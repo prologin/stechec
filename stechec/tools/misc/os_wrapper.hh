@@ -151,6 +151,4 @@ inline int pthread_mutex_destroy(pthread_mutex_t *mutex)
 
 void initialize_socket();
 
-# include "Stl.hh"
-
 #endif /* !OS_WRAPPER_HH_ */
