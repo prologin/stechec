@@ -82,7 +82,8 @@ inline int pthread_create(pthread_t* thread,
                           pthread_attr_t* attr, 
                           void* (*start_routine)(void *), void* arg)
 {
-  if (CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine, arg, 0, NULL) == NULL)
+  if (CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine,
+                   arg, 0, NULL) == NULL)
     return 1;
   return 0;
 }
@@ -93,7 +94,8 @@ inline int pthread_join(pthread_t thread, void** value_ptr)
   return 0;
 }
 
-inline int pthread_mutex_init(pthread_mutex_t* mutex, const pthread_mutexattr_t* mutexattr)
+inline int pthread_mutex_init(pthread_mutex_t* mutex,
+                              const pthread_mutexattr_t* mutexattr)
 {
   InitializeCriticalSection(mutex);
   return 0;

@@ -76,7 +76,7 @@ void CmdLineInterface::run()
       while (ccx_->process())
         ;
       // Parse and handle a command, if any.
-      if (input_.getCommand())
+      if (input_.process())
         return;
     }
 }

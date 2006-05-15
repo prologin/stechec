@@ -37,4 +37,15 @@ struct ArrayDeleter
   }
 };
 
+inline std::string trim(const std::string& s)
+{
+  if (s.length() == 0)
+    return s;
+  int b = s.find_first_not_of(" \t");
+  int e = s.find_last_not_of(" \t");
+  if (b == -1) // No non-spaces
+    return "";
+  return std::string(s, b, e - b + 1);
+}
+
 #endif /* !STL_HH_ */

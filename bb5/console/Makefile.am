@@ -15,7 +15,8 @@ bb5_client_console_la_CXXFLAGS =		\
 	-DMSG_COLOR
 
 bb5_client_console_la_LDFLAGS =			\
-	-module
+	-module					\
+	-L/sw/lib -lreadline
 
 INCLUDES 	=				\
 	-I$(top_srcdir)/stechec/tools		\
