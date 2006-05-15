@@ -1,0 +1,45 @@
+une map de tests avec pleins de rues.
+2 39 39
+5 5
+1 1
+10 5
+1 10
+.........rr.bb.rrr.bbbbbbb..rr.........
+.........rr.bb.rrr.b........rrrrrrrrrr.
+..bbbbbb.rr.bb.rrr.b..bbbb..rr.bbbbbbr.
+..bbPbbb.rr.bb.rrr.b..bbbb..rr.bbbbbbr.
+..bb.rrrrrr.bb.rrr.b..bbbb..rrrrrr.bbr.
+..bb.rrrrrr.bb.rrr.b..bbbb..rrrrrr.bbr.
+..bb.rr.bbbbbb.rrr.bPPbbbbbbbbb.rr.bbr.
+..bb.rr.bbbbbb.rrr.bbbbbbbbbbbb.rr.bbr.
+.....rr........rrr..............rr...r.
+rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr.
+rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr.....
+.....bbbbbbbbb.rrr.bbbbbbbbbbbbrrbbbbbb
+bbb..bbbbbbPbb.rrr.bbbbbbbbbbbbrrbbPbbb
+bbb.........bb.rrr.bbbbbPbbbbbbrrrrrrrr
+bP..........bb.rrrrrrrrrrrrrrrrrrrrrrrr
+bbbbbbb..bb.bb.rrr.bbbbb..bbbbbrrbbbbrr
+bbbbbbb..bb.bb.rrr.bbbbb..bbbbbrrbbbbrr
+.........bb.bb.rrr.bbb......PbbrrbbbPrr
+.rrrrrrrrrrrrrrrrr.bbP......bbbrrbbbbrr
+.rrrrrrrrrrrrrrrrr.bbbbbbbbbbbbrrbbbbrr
+.rr.bbbbbbbbbbbPbb.............rrrrrrrr
+.rr.bbbbbbbbbbbbbbbbbbbbbbbbbbbrrrrrrrr
+.rr.bbbbbbbbbbbbbbbbbbbbbbbbbbbrrbbbbbb
+.rr.......bb...........rrrrrrrrrrbbbPbb
+.rr.bbbb..bb...........rrrrrrrrrr......
+.rr.bbbb..bb..bbbPbbbb.rrbbbbbbrrbbbbb.
+.rr.bbbb..bb..bbbbbbbb.rrbbbP.brrrrrrrr
+.rr...........bbbbbbbb.rrbbbb.brrrrrrrr
+.rrrrrrrrrrrrrrrrrrrrrrrrrrr...........
+.rrrrrrrrrrrrrrrrrrrrrrrrrrrbbbbbbbbb..
+..............rr.bb..bbbbbrrbbbbbbbbb..
+bbbb.bbbbbbbb.rr.bb.....bbrr...........
+bbbb.bbbbb....rr.bbPbbb...rr.bbbb.bb.bb
+bbbb.bbbbb.bb.rr.bbbbbbbbbrr.bbbb.Pb.bb
+...........bb.rr.....b....rr...........
+..bbbbbbbP.bb.rr.bbb.b.bb.rr.bbbbbbbb..
+..bbbbbbbb.bb.rr.bbb...bb.rr.bbbbbbbb..
+rrrrrrrrrrrrrrrr.bbbbbPbb.rr...........
+rrrrrrrrrrrrrrrr.bbbbbbbb.rr...........

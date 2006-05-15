@@ -1,0 +1,47 @@
+
+#ifndef SDLVISU_HH_
+# define SDLVISU_HH_
+
+# include <SDL.h>
+# include <SDL_image.h>
+
+# include "tools.hh"
+# include "client_cx.hh"
+# include "Api.hh"
+# include "Event.hh"
+
+class SDLVisu : public AntEvent
+{
+public:
+  SDLVisu(Api* api, ClientCx* ccx);
+
+  int run();
+
+private:
+
+  // Callback events, from AntEvent
+  virtual void  mapContent(int x, int y, int map_content);
+  virtual void  newUnit();
+  virtual void  antMove(int id, int x, int y);
+  virtual void  antGetFood(int id);
+  virtual void  antLetFood(int id);
+
+  Api*          api_;
+  ClientCx*     ccx_;
+  bool          redraw_;
+
+  // SDL specifics functions an variables.
+  bool          initSDL();
+  SDL_Surface*  load_image(const std::string& filename);
+  bool          drawSquare(int x, int y);
+  bool          drawAll();
+    
+  SDL_Surface*  screen;
+  SDL_Surface*  anthill;
+  SDL_Surface*  food;
+  SDL_Surface*  ground;
+  SDL_Surface*  rock;
+  SDL_Surface*  ant[2];
+};
+
+#endif /* !SDLVISU_HH_ */

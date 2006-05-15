@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<team name="Halflings" race="halfling" coach="coach" BBversion="4" emblem="halflings.jpg">
+<rating>100</rating>
+<treasury>1000000</treasury>
+<reroll>8</reroll>
+<rerollcost>60000</rerollcost>
+<fanfactor>4</fanfactor>
+<assistant>0</assistant>
+<cheerleader>0</cheerleader>
+<apothecary>0</apothecary>
+<wizard>0</wizard>
+<players>
+
+<!-- halfling -->
+
+<player name="Frodon" number="1" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Bilbo" number="2" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Meril" number="3" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Pipin" number="4" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Jeshech" number="5" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Jouresech" number="6" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Oscour" number="7" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Denom" number="8" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Pitiot" number="9" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Ugus" number="10" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Zarty" number="11" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Filtoro" number="12" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Zikea" number="13" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Zoloize" number="14" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Marobarre" number="15" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Filkin" number="16" position="halfling" race="halfling" display="halfling_h.png">
+<ma>5</ma>
+<st>2</st>
+<ag>3</ag>
+<av>6</av>
+<positionid>0</positionid>
+<cost>30000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+
+
+</players></team>
+
+

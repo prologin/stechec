@@ -1,0 +1,133 @@
+conf:
+  package_name: ant
+  rule_lib: ant
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: |
+     Certaines fonctions retournent des valeurs intéressantes, en voici les
+     constantes
+  -
+    cst_name: UNKNOWN
+    cst_val: 0
+    cst_comment: L'unite de carte est inconnue
+  -
+    cst_name: NOTHING
+    cst_val: 1
+    cst_comment: L'unite de carte est vide
+  -
+    cst_name: OBSTACLE
+    cst_val: 2
+    cst_comment: L'unite de carte est un obstacle
+  -
+    cst_name: ANTHILL
+    cst_val: 3
+    cst_comment: L'unite de carte est une fourmiliere
+  -
+    cst_name: FOOD
+    cst_val: 4
+    cst_comment: L'unite de carte est de la nourriture
+  -
+    cst_name: NO_ANT
+    cst_val: -1
+    cst_comment: Il n'y a pas de fourmi
+  -
+    cst_name: SUCCESS
+    cst_val: 0
+    cst_comment: L'action a reussie
+  -
+    cst_name: BAD_ARGUMENT
+    cst_val: -1
+    cst_comment: Les arguments sont invalides
+  -
+    cst_name: INVALID_COMMAND
+    cst_val: -2
+    cst_comment: L'ordre n'est pas valide
+
+
+
+
+function:
+  -
+    fct_name: get_my_team
+    fct_summary: retourne l'id de votre team
+    fct_ret_type: int
+  -
+    fct_name: get_nb_ant
+    fct_summary: retourne le nombre de fourmis
+    fct_ret_type: int
+    fct_arg:
+      - [team_id, int]
+  -
+    fct_name: get_landscape_width
+    fct_summary: retourne la largeur de la map
+    fct_ret_type: int
+  -
+    fct_name: get_landscape_height
+    fct_summary: retourne la hauteur de la map
+    fct_ret_type: int
+  -
+    fct_name: get_anthill_pos_x
+    fct_summary: retourne la position en x de la fourmiliere
+    fct_ret_type: int
+    fct_arg:
+      - [team_id, int]
+  -
+    fct_name: get_anthill_pos_y
+    fct_summary: retourne la position en y de la fourmiliere
+    fct_ret_type: int
+    fct_arg:
+      - [team_id, int]
+  -
+    fct_name: get_ant_pos_x
+    fct_summary: retourne la position en x d'une fourmi
+    fct_ret_type: int
+    fct_arg:
+      - [ant_id, int]
+  -
+    fct_name: get_ant_pos_y
+    fct_summary: retourne la position en y d'une fourmi
+    fct_ret_type: int
+    fct_arg:
+      - [ant_id, int]
+  -
+    fct_name: get_land_type
+    fct_summary: retourne le type de terrain
+    fct_ret_type: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: get_land_ant
+    fct_summary: retourne l'id de la fourmi se trouvant sur cette case ,sinon -1
+    fct_ret_type: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: get_ant_luggage
+    fct_summary: retourne la charge en nourriture d'une fourmi
+    fct_ret_type: int
+    fct_arg:
+      - [ant_id, int]
+  -
+    fct_name: move_ant
+    fct_summary: deplace une fourmi
+    fct_ret_type: int
+    fct_arg:
+      - [ant_id, int]
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: carry_food
+    fct_summary: recupere la nourriture
+    fct_ret_type: int
+    fct_arg:
+      - [ant_id, int]
+  -
+    fct_name: let_food
+    fct_summary: depose la nourriture
+    fct_ret_type: int
+    fct_arg:
+      - [ant_id, int]

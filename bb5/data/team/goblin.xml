@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<team name="Goblins" race="goblin" coach="coach" BBversion="4" emblem="goblins.jpg">
+<rating>100</rating>
+<treasury>1000000</treasury>
+<reroll>5</reroll>
+<rerollcost>60000</rerollcost>
+<fanfactor>6</fanfactor>
+<assistant>0</assistant>
+<cheerleader>0</cheerleader>
+<apothecary>0</apothecary>
+<wizard>0</wizard>
+<players>
+
+<!-- goblin -->
+
+<player name="Skraargh" number="1" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Ope" number="2" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Kuere" number="3" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Kekit" number="4" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Maxchin" number="5" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Ikit" number="6" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Ikea" number="7" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Darty" number="8" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Tween" number="9" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Tejus" number="10" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Terojpe" number="11" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Originox" number="12" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Abra" number="13" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Abro" number="14" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Abri" number="15" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+<player name="Abli" number="16" position="goblin" race="goblin" display="goblin_g.png">
+<ma>6</ma>
+<st>2</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>40000</cost>
+<skill>dodge</skill>
+<skill>right stuff</skill>
+<skill>stunty</skill>
+</player>
+
+
+</players></team>
+
+

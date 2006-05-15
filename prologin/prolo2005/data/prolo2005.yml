@@ -1,0 +1,468 @@
+conf:
+  package_name: prolo2005
+  rule_lib: libzavie
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: |
+     \subsection{Les informations}
+     \subsubsection{Les constantes}
+  -
+    cst_name: UNKNOWN
+    cst_val: -1
+    cst_comment: L'objet est invisible
+  -
+    cst_name: TERRAIN
+    cst_val: 0
+    cst_comment: La case est du terrain
+  -
+    cst_name: WATER
+    cst_val: 1
+    cst_comment: La case est de l'eau
+  -
+    cst_name: ORE
+    cst_val: 2
+    cst_comment: La case est du minerai
+  -
+    cst_name: PLASMA
+    cst_val: 3
+    cst_comment: La case est du plasma
+  -
+    cst_name: MINE
+    cst_val: 0
+    cst_comment: Une mine est presente sur la case
+  -
+    cst_name: FACTORY
+    cst_val: 1
+    cst_comment: Une usine est presente sur la case
+  -
+    cst_name: CENTRAL
+    cst_val: 2
+    cst_comment: Une centrale est presente sur la case
+  -
+    cst_name: HOTEL
+    cst_val: 3
+    cst_comment: Un hotel est present sur la case
+  -
+    cst_name: ORE_BUILDING
+    cst_val: 1000
+    cst_comment: Minerai requis pour construire un batiment
+    cst_hasdoc: true
+  -
+    cst_name: PLASMA_BUILDING
+    cst_val: 50
+    cst_comment: Plasma requis pour construire un batiment
+    cst_hasdoc: true
+  -
+    cst_name: ORE_COLEOPTERA
+    cst_val: 1000
+    cst_comment: Minerai requis pour construire un coleoptere
+    cst_hasdoc: true
+  -
+    cst_name: PLASMA_COLEOPTERA
+    cst_val: 200
+    cst_comment: Plasma requis pour construire un coleoptere
+    cst_hasdoc: true
+  -
+    cst_name: DEC_Y
+    cst_val: 0
+    cst_comment: Direction vers les y negatifs
+  -
+    cst_name: INC_Y
+    cst_val: 1
+    cst_comment: Direction vers les y positifs
+  -
+    cst_name: DEC_X
+    cst_val: 2
+    cst_comment: Direction vers les x negatifs
+  -
+    cst_name: INC_X
+    cst_val: 3
+    cst_comment: Direction vers les x positifs
+  -
+    cst_name: INVALID_COMMAND
+    cst_val: -3
+    cst_comment: Commande invalide
+  -
+    cst_name: NO_UNIT
+    cst_val: -2
+    cst_comment: L'identifiant demande pour l'unite n'existe pas
+  -
+    cst_name: BAD_ARGUMENT
+    cst_val: -1
+    cst_comment: Mauvais argument
+  -
+    cst_name: SUCCESS
+    cst_val: 0
+    cst_comment: La commande a reussi
+  -
+    cst_name: STATE_NORMAL
+    cst_val: 0
+    cst_comment: Le coleoptere est dans l'etat par defaut
+  -
+    cst_name: STATE_BUILDING
+    cst_val: 1
+    cst_comment: Le coleoptere construit un batiment
+  -
+    cst_name: STATE_DOCKING
+    cst_val: 2
+    cst_comment: Le coleoptere est arrime (et ne fait rien)
+  -
+    cst_name: STATE_TRANSFERING
+    cst_val: 3
+    cst_comment: Le coleoptere est en train d'effectuer un transfert
+  -
+    cst_name: STATE_CANAL_OPEN
+    cst_val: 4
+    cst_comment: Le coleoptere a ouvert son canal (et attend)
+  -
+    cst_name: STATE_REPAIRING
+    cst_val: 5
+    cst_comment: Le coleoptere se fait reparer dans une usine
+  -
+    cst_name: STATE_DEAD
+    cst_val: 6
+    cst_comment: Le coleoptere est mort ou n'existe pas
+
+
+
+function:
+  - doc_extra: \subsubsection{Informations sur le monde}
+  -
+    fct_name: world_size_x
+    fct_type_ret: int
+    fct_summary: Récupère la taille du monde en hauteur.
+    fct_ret_comment: Un entier contenant la taille du monde en hauteur
+    fct_notice: Retourne toujours 50 lors des matchs officiels
+  -
+    fct_name: world_size_y
+    fct_type_ret: int
+    fct_summary: Récupère la taille du monde en largeur.
+    fct_ret_comment: Un entier contenant la taille du monde en largeur.
+    fct_notice: Retourne toujours 50 lors des matchs officiels
+  -
+    fct_name: land_type
+    fct_summary: Retourne le type du terrain
+    fct_type_ret: int
+    fct_ret_comment: Eau, champ de minerai, champ de plasma...
+    fct_arg:
+      - [x, int, Coordonnée en x de la case demandée]
+      - [y, int, Coordonnée en y de la case demandée]
+  -
+    fct_name: land_value
+    fct_summary: Valeur fonciere du terrain.
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: teams
+    fct_summary: Nombre d'equipes presentes
+    fct_type_ret: int
+  -
+    fct_name: my_team
+    fct_summary: Identifiant de votre equipe
+    fct_type_ret: int
+  -
+    fct_name: current_turn
+    fct_summary: Tour actuel
+    fct_type_ret: int
+  -
+    fct_name: remaining_turns
+    fct_summary: Nombre de tours restant
+    fct_type_ret: int
+  -
+    fct_name: time_remaining
+    fct_summary: Temps (en ms) restant pour ce tour
+    fct_type_ret: int
+  -
+    fct_name: extra_time_remaining
+    fct_summary: Temps additionnel (en ms) restant pour la partie
+    fct_type_ret: int
+  - doc_extra: |
+      Attention, les fonctions permettant de connaître le temps restant ont
+      été codées par un chat, ce qui signifie donc que vous êtes face à un
+      paradoxe~! Le fait d'appeler une fonction pour savoir si vous avez
+      perdu du temps vous fait perdre du temps, c'est inévitable. Donc un
+      conseil~: évitez d'appeler cette fonction trop souvent.
+
+  - doc_extra: |
+      \subsubsection{Informations sur les \textsl{B-14-773}}
+      Les fonctions suivantes permettent d'avoir des informations sur les
+      \textsl{Coléoptère}. Si l'appel est incorrect, elles renvoient une
+      erreur au lieu de l'information demandée. \\
+
+  -
+    fct_name: coleoptera_team
+    fct_summary: Identifiant de l'equipe possedant le coleoptere se trouvant a la position demandee.
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: coleoptera_id
+    fct_summary: Idendifiant du coleoptere de votre equipe se trouvant a la position demandee
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: coleoptera_x
+    fct_summary: Position en x sur la carte du coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: coleoptera_y
+    fct_summary: Position en y sur la carte du coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: coleoptera_ore
+    fct_summary: Quantite de minerai contenu par le coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: coleoptera_plasma
+    fct_summary: Quantite de plasma contenu par le coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: coleoptera_damage
+    fct_summary: Pourcentage de dommage du coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: coleoptera_state
+    fct_summary: Renvoie l'etat du coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: get_first_coleoptera
+    fct_summary: Renvoie l'id du premier coleoptere de votre equipe
+    fct_type_ret: int
+  -
+    fct_name: get_next_coleoptera
+    fct_summary: Renvoie l'id du coleoptere suivant de votre equipe, ou -1 si c'etait le dernier
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: building_type
+    fct_summary: Type du batiment se trouvant a la position demandee
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+
+
+  - doc_extra: \subsubsection{Informations sur les constructions}
+  -
+    fct_name: building_team
+    fct_summary: Idendifiant de l'equipe possedant le batiment a la position demandee
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: factory_id
+    fct_summary: Idendifiant de l'usine de votre equipe se trouvant a la position demandee
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: hotel_id
+    fct_summary: Idendifiant de l'hotel de votre equipe se trouvant a la position demandee
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: central_id
+    fct_summary: Idendifiant de la centrale de votre equipe se trouvant a la position demandee
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: mine_id
+    fct_summary: Idendifiant de la mine de votre equipe se trouvant a la position demandee
+    fct_type_ret: int
+    fct_arg:
+      - [x, int]
+      - [y, int]
+  -
+    fct_name: factory_x
+    fct_summary: Position en x sur la carte de l'usine 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: factory_y
+    fct_summary: Position en y sur la carte de l'usine 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: factory_plasma
+    fct_summary: Stock de plasma de l'usine 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+
+  -
+    fct_name: factory_ore
+    fct_summary: Stock de minerai de l'usine 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: factory_state
+    fct_summary: Renvoie le nombre de tours necessaires pour finir toutes les constructions demandees.
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: mine_x
+    fct_summary: Position en x sur la carte de la mine 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: mine_y
+    fct_summary: Position en y sur la carte de la mine 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: central_x
+    fct_summary: Position en x sur la carte de la centrale 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: central_y
+    fct_summary: Position en y sur la carte de la centrale 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: hotel_x
+    fct_summary: Position en x sur la carte de l'hotel 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: hotel_y
+    fct_summary: Position en y sur la carte de l'hotel 'id
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: hotel_value
+    fct_summary: Valeur fonciere de l'hotel 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+
+
+  - doc_extra: |
+     \subsection{Les commandes}
+     Toutes les fonctions renvoient un entier correspondant au succès ou à
+     l'échec de la commande, comme par exemple si vous essayez de déplacer
+     un \textsl{Coléoptère} au dessus de l'eau\footnote{De l'eau, il y en
+     aura bien assez sans faire de zèle...}.
+     \subsubsection{Les \textsl{B-14-773}}
+  -
+    fct_name: move_coleoptera
+    fct_summary: Deplace le coleoptere 'id' d'une case dans la direction indiquee
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+      - [direction, int]
+  -
+    fct_name: dock_coleoptera_to_coleoptera
+    fct_summary: Arrime le coleoptere 'id1' au coleoptere 'id2'
+    fct_type_ret: int
+    fct_arg:
+      - [id1, int]
+      - [id2, int]
+  -
+    fct_name: dock_coleoptera_to_building
+    fct_summary: Arrime le coleoptere 'id' au batiment se trouvant sur sa case
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: transfert
+    fct_summary: Transfere les quantites souhaitees depuis le coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+      - [ore, int]
+      - [plasma, int]
+  -
+    fct_name: open_canal
+    fct_summary: Ouvre le canal du coleoptere
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: close_canal
+    fct_summary: Ferme le canal du coleoptere
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+  -
+    fct_name: throw_plasma
+    fct_summary: Envoie du plasma dans la direction 'direction'.
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+      - [direction, int]
+      - [quantity, int]
+  -
+    fct_name: make_building
+    fct_summary: Construit un batiment 'type' avec le coleoptere 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+      - [type_building, int]
+  -
+     fct_name: repair_coleoptera_by_coleoptera
+     fct_summary: Repare un coleoptere avec un autre coleoptere
+     fct_type_ret: int
+     fct_arg:
+      - [id1, int]
+      - [id2, int]
+  -
+     fct_name: repair_coleoptera_by_factory
+     fct_summary: Repare un coleoptere avec une usine (id correspond a celui de l'usine)
+     fct_type_ret: int
+     fct_arg:
+      - [id, int]
+
+  - doc_extra: \subsubsection{Les usines}
+  -
+    fct_name: make_coleoptera
+    fct_summary: Construit un nombre 'count' de coleopteres de l'usine 'id'
+    fct_type_ret: int
+    fct_arg:
+      - [id, int]
+      - [count, int]
+
+user_function:
+  - doc_extra: |-
+     \subsection{Ce que vous devez faire}
+     Vous êtes libres de mener la stratégie qui vous semble la plus
+     adaptée, et vous avez entière liberté sur la façon de
+     l'implémenter. Toutefois nous vous demandons d'écrire deux fonctions
+     en particulier : une fonction qui sera appelée au début de la partie,
+     et une autre qui sera appelée à chaque tour.

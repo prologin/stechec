@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<team name="Chaos" race="chaos" coach="Sanyi" BBversion="4" emblem="chaos.jpg">
+<rating>100</rating>
+<treasury>1000000</treasury>
+<reroll>1</reroll>
+<rerollcost>70000</rerollcost>
+<fanfactor>5</fanfactor>
+<assistant>0</assistant>
+<cheerleader>0</cheerleader>
+<apothecary>0</apothecary>
+<wizard>0</wizard>
+<players>
+
+<!-- chaos warrior -->
+
+<player name="Dwarfy" number="1" position="warrior" race="chaos" display="chaos_w.png">
+<ma>5</ma>
+<st>4</st>
+<ag>3</ag>
+<av>9</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+</player>
+
+<player name="Clown" number="2" position="warrior" race="chaos" display="chaos_w.png">
+<ma>5</ma>
+<st>4</st>
+<ag>3</ag>
+<av>9</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+</player>
+
+<player name="Beat Boy" number="3" position="warrior" race="chaos" display="chaos_w.png">
+<ma>5</ma>
+<st>4</st>
+<ag>3</ag>
+<av>9</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+</player>
+
+<player name="Wasp" number="4" position="warrior" race="chaos" display="chaos_w.png">
+<ma>5</ma>
+<st>4</st>
+<ag>3</ag>
+<av>9</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+</player>
+
+<!-- beastman -->
+
+<player name="Stinger" number="5" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+<player name="Creep" number="6" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+<player name="Sweeper" number="7" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+<player name="Ironbone" number="8" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+<player name="Crusher" number="9" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+<player name="Stricker" number="10" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+<player name="Csere" number="11" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+<player name="Cisera" number="12" position="beastman" race="chaos" display="chaos_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>60000</cost>
+<skill>horns</skill>
+</player>
+
+</players></team>
+
+

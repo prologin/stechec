@@ -1,0 +1,94 @@
+Interaction avec le serveur :
+=============================
+Le wrapper pour les candidats : stechec/scripts/files/main.c
+Exemple pour le client de rendu : prologin/ant/visu/sdl_visu.cc
+
+Dans le cas du candidat, sa fonction play_turn est appelée, mais dans
+le cas du client de rendu, c'est lui qui mène la danse à coups de
+setReady(). Les appels aux fonctions concernent le tour courant.
+
+ * A faire : Voir pour la boucle du jeu dans gui.cc. Quand ce sera
+             fait, ligne droite affichage. Afficher des bidules au
+             départ et améliorer au fur et à mesure. Prévoir un bout
+             de code pour chunter le server et visualiser directement.
+
+
+Affichage d'un joueur :
+=======================
+Imposteur dont la texture dépend de l'orientation et de l'animation.
+Plein de sprites LLB ont été créés pour utiliser dans le monde 3D, à
+la Ragnarok.
+
+ * A faire : tester que ça marche et animer.
+
+
+Fichiers 3DS :
+==============
+Pour la de Lorean, on a un fichier 3DS de de Lorean, que Nomad doit en
+théorie modifier vite fait si il y a le temps, pour en faire une
+machine à remonter le temps.
+
+Un chargeur de 3DS basique trouvé sur un site de programmation a été
+inséré et nettoyé de sa porcherie Windows. Il reste à le tester et à
+écrire notre propre classe Mesh, parce que la leur donne l'impression
+d'avoir été codée à l'arrache. En tout cas ça a l'intérêt de guider
+dans la construction d'une telle classe.
+
+Ce chargeur semble avoir un problème pour gérer la position des
+mesh. Rien de méchant : au pire on demandera à Nomad que la De Lorean
+soit en un seul mesh.
+
+ * A faire : fusionner ce truc avec la classe Mesh.
+
+
+Modelisation :
+==============
+Le fichier modelisation.dia contient un schéma UML de la modélisation.
+Ce qui est en rouge n'a pas encore été implémenté. Ce qui est en noir
+à été commencé. Les quelques classes en ocre sont les classes
+majeures.
+
+ * A faire : Il faut finir la modélisation d'une part, et
+             l'implémenter d'autre part.
+
+
+Gestion de l'historique :
+=========================
+Les objets du monde sont dans un tableau (une liste, peu importe) dont
+chaque case représente un tour, ceci afin de gérer l'historique.
+
+Leurs représentions elles, sont uniques, ceci afin de maintenir une
+cohérence entre deux rendus (animation, tri des objets...), et tout
+simplement parce que faire un tableau n'a pas d'utilité.
+
+DataCenter contient tout cela.
+
+ * A faire : mises à jour côté affichage.
+
+
+Gestion des textures :
+======================
+TextureManager gère tout : on lui demande une texture et il la charge
+et renvoie un entier. Il suffit ensuite de lui passer cet entier quand
+on veut activer la texture.
+
+ * A faire : utiliser la libim parce que la libjpeg ne link pas. Il
+             manque encore des textures pour le terrain et les
+             bâtiments.
+
+
+Gestion du rendu :
+==================
+Il est préférable d'afficher les choses dans un certain ordre : du
+plus proche au plus éloigné pour les éléments entièrement opaques
+(pour optimiser), et du plus éloigné au plus proche pour les éléments
+transparents (pour avoir un rendu correct visuellement).
+
+La solution envisagée pour faire ça est d'avoir une liste d'objets Gem
+à afficher, et de maintenir cette liste triée. Il suffit alors de
+balayer cette liste en appelant les méthodes Render(). Il faut
+implémenter un opérateur de comparaison qui dit quel Gem il faut
+afficher en premier, en prenant en compte sa distance et son type.
+
+ * A faire : quand on affichera quelque chose, passer à ce mode de
+             fonctionnement.

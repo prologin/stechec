@@ -1,0 +1,6 @@
+--- %YAML:1.0
+
+basic:
+  map: prologin.map
+  client_1:
+    source: c/basic.c

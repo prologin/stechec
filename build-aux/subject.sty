@@ -1,0 +1,35 @@
+%
+% Some commonly used packages
+%
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+%\usepackage{palatino}
+\usepackage{listings}
+\usepackage{array}
+\usepackage{color}
+\usepackage{graphicx}
+
+%
+% Box for API functions and constants.
+%
+\definecolor{colIdentifier}{gray}{0}
+\definecolor{colKeys}{rgb}{0,0,0.6}
+
+\lstnewenvironment{lst-c++}{%
+\lstset{%
+language=C++,
+identifierstyle=\color{colIdentifier},
+keywordstyle=\color{colKeys},
+basicstyle=\ttfamily\small
+}}{}
+
+%% \newcommand{\functitle}[1]{%
+%% \noindent \makebox[0pt][l]{\colorbox[gray]{0.8}{\makebox[8cm]{}}}%
+%% \makebox[\textwidth][l]{$\bullet$ \fontfamily{phv}\fontseries{sb}\selectfont\large#1}
+%% }
+
+\newcommand{\functitle}[1]{%
+\vspace{0.5cm}
+$\bullet$ \underline{\textbf{#1}}
+}

@@ -1,0 +1,184 @@
+Le thème du jeu est Retour vers le futur
+
+
+La carte est une ville : un quadrillage avec des bâtiments.
+Concernant le "brouillard de guerre", les personnages voient la carte
+complète (batiments, rues...), mais ne voient le reste que dans la
+limite de leur champ de vision (ça permet de jouer à cache-cache et
+éventuellement d'attendre un joueur au coin de la rue).
+Certains bâtiment sont des lieux où l'on peut parier à des jeux, qui
+rapportent plus ou moins d'argent. Ces jeux ont des lieux et dates
+bien précises. Le but est de remporter un maximum d'argent durant une
+partie. Plusieurs personnes peuvent parier en même temps, mais se
+partagent alors les gains. Le nombre de jeux est très supérieur à ce
+qu'il est possible de jouer en une partie. Jouer est automatique : il
+suffit d'aller sur le bâtiment concerné. Si le pari est indisponible
+(mauvais bâtiment ou date), le personnage reste bloqué à
+l'extérieur.
+
+Il y a un almanach, permettant de connaître le lieu, la date, la
+cagnotte et le résultat de ces jeux. On peut se souvenir d'un nombre
+(très) limité de résultats (pile de taille fixée) pour jouer un nombre
+limité de paris sans l'almanach.
+Il est possible de jouer avec ou sans almanach. Avec, un joueur a 100%
+de chances de gagner, et sans, il a une probabilité de gagner qui
+diminue à chaque fois qu'il refait le même pari. S'il gagne, il
+connaît le résultat et ses chances de gagner passent à 100%. C'est
+donc au serveur de se rappeler de ce que chacun sait (ce qui n'est pas
+compliqué).
+
+Il y a une de Lorean, permettant de voyager dans le temps. Lorsque
+l'on va dans le futur, la partie continue et la de Lorean réapparaît
+un peu plus tard. Lorsque l'on va dans le passé, tous les joueurs se
+retrouvent à la place qu'ils occupaient, sauf le conducteur de la de
+Lorean. Les paris qui suivent la date sont annulés. La structure d'un
+pari est du genre {x, y, date, montant, gagné[joueurs]}.
+Pour empêcher une boucle infinie dans l'espace temps (une IA basique
+qui revient dans le passé et refait exactement la même chose) on
+limite l'utilisation de la voiture (c'est que ça bouffe de
+l'électricité de truc là !).
+Lorsque l'on rentre dans un bâtiment pour parier, on est obligé de
+laisser la de Lorean à l'extérieur, permettant à n'importe qui de la
+voler.
+
+Lorsque qu'un personnage passe sur une case où se trouve l'almanach ou
+la de Lorean, il récupère l'objet en question et peut s'en servir. Un
+personnage peut également en assomer un autre pour lui voler cet
+almanach, ou lui couper la route pour lui voler la de Lorean. Du point
+de vue de l'API, c'est automatique : si un joueur avec l'almanach ou
+la de Lorean tombe sur la même case qu'un joueur d'une autre équipe,
+il est assomé et l'autre joueur récupère l'objet. Pour éviter une
+boucle, un joueur reste assomé un certain nombre de tours.
+
+Dans le cas particulier de la de Lorean interceptée au moment d'un
+voyage dans le temps, c'est la date passée à joue_tour qui permet au
+candidat de savoir que son joueur a pilé pour éviter de mettre du sang
+partout.
+
+
+Au début du jeu l'almanach et la DeLorean sont à un endroit inconnu.
+Le premier qui lui tombe dessus entâme le jeu. Comme les autres
+sujets, la première phase est donc une phase de découverte de la
+carte.
+
+Le voyage dans le temps avec souvenir constitue un défi intéressant
+pour les candidats : ils peuvent optimiser leurs actions en se
+souvenant de quand ils ont fait leurs paris, et au lieu de jouer à
+l'instant ils ont intérêt à planifier leurs coups.  Celui qui met en
+place la bonne structure pour se souvenir de ce qu'il a fait aura un
+clair avantage : il aura juste à la rejouer. Du coup (même si je doute
+que des candidats en tirent parti) il est possible d'utiliser le temps
+de calcul pour explorer de nouveaux scénarios.
+
+Les candidats se sont plaints de devoir faire des algos de plus court
+chemin donc on avait décidé de le leur fournir. Comme problème de
+remplacement à leur mettre sous la dent, mais qui n'est pas
+indispensable contrairement à l'autre : comme la carte est une ville,
+un cadrillage plus ou moins régulier de rues, intercepter un autre
+personnage est assez technique, d'autant plus que disposant de cette
+fonction de plus court chemin, chacun peut extrapoler les mouvements
+des autres.
+
+
+API :
+=====
+
+Les unités, les équipes, les bâtiments, les jeux (bref tout) ont un
+identifiant unique, et 0 sert de code d'erreur.
+
+L'attaque est automatique : il suffit de ne pas être assomé et d'être
+sur la même case qu'un personnage possédant l'almanach ou la de
+Lorean.
+
+Le pari est automatique : il suffit d'avancer sur le bâtiment. Si le
+pari nést pas ouvert, le déplacement échoue. Sinon on ressort un
+certain nombre de tours plus tard.
+
+
+// Fonction à coder par le candidat :
+// ==================================
+
+void tour (int date) // Permet de détecter les voyages dans le temps
+
+
+// Fonctions d'information :
+// =========================
+
+int mon_equipe ()
+
+int score (int équipe)
+-> {erreur, score}
+
+int possede_delorean ()
+-> {non, unité}
+
+int possede_almanach ()
+-> {non, unité}
+
+int autonomie_delorean () // Ayant la de Lorean, on peut vérifier la batterie
+-> {erreur, autonomie}
+
+int regarde (int x, y) // Exploration de la carte
+o-> {hors champ, rien, batiment, unité}
+
+
+// Si il y a une unité on peut savoir qui
+// --------------------------------------
+
+int qui (int x, y)
+-> {erreur, unité}
+
+int equipe (int unité)
+-> {erreur, équipe}
+
+int possede_almanach (int unité)
+-> {erreur, non, oui}
+
+int possede_delorean (int unité)
+-> {erreur, non, oui}
+
+int etat (int unité)
+-> {erreur, assomée, ok, que sais-je}
+
+
+// Si il y a un bâtiment on peut savoir quoi
+// -----------------------------------------
+
+int quoi (int x, y)
+-> {erreur, bâtiment quelconque, id des lieux de jeu}
+
+int ouvert (int bâtiment)
+-> {erreur, non, oui}
+
+int jeu (int bâtiment)
+-> {erreur, identifiant du jeu}
+
+
+// Fonctions de commande :
+// =======================
+
+int deplace (int unité, int x, int y)
+-> {erreur, interruption, ok}
+
+int convecteur_temporel (int date) // On vérifie la date grâce à tour()
+-> {erreur, ok}
+
+int memorise_score (int jeu) // Empile un résultat à jouer si on a l'amanach
+-> {erreur, ok}
+
+int quand_jouer (int jeu)
+-> {erreur, date}
+
+int ou_jouer (int jeu)
+-> {erreur, bâtiment}
+
+int cagnotte (int jeu)
+-> {erreur, montant}
+
+int adresse_x (int bâtiment)
+-> {erreur, x}
+
+int adresse_y (int bâtiment)
+-> {erreur, y}
+
+

@@ -1,0 +1,809 @@
+%% -*- Latex -*-
+\documentclass[10pt]{report}
+\usepackage{tbt}
+\usepackage{acro}
+\getrevision$LastChangedRevision: 3226 $
+
+\title{
+  \vspace{-2cm}
+  \includegraphics[width=8cm]{prolo_undate} \\
+  \vspace{1cm}
+  \Huge{\textbf{Stechec V3}} \\[12pt]
+  \huge{Plateforme générique pour le développement de jeux
+    tour à tour} \\[12pt]
+  \Large{Architecture - Révision \revision}
+  \vspace{2cm}
+}
+
+\author{
+  Olivier Gournet \\
+  \url{olivier.gournet@lrde.epita.fr} \and
+  Fabrice Hesling \\
+  \url{fabecc@gmail.com}
+  \vspace{1cm}
+}
+
+\date{\today}
+
+\def\stechec{%
+{\normalfont\rmfamily S
+\kern-.32em\raise.2ex\hbox{T}
+\kern-.48em\raise-.25ex\hbox{\scshape e}
+\kern-.31em\raise.1ex\hbox{C}
+\kern-.35emH
+\kern-.4em\raise-.25ex\hbox{\scshape e}
+\kern-.4emC}
+\xspace}%
+
+\begin{document}
+
+% passe une ligne entre chaque paragraphe
+\addtolength{\parskip}{\baselineskip}
+% utilise des bullet pour les itemize
+\renewcommand{\labelitemi}{%
+  {$\bullet$}}%
+
+\maketitle
+\tableofcontents
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% INTRODUCTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introduction}
+
+\stechec, mais qu'est ce que c'est\footnote{Ça se mange ?} ? Question
+délicate, alors essayez de suivre... \stechec est un
+\emph{environnement} relativement complet pour faciliter la création
+de jeux en tour par tour. Par exemple, pour faire un jeu de plateau en
+tour par tour, jouable en réseau par une IA ou un humain, \stechec
+arrive avec un paquet de choses déjà faite, comme la communication
+réseau, les fichiers de configuration, des outils pour faciliter la
+gestion des règles du jeu et de l'interface, \ldots
+
+Tout seul, \stechec ne sert à rien. Il faut lui rajouter une
+surcouche, c'est à dire un jeu avec des règles, et les interfaces
+utilisateurs correspondantes. Pour l'instant, il existe deux jeux
+construits au dessus de \stechec: \ac{tbt}, et les sujets de finales
+Prologin. Vous pouvez pensez à \stechec comme au moteur de la voiture,
+et à \ac{tbt} (ou les sujets prologin) comme la
+carrosserie\footnote{Dans ce cas, on peut considérer qu'il fait aussi
+  ouvre-vitre électrique}. Les deux parties sont complémentaires, et
+devront s'assembler tant et bien que mal.
+
+En théorie, tout ce qui est dans \stechec, le code, la modélisation,
+les fonctionnalités sont figées. Ce présent document va essayer de
+présenter les fonctionnalités principales, avec le mode d'emploi pour
+la création d'un nouveau jeu. En pratique, tout n'est pas encore figé,
+et des choses sont rajoutés dans \stechec au fur et à mesure des
+besoins.
+
+Voici un aperçu des fonctionnalités:
+\begin{itemize}
+\item Règles:
+\item Client:
+  \begin{itemize}
+    \item Interface graphique
+    \item UI
+  \end{itemize}
+\item Serveur:
+\item Meta-serveur:
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% HISTORIQUE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Historique}
+
+Chaque année, le serveur de la finale prologin \cite{prologin.www} est
+refait. Un effort a été fait en 2004 pour faire un programme
+suffisamment générique, pour ne pas avoir a tout refaire chaque
+année. Nom de code: \emph{Absolut}. Ce fut un quasi-échec pour un tas
+de raisons, ce qui a fait qu'il n'a pas pu être repris l'année
+suivante.
+
+En 2005, un groupe de personnes motivés\footnote{Certaines pour les
+  notes, d'autres pour des raisons plus obscures...} a repris les
+choses en main, et tracé le contour d'un nouveau \emph{serveur
+  générique}. Petit nom pour ce bébé: \emph{\stechec}\footnote{A la
+  base, ce devait être un véritable échec.}. Finalement, quasiment
+tout a fonctionné au dela des espérances, mais le code de base n'était
+pas assez souple pour pouvoir faire des choses un peu différentes des
+sujets prologin.
+
+Début 2006, \stechec a servi de source d'inspiration à la modélisation
+de \ac{tbt}, adapation du célèbre jeu de plateau Blood Bowl. Les
+principes furent repris, mais le code fut faconné de manière un peu
+plus souple et générique. Au bout d'un moment, pour ne pas à avoir à
+maintenir ces deux programmes, qui faisaient à peu près la même chose,
+ils furent mergés\footnote{A l'arrach', comme d'habitude}, avant la
+finale de l'édition 2006 de prologin.
+
+Voici un aperçu des fontionnalitées, à travers le temps et les
+versions:
+
+\begin{itemize}
+\item \textbf{V1} (début 2005) Définition de la
+  modélisation. Implémentation en C.
+\item \textbf{V2} (avril 2005) La modélisation a été conservée, mais
+  plusieurs pan de codes ont été refait, plus robuste. Le langage
+  passe majoritairement sur du C++.
+\item \textbf{V3} (début 2006) La version actuelle. Système de
+  messages asynchrone.
+\item \textbf{V4} (¨un jour¨) Pleins d'idée, pour une future version,
+  comme les fonctions de l'API bloquante, \ldots
+\end{itemize}
+
+\chapter{Vue d'ensemble}
+
+\vspace{1cm}
+
+\begin{verse}
+\it O give me commentators plain, \\
+\it Who with no deep researches vex the brain.
+\begin{flushright}
+\small{\textsc{CRABBE}}
+\end{flushright}
+\end{verse}
+
+\vspace{1.5cm}
+
+Vous avez réussi à ouvrir ce document, ça veut dire que vous avez déjà
+réussi à récupérer et à installer \stechec. Ce document
+explique comment créer un nouveau concours, et tout particulièrement
+comment et où coder les règles. \\
+
+Le projet est constitué de plusieurs paquets. Il y a le paquet de
+base, \stechec, qui comprend tout ce qui est commun aux
+concours, comme le client, le serveur, une partie de l'interface
+graphique, la gestion des différents langages... L'arborescence des
+répertoires est présentée dans le listing~\ref{arboStechec}. \\
+
+Ensuite, il y a un paquet par concours (voir
+listing~\ref{arboContest}), pour l'instant: \texttt{ant},
+\texttt{prolo2005} et \texttt{robotarena}, qui dépendent uniquement de
+\stechec. Ils contiennent un fichier yaml décrivant toutes les
+fonctions que le joueur pourra utiliser, et produisent une
+bibliothèque dynamique contenant les régles du jeu. Ils contiennent de
+plus les sprites et autres éléments graphique spécifique au concours. \\
+
+En théorie, vous n'avez pas à toucher à une seule ligne dans
+\stechec (à part pour des séances de bug fix, bien sûr). Par
+contre, vous pouvez aussi rajouter tout ce qui semble utile pour un
+concours dans ce paquet, et que vous n'avez pas le temps de rendre
+'générique' (comme l'éditeur de map, dans \texttt{prolo2005}). \\
+
+Vous devez aussi avoir installé \stechec sur votre machine
+pour suivre toutes les étapes de création d'un nouveau concours. Les
+explications sont dans le fichier README, situé à la racine de
+\stechec.  Nous y sommes ! Il ne reste plus qu'a vous
+souhaiter une bonne lecture, et bon courage. \\
+
+\begin{lstlisting}[caption={Arborescence du paquet \stechec},
+float=tb, label=arboStechec, frame=single]
+.
+|-- config                  divers scripts M4 pour autotools
+|-- data                    fichiers de configuration
+|-- doc	                    ce que vous êtes en train de lire :)
+|-- scripts                 scripts shell et ruby divers
+|   |-- make_player         scripts générant l'arborescence de 'player'
+|   `-- make_rules          scripts générant l'arbo d'un nouveau concours
+|-- src
+|   |-- client              les sources du client générique
+|   |-- main_server         pont entre l'interface web et les meta-serveurs
+|   |-- meta-serv           execute les matchs donnés par l'interface web
+|   |-- rules               base des régles
+|   |-- server              les sources du serveur générique
+|   |-- tkrun               top-level graphique pour le script 'run'
+|   |-- tools
+|   |   |-- argument        argument en ligne de commande
+|   |   |-- module_reseau   lib tcp/ip pour le client et le serveur
+|   |   |-- rules_loader    charge les règles pour le serveur et le client
+|   |   `-- verboseur       afficheur de messages de debug, en couleur
+|   `-- visio               la base de l'interface de visualisation
+|       `-- graphics_2D     l'interface de visualisation 2D en qt
+|-- test                    quelques tests, notamment pour le rep 'scripts'
+`-- www                     répertoire dont vous ne verrez jamais l'existence
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Arborescence d'un concours},
+label=arboContest, float=tb, frame=single]
+.
+|-- config                  divers scripts M4 pour autotools
+|-- data                    données pour le jeu, cartes...
+|   |-- texture_2D          sprites pour l'interface 2D
+|   `-- texture_3D
+|-- src                     implémentation des règles pour le concours
+|-- test                    tests sur le comportement des règles.
+`-- subject                 document (latex) decrivant le sujet
+\end{lstlisting}
+
+
+\chapter{Création d'un nouveau concours}
+
+Vous venez donc d'acquérir ce magnifique nouveau serveur générique à
+grands coups de svn checkout ou de wget, et vous aimeriez créer un
+concours. Voici les différentes étapes à accomplir : \\
+
+
+\begin{itemize}
+\item Création d'un fichier Yaml, contenant l'ensemble des
+  prototypes des règles, des fonctions du joueur, et quelques
+  paramètres de configuration;
+\item Exécution du script de création de concours. Ce script va
+  vous créer un concours de base, avec toute une arborescence et des
+  fichiers prêts à être remplis;
+\item Programmation des règles, en C/C++;
+\item Compilation;
+\item Déboggage;
+\item Et enfin, le moment tant attendu, la release :) \\
+\end{itemize}
+
+Bien entendu, les 3 avant derniers points ne sont pas uniquement
+séquentiels, mais ont plutôt fortement tendance à être cyclique.
+Tous ces points vont êtres abordés dans les chapitres suivants.
+
+\chapter{Le fichier Yaml}
+
+Chaque année, les participants à la finale de Prologin peuvent coder
+dans un langage à choisir parmi les suivants\footnote{Référez vous au
+document \emph{new-language.pdf} si vous vous sentez motivé pour gérer
+un autre langage} : C, C++, Pascal, Caml, Java, ou Haskell. \\
+
+Le fichier Yaml détaille les fonctions et constantes qui constitueront
+l'API pour le joueur. Des scripts en Ruby permettent ensuite de lire
+ces spécifications pour générer automatiquement des fichiers. Ces
+fichiers générés peuvent servir de base pour coder les règles, ou
+pourront être les fichiers données aux candidats avec toute la glue
+nécessaire pour lier les différents langages avec le C, ou encore pour
+générer la documentation de l'API en latex. Des exemples sont fournis
+dans \texttt{stechec/test}, et dans les concours déjà existant. \\
+
+\section{Le fichier YAML}
+
+Un fichier Yaml est constitué de telle sorte qu'il soit lisible très
+facilement. N'importe quelle structure est facilement identifiable,
+comme le montre l'exemple plus bas. Voici la structure du fichier: \\
+
+\begin{enumerate}
+\item \textbf{L'environnement:} (conf) \\
+  Tous ces éléments doivent être spécifiés:
+  \begin{itemize}
+  \item \texttt{package\_name} : nom du paquet. Celui ci sert lors de la
+    génération d'un template pour un nouveau concours.
+  \item \texttt{rule\_lib} : nom de la bibliothèque contenant les règles, sans
+    l'extension. En général, vous voudriez y mettre le même nom que
+    \emph{package\_name}, mais pour des raisons partiellement
+    historiques et partiellement stupide, une différence peut être
+    faite. Par exemple, pour le paquet \texttt{prolo2005}, la
+    bibliothèque de règle se nomme \texttt{libzavie}, en hommage à son
+    concepteur, et pour le paquet \texttt{ant}, elle s'appelle
+    \texttt{fourmis} (un franglais mal placé).
+  \item \texttt{player\_lib} : nom de la bibliothèque qui sera créé par le
+    Makefile du joueur, contenant son champion. Par défaut, celui-ci est
+    \texttt{champion}, et il est pour l'instant déconseillé de mettre
+    autre chose, certains scripts étant hardcodés avec cette valeur.
+  \item \texttt{player\_filename} : nom des fichiers générés dans le dossier du
+    joueur, sans l'extension. Ce sont les fichiers que le joueur aura
+    à modifier. D'autres fichiers, contenant le nom interface, seront
+    aussi créés. \\
+  \end{itemize}
+
+\item \textbf{La liste de constantes:} (constant)\\ 
+  chaque élément du tableau est une table de hash de 4 éléments (tous
+  obligatoires, sauf \texttt{cst\_hasdoc}):
+  \begin{itemize}
+  \item \texttt{cst\_name}, qui indique le nom de la constante
+  \item \texttt{cst\_val}, qui indique la valeur de la constante
+  \item \texttt{cst\_comment}, qui ajoute commentaire associé à la
+  constante
+  \item \texttt{cst\_hasdoc}, qui indique si cette constante doit se
+  retrouver dans le sujet, sur la documentation de l'API (par défaut,
+  non)\\
+  \end{itemize}
+
+\item \textbf{la liste de fonctions:} (function)\\
+   chaque élément est une table de hash pouvant contenir ces éléments:
+  \begin{itemize}
+  \item \texttt{fct\_name} (obligatoire) : nom de la fonction
+  \item \texttt{fct\_type\_ret} : type de retour de la fonction
+  \item \texttt{fct\_summary} : un résumé de ce que fait la
+  fonction. Ce commentaire est le seul qui se trouvera dans les
+  headers des fichiers générés pour le joueur.
+  \item \texttt{fct\_notice} : une remarque particulière sur la
+  fonction, si il y a besoin.
+  \item \texttt{fct\_ret\_comment} : un commentaire sur la valeur de
+  retour de la fonction.
+  \item \texttt{fct\_arg\_comment} : un commentaire sur les arguments.
+  \item \texttt{fct\_arg} : il représente un tableau d'arguments, dont
+     	       chaque élément est lui-même un tableau:
+	       \begin{itemize}
+	       \item le premier élément est le nom du paramètre;
+	       \item le second élément est le type du paramètre;
+	       \item le troisième élément (optionnel) est un
+	       commentaire spécifique pour ce paramètre en
+	       particulier. \\
+	       \end{itemize}
+  \end{itemize}
+
+\item \textbf{la liste de fonctions utilisateur:} (user\_function) \\
+  même schéma que les fonctions du point précédent. Ce sont les
+  fonctions qui devront être codé par l'utilisateur. Classiquement, on
+  y trouve que \texttt{init\_game} et \texttt{play\_turn}. \\
+\end{enumerate}
+
+Certains éléments d'une table de hash peuvent être absents. Dans ce
+cas, des valeurs par défaut seront utilisées. Par exemple, pour
+définir un type de retour void, il suffit de ne pas spécifier
+'fct\_type\_ret'\footnote{Ou mettre ¨void¨, les 2 fontionnent.}. Pour
+chaque définition de fonction, le nom de la fonction est
+obligatoire. Le reste sera défini comme void ou commentaire vide si
+vous ne mettez rien. \\
+
+Concernant les arguments et type de retour, les différents types
+possibles sont : \texttt{int}, \texttt{bool}\footnote{En réalité, il
+n'est que partiellement supporté, et n'a jamais été testé.} et
+\texttt{void}. void ne peut cependant pas être affecté à
+'fct\_arg\_type' : dans ce cas il ne faut pas le spécifier. \\
+
+Vous pouvez rajouter du texte dans la documentation qui sera générée
+dans le sujet, en rajoutant des sections: \texttt{- doc\_extra:
+commentaire...}. Toutes les commandes \LaTeX\, sont autorisées. \\
+
+Pour les commentaires et la documentation, vous pouvez les mettre sur
+plusieurs lignes, en mettant \texttt{|-} après les deux points, et en
+sautant une ligne avant l'argument suivant. Continuez à respectez
+l'indentation ! Un exemple est donné dans la section \ref{sec:yaml-ex}
+
+\section{Pièges à éviter}
+
+Ne mettez pas d'accents dans le fichier, même dans les
+commentaires. Certains langages (pascal) ne supportent pas les accents
+dans leur fichier source. \\
+
+% speciale note yabo :)
+Faites attention à l'indentation. La structure d'un document Yaml est
+basé sur l'identation, les parseurs y sont très sensibles, et la
+majorité des erreurs proviennent de là. En particulier, les
+tabulations sont à
+proscrire\footnote{\url{http://www.yaml.org/faq.html}}, essayer de
+régler votre éditeur pour remplacer les tabulations par des espaces.
+
+\section{Références}
+
+\noindent
+\url{http://www.yaml.org/} \\
+\url{http://yaml4r.sourceforge.net/doc/} \\
+\url{http://yaml4r.sourceforge.net/cookbook/}
+
+\section{Exemple de fichier Yaml}
+\label{sec:yaml-ex}
+
+Encore une fois, les meilleurs exemples sont les fichiers de
+configuation des concours déjà existant. Magnanime, un petit exemple
+vous est proposé dans ce présent document: \\
+
+\begin{lstlisting}[caption={Example d'un fichier de spécification Yaml},
+label=yamlEx, frame=single]
+conf:
+  package_name: nom_du_concours
+  rule_lib: nom_du_concours
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: |
+    \subsection{Constantes}
+    Voici les constantes disponibles: \\
+  -
+    cst_name: constante_1
+    cst_val: 42
+    cst_hasdoc: true
+  -
+    cst_name: constante_2
+  -
+    cst_name: constante_3
+    cst_val: "TOTO"
+    cst_comment: voici un commentaire qui decrit la constante_3
+    cst_hasdoc: true
+
+function:
+  - doc_extra: \subsection{Les fonctions}
+  -
+    fct_name: my_function
+    fct_summary: |-
+      commentaire de la
+      premiere fonction
+      sur plusieurs lignes
+
+    fct_notice: Attention, peut segfaulter !
+    fct_arg_comment: deux entier positifs
+    fct_arg:
+      - [n, int, commentaire sur n]
+      - [r, int]
+  -
+    fct_name: my_function_two_which_return_something
+    fct_type_ret: int
+    fct_ret_comment: un entier valant 42 les jours de pleine lune
+    fct_arg:
+      - [str, int]
+      - [num, int]
+  -
+    fct_name: my_function_three_without_arg
+    fct_summary: un commentaire quelconque.
+    fct_type_ret: int
+
+user_function:
+  -
+    fct_name: init_game
+    fct_summary: Fonction de debut
+  -
+    fct_name: play_turn
+    fct_summary: Fonction appelee a chaque tour
+\end{lstlisting}
+
+\section{Génération du squelette de base}
+
+A ce niveau là, vous devriez avoir votre fichier de spécification Yaml
+complètement remplit. Si ce n'est pas le cas, vous avez gagné le droit
+de le faire maintenant. Ensuite, lancez la commande suivante: \\
+
+\begin{lstlisting}[backgroundcolor=\color{white}, language=sh]
+$ generator rules fichier_yaml.yml /tmp 
+\end{lstlisting}
+%$
+\vspace{0.3cm}
+\noindent
+Si tout se passe bien, vous aurez vos règles dans le répertoire
+/tmp/<nom-du-concours>. \\
+
+Attention, c'est un script ¨one-shoot¨. Une fois que vous aurez généré
+vos règles de base et commencé à coder les règles, vous ne pourrez
+plus relancer ce script~\footnote{Techniquement, si, mais votre code
+  sera simplement écrasé.}. Si vous avez par la suite des changements
+à faire dans l'API, vous devrez maintenir à jour le fichier Yaml
+\emph{et} les prototypes dans le code des règles. Réfléchissez bien
+sur votre fichier Yaml avant de vous lancer dans le code !
+
+\chapter{Hiérarchie et utilisation d'un module de règle}
+
+Les règles sont habituellement codées en C++, pour profiter des
+facilitées d'écriture offerte par les classes et de quelques
+fonctionalitées comme le polymorphisme, même si généralement ca se
+rapproche plus du C avec l'utilisation de nombreux tableaux statiques.
+Elle est représentée sous forme de pseudo-UML sur la page suivante. \\
+
+La partie supérieur représente les classes de base déjà codée dans le
+package de base \stechec. Vous ne devriez pas avoir besoin de
+les modifier, et les interfaces devraient rester stable (sinon une
+modification et une recompilation de tous les concours serait
+nécessaire, sans parler des problèmes de version avec les
+bibliothèques dynamiques...) \\
+
+La modélisation peu paraitre certes un peu étrange du premier abord,
+mais elle a été concue dans le but de simplifier au maximum la
+création d'un concours, et non d'obtenir une bonne note à un partiel
+de modélisation. N'ayez pas peur, de tout manière, vous n'aurez
+probablement jamais besoin de tout utiliser, du moment que ca
+fonctionne...\\
+
+Notons enfin que les concours existants (prolo2005 et ant) ne sont pas
+le meilleur exemple de ce qu'on puisse faire avec cette hiérarchie,
+simplement parce la modélisation actuelle a été concue de manière
+quelque peu désynchronisée avec le code des règles.
+
+\newpage
+
+\includegraphics[angle=90, scale=0.52]{rules-uml}
+
+\section{La structure de communication}
+
+Pour les communications entre le client et le serveur, une structure
+spéciale est mise à votre disposition. Il est impossible de faire
+transiter autre chose que des entiers entre le client et le
+serveur\footnote{Bien entendu, il est toujours possible d'encapsuler
+  toutes les données que vous voulez dans des entiers, si vous en avez
+  vraiment besoin}. En réalité, la \texttt{struct s\_com} est une
+classe qui contient une ou deux fonctions pour faciliter sa
+manipulation. \\
+
+\begin{lstlisting}[caption={Définition de la structure \texttt{s\_com}},
+label=structCom, frame=single, language=C++]
+struct    s_com
+{
+  int     type;         /* type du message */
+  int     player_id;    /* uid du joueur source/destination */
+  int     nb_args;      /* nombre d'arguments */
+  int     arg[MAX_ARG]; /* MAX_ARG == 8 */
+};
+\end{lstlisting}
+
+
+Tous les champs sont normalement très explicites, sauf le champs
+\texttt{player\_id} qui peut être parfois trompeur. Globalement, pour
+les communications $client \rightarrow serveur$, il désigne l'uid du
+client qui a envoyé le message (et il est généralement mis
+automatiquement), et dans le sens $serveur \rightarrow client$, il
+désigne l'uid du client auquel s'adresse spécifiquement le serveur
+(n'oubliez pas qu'un message émit par le serveur est toujours recu par
+tous les clients).
+
+\section{Les points d'entrée}
+
+Vous disposez de plusieurs points d'entrée lors des échanges entre
+le client et le serveur, dans le but d'effectuer une opération ou
+d'envoyer une donnée au client, ou au serveur (la carte en début
+de partie par exemple). Pour cela, le serveur et le client
+appellent tous les deux différentes fonctions le long de leur
+exécution, qui sont vides par défaut, et que vous pouvez
+remplir. Les voici :
+
+\begin{verbatim}
+int  beforeGame();
+int  initGame();
+int  beforeNewTurn();
+int  afterNewTurn();
+int  afterGame();
+
+int  isMatchFinished();
+int  getScore();
+\end{verbatim}
+
+Ces fonctions, à l'exception des deux dernières, existent chez le
+client et chez le serveur. Elles se trouvent dans les fichiers
+\texttt{ClientEntry.hh} et \texttt{ServerEntry.hh} \\
+
+\begin{itemize}
+\item {\bf beforeGame(): }
+
+Cette fonction est appelée avant de lancer la fonction init du
+joueur.Du côté serveur, c'est dans cette fonction qu'il est bon de
+définir la carte, et de l'envoyer au client. Vous pouvez récupérer le
+chemin vers la carte en utilisant les arguments en lignes de commande
+supplémentaire, et devez, une fois chargée, l'envoyer au client par
+les méthodes usuelles.
+
+Du côté client, vous pouvez réceptionner tous les envois que vous avez
+fait du côté serveur. \\
+
+\item {\bf initGame(): }
+
+Cette fonction est appelée après la fonction init du joueur,
+mais avant la boucle de jeu. \\
+
+\item {\bf beforeNewTurn(): }
+
+Cette fonction est appelée avant chaque nouveau tour de
+jeu. \\
+
+\item {\bf afterNewTurn(): }
+
+Cette fonction est appelée après chaque nouveau tour de
+jeu. \\
+
+\item {\bf afterGame(): }
+
+Cette fonction est appelée tout à la fin du jeu, après la
+boucle de jeu. \\
+
+\item {\bf isMatchFinished(): }
+
+Fonction dans laquelle vous DEVEZ définir quand s'arrête la partie :
+cette fonction est appelée à chaque tour (avant le début de chaque
+tour) et retourne un entier qui dit si oui ou non la partie est
+terminée.
+
+\end{itemize}
+
+\chapter{Compilation et debuggage}
+
+\section{Compilation}
+
+Une fois que vous avez fini de coder vos points d'entrée et vos
+règles, vous pouvez compiler le projet. Pour ce faire :\\
+
+\begin{lstlisting}[backgroundcolor=\color{white}, language=sh]
+$ ./configure --prefix=$(stechec_prefix)
+$ make
+$ make install
+\end{lstlisting} %$
+
+Pour pouvoir utiliser votre nouvelle bibliothèque de règles, il est
+plus pratique de faire un make install. Néanmoins, vous pouvez
+toujours jouer avec \verb,LD_LIBRARY_PATH,.
+
+\section{Debuggage}
+
+Vous pouvez débugger avec fprintf, bien entendu. Faites attention, du
+côté du serveur, de ne pas écrire sur la sortie standart, celle-ci
+étant utilisée pour récupérer les scores de fin de partie. L'emploi de
+\texttt{MSG} est toutefois conseillée. Elle vous permettra d'y
+associer un niveau de verbosité (bavardage, pour les puristes).  Voici
+les prototypes\,\footnote{Dans l'implementation, ce sont des
+  macros.}: \\
+
+\begin{lstlisting}[language=C++,backgroundcolor=\color{white}]
+void MSG(int level, const char* format, ...);
+void ERROR_RET(int ret_value, int level, const char* format, ...);
+\end{lstlisting}
+\vspace{0.3cm}
+
+Ces fonctions ont le même comportement que printf, sauf que par
+défaut, la sortie d'erreur standard est utilisée. La première a un
+argument de plus, \emph{level}. Ce paramètre peut varier de 1 à 30,
+plus il est élevé, moins il a de chance de s'afficher. Par défaut, le
+niveau de verbosité des programmes est réglé à 1. \\
+
+La seconde fonction, \verb,ERROR_RET,, effectue en plus un return de la
+valeur indiquée\,\footnote{Pour le coup, il faut vraiment dire que c'est
+  une macro.}. \\
+
+Vous pouvez également utiliser sans trop de problème gdb ou valgrind
+pour débugger. Référez vous au document \emph{user-doc.pdf} si vous ne
+savez pas trop comment lancer une partie. \\
+
+
+\section{Release}
+
+Cette section a-t-elle un réel interêt ? Non. Si vous arrivez à
+quelque chose qui marche, tant mieux. Dans ce cas, un ptit mail pour
+nous prévenir serait plaisant.
+
+\chapter{Test}
+
+Vous venez de terminer de coder. Vous avez explosé le
+dernier\footnote{Oui, le dernier. Avant le prochain.} bug qui vous
+empechait de dormir. Tout marche. Vous allez pouvoir enfin aller vous
+vautrer devant la télé, avec une bonne bière\footnote{L'auteur
+préconise une vodka glaçon, avec un zeste de citron.}. Enfin
+presque. Quelqu'un vient vous aggresser sur votre logiciel de
+messagerie instantanée: ¨Eh, y'a plus rien qui marche !¨. \\
+
+Ca arrive plus souvent qu'on ne le croit. L'effet est encore aggravé
+lorsque l'on est en finale, et que tout à coup 100 personnes se lèvent
+et viennent vers vous, l'air menaçant. Une procédure de tests de
+non-régression semble la bienvenue. Ca consiste à ajouter une petite
+batterie de champions stupides, qui font des choses très simple, un
+déplacement à droite, un déplacement à gauche, demander ce que la
+carte contient, et qui échouerait dès que le serveur ne fait pas ce
+qu'on avait prévu. Celle-ci serait lancée automatiquement, à chaque
+fois que \texttt{make check} est appelé. La tarball qui est distribuée
+sur le net est créée avec la commande \texttt{make distcheck}, ce qui
+vous assure une tarball qui fonctionne (presque) bien. Passons à la
+pratique. \\
+
+Pour faciliter la mise en place de ce genre de batterie de test,
+quelques outils sont mis à votre disposition. En fait, vous n'avez
+qu'à remplir un fichier (en Yaml) décrivant les tests à lancer, et à
+coder les quelques champions correspondant. Tous ces fichiers se
+trouvent dans le répertoire \texttt{test} de chaque concours. \\
+
+\section{Description de test\_pool.yml}
+
+La structure de ce fichier ressemble beaucoup à celui utilisé par
+\texttt{run} et \texttt{tkrun}, avec quelques champs en plus. En
+réalité, ce fichier va être modifié en interne, pour finalement
+appeler \texttt{run} qui jouera le match. \\
+
+Cela veut dire que vous pouvez utiliser toutes les fonctionnalités qui
+sont offertes par le fichier de configuration de \texttt{run} (se
+référer au document \emph{user-doc.pdf}). Entre autre, le nombre de
+tours maximal, le niveau de bavardage, etc. Evitez d'utiliser
+\texttt{gdb}, ca risque de ne pas marcher. Ces commandes doivent être
+en majuscules. Les champs qui n'existent pas déjà dans le fichier de
+configuration de \texttt{run} sont expliqués ici: \\
+
+\begin{itemize}
+\item \texttt{name:} Nom du test. Il sera affiché lors de l'exécution
+du \texttt{make check}. \\
+\item \textbf{\texttt{server\_config}} :
+  \begin{itemize}
+    \item \texttt{map}: Spécifie la carte à utiliser (ne pas utiliser
+    \texttt{MAP}). Si vous voulez utiliser une carte qui se trouve
+    déjà dans le répertoire \texttt{data/}, préfixez la par
+    \texttt{data/}. Si vous voulez utiliser une carte spécialement
+    conçu pour un test, sur laquelle des vrais matchs n'ont pas de
+    raison de se faire, préfixez la par \texttt{map/}, et mettez la
+    dans le répertoire \texttt{test/map/}. \\
+  \end{itemize}
+\item \textbf{\texttt{champion\_1}} :
+  \begin{itemize}
+    \item \texttt{source} : Spécifie le fichier source (remplace
+    \texttt{CHAMPION}) à utiliser. Celui-ci est préfixé par le langage
+    utilisé (\texttt{c/}, \texttt{cxx/}, \texttt{caml/}, \ldots) \\
+  \end{itemize}
+\item \textbf{\texttt{champion\_2}} : \\
+  Vous pouvez mettre autant de champion que vous le voulez, comme dans
+  \texttt{run}. Vous être bien sur libre d'utiliser le même code
+  source que les autres champions, ou un différent. Faites attention,
+  cependant, le champion\_1 n'aura pas toujours l'id 1 lors de
+  l'execution, dans les règles. \\
+\end{itemize}
+
+Comme toujours, un exemple récapitulant les différentes possibilitées
+est toujours le bienvenu: \\
+
+\begin{lstlisting}
+--- %YAML:1.0
+-
+  name: initialization
+  server_config:
+    map: data/test.map
+    MAX_TURN: 20
+    VERBOSE: 2
+  champion_1:
+    source: c/init.c
+-
+  name: move_sphere
+  server_config:
+    map: map/test.map
+  champion_1:
+    source: c/move.c
+  champion_2:
+    source: cxx/move.cc
+\end{lstlisting}
+
+\section{Les champions de test}
+
+Vous pouvez les faire dans n'importe quel langage. Ils doivent se
+trouver dans le répertoire \texttt{test/<langage>/}. C'est un champion
+tout ce qui a de plus banal, et qui à tendance a quitter dès qu'une
+valeur retournée par l'API ne lui plait pas. Un exemple sera plus
+parlant qu'un long discours: \\
+
+\begin{lstlisting}[caption={Exemple de champion-test, \texttt{test/c/init.c}},
+language=C]
+#include <assert.h>
+#include "prologin.h"
+
+/* Fonction de debut */
+void init_game(void)
+{
+  int mteam = my_team();
+  assert(world_size_x() == 10);
+  assert(world_size_y() == 10);
+  assert(world_size_z() == 5);
+  assert(nb_teams() == 1);
+
+  assert(get_nb_spheres(mteam) == 5);
+}
+
+/* Fonction appelee a chaque tour */
+void play_turn(void)
+{
+}
+\end{lstlisting}
+
+\chapter{Le mot de la fin}
+
+Eh bien. Ce document est loin d'être complet, et plein de choses sur
+l'implémentation manquent. C'est pas très important, vu que personne
+ne va le lire, et que cet amas de code va tomber très rapidement aux
+oubliettes\,\footnote{L'auteur préconise également le RJ45.}. Le
+prochain paragraphe est d'origine, c'est à dire qu'il a été écrit par
+des personnes devant être notées. Optimisme, quand tu nous tiens ! \\
+
+Voilà ! Vous avez normalement fini de créer votre concours ! Nous
+espérons que vous avez apprécié la facilité d'utilisation de ce
+serveur générique, et vous souhaitons un joyeux concours. :)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% GLOSSAIRE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix{}
+\chapter{Glossaire}
+\label{chap:glossaire}
+
+\begin{itemize}
+\item \textbf{Stechec}: Nom du projet qui constitue la charpente
+  soutennant chaque jeu (comme \ac{tbt}). A priori, l'utilisateur
+  final n'a même pas à connaitre son existence.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BIBLIO & SITES WEB
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{tbt,prologin}
+
+\end{document}

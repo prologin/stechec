@@ -1,0 +1,6 @@
+.texte { font-family: verdana,Arial, Helvetica, sans-serif; font-size: 12px; font-weight: normal; color: #000000; text-decoration: none; height:20; border:1 solid #DDDDDD;  }
+.liste { font-family: verdana,Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; color: #000000; text-decoration: none; height:20; border:1 solid #FFFFEE;  }
+.bouton { font-family: verdana,Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #000000; text-decoration: none; height:20; border:1 solid #000000; cursor: hand;  }
+.titre { font-family: verdana,Arial, Helvetica, sans-serif; font-size: 12px; font-weight: normal; color: #000000; text-decoration: none;  } 
+.zone { font-family: verdana,Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; color: #000000; text-decoration: none;  border:0 ; }
+

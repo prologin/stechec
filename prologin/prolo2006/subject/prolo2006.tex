@@ -1,0 +1,471 @@
+%LaTeX Document
+
+\documentclass[a4paper,twoside,12pt]{article}
+
+\usepackage{a4}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage{verbatim}
+
+\usepackage{graphicx}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{subject}
+\usepackage{eurosym}
+
+%\NoAutoSpaceBeforeFDP
+
+\makeindex
+
+\begin{document}
+
+\sloppy
+
+\lhead[\textsl{Prologin 2006}]{\nouppercase \leftmark}
+\rhead[Sujet de finale]{}
+
+% Couverture =========================================================
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=\linewidth]{logo_prologin2006} \\
+\vspace{4cm}
+\Huge
+\textbf{OutATime}\\
+\vspace{2cm}
+\normalsize
+Sujet de la finale du Concours National d'Informatique\\
+29 avril au 1er mai 2006\\
+%\vspace{2cm}
+%\large(Dernière révision~: \date)\\
+\end{center}
+\end{titlepage}
+
+% Citation ===========================================================
+\newpage
+\pagestyle{empty}
+
+\begin{flushright}
+\begin{verbatim}
+
+\end{verbatim}
+
+\vspace{10cm}
+\textsl{Well, the way I see it, if you're going to build a time
+machine into a car, why not doing it with some style.}
+
+Dr. Emmett Brown (\textsl{Back to the Future})
+\end{flushright}
+
+
+% Sommaire ===========================================================
+\newpage
+\tableofcontents
+
+% Corps ==============================================================
+\newpage
+\setcounter{page}{1}
+\pagestyle{fancy}
+
+
+\section{Un week-end presque comme les autres} %----------------------
+
+\subsection{Total Recall} %-------------------------------------------
+
+Bonjour à toi, vainqueur de l'édition 2006 de Prologin~! Ce fut une
+belle finale, et ce marathon de programmation aura été serré. Mais
+fort heureusement, tu t'en es bien sorti. Reste à savoir qui tu es,
+puisque autour de toi les autres candidats lisent précisément le même
+texte.\\
+
+Car c'est toi --- ou plutôt \emph{moi} --- qui as écrit ce sujet, à la
+différence que \emph{moi}, j'ai participé à la finale, et toi pas
+encore. Mais dans trois jours nos dimensions temporelles se
+rejoindront et nous serons à nouveau une seule et même personne, même
+si finalement tu ne te souviendras pas de ton expérience propre ---
+enfin celle que tu aurais pu avoir --- c'est ta dire de la mienne.
+J'imagine que les choses doivent déjà te sembler excessivement
+confuses. Il est tôt, ce sont les premières lignes d'un sujet
+relativement épais\ldots{} Ça s'annonce mal, n'est-ce pas~? Ne t'inquiète
+pas, bientôt tout devrait devenir clair.\\
+
+Comme toi j'ai eu ce sujet entre les mains, et comme toi, du moins
+je l'espère, j'ai gagné. Et c'est justement là le drame~: après ça j'ai
+voulu faire un petit voyage dans le temps, juste pour tester d'un
+point de vue touristique, ou au moins ludique --- bref pour
+m'amuser. Mais le fait de me retrouver à court de plutonium en pleine
+translation temporelle a malheureusement eu quelques conséquences
+assez regrettables, à savoir un bouleversement du continuum
+espace-temps. Au final j'étais revenu dans le passé et resté dans le
+futur à la fois, et j'avais gagné et perdu à la fois, me retrouvant
+avec une nature quantique~; au moment où les organisateurs ont voulu
+savoir qui avait gagné, et donc observer les résultats, ça a été la
+catastrophe\footnote{Un peu comme le chat de Schrödinger, en moins
+théorique\ldots}.\\
+
+Donc j'essaie de réparer les choses comme je peux, parce que cette
+situation, potentiellement un paradoxe temporel dont l'issue
+engendrerait une réaction en chaîne qui pourrait déchirer le tissu
+même du continuum espace-temps, provoquant la destruction totale de
+l'univers\footnote{Hypothèse la plus pessimiste, je te l'accorde, le
+cataclysme pourrait être plus localisé et affecter uniquement notre
+galaxie.}, est assez difficile. C'est la raison pour laquelle mon moi
+d'après la finale s'adresse au moi d'avant la finale, autrement dit, à
+toi. Comment tout cela est-il possible te demandes-tu~? Tout
+simplement avec une De\,Lorean tout ce qu'il y a de plus banal, ou
+presque.\\
+
+Je vais donc t'expliquer du mieux que je peux ce que j'ai compris du
+sujet, et je compte sur toi pour gagner à nouveau\footnote{Il est
+évident que je ne peux pas te donner de stratégie, puisque les autres
+lisent ce même sujet. Mais je te fais confiance.}. Par contre je suis
+désolé, mais comme tu l'auras probablement compris, tu ne pourras pas
+tester le voyage dans le temps, sans quoi tu te condamnerais à revivre
+perpétuellement cette finale. Une boucle active infinie dans l'espace
+temps, je ne sais pas ce que ça donne mais je crains le pire. Le bon
+côté des choses, c'est que tu n'auras pas à rédiger ce sujet.
+
+
+\subsection{Le sujet dont vous êtes le héros (ou pas)} %--------------
+
+Non content de sa nature déjà fortement auto-référente, le sujet de
+cette année vous met en scène, vous\footnote{\emph{Nous}~? Je ne sais
+plus très bien où j'en suis\ldots}, finalistes. Cela semble si
+incroyable et pourrait signifier que ce segment du temps contient
+une spécificité cosmique intrinsèque, un peu comme si c'était le
+point d'intersection de l'ensemble du continuum
+espace-temps\footnote{À moins que ce ne soit une vulgaire
+coïncidence.}.\\
+
+Tout a commencé samedi 29 avril\footnote{Ce doit être aujourd'hui pour
+toi.}~: ayant traversé les dimensions spatiales et temporelle à bord
+de son coupé sport gris métallisé, un étrange personnage a fait une
+entrée remarquée dans la cour en plein début de finale, évitant de
+justesse un candidat en retard, trois poubelles et un groupe
+d'organisateurs. Après avoir posé quelques questions incohérentes à
+propos de quelqu'un pour lequel il avait apparemment beaucoup
+d'estime\footnote{Il répétait sans cesse « Il valait\ldots ».}, il a
+fini par disparaître, \emph{littéralement}, ne laissant que sa voiture
+et \emph{un magazine}.\\
+
+L'engin était une sorte de K2000, à quelques différences près~: plein
+de tableaux lumineux mais la voix d'Amstrad en moins, une carrosserie
+en acier inoxydable, une allure passablement futuriste quoique un peu
+démodée\ldots{} Bref, c'était quelque chose de finalement beaucoup plus
+classe qu'une simple voiture avec un feu de stop à l'avant et une
+pédale d'accélérateur lumineuse. Après une inspection méticuleuse de
+l'engin par l'ensemble des candidats et organisateurs, et la triste
+conclusion qu'un Linux ne tournerait probablement pas dessus, un
+candidat a eu l'idée d'emporter le magazine. Au début, personne n'a
+compris~: un magazine de sport, quel genre d'informaticien pouvait
+bien vouloir lire ça~?  Et puis, quand le lendemain le candidat
+faisait la une de Slashdot avec le surnom « Richest Froggy on Earth »
+--- ainsi qu'un splendide troll n'ayant rien à voir, mais néanmoins
+très actif sur la guerre en Irak\footnote{Cette conséquence
+systématique de l'évocation de la France sur le site en question fait
+partie des quarante-deux grands postulats de l'économie libérale.} ---
+les avis ont quelque peu évolué.\\
+
+Un autre candidat a alors décidé de prendre la voiture avec
+l'apparente intention de se jeter contre un mur à pleine vitesse. Mais
+au lieu de l'\oe uvre d'art d'un militant pour le recyclage de l'acier
+que tout le monde s'attendait à obtenir, il n'y a rien eu. Ou plutôt
+si~: le vague souvenir d'un énorme arc électrique et d'une paire de
+traînées enflammées au sol très photogéniques, ainsi qu'une énorme
+sensation de déjà-vu. Et nous étions à nouveau samedi. À un détail
+près, cependant~: au lieu de s'en aller l'air de rien, le premier
+candidat se trouvait assommé proprement par le second, et dépossédé du
+magazine. Dès lors, même les esprits les plus lents ont commencé à se
+réveiller\ldots\\
+
+Tandis que la suite pouvait se résumer à un indescriptible capharnaüm
+avec des candidats s'arrachant ce magazine et traversant le temps à
+tout va, quelqu'un émettait calmement l'hypothèse que la collision
+avec les poubelles lors de l'arrivée de la voiture avait peut-être
+provoqué une fuite dans le convecteur temporel. Ce pouvait être selon
+lui la raison pour laquelle tout le monde se souvenait de tout.\\
+
+Chose curieuse, cette entropie en pleine augmentation a soudain
+convergé vers un état d'agitation sensiblement plus ordonnée. Les
+candidats ont en effet assez rapidement décidé de s'organiser~:
+certains se sont stratégiquement regroupés par trois~; il était clair
+qu'aucun ne pouvait espérer récupérer seul à la fois la voiture et le
+magazine. Les groupes avaient des tactiques différentes, mais tous
+eurent la bonne idée de s'échanger leurs numéros de mobiles au
+préalable. Les plus débrouillards ont même songé à prendre une carte
+de la ville, plutôt qu'à se fier à leur sens de l'orientation,
+exceptionnellement mauvais pour la plupart. Ils n'avaient bien sûr
+qu'une seule idée en tête~: récupérer le magazine et aller parier dans
+toute la ville.
+
+% Une formulation marrante qui peut servir :
+%
+% Vous allez devoir\footnote{Ça y est je sais, c'est « vous » parce que
+% « nous », nous l'avons déjà fait~!}
+
+
+\section{Comment gagner au loto} %------------------------------------
+
+\subsection{Questions pour un champion} %------------------------------
+
+Si la victoire est à peu près assurée pour quiconque entre dans une
+salle de jeux avec sous le bras un hypothétique document contenant le
+résultat des paris\footnote{Notons toutefois que certains sont
+parfaitement capables de perdre dans ce cas également, et sans le
+faire exprès, ce qui est une bonne illustration du fait qu'une
+probabilité de 1 ne signifie pas l'occurrence systématique d'un
+événement.}, il en va autrement sans cette aide.\\
+
+Si l'on ne connaît rien en sport et que l'on n'a jamais eu entre les
+mains un tel document, la règle des tirages sans remise dans le panier
+s'applique~: à chaque tentative, la probabilité de gagner tend vers 1.
+Pour simplifier\footnote{On n'est pas là pour modéliser les chances de
+gagner à un pari que l'on pourrait retenter indéfiniment grâce à une
+machine à remonter le temps.} on considère que les chances de gagner
+sont au départ de une sur dix, elles passent donc à une sur neuf en
+cas d'échec, et ainsi de suite à chaque tentative.\\
+
+Si l'on ne connaît toujours rien en sport mais que l'on a la chance
+d'avoir eu entre les mains un tel document, on peut avoir eu l'idée de
+mémoriser certains résultats. Le succès d'un pari pour les événements
+concernés est donc garanti. Malheureusement ce nombre est très limité,
+pour une raison très simple~: les limitations de la mémoire à court
+terme. Pour mémoriser un grand nombre d'informations dénuées de charge
+émotionnelle, il est nécessaire de se concentrer suffisamment
+longuement pour que le cerveau se décide à estimer qu'elles sont
+dignes d'intérêt et les range dans la mémoire à long terme. Sans cela,
+elles restent dans la mémoire à court terme, dont la taille est très
+limitée\footnote{Il suffit pour s'en convaincre de voir combien
+d'éléments d'une liste de courses on est capable de retenir, après une
+seule lecture et une récitation de l'alphabet à l'envers.}. Par
+conséquent, tenter de mémoriser des informations supplémentaires aura
+pour effet inévitable d'oublier les informations les plus anciennes.
+Enfin, normalement la mémoire à court terme ne permet, comme son nom
+l'indique, de conserver des informations que peu de temps. Il est
+toutefois possible de prolonger ce temps en se répétant ces
+éléments.\\
+
+Enfin si l'on a gagné un pari, l'information est alors chargée
+en émotion et l'on n'a aucun souci à se faire sur la capacité à
+la ressortir\footnote{Y compris juste après avoir été réveillé à
+quatre heures vingt du matin avec un seau d'eau.}.\\
+
+Le cas où l'on s'y connaît en sport n'est bien entendu pas traité
+puisque l'on parle d'informaticiens pour qui la seule épreuve physique
+digne d'intérêt est un tournoi de typespeed\footnote{Pour tester
+pendant la finale, il vous suffira de taper « typespeed » dans un
+terminal.}.
+
+
+\subsection{Le journal d'hier} %--------------------------------------
+
+Ce fameux magazine sportif trouvé dans la voiture est en réalité un
+almanach~: l'almanach des sports, contenant les résultats de tous les
+grands événements sportifs de 1950 à 2010. Il
+% dans le film, c'est de 1950 à 2000
+% source : http://perso.wanadoo.fr/viney.nancy/hoverbttf/Almanach.htm
+s'agit par ailleurs d'un modèle protégé de la poussière par une
+magnifique jaquette, qui n'a absolument aucun autre intérêt que de
+protéger de la poussière mais qui sera néanmoins très prisée en tant
+qu'antiquité dans quelques années, lorsque le papier sera
+auto-dépoussiérant.\\
+
+On peut se demander quel est l'intérêt de noter tous les résultats
+sportifs dans un magazine, si ce n'est servir dans un scénario pour
+une quelconque histoire de science fiction. En tout cas, avec la
+possibilité offerte par un coupé sport de passer la marche arrière
+dans le temps, une utilité probablement insoupçonnée des éditeurs
+apparaît très nettement. Il suffit alors pour un jeu donné d'aller à
+la bonne adresse spatio-temporelle et de remplir correctement le
+bulletin de pari.\\
+
+En prévision de la perte de cet almanach, les esprits prévoyants
+peuvent essayer de mémoriser son contenu. Malheureusement, tous ces
+tableaux de chiffres et de noms étranges ne facilitent guère la tâche,
+surtout lorsque le contexte est quelque peu animé\ldots{} Aussi la
+mémorisation d'une poignée de résultats nécessite une grande
+concentration, et donc un peu de temps, et il n'est de toute façon
+pas envisageable de retenir plus de sept résultats. Toute tentative de
+mémorisation de résultats supplémentaires entraîne immanquablement
+l'oubli de ceux mémorisés en premier.
+
+
+\subsection{La voiture de demain} %-----------------------------------
+
+La De\,Lorean DMC-12, dite De\,Lorean, est l'unique et néanmoins culte
+modèle produit de 1981 à 1983 par la compagnie De\,Lorean Motor
+Company, fondée par le non moins célèbre John Zachary De\,Lorean.\\
+
+Une carrosserie signée Giorgetto Giugiaro, en acier inoxydable du plus
+bel effet, des portes papillons, un châssis en Y de Lotus, un moteur
+PRV à six cylindres en V à 90° en position arrière, des rétroviseurs
+et vitres électriques ainsi qu'une climatisation et une condamnation
+centralisée de série, un convecteur temporel, sa console et son
+réservoir de plutonium en option.\\
+
+4,26 mètres par 1,85 mètre pour 1,17 mètre de hauteur, 1288
+kilogrammes, de 0 à 100 kilomètres par heure en 9,5 secondes, de 0 à
+100 ans en 88 miles par heure.\\
+
+Outre la possibilité de se déplacer dans l'espace, cette voiture
+permet donc de se déplacer également dans le temps. Toutefois,
+l'essence conventionnelle ne convient pas et il lui faut un carburant
+qui a plus de pêche~: du plutonium. Faute de groupe d'extrémistes
+libyens incapables de distinguer une bombe nucléaire d'une boite
+remplie de vieilles pièces de flipper, cette source d'énergie est
+malheureusement assez difficile à trouver. Fort heureusement, il en
+reste dans le réservoir de la voiture. Les voyages que cette réserve
+permet de faire sont cependant limités~: que ce soit pour aller vers
+le passé ou vers le futur, la consommation est proportionnelle est au
+temps parcouru. Ainsi, revenir dans le passé deux heures plus tôt
+consommera bien entendu deux fois plus que de ne revenir que d'une
+heure. En cas de tentative de voyage d'une durée supérieure à ce que
+permet la réserve, la voiture ira aussi loin dans le temps qu'elle le
+pourra.\\
+
+Il faut noter également que si la console permettant de régler le
+voyage dans le temps est d'une utilisation particulièrement simple,
+elle prends néanmoins du temps. Aussi faut-il prévoir un délai entre
+le moment où l'on décide de se rendre à une date, et le moment où l'on
+entame enfin le voyage. Il faut donc prendre garde aux personnes qui
+seraient susceptibles d'essayer de monter dans la voiture pendant ce
+temps. Le concepteur de la voiture n'a pas jugé utile --- ou a jugé
+trop complexe ? --- de mettre le bouton « Annuler » si cher aux
+informaticiens. Il convient donc, pour une fois, de réfléchir avant
+d'agir. La seule manière de savoir si le convecteur a déjà été
+enclenché est d'essayer de l'actionner une nouvelle fois~: cependant,
+il n'est pas possible d'en changer la date.\\
+
+Enfin, il ne faut pas oublier que le voyage dans le temps nécessite au
+préalable d'atteindre la vitesse correcte de 88 miles par
+heure\footnote{Environ 142 kilomètres par heure.}. Aussi après avoir
+réglé la date faut-il prévoir de se retrouver à une bonne distance du
+point de départ une fois arrivé à la date de destination\ldots 
+
+
+\subsection{La ville d'aujourd'hui} %---------------------------------
+
+Aujourd'hui, c'est donc dans cet endroit que se déroule la
+finale\footnote{Enfin se déroulait pour moi.}. Fort du plan d'accès
+reçu par courrier, tu pourras connaître les rues de la ville et donc
+t'y déplacer sans difficulté. Ce que tu ne sauras pas par contre,
+faute d'intérêt pour cette activité décadente en dehors des événements
+de ce week-end, c'est l'adresse où il est possible de jouer~! De même,
+il t'est impossible de deviner la position des autres candidats, à
+l'exception bien sûr de tes alliés avec qui tu pourras rester en
+contact permanent grâce aux téléphones mobiles. Toutefois, un
+candidat, un almanach, ou une De\,Lorean se trouvant dans la même rue
+que toi ne t'échapperont pas même à plusieurs centaines de mètres,
+grâce respectivement aux tee-shirt Prologin, à la jaquette, et au
+réservoir de plutonium caractéristiques.
+
+
+\subsection{Personne ne me traite\ldots{} de mauviette.} %--------------
+
+Les candidats, bien que foncièrement cupides pour l'occasion, sont
+d'un naturel plutôt pacifique, voire parfaitement calme. Peut-être
+est-ce la vie en compagnie d'un ordinateur qui veut cela ? Toujours
+est-il qu'ils en viennent donc assez rarement aux mains, qui sont
+finalement leur outil de travail et donc parmi ce qu'ils possèdent de
+plus précieux.\\
+
+Toutefois la folie collective entraînée par les quelques événements
+ayant marqué le début de la finale ont quelque peu perturbé leurs
+habitudes. Même s'ils continuent à ne pas montrer le moindre signe de
+violence la plupart du temps, ils se comportent différemment en
+présence de l'almanach ou de la De\,Lorean~: la cupidité les rend
+alors prêts à tout, jusqu'à arrêter l'informatique, pour récupérer
+l'un ou l'autre. Aussi lorsqu'un candidat ne possédant ni l'almanach,
+ni la De\,Lorean en croise un ayant l'un des deux, il réagit
+immédiatement en agressant ce dernier et en proférant des menaces
+d'inscription à des listes de spam. Le candidat attaqué ne sachant
+trop que faire et craignant pour l'intégrité de sa boite électronique
+se voit alors systématiquement dépossédé de son bien et reste un
+moment immobile, tâchant de se remettre de ses émotions, tandis que le
+second s'enfuit en exultant.\\
+
+Si plusieurs candidats tombent simultanément sur un candidat possédant
+un objet, une bagarre générale dans la plus pure tradition gauloise a
+lieu, à l'issue de laquelle un seul candidat ressort indemne,
+emportant avec lui l'objet convoité. Cependant, rien ne permet de
+savoir qui gagnera. La seule certitude est que le candidat attaqué
+restera invariablement le grand perdant de l'incident.
+
+
+\section{Que le meilleur gagne~!} %-----------------------------------
+
+\subsection{Dernière mise au point} %---------------------------------
+
+Mais qui est le meilleur\footnote{C'est toi --- enfin moi ---
+évidemment~! Il faut suivre~!}~? Ce n'est certainement pas celui qui
+aura le plus de molaires à son collier, et d'ailleurs toute tentative
+en ce sens sera sévèrement réprimée. Le meilleur est tout simplement
+celui qui aura remporté le plus grand nombre de points au cours du
+tournoi final sur le serveur. Et ce nombre de points se calcule comme
+suit~: à la fin d'un match, l'équipe qui a remporté le plus d'argent
+se voit attribuer mille points tandis que l'équipe qui a remporté le
+moins d'argent ne se voit attribuer aucun point. À l'exception des
+ex-aequo, les autres équipes se voient attribuer des points en
+fonction de leur classement. Chaque match se termine 36 heures (voir
+en fin de sujet pour un nombre de tours de jeu) après le début de la
+partie. Évidemment, la durée d'un match en tours sera variable,
+en fonction de l'utilisation ou non de la voiture. \\
+
+Prenons un exemple imaginaire avec un match confrontant six candidats
+utilisant chacun un langage différent~: à la fin d'un match, l'équipe
+C totalise 1000~\euro{}, l'équipe C++ 2000~\euro{}, l'équipe Caml
+4200~\euro{}, l'équipe Lua 1500~\euro{}, l'équipe Java 1200~\euro{},
+et enfin l'équipe Pascal quant à elle totalise 1500~\euro{}.
+L'attribution de points est alors la suivante~: en première position
+l'équipe Caml se voit attribuer 1000 points, puis l'équipe C++ 800
+points, ensuite en troisième position ex-aequo les équipes Lua et
+Pascal reçoivent chacune 600 points, en cinquième position arrive
+l'équipe Java avec 200 points, et enfin l'équipe C n'a aucun point.
+
+
+\subsection{Résumé} %-------------------------------------------------
+
+Vous êtes à la tête d'un groupe de trois personnes et vous allez
+devoir vous débrouiller pour récolter le plus d'argent possible. Au
+début de la partie, chaque équipe de trois se trouve à un endroit
+différent de la ville. L'almanach et la voiture se trouvent dans la
+ville~: à vous de trouver où. Vous devez mettre au point une stratégie
+et donner des ordres à vos trois personnages (cf. les fonctions en fin
+de sujet).\\
+
+Bonne chance, et rendez-vous dans trente-six heures~!\\
+
+P.S.~: fais attention au jus d'orange, je m'en suis renversé dessus et
+je préférerais que cela ne m'arrive pas une deuxième fois.
+
+
+\newpage
+
+\section{Outils informatiques} %--------------------------------------
+
+La philosophie de l'interface que vous utiliserez est la suivante~:
+les joueurs sont identifiés par une valeur unique. À partir de cet
+identifiant il est possible d'obtenir toutes les informations
+relatives à ce joueur~: sa position, son équipe, s'il possède la
+De\,Lorean ou l'almanach. Si le joueur en question est dans une équipe
+adverse et qu'il est hors de vue, une erreur est récupérée au lieu de
+l'information souhaitée.\\
+
+De même les jeux sont identifiés par une valeur unique. À partir de
+cette valeur, et à condition d'avoir mémorisé ce jeu ou de posséder
+l'almanach, il est possible d'obtenir toutes les informations
+relatives à ce jeu~: date, lieu, cagnotte.\\
+
+À condition qu'ils soient visibles, il est également possible
+d'obtenir des informations sur l'almanach et la De\,Lorean~: leur
+position, qui les contrôle, l'autonomie de la De\,Lorean.
+
+\input{api}
+
+\end{document}
+
+% ====================================================================
+% Zavie - Julien Guertault
+% LLB - Laurent Le Brun

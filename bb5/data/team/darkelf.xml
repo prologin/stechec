@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<team name="Dark Elves" race="darkelf" coach="Manecska" BBversion="4" emblem="darkelves.jpg">
+<rating>100</rating>
+<treasury>0</treasury>
+<reroll>1</reroll>
+<rerollcost>50000</rerollcost>
+<fanfactor>2</fanfactor>
+<assistant>0</assistant>
+<cheerleader>0</cheerleader>
+<apothecary>0</apothecary>
+<wizard>0</wizard>
+<formation>default.xml</formation>
+<players>
+
+<!-- lineman -->
+
+<player name="Shaaron Coldblade" number="1" position="lineman" race="darkelf" display="darkelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Loran Kiel" number="2" position="lineman" race="darkelf" display="darkelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Erkan Karlath" number="3" position="lineman" race="darkelf" display="darkelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Haron Distar" number="4" position="lineman" race="darkelf" display="darkelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Jadis Zar" number="5" position="lineman" race="darkelf" display="darkelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Arkhos Starnek" number="6" position="lineman" race="darkelf" display="darkelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<!-- witch elf -->
+
+<player name="Xara Rakarth" number="7" position="witch" race="darkelf" display="darkelf_w.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>110000</cost>
+<skill>dodge</skill>
+<skill>frenzy</skill>
+<skill>jump up</skill>
+</player>
+
+<player name="Sorsha-Tenzee" number="8" position="witch" race="darkelf" display="darkelf_w.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>110000</cost>
+<skill>dodge</skill>
+<skill>frenzy</skill>
+<skill>jump up</skill>
+</player>
+
+<!-- thrower -->
+
+<player name="Drago Florea" number="9" position="thrower" race="darkelf" display="darkelf_t.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>2</positionid>
+<cost>90000</cost>
+<skill>pass</skill>
+</player>
+
+<!-- blitzer -->
+
+<player name="Jor Pintao" number="10" position="blitzer" race="darkelf" display="darkelf_b.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>100000</cost>
+<skill>block</skill>
+</player>
+
+<player name="Korin Tullaris" number="11" position="blitzer" race="darkelf" display="darkelf_b.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>100000</cost>
+<skill>block</skill>
+</player>
+</players></team>

@@ -1,0 +1,133 @@
+<?xml version="1.0" ?>
+<team name="Wood Elves" race="woodelf" coach="coach" BBversion="4" emblem="woodelves.jpg">
+<rating>100</rating>
+<treasury>1000000</treasury>
+<reroll>2</reroll>
+<rerollcost>50000</rerollcost>
+<fanfactor>1</fanfactor>
+<assistant>0</assistant>
+<cheerleader>0</cheerleader>
+<apothecary>0</apothecary>
+<wizard>0</wizard>
+<players>
+
+<!-- lineman -->
+
+<player name="Miel" number="1" position="lineman" race="woodelf" display="woodelf_l.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Adalion" number="2" position="lineman" race="woodelf" display="woodelf_l.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Mandariel" number="3" position="lineman" race="woodelf" display="woodelf_l.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Tyrion" number="4" position="lineman" race="woodelf" display="woodelf_l.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Ryollon" number="5" position="lineman" race="woodelf" display="woodelf_l.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<!-- wardancer -->
+
+<player name="Garadiel" number="6" position="wardancer" race="woodelf" display="woodelf_w.png">
+<ma>8</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>120000</cost>
+<skill>block</skill>
+<skill>dodge</skill>
+<skill>leap</skill>
+</player>
+
+<player name="Maradiel" number="7" position="wardancer" race="woodelf" display="woodelf_w.png">
+<ma>8</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>120000</cost>
+<skill>block</skill>
+<skill>dodge</skill>
+<skill>leap</skill>
+</player>
+
+<!-- passer -->
+
+<player name="Beniel" number="8" position="passer" race="woodelf" display="woodelf_p.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>90000</cost>
+<skill>pass</skill>
+</player>
+
+<player name="Arkanion" number="9" position="passer" race="woodelf" display="woodelf_p.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>90000</cost>
+<skill>pass</skill>
+</player>
+
+<!-- catcher -->
+
+<player name="Adriel" number="10" position="catcher" race="woodelf" display="woodelf_c.png">
+<ma>9</ma>
+<st>2</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>1</positionid>
+<cost>90000</cost>
+<skill>dodge</skill>
+<skill>catch</skill>
+</player>
+
+<player name="Ladilion" number="11" position="catcher" race="woodelf" display="woodelf_c.png">
+<ma>9</ma>
+<st>2</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>1</positionid>
+<cost>90000</cost>
+<skill>dodge</skill>
+<skill>catch</skill>
+</player>
+
+</players></team>

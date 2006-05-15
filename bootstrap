@@ -1,0 +1,30 @@
+#! /bin/bash -e
+
+#
+# Many, many people where fooled by automake-1.4 and aclocal-1.4,
+# as this is the default version for automake package (sarge, and before).
+# So do a little check...
+#
+check_version()
+{
+    local -i maj=$2
+    local -i min=$3
+    if test $maj -le 1 -a $min -le 5; then
+	echo "*** ERROR"
+	echo "*** Your '$1' is outdated (v$maj.$min). Please get the latest"
+	echo "*** version (1.9 is fine), play with update-alternatives, or don't"
+	echo "*** try to play with the developpment version."
+	exit 1
+    fi #> /dev/stderr
+}
+am_version=$(automake --version | head -n 1 | sed -nr 's/^.*([0-9])\.([0-9])[\.-][a-zA-Z0-9]*$/\1 \2/p')
+ac_version=$(aclocal --version | head -n 1 | sed -nr 's/^.*([0-9])\.([0-9])[\.-][a-zA-Z0-9]*$/\1 \2/p')
+
+check_version automake $am_version
+check_version aclocal $ac_version
+
+#
+# Do the real bootstrap
+#
+rm -rf config.cache config.log acconfig.h aclocal.m4 autom4te.cache
+autoreconf -f -v -i

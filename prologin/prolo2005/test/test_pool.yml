@@ -1,0 +1,21 @@
+--- %YAML:1.0
+
+basic:
+  map: prologin.map
+  client_1:
+    source: c/basic.c
+
+finaliste_1:
+  map: prologin.map
+  client_1:
+    source: c/bonifas.c
+
+finaliste_2:
+  map: prologin.map
+  client_1:
+    source: cxx/esteves.cc
+
+finaliste_3:
+  map: prologin.map
+  client_1:
+    source: c/pech.c

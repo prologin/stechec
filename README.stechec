@@ -1,0 +1,179 @@
+                                                  -*- Text -*-
+        ____ _____ _____ ____ _   _ _____ ____
+       / ___|_   _| ____/ ___| | | | ____/ ___|
+       \___ \ | | |  _|| |   | |_| |  _|| |
+        ___) || | | |__| |___|  _  | |__| |___
+       |____/ |_| |_____\____|_| |_|_____\____|
+
+                             Plus l'echec est grand
+                 plus il y a de mérite à l'esquiver
+                                         (C) fabecc
+
+======================
+=== Overview        ==
+======================
+
+Stechec est le serveur de jeu pour les finales prologin, doté une
+architecture suffisamment modulaire et stable, pour disons, ne pas
+recommencer 'from scratch' l'année prochaine (ça sent le vécu...).
+
+======================
+== Requirements     ==
+======================
+
+Pour le moment, ca n'a été vraiment testé que sur des distributions
+Debian. Il n'est pas improbable que cela fonctionne sur toute
+distribution GNU/Linux. Le portage Windows n'est pas à l'ordre du
+jour.
+
+--- 
+Liste des paquets debian nécessaire (liste très certainement
+non-exaustive):
+
+Depends:
+
+  make
+  gcc (>= 3.3)
+  g++ (>= 3.3)
+  ruby (>= 1.8.2)
+  libtk-ruby (>= 1.8.2)
+  libmysqlclient15-dev
+  libxerces27-dev
+  libsdl1.2-dev
+  libsdlimage1.2-dev
+  libsdlttf2.0-dev
+  libqt3-mt-dev
+  libqt3-headers
+
+Suggests:
+
+  tetex-bin
+  help2man
+  doxygen
+  ocaml (>= 3.08.3)
+  fp-compiler (>= 1.9.6)
+  gcj (= 3.3)
+  libgcj5-dev
+
+
+======================
+== Installation     ==
+======================
+
+$ ./configure --prefix=~/prologin/local
+$ make
+$ make install
+
+Il est fortement conseillé de faire un make install après le make,
+c'est à dire ne pas lancer les binaires depuis le répertoire de
+sources (Une bonne partie de la configuration se relie sur ce qui est
+installé).
+
+Il est aussi suggéré de l'installer ailleurs que dans /usr/local, en
+utilisant --prefix=PATH au configure (pour ne pas pourrir votre système).
+
+Par la suite, nous nous référerons à ${prefix} pour désigner
+l'emplacement où vous avez installé stechec.
+
+---
+Flags de configuration utiles, pour ./configure:
+
+--prefix	: chemin du répertoire d'installation
+
+--enable-debug  : compile en -ggdb3 et sans -O2, pour débugger
+--with-qt       : spécifie le répertoire de qt (défaut debian: /usr/share/qt3)
+--without-qt    : désactive la compilation des sources qt
+--without-mysql : désactive la compilation du meta et main serveur
+
+
+======================
+== Usage            ==
+======================
+
+La variable ${prefix} est /usr pour les personnes ayant installé les
+paquets debian, se référer à la section *Installation* pour les
+autres.
+
+Si ${prefix} est différent de /usr:
+$ export PATH=${prefix}:$PATH
+
+Il existe plusieurs manières de lancer tout le bordel. En voici
+quelques unes, la liste n'est pas exhaustive.
+
+
+--- Lancer un match avec 'run'.
+Des exemples de fichiers xml, à passer en argument à 'run', se trouvent
+dans le répertoire conf/ de la tarball de stechec.
+Regardez a quoi ca ressemble avant de lancer, modifiez le si besoin.
+
+$ run $HOME/stechec/conf/prolo2005.xml
+
+
+--- Utiliser 'tkrun'.
+'tkrun' est une interface graphique, par dessus 'run': (FIXME: pas
+encore remise)
+
+$ tkrun
+
+
+--- Rejouer une partie.
+Pour rejouer une partie, en admettant que vous avez sous la main le
+fichier match.log: (FIXME: marche pas encore)
+
+Modifiez le fichier xml, en mettant <mode replay="true"> pour le
+client, puis lancez:
+
+$ run $HOME/stechec/conf/prolo2005.xml
+
+
+--- Mode Warrior (mais de loin le plus pratique)
+Pour lancer le serveur et le(s) client(s) séparément (utile pour
+débugger):
+
+$ tbt_server $HOME/stechec/conf/prolo2005.xml
+(dans une autre console:)
+$ tbt 1 $HOME/stechec/conf/prolo2005.xml
+(dans une troisieme console:)
+$ tbt 2 $HOME/stechec/conf/prolo2005.xml
+(etc...)
+
+Le numéro après 'tbt' indique la section 'client_' du fichier .xml à
+prendre en compte.
+
+
+======================
+== More Information ==
+======================
+
+Quelques informations supplémentaire sur l'utilisation de stechec,
+pour la création de nouvelles règles (quelque peu incomplet), et le
+support de nouveaux langages pour le candidat se trouvent dans:
+
+$(prefix)/share/stechec/doc
+
+
+Sinon, vous pouvez toujours visiter le site officiel:
+
+http://www.prologin.org
+
+Allez faire un tour du coté du forum, section 'Serveur Finale'.
+
+
+
+--
+
+Stechec project is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Stechec project is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with the Stechec project; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Copyright (C) 2005, 2006 Prologin

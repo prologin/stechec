@@ -1,0 +1,64 @@
+# -*- Makefile -*-
+
+SUBDIRS = . xml_test
+
+noinst_LTLIBRARIES = libtools.la
+
+libtools_la_SOURCES =				\
+	tools.hh
+
+libtools_la_SOURCES +=				\
+	misc/Library.cc				\
+	misc/Library.hh				\
+	misc/Stl.hh				\
+	misc/Timer.hh				\
+	misc/Timer.cc				\
+	misc/Position.hh			\
+	misc/Point.hh				\
+	misc/Rect.hh				\
+	misc/Exception.hh			\
+	misc/ExceptionDefine.hh			\
+	misc/os_wrapper.hh			\
+	misc/os_wrapper.cc
+
+libtools_la_SOURCES +=				\
+	logger/log.cc				\
+	logger/log.hh
+
+libtools_la_SOURCES +=				\
+	datatfs/cx.hh				\
+	datatfs/cx.hxx				\
+	datatfs/cx_recv_data.cc			\
+	datatfs/cx_send_data.cc			\
+	datatfs/direct.cc			\
+	datatfs/direct.hh			\
+	datatfs/tcp.cc				\
+	datatfs/tcp.hh				\
+	datatfs/file.cc				\
+	datatfs/file.hh				\
+	datatfs/netpoll.hh			\
+	datatfs/netpoll.hxx			\
+	datatfs/Packet.hh			\
+	datatfs/Packet.cc
+
+libtools_la_SOURCES +=				\
+	xml/xml.cc				\
+	xml/xml.hh				\
+	xml/xml_parser.cc			\
+	xml/xml_parser.hh			\
+	xml/xml_writer.cc			\
+	xml/xml_writer.hh			\
+	xml/strings.hh
+
+libtools_la_CPPFLAGS	=			\
+	$(XERCES_CPPFLAGS)
+
+libtools_la_CXXFLAGS	=			\
+	-DMODULE_NAME=\"tools\"			\
+	-DMODULE_COLOR=C_PURPLE
+
+libtools_la_LDFLAGS 	= 			\
+	$(XERCES_LDFLAGS)
+
+libtools_la_LIBADD      =			\
+	$(LIBDL)

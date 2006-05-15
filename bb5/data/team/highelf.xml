@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+<team name="High Elves" race="highelf" coach="Doc Anguirel" BBversion="4" emblem="highelves.jpg">
+<rating>100</rating>
+<treasury>000000</treasury>
+<reroll>1</reroll>
+<rerollcost>50000</rerollcost>
+<fanfactor>1</fanfactor>
+<assistant>0</assistant>
+<cheerleader>0</cheerleader>
+<apothecary>1</apothecary>
+<wizard>0</wizard>
+<players>
+
+<!-- dragon warrior -->
+
+<player name="Belwood le grand" number="7" position="dragon warrior" race="highelf" display="highelf_dw.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+<skill>block</skill>
+</player>
+
+<player name="Elwendil" number="8" position="dragon warrior" race="highelf" display="highelf_dw.png">
+<ma>7</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+<skill>block</skill>
+</player>
+
+<!-- phoenix warrior -->
+
+<player name="Lothar Demwen" number="6" position="phoenix warrior" race="highelf" display="highelf_pw.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>80000</cost>
+<skill>pass</skill>
+</player>
+
+<player name="Everglade" number="11" position="phoenix warrior" race="highelf" display="highelf_pw.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>80000</cost>
+<skill>pass</skill>
+</player>
+
+
+<!-- lion warrior -->
+
+<player name="Valen Swift" number="10" position="lion warrior" race="highelf" display="highelf_lw.png">
+<ma>8</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>90000</cost>
+<skill>catch</skill>
+</player>
+
+<player name="Gil-Galad" number="9" position="lion warrior" race="highelf" display="highelf_lw.png">
+<ma>8</ma>
+<st>3</st>
+<ag>4</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>90000</cost>
+<skill>catch</skill>
+</player>
+
+<!-- lineman -->
+
+<player name="Turino algrif" number="1" position="lineman" race="highelf" display="highelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+
+<player name="Elendil" number="2" position="lineman" race="highelf" display="highelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Ossirian" number="3" position="lineman" race="highelf" display="highelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Tol Galem" number="4" position="lineman" race="highelf" display="highelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+<player name="Dorthonion" number="5" position="lineman" race="highelf" display="highelf_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>4</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>70000</cost>
+</player>
+
+</players></team>

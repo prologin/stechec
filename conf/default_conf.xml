@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<config>
+
+  <game>
+    <rules>ant</rules>
+    <nb_team>1</nb_team>
+    <max_turn>30</max_turn>
+    <map>basic.map</map>
+  </game>
+
+  <client>
+    <connect val="network" host="localhost" port="25151"
+             game_uid="41" connect_on_startup="true" />
+  </client>
+
+  <client_1>
+    <champion>/home/victor/tbt/local/ant/c/champion</champion>
+    <mode replay="false" spectator="false" />
+    <limit memory="10000" time="500" time_reserve="2500" />
+    <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
+  </client_1>
+
+  <client_2>
+    <champion>ant_sdlvisu</champion>
+    <mode replay="false" file="match.log" spectator="true" />
+    <limit memory="0" time="500" time_reserve="2500" />
+    <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
+  </client_2>
+
+  <server>
+    <options persistent="false" start_game_timeout="30" />
+    <listen port="25151" />
+    <log enabled="false" file="match.log" />
+    <nb_spectator>1</nb_spectator>
+    <debug verbose="8" printloc="true" />
+    <server_debug verbose="8" printloc="false" />
+  </server>
+
+</config>

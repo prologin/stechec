@@ -1,0 +1,138 @@
+Yo,
+
+Voici le sujet, tel que me l'avait donné Zavie. Essayez de limiter la
+diffusion au minimum strictement *nécessaire*. Essayez de ne pas en
+parler à d'autres personnes, ils pourraient connaitre des candidats,
+etc... Ce genre de chose peut leaker rapidement, si on n'y fait pas
+gaffe.
+
+Les lignes commencant par '>' ne sont pas des citations, ce sont des
+commentaires que j'ai rajouté, suite a quelques échanges de mails avec
+Zavie. J'ai mis quelques chiffres, histoire de vous donner des ordres
+de grandeurs, mais essayer de mettre tout ca en constantes, qu'on
+puisse les ajuster facilement.
+
+Je ne suis pas la tout la semaine prochaine. Essayez, pendant ce
+temps, de faire ce que je vous avais demandé. Si vous avez des
+questions sur le sujet, mailez Zavie et LLB. Pour le code, mailez moi.
+
+-----
+Le thème du jeu est Retour vers le futur
+
+La carte est une ville : un quadrillage avec des bâtiments.
+Concernant le "brouillard de guerre", les personnages voient la carte
+complète (batiments, rues...), mais ne voient le reste que dans la
+limite de leur champ de vision (ça permet de jouer à cache-cache et
+éventuellement d'attendre un joueur au coin de la rue).
+
+> Taille de la carte: environ 40x40
+
+Certains bâtiment sont des lieux où l'on peut parier à des jeux, qui
+rapportent plus ou moins d'argent. Ces jeux ont des lieux et dates
+bien précises.
+
+> Les jeux sont identifiés de manière unique par le triplet (x, y, date).
+
+Le but est de remporter un maximum d'argent durant une
+partie. Plusieurs personnes peuvent parier en même temps, mais se
+partagent alors les gains. Le nombre de jeux est très supérieur à ce
+qu'il est possible de jouer en une partie. Jouer est automatique : il
+suffit d'aller sur le bâtiment concerné. Si le pari est indisponible
+(mauvais bâtiment ou date), le personnage reste bloqué à
+l'extérieur.
+
+Il y a un almanach, permettant de connaître le lieu, la date, la
+cagnotte et le résultat de ces jeux. On peut se souvenir d'un nombre
+(très) limité de résultats (pile de taille fixée) pour jouer un nombre
+limité de paris sans l'almanach.
+
+> La taille maximum de la pile/file se situerait aux alentours de 7. Si on
+> essaie de mémoriser un résultat alors que la pile est pleine, la donnée
+> la plus vieille est détruite (ie: pas de mémoire sélective).
+> Il faut 2 tours a un joueur pour se souvenir d'une equipe: il peut etre
+> interrompu si un joueur adverse l'assome.
+
+Il est possible de jouer avec ou sans almanach. Avec, un joueur a 100%
+de chances de gagner, et sans, il a une probabilité de gagner qui
+augmente à chaque fois qu'il refait le même pari. S'il gagne, il
+connaît le résultat et ses chances de gagner passent à 100%. C'est
+donc au serveur de se rappeler de ce que chacun sait (ce qui n'est pas
+compliqué).
+
+> Quand on joue à un jeu _sans_ almanach, la pile n'entre pas du tout
+> en jeu. On peut alors se souvenir d'un nombre illimité de réussites/echec.
+> Un jeu peut être représenté par un lancé de dé à 12 faces.
+
+Il y a une de Lorean, permettant de voyager dans le temps. Lorsque
+l'on va dans le futur, la partie continue et la de Lorean réapparaît
+un peu plus tard. Lorsque l'on va dans le passé, tous les joueurs se
+retrouvent à la place qu'ils occupaient, sauf le conducteur de la de
+Lorean. Les paris qui suivent la date sont annulés. La structure d'un
+pari est du genre {x, y, date, montant, gagné[joueurs]}.
+
+> Pour un voyage dans le temps (vers le passé ou le futur), la De Lorean
+> reapparait dans un carré de 10x10 autour de l'endroit d'où elle était
+> partie.
+
+Pour empêcher une boucle infinie dans l'espace temps (une IA basique
+qui revient dans le passé et refait exactement la même chose) on
+limite l'utilisation de la voiture (c'est que ça bouffe de
+l'électricité de truc là !).
+
+> En fait, pas réellement. Le jeu est limité à un certain nombre de tours
+> réel (disons 1000 tours pour une partie), donc même si un joueur 'boucle'
+> dans le temps, la partie s'arretera un jour. Par contre, limiter
+> l'utilisation de la voiture, en imposant un délai de 10 tours entre
+> chaque utilisation.
+
+Lorsque l'on rentre dans un bâtiment pour parier, on est obligé de
+laisser la de Lorean à l'extérieur, permettant à n'importe qui de la
+voler.
+
+Lorsque qu'un personnage passe sur une case où se trouve l'almanach ou
+la de Lorean, il récupère l'objet en question et peut s'en servir. Un
+personnage peut également en assomer un autre pour lui voler cet
+almanach, ou lui couper la route pour lui voler la de Lorean. Du point
+de vue de l'API, c'est automatique : si un joueur avec l'almanach ou
+la de Lorean tombe sur la même case qu'un joueur d'une autre équipe,
+il est assomé et l'autre joueur récupère l'objet. Pour éviter une
+boucle, un joueur reste assomé un certain nombre de tours.
+
+> Il reste assome 3 tours. Si 2 joueurs se deplacent sur la meme case
+> en meme temps, un des 2 joueurs se fait assommer, aléatoirement
+> (faites le le plus simplement possible dans le code).
+
+Dans le cas particulier de la de Lorean interceptée au moment d'un
+voyage dans le temps, c'est la date passée à joue_tour qui permet au
+candidat de savoir que son joueur a pilé pour éviter de mettre du sang
+partout.
+
+> La de Lorean met 4 tours entre le moment ou le joueur veut remonter
+> dans le temps, et le moment ou elle le fait réellement. L'interception
+> se situe ici.
+
+Au début du jeu l'almanach et la DeLorean sont à un endroit inconnu.
+Le premier qui lui tombe dessus entâme le jeu. Comme les autres
+sujets, la première phase est donc une phase de découverte de la
+carte.
+
+Le voyage dans le temps avec souvenir constitue un défi intéressant
+pour les candidats : ils peuvent optimiser leurs actions en se
+souvenant de quand ils ont fait leurs paris, et au lieu de jouer à
+l'instant ils ont intérêt à planifier leurs coups.  Celui qui met en
+place la bonne structure pour se souvenir de ce qu'il a fait aura un
+clair avantage : il aura juste à la rejouer. Du coup (même si je doute
+que des candidats en tirent parti) il est possible d'utiliser le temps
+de calcul pour explorer de nouveaux scénarios.
+
+Les candidats se sont plaints de devoir faire des algos de plus court
+chemin donc on avait décidé de le leur fournir. Comme problème de
+remplacement à leur mettre sous la dent, mais qui n'est pas
+indispensable contrairement à l'autre : comme la carte est une ville,
+un cadrillage plus ou moins régulier de rues, intercepter un autre
+personnage est assez technique, d'autant plus que disposant de cette
+fonction de plus court chemin, chacun peut extrapoler les mouvements
+des autres.
+
+> Chaque équipe aura 3 joueurs. Il peut y avoir entre 1 et 6 équipes par
+> parties.

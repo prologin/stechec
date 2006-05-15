@@ -1,0 +1,25 @@
+#
+# Fichier de conf Yaml de Stechec Meta-server et Main-server 
+#
+
+# Information sur la base de donné
+database:
+  ip: 192.168.0.24
+  login: root
+  pass: prolo
+  database: stechec
+  port: 3125
+
+# Information interne
+internal:
+  wait_sleep: 5
+  max process: 5
+  ip local: 127.0.0.1
+  verbose: 10
+
+# Different programme de lancement
+command:
+  compil: /home/fabecc/assos/prologin/stechec/scripts/compile_champion.sh
+  triche: /home/fabecc/assos/prologin/stechec/scripts/check_cheating.sh
+  client: /home/fabecc/assos/prologin/stechec/scripts/run_client.sh
+  server: /home/fabecc/assos/prologin/stechec/scripts/run_server.sh

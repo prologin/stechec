@@ -1,0 +1,119 @@
+%%
+%% Bordel latex
+%%
+
+\usepackage[french]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{palatino} % nice fonts
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[colorlinks,bookmarks,bookmarksnumbered]{hyperref}
+
+%% ca sert a quoi ca ?
+%\usepackage{index}
+%\makeindex
+
+% merci didier !
+\def\getrevision$LastChangedRevision:#1${\def\revision{#1}}
+
+%% horizontal margins
+\setlength{\hoffset}{-1in}
+\setlength{\oddsidemargin}{3cm}
+\setlength{\evensidemargin}{3cm}
+\setlength{\textwidth}{15cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\marginparwidth}{0cm}
+
+%% vertical margins
+\setlength{\voffset}{-1in}
+\setlength{\topmargin}{2cm}
+\setlength{\headheight}{20mm}
+\setlength{\headsep}{10mm}
+\setlength{\textheight}{20cm}
+\setlength{\footskip}{0.7cm}
+
+\usepackage[flushmargin, bottom]{footmisc}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\renewcommand{\headwidth}{\textwidth}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+\renewcommand{\footnoterule}{}
+\renewcommand{\baselinestretch}{1.1}
+
+% fancyheader
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancyhf{} %delete the current section for header and footer
+\fancyfoot[R]{\setlength{\fboxsep}{2pt}{\footnotesize\sffamily\thepage}}
+\fancyfoot[L]{\nouppercase\leftmark}
+\fancyhead[L]{\small{TBT - Tow Bowl Tactics}}
+\fancypagestyle{plain}
+
+%% Customize chapters
+\def\@makechapterhead#1{%
+  \vspace*{20\p@}%
+  { \parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        %\huge\it\sffamily\color{chapterheadcolor} \@chapapp\space \thechapter
+        \par\nobreak
+        \vskip 5\p@
+    \fi
+    \interlinepenalty\@M
+    \raggedleft
+    \huge\scshape\sffamily #1\nobreak
+    \vskip 40\p@
+  }}%
+\def\@makeschapterhead#1{%
+  \vspace*{20\p@}%
+  {\raggedleft \parindent \z@ \raggedright
+    \normalfont
+    \interlinepenalty\@M
+    \huge\upshape\sffamily  #1\nobreak
+    \vskip 40\p@
+  }}%
+
+%%
+%% Bibliography
+%%
+\bibliographystyle{apalike}
+
+%%
+%% Listings
+%%
+\usepackage{listings}
+
+\definecolor{colKeys}{rgb}{0,0,1}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\definecolor{colComments}{rgb}{0,0.5,1}
+\definecolor{colString}{rgb}{0.6,0.1,0.1}
+\definecolor{colBack}{rgb}{0.95,0.95,0.95}
+
+\lstset{%configuration de listings
+float=hbp,%
+basicstyle=\ttfamily\small, %
+identifierstyle=\color{colIdentifier}, %
+keywordstyle=\color{colKeys}, %
+stringstyle=\color{colString}, %
+commentstyle=\color{colComments}, %
+columns=flexible, %
+tabsize=2, %
+%frame=trBL, %
+frameround=tttt, %
+framerule=1pt,%
+extendedchars=true, %
+showspaces=false, %
+showstringspaces=false, %
+%numbers=left, %
+%numberstyle=\tiny, %
+breaklines=true, %
+breakautoindent=true, %
+captionpos=b,%
+xrightmargin=0cm, %
+xleftmargin=0cm,%
+backgroundcolor=\color{colBack}
+}
+
+

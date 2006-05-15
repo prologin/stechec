@@ -1,0 +1,22 @@
+--- %YAML:1.0
+
+initialization:
+  map: basic.map
+  client_1:
+    source: c/init.c
+
+game_c:
+  map: basic.map
+  max_turn: 50
+  client_1:
+    source: c/simple_game.c
+
+game_pascal:
+  map: basic.map
+  client_1:
+    source: pascal/prologin.pas
+
+game_java:
+  map: basic.map
+  client_1:
+    source: java/Prologin.java

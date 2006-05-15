@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+
+<player name="Kroxigor" number="0" position="Big Guy" race="lizardmen" display="kroxigor.png">
+<ma>6</ma>
+<st>5</st>
+<ag>1</ag>
+<av>9</av>
+<positionid>200</positionid>
+<cost>130000</cost>
+<skill>prehensile tail</skill>
+<skill>thick skull</skill>
+<skill>big guy</skill>
+<skill>bone head</skill>
+</player>
+
+<player name="Minotaur" number="0" position="Big Guy" race="chaos,chaos dwarf,norse" display="minotaur.png">
+<ma>5</ma>
+<st>5</st>
+<ag>2</ag>
+<av>8</av>
+<positionid>201</positionid>
+<cost>110000</cost>
+<skill>mighty blow</skill>
+<skill>frenzy</skill>
+<skill>horns</skill>
+<skill>thick skull</skill>
+<skill>always hungry</skill>
+<skill>big guy</skill>
+<skill>throw team mate</skill>
+<skill>wild animal</skill>
+</player>
+
+<player name="Ogre" number="0" position="Big Guy" race="chaos,dwarf,goblin,halfling,human,norse,orc" display="ogre.png">
+<ma>5</ma>
+<st>5</st>
+<ag>2</ag>
+<av>9</av>
+<positionid>202</positionid>
+<cost>120000</cost>
+<skill>thick skull</skill>
+<skill>mighty blow</skill>
+<skill>big guy</skill>
+<skill>bone head</skill>
+<skill>throw team mate</skill>
+</player>
+
+<player name="Rat Ogre" number="0" position="Big Guy" race="skaven" display="ratogre.png">
+<ma>6</ma>
+<st>5</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>203</positionid>
+<cost>130000</cost>
+<skill>mighty blow</skill>
+<skill>frenzy</skill>
+<skill>prehensil tail</skill>
+<skill>big guy</skill>
+<skill>wild animal</skill>
+</player>
+
+<player name="Treeman" number="0" position="Big Guy" race="halfling,wood elf" display="treeman.png">
+<ma>2</ma>
+<st>6</st>
+<ag>1</ag>
+<av>10</av>
+<positionid>204</positionid>
+<cost>110000</cost>
+<skill>mighty blow</skill>
+<skill>stand firm</skill>
+<skill>thick skull</skill>
+<skill>big guy</skill>
+<skill>take root</skill>
+<skill>trow team mate</skill>
+</player>
+
+<player name="Troll" number="0" position="Big Guy" race="chaos,chaos dwarf,goblin,orc" display="troll.png">
+<ma>4</ma>
+<st>5</st>
+<ag>1</ag>
+<av>9</av>
+<positionid>205</positionid>
+<cost>100000</cost>
+<skill>mighty blow</skill>
+<skill>always hungry</skill>
+<skill>big guy</skill>
+<skill>really stupid</skill>
+<skill>regenerate</skill>
+<skill>throw team mate</skill>
+</player>

@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<team name="Undead" race="undead" coach="Death Bringer" BBversion="4" emblem="undeads.jpg">
+<rating>100</rating>
+<treasury>1000000</treasury>
+<reroll>4</reroll>
+<rerollcost>70000</rerollcost>
+<fanfactor>3</fanfactor>
+<assistant>0</assistant>
+<cheerleader>0</cheerleader>
+<apothecary>0</apothecary>
+<wizard>0</wizard>
+<players>
+
+<!-- mummy -->
+
+<player name="ToT" number="1" position="mummy" race="undead" display="undead_m.png">
+<ma>3</ma>
+<st>5</st>
+<ag>1</ag>
+<av>9</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+<skill>regenerate</skill>
+<skill>mighty blow</skill>
+</player>
+
+<player name="Akhenaton" number="2" position="mummy" race="undead" display="undead_m.png">
+<ma>3</ma>
+<st>5</st>
+<ag>1</ag>
+<av>9</av>
+<positionid>0</positionid>
+<cost>100000</cost>
+<skill>regenerate</skill>
+<skill>mighty blow</skill>
+</player>
+
+<!-- wight -->
+
+<player name="Skeletor" number="3" position="wight" race="undead" display="undead_w.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>90000</cost>
+<skill>regenerate</skill>
+<skill>block</skill>
+</player>
+
+<player name="Sanguinus" number="4" position="wight" race="undead" display="undead_w.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>8</av>
+<positionid>1</positionid>
+<cost>90000</cost>
+<skill>regenerate</skill>
+<skill>block</skill>
+</player>
+
+<!-- ghoul -->
+
+<player name="Loki la teigne" number="5" position="ghoul" race="undead" display="undead_g.png">
+<ma>7</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>70000</cost>
+<skill>dodge</skill>
+</player>
+
+<player name="Nazgul" number="6" position="ghoul" race="undead" display="undead_g.png">
+<ma>7</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>70000</cost>
+<skill>dodge</skill>
+</player>
+
+<!-- zombie -->
+
+<player name="wazaaa" number="10" position="zombie" race="undead" display="undead_z.png">
+<ma>4</ma>
+<st>3</st>
+<ag>2</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>30000</cost>
+<skill>regenerate</skill>
+</player>
+
+<player name="Mickey Jakson" number="11" position="zombie" race="undead" display="undead_z.png">
+<ma>4</ma>
+<st>3</st>
+<ag>2</ag>
+<av>8</av>
+<positionid>3</positionid>
+<cost>30000</cost>
+<skill>regenerate</skill>
+</player>
+
+
+<!-- skeleton -->
+
+<player name="Dechetor" number="7" position="skeleton" race="undead" display="undead_s.png">
+<ma>5</ma>
+<st>3</st>
+<ag>2</ag>
+<av>7</av>
+<positionid>4</positionid>
+<cost>30000</cost>
+<skill>regenerate</skill>
+</player>
+
+<player name="Shiva" number="8" position="skeleton" race="undead" display="undead_s.png">
+<ma>5</ma>
+<st>3</st>
+<ag>2</ag>
+<av>7</av>
+<positionid>4</positionid>
+<cost>30000</cost>
+<skill>regenerate</skill>
+</player>
+
+<player name="Masticator" number="9" position="skeleton" race="undead" display="undead_s.png">
+<ma>5</ma>
+<st>3</st>
+<ag>2</ag>
+<av>7</av>
+<positionid>4</positionid>
+<cost>30000</cost>
+<skill>regenerate</skill>
+</player>
+
+</players></team>

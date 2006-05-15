@@ -1,0 +1,102 @@
+%% -*- latex -*-
+
+\documentclass[11]{article}
+
+\usepackage{subject}
+
+\title{Les fourmis}
+\author{Prologin 2005}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Le jeu  des fourmis est un  jeu qui est  souvent mis en avant  dans le
+domaine de l'intelligence artificielle,  que cela soit pour introduire
+l'intelligence   de  groupe  (cf   Login:  hors   série  "Intelligence
+artificielle")  ou encore pour  des personnes  plus initiées  comme on
+peut le voir avec certains concours internationaux d'informatique.
+
+C'est pourquoi nous allons nous aussi prendre ce petit jeu qui est
+très simple à comprendre et à mettre en place, notamment dans le but
+de tester et débugger notre serveur pour la finale.
+
+\section{Le sujet}
+
+Le monde des fourmis est une grande prairie où il existe des obstacles
+tels que  des pierres,  des feuilles et  des trous remplis  d'eau.  Ce
+monde est rectangulaire  et est constitué de cases  carrées, à l'image
+d'un échiquier.   On trouve également  deux autres éléments  sur cette
+plaine  avec  lesquels les  fourmis  vont  interagir  grandement :  la
+nourriture et leur fourmilière.
+
+Le but du jeu est donc pour une équipe de faire un maximum de réserves
+de nourriture dans  sa fourmilière.  Il faut savoir  que sur la carte,
+la nourriture et le nombre de fourmis sont limités.
+
+Chaque  équipe  possède 8  fourmis  au début  du  jeu.  Elle se  voit
+attribuer  1  fourmi supplémentaire  pour  chaque  dizaine d'unité  de
+nourriture qu'une fourmilière collecte.
+
+En un tour,  une fourmi peut se déplacer sur une  case adjacente de la
+case où elle se trouve. Elle a donc 4 possibilités de déplacement.
+
+Pour prendre de la nourriture, une fourmi doit se trouver sur une case
+adjacente  à cette  nourriture  et  elle prend  un  tour pour  pouvoir
+découper un morceau et le mettre  sur son dos. La quantité maximum que
+peut porter une fourmi est de 7 unités.
+
+Une  fois  revenu à  la  fourmilière  (c'est-à-dire  sur la  case  qui
+représente  l'entrée de la  fourmilière), la  fourmi met  également un
+tour pour pouvoir  déposer ce qu'elle a sur le dos..   Il peut y avoir
+un nombre  infini de fourmis à  cette entrée alors que  sur les autres
+cases, il ne peut y avoir qu'une seule fourmi à la fois.
+
+Si jamais deux fourmis veulent aller au même endroit, c'est un peu
+comme au poker. La fourmi ayant le plus de chance peut se déplacer sur
+cette case, de façon non déterministe.
+
+Enfin,  pour que  cela  soit vraiment  intéressant,  nous ajoutons  un
+brouillard sur  la carte  (comme dans les  jeux de  type "starcraft").
+Chaque équipe ne peut connaitre sur  la carte que ce qui se trouve aux
+alentours de chacune  de ses fourmis (ici, on prendra  un carré de 3x3
+centré  sur la fourmi)  et aux  alentours de  sa fourmilière  (ici, un
+carré de 11x11 centré sur l'entrée de la fourmilière).
+
+Les fourmis étant des créatures globalement pacifiques, il n'est pas
+possible de tuer des fourmis d'une autre équipe. Cela réduit l'intêret
+du jeu, mais, hé, ne vous inquiétez pas, pour la finale, nous
+prendrons des fourmis carnivores.
+
+\section{Contraintes}
+
+Une partie dure 150 tours. Pour chaque tour, vous disposez de 100
+millisecondes pour effectuer toutes vos actions, plus 1 seconde de
+temps additionnel qui vous est décompté dès que vous dépassez le temps
+pour un tour. Une fois que ce temps additionnel est épuisé, votre
+champion est retiré de la partie.
+
+Vous devez écrire 2 fonctions, la première étant appelée une fois au
+début de la partie, la seconde à chaque tour:
+\begin{verbatim}
+void	init_game();
+void	play_turn();
+\end{verbatim}
+
+Si vous avez des informations à stocker, vous pouvez utiliser des
+variables globales. Mais ne perdez pas votre temps à stocker des
+informations, les fonctions de l'api sont rapides, vous pouvez les
+appeler sans ménagement.
+
+\section{L'Api}
+
+Pour accéder aux informations de la partie, nous vous proposons une
+api.  Les différentes fonctions sont ici décrites en C, mais elle sont
+utilisables de la même manière dans les autres langages. Reportez vous
+au code d'exemple qui vous est fournit.
+
+\input{api}
+
+\end{document}

@@ -1,0 +1,593 @@
+%% -*- LaTeX -*- Document
+
+\documentclass[a4paper,twoside,12pt]{article}
+
+\usepackage{a4}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage{verbatim,fancyvrb}
+\usepackage{subject}
+\renewcommand\ttdefault{cmtt}
+
+%\NoAutoSpaceBeforeFDP
+\geometry{bindingoffset=5mm,hmarginratio=1:1,heightrounded,headheight=15pt}
+
+\makeindex
+
+\begin{document}
+\pagestyle{empty}
+\sloppy
+
+%\lhead[\textsl{Prologin 2005}]{\nouppercase \leftmark}
+%\rhead[Sujet de la finale]{}
+\lhead[\thepage]{\nouppercase \leftmark}
+\rhead[\textsl{Prologin 2005} --- Sujet de la finale]{\thepage}
+\cfoot{}
+
+% Couverture =========================================================
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=\linewidth]{logo}\\
+\vspace{4cm}
+\Huge
+\textbf{Hatamis-Maun}\\
+\vspace{2cm}
+\normalsize
+Sujet de la finale du Concours National d'Informatique\\
+22 au 24 avril 2005\\
+%\vspace{2cm}
+%\large(Dernière révision~: 20 avril 2005 - 15~:~17)\\
+\end{center}
+\end{titlepage}
+
+% Citation ===========================================================
+\cleardoublepage
+
+\begin{flushright}
+\vspace*{10cm}
+\textsl{On parlait autrefois de \og décrocher \fg\ la Lune.\\
+        Aujourd'hui, elle m'appartient.}
+
+\medskip
+
+Jonas Loyd,\\
+P.D.G. de \textsl{Moon Travels}
+\end{flushright}
+
+
+% Sommaire ===========================================================
+\cleardoublepage
+\tableofcontents
+
+% Corps ==============================================================
+\cleardoublepage
+\setcounter{page}{1}
+\pagestyle{fancy}
+\parskip=6pt plus 3pt
+
+\section{Rapport de situation} %--------------------------------------
+
+\subsection{Le roi du capitalisme}
+
+Fondatrice et dirigeante de l'une des plus grosses compagnies du
+super-amas de la Vierge spécialisées dans le tourisme
+inter-galactique, vous êtes ce personnage mégalomane que l'on ne nomme
+plus, dont l'immense fortune n'a d'égale que l'égocentrisme
+narcissique.
+
+Vos projets n'ont toujours été que des succès, tant médiatiques
+qu'économiques, et ce depuis votre première entreprise, offerte par
+votre père pour vos dix ans. La popularité de vos décisions n'a certes
+pas toujours été indiscutable, mais qu'importe~: telle est la loi des
+grands de ce monde. Après tout l'hyper-déviation ayant nécessité la
+destruction de la Terre\footnote{Voir l'article de Douglas Adams sur
+le sujet.} est parvenue à redynamiser le secteur de Proxima du
+Centaure. Il est d'ailleurs heureux que vous ayez été la première
+personne à en mesurer le potentiel touristique, et donc à en obtenir
+les droits d'exploitation exclusifs.
+
+
+\subsection{S'il n'y a pas de solution, c'est qu'il n'y a pas de problème~!}
+
+Jusque là tout allait pour le mieux dans le meilleur des mondes.
+Seulement voilà, ces dernières années tout n'est plus
+rose\footnote{Quelle idée d'avoir associé cette couleur niaise au
+bonheur, alors que tout le monde sait que les devises lactéennes sont
+vertes, en référence au Dollar~!}. Depuis l'attentat dévastateur de
+Folston Paradise\footnote{Voir la reconstitution réalisée par Luc
+Besson.}, retransmis en direct à la radio pour couronner le tout,
+votre empire est menacé~: la croissance n'est plus que de 4,1\%, au
+lieu des 4,2\% habituels. D'un naturel pourtant peu contrariant, vous
+êtes aujourd'hui au bord du gouffre et de la dépression nerveuse~!
+
+Pour remédier à cela, il ne vous reste plus qu'une seule solution~:
+\textsl{P3X-5142}~! Également connue sous le doux nom de
+\og \textsl{Hatamis-Maun} \fg, cette planète vierge au ciel d'un
+vert\footnote{C'est forcément un signe~!} inimitable est une véritable
+merveille de la nature. Après avoir rasé quelques forêts\footnote{Les
+arbres sur cette planète ont la particularité d'être rose~: c'est
+probablement un signe également.} pour y construire autant de
+complexes hôteliers, elle devrait constituer la nouvelle destination
+de rêve à la mode dans le milieu des dirigeants de
+multi-mondiales\footnote{Les techniciens d'intervention en milieu non
+protégé constituent certes 90\% de la population, mais ne représentent
+que 10\% du pouvoir d'achat, donc autant viser une autre
+clientèle.}.
+
+De plus un autre intérêt de cette planète, et non des moindres, est
+l'abondance des ressources naturelles à sa surface. La technologie
+actuelle permet bien sûr de s'affranchir de ce genre de choses~:
+quelques navires-cargos suffisent habituellement à amener tout le
+nécessaire pour construire des installations prêtes à accueillir une
+centaine de milliers de personnes. D'ailleurs, les gouvernements
+n'hésitent pas lorsqu'il s'agit de placer des bases stratégiques ou
+des postes avancés dans la lutte contre l'arachnide. Mais ce n'est pas
+parce que les multi-mondiales, en particulier de l'industrie
+spacio-touristique, disposent de moyens financiers plus importants
+qu'elles sont pour autant disposées à dépenser sans
+compter\footnote{Ne jamais oublier la règle d'or~: \og Profit à tout
+prix et au mépris de tout \fg.}. Donc si les ressources sont directement
+disponibles sur place, autant en profiter\footnote{Les études montrent
+qu'il faut en moyenne un demi-siècle avant que l'écosystème ne soit
+complètement bousculé par la consommation intensive.}~!
+
+Seulement tout n'est pas si simple. En effet, d'après le service des
+ressources cognitives extérieures\footnote{Le nom est un peu long,
+mais sonne mieux que \og espionnage industriel \fg.}, il semblerait que 99
+de vos concurrents soient également décidés à mettre la main sur votre
+planète. Il n'est bien évidemment pas question un seul instant de les
+laisser ne serait-ce qu'espérer s'approprier ce qui vous revient
+naturellement de droit~! Malheureusement, cette fois aboyer quelques
+ordres à votre charmant secrétaire\footnote{En parlant de lui, il
+faudra penser à le licencier pour motif économique et en prendre un
+autre, plus jeune~: son dossier indique qu'il va bientôt avoir 19
+ans.} ponctués de plaisanteries de goût douteux pour le déstabiliser
+ne suffira pas. Il va donc falloir que vous vous occupiez de cela
+personnellement.
+
+Pour couronner le tout, il semblerait que plusieurs équipes
+d'aménagement soient déjà en route~: les compagnies n'ont pas encore
+été identifiées, mais les estimations annoncent leur arrivée sur le
+terrain dans seulement trente-six heures. Bien évidemment, votre
+équipe s'est mise en route immédiatement, mais le générateur
+d'improbabilité infinie étant en panne, ces incapables n'arriveront
+pas sur place avant les autres~: au mieux en même temps. Ne disposant
+d'aucune stratégie il va vous falloir en définir une, que votre
+secrétaire se chargera alors de faire parvenir à la flotte, afin
+d'infliger à ces opportunistes\footnote{Le terme est à prendre ici
+dans son sens péjoratif.} une défaite cuisante.
+
+
+\subsection{La dead-line}
+
+La meilleure façon de vous approprier \textsl{Hatamis-Maun} est de
+mettre vos concurrents devant le fait accompli. Aussi, la tâche de
+votre équipe va consister à prendre le contrôle d'un maximum de
+terrain.
+
+Toutefois, votre budget en temps est très limité, aussi vous faut-il
+une victoire rapide. Si la bataille venait à durer, l'opération
+pourrait se transformer en gouffre financier, sans parler de l'impact
+médiatique que cela pourrait avoir si le public apprenait que vous
+vous disputez une planète~: sa valeur en tant que destination de rêve
+s'effondrerait aussitôt, entraînant avec elle le cours des actions de
+la compagnie. C'est la raison pour laquelle passé un certain délai, un
+bilan sera établi~: si l'inconcevable arrivait, à savoir s'il
+s'averrait que vous ne contrôliez pas la majorité du territoire, alors
+le projet serait immédiatement et définitivement
+abandonné\footnote{Les employés de l'équipe, quant à eux, seraient
+bien entendu congédiés sur le champ pour faute grave.}.
+
+Objectivement, le critère pris en compte pour quantifier le succès de
+vos opérations est le poids économique de vos installations, autrement
+dit la somme de la valeur foncière de vos hôtels. Les clients ont en
+effet cette désagréable tendance à préférer certains sites, et à se
+formaliser du nombre d'hôtels présents dans le voisinage.
+
+
+\subsection{Le matériel}
+
+
+\subsubsection{Le \textsl{B-14-773}}
+
+Votre meilleur atout dans cette aventure économique est le
+\textsl{B-14-773}, dit \og le \textsl{Coléoptère} \fg. Ce petit véhicule
+volant très bon marché est l'un des engins les plus polyvalents qui
+soient. Il permet de coloniser un territoire de façon quasiment
+autonome, pourvu qu'il ait accès à des sources de minerai et
+d'énergie. Quel heureux concours de conditions favorables, puisque
+\textsl{Hatamis-Maun} regorge justement de telles ressources en
+surface~! Celles-ci apparaissent toutefois à l'état brut, et
+nécessitent donc la construction d'installations appropriées pour
+pouvoir être exploitées. En fait, le seul défaut de cet appareil est
+la technologie utilisée pour voler~: elle repose sur la génération
+d'un champ de plasma, dont l'echo renvoyé par le terrain permet de
+soulever l'engin. Malheureusement l'eau ne renvoie pas cet echo, et il
+est donc impossible de voler au dessus de l'eau.
+
+Le \textsl{B-14-773} permet, à condition de disposer du matériel
+requis, de bâtir toutes sortes de constructions. Ces constructions
+peuvent être des complexes hôteliers bien sûr, mais également des
+mines d'extraction et d'affinage de minerai, des centrales de
+canalisation de plasma, ou encore des usines d'assemblage de
+\textsl{B-14-773}. Ces dernières peuvent produire à leur tour des
+engins, permettant ainsi une colonisation efficace. Les constructions
+ne peuvent pas se faire n'importe où\footnote{Ce qui n'a rien à voir
+avec le fait de bâtir sauvagement...}. Les mines ne peuvent être
+construites que sur des gisements de minerai, et les centrales que sur
+des fontaines de plasma. Les hôtels et les usines d'assemblage peuvent
+par contre être construits à peu près partout.
+
+Le \textsl{Coléoptère} peut également transporter, recevoir, et
+transmettre du minerai et de l'énergie très facilement. Cependant il y
+a quelques inconvénients auxquels il faut faire attention. D'une part,
+l'énergie nécessaire à son déplacement est prélevée sur son stock. Si
+celui-ci arrive à zéro, l'engin alors privé d'énergie se transforme en
+cafetière volante et s'écrase\footnote{En l'absence de plasma,
+l'accident ne provoque pas le moindre effet secondaire susceptible
+d'attirer une caméra de télévision...}. D'autre part, sa capacité est
+limitée, et il ne peut recevoir plus d'une certaine quantité d'énergie
+par tour. Si l'énergie reçue est supérieure à cette limite ne
+serait-ce qu'un tour, ou si l'énergie totale stockée dépasse sa
+capacité, il explose, libérant de façon spectaculaire son plasma
+interne\footnote{Les dégâts occasionnés par les débris et le minerai
+transformés en autant de projectiles peuvent être particulièrement
+conséquents.}. D'ailleurs il faut noter que lorsqu'un appareil explose
+alors qu'il construisait un bâtiment, ce dernier est malheureusement
+perdu. Fort heureusement, une fois achevés, les bâtiments ne craignent
+plus rien.
+
+Pour transmettre du minerai ou de l'énergie entre deux appareils, il
+suffit que les deux s'arriment l'un à l'autre. Une fois l'arrimage
+effectué, le transfert peut avoir lieu. Le transfert de plasma est
+instantané, mais le transfert de minerai est quant à lui relativement
+lent. Lorsqu'il est achevé, les deux engins sont automatiquement
+désarrimés, mais avant cela il est impossible de l'interrompre. Un
+appareil ne disposant que d'une seule structure d'arrimage, il ne peut
+s'arrimer qu'à un seul appareil à la fois. De plus si deux appareils
+arrimés tentent tous les deux de transférer quelque chose, le
+transfert échoue et ils sont automatiquement désarrimés.
+
+Il existe également une autre procédure concernant le transfert
+d'énergie~: du fait de sa nature proche de la lumière, elle peut
+également être transférée à distance. Ce type de transfert est
+quasiment instantané, quelle que soit la distance. Pour cela, le
+\textsl{Coléoptère} receveur a la possibilité d'ouvrir son canal
+d'entrée~: un \textsl{Coléoptère} émetteur, immobile, peut alors
+effectuer un transfert en direction du receveur. Cette méthode, bien
+que plus laborieuse à mettre en place étant donné qu'il faut attendre
+que le canal soit complètement ouvert, présente un avantage
+certain. Il faut toutefois noter qu'elle présente également un
+risque~: en effet, si un appareil reçoit de l'énergie alors que son
+canal d'entrée est fermé, il subit d'importants dommages. L'ouverture
+du canal en vol pour éviter ce problème n'est malheureusement pas
+possible car cela entraînerait des dommages mécaniques~: l'appareil
+doit être immobilisé tant que son canal est ouvert. La transmission de
+plasma vers un bâtiment par cette méthode n'est quant à elle pas
+possible, du fait de la différence d'altitude. Pour la même raison, il
+n'est pas possible de transmettre de l'énergie à un engin arrimé à un
+bâtiment.
+
+D'un point de vue militaire, les \textsl{B-14-773} ne disposent
+d'aucun d'armement, conformément aux dispositions de la convention de
+Véga\footnote{La convention de Véga avait pour but de mettre un terme
+à l'insécurité des colonies.}. Fort
+heureusement\footnote{Officieusement il va de soit.}, les points
+évoqués précédemment permettent de contourner ce problème.
+L'expérience montre par ailleurs que les avocats font un travail
+remarquable concernant ce type \og d'incidents \fg.
+
+Entre autres avantages, les \textsl{B-14-773} peuvent effectuer
+facilement des réparations sur un appareil endommagé, avec toutefois
+une limite d'énergie et de minerai dépensés par tour. Pour gagner du
+temps, un appareil endommagé peut être restauré simultanément par
+quatre autres appareils au plus. Un appareil endommagé peut également
+retourner dans une usine de montage.
+
+L'entrée et la sortie des appareils s'effectue par le dessus de
+l'usine, tout comme l'arrimage. Aucune vérification n'étant prévue
+lors de la sortie d'un \textsl{Coléoptère} de la chaîne de montage ou
+de réparation, il faut prendre les précautions nécessaires. En effet,
+un \textsl{B-14-773} sortant de l'usine est littéralement éjecté à la
+verticale par une puissante catapulte. Si une collision a lieu à ce
+moment avec un autre appareil se trouvant au dessus de l'usine ou
+arrimé à celle-ci, l'explosion des deux appareils est généralement
+inévitable.
+
+
+\subsubsection{Les usines d'exploitation}
+
+La planète \textsl{P3X-5142} regorge de ressources naturelles,
+présentes entre autres sous la forme de veines de minerai et de
+fontaines de plasma en surface. D'autres ressources sont présentes,
+mais restent moins intéressantes car moins facilement exploitables.
+
+Pour tirer parti des ressources, il est nécessaire de construire au
+préalable des mines d'exploitation adaptées. Moyennant un coût de
+construction en minerai et en énergie, un \textsl{Coléoptère} peut
+monter rapidement une mine d'extraction et d'affinage de minerai sur
+un gisement, ou une centrale de canalisation de plasma sur une
+fontaine.
+
+Dès lors que de telles installations sont prêtes, il suffit aux engins
+de s'y arrimer pour remplir leur stock. Pour s'arrimer à un bâtiment,
+l'appareil doit se placer juste au dessus. Les bâtiments ne possédant
+qu'une seule plate-forme d'arrimage, un seul engin peut s'arrimer à la
+fois. Lorsqu'un \textsl{Coléoptère} s'arrime à une mine ou à une
+centrale, il reçoit automatiquement un flux qui s'interrompt dès que
+le stock est rempli~: il est alors automatiquement désarrimé. Pour des
+raisons de sécurité, il n'est pas possible de se désarrimer tant que
+la procédure de remplissage n'est pas achevée. De plus, il n'est
+possible d'arrimer qu'un seul appareil à la fois.
+
+\subsubsection{Les usines d'assemblage}
+
+Il est fort probable que le nombre de \textsl{Coléoptères} envoyés sur
+\textsl{Hatamis-Maun} se révèle insuffisant. Il est de plus tout à
+fait possible que certains appareils subissent des dommages au cours
+de l'opération. Aussi des usines d'assemblage et de réparation de
+\textsl{B-14-773} vont se révéler nécessaires.
+
+Tout comme l'usine d'exploitation, une usine d'assemblage peut être
+montée par un \textsl{Coléoptère} moyennant un certain coût en minerai
+et en énergie, à la différence près que celle-ci ne peut pas être
+construite sur un gisement, ni sur une fontaine. Une fois l'usine
+montée, celle-ci peut produire des \textsl{B-14-773} à la chaîne sur
+commande. Du minerai et de l'énergie sont bien sûr nécessaires à son
+bon fonctionnement, aussi dispose-t-elle d'un stock. Si une commande
+arrive alors que ce stock est insuffisant pour fabriquer ou réparer,
+et préparer correctement un appareil, même si le stock n'est pas vide,
+la chaîne n'est même pas lancée.
+
+En l'absence de réseau de distribution, elle doit être régulièrement
+ravitaillée. Cette tâche est donc assurée par des
+\textsl{Coléoptères}~: un appareil peut s'arrimer et déposer la
+quantité de minerai et d'énergie voulue. Une fois le transfert
+effectué il est automatiquement libéré. Tout comme pour les usines
+d'exploitation, il n'est possible d'arrimer qu'un seul engin à la
+fois, et il n'est pas possible d'interrompre le transfert.
+
+Enfin, les usines de montage permettent également d'effectuer des
+réparations sur les appareils endommagés. Un \textsl{B-14-773} peut
+entrer dans une usine et subir une révision complète. Il faut noter
+que du fait du caractère exceptionnel de ce type de procédure,
+lorsqu'un appareil entre dans une usine, toute la chaîne est
+interrompue afin de pouvoir le réparer le plus rapidement
+possible. Pendant ce temps, aucun autre appareil ne peut entrer, afin
+de ne pas saturer l'usine qui est déjà face à une situation de crise.
+
+
+\subsubsection{Les complexes hôteliers}
+
+Ce dernier type de bâtiment est la finalité de l'opération. Leur
+construction s'effectue de la même façon que les usines d'assemblage~:
+partout sauf sur les gisements et fontaines, par un
+\textsl{Coléoptère} et pour un certain coût en minerai et en
+énergie. Il y a toutefois un paramètre nouveau qui intervient~: la
+valeur foncière du terrain.
+
+Le terrain a tendance à voir sa valeur monter en présence d'éléments
+qui rendent le paysage attractif aux yeux des touristes, et
+réciproquement. Des éléments qui font augmenter cette valeur sont par
+exemple la proximité de la mer, un beau paysage, des fleurs, ce genre
+de choses superficielles... Les éléments qui peuvent la faire baisser
+au contraire sont en tout premier lieu la présence d'une usine, une
+forte concentration d'hôtels, un paysage laid... Tous ces paramètres
+sont difficiles à modéliser, mais une simulation du comportement du
+touriste moyen est tout de même disponible, et permet d'évaluer la
+valeur d'un terrain à un instant donné.
+
+Une utilisation fine de cette simulation permet de choisir des
+emplacements pertinents pour la construction des hôtels, mais aussi
+des usines. Il ne faut jamais perdre de vue que la construction d'un
+hôtel ou d'une usine fait inévitablement baisser localement la valeur
+du terrain.
+
+
+\subsubsection{Les satellites}
+
+Nous sommes aujourd'hui au beau milieu d'une ère ultra-technologique
+dans laquelle chacun d'entre nous est entouré par un nombre inouï de
+processeurs dans sa vie de tous les jours. Le moindre enfant de dix
+ans possède déjà un téléphone mobile auto-cuiseur à micro-ondes avec
+une connexion au réseau de satellites d'imagerie planétaire avec une
+précision de 1cm par pixel pour pouvoir dilapider l'argent de ses
+parents en votant dans des jeux d'holoréalité. Le dernier né de cette
+famille, \textsl{Le Voyage de l'isolation}\footnote{Ce jeu
+consiste à enfermer douze garçons et filles de 18 à 28 ans dans une
+capsule en orbite autour d'un objet transneptunien pendant
+quarante-deux jours. Nous en sommes au vingtième, et il reste encore
+sept survivants.}, connaît d'ailleurs un succès phénoménal.
+
+Seulement voilà, c'est bien là que le bât blesse~! Dans ce monde de
+technologie et de satellites, en orbite d'une planète
+vierge\footnote{Mais plus pour longtemps.}, il n'y a absolument pas la
+moindre boîte de conserve radioactive... Ce qui signifie qu'au sol,
+vos équipes sont à peu près aussi aveugles que les explorateurs du
+XVIII\textsuperscript{e} siècle. Leur conscience du terrain se limite
+en effet à ce qu'ils perçoivent depuis leurs appareils et constructions.
+L'exploration s'annonce donc difficile, d'autant plus que seul le
+terrain visible peut être évalué.
+
+
+\subsection{Résumé}
+
+En bref, la situation est la suivante~: \textsl{P3X-5142} est la cible
+de compagnies concurrentes et probablement véreuses, et il faut à tout
+prix\footnote{Façon de parler bien sûr.} la coloniser en
+premier. Votre équipe va débarquer dans seulement quelques heures sur
+la planète, avec pour seul matériel\footnote{C'est déjà bien assez.}
+cinq \textsl{B-14-773} avec des stocks de plasma et de minerai
+remplis.
+
+Il va falloir construire des hôtels en tenant compte de la valeur du
+terrain, afin d'obtenir la plus grande valeur immobilière possible.
+Pour cela, il va falloir utiliser intelligemment les ressources
+disponibles en construisant des usines d'exploitation de minerai et
+d'énergie, ainsi que des usines de fabrication de \textsl{B-14-773}.
+
+Chaque bâtiment a un coût de construction en minerai, en énergie, en
+temps, et enfin en capital touristique puisqu'ils font baisser la
+valeur du terrain. Les usines de montage ont de plus un coût
+d'exploitation, directement lié au nombre d'appareils qui y sont
+fabriqués ou réparés.
+
+Enfin, les \textsl{Coléoptères} permettent de construire ces
+bâtiments, de transporter et de s'échanger de l'énergie et du minerai,
+d'effectuer des réparations, et éventuellement de provoquer des dégâts
+à d'autres appareils en leur transmettant \og accidentellement \fg\ de
+l'énergie alors qu'ils ne s'y attendaient pas.
+
+À la fin de l'opération, la valeur foncière de chaque hôtel sera
+comptabilisée, et le total sera comparé à celui de vos concurrents. Si
+tout se passe bien, \textsl{Hatamis-Maun} vous appartiendra et les
+touristes s'empresseront de vous donner tout leur argent pour pouvoir
+goûter au climat local, si différent d'ici\footnote{Comprenne qui
+pourra... \textsl{Hin~! Hin~! Hin~! Hin~! Hin~!}}.
+
+
+\section{Ordres de grandeur}
+
+Ici sont données quelques grandeurs permettant d'imaginer comment va
+se dérouler l'opération.
+
+
+\subsection{Les distances}
+
+Le terrain sur lequel se déroule l'action est une zone carrée
+discrétisée de 50 cases de côté. Un bâtiment ou un appareil occupe
+justement une case. Les \textsl{B-14-773} ont beau être des appareils
+volants, comme ils volent à peu près à la même altitude, ils ne
+peuvent pas être plusieurs sur une même case. Si un appareil essaye
+d'aller sur une case où se trouve déjà un autre appareil, ou si deux
+appareils essayent d'aller sur la même case, le déplacement
+échoue. Enfin, deux cases sont considérées comme adjacentes si elles
+partagent un côté. Une case peut donc avoir au plus quatre cases
+adjacentes.
+
+Les \textsl{Coléoptères} et les bâtiments permettent de voir les
+environs sur une distance de 5 cases. Cette distance représente le
+nombre de cases que peut parcourir un appareil en 5 tours.
+
+Les transferts de plasma n'ont pas de limite de distance. Par
+conséquent, si aucun appareil n'intercepte le flux, celui-ci traverse
+la carte. Par contre si le flux est intercepté, il ne va pas plus
+loin.
+
+
+\subsection{Le matériel}
+
+Le \textsl{B-14-773} dispose de stocks pouvant contenir 100 mégajoules
+de plasma, et 1 tonne de minerai. Il est de plus caractérisé par un
+pourcentage de dégâts. Si cette valeur atteint 100, sa structure
+devient complètement instable et il explose. Lorsqu'un appareil reçoit
+de l'énergie alors que son canal d'entrée est fermé, les dégâts
+augmentent de 5\% par mégajoule de plasma absorbé. Lorsqu'un appareil
+explose, les appareils à proximité voient leur pourcentage de dégâts
+monter de 50\% pour les cases adjacentes, et 25\% pour les cases
+ajdacentes à ces cases. Si plusieurs appareils explosent
+simultanément, les dommages s'additionnent. Un \textsl{B-14-773} peut
+toutefois être réparé par des appareils situés dans des cases
+adjacentes (quatre au plus, donc), et ce simultanément. Il faut juste
+qu'il soit immobile. Enfin lors des transferts, la quantité de minerai
+est simplement limitée par la vitesse de transfert. Par contre le
+plasma peut être transféré instantanément quelle que soit sa
+quantité~: la limite à ne pas dépasser est de 20 mégajoules par tour
+pour l'appareil receveur, sous peine d'explosion. L'appareil émetteur
+n'est quant à lui pas limité.
+
+Une usine de montage dispose également de stocks, pouvant contenir
+jusqu'à 1 gigajoule de plasma, et 10 tonnes de minerai. L'assemblage
+d'un \textsl{Coléoptère} coûte 1 tonne de minerai, et 100 mégajoules
+de plasma, auquels il faut encore ajouter 100 mégajoules destinés à
+remplir son stock~: un \textsl{B-14-773} sort toujours de l'usine avec
+ses batteries pleines. Lorsqu'un appareil entre dans une usine pour y
+subir des réparations, celles-ci coûtent 5 kilogrammes de minerai et 1
+mégajoule de plasma par pourcentage de dégâts, auxquel il faut une
+fois de plus ajouter le plasma nécessaire pour remplir son stock. Il
+faut noter d'autre part que le minerai utilisé est prélevé en priorité
+sur l'appareil en question.
+
+En parlant de minerai et de plasma, les ressources de la planète ne
+sont certes pas inépuisables, mais néanmoins virtuellement infinies
+étant donnée la durée de l'opération. Après tout, si ce n'est pas vous
+qui consommez les ressources naturelles de cette planète, ce sera
+quelqu'un d'autre. Donc autant profiter de cette période avant que ce
+ne soit la crise du plasma et qu'il faille trouver une excuse pour
+faire la guerre à d'autres pays.
+
+Enfin, un bâtiment quel qu'il soit coûte à la construction 50
+mégajoules de plasma et 1 tonne de minerai\footnote{C'est
+impressionnant ce que l'on peut faire avec une petite tonne de minerai
+après un peu de raffinage~!}. Concernant son impact sur la valeur du
+terrain, il fait baisser celle-ci de 5\% partout où il est
+visible. Cet impact s'accumule en présence de plusieurs
+bâtiments. Finalement, la valeur du terrain évolue entre 0 et 100\%
+selon les endroits. En présence d'un hôtel sa valeur maximale est donc
+de 95\%. Si elle vaut 0\%, c' est bien simple, l'hôtel est tellement
+peu rentable qu'il a une valeur foncière nulle.
+
+
+\subsection{Le temps}
+
+À un instant donné, le personnel d'une usine ou le pilote d'un
+\textsl{Coléoptère} ne peut faire qu'une seule chose à la fois. Il est
+donc naturel de discrétiser le temps, et de compter en tours. Le tour
+étant l'unité de temps indivisible pendant lequel vos employés ne font
+qu'une seule chose.
+
+Tout d'abord, ces fénéants peuvent ne rien faire. Comme ces incapables
+sont parfaitement dénués de la moindre autonomie, c'est le cas dès
+qu'ils n'ont aucune consigne. Il ne tient qu'à vous de faire en sorte
+que cela arrive le moins souvent possible.
+
+Un \textsl{Coléoptère} peut au choix~:
+\begin{itemize}
+\item se déplacer (à la vitesse d'une case par tour)~;
+\item s'arrimer à un bâtiment ou à un autre appareil (ce qui lui prend
+tout de même 1 tour)~;
+\item transférer simultanément du minerai et du plasma vers l'appareil
+ou au bâtiment auquel il est arrimé (ce qui prend 1 tour pour 100
+kilogrammes de minerai, et 1 tour pour le plasma si il y en a)~;
+\item recevoir du minerai ou du plasma depuis une mine ou une centrale
+à laquelle il est arrimé (ce qui prend 1 tour pour 100 kilogrammes de
+minerai ou 10 mégajoules de plasma)~;
+\item ouvrir ou fermer son canal d'entrée de plasma (ce qui prend
+encore à ce pousse-bouton de pilote 1 tour~!)
+\item libérer du plasma (encore 1 tour, quelle que soit la quantité)~;
+\item entrer dans une usine (toujours 1 tour)~;
+\item construire un bâtiment (10 tours)~;
+\item réparer un autre appareil (1 tour pour 10\% de dégâts).
+\end{itemize}
+
+
+Un appareil hors de l'usine de montage et qui n'est pas arrimé à un
+bâtiment consomme de plus 1 mégajoule de plasma par tour. D'ailleurs
+un appareil coûte 10 tours à l'usine de montage pour la fabrication,
+et 1 tour pour 10\% de dégâts pour la réparation.
+
+Enfin vous disposez à chaque tour de 150ms de temps de calcul. Si
+jamais vous dépassez cette limite, vous pourrez puiser dans une
+réserve de temps supplémentaire de 2 secondes, valable pour toute la
+partie. Si cette réserve est épuisée, vos fréquences radio seront
+déphasées, et vos équipes ne pourront plus communiquer~: autrement dit
+elle deviendront absolument inactives. La partie ne dure que 1000
+tours~: il va falloir faire très vite~!
+
+Quant à vous, vous disposez de 36 heures et 42 minutes. Vous aussi,
+vous allez devoir faire vite... Mais n'oubliez surtout pas de bien
+vous amuser.
+
+
+\section{Outils informatiques}
+
+Ici sont présentés les outils qui sont à disposition pour mettre au
+point la stratégie qui scellera l'avenir de \textsl{Hatamis-Maun}.
+Toutes les fonctions travaillent avec des entiers.
+
+\input{api}
+
+\end{document}
+% Zavie - Julien Guertault

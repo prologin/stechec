@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<config>
+
+  <game>
+    <nb_team>2</nb_team>
+  </game>
+
+  <client>
+    <rules>bb5_client_rules</rules>
+    <connect val="network" host="localhost" port="25151"
+             game_uid="41" connect_on_startup="true" />
+  </client>
+
+  <client_1>
+    <champion>bb5_visu</champion>
+    <team>team.xml</team>
+    <mode replay="false" spectator="false" />
+    <limit memory="10000" time="500" time_reserve="2500" />
+    <debug valgrind="false" gdb="false" verbose="4" printloc="true" />
+  </client_1>
+
+  <client_2>
+    <champion>bb5_client_console</champion>
+    <team>team.xml</team>
+    <mode replay="false" file="match.log" spectator="false" />
+    <limit memory="0" time="500" time_reserve="2500" />
+    <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
+  </client_2>
+
+  <server>
+    <rules>bb5_arbiter</rules>
+    <options persistent="true" start_game_timeout="30" />
+    <listen port="25151" />
+    <log enabled="false" file="match.log" />
+    <nb_spectator>0</nb_spectator>
+    <debug verbose="8" printloc="true" />
+    <server_debug verbose="3" printloc="false" />
+  </server>
+
+</config>

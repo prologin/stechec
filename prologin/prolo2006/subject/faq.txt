@@ -1,0 +1,32 @@
+* Comment connaître les identifiants de mes joueurs ?
+
+- La fonction mon_equipe() permet de connaître l'identifiant de mon équipe.
+- La fonction equipe(joueur) permet de connaître l'équipe d'un joueur.
+- La fonction equipes() permet de savoir combien d'équipes participent.
+- La constante taille_equipe() permet de savoir combien de joueurs compte
+  chaque équipe.
+
+Étant donné que les identifiants de joueurs sont consécutifs et
+commencent à 1, à partir de ces fonctions il est possible de
+déterminer une fois pour toutes les identifiants des joueurs que l'on
+contrôle.
+
+
+* Lorsque des joueurs sont dans une salle de jeux, que renvoie la
+fonction regarde(x, y) aux coordonnées de cette salle ?
+
+Elle dit qu'il y a une salle de jeux.
+
+
+* J'ai appelé la fonction deplace_joueur et le personnage n'avance que
+  d'une seule case.
+
+Il faut appeler deplace_joueur à chaque tour.
+
+* A quoi sert la fonction remaining_turn() ?
+
+A rien. C'est une erreur dans le sujet. Elle n'est pas implementee dans l'API.
+
+* A quoi sert la constante MAX_TURN ?
+
+Typo. Elle devrait s'appeler MAX_DATE, et avoir la valeur de 500.
