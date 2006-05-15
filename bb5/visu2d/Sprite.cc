@@ -93,7 +93,7 @@ void Sprite::move(int to_x, int to_y, double velocity)
   move(Point(to_x, to_y), velocity);
 }
 
-void Sprite::anim(int delay, bool loop_forever = true)
+void Sprite::anim(int delay, bool loop_forever)
 {
   if (nb_anim_width_ == 1 && nb_anim_height_ == 1)
     {
