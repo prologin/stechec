@@ -54,9 +54,14 @@ public:
   virtual void  setAngle(double angle);
   virtual void  setZ(int z);
 
+
   //! @brief In this method you can do all you want with your object.
   virtual void  update();
 
+  //! @brief Get zone to render.
+  //! rect_ can be larger than we really want to show. Used only on render().
+  virtual Rect  getRenderRect() const;
+  
   //! @brief Don't care of this. Should only be overriden by VirtualSurface.
   virtual void  render() {}
 

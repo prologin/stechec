@@ -89,7 +89,7 @@ void VirtualSurface::render()
       LOG6("+ Managing invalidated surface: " << *rit);
       for (it = child_list_.begin(); it != child_list_.end(); ++it)
         {
-          Rect child_surf((*it)->getRect());
+          Rect child_surf((*it)->getRenderRect());
           LOG6("  To child: " << **it);
           child_surf &= *rit;
           if (child_surf.w > 0 && child_surf.h > 0)

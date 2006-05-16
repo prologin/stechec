@@ -198,6 +198,11 @@ void Surface::setZ(int z)
     parent_->updateChildZOrder();
 }
 
+Rect Surface::getRenderRect() const
+{
+  return rect_;
+}
+
 void Surface::update()
 {
   if (redraw_all_)

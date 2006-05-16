@@ -26,6 +26,8 @@ bb5_visu_la_SOURCES =				\
 	Surface.cc				\
 	VirtualSurface.hh			\
 	VirtualSurface.cc			\
+	VirtualScrollableSurface.hh		\
+	VirtualScrollableSurface.cc		\
 	Sprite.hh				\
 	Sprite.cc				\
 	Input.hh				\

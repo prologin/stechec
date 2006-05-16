@@ -37,6 +37,10 @@ int Game::run()
   panel.setPos(Point(500, 0));
   win_.getScreen().addChild(&panel);
 
+  VirtualScrollableSurface field("VSField", win_.getInput(),
+                                 Point(500, 600), Point(1000, 1000));
+  win_.getScreen().addChild(&field);
+  
   Surface panel_bg("image/panel/panel");
   panel.addChild(&panel_bg);
 
@@ -55,22 +59,22 @@ int Game::run()
 
   Surface bg("image/screens/title_bg");
   bg.setZ(-1);
-  win_.getScreen().addChild(&bg);
+  field.addChild(&bg);
 
   Sprite ball("image/general/ball");
   ball.setZ(2);
-  ball.setPos(10,550);
+  ball.setPos(10, 550);
   ball.move(Point(50, 50), 20.);
-  win_.getScreen().addChild(&ball);
+  field.addChild(&ball);
 
   Sprite ball2("image/general/ball");
   ball2.setZ(2);
   ball2.setPos(100, 0);
   ball2.move(Point(500, 550), 15.);
-  win_.getScreen().addChild(&ball2);
+  field.addChild(&ball2);
 
   Sprite ovni("image/figs/ovni");
-  ovni.setZ(3);
+  ovni.setZ(2);
   ovni.splitSurfaceIntoAnim(4, 3);
   ovni.setPos(200, 100);
   ovni.move(300, 500, 15.);

@@ -46,7 +46,7 @@ public:
   void invalidate(const Rect& zone);
   void invalidate(const Point& pos, const Point& size);
   
-private:
+protected:
   typedef std::vector<Surface*> SurfaceList;
   SurfaceList   child_list_;
 

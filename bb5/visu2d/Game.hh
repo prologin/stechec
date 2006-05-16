@@ -27,6 +27,7 @@
 # include "Input.hh"
 # include "Surface.hh"
 # include "VirtualSurface.hh"
+# include "VirtualScrollableSurface.hh"
 # include "Sprite.hh"
 
 class Game
