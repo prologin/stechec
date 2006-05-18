@@ -36,7 +36,7 @@ static Input* input_inst = NULL;
 
 void get_line(char* line);
 char** cmd_completion(const char* text, int start, int end);
-char** cmd_completion_foo(const char*, int, int);
+char* cmd_completion_foo(const char*, int);
 
 
 
@@ -254,7 +254,8 @@ Input::Input(CmdLineInterface* i, Api* gc)
   ios_base::sync_with_stdio(true);
 
   // Initialize readline
-  rl_callback_handler_install(NULL, (VFunction*)&get_line);
+  // (mac needs (VFunction*)&get_line)
+  rl_callback_handler_install(NULL, &get_line);
   rl_attempted_completion_function = cmd_completion;
   rl_completion_entry_function = cmd_completion_foo;
 
@@ -421,20 +422,22 @@ char** cmd_completion(const char* text, int start, int)
 {
   char **matches = NULL;   
 
+  // FIXME: is 'completion_matches' on mac.
   if (start == 0)
-    matches = completion_matches(text, cmd_generator);
+    matches = rl_completion_matches(text, cmd_generator);
   else if (strncmp(rl_line_buffer, "print", 5) == 0)
-    matches = completion_matches(text, cmd_generator_print);
+    matches = rl_completion_matches(text, cmd_generator_print);
   else if (strncmp(rl_line_buffer, "move", 4) == 0)
-    matches = completion_matches(text, cmd_generator_move);
+    matches = rl_completion_matches(text, cmd_generator_move);
   else if (strncmp(rl_line_buffer, "help", 4) == 0)
-    matches = completion_matches(text, cmd_generator_help);
+    matches = rl_completion_matches(text, cmd_generator_help);
 
   return matches;
 }
 
 // Override the default completion, on filename and users.
-char** cmd_completion_foo(const char*, int, int)
+// FIXME: maybe mac need 3thd arg int.
+char* cmd_completion_foo(const char*, int)
 {
   return NULL;
 }
