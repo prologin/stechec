@@ -66,7 +66,7 @@ void SDLWindow::init()
   SDL_WM_SetCaption("TBT Game", NULL);
   SDL_WM_GrabInput(SDL_GRAB_OFF);
 
-  frame_last_tick_ = SDL_GetTicks();
+  frame_previous_tick_ = frame_tick_fps_ = SDL_GetTicks();
 }
 
 bool SDLWindow::processOneFrame()
@@ -92,15 +92,20 @@ bool SDLWindow::processOneFrame()
   screen_.update();
   screen_.render();
 
-  // FIXME: stick to a certain number of fps.
-
+  // Count FPS.
   frame_drawed_++;
-  if (SDL_GetTicks() >= frame_last_tick_ + 1000)
+  const unsigned now = SDL_GetTicks();
+  if (now >= frame_tick_fps_ + 1000)
     {
-      frame_last_tick_ = SDL_GetTicks();
+      frame_tick_fps_ = now;
       LOG3("FPS: " << frame_drawed_);
       frame_drawed_ = 0;
     }
-  
+
+  // Wait a little if we have rendered too fast - 50 FPS max.
+  if (now < frame_previous_tick_ + 20)
+    SDL_Delay(20 - (now - frame_previous_tick_));
+  frame_previous_tick_ = now;
+
   return false;
 }

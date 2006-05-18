@@ -56,7 +56,8 @@ private:
 
   bool                  is_fullscreen_;
   unsigned              frame_drawed_;
-  unsigned              frame_last_tick_;
+  unsigned              frame_tick_fps_;
+  unsigned              frame_previous_tick_;
 };
 
 #endif /* !SDLWINDOW_HH_ */
