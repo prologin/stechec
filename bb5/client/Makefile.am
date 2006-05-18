@@ -5,6 +5,8 @@ lib_LTLIBRARIES	= bb5_client_rules.la
 bb5_client_rules_la_SOURCES	=		\
 	Api.hh					\
 	Api.hxx					\
+	CBall.hh				\
+	CBall.cc				\
 	CPlayer.cc				\
 	CPlayer.hh				\
 	CRules.cc				\
