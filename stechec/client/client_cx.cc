@@ -128,7 +128,7 @@ void ClientCx::sendPacket(const Packet& p)
   if (p.client_id >= UID_VIEWER_BASE)
     return;
 
-  LOG4("Send packet `" << rules_->getPacketStr(p.token) << "' (client_id "
+  LOG5("Send packet `" << rules_->getPacketStr(p.token) << "' (client_id "
        << p.client_id << ")");
   assert(p.client_id >= UID_COACH_BASE);
   cx_->send(&p);

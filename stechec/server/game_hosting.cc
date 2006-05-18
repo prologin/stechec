@@ -74,7 +74,7 @@ pthread_t GameHosting::getThreadId() const
 
 void    GameHosting::sendPacket(const Packet& p)
 {
-  LOG4("Send packet `" << rules_->getPacketStr(p.token)
+  LOG5("Send packet `" << rules_->getPacketStr(p.token)
        << "' to client_id `" << p.client_id << "'");
   std::for_each(clients_.begin(), clients_.end(), Client::Send(p));
   log_.send(&p);
