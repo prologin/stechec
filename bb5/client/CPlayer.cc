@@ -37,37 +37,43 @@ void CPlayer::setPosition(const Position& pos)
   f->setPlayer(pos_, this);
 }
 
+// Load player info from xml.
+// Do not store them right now, they will be returned by the server.
 void CPlayer::loadConfig(xml::XMLTeam& team)
 {
   team.switchToPlayer(id_);
 
   MsgPlayerInfo pkt;
   pkt.player_id = id_;
+  stringToPacket(pkt.name, team.getAttr<std::string>("player", "name"), 32);
   pkt.ma = team.getData<int>("ma");
   pkt.st = team.getData<int>("st");
   pkt.ag = team.getData<int>("ag");
   pkt.av = team.getData<int>("av");
-  //init ma_remain_ to prevent random value
-  ma_remain_ = 0;
+  pkt.player_position = team.getData<int>("positionid");
+  stringToPacket(pkt.player_img, team.getAttr<std::string>("player", "display"), 32);
   
-  stringToPacket(pkt.name, team.getAttr<std::string>("player", "name"), 32);
   r_->sendPacket(pkt);
 }
 
+// Receive player info from server. Now, store them.
 void CPlayer::msgPlayerInfo(const MsgPlayerInfo* m)
 {
+  LOG4("Get info for player " << m->player_id << " team " << m->client_id);
   ma_ = m->ma;
   st_ = m->st;
   ag_ = m->ag;
   av_ = m->av;
   name_ = packetToString(m->name);
+  player_position_ = m->player_position;
+  player_picture_ = packetToString(m->player_img);
 }
 
 bool CPlayer::move(const Position& to)
 {
   if (to == pos_)
     {
-      LOG2("You already are on " << pos_);
+      LOG2("You are already on " << pos_);
       return false;
     }
   if (!r_->getField()->intoField(to))
@@ -81,7 +87,7 @@ bool CPlayer::move(const Position& to)
   const PosList& p = f->getPath(pos_, to, this);
   if (p.empty())
     {
-      LOG2("Can't go from " << pos_ << " to " << to << ". Sorry.");
+      LOG2("Can not go from " << pos_ << " to " << to << ". Sorry.");
       return false;
     }
   pkt.player_id = id_;

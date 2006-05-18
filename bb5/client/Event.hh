@@ -42,12 +42,15 @@ public:
   virtual void evMoveTurnMarker() {}
   virtual void evTimeExceeded() {}
   virtual void evChat(const std::string& msg);
+  virtual void evBallPos(const Point& pos);
+  virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evPlayerKnocked(int team_id, int player_id);
 };
 
-
 inline void Event::evChat(const std::string&) {}
+inline void Event::evBallPos(const Point&) {}
+inline void Event::evPlayerPos(int, int, const Point&) {}
 inline void Event::evPlayerMove(int, int, const Point&) {}
 inline void Event::evPlayerKnocked(int, int) {}
 

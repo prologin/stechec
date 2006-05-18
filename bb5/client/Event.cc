@@ -67,6 +67,18 @@ void EventProcess::dispatch(const MsgChat& pkt) const
 }
 
 template <>
+void EventProcess::dispatch(const MsgBallPos& pkt) const
+{
+  ev_->evBallPos(Point(pkt.col, pkt.row));
+}
+
+template <>
+void EventProcess::dispatch(const MsgPlayerPos& pkt) const
+{
+  ev_->evPlayerPos(pkt.client_id, pkt.player_id, Point(pkt.col, pkt.row));
+}
+
+template <>
 void EventProcess::dispatch(const ActMove& pkt) const
 {
   // FIXME: may send all movements to UI, to have a nice animation.

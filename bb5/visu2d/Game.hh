@@ -29,8 +29,11 @@
 # include "VirtualSurface.hh"
 # include "VirtualScrollableSurface.hh"
 # include "Sprite.hh"
+# include "Panel.hh"
+# include "Field.hh"
+# include "Event.hh"
 
-class Game
+class Game : public Event
 {
 public:
   Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx);
@@ -39,10 +42,18 @@ public:
   int run();
   
 private:
+
+  // Events
+  virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
+  virtual void evBallPos(const Point& pos);
+
   SDLWindow&            win_;    ///< The SDL window.
   xml::XMLConfig*       xml_;    ///< Configuration file.
   Api*                  api_;    ///< Interface with client's rules.
   ClientCx*             ccx_;    ///< Connection with the server.
+
+  Panel                 panel_;  ///< Game panel.
+  VisuField             field_;  ///< Game field.
 };
 
 #endif /* !GAME_HH_ */

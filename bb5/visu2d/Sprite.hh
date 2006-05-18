@@ -27,12 +27,14 @@ public:
   Sprite(const std::string filename, double zoom = 1., double angle = 0.);
   virtual ~Sprite();
 
-  void splitSurfaceIntoAnim(int nb_anim_width, int nb_anim_height);
+  void splitNbFrame(int nb_frame_width, int nb_frame_height);
+  void splitSizeFrame(int size_frame_width, int size_frame_height);
 
   void move(const Point& to, double velocity);
   void move(int to_x, int to_y, double velocity);
   void anim(int delay, bool loop_forever = true);
   void stopAnim();
+  void setFrame(int frame);
 
   virtual void setZoom(double zoom);
 

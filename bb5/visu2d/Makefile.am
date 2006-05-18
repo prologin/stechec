@@ -35,7 +35,11 @@ bb5_visu_la_SOURCES =				\
 	SDLWindow.hh				\
 	SDLWindow.cc				\
 	Game.hh					\
-	Game.cc
+	Game.cc					\
+	Panel.hh				\
+	Panel.cc				\
+	Field.hh				\
+	Field.cc
 
 CXXFLAGS =					\
 	-DMODULE_NAME=\"visu2d\"		\

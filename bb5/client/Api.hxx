@@ -17,7 +17,7 @@
 inline Api::Api(CRules* rules)
   : BaseApi<CRules>(rules)
 {
-  selected_team_ = rules_->our_team_;
+  selected_team_ = NULL;
 }
 
 inline Api::~Api()
@@ -45,8 +45,7 @@ inline void Api::doAskIllegalProcedure()
 
 inline bool Api::doPlaceBall(const Point& pos)
 {
-  assert(rules_->getState() != GS_WAIT
-         && rules_->getState() != GS_INITGAME);
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
 
   Position bpos(pos);
   if (!rules_->field_->intoField(bpos))
@@ -88,9 +87,9 @@ inline void Api::sendChatMessage(const std::string& msg)
 inline void Api::switchTeam(int to_team)
 {
   assert(rules_->getState() != GS_WAIT);
-  if (to_team == US)
+  if (to_team == US || (to_team <= 1 && to_team == rules_->getTeamId()))
     selected_team_ = rules_->our_team_;
-  if (to_team == THEM)
+  if (to_team == THEM || (to_team <= 1 && to_team != rules_->getTeamId()))
     selected_team_ = rules_->other_team_;
 }
 

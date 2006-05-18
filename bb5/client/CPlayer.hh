@@ -21,10 +21,8 @@
 
 class CRules;
 
-/*! @brief Player class for client.
-**
-** @author victor
-** @date 04/01/2006
+/*!
+** Player class for client.
 */
 class CPlayer : public Player
 {

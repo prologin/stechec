@@ -51,19 +51,26 @@ Sprite::~Sprite()
 {
 }
 
-void Sprite::splitSurfaceIntoAnim(int nb_anim_width, int nb_anim_height)
+void Sprite::splitNbFrame(int nb_frame_width, int nb_frame_height)
 {
   if (surf_ == NULL)
     PRINT_AND_THROW(Exception, "Surface not loaded yet. Can't set animation");
-  if (surf_->w % nb_anim_width != 0)
+  if (surf_->w % nb_frame_width != 0)
     PRINT_AND_THROW(Exception, "Bad image width (" << surf_->w << "), can't "
-                    "split into `"<< nb_anim_width << "' animations.");
-  if (surf_->h % nb_anim_height != 0)
+                    "split into `"<< nb_frame_width << "' animations.");
+  if (surf_->h % nb_frame_height != 0)
     PRINT_AND_THROW(Exception, "Bad image width (" << surf_->h << "), can't "
-                    "split into `"<< nb_anim_height << "' animations.");
+                    "split into `"<< nb_frame_height << "' animations.");
 
-  nb_anim_width_ = nb_anim_width;
-  nb_anim_height_ = nb_anim_height;
+  nb_anim_width_ = nb_frame_width;
+  nb_anim_height_ = nb_frame_height;
+  setSize(Point(surf_->w / nb_anim_width_, surf_->h / nb_anim_height_));
+}
+
+void Sprite::splitSizeFrame(int size_frame_width, int size_frame_height)
+{
+  nb_anim_width_ = surf_->w / size_frame_width;
+  nb_anim_height_ = surf_->h / size_frame_height;
   setSize(Point(surf_->w / nb_anim_width_, surf_->h / nb_anim_height_));
 }
 
@@ -112,10 +119,18 @@ void Sprite::stopAnim()
   is_animing_ = false;
 }
 
+void Sprite::setFrame(int frame)
+{
+  if (frame < 1 || frame > nb_anim_width_ * nb_anim_height_ )
+    PRINT_AND_THROW(Exception, "Frame out of bound: " << frame
+                    << " ([1.." << nb_anim_width_ * nb_anim_height_ << "])");
+  current_anim_ = frame - 1;
+}
+
 void Sprite::setZoom(double zoom)
 {
   Surface::setZoom(zoom);
-  splitSurfaceIntoAnim(nb_anim_width_, nb_anim_width_);
+  splitNbFrame(nb_anim_width_, nb_anim_width_);
 }
 
 void Sprite::update()

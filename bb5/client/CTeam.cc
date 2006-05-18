@@ -48,6 +48,7 @@ void CTeam::loadConfig(const std::string& team_file)
       if (!xml_team_.switchToPlayer(i + 1))
         break;
       CPlayer p(i + 1, team_id_, r_);
+      LOG5("Load player " << i + 1 << " xml config.");
       p.loadConfig(xml_team_);
       player_.push_back(p);
     }
@@ -66,7 +67,7 @@ void CTeam::placeTeam(int formation_id)
       pkt.row = pos.row;
       pkt.col = pos.col;
       // if this is team 2, mirror on rows [|13-25|].
-      if (team_id_ == 2)
+      if (team_id_ == 1)
         pkt.row = ROWS - pkt.row - 1;
       r_->sendPacket(pkt);
     }
@@ -79,7 +80,6 @@ bool CTeam::movePlayer(int player_id, const Position& to)
     return false;
   return p->move(to);
 }
-
 
 
 
@@ -110,8 +110,10 @@ void CTeam::msgPlayerPos(const MsgPlayerPos* m)
   if (m->client_id != team_id_)
     return;
 
+  LOG4("Set position for player " << m->player_id << " team " << m->client_id);
   Position pos(m->row, m->col);
   player_[m->player_id - 1].setPosition(pos);
+  r_->onEvent(m);
 }
 
 void CTeam::msgPlayerMove(const ActMove* m)

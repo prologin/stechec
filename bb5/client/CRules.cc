@@ -79,15 +79,14 @@ void        CRules::msgInitGame(const MsgInitGame* m)
 
   // Create some objects.
   weather_ = new Weather;
-  ball_ = new Ball;
+  ball_ = new CBall(this);
   field_ = new CField;
   HANDLE_WITH(MSG_WEATHER, Weather, weather_, setWeather, GS_INITGAME);
-  HANDLE_WITH(MSG_BALLPOS, Ball, ball_, setPosition, GS_ALL);
+  HANDLE_WITH(MSG_BALLPOS, CBall, ball_, setPosition, GS_ALL);
 
   // Create, populate our team from the xml file, and send it.
   our_team_ = new CTeam(getTeamId(), this);
   our_team_->loadConfig(cfg_.getData<std::string>("team"));
-  api_->switchTeam(US);
 
   // Other team.
   other_team_ = new CTeam(getTeamId() == 0 ? 1 : 0, this);
@@ -101,6 +100,9 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
 {
   setState(GS_INITHALF);
   LOG2("-- CRules: change state: GS_INITHALF");
+
+  // Now, you can safely use Api fonctions referring to teams.
+  api_->switchTeam(US);
 
   if (m->client_id != getTeamId())
     {

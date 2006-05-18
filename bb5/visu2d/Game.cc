@@ -22,60 +22,47 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   : win_(win),
     xml_(xml),
     api_(api),
-    ccx_(ccx)
+    ccx_(ccx),
+    panel_(api, win.getInput()),
+    field_(api, win.getInput())
 {
+  api_->setEventHandler(this);
+  win_.getScreen().addChild(&panel_);
+  win_.getScreen().addChild(&field_);
 }
 
 Game::~Game()
 {
+  win_.getScreen().removeChild(&panel_);
+  win_.getScreen().removeChild(&field_);
+}
+
+void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
+{
+  field_.addPlayer(team_id, player_id, pos);
+}
+void Game::evBallPos(const Point& pos)
+{
+  field_.setBallPos(pos);
 }
 
 int Game::run()
 {
-  // This is just for demo. They should go into Game.hh/other classes.
-  VirtualSurface panel("VPanel", 300, 600);
-  panel.setPos(Point(500, 0));
-  win_.getScreen().addChild(&panel);
-
-  VirtualScrollableSurface field("VSField", win_.getInput(),
-                                 Point(500, 600), Point(1000, 1000));
-  win_.getScreen().addChild(&field);
-  
-  Surface panel_bg("image/panel/panel");
-  panel.addChild(&panel_bg);
-
-  Sprite wheel("image/panel/wheels");
-  wheel.setZ(1);
-  wheel.setPos(50, 50);
-  wheel.splitSurfaceIntoAnim(13, 1);
-  wheel.anim(250);
-  panel.addChild(&wheel);
-
-  Sprite wheel2(wheel);
-  wheel2.setPos(150, 350);
-  wheel2.anim(20);
-  wheel2.move(Point(200, 500), 10.);
-  panel.addChild(&wheel2);
-
-  Surface bg("image/screens/title_bg");
-  bg.setZ(-1);
-  field.addChild(&bg);
-
   Sprite ball("image/general/ball");
   ball.setZ(2);
   ball.setPos(10, 550);
   ball.move(Point(50, 50), 20.);
-  field.addChild(&ball);
+  field_.addChild(&ball);
 
   Sprite ball2("image/general/ball");
   ball2.setZ(2);
   ball2.setPos(100, 0);
   ball2.move(Point(500, 550), 15.);
-  field.addChild(&ball2);
+  field_.addChild(&ball2);
 
   Sprite ovni("image/figs/ovni");
   ovni.setZ(2);
-  ovni.splitSurfaceIntoAnim(4, 3);
+  ovni.splitNbFrame(4, 3);
   ovni.setPos(200, 100);
   ovni.move(300, 500, 15.);
   win_.getScreen().addChild(&ovni);
@@ -86,6 +73,7 @@ int Game::run()
       // Process any rules incoming messages.
       while (ccx_->process())
         ;
+
       // Update the whole app, and print one frame.
       if (win_.processOneFrame())
         break;

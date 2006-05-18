@@ -83,10 +83,6 @@ bool SDLWindow::processOneFrame()
         }
       input_.update(event);
     }
-  
-  for (int i = 0; i < 255; i++)
-    if (input_.key_pressed_[i])
-      LOG1("PRESSED " << i);
 
   // Update and render.
   screen_.update();

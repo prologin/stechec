@@ -27,6 +27,8 @@ DECLARE_PACKET(MSG_PLAYERINFO, MsgPlayerInfo)
   int ag;
   int av;
   int name[8];
+  int player_position; ///< Graphic info.
+  int player_img[8]; ///< Graphic info.
 END_PACKET
 
 DECLARE_PACKET(MSG_PLAYERPOS, MsgPlayerPos)
@@ -79,6 +81,17 @@ protected:
 
   int ma_remain_;
   bool action_done_;
+
+  //
+  // Graphic infos, not stored by the server.
+  //
+public:
+  int getPlayerPosition() const;
+  const std::string& getPlayerPicture() const;
+  
+protected:
+  int player_position_;
+  std::string player_picture_;
 };
 
 # include "Player.hxx"

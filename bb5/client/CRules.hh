@@ -19,14 +19,16 @@
 
 # include "BaseCRules.hh"
 # include "Weather.hh"
-# include "Ball.hh"
 # include "Field.hh"
+# include "CBall.hh"
 # include "CTeam.hh"
 
 //! @brief Constants for switchTeam().
 enum eSelTeam {
-  US,   ///< Get information on our team.
-  THEM  ///< Get information on the other them.
+  TEAM1 = 0,    ///< Get information on team 1.
+  TEAM2,        ///< Get information on team 2.
+  US,           ///< Get information on our team.
+  THEM          ///< Get information on the other them.
 };
 
 // Mostly a big hack, to have BaseCRules::onEvent(int) working.
@@ -74,7 +76,7 @@ private:
   int       cur_turn_;
   int       cur_half_;
   Weather*  weather_;
-  Ball*     ball_;
+  CBall*    ball_;
   CField*   field_;
   CTeam*    our_team_;
   CTeam*    other_team_;
