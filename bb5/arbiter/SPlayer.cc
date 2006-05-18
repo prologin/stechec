@@ -42,7 +42,7 @@ void SPlayer::msgPlayerInfo(const MsgPlayerInfo* m)
   ag_ = m->ag;
   av_ = m->av;
   name_ = packetToString(m->name);
-  ma_remain_ = 0; //prevent strange values before kickoff
+
   // Ok, tell everybody we have accepted this player.
   r_->sendPacket(*m);
 }

@@ -77,8 +77,8 @@ void STeam::msgPlayerPos(const MsgPlayerPos* m)
   else
     {
       // not in their field side - error.
-      if (team_id_ == 1 && pos.row >= ROWS / 2
-          || team_id_ == 2 && pos.row < ROWS / 2)
+      if (team_id_ == 0 && pos.row >= ROWS / 2
+          || team_id_ == 1 && pos.row < ROWS / 2)
         r_->sendIllegal(m->token, m->client_id);
       else
         {
