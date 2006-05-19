@@ -94,6 +94,7 @@ protected:
   VirtualSurface* parent_;
 
   friend class VirtualSurface;
+  friend class ResourceCenter; // for stats
 };
 
 #endif /* !SURFACE_HH_ */

@@ -43,6 +43,17 @@ ResourceCenter::ResourceCenter()
 ResourceCenter::~ResourceCenter()
 {
   inst_ = NULL;
+  printStatistics();
+}
+
+void ResourceCenter::printStatistics()
+{
+  ImageList::iterator it;
+  
+  LOG3("*** ResourceCenter: " << image_list_.size() << " images in list.");
+  for (it = image_list_.begin(); it != image_list_.end(); ++it)
+    LOG4(" - " << it->filename_ << " (" << it->zoom_ << ", " << it->angle_
+         << ") refcount: " << it->surf_->refcount);
 }
 
 ResourceCenter* ResourceCenter::getInst()
@@ -75,13 +86,16 @@ Surface ResourceCenter::getImage(const std::string& filename, double zoom, doubl
   // If original image is not found, load it and insert it into the cache.
   if (orig_surf == NULL)
     {
-      orig_surf = loadImage(filename);  
+      orig_surf = loadImage(filename);
+      orig_surf->refcount = 0;
       image_list_.insert(Surface(orig_surf, 1., 0., filename));
     }
 
   SDL_Surface* wanted_surf = transformImage(orig_surf, zoom, angle);
+  wanted_surf->refcount = 0;
   Surface res_surf(wanted_surf, zoom, angle, filename);
   image_list_.insert(res_surf);
+
   return res_surf;
 }
 

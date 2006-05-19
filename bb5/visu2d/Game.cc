@@ -65,7 +65,7 @@ int Game::run()
   ovni.splitNbFrame(4, 3);
   ovni.setPos(200, 100);
   ovni.move(300, 500, 15.);
-  win_.getScreen().addChild(&ovni);
+  //win_.getScreen().addChild(&ovni);
   
   // Sit back and see what's happening...
   while (api_->getState() != GS_END)

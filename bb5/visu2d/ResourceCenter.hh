@@ -68,6 +68,9 @@ public:
   //! @throw SDLError Thrown if the file could not be opened.
   Surface getImage(const std::string& filename, double zoom, double angle);
 
+  //! @brief Print cache info.
+  void printStatistics();
+  
 private:
   //! @brief Load an SDL_surface from a picture (png) file.
   //! @note No caching is done.

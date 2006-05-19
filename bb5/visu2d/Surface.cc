@@ -40,11 +40,11 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
     redraw_all_(true),
     parent_(NULL)
 {
-  if (surf != NULL)
+  if (surf_ != NULL)
     {
       rect_.w = surf->w;
       rect_.h = surf->h;
-      surf->refcount++;
+      surf_->refcount++;
     }
 }
 
@@ -61,6 +61,7 @@ Surface::Surface(const std::string filename, double zoom, double angle)
   rect_.h = surf_->h;
   zoom_ = ref.zoom_;
   angle_ = ref.angle_;
+  surf_->refcount++;
 }
 
 Surface::Surface(int width, int height)
@@ -113,13 +114,13 @@ Surface& Surface::operator=(const Surface& s)
   parent_ = s.parent_;
   if (surf_ != NULL)
     surf_->refcount++;
-
   return *this;
 }
 
 Surface::~Surface()
 {
-  SDL_FreeSurface(surf_);
+  if (surf_)
+    SDL_FreeSurface(surf_);
 }
 
 Point Surface::getPos() const
