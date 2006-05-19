@@ -41,6 +41,8 @@ public:
   TTFError(const std::string& msg);
 };
 
+struct _TTF_Font;
+typedef struct _TTF_Font TTF_Font;
 
 /*!
 ** @brief Provide cache for SDL resources.
@@ -68,6 +70,13 @@ public:
   //! @throw SDLError Thrown if the file could not be opened.
   Surface getImage(const std::string& filename, double zoom, double angle);
 
+  //! @brief Load a font file.
+  //! @note Caller is reponsible of calling releaseFont when it has finished.
+  TTF_Font* getFont(const std::string font_name, int font_size);
+
+  //! @brief Release a font.
+  void releaseFont(TTF_Font* font);
+  
   //! @brief Print cache info.
   void printStatistics();
   
@@ -83,8 +92,24 @@ private:
   SDL_Surface* transformImage(SDL_Surface* from, double zoom, double angle);
 
   static ResourceCenter* inst_;
+
   typedef std::set<Surface> ImageList;
   ImageList             image_list_;
+
+  struct LoadedFont {
+    TTF_Font* font_;    ///< TTF_Font ptr.
+    std::string name_;  ///< Font filename.
+    int size_;          ///< Font size.
+    int ref_count_;     ////< Number of instance currently using this font.
+    friend bool operator< (const LoadedFont& lhs, const LoadedFont& rhs)
+    {
+      if (lhs.name_ < rhs.name_)
+        return true;
+      return lhs.size_ < rhs.size_;
+    }
+  };
+  typedef std::set<LoadedFont> FontList;
+  FontList font_list_;
 };
 
 #endif /* !RESOURCECENTER_HH_ */

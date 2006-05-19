@@ -32,16 +32,19 @@ VisuField::~VisuField()
 
 void VisuField::addPlayer(int team_id, int player_id, const Point& pos)
 {
+  Sprite& s = player_[team_id][player_id];
+
+  // Get added player
   api_->switchTeam(team_id);  
   const CTeam* team = api_->getTeam();
   const CPlayer* p = team->getPlayerConst(player_id);
-  Sprite& s = player_[team_id][player_id];
+
+  // Set its property
   s = Sprite("image/figs/amazon");
   s.splitSizeFrame(40, 40);
   s.setZ(3);
   s.setFrame(p->getPlayerPosition() * 2 + 1);
   s.setPos(pos * 40);
-  LOG3("add player " << player_id << " at: " << s.getRect() << " pos: " << pos);
   addChild(&s);
 }
 
@@ -50,7 +53,6 @@ void VisuField::setBallPos(const Point& pos)
   ball_.setPos(pos * 40);
   ball_.setZ(4);
   addChild(&ball_);
-  LOG3("set ball at" << ball_.getRect());
 }
 
 void VisuField::update()

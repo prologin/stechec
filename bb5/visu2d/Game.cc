@@ -60,6 +60,12 @@ int Game::run()
   ball2.move(Point(500, 550), 15.);
   field_.addChild(&ball2);
 
+  TextSurface ts("font/Vera", 100, 30);
+  ts.setZ(4);
+  ts.setPos(400, 300);
+  ts.setText("Hello World !");
+  field_.addChild(&ts);
+  
   Sprite ovni("image/figs/ovni");
   ovni.setZ(2);
   ovni.splitNbFrame(4, 3);

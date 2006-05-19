@@ -28,6 +28,8 @@ bb5_visu_la_SOURCES =				\
 	VirtualSurface.cc			\
 	VirtualScrollableSurface.hh		\
 	VirtualScrollableSurface.cc		\
+	TextSurface.hh				\
+	TextSurface.cc				\
 	Sprite.hh				\
 	Sprite.cc				\
 	Input.hh				\

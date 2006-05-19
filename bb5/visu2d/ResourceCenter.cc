@@ -129,3 +129,45 @@ SDL_Surface* ResourceCenter::transformImage(SDL_Surface* from, double zoom, doub
 {
   return rotozoomSurface(from, angle, 1. / zoom, SMOOTHING_OFF);
 }
+
+
+TTF_Font* ResourceCenter::getFont(const std::string font_name, int font_size)
+{
+  LoadedFont lf;
+
+  lf.name_ = font_name;
+  lf.size_ = font_size;
+
+  // Search if this font was already loaded.
+  FontList::iterator it = font_list_.find(lf);
+  if (it != font_list_.end())
+    {
+      const_cast<LoadedFont&>(*it).ref_count_++;
+      return it->font_;
+    }
+
+  // Load this font, and add it to the cache.
+  lf.ref_count_ = 1;
+  lf.font_ = TTF_OpenFont((std::string(PKGDATADIR) + "/" + font_name + ".ttf").c_str(),
+                          font_size);
+  if (lf.font_ == NULL)
+    PRINT_AND_THROW(TTFError, "OpenFont: ");
+
+  font_list_.insert(lf);
+  return lf.font_;
+}
+
+void ResourceCenter::releaseFont(TTF_Font* font)
+{
+  FontList::iterator it;
+  for (it = font_list_.begin(); it != font_list_.end(); ++it)
+    if (it->font_ == font)
+      {
+        if (--(const_cast<LoadedFont&>(*it).ref_count_) == 0)
+          {
+            TTF_CloseFont(it->font_);
+            font_list_.erase(it);
+          }
+        break;
+      }
+}
