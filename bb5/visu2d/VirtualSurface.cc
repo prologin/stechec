@@ -42,6 +42,10 @@ void VirtualSurface::addChild(Surface* child)
   child->parent_ = this;
   child_list_.push_back(child);
   updateChildZOrder();
+
+  // Some children may override this method to do something special
+  // with parent.
+  child->setPos(child->getPos());
 }
 
 void VirtualSurface::removeChild(Surface* child)
@@ -50,14 +54,25 @@ void VirtualSurface::removeChild(Surface* child)
   it = std::find(child_list_.begin(), child_list_.end(), child);
   if (it != child_list_.end())
     {
-      (*it)->parent_ = NULL;
+      child->parent_ = NULL;
+      invalidate(child->getRect());
       child_list_.erase(it);
     }
+  else
+    WARN("Removing child: not found: " << *child);
 }
 
 void VirtualSurface::updateChildZOrder()
 {
   std::sort(child_list_.begin(), child_list_.end(), Surface::ZSort());
+}
+
+Point VirtualSurface::getAbsolutePos() const
+{
+  if (parent_ != NULL)
+    return parent_->getAbsolutePos() + getPos();
+  else
+    return getPos();
 }
 
 void VirtualSurface::update()
@@ -89,7 +104,7 @@ void VirtualSurface::render()
       LOG6("+ Managing invalidated surface: " << *rit);
       for (it = child_list_.begin(); it != child_list_.end(); ++it)
         {
-          Rect child_surf((*it)->getRenderRect());
+          Rect child_surf((*it)->getRealRect());
           LOG6("  To child: " << **it);
           child_surf &= *rit;
           if (child_surf.w > 0 && child_surf.h > 0)

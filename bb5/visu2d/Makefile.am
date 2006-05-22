@@ -34,6 +34,8 @@ bb5_visu_la_SOURCES =				\
 	Sprite.cc				\
 	Input.hh				\
 	Input.cc				\
+	InputEvent.hh				\
+	InputEvent.cc				\
 	SDLWindow.hh				\
 	SDLWindow.cc				\
 	Game.hh					\
@@ -41,7 +43,9 @@ bb5_visu_la_SOURCES =				\
 	Panel.hh				\
 	Panel.cc				\
 	Field.hh				\
-	Field.cc
+	Field.cc				\
+	VisuPlayer.hh				\
+	VisuPlayer.cc
 
 CXXFLAGS =					\
 	-DMODULE_NAME=\"visu2d\"		\

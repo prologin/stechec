@@ -45,6 +45,9 @@ private:
 
   Surface       bg_;
   Sprite        wheel_;
+
+  // Player information
+  bool          showing_player_info_;
   Surface       player_picture_;
 };
 

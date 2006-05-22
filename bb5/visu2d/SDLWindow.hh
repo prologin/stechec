@@ -39,6 +39,8 @@ public:
   
   void setFullscreen(bool enable);
 
+  int getFps() const;
+  
   //! @brief Initialize all the SDL stuff.
   void init();
 
@@ -58,6 +60,7 @@ private:
   unsigned              frame_drawed_;
   unsigned              frame_tick_fps_;
   unsigned              frame_previous_tick_;
+  int                   fps_;
 };
 
 #endif /* !SDLWINDOW_HH_ */

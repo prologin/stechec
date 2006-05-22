@@ -25,7 +25,7 @@ Surface::Surface()
     zoom_(1.),
     angle_(0.),
     z_(0),
-    redraw_all_(true),
+    redraw_all_(false),
     parent_(NULL)
 {
 }
@@ -49,42 +49,25 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
 }
 
 Surface::Surface(const std::string filename, double zoom, double angle)
-  : rect_(0, 0, -1, -1),
+  : surf_(NULL),
+    rect_(0, 0, -1, -1),
     z_(0),
     redraw_all_(true),
     parent_(NULL)
 {
-  Surface ref(ResourceCenter::getInst()->getImage(filename, zoom, angle));
-  surf_ = ref.surf_;
-  filename_ = ref.filename_;
-  rect_.w = surf_->w;
-  rect_.h = surf_->h;
-  zoom_ = ref.zoom_;
-  angle_ = ref.angle_;
-  surf_->refcount++;
+  load(filename, zoom, angle);
 }
 
 Surface::Surface(int width, int height)
-  : rect_(0, 0, width, height),
+  : surf_(NULL),
+    rect_(0, 0, width, height),
     zoom_(1.),
     angle_(0.),
     z_(0),
     redraw_all_(true),
     parent_(NULL)
 {
-  SDL_Surface* ref_surface = SDL_GetVideoSurface();
-  assert(ref_surface != NULL);
-
-  surf_ = SDL_CreateRGBSurface(SDL_HWSURFACE,
-                               width,
-                               height,
-                               ref_surface->format->BitsPerPixel,
-                               ref_surface->format->Rmask,
-                               ref_surface->format->Gmask,
-                               ref_surface->format->Bmask,
-                               ref_surface->format->Amask);
-  if (surf_ == NULL)
-    PRINT_AND_THROW(SDLError, "Can't create surface");
+  create(width, height);
 }
 
 Surface::Surface(const Surface& s)
@@ -166,8 +149,7 @@ void Surface::setPos(const Point& pos)
 
 void Surface::setPos(int x, int y)
 {
-  rect_.x = x;
-  rect_.y = y;
+  setPos(Point(x, y));
 }
 
 void Surface::setSize(const Point& size)
@@ -199,9 +181,43 @@ void Surface::setZ(int z)
     parent_->updateChildZOrder();
 }
 
-Rect Surface::getRenderRect() const
+void Surface::create(int width, int height)
 {
-  return rect_;
+  if (surf_ != NULL)
+    SDL_FreeSurface(surf_);
+
+  SDL_Surface* ref_surface = SDL_GetVideoSurface();
+  assert(ref_surface != NULL);
+
+  surf_ = SDL_CreateRGBSurface(SDL_HWSURFACE,
+                               width,
+                               height,
+                               ref_surface->format->BitsPerPixel,
+                               ref_surface->format->Rmask,
+                               ref_surface->format->Gmask,
+                               ref_surface->format->Bmask,
+                               ref_surface->format->Amask);
+  if (surf_ == NULL)
+    PRINT_AND_THROW(SDLError, "Can't create surface");
+
+  rect_.w = width;
+  rect_.h = height;
+}
+
+void Surface::load(const std::string filename, double zoom, double angle)
+{
+  if (surf_ != NULL)
+    SDL_FreeSurface(surf_);
+    
+  Surface ref(ResourceCenter::getInst()->getImage(filename, zoom, angle));
+  surf_ = ref.surf_;
+  filename_ = ref.filename_;
+  rect_.w = surf_->w;
+  rect_.h = surf_->h;
+  zoom_ = ref.zoom_;
+  angle_ = ref.angle_;
+  redraw_all_ = true;
+  surf_->refcount++;
 }
 
 void Surface::update()
@@ -212,6 +228,12 @@ void Surface::update()
         parent_->invalidate(rect_);
       redraw_all_ = false;
     }
+}
+
+
+Rect Surface::getRealRect() const
+{
+  return rect_;
 }
 
 void Surface::blit(Surface& to)

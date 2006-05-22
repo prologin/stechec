@@ -63,8 +63,10 @@ void TextSurface::update()
   // Print the text, if changed.
   if (text_ != previous_text_)
     {
-      boxRGBA(surf_, 0, 0, getSize().x, getSize().y, 127, 255, 212, 150);
-      rectangleRGBA(surf_, 1, 1, getSize().x - 2 , getSize().y - 2, 127, 255, 212, 150);
+      SDL_SetAlpha(surf_, SDL_SRCALPHA, 150);
+      SDL_FillRect(surf_, NULL, SDL_MapRGB(surf_->format, 0, 0, 0));
+      boxRGBA(surf_, 0, 0, getSize().x, getSize().y, 127, 255, 212, 1);
+      rectangleRGBA(surf_, 1, 1, getSize().x - 2 , getSize().y - 2, 127, 255, 212, 1);
 
       temp_surf = TTF_RenderText_Solid(font_, text_.c_str(), darkmagenta_color);
       if (temp_surf == NULL)

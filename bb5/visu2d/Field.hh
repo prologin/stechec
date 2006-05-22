@@ -32,7 +32,6 @@ public:
   virtual ~VisuField();
 
   void setBallPos(const Point& pos);
-  void addPlayer(int team_id, int player_id, const Point& pos);
   
   virtual void update();
 

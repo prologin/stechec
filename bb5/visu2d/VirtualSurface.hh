@@ -39,7 +39,11 @@ public:
   void removeChild(Surface* child);
 
   void updateChildZOrder();
-  
+
+  //! @brief Get the surface position wrt the screen (real (0,0)),
+  //! not relative to its parent.
+  virtual Point getAbsolutePos() const;
+
   virtual void update();
   virtual void render();
 

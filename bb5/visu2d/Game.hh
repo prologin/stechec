@@ -32,6 +32,7 @@
 # include "Sprite.hh"
 # include "Panel.hh"
 # include "Field.hh"
+# include "VisuPlayer.hh"
 # include "Event.hh"
 
 class Game : public Event
@@ -40,8 +41,10 @@ public:
   Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx);
   ~Game();
 
-  int run();
+  Input& getInput();
   
+  int run();
+
 private:
 
   // Events
@@ -55,6 +58,8 @@ private:
 
   Panel                 panel_;  ///< Game panel.
   VisuField             field_;  ///< Game field.
+
+  VisuPlayer*           player_[2][16]; ///< Players...
 };
 
 #endif /* !GAME_HH_ */

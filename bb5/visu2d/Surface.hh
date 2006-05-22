@@ -47,20 +47,25 @@ public:
   int           getZ() const;
   SDL_Surface*  getSDLSurface();
 
-  void          setPos(const Point& pos);
+  virtual void  setPos(const Point& pos);
   void          setPos(int x, int y);
   void          setSize(const Point& size);
   virtual void  setZoom(double zoom);
   virtual void  setAngle(double angle);
   virtual void  setZ(int z);
 
+  void create(int width, int height);
+  void load(const std::string filename, double zoom = 1. , double angle = 0.);
 
   //! @brief In this method you can do all you want with your object.
   virtual void  update();
 
-  //! @brief Get zone to render.
-  //! rect_ can be larger than we really want to show. Used only on render().
-  virtual Rect  getRenderRect() const;
+  //! @brief Get the real zone to show on the screen.
+  //!
+  //! getRect() can be larger than we really want to show, or off-screen.
+  //! Used for VirtualScrollableSurface rendering, and input events.
+  //! By default, return getRect(), but can be overriden.
+  virtual Rect  getRealRect() const;
   
   //! @brief Don't care of this. Should only be overriden by VirtualSurface.
   virtual void  render() {}

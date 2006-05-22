@@ -29,7 +29,8 @@ public:
                            const Point& virtual_size);
   ~VirtualScrollableSurface();
 
-  virtual Rect getRenderRect() const;
+  virtual Rect getRealRect() const;
+  virtual Point getAbsolutePos() const;
 
   virtual void update();
 

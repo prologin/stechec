@@ -34,14 +34,23 @@ VirtualScrollableSurface::~VirtualScrollableSurface()
 }
 
 
-Rect VirtualScrollableSurface::getRenderRect() const
+Rect VirtualScrollableSurface::getRealRect() const
 {
-  return Rect(getPos().x, getPos().y, real_size_.x, real_size_.y);
+  return Rect(getPos(), real_size_);
+}
+
+Point VirtualScrollableSurface::getAbsolutePos() const
+{
+  if (parent_ != NULL)
+    return parent_->getAbsolutePos() + getPos() - vpos_;
+  else
+    return getPos() - vpos_;
 }
 
 void VirtualScrollableSurface::update()
 {
-  const Rect rect(getRect()); // FIXME: must be a parent of screen to work.
+  // FIXME: must be directly attached to screen to work.
+  const Rect rect(getPos(), getSize());
 
   // Screen borders.
   const Rect left(rect.x, rect.y, 20, real_size_.y);
@@ -84,13 +93,18 @@ void VirtualScrollableSurface::update()
   // Ask redraw if something moved.
   if (vpos_ != last_pos)
     {
-      Rect inv(getPos().x, getPos().y, real_size_.x, real_size_.y);
+      Rect inv(getPos(), real_size_);
       parent_->invalidate(inv);
+
+      // Update children absolute position.
+      SurfaceList::iterator it;
+      for (it = child_list_.begin(); it != child_list_.end(); ++it)
+        (*it)->setPos((*it)->getPos());
     }
 
 
   // Render children
-  std::for_each(child_list_.begin(), child_list_.end(), std::mem_fun(&Surface::update));
+  for_all(child_list_, std::mem_fun(&Surface::update));
 
   // Propagate invalidated surface to the parent.
   if (parent_ != NULL)

@@ -21,7 +21,8 @@ Panel::Panel(Api* api, Input& input)
     api_(api),
     inp_(input),
     bg_("image/panel/panel"),
-    wheel_("image/panel/wheels")
+    wheel_("image/panel/wheels"),
+    showing_player_info_(false)
 {
   setPos(Point(500, 0));
   addChild(&bg_);
@@ -39,15 +40,24 @@ Panel::~Panel()
 
 void Panel::displayPlayerInfo(int team_id, int player_id)
 {
+  if (showing_player_info_)
+    hidePlayerInfo();
+
   api_->switchTeam(team_id);
   const CPlayer* p = api_->getPlayer(player_id);
-  player_picture_ = Surface(p->getPlayerPicture());
+  player_picture_ = Surface(std::string("image/figs/") + p->getPlayerPicture());
+  player_picture_.setPos(45, 150);
   addChild(&player_picture_);
+  showing_player_info_ = true;
 }
 
 void Panel::hidePlayerInfo()
 {
-  
+  if (showing_player_info_)
+    {
+      removeChild(&player_picture_);
+      showing_player_info_ = false;
+    }
 }
 
 void Panel::update()

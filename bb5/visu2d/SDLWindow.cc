@@ -20,9 +20,10 @@
 
 SDLWindow::SDLWindow(xml::XMLConfig* xml)
   : xml_(xml),
-    is_fullscreen_(false)
+    is_fullscreen_(false),
+    frame_drawed_(0),
+    fps_(0)
 {
-  frame_drawed_ = 0;
 }
 
 Input& SDLWindow::getInput()
@@ -46,6 +47,12 @@ void SDLWindow::setFullscreen(bool enable)
   is_fullscreen_ = enable;
   // FIXME: todo.
 }
+
+int SDLWindow::getFps() const
+{
+  return fps_;
+}
+
 
 void SDLWindow::init()
 {
@@ -85,6 +92,7 @@ bool SDLWindow::processOneFrame()
     }
 
   // Update and render.
+  input_.updateObjects();
   screen_.update();
   screen_.render();
 
@@ -94,6 +102,7 @@ bool SDLWindow::processOneFrame()
   if (now >= frame_tick_fps_ + 1000)
     {
       frame_tick_fps_ = now;
+      fps_ = frame_drawed_;
       LOG3("FPS: " << frame_drawed_);
       frame_drawed_ = 0;
     }

@@ -29,18 +29,57 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   api_->setEventHandler(this);
   win_.getScreen().addChild(&panel_);
   win_.getScreen().addChild(&field_);
+
+  for (int i = 0; i < 16; i++)
+    {
+      player_[0][i] = NULL;
+      player_[1][i] = NULL;
+    }
 }
 
 Game::~Game()
 {
   win_.getScreen().removeChild(&panel_);
   win_.getScreen().removeChild(&field_);
+
+  for (int i = 0; i < 16; i++)
+    {
+      delete player_[0][i];
+      delete player_[1][i];
+    }
 }
+
+Input& Game::getInput()
+{
+  return win_.getInput();
+}
+
 
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
-  field_.addPlayer(team_id, player_id, pos);
+  VisuPlayer* p = player_[team_id][player_id - 1];
+
+  // First msg means player creation
+  if (player_[team_id][player_id - 1] == NULL)
+    {
+      // Get added player infos.
+      api_->switchTeam(team_id);  
+      const CPlayer* ap = api_->getPlayer(player_id);
+
+      // Create it.
+      p = new VisuPlayer(api_, panel_, field_, *this, ap);
+      player_[team_id][player_id - 1] = p;
+
+      // Set its property
+      p->load("image/figs/amazon");
+      p->splitSizeFrame(40, 40);
+      p->setZ(3);
+      p->setFrame(ap->getPlayerPosition() * 2 + 1);
+      field_.addChild(p);
+    }
+  p->setPos(pos * 40);
 }
+
 void Game::evBallPos(const Point& pos)
 {
   field_.setBallPos(pos);
@@ -60,11 +99,15 @@ int Game::run()
   ball2.move(Point(500, 550), 15.);
   field_.addChild(&ball2);
 
-  TextSurface ts("font/Vera", 100, 30);
-  ts.setZ(4);
-  ts.setPos(400, 300);
-  ts.setText("Hello World !");
-  field_.addChild(&ts);
+  TextSurface fps("font/Vera", 70, 25);
+  fps.setZ(4);
+  fps.setPos(720, 570);
+  win_.getScreen().addChild(&fps);
+
+  TextSurface status("font/Vera", 160, 25);
+  status.setZ(4);
+  status.setPos(0, 575);
+  win_.getScreen().addChild(&status);
   
   Sprite ovni("image/figs/ovni");
   ovni.setZ(2);
@@ -96,6 +139,22 @@ int Game::run()
           LOG2("key pressed: o");
           ovni.setZoom(ovni.getZoom() - 1.);
         }
+
+      // Print some things
+      std::ostringstream os;
+      os << "FPS: " << win_.getFps();
+      fps.setText(os.rdbuf()->str());
+
+      switch (api_->getState())
+        {
+        case GS_WAIT: status.setText("Status: GS_WAIT"); break;
+        case GS_INITGAME: status.setText("Status: GS_INITGAME"); break;
+        case GS_INITHALF: status.setText("Status: GS_INITHALF"); break;
+        case GS_COACH1: status.setText("Status: GS_COACH1"); break;
+        case GS_COACH2: status.setText("Status: GS_COACH2"); break;
+        case GS_PAUSE: status.setText("Status: GS_PAUSE"); break;
+        default: status.setText("Status: other"); break;
+          }
     }
   return 0;
 }

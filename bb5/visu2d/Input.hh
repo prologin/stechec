@@ -20,6 +20,7 @@
 # include <SDL.h>
 # include "tools.hh"
 
+# include "InputEvent.hh"
 
 /*!
 ** Hold keyboard and mouse state.
@@ -41,6 +42,13 @@ public:
   Input();
   ~Input();
 
+  static const Input* getInst();
+  static void addObject(InputEvent* obj);
+  static void removeObject(InputEvent* obj);
+
+  void updateObjects();
+
+  //! @brief To call before a serie of update();
   void reset();
   
   //! @brief Update Input structure. To use in the main loop only.
@@ -62,6 +70,11 @@ public:
 private:
   int modifier_;
   int modifier_pressed_;
+
+  typedef std::vector<InputEvent*> InputEventList;
+  InputEventList object_;
+  
+  static Input* inst_;
 };
 
 #endif /* !INPUT_HH_ */
