@@ -14,7 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include <SDL_TTF.h>
+#include <SDL_ttf.h>
 #include <SDL_gfxPrimitives.h>
 
 #include "TextSurface.hh"
