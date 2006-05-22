@@ -48,4 +48,11 @@ inline std::string trim(const std::string& s)
   return std::string(s, b, e - b + 1);
 }
 
+// std::for_each with less typing.
+template <typename Collection, typename Function>
+inline Function for_all(Collection &c, const Function &f) 
+{
+  return std::for_each(c.begin(), c.end(), f);
+}
+
 #endif /* !STL_HH_ */
