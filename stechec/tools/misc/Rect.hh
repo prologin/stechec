@@ -29,7 +29,7 @@ class Rect
 public:
   Rect();
   Rect(int x, int y, int w, int h);
-  Rect(const Point& p1, const Point& p2);
+  Rect(const Point& pos, const Point& size);
 
   bool inside(const Point& pos) const;
 
@@ -70,11 +70,11 @@ inline Rect::Rect(int x, int y, int w, int h)
 {
 }
 
-inline Rect::Rect(const Point& p1, const Point& p2)
-  : x(p1.x),
-    y(p1.y),
-    w(p2.x - p1.x),
-    h(p2.y - p1.y)
+inline Rect::Rect(const Point& pos, const Point& size)
+  : x(pos.x),
+    y(pos.y),
+    w(size.x),
+    h(size.y)
 {
 }
 
