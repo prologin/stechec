@@ -39,9 +39,31 @@ public:
   Surface(const Surface& s);
   Surface& operator=(const Surface& s);
 
+  //! @brief Get the relative position of the surface.
   Point         getPos() const;
+
+  //! @brief Get the size of the surface (width-height).
   Point         getSize() const;
+
+  //! @brief Get the relative surface position.
+  //! @note This is equivalent to: Rect(getPos(), getSize());
   const Rect&   getRect() const;
+
+  //! @brief Get the absolute surface position, (0,0) is the top-left
+  //! corner of the screen.
+  Rect          getAbsoluteRect() const;
+
+  //! @brief Get the relative real zone to show on the screen.
+  //!
+  //! getRect() can be larger than we really want to show, or off-screen.
+  //! Used for VirtualScrollableSurface rendering, and input events.
+  //! By default, return getRect(), but can be overriden.
+  virtual Rect  getRealRect() const;
+
+  //! @brief Get the absolute real zone to show on the screen.
+  Rect          getRealAbsoluteRect() const;
+
+
   double        getZoom() const;
   double        getAngle() const;
   int           getZ() const;
@@ -59,13 +81,6 @@ public:
 
   //! @brief In this method you can do all you want with your object.
   virtual void  update();
-
-  //! @brief Get the real zone to show on the screen.
-  //!
-  //! getRect() can be larger than we really want to show, or off-screen.
-  //! Used for VirtualScrollableSurface rendering, and input events.
-  //! By default, return getRect(), but can be overriden.
-  virtual Rect  getRealRect() const;
   
   //! @brief Don't care of this. Should only be overriden by VirtualSurface.
   virtual void  render() {}
@@ -73,14 +88,18 @@ public:
   virtual void blit(Surface& to);
   virtual void blit(Surface& to, const Rect& to_rect, const Rect& from_rect);
 
-  class ZSort : public std::binary_function<const Surface*, const Surface*, bool>
+  // Sort by Z component. Used by VirtualSurface.
+  struct ZSort : public std::binary_function<const Surface*, const Surface*, bool>
   {
-  public:
-    bool operator()(const Surface* lhs, const Surface* rhs)
-    { return lhs->z_ < rhs->z_; }
+    bool operator()(const Surface* lhs, const Surface* rhs);
   };
 
-  friend bool operator< (const Surface& lhs, const Surface& rhs);
+  // Sort by filename-zoom-angle. Used by ResourceCenter
+  struct ImgSort : public std::binary_function<const Surface*, const Surface*, bool>
+  {
+    bool operator()(const Surface& lhs, const Surface& rhs);    
+  };
+
   friend std::ostream& operator<< (std::ostream& os, const Surface& s);
   
 protected:

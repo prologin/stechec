@@ -26,6 +26,7 @@ VisuPlayer::VisuPlayer(Api* api, Panel& panel, VisuField& field, Game& game, con
     field_(field),
     game_(game),
     p_(p),
+    has_focus_(false),
     is_selected_(false),
     circle_("image/general/circle"),
     circle_selected_("image/general/circle_select"),
@@ -51,40 +52,36 @@ void VisuPlayer::setPos(const Point& pos)
   circle_.setPos(pos);
   circle_selected_.setPos(pos);
   player_num_.setPos(pos + Point(3, 18));
-    
-  if (parent_ != NULL)
-    {
-      setObjectRect(Rect(parent_->getAbsolutePos() + pos, getSize()));
-      setObjectContainer(parent_->getRealRect());
-    }
 }
 
 
 void VisuPlayer::update()
 {
   Input& inp = game_.getInput();
-  if (inp.button_pressed_[1] && has_focus_ && !is_selected_)
-    {
-      field_.addChild(&circle_selected_);
-      is_selected_ = true;
-    }
-  
-  Sprite::update();
-}
 
-void VisuPlayer::mouseMove(const Point& pos)
-{
-  if (!has_focus_)
+  // Update focus.
+  bool now_focus = getAbsoluteRect().inside(inp.mouse_);
+
+  // Mouse moves on player.
+  if (!has_focus_ && now_focus)
     {
       parent_->addChild(&circle_);
       panel_.displayPlayerInfo(p_->getTeamId(), p_->getId());
     }
-}
 
-void VisuPlayer::mouseOut()
-{
-  if (has_focus_)
+  // Mouse moves out of player.
+  if (has_focus_ && !now_focus)
     {
       parent_->removeChild(&circle_);
     }
+
+  // Click on player. Select him.
+  if (has_focus_ && !is_selected_ && inp.button_pressed_[1])
+    {
+      field_.addChild(&circle_selected_);
+      is_selected_ = true;
+    }
+
+  has_focus_ = now_focus;
+  Sprite::update();
 }

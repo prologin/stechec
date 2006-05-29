@@ -37,27 +37,6 @@ const Input* Input::getInst()
   return inst_;
 }
 
-void Input::addObject(InputEvent* obj)
-{
-  assert(inst_ != NULL);
-  inst_->object_.push_back(obj);
-}
-
-void Input::removeObject(InputEvent* obj)
-{
-  assert(inst_ != NULL);
-  inst_->object_.erase(std::remove(inst_->object_.begin(), inst_->object_.end(), obj),
-                       inst_->object_.end());
-}
-
-void Input::updateObjects()
-{
-  if (mouse_delta_ != Point(0, 0))
-    std::for_each(object_.begin(), object_.end(),
-                  std::bind2nd(std::mem_fun(&InputEvent::privMouseMove),
-                               mouse_));
-}
-
 bool Input::isModDown(int mod) const
 {
   return modifier_ & mod;

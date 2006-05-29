@@ -31,7 +31,7 @@ class CPlayer;
 ** Player caracteristics are not stored in this class, they are
 ** fetched from Api.
 */
-class VisuPlayer : public Sprite, public InputEvent
+class VisuPlayer : public Sprite
 {
 public:
   VisuPlayer(Api* api, Panel& panel, VisuField& field, Game& game, const CPlayer* p);
@@ -42,15 +42,14 @@ public:
   virtual void update();
   
 private:
-  virtual void mouseMove(const Point& pos);
-  virtual void mouseOut();
 
   Api*          api_;
   Panel&        panel_;
   VisuField&    field_;
   Game&         game_;
   const CPlayer* p_;
-  
+
+  bool          has_focus_;
   bool          is_selected_;
   Sprite        circle_;
   Sprite        circle_selected_;

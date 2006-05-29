@@ -121,7 +121,7 @@ void VirtualSurface::render()
       && SDL_GetVideoSurface() == surf_
       && !invalidated_surf_.empty())
     {
-      LOG4("Flip screen.");
+      LOG5("Flip screen.");
       SDL_Flip(surf_);
     }
 

@@ -93,7 +93,7 @@ private:
 
   static ResourceCenter* inst_;
 
-  typedef std::set<Surface> ImageList;
+  typedef std::set<Surface, Surface::ImgSort> ImageList;
   ImageList             image_list_;
 
   struct LoadedFont {

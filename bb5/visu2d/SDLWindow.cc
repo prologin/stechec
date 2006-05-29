@@ -92,7 +92,6 @@ bool SDLWindow::processOneFrame()
     }
 
   // Update and render.
-  input_.updateObjects();
   screen_.update();
   screen_.render();
 

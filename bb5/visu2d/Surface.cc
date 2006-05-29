@@ -121,6 +121,27 @@ const Rect& Surface::getRect() const
   return rect_;
 }
 
+Rect Surface::getRealRect() const
+{
+  return rect_;
+}
+
+// Not really sure of this one... but should be rarely used...
+Rect Surface::getRealAbsoluteRect() const
+{
+  if (parent_)
+    return getRealRect() + parent_->getAbsolutePos();
+  return getRealRect();
+}
+
+Rect Surface::getAbsoluteRect() const
+{
+  if (parent_)
+    return rect_ + parent_->getAbsolutePos();
+  return rect_;
+}
+
+
 double Surface::getZoom() const
 {
   return zoom_;
@@ -230,12 +251,6 @@ void Surface::update()
     }
 }
 
-
-Rect Surface::getRealRect() const
-{
-  return rect_;
-}
-
 void Surface::blit(Surface& to)
 {
   SDL_Rect tor = { rect_.x, rect_.y, 0, 0 };
@@ -251,7 +266,12 @@ void Surface::blit(Surface& to, const Rect& to_rect, const Rect& from_rect)
     PRINT_AND_THROW(SDLError, "Blit failed");
 }
 
-bool operator< (const Surface& lhs, const Surface& rhs)
+bool Surface::ZSort::operator() (const Surface* lhs, const Surface* rhs)
+{
+  return lhs->z_ < rhs->z_;
+}
+
+bool Surface::ImgSort::operator() (const Surface& lhs, const Surface& rhs)
 {
   if (lhs.filename_ < rhs.filename_)
     return true;

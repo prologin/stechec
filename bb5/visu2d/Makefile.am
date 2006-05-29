@@ -34,8 +34,6 @@ bb5_visu_la_SOURCES =				\
 	Sprite.cc				\
 	Input.hh				\
 	Input.cc				\
-	InputEvent.hh				\
-	InputEvent.cc				\
 	SDLWindow.hh				\
 	SDLWindow.cc				\
 	Game.hh					\
