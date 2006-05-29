@@ -71,7 +71,6 @@ public:
    int visible_test(int to_x, int to_y, Position ref, Position pos);
    int score(int id);
    int current_date();
-   int remaining_turn();
    int almanach_visible ();
    int position_almanach_x();
    int position_almanach_y();

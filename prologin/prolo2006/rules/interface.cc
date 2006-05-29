@@ -77,11 +77,6 @@ int current_date()
   return api->current_date();
 }
 
-int remaining_turn()
-{
-  return api->remaining_turn();
-}
-
 int time_remaining()
 {
   return api->getTimeRemaining();
