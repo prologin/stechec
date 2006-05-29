@@ -5,7 +5,6 @@ SUBDIRS =					\
 	rules					\
 	subject					\
 	test					\
-	editor					\
 	virchor
 
 if HAVE_QT

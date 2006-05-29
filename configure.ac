@@ -224,7 +224,6 @@ AC_CONFIG_FILES([
   prologin/prolo2006/visu/Makefile
   prologin/prolo2006/sdlvisu/Makefile
   prologin/prolo2006/virchor/Makefile
-  prologin/prolo2006/editor/Makefile
 ])
 
 AC_OUTPUT

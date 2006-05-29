@@ -4,6 +4,7 @@ SUBDIRS =					\
 	data					\
 	rules					\
 	subject					\
+	editor					\
 	test
 
 if HAVE_QT
