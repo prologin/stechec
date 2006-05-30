@@ -23,6 +23,7 @@
 class TextSurface : public Surface
 {
 public:
+  TextSurface();
   TextSurface(const std::string& font_name, int surf_width, int surf_height);
   TextSurface(const TextSurface& ts);
   TextSurface& operator= (const TextSurface& rhs);

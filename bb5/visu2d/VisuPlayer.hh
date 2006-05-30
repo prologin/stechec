@@ -25,6 +25,10 @@ class VisuField;
 class Game;
 class CPlayer;
 
+enum eAction {
+  eActMove
+};
+
 /*
 ** Player class for visu.
 **
@@ -37,6 +41,10 @@ public:
   VisuPlayer(Api* api, Panel& panel, VisuField& field, Game& game, const CPlayer* p);
   virtual ~VisuPlayer();
 
+  void unselect();
+
+  void action(eAction action);
+  
   virtual void setPos(const Point& pos);
 
   virtual void update();
@@ -54,6 +62,7 @@ private:
   Sprite        circle_;
   Sprite        circle_selected_;
   Sprite        player_num_;
+  Sprite        action_popup_;
 };
 
 #endif /* !VISUPLAYER_HH_ */

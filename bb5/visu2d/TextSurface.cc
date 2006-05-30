@@ -19,6 +19,13 @@
 
 #include "TextSurface.hh"
 
+TextSurface::TextSurface()
+  : font_(NULL),
+    line_skip_(-1),
+    ref_count_(0)
+{
+}
+
 TextSurface::TextSurface(const std::string& font_name, int surf_width, int surf_height)
   : Surface(surf_width, surf_height)
 {
@@ -34,15 +41,22 @@ TextSurface::~TextSurface()
 }
 
 TextSurface::TextSurface(const TextSurface& ts)
+  : Surface(ts)
 {
   font_ = ts.font_;
+  line_skip_ = ts.line_skip_;
   ref_count_ = ts.ref_count_ + 1;
+  previous_text_ = "";
 }
 
 TextSurface& TextSurface::operator= (const TextSurface& rhs)
 {
+  Surface::operator=(rhs);
+
   font_ = rhs.font_;
-  ref_count_ = rhs.ref_count_ + 1;  
+  line_skip_ = rhs.line_skip_;
+  ref_count_ = rhs.ref_count_ + 1;
+  previous_text_ = "";
 }
 
 void TextSurface::setText(const std::string& text)

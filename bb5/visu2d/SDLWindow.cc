@@ -102,7 +102,7 @@ bool SDLWindow::processOneFrame()
     {
       frame_tick_fps_ = now;
       fps_ = frame_drawed_;
-      LOG3("FPS: " << frame_drawed_);
+      LOG5("FPS: " << frame_drawed_);
       frame_drawed_ = 0;
     }
 

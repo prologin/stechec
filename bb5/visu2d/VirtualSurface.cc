@@ -86,6 +86,8 @@ void VirtualSurface::update()
       for (rit = invalidated_surf_.begin(); rit != invalidated_surf_.end(); rit++)
         parent_->invalidate(*rit + getPos());
     }
+
+  Surface::update();
 }
 
 void VirtualSurface::render()

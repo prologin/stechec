@@ -24,7 +24,10 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
     api_(api),
     ccx_(ccx),
     panel_(api, win.getInput()),
-    field_(api, win.getInput())
+    field_(api, win.getInput()),
+    action_popup_(win.getScreen(), win.getInput()),
+    our_turn_(false),
+    is_playing_(false)
 {
   api_->setEventHandler(this);
   win_.getScreen().addChild(&panel_);
@@ -54,6 +57,25 @@ Input& Game::getInput()
   return win_.getInput();
 }
 
+VirtualSurface& Game::getScreen()
+{
+  return win_.getScreen();
+}
+
+void Game::evKickOff()
+{
+  kickoff_notice_ = TextSurface("font/Vera", 160, 25);
+  kickoff_notice_.setZ(4);
+  kickoff_notice_.setPos(165, 575);
+  kickoff_notice_.setText("Kickoff. Place the ball.");
+  win_.getScreen().addChild(&kickoff_notice_);
+}
+
+void Game::evNewTurn(bool our_turn)
+{
+  our_turn_ = our_turn;
+  is_playing_ = true;
+}
 
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
@@ -85,6 +107,20 @@ void Game::evBallPos(const Point& pos)
   field_.setBallPos(pos);
 }
 
+void Game::selectPlayer(VisuPlayer* vp)
+{
+  action_popup_.hide();
+  action_popup_.setVisuPlayer(vp);
+}
+
+void Game::unselectAllPlayer()
+{
+  for (int i = 0; i < 2; i++)
+    for (int j = 0; j < 16; j++)
+      if (player_[i][j] != NULL)
+        player_[i][j]->unselect();
+}
+
 int Game::run()
 {
   Sprite ball("image/general/ball");
@@ -108,14 +144,7 @@ int Game::run()
   status.setZ(4);
   status.setPos(0, 575);
   win_.getScreen().addChild(&status);
-  
-  Sprite ovni("image/figs/ovni");
-  ovni.setZ(2);
-  ovni.splitNbFrame(4, 3);
-  ovni.setPos(200, 100);
-  ovni.move(300, 500, 15.);
-  //win_.getScreen().addChild(&ovni);
-  
+    
   // Sit back and see what's happening...
   while (api_->getState() != GS_END)
     {
@@ -127,18 +156,10 @@ int Game::run()
       if (win_.processOneFrame())
         break;
 
-      if (win_.getInput().key_pressed_['b'])
-        ovni.anim(1, false);
-      if (win_.getInput().key_pressed_['p'])
-        {
-          LOG2("key pressed: p");
-          ovni.setZoom(ovni.getZoom() + 1.);
-        }
-      if (win_.getInput().key_pressed_['o'])
-        {
-          LOG2("key pressed: o");
-          ovni.setZoom(ovni.getZoom() - 1.);
-        }
+      if (win_.getInput().button_pressed_[1])
+        action_popup_.hide();
+      if (win_.getInput().button_pressed_[3])
+        action_popup_.show(win_.getInput().mouse_);
 
       // Print some things
       std::ostringstream os;

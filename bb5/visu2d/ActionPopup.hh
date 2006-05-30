@@ -14,33 +14,34 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#ifndef GAMEFIELD_HH_
-# define GAMEFIELD_HH_
+#ifndef ACTIONPOPUP_HH_
+# define ACTIONPOPUP_HH_
 
-# include "Api.hh"
-# include "Input.hh"
-# include "VirtualScrollableSurface.hh"
+# include "VirtualSurface.hh"
 # include "Sprite.hh"
+# include "Input.hh"
 
-/*
-** Game field (on the left).
-*/
-class VisuField : public VirtualScrollableSurface
+class VisuPlayer;
+
+class ActionPopup : public VirtualSurface
 {
 public:
-  VisuField(Api* api, Input& input);
-  virtual ~VisuField();
+  ActionPopup(VirtualSurface& screen, Input& input);
+  virtual ~ActionPopup();
 
-  void setBallPos(const Point& pos);
+  void setVisuPlayer(VisuPlayer* vp);
+  void show(const Point& pos);
+  void hide();
 
   virtual void update();
 
 private:
-  Api*          api_;
-  Input&        inp_;
+  VirtualSurface& screen_;
+  Input& input_;
 
-  Surface       bg_;
-  Sprite        ball_;
+  VisuPlayer* vp_;
+  Sprite sprite_[12];
+  bool show_;
 };
 
-#endif /* !GAMEFIELD_HH_ */
+#endif /* !ACTIONPOPUP_HH_ */

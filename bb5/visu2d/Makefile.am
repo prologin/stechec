@@ -36,6 +36,8 @@ bb5_visu_la_SOURCES =				\
 	Input.cc				\
 	SDLWindow.hh				\
 	SDLWindow.cc				\
+	ActionPopup.hh				\
+	ActionPopup.cc				\
 	Game.hh					\
 	Game.cc					\
 	Panel.hh				\

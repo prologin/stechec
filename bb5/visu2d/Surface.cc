@@ -223,6 +223,7 @@ void Surface::create(int width, int height)
 
   rect_.w = width;
   rect_.h = height;
+  redraw_all_ = true;
 }
 
 void Surface::load(const std::string filename, double zoom, double angle)

@@ -34,20 +34,34 @@
 # include "Field.hh"
 # include "VisuPlayer.hh"
 # include "Event.hh"
+# include "ActionPopup.hh"
 
+/*!
+** Main class to create on new game, to destroy when a game is
+** finished. Takes care of the remaining...
+*/
 class Game : public Event
 {
 public:
   Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx);
   ~Game();
 
-  Input& getInput();
+  Input&                getInput();
+  VirtualSurface&       getScreen();
+
+  //! @brief To call when a player is selected.
+  void selectPlayer(VisuPlayer* vp);
+ 
+  //! @brief Unselect all selected players on the screen.  
+  void unselectAllPlayer();
   
   int run();
 
 private:
 
   // Events
+  virtual void evKickOff();
+  virtual void evNewTurn(bool our_turn);
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evBallPos(const Point& pos);
 
@@ -58,8 +72,13 @@ private:
 
   Panel                 panel_;  ///< Game panel.
   VisuField             field_;  ///< Game field.
+  ActionPopup           action_popup_;  ///< Action for player, on left click.
 
   VisuPlayer*           player_[2][16]; ///< Players...
+  bool                  our_turn_;
+  bool                  is_playing_;
+
+  TextSurface           kickoff_notice_;
 };
 
 #endif /* !GAME_HH_ */

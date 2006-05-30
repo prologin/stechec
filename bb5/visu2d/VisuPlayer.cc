@@ -46,6 +46,25 @@ VisuPlayer::~VisuPlayer()
 {
 }
 
+void VisuPlayer::unselect()
+{
+  if (is_selected_)
+    {
+      is_selected_ = false;
+      field_.removeChild(&circle_selected_);
+    }
+}
+
+void VisuPlayer::action(eAction action)
+{
+  switch (action)
+    {
+    case eActMove:
+      LOG3("MOVE PLAYER");
+      break;
+    }
+}
+
 void VisuPlayer::setPos(const Point& pos)
 {
   Sprite::setPos(pos);
@@ -78,7 +97,9 @@ void VisuPlayer::update()
   // Click on player. Select him.
   if (has_focus_ && !is_selected_ && inp.button_pressed_[1])
     {
+      game_.unselectAllPlayer();
       field_.addChild(&circle_selected_);
+      game_.selectPlayer(this);
       is_selected_ = true;
     }
 
