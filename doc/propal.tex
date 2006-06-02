@@ -86,8 +86,8 @@ contributions.
 
 L'ancienne version de \ac{tbt} (la 0.5) est vraiment bien coté
 utilisateur, un peu moins niveau développement. La structure, beaucoup
-trop monolithique, liée à un manque de documentation chronique, a dû
-pas mal freiner le dev. L'objectif, dans un premier temps, est de
+trop monolithique, liée à un manque de documentation chronique, a
+pas mal freiné le dev. L'objectif, dans un premier temps, est de
 d'obtenir la même chose que la 0.5, au niveau du jeu et de l'interface
 graphique, mais en le faisant un peu mieux\footnote{Et avec de la
   documentation\ldots} pour pouvoir aller plus loin ensuite.
@@ -431,14 +431,14 @@ binaire.
     label=lst:packet]
 struct Packet {
   int token;
-  int player_id;
+  int client_id;
   int data_size;
 };
 \end{lstlisting}
 
 \begin{itemize}
 \item \texttt{token}: Signification du message. Plusieurs tokens possibles sont décrits à la table \ref{tab:tokens}.
-\item \texttt{player\_id}: L'uid du client duquel le message provient
+\item \texttt{client\_id}: L'uid du client duquel le message provient
   / auquel le message est destiné.
 \item \texttt{data\_size}: Taille totale du paquet.
 \end{itemize}
@@ -992,6 +992,188 @@ partie où il y a beaucoup de code à récupérer de l'ancien TBT.
 Concernant les graphismes, actuellement le consensus est de conserver
 ceux existant dans la version 0.5, ainsi que tout le
 look\&feel. Néanmoins, on reste ouvert aux propositions.
+
+Allez, rapide explication de la structure du code du client
+graphique en SDL. Comme le temps me manque, on va faire ca style SMS.
+
+\subsection{Présentation du moteur}
+
+SDL est une bibliothèque simple, très simple, et finalement assez bas
+niveau. On s'en sert pour l'affichage (video), l'input (clavier et
+souris), et le son (pas encore codé).
+
+Pour la video, SDL fonctionne avec des surfaces, des rectangles en
+réalité (SDL\_Surface). L'ecran (ce qui est effectivement affiché à
+l'utilisateur) est aussi une surface (pour l'instant fixée a
+800x600). Une image est également une surface. L'affichage de texte
+passe aussi par une surface. Pour finir, on peut aussi créer des
+surfaces 'vierges'. La seule opération permise sur les surfaces est la
+copie d'une surface vers une autre. On peut copier seulement une
+partie d'une image, appliquer de la transparence au passage,
+etc... Mais au final, ca revient toujours a des copies de rectangles.
+
+Une fois toutes les surfaces chargées en mémoire, la première
+difficultée est de les copier sur l'écran dans le bon ordre, et au bon
+endroit. Copiez d'abord un joueur, puis le fond d'écran, et vous
+pouvez être sur que vous ne verrez jamais le joueur. De plus, avec le
+terrain qui peut être scrollable, gérer la différence entre les
+coordonnées du jeu et celle de l'écran est souvent un casse-tête. La
+deuxième difficultée est le temps de rendu. Si a chaque frame, vous
+essayez de recopier la totalité des surfaces sur l'écran, ca va ramer
+de manière inacceptable. Il faut s'arranger pour ne recopier
+\emph{que} ce qui a besoin de l'être sur l'écran.
+
+La troisième difficulté, qui n'en est pas vraiment une, est que l'API
+SDL est en C. Les appels sont des fois un peu rébarbatifs, il faut
+gérer sa mémoire correctement, \ldots. Vu qu'on code en C++, il est
+plus simple de tout wrapper dans des jolies classes, et ne plus a
+avoir à gérer le côté bas niveau. Tout ca pour introduire mon
+mini-moteur SDL, qui élimine au maximum ces 3 problèmes. En fait, il
+permet même au final d'afficher des choses à l'écran en moins de 10
+lignes et sans appeler directement une seule fonction de la SDL.
+
+Un petit exemple d'utilisation, qui permet d'afficher et d'animer la
+roue qui tourne (le sablier de tbt 0.5). les détails seront expliqués
+plus tard:
+
+\begin{verbatim}
+  Sprite wheel("image/wheel"); // Cree une sprite a partir d'une image png
+  wheel.setZ(1);               // Position z de la sprite
+  wheel.setPos(113, 506);      // Position x,y de la sprite
+  wheel.splitNbFrame(13, 1);   // Splitte l'image en 13 miniatures
+  wheel.anim(100);             // Change de miniature toutes les 100 ms
+  screen_.addChild(&wheel_);   // Ajoute la sprite sur l'écran.
+\end{verbatim}
+
+Et c'est tout! Tout le reste, affichage, rendu quand il faut, \ldots,
+est géré automatiquement.
+
+\subsection{Détails du moteur}
+
+La modélisation est la suivante:
+
+\begin{verbatim}
+                       1  
+  SDLWindows ----------- Input
+                   |---- ResourceCenter         
+
+                     Surface
+                        |
+         --------------------------
+         |                        |
+  VirtualSurface                Sprite
+         |
+  VirtualScrollableSurface
+\end{verbatim}
+
+\texttt{SDLWindows} est la classe qui gère la création de la fenêtre
+SDL, de la surface écran, et des événements utilisateurs. Il faut lui
+appeler régulièrement (== boucler dessus) la méthode
+\texttt{processOneFrame}. C'est tout. Elle possède une instance de
+\texttt{Input} et \texttt{ResourceCenter}.
+
+\texttt{Input} est une classe toute simple qui contient l'état du
+clavier et de la souris. Elle peut être récupérée par n'importe quelle
+classe qui veut faire des ``choses interactives''.
+
+\texttt{ResourceCenter} est une classe essentiellement utilisé en
+interne. Elle s'occupe de charger et de mettre en cache les images et
+les fontes, histoire de ne pas charger 15 fois la même image. Vous
+n'auriez pas à priori à l'utiliser directement.
+
+\texttt{Surface} est la classe de loin la plus intéressante. Elle
+contient en interne une (et une seule) structure SDL\_Surface, et
+permet de stocker une image, ou être utilisée comme surface pour un
+affichage intermédiaire (en utilisant VirtualSurface derrière). Elle
+possède une plétore de fonction pour placer la surface (position),
+taille, position en Z (0 -> background, supérieur à 0 -> niveau de
+foreground), \ldots. Utilisez \texttt{Surface} si vous ne voulez
+qu'afficher une image. Pour l'animation, le déplacement visuel,
+utiliser plutôt \texttt{Sprite}.
+
+\texttt{Sprite} est un raffinement de \texttt{Surface}, qui permet de
+faire des choses un peu plus évoluée, comme splitter une image qui est
+en réalité une collection de miniature et n'afficher qu'une miniature
+ou l'animer, gère le déplacement... En fait, les fonctionnalitées sont
+rajoutés au fur et a mesure des besoins dans le reste de tbt. Il est
+toujours possible de créer d'autres classes dérivant de
+\texttt{Surface} ou de \texttt{Sprite} pour faire des trucs plus
+spécifiques et qui seront utilisé un peu partout\footnote{oui, c'est
+  de la POO, quoi...}, par exemple un menu contextuel (popup), une
+boite de dialogue, \ldots
+
+\texttt{VirtualSurface} est la seconde classe la plus importante
+derrière \texttt{Surface}. Elle peut être vue comme une sorte de
+\emph{container}, dans lequel des Surfaces (et d'autres
+VirtualSurface, aussi !) peuvent être ajouté. Elle s'occupe ensuite de
+mettre à jour les objets qu'elle contient, et effectue le rendu dans
+sa propre surface\footnote{Plus d'explications un peu plus bas (oui,
+  dans le FIXME...)}. Elle dérive de \texttt{Surface} pour avoir sa
+SDL\_Surface\footnote{Oui, il est dit plus haut qu'il est possible de
+  créer des surfaces vierge, c'est a dire ne provenant pas directement
+  d'une image} et récupérer toutes les méthodes de positionnement de
+la surface. Finalement, la surface SDL principale qui est affiché à
+l'ecran est de type \texttt{VirtualSurface}, sauf qu'à la création, on
+lui passe le SDL\_Surface de l'écran plutot qu'il en crée un
+temporaire.
+
+\texttt{VirtualScrollableSurface} est un raffinement de
+\texttt{VirtualSurface} pour permettre la création d'une surface
+\emph{virtuelle} qui sera plus grande que ce qui sera affiché
+réellement à l'écran. Utilisé pour l'affichage du champ de
+bataille. D'ailleurs, ca pose pas mal de soucis, d'où la fonction
+\texttt{getRealSurface()} dans la classe \texttt{Surface}.
+
+FIXME: expliquer en détail la relation père fils des VirtualSurface et
+des Surface, la procédure de rendu d'une frame (méthode update appelée
+recursivement depuis la surface parent, l'écran, puis render), et la
+gestion de la mémoire sur les Surface (le refcount).
+
+\subsection{Et tbt, dans tout ca ?}
+
+On a un moteur, il faut bien en faire quelque chose. On va donc
+contruire un truc par dessus ca. \texttt{Game} est la classe
+principale, qui contient le \texttt{SDLWindows} et toutes les autres
+instances de classe. Les autres classes devraient être assez explicite.
+
+\begin{verbatim}
+     Sprite      VirtualSurface    VirtualScrollableSurface
+       |            |      |                 |
+   VisuPlayer     Panel    |             VisuField
+                       ActionPopup
+          Game
+\end{verbatim}
+
+Ces classes font régulièrement appel à l'API des régles de tbt, pour
+récupérer toutes les infos nécessaires sur le jeu, la position des
+joueurs, etc... Les classes et les méthodes sont pas encore fixées, ca
+peut bouger en fonction des évolutions. Pour l'instant, la question de
+``quelle classe fait quoi'' est pas franchement résolue, ca se fera au
+fur et à mesure en fonction de la cohérence/facilité.
+
+\subsection{Considérations diverses}
+
+\textbf{La vitesse}: Pas mal de choses, dans la hiérarchie de classe,
+fonctionne avec des méthodes virtuelles (il n'y a quasiment aucune
+template). On peut facilement dire que \texttt{virtual} est lent, mais
+ca dérange pas trop. En fait, je suis parti du principe que
+l'opération prenant tout le temps CPU est le blit. Donc, une fois les
+blits sont a peu près optimisé (cad, en faire le moins possible), ca
+suffit. Ca veut dire que je ne cherche même pas a optimiser le reste
+du code, on verra plus tard a coup de callgrind si il y a des parties
+de code trop consommatrice.
+
+\textbf{Les événements}: Il y a un sytème d'événement pas trop
+explicité (bb5/client/Event.hh, dont hérite la class \texttt{Game})
+qui permet de détourner les messages arrivant dans les règles client
+pour appeler directement des méthodes virtuelles dans l'interface
+graphique (via la classe \texttt{Event} et \texttt{Game}). C'est basé
+sur un vieux kludge, et finalement, je ne sais pas trop si ca va être
+utile ou même si c'est désirable. Tout ce qui arrive par ce système
+devrait aussi être récupérable en appelant explicitement les fonctions
+de l'API des règles. Simplement, c'était déjà en place quand j'ai
+commencé la gui, ca faisait moins de lignes de code a taper, \ldots
+Voir si c'est utile.
 
 \chapter{Divers}
 
