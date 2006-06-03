@@ -21,7 +21,7 @@ void stringToPacket(int* dst, const std::string& src, unsigned max_size)
   unsigned i;
   unsigned src_size = src.length() > max_size - 1 ? max_size - 1 : src.length();
 
-  memset(dst, 0, (src_size / 4 + 1) * 4);
+  memset(dst, 0, max_size);
   for (i = 0; i < src_size; i++)
     dst[i / 4] |= src[i] << ((i & 3) << 3);
 }
