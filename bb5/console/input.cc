@@ -28,8 +28,9 @@
 // Readline compatibility
 #ifdef HOSTTYPE_DARWIN
 # define rl_completion_matches completion_matches
+typedef VFunction MyRL_VFunction;
 #else
-typedef void (*VFunction)(char*);
+typedef void (MyRL_VFunction)(char*);
 #endif
 
 using namespace std;
@@ -266,7 +267,7 @@ Input::Input(CmdLineInterface* i, Api* gc)
   ios_base::sync_with_stdio(true);
 
   // Initialize readline
-  rl_callback_handler_install(NULL, (VFunction*)&get_line);
+  rl_callback_handler_install(NULL, (MyRL_VFunction*)&get_line);
   rl_attempted_completion_function = cmd_completion;
   rl_completion_entry_function = cmd_completion_foo;
 
