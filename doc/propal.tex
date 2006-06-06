@@ -1036,19 +1036,34 @@ Un petit exemple d'utilisation, qui permet d'afficher et d'animer la
 roue qui tourne (le sablier de tbt 0.5). les détails seront expliqués
 plus tard:
 
-\begin{verbatim}
+\begin{lstlisting}[
+    language=C++]
   Sprite wheel("image/wheel"); // Cree une sprite a partir d'une image png
   wheel.setZ(1);               // Position z de la sprite
   wheel.setPos(113, 506);      // Position x,y de la sprite
   wheel.splitNbFrame(13, 1);   // Splitte l'image en 13 miniatures
   wheel.anim(100);             // Change de miniature toutes les 100 ms
   screen_.addChild(&wheel_);   // Ajoute la sprite sur l'écran.
-\end{verbatim}
+\end{lstlisting}
 
 Et c'est tout! Tout le reste, affichage, rendu quand il faut, \ldots,
 est géré automatiquement.
 
 \subsection{Détails du moteur}
+
+\begin{wrapfigure}{r}{9cm}
+  \label{fig:package-gui}
+  \includegraphics[width=8.5cm]{package-gui}
+  \caption{Relation par paquetage de la partie graphique.}
+\end{wrapfigure}
+
+La visualisation générale de la partie graphique est décrite sur la
+figure \ref{fig:package-gui}. La partie graphique est divisée en deux
+parties principales, le moteur SDL (indépendant du reste du programme)
+et la partie qui s'occupe de plus précisément de TBT. Cette dernière
+partie est relié à la connection client, qui permet la communication
+avec le serveur, ainsi qu'avec l'API, les règles client, qui vont nous
+fournir toutes les informations utiles sur le jeu.
 
 La modélisation est la suivante:
 
