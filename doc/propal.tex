@@ -23,14 +23,15 @@
 
 \begin{document}
 
-% passe une ligne entre chaque paragraphe
-\addtolength{\parskip}{\baselineskip}
 % utilise des bullet pour les itemize
 \renewcommand{\labelitemi}{%
   {$\bullet$}}%
 
 \maketitle
 \tableofcontents
+
+% passe une ligne entre chaque paragraphe
+\addtolength{\parskip}{\baselineskip}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PREAMBULE
@@ -240,8 +241,8 @@ et qui seront utilisés. Ces choix sont définitifs. En vrac:
 \begin{figure}[ht]
   \centering
   \includegraphics[width=10cm]{global}
-  \label{fig:big_picture}
   \caption{Schéma global de l'environnement TBT}
+  \label{fig:big_picture}
 \end{figure}
 
 La version proposée est beaucoup plus modulaire que la précédente. Au
@@ -280,21 +281,21 @@ les besoins. Nous aurons besoin de:
 \end{itemize}
 
 Faites bien attention à la terminologie utilisée, qui porte souvent à
-confusion. Référez vous au glossaire pour plus de
-détails\ref{chap:glossaire}.
+confusion. Référez vous au glossaire \ref{chap:glossaire} pour plus de
+détails.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=12cm]{global-clt-ser}
-  \label{fig:global_srv}
   \caption{Emboitement des modules, en configuration \emph{client/serveur}.}
+  \label{fig:global_srv}
 \end{figure}
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=12cm]{global-clt-only}
-  \label{fig:global_standalone}
   \caption{Emboitement des modules, en configuration \emph{standalone}.}
+  \label{fig:global_standalone}
 \end{figure}
 
 A noter également qu'en mode de fonctionnement \emph{client/serveur},
@@ -306,8 +307,8 @@ décrit dans la partie \ref{chap:ligue}.
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=14cm]{global-ex}
-  \label{fig:global_ex}
   \caption{Détails du processus de traitement d'un message.}
+  \label{fig:global_ex}
 \end{figure}
 
 La figure \ref{fig:global_ex} décrit le processus de traitement d'un
@@ -325,8 +326,8 @@ suivantes.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=10cm]{ligue}
-  \label{fig:ligue}
   \caption{Gestionnaire de ligue dans son environnement}
+  \label{fig:ligue}
 \end{figure}
 
 Pas grand chose à en dire. Ça doit être une application totalement
@@ -378,8 +379,8 @@ dans la configuration \emph{standalone}.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=8cm]{uml-reseau}
-  \label{fig:uml-reseau}
   \caption{Hiérarchie du réseau.}
+  \label{fig:uml-reseau}
 \end{figure}
 
 \section{Interface}
@@ -573,8 +574,8 @@ la fin de son tour avec \texttt{MSG\_TURNOVER}, répété par le serveur.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=10cm]{uml-xml}
-  \label{fig:uml-rules}
   \caption{Modélisation du module \texttt{XML}.}
+  \label{fig:uml-rules}
 \end{figure}
 
 Ce module ne mérite sûrement pas une section à lui tout seul, car il
@@ -619,8 +620,8 @@ une bibliothèque, nommons la \texttt{libcommon.la}.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=10cm]{uml-rules}
-  \label{fig:uml-rules}
   \caption{Hiérarchie de la classe \texttt{Rules}.}
+  \label{fig:uml-rules}
 \end{figure}
 
 \subsection{Les classes représentant les règles}
@@ -778,8 +779,8 @@ peu plus extensible.
 
 \begin{wrapfigure}{r}{4.5cm}
   \includegraphics[width=4.1cm]{map}
-  \label{fig:map-coord}
   \caption{Système de coordonnées du terrain de jeu.}
+  \label{fig:map-coord}
 \end{wrapfigure}
 
 Le système de coordonnées retenu et utilisé est schématisé sur la
@@ -942,8 +943,8 @@ log, création de statistique sur le nombre de TouchDown, \ldots
 \begin{figure}[ht]
   \centering
   \includegraphics[width=13cm]{uml-client}
-  \label{fig:uml-client}
   \caption{\vspace{-2cm} Schéma simplifié d'un client}
+  \label{fig:uml-client}
 \end{figure}
 
 Il y a une grosse partie, qui contiendra le point d'entrée
@@ -1052,9 +1053,9 @@ est géré automatiquement.
 \subsection{Détails du moteur}
 
 \begin{wrapfigure}{r}{9cm}
-  \label{fig:package-gui}
   \includegraphics[width=8.5cm]{package-gui}
   \caption{Relation par paquetage de la partie graphique.}
+  \label{fig:package-gui}
 \end{wrapfigure}
 
 La visualisation générale de la partie graphique est décrite sur la
@@ -1065,21 +1066,17 @@ partie est relié à la connection client, qui permet la communication
 avec le serveur, ainsi qu'avec l'API, les règles client, qui vont nous
 fournir toutes les informations utiles sur le jeu.
 
-La modélisation est la suivante:
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=13cm]{uml-gui}
+  \caption{Schéma UML simplifié du moteur graphique}
+  \label{fig:uml-gui}
+\end{figure}
 
-\begin{verbatim}
-                       1  
-  SDLWindows ----------- Input
-                   |---- ResourceCenter         
-
-                     Surface
-                        |
-         --------------------------
-         |                        |
-  VirtualSurface                Sprite
-         |
-  VirtualScrollableSurface
-\end{verbatim}
+La modélisation du moteur est présentée figure
+\ref{fig:uml-gui}. Toutes les méthodes et attributs ne sont pas
+représenté, il y en aurait trop. Référez vous au code ou la
+documentation doxygen pour une liste exhaustive.
 
 \texttt{SDLWindows} est la classe qui gère la création de la fenêtre
 SDL, de la surface écran, et des événements utilisateurs. Il faut lui
