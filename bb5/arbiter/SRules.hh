@@ -18,7 +18,6 @@
 # define SRULES_HH_
 
 # include "BaseSRules.hh"
-# include "Rules.hh"
 # include "Field.hh"
 # include "SBall.hh"
 # include "SWeather.hh"
