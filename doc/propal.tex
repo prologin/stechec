@@ -937,6 +937,9 @@ tour, \ldots).
 On peut aussi inventer toute sorte de moulettes pour ce fichier de
 log, création de statistique sur le nombre de TouchDown, \ldots
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% CLIENTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Clients}
 \label{chap:client}
 
@@ -977,25 +980,15 @@ faisant à la main, en utilisant swig, \ldots).
 Cette partie ne présente aucune difficulté majeure pour l'intégration,
 peut être codé séparément, et à vrai dire, n'est pas nécessaire pour
 une première version jouable de TBT. Par contre, les tripes et autres
-éléments interne de l'IA sont laissés à l'entière responsabilité de
+éléments internes de l'IA sont laissés à l'entière responsabilité de
 leur concepteur\footnote{Autrement dit: démerdez vous pour faire
   quelque chose de potable :).}.
 
-\section{Visualisation graphique}
-
-En 2D, ok, en 3D, ca pourra être concevable ! Pour l'instant, arrêtons
-les rêves de grandeur\footnote{Dis, papa, comment est-ce qu'on
-  conquiert le monde ?}, et restons sur la version 2D SDL. Bon, là,
-clairement, mes capacités de modélisations s'arrêtent là. On y va a
-l'arrach', et on dessine le graphique UML après. C'est aussi une
-partie où il y a beaucoup de code à récupérer de l'ancien TBT.
+\section{Client GUI/SDL 2D}
 
 Concernant les graphismes, actuellement le consensus est de conserver
 ceux existant dans la version 0.5, ainsi que tout le
 look\&feel. Néanmoins, on reste ouvert aux propositions.
-
-Allez, rapide explication de la structure du code du client
-graphique en SDL. Comme le temps me manque, on va faire ca style SMS.
 
 \subsection{Présentation du moteur}
 
@@ -1078,6 +1071,8 @@ La modélisation du moteur est présentée figure
 représenté, il y en aurait trop. Référez vous au code ou la
 documentation doxygen pour une liste exhaustive.
 
+\subsubsection{Les ressources SDL}
+
 \texttt{SDLWindows} est la classe qui gère la création de la fenêtre
 SDL, de la surface écran, et des événements utilisateurs. Il faut lui
 appeler régulièrement (== boucler dessus) la méthode
@@ -1092,6 +1087,8 @@ classe qui veut faire des ``choses interactives''.
 interne. Elle s'occupe de charger et de mettre en cache les images et
 les fontes, histoire de ne pas charger 15 fois la même image. Vous
 n'auriez pas à priori à l'utiliser directement.
+
+\subsubsection{La classe Surface et dérivés}
 
 \texttt{Surface} est la classe de loin la plus intéressante. Elle
 contient en interne une (et une seule) structure SDL\_Surface, et
@@ -1114,8 +1111,13 @@ spécifiques et qui seront utilisé un peu partout\footnote{oui, c'est
   de la POO, quoi...}, par exemple un menu contextuel (popup), une
 boite de dialogue, \ldots
 
-\texttt{VirtualSurface} est la seconde classe la plus importante
-derrière \texttt{Surface}. Elle peut être vue comme une sorte de
+\texttt{TextSurface} est pratique pour afficher du texte, via sa
+méthode setText()...
+
+\subsubsection{La classe VirtualSurface, et le rendu}
+
+C'est la seconde classe la plus importante derrière
+\texttt{Surface}. Elle peut être vue comme une sorte de
 \emph{container}, dans lequel des Surfaces (et d'autres
 VirtualSurface, aussi !) peuvent être ajouté. Elle s'occupe ensuite de
 mettre à jour les objets qu'elle contient, et effectue le rendu dans
@@ -1129,17 +1131,64 @@ l'ecran est de type \texttt{VirtualSurface}, sauf qu'à la création, on
 lui passe le SDL\_Surface de l'écran plutot qu'il en crée un
 temporaire.
 
-\texttt{VirtualScrollableSurface} est un raffinement de
-\texttt{VirtualSurface} pour permettre la création d'une surface
-\emph{virtuelle} qui sera plus grande que ce qui sera affiché
-réellement à l'écran. Utilisé pour l'affichage du champ de
-bataille. D'ailleurs, ca pose pas mal de soucis, d'où la fonction
-\texttt{getRealSurface()} dans la classe \texttt{Surface}.
-
 FIXME: expliquer en détail la relation père fils des VirtualSurface et
 des Surface, la procédure de rendu d'une frame (méthode update appelée
-recursivement depuis la surface parent, l'écran, puis render), et la
-gestion de la mémoire sur les Surface (le refcount).
+recursivement depuis la surface parent, l'écran, puis render).
+
+\subsubsection{VirtualScrollableSurface}
+
+Cette classe est un raffinement de \texttt{VirtualSurface} pour
+permettre la création d'une surface \emph{virtuelle} qui sera plus
+grande que ce qui sera affiché réellement à l'écran. Elle est utilisée
+pour l'affichage du champ de bataille, qui est plus grand que ce qu'on
+peut afficher à l'écran. Cette classe s'occupe du déplacement du
+\emph{champ de vision}. En fait, c'est comme si c'était une
+\texttt{VirtualSurface}, avec quelques ennuis du coté de la
+récupération des entrées utilisateur (la souris).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=14cm]{gui-vscrollable}
+  \caption{Détail du fonctionnement d'un objet \texttt{VirtualScrollableSurface}}
+  \label{fig:gui-vscrollable}
+\end{figure}
+
+La figure \ref{fig:gui-vscrollable} montre plus en détail le
+fonctionnement d'un objet de type \texttt{VirtualScrollableSurface},
+en prenant pour exemple le terrain de jeu de bloodbowl. La difficultée.
+
+Il faut bien faire attention au référentiel dans lequel on
+travaille. La plupart du temps, pour placer/déplacer les joueurs, la
+balle sur le terrain, on utilise celui retourné par \texttt{getRect()}
+(et les autres méthodes qui vont avec), comme si on travaillait sur
+une \texttt{VirtualSurface} classique. Dans ce cas, on se fiche bien
+de savoir ce que vois réellement le coach, on fait comme si toute la
+surface sera affichée.
+
+Par contre, il arrive qu'on ait besoin de savoir ce que voit
+réellement le coach (où est le champ de vision), principalement pour
+gérer les entrées utilisateur. Dans ce cas, on va plutôt utiliser la
+méthode \texttt{getRealRect()} (ou mieux,
+\texttt{getRealAbsoluteRect()}, puisque dans ce cas on veut les
+coordonnées par rapport à l'origine de la fenêtre, pas juste de la
+surface virtuelle). Cette méthode peut nous retourner une surface en
+dehors du champ de vision, dans ce cas, l'objet n'est pas visible.
+
+On a pas souvent besoin de passer de l'un a l'autre de ces
+référentiel. Pour l'affichage, on utilisera toujours le premier
+référentiel, et l'object \texttt{VirtualScrollableSurface} s'occupera
+d'afficher la zone qui va bien. Si on veut un objet \emph{flottant} au
+dessus du terrain, qui reste toujours à la même place à l'écran
+quelque soit la position du champ de vision, il vaut mieux l'ajouter
+au parent de \texttt{VirtualScrollableSurface}, avec un Z plus grand.
+Le seul cas où la conversion est nécessaire est pour récupérer la
+position sur le terrain depuis d'un clic ou déplacement de la
+souris. Dans ce cas il suffit d'additionner les 2 coordonnées
+\texttt{x, y} des 2 référentiels.
+
+\subsubsection{Références, mémoire}
+
+FIXME: gestion de la mémoire sur les Surface (le refcount).
 
 \subsection{Et tbt, dans tout ca ?}
 
@@ -1186,6 +1235,17 @@ devrait aussi être récupérable en appelant explicitement les fonctions
 de l'API des règles. Simplement, c'était déjà en place quand j'ai
 commencé la gui, ca faisait moins de lignes de code a taper, \ldots
 Voir si c'est utile.
+
+\section{Autres clients}
+
+On a déjà décrit 3 clients, dont 2 dont l'implémentation est déjà bien
+avancée. On peut imaginer en avoir d'autres, par exemple un affichage
+en 3D utilisant un moteur 3D quelconque. Il suffit de se connecter à
+l'API et au module de connection client/serveur, et on n'a plus qu'a
+se concentrer sur l'affichage. 
+
+D'autres clients pourraient être possible, comme un client permettant
+de jouer des parties par mail.
 
 \chapter{Divers}
 
