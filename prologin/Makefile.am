@@ -6,17 +6,7 @@ if HAVE_QT
 SUBDIRS += gui_qt
 endif
 
-if BUILD_ant
-SUBDIRS += ant
-endif
-
-if BUILD_prolo2005
-SUBDIRS += prolo2005
-endif
-
-if BUILD_prolo2006
-SUBDIRS += prolo2006
-endif
+SUBDIRS += $(BUILD_ant) $(BUILD_prolo2005) $(BUILD_prolo2006)
 
 if HAVE_MYSQL
 SUBDIRS +=					\

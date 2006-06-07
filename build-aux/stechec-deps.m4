@@ -7,10 +7,11 @@ AC_DEFUN([STECHEC_ADDMODULE],
 [
     existing_modules="$existing_modules,$1"
     stechec_cond_$1_set() {
-        AM_CONDITIONAL([BUILD_$1], [true])
+        BUILD_$1=$1
+        AC_SUBST([BUILD_$1])
     }
     stechec_cond_$1_unset() {
-        AM_CONDITIONAL([BUILD_$1], [false])
+        unset BUILD_$1
     }
 ])
 

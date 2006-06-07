@@ -196,6 +196,8 @@ AC_CONFIG_FILES([
 #
 # Prologin ouput files
 #
+if test x$BUILD_prologin != x; then
+
 AC_CONFIG_FILES([
   prologin/Makefile
   prologin/gui_qt/Makefile
@@ -203,12 +205,21 @@ AC_CONFIG_FILES([
   prologin/main_server/Makefile
   prologin/common/Makefile
   prologin/tkrun/Makefile
+])
+
+if test x$BUILD_ant != x; then
+AC_CONFIG_FILES([
   prologin/ant/Makefile
   prologin/ant/rules/Makefile
   prologin/ant/visu/Makefile
   prologin/ant/test/Makefile
   prologin/ant/subject/Makefile
   prologin/ant/data/Makefile
+])
+fi
+
+if test x$BUILD_prolo2005 != x; then
+AC_CONFIG_FILES([
   prologin/prolo2005/Makefile
   prologin/prolo2005/subject/Makefile
   prologin/prolo2005/rules/Makefile
@@ -216,6 +227,11 @@ AC_CONFIG_FILES([
   prologin/prolo2005/visu2d/Makefile
   prologin/prolo2005/editor/Makefile
   prologin/prolo2005/data/Makefile
+])
+fi
+
+if test x$BUILD_prolo2006 != x; then
+AC_CONFIG_FILES([
   prologin/prolo2006/Makefile
   prologin/prolo2006/subject/Makefile
   prologin/prolo2006/rules/Makefile
@@ -225,5 +241,8 @@ AC_CONFIG_FILES([
   prologin/prolo2006/sdlvisu/Makefile
   prologin/prolo2006/virchor/Makefile
 ])
+fi
+
+fi
 
 AC_OUTPUT
