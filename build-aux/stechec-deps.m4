@@ -39,10 +39,11 @@ stechec_adddep()
         sdl) STECHEC_PUSHDEP([sdl]) ;;
         qt) STECHEC_PUSHDEP([qt]) ;;
         mysql) STECHEC_PUSHDEP([mysql]) ;;
+        readline) STECHEC_PUSHDEP([readline]) ;;
         *)
-            sub_deps=$(eval echo "\$DEPENDS_$mod")
+            sub_deps=$(eval echo "\$DEPENDS_$dep")
             if test "x$sub_deps" != x; then
-                stechec_getdeps $sub_deps
+                stechec_getdeps $dep
             else
                 AC_MSG_ERROR([unknown dependency: $dep])
             fi
