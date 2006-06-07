@@ -569,7 +569,11 @@ la fin de son tour avec \texttt{MSG\_TURNOVER}, répété par le serveur.
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MODULE XML
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Le module XML}
+\label{chap:xml}
 
 \begin{figure}[ht]
   \centering
@@ -603,7 +607,13 @@ la vérification des documents ainsi que de fournir des valeurs par
 défaut dans le cas où tout l'utilisateur aurait omis quelques
 champs. Et, bien entendu, le débugger\footnote{Non... vraiment ? :)}.
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MODULE REGLES (CLIENT/SERVEUR)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Le module règles: arbitrage et règle client}
+\label{chap:regles}
 
 \section{La partie de code commune}
 
@@ -821,7 +831,9 @@ demandé en temps voulu.
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LE SERVEUR DE JEU
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Le serveur de jeu}
 \label{chap:serveur}
 
@@ -915,7 +927,11 @@ pas grand chose. Il est bon d'éviter ces failles en amont.
 
 \section{La gestion des clients}
 
-Gérer tous les clients, spectateurs... Comment ca, section inutile ?
+En gros, les clients qui viennent de se connecter tombent dans un pool
+d'attente, puis rejoignent une partie quand ils le demandent. Ensuite,
+a la fin de ladite partie, ils sont purement et simplement déconnecté.
+Il n'y a pas grand chose a dire de plus, il suffit de regarder le code
+dans \texttt{stechec/server/}
 
 \section{Log/Replay}
 \label{sec:log}
@@ -937,32 +953,91 @@ tour, \ldots).
 On peut aussi inventer toute sorte de moulettes pour ce fichier de
 log, création de statistique sur le nombre de TouchDown, \ldots
 
+Il faut savoir que cette partie est globalement codé, tous les
+messages peuvent être enregistré dans un fichier coté serveur, mais la
+lecture de ces logs est encore problématique... En fait, il manque un
+champ \texttt{timestamp} dans les messages, ce qui fait qu'il n'est
+pas possible de prévoir a quel rythme sortir les messages (ce qui est
+vraiment problématique, vu que tout le système est asynchrone). A
+réfléchir.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% CLIENTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Clients}
 \label{chap:client}
 
+\begin{wrapfigure}{r}{9cm}
+  \includegraphics[width=8.5cm]{package-client}
+  \caption{Schéma simplifié de l'environnement du client.}
+  \label{fig:package-client}
+\end{wrapfigure}
+
+On a vu (section \ref{chap:regles}) le fonctionnement des règles côté
+client. Il reste la plus grosse partie, le client. La figure
+\ref{fig:package-client} montre les interactions de ce client (la
+grosse boîte colorée) avec les règles et la connection serveur (classe
+\texttt{ClientCx}). Cette partie est modulaire, on peut mettre
+n'importe quoi dans la boîte client (un client graphique, en mode
+console, ou sans interaction, c'est à dire une IA). Le client contient
+la fonction \texttt{main()}, il est donc responsable d'initialiser les
+règles et la connection (mais ca se fait en quelques lignes, via les
+autres modules), puis il lui reste à gérer l'affichage et les entrées
+utilisateur (clavier, souris), et jouer via la classe \texttt{Api}.
+
+\section{Client générique (chargeur de client)}
+
+En réalité, ce n'est pas un vrai client, c'est une sorte de
+\emph{wrapper} qui va s'occuper du sale boulot, c'est à dire de parser
+le XML, de se connecter au serveur, de charger les règles, puis de
+charger et de donner la main à un vrai client. A l'origine, il a été
+conçu pour le concours prologin, pour masquer ces détails aux
+candidats, et évitent qu'ils n'y touchent. Puis, comme c'est un outil
+bien pratique, je m'en suis reservi pour le client console et
+graphique de tbt.
+
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=13cm]{uml-client}
-  \caption{\vspace{-2cm} Schéma simplifié d'un client}
-  \label{fig:uml-client}
+  \includegraphics[width=13cm]{client-generique}
+  \caption{Fonctionnement du client générique}
+  \label{fig:client-generique}
 \end{figure}
 
-Il y a une grosse partie, qui contiendra le point d'entrée
-(\texttt{main()}), qui varie selon le \emph{visage} du client, est qui
-est encore totalement indéfinie. Dans tous les cas, elle devra
-contenir une instance de \texttt{GameClient}. \texttt{GameClient} est
-responsable de la connexion avec le serveur, et contiendra quelques
-méthodes pour la \emph{maintenance} (comme connectToServer,
-disconnect, \ldots), mais rien en soi pour le jeu. Cette dernière à
-une instance de \texttt{CRules}, lui fournit les paquets reçu du
-serveur et envoie les paquets qu'il veut envoyer. \texttt{CRules} est
-prévu pour contenir tout l'état du jeu (tel que fourni par le
-serveur), plus quelques vérifications locale triviales (Inutile de
-demander au serveur si on peut bouger un joueur en dehors du terrain,
-par exemple).
+Le fonctionnement est plutôt simple, et tient dans une fonction
+\texttt{main} de 120 lignes. Il est décrit dans la figure
+\ref{fig:client-generique}. Les sources se trouvent dans le répertoire
+\texttt{stechec/client/}. Après avoir chargé le fichier XML (donné en
+ligne de commande, ou \emph{deviné} par le programme en cherchant dans
+quelques endroits prédéfinis), il va charger le module de règles
+client défini dans le fichier de configuration XML, puis appeler cette
+fonction qui doit être codé dans les règles:
+
+\begin{lstlisting}[language=C++]
+extern "C" BaseCRules* load_client_rules(xml::XMLConfig* cfg);
+\end{lstlisting}
+
+Ensuite, après avoir chargé le module de connection, il peut se
+connecter directement au serveur, si il y a
+\texttt{auto\_connect=true} dans le XML. Le nom et le port du serveur
+sont également dans le XML (aucune interaction utilisateur à ce
+niveau). Après s'être connecté au serveur, il appelle cette fonction
+si elle est présente dans les règles (TBT ne l'utilise pas, mais
+c'était nécessaire pour prologin, pour que les règles clients puissent
+être initialisé par le serveur avant de charger le code des candidats):
+
+\begin{lstlisting}[language=C++]
+extern "C" bool hook_before_ui_load(ClientCx* ccx, BaseCRules* rules);
+\end{lstlisting}
+
+Il est a noter que le module CCX est l'abbréviation de \emph{Client
+  Connexion}. Ce module fait pour l'instant partie intégrante du
+client générique, mais devrait être bougé dans une bibliothèque
+séparée. Ce client générique est bien pratique dans un certain nombre
+de cas, mais quand on veut faire quelque chose de plus compliqué (par
+exemple, une interface graphique avec un menu dans lequel il est
+possible de choisir ses paramètres de connections au serveur, de se
+connecter/déconnecter plusieurs fois sans quitter l'application), il
+vaut mieux ne pas l'utiliser et le recoder dans le client en question.
 
 \section{Client IA}
 
@@ -1030,8 +1105,7 @@ Un petit exemple d'utilisation, qui permet d'afficher et d'animer la
 roue qui tourne (le sablier de tbt 0.5). les détails seront expliqués
 plus tard:
 
-\begin{lstlisting}[
-    language=C++]
+\begin{lstlisting}[language=C++]
   Sprite wheel("image/wheel"); // Cree une sprite a partir d'une image png
   wheel.setZ(1);               // Position z de la sprite
   wheel.setPos(113, 506);      // Position x,y de la sprite
@@ -1155,7 +1229,7 @@ récupération des entrées utilisateur (la souris).
 
 La figure \ref{fig:gui-vscrollable} montre plus en détail le
 fonctionnement d'un objet de type \texttt{VirtualScrollableSurface},
-en prenant pour exemple le terrain de jeu de bloodbowl. La difficultée.
+en prenant pour exemple le terrain de jeu de bloodbowl.
 
 Il faut bien faire attention au référentiel dans lequel on
 travaille. La plupart du temps, pour placer/déplacer les joueurs, la
@@ -1309,9 +1383,7 @@ possible:
 \begin{itemize} 
 \item Une documentation décrivant la modélisation générale, décrivant
   les diverses interfaces entre modules, et reflétant l'esprit du
-  soft, genre ce document en un peu plus étoffé. Si quelqu'un sait
-  comment obtenir la même chose plus automatiquement qu'en maintenant
-  quelque chose de séparé, je suis preneur,
+  soft. Ce document convient très bien.
 \item Une autre collant plus au code, sous forme de commentaires dans
   le code, plus une description des interfaces sous format Doxygen.
 \end{itemize}
@@ -1479,6 +1551,8 @@ réfère aux modules règles client et arbitrage.
 \item Pour décrire les règles coté serveur, on utilise le mot
   \emph{arbitrage}.
 \end{itemize}
+
+FIXME: a completer ?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% BIBLIO & SITES WEB
