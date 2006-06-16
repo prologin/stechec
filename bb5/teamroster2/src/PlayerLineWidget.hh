@@ -1,0 +1,77 @@
+/*
+** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
+** 
+** Copyright (C) 2006 The TBT Team.
+** 
+** This program is free software; you can redistribute it and/or
+** modify it under the terms of the GNU General Public License
+** as published by the Free Software Foundation; either version 2
+** of the License, or (at your option) any later version.
+** 
+** The complete GNU General Public Licence Notice can be found as the
+** `NOTICE' file in the root directory.
+** 
+** The TBT Team consists of people listed in the `AUTHORS' file.
+*/
+#ifndef PLAYERLINEWIDGET_HH_
+#define PLAYERLINEWIDGET_HH_
+
+#include <vector.h>
+
+#include "pgthemewidget.h"
+#include "pglabel.h"
+#include "pgdropdown.h"
+#include "pglineedit.h"
+#include "pglistboxbaseitem.h"
+
+#include "TeamrosterApp.hh"
+#include "Position.hh"
+
+class PlayerLineWidget : public PG_ThemeWidget 
+{
+public:
+    // -----------------------------------------------------------------------
+    //  Constructors
+    // -----------------------------------------------------------------------
+	PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect);
+ 	virtual ~PlayerLineWidget();
+ 
+    void updatePosition(vector<Position> vPos);
+   
+    // -----------------------------------------------------------------------
+    //  Getters & Setters
+    // -----------------------------------------------------------------------
+    long getPlayerCost();
+
+private:
+    void emptyPlayerLine();
+    void fillPlayerLine(Position pos);
+
+    // -----------------------------------------------------------------------
+    //  GUI Handlers
+    // -----------------------------------------------------------------------
+    bool handleSelectItemPosition(PG_ListBoxBaseItem* item);
+    
+    // -----------------------------------------------------------------------
+    //  Private data members
+    // -----------------------------------------------------------------------
+	vector<Position> vPos_;
+
+	PG_LineEdit* name_;
+	PG_DropDown* position_;
+	PG_LineEdit* movementAllowance_;
+	PG_LineEdit* strength_;
+	PG_LineEdit* agility_;
+	PG_LineEdit* armourValue_;
+	PG_LineEdit* skills_;
+	PG_LineEdit* injuries_;
+	PG_LineEdit* completions_;
+	PG_LineEdit* touchdowns_;
+	PG_LineEdit* interceptions_;
+	PG_LineEdit* casualties_;
+	PG_LineEdit* mostValuablePlayer_;
+	PG_Label* starPlayerPoints_;
+	PG_Label* value_;	
+};
+
+#endif /*PLAYERLINEWIDGET_HH_*/

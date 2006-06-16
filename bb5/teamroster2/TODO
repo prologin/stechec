@@ -1,0 +1,15 @@
+Règles 
+ - calculer le SSP (Star Player Points)
+
+GUI
+ - évaluer QT
+ - ajouter les boutons load / save
+ 
+ Events
+ - gestion des évènements boutons : load / save
+ 
+ XML
+ - ajouter un schéma XSD pour la validation du fichier "races.xml"
+ - créer les classes pour parser/enregistrer le fichier team.xml  
+ 
+ 

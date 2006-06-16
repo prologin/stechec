@@ -1,0 +1,43 @@
+Teamroster v.0.0.1 
+
+Voici l'éditeur d'équipe pour TBT. 
+
+Il est écrit en C++ / SDL (Paragui).
+
+Il nécessite alors d'installer la librairie : 
+  paragui-1.1.8
+
+
+---------------------------
+ Comment compiler et tester ?
+---------------------------
+cd teamroster2
+./autogen.sh
+./configure 
+make
+./src/teamroster2
+
+
+Actuellement pour réaliser l'interface graphique la librairie ParaGui a été utilisée.
+L'avantage est qu'il s'agit d'une sur-couche de SDL offrant un ensemble de composants
+graphique de basiques tels que des zones de saisie, des dopdown lists, des boutons, etc.
+
+Par contre les inconvénients sont nombreux: 
+  - Pas vraiment de programmation SDL car il s'agit d'une sur-couche de trop haut niveau. 
+     <=> Aucune expérience acquise en SDL à proprement parler.
+  - Les composants fournis sont très loin d'être mature et il y a pas mal de chose à se faire 
+    à la main. 
+    
+
+---------------------------
+    Release notes
+---------------------------
+- Prise en charge des races disponibles dans la version LBR 5: cf. fichier ./data/races.xml
+- Choix des races => remplissage des champs "position" + cout des rerolls
+- Choix d'une position pour un joueur => remplissage des caractéristiques + skills
+- Prise en charge de l'interdiction de prendre un apothicaire pour certaines races
+- Prise en charge le contrôle des caractères de saisie dans les zones numériques
+- Limitation du nombre de reroll : 8 max pour toutes les races
+- Limitation du nombre d'apothicaire : entre 0 et 1 en fonction des races
+- Calcul automatique de la valeur totale de l'équipe 
+- Posibilité de modification de l'ensemble des champs non calculés et non fixés de la feuille
