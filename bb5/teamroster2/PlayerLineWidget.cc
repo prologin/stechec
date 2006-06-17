@@ -131,9 +131,15 @@ void PlayerLineWidget::updatePosition(vector<Position> vPos)
 		agility_->SetText("");
 		armourValue_->SetText("");
 		skills_->SetText("");
+ 		injuries_->SetText("");
+		completions_->SetText("");
+		touchdowns_->SetText("");
+		interceptions_->SetText("");
+		casualties_->SetText("");
+		mostValuablePlayer_->SetText("");
  	    starPlayerPoints_->SetText("0");
 	    value_->SetText("0");
- }
+}
  
  void PlayerLineWidget::fillPlayerLine(Position pos)
  {
@@ -159,7 +165,6 @@ void PlayerLineWidget::updatePosition(vector<Position> vPos)
  bool PlayerLineWidget::handleSelectItemPosition(PG_ListBoxBaseItem* item)
  {
  	const char* selectedPosition = item->GetText();
-//	std::cout << "PlayerLineWidget::handleSelectItemPosition:" << selectedPosition << ":" << std::endl;
  	
  	// Empty all the characteristics
  	if (strcmp("",selectedPosition) == 0)
