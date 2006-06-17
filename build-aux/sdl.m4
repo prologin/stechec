@@ -261,6 +261,25 @@ Warning: This is probably _not_ what you want.
           [http://www.ferzkopp.net/Software/SDL_gfx-2.0/])
 
 
+      #
+      # Check for Paragui, only for bb5 module.
+      #
+      # FIXME: if paragui is not installed, aclocal will report helpless message:
+      #    "macro AM_PATH_PARAGUI not defined"
+      # I haven't time to do better, and since it may be removed, this is sufficient for now.
+      #
+      # Defines HAVE_PARAGUI, PARAGUI_CFLAGS and PARAGUI_LIBS.
+      #
+      case $used_modules in
+          *bb5*)
+              AM_PATH_PARAGUI([1.0.3],
+                  :,
+	          AC_MSG_ERROR([*** PARAGUI version $PARAGUI_VERSION not found!])
+              )
+              ;;
+      esac
+      AM_CONDITIONAL([HAVE_PARAGUI], [test x"$PARAGUI_CFLAGS" != x])
+
       AC_SUBST([SDL_CFLAGS])
       AC_SUBST([SDL_LIBS])
 

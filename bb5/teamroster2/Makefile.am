@@ -1,8 +1,28 @@
-SUBDIRS = \
-	src
+# -*- Makefile.am -*-
 
-$(PACKAGE)-$(VERSION).tar.gz: dist
+bin_PROGRAMS = teamroster
 
-rpm: $(PACKAGE)-$(VERSION).tar.gz
-	cp $(PACKAGE)-$(VERSION).tar.gz /usr/src/redhat/SOURCES
-	rpm -ba $(PACKAGE).spec
+teamroster_SOURCES = 				\
+	BBowlWidget.cc				\
+	BBowlWidget.hh				\
+	Helper-classes.cc			\
+	Helper-classes.hh			\
+	My_DropDown.cc				\
+	My_DropDown.hh				\
+	PlayerLineWidget.cc			\
+	PlayerLineWidget.hh			\
+	Position.cc				\
+	Position.hh				\
+	Race.cc					\
+	Race.hh					\
+	RaceHandler.cc				\
+	RaceHandler.hh				\
+	RaceParser.cc				\
+	RaceParser.hh				\
+	Teamroster.cc				\
+	TeamrosterApp.cc			\
+	TeamrosterApp.hh
+
+teamroster_CPPFLAGS = $(XERCES_CPPFLAGS)
+teamroster_CXXFLAGS = $(PARAGUI_CFLAGS)
+teamroster_LDFLAGS = $(XERCES_LDFLAGS) $(PARAGUI_LIBS)

@@ -182,6 +182,7 @@ AC_CONFIG_FILES([
 #
 # BB5 output files
 #
+if test x$BUILD_bb5 != x; then
 AC_CONFIG_FILES([
   bb5/Makefile
   bb5/ai/Makefile
@@ -190,8 +191,10 @@ AC_CONFIG_FILES([
   bb5/common/Makefile
   bb5/console/Makefile
   bb5/data/Makefile
+  bb5/teamroster2/Makefile
   bb5/visu2d/Makefile
 ])
+fi
 
 #
 # Prologin ouput files
@@ -243,6 +246,6 @@ AC_CONFIG_FILES([
 ])
 fi
 
-fi
+fi # !BUILD_prologin
 
 AC_OUTPUT
