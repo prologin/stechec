@@ -1,15 +1,23 @@
-Règles 
- - calculer le SSP (Star Player Points)
-
-GUI
- - évaluer QT
- - ajouter les boutons load / save
+Regles 
+ - calculer le PE/SSP (Star Player Points)
+ - calculer la valeur des joueurs modifiés 
+ - Règles de validation d'une équipe avant de l'enregistrer : 
+     nombre de joueurs dans une position donnée
+     
+GUI 
+ - evaluer QT
+ - gestion des skills
+ - afficher une boite de dialogue pour exlpiquer quand l'apothicaire n'est pas disponible pour une race.
+ - afficher l'icone de l'emblème de l'équipe
+ - ajouter les boutons: load, save, quit
+ - permettre de choisir une image pour les joueurs.
  
  Events
- - gestion des évènements boutons : load / save
+ - gestion des evenements boutons : load / save
  
  XML
- - ajouter un schéma XSD pour la validation du fichier "races.xml"
- - créer les classes pour parser/enregistrer le fichier team.xml  
+ - ajouter un schema XSD pour la validation du fichier "races.xml"
+ - creer les classes pour parser/enregistrer le fichier team.xml  
  
  
+ Outil pour l'édition des positions. 
