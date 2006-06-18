@@ -20,6 +20,14 @@
 # include "BaseCRules.hh"
 # include "client_cx.hh"
 
+/*!
+** @addtogroup client
+** @{
+*/
+
+/*!
+** @brief Helper class that load/run an UI.
+*/
 class ChampionLoader
 {
 public:
@@ -38,5 +46,7 @@ private:
   run_func_t run_fun_;
   Api* api_;
 };
+
+//! @}
 
 #endif // !CHAMPION_LOADER_HH_

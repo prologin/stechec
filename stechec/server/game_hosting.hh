@@ -24,6 +24,11 @@
 # include "BaseSRules.hh"
 # include "PacketSender.hh"
 
+/*!
+** @addtogroup server
+** @{
+*/
+
 /*! @brief Represents a game, with up to two coachs and as many
 ** viewers as they could be.
 **
@@ -31,9 +36,6 @@
 **
 ** Instance of this class are under Server control, each of them
 ** run in a separate thread.
-**
-** @author victor
-** @date 29/01/2006
 */
 class GameHosting : public PacketSender
 {
@@ -43,7 +45,7 @@ public:
 
   //! @brief Add a client to this game.
   //! @param cx The associated connection.
-  //! @param client_gid The client game id, used to identify the client outside
+  //! @param client_extid The client game id, used to identify the client outside
   //!   the game (ie: league).
   //! @param wanna_be_coach True if the client wants to be a coach.
   void addClient(Cx* cx, int client_extid, bool wanna_be_coach);
@@ -89,5 +91,7 @@ private:
   bool                  finished_;        ///< Is the game finished ?
   pthread_t             self_;
 };
+
+//! @}
 
 #endif /* !GAME_HOSTING_HH_ */

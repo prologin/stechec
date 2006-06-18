@@ -17,7 +17,12 @@
 #ifndef START_ARBITER_HH_
 # define START_ARBITER_HH_
 
+//! @addtogroup client
+//! @{
+
 bool start_arbiter(xml::XMLConfig& cfg);
 void clean_arbiter();
+
+//! @}
 
 #endif /* !START_ARBITER_HH_ */

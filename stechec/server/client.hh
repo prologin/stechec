@@ -20,6 +20,19 @@
 # include "BaseSRules.hh"
 # include "datatfs/cx.hh"
 
+/*!
+** @addtogroup server
+** @{
+*/
+
+/*!
+** @brief Clients statistics that can be retrieved from Client.
+**
+** Originated from a kludge: Generic server and arbiter have several
+** different informations on each client. They are all grouped here (with
+** the CoachErrorCustom rules class), then resend to rules at the end so it can
+** write stats, calculate scores, ...
+*/
 class ClientStatistic
 {
 public:
@@ -29,8 +42,8 @@ public:
 };
 
 /*!
-** Represents an external connection on the server, coach or
-** spectator.
+** @brief Represents an external connection on the server, coach or
+** spectator, on the generic server side.
 **
 ** This class only encapsulate a Cx object, adding some useful informations
 ** like the connection uid, and if it a coach or a viewer.
@@ -101,5 +114,7 @@ private:
 };
 
 # include "Client.hxx"
+
+//! @}
 
 #endif /* !CLIENT_HH_ */

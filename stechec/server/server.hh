@@ -21,7 +21,7 @@
 # include "datatfs/tcp.hh"
 # include "game_hosting.hh"
 
-/*! @file src/server/server.hh
+/*! @file
 **
 ** @defgroup server Generic server application.
 ** @{
@@ -30,10 +30,9 @@
 //! @brief Maximum number of coachs + spectators connected on server.
 # define MAX_CONNECTION        250
 
-/*! @brief Class that handle spectators, multiple games...
-**
-** @author victor
-** @date 15/01/2006
+/*!
+** @brief Control multiple game, receive new clients, handle
+** spectators...
 */
 class Server
 {
@@ -52,14 +51,14 @@ private:
   bool          serveClient(Cx* cx);
   static void   wantShutdown(int signal);
 
-  static Server* inst;
+  static Server                 *inst;
   
-  const xml::XMLConfig& cfg_;
+  const xml::XMLConfig&         cfg_;
 
-  std::string   rules_name_;
-  Library       rules_;
-  typedef BaseSRules* (*create_rules_t)(const xml::XMLConfig*);
-  create_rules_t create_rules_fun_;
+  std::string                   rules_name_;
+  Library                       rules_;
+  typedef BaseSRules*           (*create_rules_t)(const xml::XMLConfig*);
+  create_rules_t                create_rules_fun_;
   
   typedef std::map<int, GameHosting*> GameList;
   typedef GameList::iterator    GameIter;

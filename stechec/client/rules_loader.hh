@@ -20,6 +20,14 @@
 # include "BaseRules.hh"
 # include "client_cx.hh"
 
+/*!
+** @addtogroup client
+** @{
+*/
+
+/*!
+** @brief Helper class that load/initialize/unload rules.
+*/
 class RulesLoader
 {
 public:
@@ -33,5 +41,7 @@ private:
   Library       lib_rules_;
   BaseCRules*   base_rules_;
 };
+
+//! @}
 
 #endif /* !RULES_LOADER_HH_ */

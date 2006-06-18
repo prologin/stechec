@@ -21,7 +21,14 @@
 # include "PacketSender.hh"
 # include "BaseCRules.hh"
 
-/*! @brief Handle connection with the server.
+/*! @file
+**
+** @defgroup client Generic client application.
+** @{
+*/
+
+/*!
+** @brief Handle connection with the server.
 **
 ** Takes care of network connection with the server, provides methods
 ** to connect, disconnect, ...
@@ -72,5 +79,7 @@ private:
   BaseCRules*   rules_;
   int           client_gid_;
 };
+
+//! @}
 
 #endif /* !CLIENTCX_HH_ */

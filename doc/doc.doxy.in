@@ -75,10 +75,10 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @top_srcdir@/stechec/ @srcdir@/doxygen_main.hh
+INPUT                  = @top_srcdir@/stechec/ @top_srcdir@/bb5/ @srcdir@/doxygen_main.hh
 FILE_PATTERNS          = 
 RECURSIVE              = YES
-EXCLUDE                =
+EXCLUDE                = @top_srcdir@/stechec/scripts
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
