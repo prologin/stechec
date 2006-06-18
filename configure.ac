@@ -33,11 +33,11 @@ STECHEC_ADDMODULE([prolo2006])
 
 # Modules dependencies
 DEPENDS=""
-DEPENDS_bb5="sdl"
-DEPENDS_prologin="qt,mysql"
-DEPENDS_ant="prologin,sdl"
-DEPENDS_prolo2005="prologin"
-DEPENDS_prolo2006="prologin"
+DEPENDS_bb5="sdl,readline"
+DEPENDS_prologin="sdl,mysql"
+DEPENDS_ant="prologin,qt"
+DEPENDS_prolo2005="prologin,qt"
+DEPENDS_prolo2006="prologin,qt"
 
 # Can select which module(s) to build
 AC_MSG_CHECKING([for modules to build])
@@ -136,6 +136,11 @@ AC_SUBST([LIBDL])
 AC_SUBST([LT_NO_UNDEFINED])
 CFLAGS="$CFLAGS -pipe"
 CXXFLAGS="$CXXFLAGS -pipe"
+
+# Readline (optional)
+case $DEPENDS in
+     *readline*) STECHEC_CHECK_READLINE() ;;
+esac
 
 # SDL
 case $DEPENDS in

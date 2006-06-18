@@ -12,11 +12,12 @@ bb5_client_console_la_SOURCES =			\
 bb5_client_console_la_CXXFLAGS =		\
 	-DMODULE_NAME=\"console\"		\
 	-DMODULE_COLOR=C_YELLOW			\
-	-DMSG_COLOR
+	-DMSG_COLOR				\
+	$(READLINE_CFLAGS)
 
 bb5_client_console_la_LDFLAGS =			\
 	-module					\
-	-L/sw/lib -lreadline
+	$(READLINE_LIBS)
 
 INCLUDES 	=				\
 	-I$(top_srcdir)/stechec/tools		\

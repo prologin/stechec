@@ -15,13 +15,21 @@
 */
 
 #include <cstdio>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include <sys/types.h>
-
 #include <iomanip>
 
 #include "tools.hh"
+
+#ifdef HAVE_READLINE_H
+# include <readline.h>
+# include <history.h>
+#elif HAVE_READLINE_READLINE_H
+# include <readline/readline.h>
+# include <readline/history.h>
+#else
+# error Sorry, fallback where not using readline is not implemented yet.
+#endif
+
 #include "interface.hh"
 #include "input.hh"
 
