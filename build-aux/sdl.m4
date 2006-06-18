@@ -272,9 +272,9 @@ Warning: This is probably _not_ what you want.
       #
       case $used_modules in
           *bb5*)
-              AM_PATH_PARAGUI([1.0.3],
+              AM_PATH_PARAGUI([1.1.6],
                   :,
-	          AC_MSG_ERROR([*** PARAGUI version $PARAGUI_VERSION not found!])
+	          AC_MSG_ERROR([*** PARAGUI version >= 1.1.6 not found!])
               )
               ;;
       esac
