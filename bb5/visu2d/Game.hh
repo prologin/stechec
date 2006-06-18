@@ -48,12 +48,18 @@ public:
 
   Input&                getInput();
   VirtualSurface&       getScreen();
+  Panel&                getPanel();
+  VisuField&            getField();
 
   //! @brief To call when a player is selected.
   void selectPlayer(VisuPlayer* vp);
  
   //! @brief Unselect all selected players on the screen.  
   void unselectAllPlayer();
+
+  //! @brief Coach choose an action to do (move, block,...),
+  //! next click and it will be done.
+  void addAction(eAction action);
   
   int run();
 
@@ -79,6 +85,7 @@ private:
   bool                  is_playing_;
 
   TextSurface           kickoff_notice_;
+  eAction               action_;
 };
 
 #endif /* !GAME_HH_ */

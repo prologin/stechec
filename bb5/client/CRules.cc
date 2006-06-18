@@ -125,8 +125,16 @@ void        CRules::msgPlayTurn(const MsgNewTurn* m)
 {
   // Who will play.
   setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
-  LOG2("-- CRules: change state: " << getState());
-  onEvent(m);
+  if (m->client_id == getTeamId())
+    {
+      LOG2("-- CRules: change state: GS_COACH (Our turn)");
+      onEvent(eOurTurn);
+    }
+  else
+    {
+      LOG2("-- CRules: change state: GS_COACH (Their turn)");
+      onEvent(eTheirTurn);
+    }
 }
 
 void        CRules::msgEndGame(const MsgEndGame* m)

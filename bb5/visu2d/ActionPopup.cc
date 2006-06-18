@@ -18,15 +18,13 @@
 #include "VisuPlayer.hh"
 #include "ActionPopup.hh"
 
-ActionPopup::ActionPopup(VirtualSurface& screen, Input& input)
-  : screen_(screen),
-    input_(input),
+ActionPopup::ActionPopup(Api* api, Game& game)
+  : VirtualSurface("ActionPopup", 120, 40 * 12),
+    api_(api),
+    game_(game),
     vp_(NULL),
     show_(false)
 {
-  // FIXME: recreate when needed.
-  create(120, 160);
-
   for (int i = 0; i < 12; i++)
     {
       sprite_[i].load("image/general/actions_on");
@@ -41,7 +39,7 @@ ActionPopup::ActionPopup(VirtualSurface& screen, Input& input)
 ActionPopup::~ActionPopup()
 {
   if (show_)
-    screen_.removeChild(this);
+    game_.getScreen().removeChild(this);
 }
 
 void ActionPopup::setVisuPlayer(VisuPlayer* vp)
@@ -53,7 +51,12 @@ void ActionPopup::setVisuPlayer(VisuPlayer* vp)
   sprite_[2].setPos(0, 40);
   sprite_[4].setPos(0, 80);
   sprite_[5].setPos(0, 120);
+  setSize(Point(120, 40 * 4));
+}
 
+VisuPlayer* ActionPopup::getVisuPlayer() const
+{
+  return vp_;
 }
 
 void ActionPopup::show(const Point& pos)
@@ -63,12 +66,12 @@ void ActionPopup::show(const Point& pos)
 
   if (!show_)
     {
-      screen_.addChild(this);
+      game_.getScreen().addChild(this);
       redraw_all_ = true;
     }
   if (pos != getPos())
     {
-      screen_.invalidate(getRect());
+      game_.getScreen().invalidate(getRect());
       setPos(pos);
       redraw_all_ = true;
     }
@@ -79,21 +82,29 @@ void ActionPopup::hide()
 {
   if (show_)
     {
-      screen_.removeChild(this);
-      screen_.invalidate(getRect());
+      game_.getScreen().removeChild(this);
+      game_.getScreen().invalidate(getRect());
     }
   show_ = false;
 }
 
+bool ActionPopup::isVisible() const
+{
+  return show_;
+}
+
 void ActionPopup::update()
 {
-  bool have_focus = getAbsoluteRect().inside(input_.mouse_);
+  Input& input(game_.getInput());
+  bool have_focus = getAbsoluteRect().inside(input.mouse_);
 
+  // A player
   if (have_focus && show_ && vp_ != NULL)
     {
-      if (input_.button_pressed_[1])
+      if (input.button_pressed_[1])
         {
-          vp_->action(eActMove);
+          int item = (input.mouse_.y - getRect().y) / 40;
+          game_.addAction(eActMove);
         }
     }
 

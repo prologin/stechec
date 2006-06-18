@@ -95,6 +95,13 @@ void VirtualSurface::render()
   SurfaceList::iterator it;
   RectList::iterator rit;
 
+  if (!isShown())
+    {
+      LOG5("+ Not rendering `" << name_ << "', is hidden.");
+      invalidated_surf_.clear();
+      return;
+    }
+
   LOG5("+++ Rendering `" << name_ << "'");
 
   std::for_each(child_list_.begin(), child_list_.end(),
@@ -105,17 +112,18 @@ void VirtualSurface::render()
     {
       LOG6("+ Managing invalidated surface: " << *rit);
       for (it = child_list_.begin(); it != child_list_.end(); ++it)
-        {
-          Rect child_surf((*it)->getRealRect());
-          LOG6("  To child: " << **it);
-          child_surf &= *rit;
-          if (child_surf.w > 0 && child_surf.h > 0)
-            {
-              LOG6("* Render merged, blit to: " << child_surf);
-              LOG6("* child blit from: " << child_surf - (*it)->getPos());
-              (*it)->blit(*this, child_surf, child_surf - (*it)->getPos());
-            }
-        }
+        if ((*it)->isShown())
+          {
+            Rect child_surf((*it)->getRealRect());
+            LOG6("  To child: " << **it);
+            child_surf &= *rit;
+            if (child_surf.w > 0 && child_surf.h > 0)
+              {
+                LOG6("* Render merged, blit to: " << child_surf);
+                LOG6("* child blit from: " << child_surf - (*it)->getPos());
+                (*it)->blit(*this, child_surf, child_surf - (*it)->getPos());
+              }
+          }
     }
 
   // Should be the top level VirtualSurface, screen. Flip.

@@ -25,6 +25,7 @@ Surface::Surface()
     zoom_(1.),
     angle_(0.),
     z_(0),
+    show_(true),
     redraw_all_(false),
     parent_(NULL)
 {
@@ -37,6 +38,7 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
     zoom_(zoom),
     angle_(angle),
     z_(0),
+    show_(true),
     redraw_all_(true),
     parent_(NULL)
 {
@@ -52,6 +54,7 @@ Surface::Surface(const std::string filename, double zoom, double angle)
   : surf_(NULL),
     rect_(0, 0, -1, -1),
     z_(0),
+    show_(true),
     redraw_all_(true),
     parent_(NULL)
 {
@@ -64,6 +67,7 @@ Surface::Surface(int width, int height)
     zoom_(1.),
     angle_(0.),
     z_(0),
+    show_(true),
     redraw_all_(true),
     parent_(NULL)
 {
@@ -78,6 +82,7 @@ Surface::Surface(const Surface& s)
   zoom_ = s.zoom_;
   angle_ = s.angle_;
   z_ = s.z_;
+  show_ = s.show_;
   redraw_all_ = s.redraw_all_;
   parent_ = s.parent_;
   if (surf_ != NULL)
@@ -93,6 +98,7 @@ Surface& Surface::operator=(const Surface& s)
   zoom_ = s.zoom_;
   angle_ = s.angle_;
   z_ = s.z_;
+  show_ = s.show_;
   redraw_all_ = s.redraw_all_;
   parent_ = s.parent_;
   if (surf_ != NULL)
@@ -200,6 +206,21 @@ void Surface::setZ(int z)
   z_ = z;
   if (parent_ != NULL)
     parent_->updateChildZOrder();
+}
+
+void Surface::show()
+{
+  show_ = true;
+}
+
+void Surface::hide()
+{
+  show_ = false;
+}
+
+bool Surface::isShown() const
+{
+  return show_;
 }
 
 void Surface::create(int width, int height)

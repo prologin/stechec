@@ -59,9 +59,10 @@ public:
   //! @see eSelTeam
   void                  switchTeam(int to_team);
 
-  const std::string&    getTeamName() const;
   const std::string&    getCoachName() const;
+  const std::string&    getTeamName() const;
   const CTeam*          getTeam() const;
+  int                   getTeamId() const;
   const CPlayer*        getPlayer(int player_id) const;
   const CPlayer*        getPlayer(const Point& pos) const;
   const Weather*        getWeather() const;

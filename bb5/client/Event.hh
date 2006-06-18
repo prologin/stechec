@@ -20,7 +20,9 @@
 # include "EventProcess.hh"
 
 enum {
-  eKickOff
+  eKickOff,
+  eOurTurn,
+  eTheirTurn
 };
 
 /*!
@@ -36,7 +38,7 @@ public:
   virtual ~Event() {}
 
   virtual void evIllegal() {}
-  virtual void evNewTurn() {}
+  virtual void evNewTurn(bool our_turn);
   virtual void evEndGame() {}
   virtual void evKickOff() {}
   virtual void evMoveTurnMarker() {}
@@ -48,6 +50,7 @@ public:
   virtual void evPlayerKnocked(int team_id, int player_id);
 };
 
+inline void Event::evNewTurn(bool) {}
 inline void Event::evChat(const std::string&) {}
 inline void Event::evBallPos(const Point&) {}
 inline void Event::evPlayerPos(int, int, const Point&) {}

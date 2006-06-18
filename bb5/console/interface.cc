@@ -204,10 +204,13 @@ void CmdLineInterface::evIllegal()
   cout << "An illegal action was tried. Bouh." << endl;
 }
 
-void CmdLineInterface::evNewTurn()
+void CmdLineInterface::evNewTurn(bool our_turn)
 {
-  cout << "It's our turn..." << endl;
-  our_turn_ = true;
+  if (our_turn)
+    cout << "It's our turn..." << endl;
+  else
+    cout << "It's their turn..." << endl;    
+  our_turn_ = our_turn;
 }
 
 void CmdLineInterface::evKickOff()
@@ -232,10 +235,10 @@ void CmdLineInterface::evChat(const std::string& msg)
 
 void CmdLineInterface::evPlayerMove(int team_id, int player_id, const Point& pos)
 {
-  cout << "A player has moved." << endl;
+  cout << "Player `" << player_id << "' has moved to `" << pos << "'" << endl;
 }
 
 void CmdLineInterface::evPlayerKnocked(int team_id, int player_id)
 {
-  cout << "A player has been knocked down." << endl;
+  cout << "Player `" << player_id << "' has been knocked down." << endl;
 }

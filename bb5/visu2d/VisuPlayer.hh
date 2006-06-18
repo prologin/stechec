@@ -17,17 +17,12 @@
 #ifndef VISUPLAYER_HH_
 # define VISUPLAYER_HH_
 
+# include "ActionPopup.hh"
 # include "Sprite.hh"
 
 class Api;
-class Panel;
-class VisuField;
 class Game;
 class CPlayer;
-
-enum eAction {
-  eActMove
-};
 
 /*
 ** Player class for visu.
@@ -38,22 +33,20 @@ enum eAction {
 class VisuPlayer : public Sprite
 {
 public:
-  VisuPlayer(Api* api, Panel& panel, VisuField& field, Game& game, const CPlayer* p);
+  VisuPlayer(Api* api, Game& game, const CPlayer* p);
   virtual ~VisuPlayer();
 
   void unselect();
 
-  void action(eAction action);
-  
-  virtual void setPos(const Point& pos);
+  //! @brief Do an action.
+  void action(eAction item);
 
+  virtual void setPos(const Point& pos);
   virtual void update();
-  
+
 private:
 
   Api*          api_;
-  Panel&        panel_;
-  VisuField&    field_;
   Game&         game_;
   const CPlayer* p_;
 

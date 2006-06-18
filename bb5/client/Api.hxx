@@ -93,19 +93,24 @@ inline void Api::switchTeam(int to_team)
     selected_team_ = rules_->other_team_;
 }
 
-inline const std::string& Api::getTeamName() const
-{
-  return selected_team_->getTeamName();
-}
-
 inline const std::string& Api::getCoachName() const
 {
   return selected_team_->getCoachName();
 }
 
+inline const std::string& Api::getTeamName() const
+{
+  return selected_team_->getTeamName();
+}
+
 inline const CTeam* Api::getTeam() const
 {
   return selected_team_;
+}
+
+inline int Api::getTeamId() const
+{
+  return rules_->getTeamId();
 }
 
 inline const CPlayer* Api::getPlayer(int player_id) const

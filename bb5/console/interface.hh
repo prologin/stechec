@@ -44,7 +44,7 @@ private:
 
   // All callbacks.
   virtual void          evIllegal();
-  virtual void          evNewTurn();
+  virtual void          evNewTurn(bool our_turn);
   virtual void          evKickOff();
   virtual void          evMoveTurnMarker();
   virtual void          evTimeExceeded();

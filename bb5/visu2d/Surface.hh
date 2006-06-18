@@ -76,6 +76,12 @@ public:
   virtual void  setAngle(double angle);
   virtual void  setZ(int z);
 
+  // Whether a surface will be rendered or not. (update() is
+  // still called).
+  void          show();
+  void          hide();
+  bool          isShown() const;
+
   void create(int width, int height);
   void load(const std::string filename, double zoom = 1. , double angle = 0.);
 
@@ -112,6 +118,7 @@ private:
   double        zoom_;
   double        angle_;
   int           z_;
+  bool          show_;
 
 protected:
   bool            redraw_all_;

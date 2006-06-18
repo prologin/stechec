@@ -32,6 +32,8 @@ public:
   Rect(const Point& pos, const Point& size);
 
   bool inside(const Point& pos) const;
+  Point getPos() const;
+  Point getSize() const;
 
   friend bool operator== (const Rect& lhs, const Rect& rhs);
   friend bool operator!= (const Rect& lhs, const Rect& rhs);
@@ -82,6 +84,16 @@ inline Rect::Rect(const Point& pos, const Point& size)
 inline bool Rect::inside(const Point& pos) const
 {
   return pos.x >= x && pos.x <= x + w && pos.y >= y && pos.y <= y + h;
+}
+
+inline Point Rect::getPos() const
+{
+  return Point(x, y);
+}
+
+inline Point Rect::getSize() const
+{
+  return Point(w, h);
 }
 
 inline bool operator== (const Rect& lhs, const Rect& rhs)

@@ -20,10 +20,8 @@
 #include "Game.hh"
 #include "VisuPlayer.hh"
 
-VisuPlayer::VisuPlayer(Api* api, Panel& panel, VisuField& field, Game& game, const CPlayer* p)
+VisuPlayer::VisuPlayer(Api* api, Game& game, const CPlayer* p)
   : api_(api),
-    panel_(panel),
-    field_(field),
     game_(game),
     p_(p),
     has_focus_(false),
@@ -35,11 +33,17 @@ VisuPlayer::VisuPlayer(Api* api, Panel& panel, VisuField& field, Game& game, con
   circle_.setZ(5);
   circle_.splitNbFrame(3, 1);
   circle_.anim(200);
+  circle_.hide();
+  game_.getField().addChild(&circle_);
+
   circle_selected_.setZ(6);
+  circle_selected_.hide();
+  game_.getField().addChild(&circle_selected_);
+  
   player_num_.setZ(4);
   player_num_.splitNbFrame(16, 1);
   player_num_.setFrame(p->getId());
-  field_.addChild(&player_num_);
+  game_.getField().addChild(&player_num_);
 }
 
 VisuPlayer::~VisuPlayer()
@@ -51,16 +55,29 @@ void VisuPlayer::unselect()
   if (is_selected_)
     {
       is_selected_ = false;
-      field_.removeChild(&circle_selected_);
+      circle_selected_.hide();
     }
 }
 
-void VisuPlayer::action(eAction action)
+void VisuPlayer::action(eAction item)
 {
-  switch (action)
+  Point to((game_.getInput().mouse_ + game_.getField().getRealAbsoluteRect().getPos()) / 40);
+  int player_id = p_->getId();
+  
+  switch (item)
     {
     case eActMove:
-      LOG3("MOVE PLAYER");
+      LOG2("MOVE to " << to << " - send to api.");
+      api_->doMovePlayer(player_id, to);
+      break;
+    case eActBlock:
+      LOG2("BLOCK to " << to << " - not implemented yet");
+      break;
+    case eActThrow:
+      LOG2("THROW to " << to << " - not implemented yet");
+      break;
+    case eActAggress:
+      LOG2("AGGRESS to " << to << " - not implemented yet");
       break;
     }
 }
@@ -84,25 +101,29 @@ void VisuPlayer::update()
   // Mouse moves on player.
   if (!has_focus_ && now_focus)
     {
-      parent_->addChild(&circle_);
-      panel_.displayPlayerInfo(p_->getTeamId(), p_->getId());
+      circle_.show();
+      game_.getPanel().displayPlayerInfo(p_->getTeamId(), p_->getId());
     }
 
   // Mouse moves out of player.
   if (has_focus_ && !now_focus)
     {
-      parent_->removeChild(&circle_);
+      circle_.hide();
     }
 
   // Click on player. Select him.
-  if (has_focus_ && !is_selected_ && inp.button_pressed_[1])
+  if (now_focus && !is_selected_ && inp.button_pressed_[1])
     {
       game_.unselectAllPlayer();
-      field_.addChild(&circle_selected_);
       game_.selectPlayer(this);
+      circle_selected_.show();
       is_selected_ = true;
     }
 
+  // Debug
+  if (now_focus && inp.key_pressed_['d'])
+    LOG3(*p_);
+  
   has_focus_ = now_focus;
   Sprite::update();
 }

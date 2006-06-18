@@ -25,9 +25,10 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
     ccx_(ccx),
     panel_(api, win.getInput()),
     field_(api, win.getInput()),
-    action_popup_(win.getScreen(), win.getInput()),
+    action_popup_(api, *this),
     our_turn_(false),
-    is_playing_(false)
+    is_playing_(false),
+    action_(eActNone)
 {
   api_->setEventHandler(this);
   win_.getScreen().addChild(&panel_);
@@ -62,6 +63,17 @@ VirtualSurface& Game::getScreen()
   return win_.getScreen();
 }
 
+Panel& Game::getPanel()
+{
+  return panel_;
+}
+
+VisuField& Game::getField()
+{
+  return field_;
+}
+
+
 void Game::evKickOff()
 {
   kickoff_notice_ = TextSurface("font/Vera", 160, 25);
@@ -89,7 +101,7 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
       const CPlayer* ap = api_->getPlayer(player_id);
 
       // Create it.
-      p = new VisuPlayer(api_, panel_, field_, *this, ap);
+      p = new VisuPlayer(api_, *this, ap);
       player_[team_id][player_id - 1] = p;
 
       // Set its property
@@ -121,20 +133,14 @@ void Game::unselectAllPlayer()
         player_[i][j]->unselect();
 }
 
+void Game::addAction(eAction action)
+{
+  LOG2("PREPARE an action !");
+  action_ = action;
+}
+
 int Game::run()
 {
-  Sprite ball("image/general/ball");
-  ball.setZ(2);
-  ball.setPos(10, 550);
-  ball.move(Point(50, 50), 20.);
-  field_.addChild(&ball);
-
-  Sprite ball2("image/general/ball");
-  ball2.setZ(2);
-  ball2.setPos(100, 0);
-  ball2.move(Point(500, 550), 15.);
-  field_.addChild(&ball2);
-
   TextSurface fps("font/Vera", 70, 25);
   fps.setZ(4);
   fps.setPos(720, 570);
@@ -156,10 +162,25 @@ int Game::run()
       if (win_.processOneFrame())
         break;
 
-      if (win_.getInput().button_pressed_[1])
-        action_popup_.hide();
       if (win_.getInput().button_pressed_[3])
-        action_popup_.show(win_.getInput().mouse_);
+        {
+          action_ = eActNone;
+          action_popup_.show(win_.getInput().mouse_);
+        }
+
+      if (win_.getInput().button_pressed_[1])
+        {
+          if (action_popup_.isVisible())
+            action_popup_.hide();
+          else if (action_ != eActNone
+                   && action_popup_.getVisuPlayer() != NULL)
+            {
+              LOG2("Do an action !");
+              action_popup_.getVisuPlayer()->action(action_);
+              action_ = eActNone;
+            }
+        }
+
 
       // Print some things
       std::ostringstream os;

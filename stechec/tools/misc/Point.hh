@@ -25,6 +25,7 @@ template <typename T> bool operator!= (const TPoint<T>&, const TPoint<T>&);
 template <typename T> TPoint<T> operator+ (const TPoint<T>&, const TPoint<T>&);
 template <typename T> TPoint<T> operator- (const TPoint<T>&, const TPoint<T>&);
 template <typename T> TPoint<T> operator* (const TPoint<T>&, double factor);
+template <typename T> TPoint<T> operator/ (const TPoint<T>&, T factor);
 template <typename T> std::ostream& operator<< (std::ostream&, const TPoint<T>&);
 
 
@@ -62,6 +63,7 @@ public:
   friend TPoint<T> operator+ <> (const TPoint<T>& lhs, const TPoint<T>& rhs);
   friend TPoint<T> operator- <> (const TPoint<T>& lhs, const TPoint<T>& rhs);
   friend TPoint<T> operator* <> (const TPoint<T>& lhs, double factor);
+  friend TPoint<T> operator/ <> (const TPoint<T>& lhs, T factor);
   friend std::ostream& operator<< <> (std::ostream& os, const TPoint<T>& p);
 
   T x;  ///< X coordinate (horizontal).
@@ -184,6 +186,12 @@ template <typename T>
 inline TPoint<T> operator* (const TPoint<T>& lhs, double factor)
 {
   return TPoint<T>((T)(lhs.x * factor), (T)(lhs.y * factor));
+}
+
+template <typename T>
+inline TPoint<T> operator/ (const TPoint<T>& lhs, T factor)
+{
+  return TPoint<T>((T)(lhs.x / factor), (T)(lhs.y / factor));
 }
 
 template <typename T>

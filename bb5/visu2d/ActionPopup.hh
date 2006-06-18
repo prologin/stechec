@@ -20,28 +20,48 @@
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
 # include "Input.hh"
+# include "Api.hh"
+
+enum eAction {
+  eActNone,
+  eActMove,
+  eActBlock,
+  eActGather,
+  eActThrow,
+  eActAggress,
+  eActBlitz,
+  eActRollOver,
+  eActGetUp,
+  eActTransmit,
+  eActThrowTm,
+  eActLeap
+};
 
 class VisuPlayer;
+class Game;
 
 class ActionPopup : public VirtualSurface
 {
 public:
-  ActionPopup(VirtualSurface& screen, Input& input);
+  ActionPopup(Api* api, Game& game);
   virtual ~ActionPopup();
 
   void setVisuPlayer(VisuPlayer* vp);
+  VisuPlayer* getVisuPlayer() const;
+
   void show(const Point& pos);
   void hide();
+  bool isVisible() const;
 
   virtual void update();
 
 private:
-  VirtualSurface& screen_;
-  Input& input_;
+  Api*                  api_;
+  Game&                 game_;
 
-  VisuPlayer* vp_;
-  Sprite sprite_[12];
-  bool show_;
+  VisuPlayer*           vp_;
+  Sprite                sprite_[12];
+  bool                  show_;
 };
 
 #endif /* !ACTIONPOPUP_HH_ */

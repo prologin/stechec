@@ -23,8 +23,10 @@ inline void SRules::sendIllegal(int token, int from) const
 
 inline int SRules::getCurrentTeamId() const
 {
-  if (getState() == GS_COACH1 || getState() == GS_COACH2)
-    return getState();
+  if (getState() == GS_COACH1)
+    return 0;
+  if (getState() == GS_COACH2)
+    return 1;
   if (getState() == GS_INITHALF)
     return coach_begin_;
   return -1;
@@ -34,8 +36,8 @@ inline int SRules::getCurrentOpponentTeamId() const
 {
   int id = getCurrentTeamId();
   if (id == -1)
-    return id;
-  return id == GS_COACH1 ? GS_COACH2 : GS_COACH1;
+    return -1;
+  return (id + 1) % 2;
 }
 
 inline SField* SRules::getField()

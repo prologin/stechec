@@ -25,14 +25,6 @@
 #include "interface.hh"
 #include "input.hh"
 
-// Readline compatibility
-#ifdef HOSTTYPE_DARWIN
-# define rl_completion_matches completion_matches
-typedef VFunction MyRL_VFunction;
-#else
-typedef void (MyRL_VFunction)(char*);
-#endif
-
 using namespace std;
 
 //
@@ -44,13 +36,7 @@ static Input* input_inst = NULL;
 
 void get_line(char* line);
 char** cmd_completion(const char* text, int start, int end);
-
-#ifdef HOSTTYPE_DARWIN
-int cmd_completion_foo(const char*, int);
-#else
 char* cmd_completion_foo(const char*, int);
-#endif
-
 
 
 //
@@ -267,7 +253,7 @@ Input::Input(CmdLineInterface* i, Api* gc)
   ios_base::sync_with_stdio(true);
 
   // Initialize readline
-  rl_callback_handler_install(NULL, (MyRL_VFunction*)&get_line);
+  rl_callback_handler_install(NULL, &get_line);
   rl_attempted_completion_function = cmd_completion;
   rl_completion_entry_function = cmd_completion_foo;
 
@@ -448,11 +434,7 @@ char** cmd_completion(const char* text, int start, int)
 }
 
 // Override the default completion, on filename and users.
-#ifdef HOSTTYPE_DARWIN
-int cmd_completion_foo(const char*, int)
-#else
 char* cmd_completion_foo(const char*, int)
-#endif
 {
   return NULL;
 }

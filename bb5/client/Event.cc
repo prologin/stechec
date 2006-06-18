@@ -27,6 +27,10 @@ void EventProcess::dispatch(const CustomEvent& ie) const
     case eKickOff:
       ev_->evKickOff();
       break;
+    case eOurTurn:
+      ev_->evNewTurn(true);
+    case eTheirTurn:
+      ev_->evNewTurn(false);
     }
 }
 
@@ -34,12 +38,6 @@ template <>
 void EventProcess::dispatch(const MsgIllegal&) const
 {
   ev_->evIllegal();
-}
-
-template <>
-void EventProcess::dispatch(const MsgNewTurn&) const
-{
-  ev_->evNewTurn();
 }
 
 template <>
