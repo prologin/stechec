@@ -52,8 +52,7 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	
 	skills_ = new PG_LineEdit(this,PG_Rect(285,0,194,26));
 	
-	injuries_ = new PG_LineEdit(this,PG_Rect(479,0,37,26),"LineEdit",2);
-	injuries_->SetValidKeys("0123456789");
+	injuries_ = new PG_LineEdit(this,PG_Rect(479,0,37,26));
 	
 	completions_ = new PG_LineEdit(this,PG_Rect(517,0,37,26),"LineEdit",2);
 	completions_->SetValidKeys("0123456789");
@@ -105,6 +104,14 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	app->Add(interceptions_);
 	app->Add(casualties_);
 	app->Add(mostValuablePlayer_);
+
+	// Create handlers
+	completions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
+	touchdowns_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
+	interceptions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
+	casualties_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
+	mostValuablePlayer_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
+	
 }
 
 void PlayerLineWidget::updatePosition(vector<Position> vPos)
@@ -161,6 +168,30 @@ void PlayerLineWidget::updatePosition(vector<Position> vPos)
 		sprintf(cost, "%ld", pos.getCost());
 	    value_->SetText(cost);	
  }  
+ 
+ bool PlayerLineWidget::handleEvaluateSSP(PG_LineEdit* edit) {
+
+	const char* text = completions_->GetText();
+	int com = (text != NULL) ? atoi(text) : 0;
+	
+	text = casualties_->GetText();
+	int cas = (text != NULL) ? atoi(text) : 0;
+	
+	text = interceptions_->GetText();
+	int inter = (text != NULL) ? atoi(text) : 0;
+	
+	text = touchdowns_->GetText();
+	int td = (text != NULL) ? atoi(text) : 0;
+	
+	text = mostValuablePlayer_->GetText();
+	int jpv = (text != NULL) ? atoi(text) : 0;
+	
+	char buf[6];
+	sprintf(buf, "%d", (com + 2*cas + 2*inter + 3*td + 5*jpv));
+	starPlayerPoints_->SetText(buf);
+	
+	return true;
+}
  
  bool PlayerLineWidget::handleSelectItemPosition(PG_ListBoxBaseItem* item)
  {

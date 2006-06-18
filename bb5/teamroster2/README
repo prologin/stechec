@@ -39,5 +39,6 @@ Par contre les inconvénients sont nombreux:
 - Prise en charge le contrôle des caractères de saisie dans les zones numériques
 - Limitation du nombre de reroll : 8 max pour toutes les races
 - Limitation du nombre d'apothicaire : entre 0 et 1 en fonction des races
-- Calcul automatique de la valeur totale de l'équipe 
+- Calcul automatique de la valeur totale de l'équipe (seulement les coûts d'achat)
+- Calcul du PE
 - Posibilité de modification de l'ensemble des champs non calculés et non fixés de la feuille

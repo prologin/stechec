@@ -1,12 +1,13 @@
 Regles 
- - calculer le PE/SSP (Star Player Points)
+ - gestion des blessures (injuries)
  - calculer la valeur des joueurs modifiés 
- - Règles de validation d'une équipe avant de l'enregistrer : 
+ - Regles de validation d'une équipe avant de l'enregistrer : 
      nombre de joueurs dans une position donnée
      
 GUI 
  - evaluer QT
  - gestion des skills
+ - gestion des blessures (injuries)
  - afficher une boite de dialogue pour exlpiquer quand l'apothicaire n'est pas disponible pour une race.
  - afficher l'icone de l'emblème de l'équipe
  - ajouter les boutons: load, save, quit
