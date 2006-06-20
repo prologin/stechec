@@ -15,6 +15,10 @@ teamroster_SOURCES = 				\
 	Position.hh				\
 	Race.cc					\
 	Race.hh					\
+	Player.cc					\
+	Player.hh					\
+	Team.cc					\
+	Team.hh					\
 	RaceHandler.cc				\
 	RaceHandler.hh				\
 	RaceParser.cc				\

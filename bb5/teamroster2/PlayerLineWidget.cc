@@ -29,14 +29,17 @@
 #include "BBowlWidget.hh"
 #include "PlayerLineWidget.hh" 
 #include "Position.hh"
+#include "Player.hh"
 
-PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : PG_ThemeWidget(parent,rect, true)
+PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect, Player *player) : PG_ThemeWidget(parent,rect, true)
 {
+    parent_ = parent;
+    player_ = player;
+    
 	name_ = new PG_LineEdit(this,PG_Rect(0,0,90,26));
 	
 	position_ = new My_DropDown(this, PG_Rect(90,0,92,26));	
 	position_->SetEditable(false);
-	position_->sigSelectItem.connect(slot(*this, &PlayerLineWidget::handleSelectItemPosition));
 	
 	movementAllowance_ = new PG_LineEdit(this,PG_Rect(182,0,25,26),"LineEdit",2);
 	movementAllowance_->SetValidKeys("0123456789");
@@ -51,6 +54,7 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	armourValue_->SetValidKeys("0123456789");
 	
 	skills_ = new PG_LineEdit(this,PG_Rect(285,0,194,26));
+    skills_->SetEditable(false);
 	
 	injuries_ = new PG_LineEdit(this,PG_Rect(479,0,37,26));
 	
@@ -97,7 +101,6 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	app->Add(strength_);
 	app->Add(agility_);
 	app->Add(armourValue_);
-	app->Add(skills_);
 	app->Add(injuries_);
 	app->Add(completions_);
 	app->Add(touchdowns_);
@@ -106,18 +109,30 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	app->Add(mostValuablePlayer_);
 
 	// Create handlers
-	completions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
-	touchdowns_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
-	interceptions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
-	casualties_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
-	mostValuablePlayer_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEvaluateSSP));
-	
+    name_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditName));
+    position_->sigSelectItem.connect(slot(*this, &PlayerLineWidget::handleSelectItemPosition));
+    movementAllowance_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditMa));
+    strength_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditSt));
+    agility_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditAg));
+    armourValue_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditAv));
+    injuries_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditInj));
+    	completions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditComp));
+	touchdowns_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditTd));
+	interceptions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditInter));
+	casualties_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditCasual));
+	mostValuablePlayer_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditMvp));
+
+    updateView();
 }
 
-void PlayerLineWidget::updatePosition(vector<Position> vPos)
+void PlayerLineWidget::updateModel(Player* player)
 {
-	vPos_ = vPos;
-	
+    player_ = player;
+    updateView();
+}
+
+void PlayerLineWidget::updatePositionsList(vector<Position> vPos)
+{
 	// Empty the dropdown list
     position_->DeleteAll();
     
@@ -127,105 +142,189 @@ void PlayerLineWidget::updatePosition(vector<Position> vPos)
     {
         position_->AddItem(vPos[i].getTitle());
     }
+}
+ 
+/*
+ * Method used to update the widget view
+ */
+void PlayerLineWidget::updateView()
+{  
+std::cout<<"PlayerLineWidget::updateView()"<<std::endl;
+    name_->SetText(player_->getName());
+    position_->SetText(player_->getPositionTitle());
     
-   	position_->SelectFirstItem();
- }
- 
- void PlayerLineWidget::emptyPlayerLine()
- {
-		movementAllowance_->SetText("");
-		strength_->SetText("");
-		agility_->SetText("");
-		armourValue_->SetText("");
-		skills_->SetText("");
- 		injuries_->SetText("");
-		completions_->SetText("");
-		touchdowns_->SetText("");
-		interceptions_->SetText("");
-		casualties_->SetText("");
-		mostValuablePlayer_->SetText("");
- 	    starPlayerPoints_->SetText("0");
-	    value_->SetText("0");
-}
- 
- void PlayerLineWidget::fillPlayerLine(Position pos)
- {
- 	    char ma[2];
- 	    sprintf(ma, "%d", pos.getMovementAllowance());
- 		movementAllowance_->SetText(ma);
- 		char st[2];
-		sprintf(st, "%d", pos.getStrength());
- 		strength_->SetText(st);
-		char ag[2];
-		sprintf(ag, "%d", pos.getAgility());
-		agility_->SetText(ag);
-		char av[2];
-		sprintf(av, "%d", pos.getArmourValue());
-		armourValue_->SetText(av);
-		skills_->SetText(pos.getSkills());
- 	    starPlayerPoints_->SetText("0");
-		char cost[6];
-		sprintf(cost, "%ld", pos.getCost());
-	    value_->SetText(cost);	
- }  
- 
- bool PlayerLineWidget::handleEvaluateSSP(PG_LineEdit* edit) {
+    char ma[2];
+    sprintf(ma, "%d", player_->getMovementAllowance());
+    movementAllowance_->SetText(ma);
+    char st[2];
+    sprintf(st, "%d", player_->getStrength());
+    strength_->SetText(st);
+    char ag[2];
+    sprintf(ag, "%d", player_->getAgility());
+    agility_->SetText(ag);
+    char av[2];
+    sprintf(av, "%d", player_->getArmourValue());
+    armourValue_->SetText(av);
+    
+    skills_->SetText(player_->getSkillsAsString());
+ 	
+    injuries_->SetText(player_->getInjuries());
+    
+    char com[2];
+    sprintf(com, "%d", player_->getCompletions());
+    completions_->SetText(com);
+    char td[2];
+    sprintf(td, "%d", player_->getTouchDowns());
+    touchdowns_->SetText(td);
+    char in[2];
+    sprintf(in, "%d", player_->getInterceptions());
+    interceptions_->SetText(in);
+    char cas[2];
+    sprintf(cas, "%d", player_->getCasualties());
+    casualties_->SetText(cas);
+    char mvp[2];
+    sprintf(mvp, "%d", player_->getMostValuablePlayer());
+    mostValuablePlayer_->SetText(mvp);
+    char spp[2];
+    sprintf(spp, "%d", player_->getStarPlayerPoints());
+    starPlayerPoints_->SetText(spp);
+    char cost[6];
+    sprintf(cost, "%ld", player_->getValue());
+    value_->SetText(cost);	
+}  
 
-	const char* text = completions_->GetText();
-	int com = (text != NULL) ? atoi(text) : 0;
-	
-	text = casualties_->GetText();
-	int cas = (text != NULL) ? atoi(text) : 0;
-	
-	text = interceptions_->GetText();
-	int inter = (text != NULL) ? atoi(text) : 0;
-	
-	text = touchdowns_->GetText();
-	int td = (text != NULL) ? atoi(text) : 0;
-	
-	text = mostValuablePlayer_->GetText();
-	int jpv = (text != NULL) ? atoi(text) : 0;
-	
-	char buf[6];
-	sprintf(buf, "%d", (com + 2*cas + 2*inter + 3*td + 5*jpv));
-	starPlayerPoints_->SetText(buf);
-	
-	return true;
-}
- 
- bool PlayerLineWidget::handleSelectItemPosition(PG_ListBoxBaseItem* item)
- {
- 	const char* selectedPosition = item->GetText();
- 	
- 	// Empty all the characteristics
- 	if (strcmp("",selectedPosition) == 0)
- 	{
- 		emptyPlayerLine();
- 	}
- 	else 
- 	{
- 		for (unsigned int i=0; i< vPos_.size(); i++)
-		{
-			if (strcmp(vPos_[i].getTitle(), selectedPosition) == 0)
-			{
-				fillPlayerLine(vPos_[i]);
-				break;
-			}
-		}
- 	}
- 	
- 	// Re-evaluate the total cost of the team
- 	((BBowlWidget*)GetParent())->evaluateTotalTeamCost();
- 	
- 	return true;
- }
- 
- long PlayerLineWidget::getPlayerCost()
- {	
- 	return atol(value_->GetText());
- }
- 
-
-PlayerLineWidget::~PlayerLineWidget()
+bool PlayerLineWidget::handleEditName(PG_LineEdit* edit)
 {
+    player_->setName(edit->GetText());
+    updateView();
+    return true;
 }
+
+bool PlayerLineWidget::handleEditMa(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setMovementAllowance(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditSt(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setStrength(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditAg(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setAgility(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditAv(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setArmourValue(val);
+    updateView();
+    return true;
+}
+ 
+bool PlayerLineWidget::handleEditInj(PG_LineEdit* edit)
+{
+    player_->setInjuries(edit->GetText());
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditComp(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setCompletions(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditTd(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setTouchDowns(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditInter(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setInterceptions(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditCasual(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setCasualties(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleEditMvp(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    int val = (text != NULL) ? atoi(text) : 0;
+
+    player_->setMostValuablePlayer(val);
+    updateView();
+    return true;
+}
+
+bool PlayerLineWidget::handleSelectItemPosition(PG_ListBoxBaseItem* item)
+{
+ 	const char* selectedPosition = item->GetText();
+    
+    // Assert the position has changed...
+ 	if (strcmp(selectedPosition, player_->getPositionTitle()) != 0)
+    { 
+    
+      if (strcmp("",selectedPosition) == 0)
+ 	  {
+            // Reset player caracteristics
+            player_->reset();
+ 	  }
+ 	  else 
+ 	  {
+            // Set player's position
+            player_->setPosition(selectedPosition);
+ 	  }
+ 	
+      // Refresh the view 
+      updateView(); 
+    
+      // Refresh parent view to update totalTeamValue
+      ((BBowlWidget*)parent_)->updateView();
+      
+    }
+    return true;
+}
+ 
+
+PlayerLineWidget::~PlayerLineWidget()  { }

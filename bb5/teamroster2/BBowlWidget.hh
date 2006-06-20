@@ -23,6 +23,7 @@
 
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
+#include "Team.hh"
 
 class BBowlWidget : public PG_ThemeWidget
 {
@@ -33,13 +34,19 @@ public:
 	BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect);
 	virtual ~BBowlWidget();
 
-    void evaluateTotalTeamCost();
-    
+    void updateView();
+
 private:
+
     // -----------------------------------------------------------------------
     //  GUI Handlers
     // -----------------------------------------------------------------------
     bool handleSelectItemRace(PG_ListBoxBaseItem* item);
+    
+    bool handleEditName(PG_LineEdit* edit);
+    bool handleEditBank(PG_LineEdit* edit);
+    bool handleEditHeadCoach(PG_LineEdit* edit);
+    
     bool handleEditApothecary(PG_LineEdit* edit);
     bool handleEditReroll(PG_LineEdit* edit);
     bool handleEditFanFactor(PG_LineEdit* edit);
@@ -49,26 +56,26 @@ private:
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------
-	PlayerLineWidget* mywidget[16];
+    Team*             team_;
+    
+	PlayerLineWidget* playerWidget_[16];
 
-	PG_LineEdit* teamName_;
-	PG_ListBox* race_;
-	PG_Label* teamRating_;	
-	PG_LineEdit* bank_;	
-	PG_LineEdit* headCoach_;
-	PG_LineEdit* reroll_;
-	PG_Label* rerollCost_;
-	PG_Label* rerollTotalCost_;
-	PG_LineEdit* fanFactor_;
-	PG_LineEdit* assistantCoach_;
-	PG_LineEdit* cheerleader_;
-	PG_LineEdit* apothecary_;
-	PG_Label* fanFactorCost_;
-	PG_Label* assistantCoachCost_;	
-	PG_Label* cheerleaderCost_;	
-	PG_Label* apothecaryCost_;	
-	PG_Label* totalTeamValueCost_;	
-	
+	PG_LineEdit*      teamName_;
+	PG_ListBox*       race_;
+	PG_LineEdit*      bank_;	
+	PG_LineEdit*      headCoach_;
+	PG_LineEdit*      reroll_;
+	PG_Label*         rerollCost_;
+	PG_Label*         rerollTotalCost_;
+	PG_LineEdit*      fanFactor_;
+	PG_LineEdit*      assistantCoach_;
+	PG_LineEdit*      cheerleader_;
+	PG_LineEdit*      apothecary_;
+	PG_Label*         fanFactorCost_;
+	PG_Label*         assistantCoachCost_;	
+	PG_Label*         cheerleaderCost_;	
+	PG_Label*         apothecaryCost_;	
+	PG_Label*         totalTeamValueCost_;		
 };
 
 #endif /*BBOWLWIDGET_HH_*/

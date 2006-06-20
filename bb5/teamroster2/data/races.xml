@@ -19,7 +19,7 @@
     <positions>
      <position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" skills="horns" normal="gsm" double="ap" />
      <position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" skills="" normal="gsm" double="ap" />
-     <position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" skills="loner,frenzy,horns,mighty_blow,thick_skull,wild_animal" normal="sm" double="gap" />
+     <position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" skills="loner,frenzy,horns,mighty blow,thick skull,wild animal" normal="sm" double="gap" />
     </positions> 
     <background>Chaos teams are not noted for the subtlety or originality of their game play. A simple drive up the centre of the pitch, maiming and injuring as many opposing players as possible, is about the limit of their game plan. They rarely, if ever, worry about such minor considerations like picking up the ball and scoring touchdowns not while there are any players left alive on the opposing team, anyway.</background>
    </race>

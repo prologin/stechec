@@ -21,6 +21,7 @@
 
 #include "pgthemewidget.h"
 #include "pgcolor.h"
+#include "pglineedit.h"
 #include "pglistbox.h"
 #include "pglistboxitem.h"
 
@@ -31,39 +32,30 @@
 #include "BBowlWidget.hh"
 #include "Race.hh"
 
-#define APOTHECARY_COST 50000
-#define FAN_FACTOR_COST 10000
-#define CHEERLEADER_COST 10000
-#define ASSISTANT_COACH_COST 10000
 
 BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : PG_ThemeWidget(parent,rect, true)
 {
-	// Parse races.xml file
-	RaceParser parser;
-	parser.parseFile();
+    
+    // Parse races.xml file
+    RaceParser parser;
+    parser.parseFile();
+    
+    // Create a team instance with the first available race
+    team_ = new Team(&RaceHandler::vRaces_[0]);
 	
-	PG_Color black(0,0,0);
-	
-	// Create one line per player in the team
-	for (int i=0; i<16; i++)
-	{
-	  mywidget[i]= new PlayerLineWidget(app, this,PG_Rect(42,32+26*i,737,25));
-	  mywidget[i]->SetTransparency(255, false);
-	  mywidget[i]->SetFontColor(black, true);
-	  mywidget[i]->Update();
-	  mywidget[i]->Show();
-	}
-
-	teamName_ = new PG_LineEdit(this,PG_Rect(370,452,150,25),"LineEdit");
-	
-	race_ = new PG_ListBox(NULL, PG_Rect(350,478,170,50));
-	PG_ListBoxItem* item;
-	for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
+    race_ = new PG_ListBox(NULL, PG_Rect(350,478,170,50));
+    PG_ListBoxItem* item;
+    for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
     {
-    		item = new PG_ListBoxItem(race_, 10, RaceHandler::vRaces_[i].getName());
-    }	
+        item = new PG_ListBoxItem(race_, 10, RaceHandler::vRaces_[i].getName());
+    }      
+    
+    PG_Color black(0,0,0);
 	
+    teamName_ = new PG_LineEdit(this,PG_Rect(370,452,150,25),"LineEdit");
 	bank_ = new PG_LineEdit(this,PG_Rect(370,529,150,25),"LineEdit",7);
+    bank_->SetValidKeys("0123456789");
+
 	headCoach_ = new PG_LineEdit(this,PG_Rect(370,556,150,25),"LineEdit");
 	
 	reroll_ = new PG_LineEdit(this,PG_Rect(639,452,24,15),"LineEdit",1);
@@ -106,7 +98,18 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	
 	totalTeamValueCost_ = new PG_Label(this,PG_Rect(729,556,50,20),"0","Label");	
 	totalTeamValueCost_->SetAlignment(PG_Label::RIGHT);
-	
+
+    // Create one line per player in the team
+    for (int i=0; i<16; i++)
+    {
+      playerWidget_[i]= new PlayerLineWidget(app, this,PG_Rect(42,32+26*i,737,25), team_->getPlayer(i+1));
+      playerWidget_[i]->updatePositionsList(RaceHandler::vRaces_[0].getPositions());
+      playerWidget_[i]->SetTransparency(255, false);
+      playerWidget_[i]->SetFontColor(black, true);
+      playerWidget_[i]->Update();
+      playerWidget_[i]->Show();
+    }
+
 	AddChild(teamName_);
 	AddChild(race_);
 	AddChild(bank_);
@@ -141,16 +144,19 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	assistantCoach_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditAssistantCoach));
 	fanFactor_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditFanFactor));
 	cheerleader_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditCheerleader));
-	
-	race_->sigSelectItem.connect(slot(*this, &BBowlWidget::handleSelectItemRace));
-	race_->SelectFirstItem();
+
+    race_->sigSelectItem.connect(slot(*this, &BBowlWidget::handleSelectItemRace));
+    race_->SelectFirstItem();
+
+    updateView();
 }
 
 BBowlWidget::~BBowlWidget()
 {	
+    delete team_;
+    
 	delete teamName_;
 	delete race_;
-	delete teamRating_;	
 	delete bank_;	
 	delete headCoach_;
 	delete reroll_;
@@ -168,139 +174,199 @@ BBowlWidget::~BBowlWidget()
 
 	for (int i=0; i<16; i++)
     {	
-    		delete mywidget[i];
+    		delete playerWidget_[i];
     }
 }
 
-bool BBowlWidget::handleEditApothecary(PG_LineEdit* edit) {
-	const char* text = apothecary_->GetText();
+/*
+ * Method used to update the widget view
+ */
+void BBowlWidget::updateView()
+{     
+std::cout<<"BBowlWidget::updateView()"<<std::endl;
+
+    teamName_->SetText(team_->getName());
+    
+    char bank[6];
+    sprintf(bank, "%ld", team_->getBank());
+    bank_->SetText(bank);
+
+    headCoach_->SetText(team_->getHeadCoach());
+
+    char reroll[1];
+    sprintf(reroll, "%d", team_->getReroll());
+    reroll_->SetText(reroll);
+    
+    char rerollUnitCost[5];
+    sprintf(rerollUnitCost, "%ld", team_->getRerollUnitaryCost());
+    rerollCost_->SetText(rerollUnitCost);
+    
+    char rerollTotalCost[6];
+    sprintf(rerollTotalCost, "%ld", team_->getRerollTotalCost());
+    rerollTotalCost_->SetText(rerollTotalCost);
+    
+    char fanFactor[1];
+    sprintf(fanFactor, "%d", team_->getFanFactor());
+    fanFactor_->SetText(fanFactor);
+    
+    char fanFactorCost[6];
+    sprintf(fanFactorCost, "%ld", team_->getFanFactorCost());
+    fanFactorCost_->SetText(fanFactorCost);
+
+    char assistantCoach[1];
+    sprintf(assistantCoach, "%d", team_->getAssistantCoach());
+    assistantCoach_->SetText(assistantCoach);
+    
+    char assistantCoachCost[6];
+    sprintf(assistantCoachCost, "%ld", team_->getAssistantCoachCost());
+    assistantCoachCost_->SetText(assistantCoachCost);
+
+    char cheerleader[1];
+    sprintf(cheerleader, "%d", team_->getCheerleader());
+    cheerleader_->SetText(cheerleader);
+    
+    char cheerleaderCost[6];
+    sprintf(cheerleaderCost, "%ld", team_->getCheerleaderCost());
+    cheerleaderCost_->SetText(cheerleaderCost);
+
+    char apothecary[1];
+    sprintf(apothecary, "%d", team_->getApothecary());
+    apothecary_->SetText(apothecary);
+    
+    char apothecaryCost[6];
+    sprintf(apothecaryCost, "%ld", team_->getApothecaryCost());
+    apothecaryCost_->SetText(apothecaryCost);
+
+    char totalTeamValueCost[7];
+    sprintf(totalTeamValueCost, "%ld", team_->getTotalValueCost());
+    totalTeamValueCost_->SetText(totalTeamValueCost);
+}  
+
+bool BBowlWidget::handleEditName(PG_LineEdit* edit)
+{
+    team_->setName(edit->GetText());
+    updateView();   
+    return true;
+}
+
+bool BBowlWidget::handleEditBank(PG_LineEdit* edit)
+{
+    const char* text = edit->GetText();
+    long val = (text != NULL) ? atol(text) : 0;
+    
+    team_->setBank(val);
+    updateView();   
+    return true;
+}
+
+bool BBowlWidget::handleEditHeadCoach(PG_LineEdit* edit)
+{
+    team_->setHeadCoach(edit->GetText());
+    updateView();   
+    return true;
+}
+
+bool BBowlWidget::handleEditApothecary(PG_LineEdit* edit) 
+{
+	const char* text = edit->GetText();
 	int val = (text != NULL) ? atoi(text) : 0;
 	
-	char buf[6];
-	sprintf(buf, "%ld", APOTHECARY_COST * (long)val);
-	apothecaryCost_->SetText(buf);
-	evaluateTotalTeamCost();
-	
+    team_->setApothecary(val);
+    updateView();	
 	return true;
 }
 
 bool BBowlWidget::handleEditReroll(PG_LineEdit* edit)
- {
-	const char* text = reroll_->GetText();
-	int val = (text != NULL) ? atoi(text) : 0;
-	
-	char buf[6];
-	sprintf(buf, "%ld", atol(rerollCost_->GetText()) * (long)val);
-	rerollTotalCost_->SetText(buf);
-	evaluateTotalTeamCost();
-	
-	return true;
-}
-
-bool BBowlWidget::handleEditFanFactor(PG_LineEdit* edit) {
-	const char* text = fanFactor_->GetText();
-	int val = (text != NULL) ? atoi(text) : 0;
-	
-	char buf[6];
-	sprintf(buf, "%ld", FAN_FACTOR_COST * (long)val);
-	fanFactorCost_->SetText(buf);
-	evaluateTotalTeamCost();
-	
-	return true;
-}
-
-bool BBowlWidget::handleEditAssistantCoach(PG_LineEdit* edit) {
-	const char* text = assistantCoach_->GetText();
-	int val = (text != NULL) ? atoi(text) : 0;
-	
-	char buf[6];
-	sprintf(buf, "%ld", ASSISTANT_COACH_COST * (long)val);
-	assistantCoachCost_->SetText(buf);
-	evaluateTotalTeamCost();
-	
-	return true;
-}
-
-bool BBowlWidget::handleEditCheerleader(PG_LineEdit* edit) {
-	const char* text = cheerleader_->GetText();
-	int val = (text != NULL) ? atoi(text) : 0;
-	
-	char buf[6];
-	sprintf(buf, "%ld", CHEERLEADER_COST * (long)val);
-	cheerleaderCost_->SetText(buf);
-	evaluateTotalTeamCost();
-	
-	return true;
-}
-
-
-void BBowlWidget::evaluateTotalTeamCost()
 {
-	long totalCost = 0;
+    const char* text = edit->GetText();
+	int val = (text != NULL) ? atoi(text) : 0;
 	
-	// Sum up all the players costs
-	for (int i=0; i<16; i++)
-    {
-    		totalCost += mywidget[i]->getPlayerCost();
-    }
-    
-    // Add the additional costs
- 	totalCost += atol(rerollTotalCost_->GetText());
-	totalCost += atol(fanFactorCost_->GetText());
-	totalCost += atol(assistantCoachCost_->GetText());
-	totalCost += atol(cheerleaderCost_->GetText());
-	totalCost += atol(apothecaryCost_->GetText());
+    team_->setReroll(val);
+    updateView();   
+	return true;
+}
+
+bool BBowlWidget::handleEditFanFactor(PG_LineEdit* edit) 
+{
+    const char* text = edit->GetText();
+	int val = (text != NULL) ? atoi(text) : 0;
 	
-	char buf[7];
-	sprintf(buf, "%ld", totalCost);
-	totalTeamValueCost_->SetText(buf);
+    team_->setFanFactor(val);
+    updateView();   
+	return true;
+}
+
+bool BBowlWidget::handleEditAssistantCoach(PG_LineEdit* edit) 
+{
+    const char* text = edit->GetText();
+	int val = (text != NULL) ? atoi(text) : 0;
+	
+    team_->setAssistantCoach(val);
+    updateView();   
+	return true;
+}
+
+bool BBowlWidget::handleEditCheerleader(PG_LineEdit* edit) 
+{
+    const char* text = edit->GetText();
+	int val = (text != NULL) ? atoi(text) : 0;
+	
+    team_->setCheerleader(val);
+    updateView();   
+	return true;
 }
 
 bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
 {
-	const char* selectedRace = item->GetText();
-	
-	// Retrieve Postions vector for the selected race.
-	vector<Position> vPos;
-	for (unsigned int i=0; i< RaceHandler::vRaces_.size(); i++)
+    // if an old team exist...
+    if (team_ != NULL)
+    {
+        if (strcmp(item->GetText(), team_->getRace()->getName()) == 0)
+        {
+            // Race hasn't changed...
+            return true;
+        }    
+    
+        // if the race has changed, remove old team 
+        delete team_;
+    }
+    
+    // Create team instance
+ //   int idx = race_->GetSelectedIndex();
+ // workaround to solve paragui bug which returns always 0
+    int idx=0; 
+    for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
+    {
+        if (strcmp(item->GetText(), RaceHandler::vRaces_[i].getName()) == 0)
+        {
+            idx = i;
+            break;
+        }
+    }
+//std::cout << "selectIndex=" << idx << std::endl;
+ 
+    team_ = new Team(&RaceHandler::vRaces_[idx]);
+    
+	// Update apothecary use
+	if (RaceHandler::vRaces_[idx].getApothecaryUse())
 	{
-		if (strcmp(selectedRace, RaceHandler::vRaces_[i].getName()) == 0)
-		{
-			
-			// Get Positions for the selected race
-			vPos = RaceHandler::vRaces_[i].getPositions();
-
-			// Update apothecary use
-			if (RaceHandler::vRaces_[i].getApothecaryUse())
-			{
-				apothecary_->SetValidKeys("01");
-			}
-			else
-			{
-				// Remove any old apothecary
-				apothecary_->SetValidKeys("0");
-				apothecary_->SetText("0");
-				apothecaryCost_->SetText("0");
-			}	
-			
-			// Update rerollcost
-			char buf[6]; 
-			sprintf(buf, "%ld", RaceHandler::vRaces_[i].getRerollCost());
-			rerollCost_->SetText(buf);
-		
-			// Update the total cost for reroll because the price can change between races.
-			handleEditReroll(NULL);
-		
-			break;
-		}
+	   apothecary_->SetValidKeys("01");
 	}
+	else
+	{
+	   apothecary_->SetValidKeys("0");
+	}	
 		
+    // Retrieve Postions vector for the selected race.
+    vector<Position> vPos = RaceHandler::vRaces_[idx].getPositions();
+
 	// Update all the dropdowns
 	for (int i=0; i<16; i++)
 	{
-		mywidget[i]->updatePosition(vPos);
+        playerWidget_[i]->updatePositionsList(vPos);
+        playerWidget_[i]->updateModel(team_->getPlayer(i+1));
 	}
+    
+    updateView();
 	return true;
 }
-
-

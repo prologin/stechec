@@ -26,6 +26,7 @@
 
 #include "TeamrosterApp.hh"
 #include "Position.hh"
+#include "Player.hh"
 
 class PlayerLineWidget : public PG_ThemeWidget 
 {
@@ -33,32 +34,42 @@ public:
     // -----------------------------------------------------------------------
     //  Constructors
     // -----------------------------------------------------------------------
-	PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect);
+	PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect, Player *player);
  	virtual ~PlayerLineWidget();
  
-    void updatePosition(vector<Position> vPos);
-   
-    // -----------------------------------------------------------------------
-    //  Getters & Setters
-    // -----------------------------------------------------------------------
-    long getPlayerCost();
+    void updatePositionsList(vector<Position> vPos);
 
+    void updateModel(Player* player);
+    void updateView();
+   
 private:
-    void emptyPlayerLine();
-    void fillPlayerLine(Position pos);
 
     // -----------------------------------------------------------------------
     //  GUI Handlers
     // -----------------------------------------------------------------------
-    bool handleEvaluateSSP(PG_LineEdit* item);
+    bool handleEditName(PG_LineEdit* edit);
     bool handleSelectItemPosition(PG_ListBoxBaseItem* item);
+    bool handleEditMa(PG_LineEdit* edit);
+    bool handleEditSt(PG_LineEdit* edit);
+    bool handleEditAg(PG_LineEdit* edit);
+    bool handleEditAv(PG_LineEdit* edit);
+ 
+    bool handleEditInj(PG_LineEdit* edit);
+
+    bool handleEditComp(PG_LineEdit* edit);
+    bool handleEditTd(PG_LineEdit* edit);
+    bool handleEditInter(PG_LineEdit* edit);
+    bool handleEditCasual(PG_LineEdit* edit);
+    bool handleEditMvp(PG_LineEdit* edit);
     
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------
-	vector<Position> vPos_;
-
-	PG_LineEdit* name_;
+    Player*      player_;
+    
+	PG_Widget*   parent_;
+    
+    PG_LineEdit* name_;
 	PG_DropDown* position_;
 	PG_LineEdit* movementAllowance_;
 	PG_LineEdit* strength_;
@@ -71,8 +82,8 @@ private:
 	PG_LineEdit* interceptions_;
 	PG_LineEdit* casualties_;
 	PG_LineEdit* mostValuablePlayer_;
-	PG_Label* starPlayerPoints_;
-	PG_Label* value_;	
+	PG_Label*    starPlayerPoints_;
+	PG_Label*    value_;	
 };
 
 #endif /*PLAYERLINEWIDGET_HH_*/
