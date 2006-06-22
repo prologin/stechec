@@ -14,28 +14,24 @@
 #
 AC_DEFUN([STECHEC_CHECK_READLINE], 
 [
-    echo "cv readline before: $stechec_cv_dir_readline"
    AC_ARG_WITH([readline],
                AS_HELP_STRING([--with-readline=DIR], 
                               [compile with the specified readline library]),
                [stechec_cv_dir_readline="$withval"])
 
-    echo "cv readline after arg: $stechec_cv_dir_readline"
    if test x"$stechec_cv_dir_readline" = x; then
        stechec_cv_dir_readline=yes
    fi
    AC_CACHE_CHECK([whether to use readline],
        [stechec_cv_dir_readline],
        [stechec_cv_dir_readline=yes])
-   echo "cv readline after cache: $stechec_cv_dir_readline"
    if test x"$stechec_cv_dir_readline" = xyes; then
        stechec_cv_dir_readline=""
    fi
-   echo "cv readline after cache: $stechec_cv_dir_readline"
 
    if test x"$stechec_cv_dir_readline" != x; then
-       readline_libdir="-L$stechec_cv_dir_readline "
-       READLINE_CFLAGS="-I$stechec_cv_dir_readline"
+       readline_libdir="-L$stechec_cv_dir_readline/lib "
+       READLINE_CFLAGS="-I$stechec_cv_dir_readline/include"
    fi
 
    if test x"$stechec_cv_dir_readline" != xno; then
@@ -46,7 +42,7 @@ AC_DEFUN([STECHEC_CHECK_READLINE],
        AC_CHECK_LIB([readline], 
            [rl_completion_matches], 
            [have_readline=yes])
-       if test x$have_readline; then
+       if test x$have_readline = xyes; then
            AC_CHECK_HEADERS([readline.h readline/readline.h], 
                [have_readline_dev=yes])
        fi
