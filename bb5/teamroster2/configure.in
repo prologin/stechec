@@ -34,5 +34,4 @@ AC_SUBST(CXXFLAGS)
 # Finally create all the generated files
 AC_OUTPUT([
 Makefile
-src/Makefile
 ])
