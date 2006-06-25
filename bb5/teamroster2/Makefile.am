@@ -15,6 +15,7 @@ teamroster_SOURCES = 				\
 	Position.hh				\
 	Race.cc					\
 	Race.hh					\
+	InvalidParameterException.hh					\
 	Player.cc					\
 	Player.hh					\
 	Team.cc					\
@@ -29,4 +30,6 @@ teamroster_SOURCES = 				\
 
 teamroster_CPPFLAGS = $(XERCES_CPPFLAGS)
 teamroster_CXXFLAGS = $(PARAGUI_CFLAGS)
-teamroster_LDFLAGS = $(XERCES_LDFLAGS) $(PARAGUI_LIBS)
+teamroster_LDFLAGS =  -lxerces-c $(PARAGUI_LIBS)
+
+
