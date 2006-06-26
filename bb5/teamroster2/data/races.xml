@@ -1,262 +1,711 @@
-<?xml version="1.0" ?>
-
-<races BBversion="5">
-  <race name="Amazon"> 
-    <apothecary use="true" />
-    <reroll cost="50000" qty="8" />
-    <positions>
-     <position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" skills="dodge" normal="g" double="asp" />
-     <position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" skills="dodge,pass" normal="gp" double="as" />
-     <position qty="2" title="Catcher" cost="70000" ma="6" st="3" ag="3" av="7" skills="dodge,catch" normal="ga" double="sp" />
-     <position qty="4" title="Blitzer" cost="90000" ma="6" st="3" ag="3" av="7" skills="dodge,block" normal="gs" double="ap" />
-    </positions>
-    <background>Long ago, driven by a desire for adventure, the Valkyries of the Norse settlement in Lustria sailed away from their men-folk and founded a colony deep within the estuary of the river Amaxon. Now these ferocious warriors have taken to the Blood Bowl pitch and Nuffle save those who dare play against them!</background>
-  </race>
-
-  <race name="Chaos"> 
-    <apothecary use="true" />
-    <reroll cost="60000" qty="8" />
-    <positions>
-     <position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" skills="horns" normal="gsm" double="ap" />
-     <position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" skills="" normal="gsm" double="ap" />
-     <position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" skills="loner,frenzy,horns,mighty blow,thick skull,wild animal" normal="sm" double="gap" />
-    </positions> 
-    <background>Chaos teams are not noted for the subtlety or originality of their game play. A simple drive up the centre of the pitch, maiming and injuring as many opposing players as possible, is about the limit of their game plan. They rarely, if ever, worry about such minor considerations like picking up the ball and scoring touchdowns not while there are any players left alive on the opposing team, anyway.</background>
-   </race>
-
-  <race name="Chaos Dwarf"> 
-    <apothecary use="true" />
-    <reroll cost="70000" qty="8" />
-    <positions>
-     <position qty="16" title="Hobgoblin" cost="40000" ma="6" st="3" ag="3" av="7" skills="" normal="g" double="asp" />
-     <position qty="6" title="Chaos dwarf" cost="70000" ma="4" st="3" ag="2" av="9" skills="block,tackle,thick skull" normal="gs" double="apm" />
-     <position qty="2" title="Bull centaurs" cost="130000" ma="6" st="4" ag="2" av="9" skills="sprint,sure feet,thick skull" normal="gs" double="ap" />
-     <position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" skills="loner,frenzy,horns,mighty blow,thick skull,wild animal" normal="s" double="gapm" />
-    </positions> 
-    <background>Chaos Dwarfs are the twisted descendants of Dwarf explorers who have been terribly affected by the forces of Chaos, turning them into evil, self-centred creatures. In one way, however, they haven't changed at all, they still love playing Blood Bowl! Chaos Dwarfs are not very numerous and make great use of sneaky Hobgoblin slaves to perform all kinds of tasks, including playing on their Blood Bowl teams.</background>
- </race>
-
-  <race name="Dark Elf"> 
-    <apothecary use="true" />
-    <reroll cost="50000" qty="8" />
-    <positions>
-     <position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" skills="" normal="ga" double="sp" />
-     <position qty="2" title="Runner" cost="80000" ma="7" st="3" ag="4" av="7" skills="dump off" normal="gap" double="s" />
-     <position qty="2" title="Assassin" cost="90000" ma="6" st="3" ag="4" av="7" skills="shadowing, stab" normal="ga" double="sp" />
-     <position qty="4" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" skills="block" normal="ga" double="sp" />
-     <position qty="2" title="Witch elf" cost="110000" ma="7" st="3" ag="4" av="7" skills="frenzy,dodge,jump up" normal="ga" double="sp" />
-    </positions>
-    <background>Evil beyond belief, skilled without doubt, the Dark Elves take to the pitch to show the world their superiority. Dark Elf teams prefer a malevolent and spiteful running game over the passing of their goodly cousins. Backed up by the ruthless Witch Elves and dangerous assassins, a Dark Elf team has all the tools to power through rather than around any opposition line.</background>
-  </race>
-
-  <race name="Dwarf"> 
-    <apothecary use="true" />
-    <reroll cost="40000" qty="8" />
-    <positions>
-     <position qty="16" title="Blocker" cost="70000" ma="4" st="3" ag="2" av="9" skills="block,tackle,thick skull" normal="gs" double="ap" />
-     <position qty="2" title="Runner" cost="80000" ma="6" st="3" ag="3" av="8" skills="sure hands,thick skull" normal="gp" double="as" />
-     <position qty="2" title="Blitzer" cost="80000" ma="5" st="3" ag="3" av="9" skills="block,thick skull" normal="gs" double="ap" />
-     <position qty="2" title="Troll slayer" cost="90000" ma="5" st="3" ag="2" av="8" skills="block,dauntless,frenzy,thick skull" normal="gs" double="ap" />
-     <position qty="1" title="Deathroller" cost="160000" ma="4" st="7" ag="1" av="10" skills="break tackle,dirty player,juggernaut,mighty blow,no hands,secret weapon,stand firm" normal="s" double="gap" />
-    </positions>
-    <background>Dwarfs seem to be ideal Blood Bowl players, being compact, tough, well-armoured and having a stubborn knack of refusing to die! Most successful Dwarf teams work to the principle that if they can take out all the other team's potential scorers, and wear down the rest, then there won't be anybody left to stop them scoring the winning touchdowns!</background>
-  </race>
-
-  <race name="Elf"> 
-    <apothecary use="true" />
-    <reroll cost="50000" qty="8" />
-    <positions>
-     <position qty="16" title="Lineman" cost="60000" ma="6" st="3" ag="4" av="7" skills="" normal="ga" double="sp" />
-     <position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="4" av="7" skills="pass" normal="gap" double="s" />
-     <position qty="4" title="Catcher" cost="100000" ma="8" st="3" ag="4" av="7" skills="catch, nerves of steel" normal="ga" double="sp" />
-     <position qty="2" title="Blitzer" cost="110000" ma="7" st="3" ag="4" av="8" skills="block,side step" normal="ga" double="sp" />
-    </positions> 
-    <background>When the NAF collapsed, many Elven teams were left penniless. Those teams that have survived the fallout are not as rich as the High Elf teams nor as well equipped, but they sure know how to play the game. Sporting facemasks and mohawks, they take to the pitch to relive the glory days they once played in.</background>
-  </race>
-
-  <race name="Goblin"> 
-    <apothecary use="true" />
-    <reroll cost="60000" qty="8" />
-    <positions>
-     <position qty="16" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" skills="dodge,right stuff,stunty" normal="a" double="gsp" />
-     <position qty="1" title="Bombardier" cost="40000" ma="6" st="2" ag="3" av="7" skills="bombardier,dodge,no hands,secret weapon,stunty" normal="a" double="gsp" />
-     <position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" skills="dirty player,dodge,leap,secret weapon,stunty,very long legs" normal="a" double="gsp" />
-     <position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" skills="chainsaw,no hands,secret weapon,stunty" normal="a" double="gsp" />
-     <position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" skills="ball and chain,no hands,secret weapon,stunty" normal="s" double="gap" />
-
-     <position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" skills="loner,always hungry,mighty blow,really stupid,regeneration,throw team-mate" normal="s" double="gap" />
-    </positions>
-    <background>A Goblin team's game plan owes much more to hope than potential. Goblins can make quite good catchers because they are small and agile, but the art of throwing is sadly lost to them, while the chances of their blocking anything larger than a Halfling are remote to say the least. Still, this never seems to bother Goblin players, and occasionally the use of a particularly devious secret weapon will even allow a Goblin team to win a match.</background>
-  </race>
-
-  <race name="Halfling"> 
-    <apothecary use="true" />
-    <reroll cost="60000" qty="8" />
-    <positions>
-     <position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" skills="dodge,right stuff,stunty" normal="a" double="gsp" />
-     <position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" skills="loner,mighty blow,stand firm,strong arm,take root,thick skull,throw team-mate" normal="s" double="gap" />
-    </positions>
-    <background>The technical deficiency of Halfling teams is legendary. They're too short to throw or catch, they run at half pace, and the whole team can spend all afternoon trying to block an Ogre without any chance of success. Most Halfling coaches try to make up for quality with quantity. After all, if you can get half a dozen players in the opposing team's End Zone and, by some miracle, manage to end up with the ball, then there is a small chance that one or two of them won�t be jelly by the time you throw the thing.</background>
-  </race>
-
-  <race name="High Elf"> 
-    <apothecary use="true" />
-    <reroll cost="50000" qty="8" />
-    <positions>
-     <position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" skills="" normal="ga" double="sp" />
-     <position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" skills="pass,safe throw" normal="gap" double="s" />
-     <position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" skills="catch" normal="ga" double="sp" />
-     <position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" skills="block" normal="ga" double="sp" />
-    </positions>
-    <background>The Elven Kingdom sponsored High Elf teams, feature a dangerous passing game and some of the most arrogant players you will find. Rich beyond the dreams of most teams, the High Elves often feature many Princes and noble born Elves on the team and what they cannot beat, they'll buy.</background>
-  </race>
-
-  <race name="Human"> 
-    <apothecary use="true" />
-    <reroll cost="50000" qty="8" />
-    <positions>
-     <position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" skills="" normal="g" double="asp" />
-     <position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" skills="catch,dodge" normal="ga" double="sp" />
-     <position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" skills="sure hands,pass" normal="gp" double="as" />
-     <position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" skills="block" normal="gs" double="ap" />
-     <position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" skills="loner,bone-head,mighty blow,thick skull,throw team-mate" normal="s" double="gap" />
-    </positions>
-    <background>Although Human teams do not have the individual strengths or outstanding abilities available to other races, they do not suffer from any outstanding weakness either. This makes Human teams extremely flexible, equally at home running the ball, passing it, or ignoring it and pounding the opposition into the turf instead!</background>
-  </race>
-
-  <race name="Khemri"> 
-    <apothecary use="false" />
-    <reroll cost="70000" qty="8" />
-    <positions>
-     <position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" skills="regeneration" normal="g" double="asp" />
-     <position qty="2" title="Thro-Ras" cost="70000" ma="6" st="3" ag="2" av="7" skills="pass,regeneration,sure hands" normal="gp" double="as" />
-     <position qty="2" title="Blitz-Ras" cost="90000" ma="6" st="3" ag="2" av="8" skills="block,regeneration" normal="gs" double="ap" />
-     <position qty="4" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" skills="mighty blow,regeneration" normal="s" double="gap" />
-    </positions>
-    <background>Over 8,000 years ago, the Khemri played the first games of Blood Bowl against the Slann. But, as the Kingdom died off, so did the game until its rediscovery. And as the game returned, it was inevitable that the ancient players and stars of the Khemri would return to the pitch they once played on.</background>
-  </race>
-
-  <race name="Lizardman"> 
-    <apothecary use="true" />
-    <reroll cost="60000" qty="8" />
-    <positions>
-     <position qty="16" title="Skinks" cost="60000" ma="8" st="2" ag="3" av="7" skills="dodge,stunty" normal="a" double="gsp" />
-     <position qty="6" title="Saurus" cost="80000" ma="6" st="4" ag="1" av="9" skills="" normal="gs" double="ap" />
-     <position qty="1" title="Kroxigor" cost="140000" ma="6" st="5" ag="1" av="9" skills="loner,bone-head,mighty blow,prehensile tail,thick skull" normal="s" double="gap" />
-    </positions>
-    <background>The Mage-Priests foretold the game of Blood Bowl thousands of years before it was discovered by the Dwarf Roze-El. So it is no surprise that the Lizardmen play Blood Bowl. Providing an odd blend of dexterity and strength, the Lustrian team can almost last the distance against a power team such as Chaos, while remaining able to pull off the running plays of the Skaven.</background>
-  </race>
-
-  <race name="Necromantic"> 
-    <apothecary use="false" />
-    <reroll cost="70000" qty="8" />
-    <positions>
-     <position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" skills="regeneration" normal="g" double="asp" />
-     <position qty="2" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" skills="dodge" normal="ga" double="sp" />
-     <position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" skills="block,regeneration" normal="gs" double="ap" />
-     <position qty="2" title="Flesh golem" cost="110000" ma="4" st="4" ag="2" av="9" skills="regeneration,stand firm,thick skull" normal="gs" double="ap" />
-     <position qty="2" title="Werewolf" cost="120000" ma="8" st="3" ag="3" av="8" skills="claws,frenzy,regeneration" normal="ga" double="sp" />
-    </positions>
-    <background>The damned and the cursed do not always lurk in the forests or in the graveyards of the Old World. Sometimes they come together, forming a group to hunt those more fortunate of souls. Finding relief in crazed outbursts of terrible violence, these groups do the best they can to ease their suffering - they pop off for a nice game of Blood Bowl.</background>
-  </race>
-
-  <race name="Norse"> 
-    <apothecary use="true" />
-    <reroll cost="60000" qty="8" />
-    <positions>
-     <position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="7" skills="block" normal="g" double="asp" />
-     <position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" skills="block,pass" normal="gp" double="as" />
-     <position qty="2" title="Runner" cost="90000" ma="7" st="3" ag="3" av="7" skills="block,dauntless" normal="ga" double="sp" />
-     <position qty="2" title="Berserker" cost="90000" ma="6" st="3" ag="3" av="7" skills="block,frenzy,jump up" normal="gs" double="ap" />
-     <position qty="2" title="Ulfwerener" cost="110000" ma="6" st="4" ag="2" av="8" skills="frenzy" normal="gs" double="ap" />
-     <position qty="1" title="Snow troll" cost="140000" ma="5" st="5" ag="1" av="8" skills="loner,claws,disturbing presence,frenzy,wild animal" normal="s" double="gap" />
-    </positions>
-    <background>Norse teams have a well deserved reputation for ferocity both on and off the playing pitch. The Norse that takes up Blood Bowl is a truly unedifying specimen, interested only in beer, women and song off the playing pitch, and beer, women and bloody carnage while on it!</background>
-  </race>
-
-  <race name="Nurgle"> 
-    <apothecary use="false" />
-    <reroll cost="70000" qty="8" />
-    <positions>
-     <position qty="16" title="Rotter" cost="40000" ma="5" st="3" ag="3" av="8" skills="decay,nurgle's rot" normal="gm" double="asp" />
-     <position qty="4" title="Pestigor" cost="80000" ma="6" st="3" ag="3" av="8" skills="horns,nurgle's rot,regeneration" normal="gsm" double="ap" />
-     <position qty="4" title="Nurgle warrior" cost="110000" ma="4" st="4" ag="2" av="9" skills="disturbing presence,foul appearance,nurgle's rot,regeneration" normal="gsm" double="ap" />
-     <position qty="1" title="Beast of Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" skills="loner,disturbing presence,foul appearance,mighty blow,nurgle's rot,really stupid,regeneration,tentacles" normal="s" double="gapm" />
-    </positions>
-    <background>Nurgle teams are a form of Chaos team whose players worship the god Nurgle. Nurgle is the Chaos god of corruption and disease, and he rewards his players by granting them a rather unpleasant disease known as Nurgle's Rot. The fact that Nurgle teams smell awful is assumed rather than proven. True, they are all made up of semi decomposed flesh surrounded by swarms of flies, but by the time anyone gets close enough to get a really accurate whiff, he has inevitably caught one of Nurgle's nasty diseases, and he usually dies before he can suggest a new personal hygiene regime.</background>
-  </race>
-
-  <race name="Ogre"> 
-    <apothecary use="true" />
-    <reroll cost="70000" qty="8" /> 
-    <positions>
-     <position qty="16" title="Snotling" cost="20000" ma="5" st="1" ag="3" av="5" skills="dodge,right stuff,side step,stunty,titchy" normal="a" double="gsp" />
-     <position qty="6" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" skills="bone-head,mighty blow,thick skull,throw team-mate" normal="s" double="gap" />
-    </positions>
-    <background>Ogre teams have existed since the forming of the NAF and have even had some success such as winning the XV Blood Bowl. However, as any right-minded person will tell you, having more than one Ogre in the same place at the same time is a disaster in the making. The key to an Ogre team is the Snotlings. If they are close enough to jab an Ogre in the leg to remind him that they are playing in a match then you may have the makings of a team.</background>
-  </race>
-
-  <race name="Orc"> 
-    <apothecary use="true" />
-    <reroll cost="60000" qty="8" />
-    <positions>
-     <position qty="16" title="Lineman" cost="50000" ma="5" st="3" ag="3" av="9" skills="" normal="g" double="asp" />
-     <position qty="4" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" skills="right stuff,dodge,stunty" normal="a" double="gsp" />
-     <position qty="2" title="Thrower" cost="70000" ma="5" st="3" ag="3" av="8" skills="sure hands,pass" normal="gp" double="as" />
-     <position qty="4" title="Black orc" cost="80000" ma="4" st="4" ag="2" av="9" skills="" normal="gs" double="ap" />
-     <position qty="4" title="Blitzer" cost="80000" ma="6" st="3" ag="3" av="9" skills="block" normal="gs" double="ap" />
-     <position qty="1" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" skills="loner,always hungry,mighty blow,really stupid,regeneration,throw team-mate" normal="s" double="gap" />
-    </positions>
-    <background>Orcs have been playing Blood Bowl since the game was invented, and Orc teams such as the Gouged Eye and Severed Heads are amongst the best in the league. Orc teams are tough and hard-hitting, grinding down the opposition's line to create gaps for their excellent Orc Blitzers to exploit.</background>
-  </race>
-
-  <race name="Skaven"> 
-    <apothecary use="true" />
-    <reroll cost="60000" qty="8"/>
-    <positions>
-     <position qty="16" title="Lineman" cost="50000" ma="7" st="3" ag="3" av="7" skills="" normal="g" double="aspm" />
-     <position qty="2" title="Thrower" cost="70000" ma="7" st="3" ag="3" av="7" skills="sure hands,pass" normal="gp" double="asm" />
-     <position qty="4" title="Gutter runner" cost="80000" ma="9" st="2" ag="4" av="7" skills="dodge" normal="ga" double="spm" />
-     <position qty="2" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" skills="block" normal="gs" double="apm" />
-     <position qty="1" title="Rat ogre" cost="160000" ma="6" st="5" ag="2" av="8" skills="loner,frenzy,mighty blow,prehensile tail,wild animal" normal="s" double="gapm" />
-    </positions>
-    <background>They may not be all that strong, they certainly aren't tough, but boy oh boy are Skaven fast! Many an opponent has been left in the starting blocks as fast-moving Skaven players scamper through a gap in the line and run in for a lightning fast touchdown.</background>
-  </race>
-
-  <race name="Undead"> 
-    <apothecary use="false" />
-    <reroll cost="70000" qty="8" />
-    <positions>
-     <position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" skills="regeneration" normal="g" double="asp" />
-     <position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" skills="regeneration" normal="g" double="asp" />
-     <position qty="4" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" skills="dodge" normal="ga" double="sp" />
-     <position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" skills="block,regeneration" normal="gs" double="ap" />
-     <position qty="2" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" skills="mighty blow,regeneration" normal="s" double="gap" />
-    </positions>
-    <background>In the Old World the dead do not rest easy. Vampires lurk in haunted castles, Necromancers seek to escape death by searching for forbidden knowledge, the Liche-lords rule over legions of corpses, and on the Blood Bowl field players who died long ago return to the scenes of their former glory and play Blood Bowl once again'</background>
-  </race>
-
-  <race name="Vampire"> 
-    <apothecary use="true" />
-    <reroll cost="70000" qty="8" />
-    <positions>
-     <position qty="16" title="Thrall" cost="40000" ma="6" st="3" ag="3" av="7" skills="" normal="g" double="asp" />
-     <position qty="6" title="Vampire" cost="110000" ma="6" st="4" ag="4" av="8" skills="blood lust,hypnotic gaze,regeneration" normal="gas" double="p" />
-    </positions>
-    <background>Although Vampire teams include a number of extremely capable players, they are let down by the unreliability of the Vampires. While they should be concentrating on the game, their attention often wanders to their hunger and before you know it they are off for a quick bite!</background>
-  </race>
-
-  <race name="Wood Elf"> 
-    <apothecary use="true" />
-    <reroll cost="50000" qty="8" />
-    <positions>
-     <position qty="16" title="Lineman" cost="70000" ma="7" st="3" ag="4" av="7" skills="" normal="ga" double="sp" />
-     <position qty="4" title="Catcher" cost="90000" ma="9" st="2" ag="4" av="7" skills="catch, dodge" normal="ga" double="sp" />
-     <position qty="2" title="Thrower" cost="90000" ma="7" st="3" ag="4" av="7" skills="pass" normal="gap" double="s" />
-     <position qty="2" title="Wardancer" cost="120000" ma="8" st="3" ag="4" av="7" skills="block,dodge,leap" normal="ga" double="sp" />
-     <position qty="1" title="Treeman" cost="140000" ma="2" st="6" ag="1" av="10" skills="loner,mighty blow,stand firm,strong arm,take root,thick skull,throw team-mate" normal="s" double="gap" />
-    </positions>
-    <background>For Wood Elves the Long pass is everything, even more so than their High Elf cousins, and all of their effort goes into being an expert at throwing or receiving. No Wood Elf worth his salt is going to be weighed down by extra Armour and be forced to lurk about, attempting to knock opposing players over. Instead they rely on their natural athletic ability to keep them out of trouble, which is normally enough ' it takes a very agile or lucky opponent to lay a hand on a Wood Elf!</background> 
- </race>
-
+<?xml version="1.0"?>
+<races BBversion="5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="races.xsd">
+	<race name="Amazon" emblem="amazon.jpg">
+		<apothecary use="true"/>
+		<reroll cost="50000" qty="8"/>
+		<positions>
+			<position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+				<skills>
+					<skill name="dodge"/>
+				</skills>
+			</position>
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as">
+				<skills>
+					<skill name="dodge"/>
+					<skill name="pass"/>
+				</skills>
+			</position>
+			<position qty="2" title="Catcher" cost="70000" ma="6" st="3" ag="3" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="dodge"/>
+					<skill name="catch"/>
+				</skills>
+			</position>
+			<position qty="4" title="Blitzer" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap">
+				<skills>
+					<skill name="dodge"/>
+					<skill name="block"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Long ago, driven by a desire for adventure, the Valkyries of the Norse settlement in Lustria sailed away from their men-folk and founded a colony deep within the estuary of the river Amaxon. Now these ferocious warriors have taken to the Blood Bowl pitch and Nuffle save those who dare play against them!</background>
+	</race>
+	<race name="Chaos" emblem="chaos.jpg">
+		<apothecary use="true"/>
+		<reroll cost="60000" qty="8"/>
+		<positions>
+			<position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap">
+				<skills>
+					<skill name="horns"/>
+				</skills>
+			</position>
+			<position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" normal="gsm" double="ap">
+				<skills/>
+			</position>
+			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="sm" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="frenzy"/>
+					<skill name="horns"/>
+					<skill name="mighty blow"/>
+					<skill name="thick skull"/>
+					<skill name="wild animal"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Chaos teams are not noted for the subtlety or originality of their game play. A simple drive up the centre of the pitch, maiming and injuring as many opposing players as possible, is about the limit of their game plan. They rarely, if ever, worry about such minor considerations like picking up the ball and scoring touchdowns not while there are any players left alive on the opposing team, anyway.</background>
+	</race>
+	<race name="Chaos Dwarf" emblem="chaosdwarves.jpg">
+		<apothecary use="true"/>
+		<reroll cost="70000" qty="8"/>
+		<positions>
+			<position qty="16" title="Hobgoblin" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+				<skills/>
+			</position>
+			<position qty="6" title="Chaos dwarf" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="apm">
+				<skills>
+					<skill name="block"/>
+					<skill name="tackle"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+			<position qty="2" title="Bull centaurs" cost="130000" ma="6" st="4" ag="2" av="9" normal="gs" double="ap">
+				<skills>
+					<skill name="sprint"/>
+					<skill name="sure feet"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="s" double="gapm">
+				<skills>
+					<skill name="loner"/>
+					<skill name="frenzy"/>
+					<skill name="horns"/>
+					<skill name="mighty blow"/>
+					<skill name="thick skull"/>
+					<skill name="wild animal"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Chaos Dwarfs are the twisted descendants of Dwarf explorers who have been terribly affected by the forces of Chaos, turning them into evil, self-centred creatures. In one way, however, they haven't changed at all, they still love playing Blood Bowl! Chaos Dwarfs are not very numerous and make great use of sneaky Hobgoblin slaves to perform all kinds of tasks, including playing on their Blood Bowl teams.</background>
+	</race>
+	<race name="Dark Elf" emblem="darkelves.jpg">
+		<apothecary use="true"/>
+		<reroll cost="50000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp">
+				<skills/>
+			</position>
+			<position qty="2" title="Runner" cost="80000" ma="7" st="3" ag="4" av="7" normal="gap" double="s">
+				<skills>
+					<skill name="dump off"/>
+				</skills>
+			</position>
+			<position qty="2" title="Assassin" cost="90000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="shadowing"/>
+					<skill name="stab"/>
+				</skills>
+			</position>
+			<position qty="4" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
+				<skills>
+					<skill name="block"/>
+				</skills>
+			</position>
+			<position qty="2" title="Witch elf" cost="110000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="frenzy"/>
+					<skill name="dodge"/>
+					<skill name="jump up"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Evil beyond belief, skilled without doubt, the Dark Elves take to the pitch to show the world their superiority. Dark Elf teams prefer a malevolent and spiteful running game over the passing of their goodly cousins. Backed up by the ruthless Witch Elves and dangerous assassins, a Dark Elf team has all the tools to power through rather than around any opposition line.</background>
+	</race>
+	<race name="Dwarf" emblem="dwarves.jpg">
+		<apothecary use="true"/>
+		<reroll cost="40000" qty="8"/>
+		<positions>
+			<position qty="16" title="Blocker" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+					<skill name="tackle"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+			<position qty="2" title="Runner" cost="80000" ma="6" st="3" ag="3" av="8" normal="gp" double="as">
+				<skills>
+					<skill name="sure hands"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+			<position qty="2" title="Blitzer" cost="80000" ma="5" st="3" ag="3" av="9" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+			<position qty="2" title="Troll slayer" cost="90000" ma="5" st="3" ag="2" av="8" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+					<skill name="dauntless"/>
+					<skill name="frenzy"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+			<position qty="1" title="Deathroller" cost="160000" ma="4" st="7" ag="1" av="10" normal="s" double="gap">
+				<skills>
+					<skill name="break tackle"/>
+					<skill name="dirty player"/>
+					<skill name="juggernaut"/>
+					<skill name="mighty blow"/>
+					<skill name="no hands"/>
+					<skill name="secret weapon"/>
+					<skill name="stand firm"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Dwarfs seem to be ideal Blood Bowl players, being compact, tough, well-armoured and having a stubborn knack of refusing to die! Most successful Dwarf teams work to the principle that if they can take out all the other team's potential scorers, and wear down the rest, then there won't be anybody left to stop them scoring the winning touchdowns!</background>
+	</race>
+	<race name="Elf" emblem="elves.jpg">
+		<apothecary use="true"/>
+		<reroll cost="50000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp">
+				<skills/>
+			</position>
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="4" av="7" normal="gap" double="s">
+				<skills>
+					<skill name="pass"/>
+				</skills>
+			</position>
+			<position qty="4" title="Catcher" cost="100000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="catch"/>
+					<skill name="nerves of steel"/>
+				</skills>
+			</position>
+			<position qty="2" title="Blitzer" cost="110000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
+				<skills>
+					<skill name="block"/>
+					<skill name="side step"/>
+				</skills>
+			</position>
+		</positions>
+		<background>When the NAF collapsed, many Elven teams were left penniless. Those teams that have survived the fallout are not as rich as the High Elf teams nor as well equipped, but they sure know how to play the game. Sporting facemasks and mohawks, they take to the pitch to relive the glory days they once played in.</background>
+	</race>
+	<race name="Goblin" emblem="goblins.jpg">
+		<apothecary use="true"/>
+		<reroll cost="60000" qty="8"/>
+		<positions>
+			<position qty="16" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+				<skills>
+					<skill name="dodge"/>
+					<skill name="right stuff"/>
+					<skill name="stunty"/>
+				</skills>
+			</position>
+			<position qty="1" title="Bombardier" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+				<skills>
+					<skill name="bombardier"/>
+					<skill name="dodge"/>
+					<skill name="no hands"/>
+					<skill name="secret weapon"/>
+					<skill name="stunty"/>
+				</skills>
+			</position>
+			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp">
+				<skills>
+					<skill name="dirty player"/>
+					<skill name="dodge"/>
+					<skill name="leap"/>
+					<skill name="secret weapon"/>
+					<skill name="stunty"/>
+					<skill name="very long legs"/>
+				</skills>
+			</position>
+			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+				<skills>
+					<skill name="chainsaw"/>
+					<skill name="no hands"/>
+					<skill name="secret weapon"/>
+					<skill name="stunty"/>
+				</skills>
+			</position>
+			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap">
+				<skills>
+					<skill name="ball and chain"/>
+					<skill name="no hands"/>
+					<skill name="secret weapon"/>
+					<skill name="stunty"/>
+				</skills>
+			</position>
+			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="always hungry"/>
+					<skill name="mighty blow"/>
+					<skill name="really stupid"/>
+					<skill name="regeneration"/>
+					<skill name="throw team-mate"/>
+				</skills>
+			</position>
+		</positions>
+		<background>A Goblin team's game plan owes much more to hope than potential. Goblins can make quite good catchers because they are small and agile, but the art of throwing is sadly lost to them, while the chances of their blocking anything larger than a Halfling are remote to say the least. Still, this never seems to bother Goblin players, and occasionally the use of a particularly devious secret weapon will even allow a Goblin team to win a match.</background>
+	</race>
+	<race name="Halfling" emblem="halflings.jpg">
+		<apothecary use="true"/>
+		<reroll cost="60000" qty="8"/>
+		<positions>
+			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp">
+				<skills>
+					<skill name="dodge"/>
+					<skill name="right stuff"/>
+					<skill name="stunty"/>
+				</skills>
+			</position>
+			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="mighty blow"/>
+					<skill name="stand firm"/>
+					<skill name="strong arm"/>
+					<skill name="take root"/>
+					<skill name="thick skull"/>
+					<skill name="throw team-mate"/>
+				</skills>
+			</position>
+		</positions>
+		<background>The technical deficiency of Halfling teams is legendary. They're too short to throw or catch, they run at half pace, and the whole team can spend all afternoon trying to block an Ogre without any chance of success. Most Halfling coaches try to make up for quality with quantity. After all, if you can get half a dozen players in the opposing team's End Zone and, by some miracle, manage to end up with the ball, then there is a small chance that one or two of them won�t be jelly by the time you throw the thing.</background>
+	</race>
+	<race name="High Elf" emblem="highelves.jpg">
+		<apothecary use="true"/>
+		<reroll cost="50000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp">
+				<skills/>
+			</position>
+			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s">
+				<skills>
+					<skill name="pass"/>
+					<skill name="safe throw"/>
+				</skills>
+			</position>
+			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="catch"/>
+				</skills>
+			</position>
+			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
+				<skills>
+					<skill name="block"/>
+				</skills>
+			</position>
+		</positions>
+		<background>The Elven Kingdom sponsored High Elf teams, feature a dangerous passing game and some of the most arrogant players you will find. Rich beyond the dreams of most teams, the High Elves often feature many Princes and noble born Elves on the team and what they cannot beat, they'll buy.</background>
+	</race>
+	<race name="Human" emblem="humans.jpg">
+		<apothecary use="true"/>
+		<reroll cost="50000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp">
+				<skills/>
+			</position>
+			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="catch"/>
+					<skill name="dodge"/>
+				</skills>
+			</position>
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as">
+				<skills>
+					<skill name="sure hands"/>
+					<skill name="pass"/>
+				</skills>
+			</position>
+			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+				</skills>
+			</position>
+			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="bone-head"/>
+					<skill name="mighty blow"/>
+					<skill name="thick skull"/>
+					<skill name="throw team-mate"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Although Human teams do not have the individual strengths or outstanding abilities available to other races, they do not suffer from any outstanding weakness either. This makes Human teams extremely flexible, equally at home running the ball, passing it, or ignoring it and pounding the opposition into the turf instead!</background>
+	</race>
+	<race name="Khemri" emblem="khemri.jpg">
+		<apothecary use="false"/>
+		<reroll cost="70000" qty="8"/>
+		<positions>
+			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp">
+				<skills>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="2" title="Thro-Ras" cost="70000" ma="6" st="3" ag="2" av="7" normal="gp" double="as">
+				<skills>
+					<skill name="pass"/>
+					<skill name="regeneration"/>
+					<skill name="sure hands"/>
+				</skills>
+			</position>
+			<position qty="2" title="Blitz-Ras" cost="90000" ma="6" st="3" ag="2" av="8" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="4" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap">
+				<skills>
+					<skill name="mighty blow"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Over 8,000 years ago, the Khemri played the first games of Blood Bowl against the Slann. But, as the Kingdom died off, so did the game until its rediscovery. And as the game returned, it was inevitable that the ancient players and stars of the Khemri would return to the pitch they once played on.</background>
+	</race>
+	<race name="Lizardman" emblem="lizardmen.jpg">
+		<apothecary use="true"/>
+		<reroll cost="60000" qty="8"/>
+		<positions>
+			<position qty="16" title="Skinks" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp">
+				<skills>
+					<skill name="dodge"/>
+					<skill name="stunty"/>
+				</skills>
+			</position>
+			<position qty="6" title="Saurus" cost="80000" ma="6" st="4" ag="1" av="9" normal="gs" double="ap">
+				<skills/>
+			</position>
+			<position qty="1" title="Kroxigor" cost="140000" ma="6" st="5" ag="1" av="9" normal="s" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="bone-head"/>
+					<skill name="mighty blow"/>
+					<skill name="prehensile tail"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+		</positions>
+		<background>The Mage-Priests foretold the game of Blood Bowl thousands of years before it was discovered by the Dwarf Roze-El. So it is no surprise that the Lizardmen play Blood Bowl. Providing an odd blend of dexterity and strength, the Lustrian team can almost last the distance against a power team such as Chaos, while remaining able to pull off the running plays of the Skaven.</background>
+	</race>
+	<race name="Necromantic" emblem="necromantics.jpg">
+		<apothecary use="false"/>
+		<reroll cost="70000" qty="8"/>
+		<positions>
+			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp">
+				<skills>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="2" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="dodge"/>
+				</skills>
+			</position>
+			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="2" title="Flesh golem" cost="110000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap">
+				<skills>
+					<skill name="regeneration"/>
+					<skill name="stand firm"/>
+					<skill name="thick skull"/>
+				</skills>
+			</position>
+			<position qty="2" title="Werewolf" cost="120000" ma="8" st="3" ag="3" av="8" normal="ga" double="sp">
+				<skills>
+					<skill name="claws"/>
+					<skill name="frenzy"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+		</positions>
+		<background>The damned and the cursed do not always lurk in the forests or in the graveyards of the Old World. Sometimes they come together, forming a group to hunt those more fortunate of souls. Finding relief in crazed outbursts of terrible violence, these groups do the best they can to ease their suffering - they pop off for a nice game of Blood Bowl.</background>
+	</race>
+	<race name="Norse" emblem="norses.jpg">
+		<apothecary use="true"/>
+		<reroll cost="60000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+				<skills>
+					<skill name="block"/>
+				</skills>
+			</position>
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as">
+				<skills>
+					<skill name="block"/>
+					<skill name="pass"/>
+				</skills>
+			</position>
+			<position qty="2" title="Runner" cost="90000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="block"/>
+					<skill name="dauntless"/>
+				</skills>
+			</position>
+			<position qty="2" title="Berserker" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+					<skill name="frenzy"/>
+					<skill name="jump up"/>
+				</skills>
+			</position>
+			<position qty="2" title="Ulfwerener" cost="110000" ma="6" st="4" ag="2" av="8" normal="gs" double="ap">
+				<skills>
+					<skill name="frenzy"/>
+				</skills>
+			</position>
+			<position qty="1" title="Snow troll" cost="140000" ma="5" st="5" ag="1" av="8" normal="s" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="claws"/>
+					<skill name="disturbing presence"/>
+					<skill name="frenzy"/>
+					<skill name="wild animal"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Norse teams have a well deserved reputation for ferocity both on and off the playing pitch. The Norse that takes up Blood Bowl is a truly unedifying specimen, interested only in beer, women and song off the playing pitch, and beer, women and bloody carnage while on it!</background>
+	</race>
+	<race name="Nurgle" emblem="nurgles.jpg">
+		<apothecary use="false"/>
+		<reroll cost="70000" qty="8"/>
+		<positions>
+			<position qty="16" title="Rotter" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp">
+				<skills>
+					<skill name="decay"/>
+					<skill name="nurgle's rot"/>
+				</skills>
+			</position>
+			<position qty="4" title="Pestigor" cost="80000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap">
+				<skills>
+					<skill name="horns"/>
+					<skill name="nurgle's rot"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="4" title="Nurgle warrior" cost="110000" ma="4" st="4" ag="2" av="9" normal="gsm" double="ap">
+				<skills>
+					<skill name="disturbing presence"/>
+					<skill name="foul appearance"/>
+					<skill name="nurgle's rot"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="1" title="Beast of Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" normal="s" double="gapm">
+				<skills>
+					<skill name="loner"/>
+					<skill name="disturbing presence"/>
+					<skill name="foul appearance"/>
+					<skill name="mighty blow"/>
+					<skill name="nurgle's rot"/>
+					<skill name="really stupid"/>
+					<skill name="regeneration"/>
+					<skill name="tentacles"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Nurgle teams are a form of Chaos team whose players worship the god Nurgle. Nurgle is the Chaos god of corruption and disease, and he rewards his players by granting them a rather unpleasant disease known as Nurgle's Rot. The fact that Nurgle teams smell awful is assumed rather than proven. True, they are all made up of semi decomposed flesh surrounded by swarms of flies, but by the time anyone gets close enough to get a really accurate whiff, he has inevitably caught one of Nurgle's nasty diseases, and he usually dies before he can suggest a new personal hygiene regime.</background>
+	</race>
+	<race name="Ogre" emblem="ogres.jpg">
+		<apothecary use="true"/>
+		<reroll cost="70000" qty="8"/>
+		<positions>
+			<position qty="16" title="Snotling" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp">
+				<skills>
+					<skill name="dodge"/>
+					<skill name="right stuff"/>
+					<skill name="side step"/>
+					<skill name="stunty"/>
+					<skill name="titchy"/>
+				</skills>
+			</position>
+			<position qty="6" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap">
+				<skills>
+					<skill name="bone-head"/>
+					<skill name="mighty blow"/>
+					<skill name="thick skull"/>
+					<skill name="throw team-mate"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Ogre teams have existed since the forming of the NAF and have even had some success such as winning the XV Blood Bowl. However, as any right-minded person will tell you, having more than one Ogre in the same place at the same time is a disaster in the making. The key to an Ogre team is the Snotlings. If they are close enough to jab an Ogre in the leg to remind him that they are playing in a match then you may have the makings of a team.</background>
+	</race>
+	<race name="Orc" emblem="orc.jpg">
+		<apothecary use="true"/>
+		<reroll cost="60000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp">
+				<skills/>
+			</position>
+			<position qty="4" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+				<skills>
+					<skill name="right stuff"/>
+					<skill name="dodge"/>
+					<skill name="stunty"/>
+				</skills>
+			</position>
+			<position qty="2" title="Thrower" cost="70000" ma="5" st="3" ag="3" av="8" normal="gp" double="as">
+				<skills>
+					<skill name="sure hands"/>
+					<skill name="pass"/>
+				</skills>
+			</position>
+			<position qty="4" title="Black orc" cost="80000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap">
+				<skills/>
+			</position>
+			<position qty="4" title="Blitzer" cost="80000" ma="6" st="3" ag="3" av="9" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+				</skills>
+			</position>
+			<position qty="1" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="always hungry"/>
+					<skill name="mighty blow"/>
+					<skill name="really stupid"/>
+					<skill name="regeneration"/>
+					<skill name="throw team-mate"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Orcs have been playing Blood Bowl since the game was invented, and Orc teams such as the Gouged Eye and Severed Heads are amongst the best in the league. Orc teams are tough and hard-hitting, grinding down the opposition's line to create gaps for their excellent Orc Blitzers to exploit.</background>
+	</race>
+	<race name="Skaven" emblem="skavens.jpg">
+		<apothecary use="true"/>
+		<reroll cost="60000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm">
+				<skills/>
+			</position>
+			<position qty="2" title="Thrower" cost="70000" ma="7" st="3" ag="3" av="7" normal="gp" double="asm">
+				<skills>
+					<skill name="sure hands"/>
+					<skill name="pass"/>
+				</skills>
+			</position>
+			<position qty="4" title="Gutter runner" cost="80000" ma="9" st="2" ag="4" av="7" normal="ga" double="spm">
+				<skills>
+					<skill name="dodge"/>
+				</skills>
+			</position>
+			<position qty="2" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="apm">
+				<skills>
+					<skill name="block"/>
+				</skills>
+			</position>
+			<position qty="1" title="Rat ogre" cost="160000" ma="6" st="5" ag="2" av="8" normal="s" double="gapm">
+				<skills>
+					<skill name="loner"/>
+					<skill name="frenzy"/>
+					<skill name="mighty blow"/>
+					<skill name="prehensile tail"/>
+					<skill name="wild animal"/>
+				</skills>
+			</position>
+		</positions>
+		<background>They may not be all that strong, they certainly aren't tough, but boy oh boy are Skaven fast! Many an opponent has been left in the starting blocks as fast-moving Skaven players scamper through a gap in the line and run in for a lightning fast touchdown.</background>
+	</race>
+	<race name="Undead" emblem="undeads.jpg">
+		<apothecary use="false"/>
+		<reroll cost="70000" qty="8"/>
+		<positions>
+			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp">
+				<skills>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp">
+				<skills>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="4" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="dodge"/>
+				</skills>
+			</position>
+			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap">
+				<skills>
+					<skill name="block"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+			<position qty="2" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap">
+				<skills>
+					<skill name="mighty blow"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+		</positions>
+		<background>In the Old World the dead do not rest easy. Vampires lurk in haunted castles, Necromancers seek to escape death by searching for forbidden knowledge, the Liche-lords rule over legions of corpses, and on the Blood Bowl field players who died long ago return to the scenes of their former glory and play Blood Bowl once again'</background>
+	</race>
+	<race name="Vampire" emblem="vampires.jpg">
+		<apothecary use="true"/>
+		<reroll cost="70000" qty="8"/>
+		<positions>
+			<position qty="16" title="Thrall" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+				<skills/>
+			</position>
+			<position qty="6" title="Vampire" cost="110000" ma="6" st="4" ag="4" av="8" normal="gas" double="p">
+				<skills>
+					<skill name="blood lust"/>
+					<skill name="hypnotic gaze"/>
+					<skill name="regeneration"/>
+				</skills>
+			</position>
+		</positions>
+		<background>Although Vampire teams include a number of extremely capable players, they are let down by the unreliability of the Vampires. While they should be concentrating on the game, their attention often wanders to their hunger and before you know it they are off for a quick bite!</background>
+	</race>
+	<race name="Wood Elf" emblem="woodelves.jpg">
+		<apothecary use="true"/>
+		<reroll cost="50000" qty="8"/>
+		<positions>
+			<position qty="16" title="Lineman" cost="70000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp">
+				<skills/>
+			</position>
+			<position qty="4" title="Catcher" cost="90000" ma="9" st="2" ag="4" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="catch"/>
+					<skill name="dodge"/>
+				</skills>
+			</position>
+			<position qty="2" title="Thrower" cost="90000" ma="7" st="3" ag="4" av="7" normal="gap" double="s">
+				<skills>
+					<skill name="pass"/>
+				</skills>
+			</position>
+			<position qty="2" title="Wardancer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
+				<skills>
+					<skill name="block"/>
+					<skill name="dodge"/>
+					<skill name="leap"/>
+				</skills>
+			</position>
+			<position qty="1" title="Treeman" cost="140000" ma="2" st="6" ag="1" av="10" normal="s" double="gap">
+				<skills>
+					<skill name="loner"/>
+					<skill name="mighty blow"/>
+					<skill name="stand firm"/>
+					<skill name="strong arm"/>
+					<skill name="take root"/>
+					<skill name="thick skull"/>
+					<skill name="throw team-mate"/>
+				</skills>
+			</position>
+		</positions>
+		<background>For Wood Elves the Long pass is everything, even more so than their High Elf cousins, and all of their effort goes into being an expert at throwing or receiving. No Wood Elf worth his salt is going to be weighed down by extra Armour and be forced to lurk about, attempting to knock opposing players over. Instead they rely on their natural athletic ability to keep them out of trouble, which is normally enough ' it takes a very agile or lucky opponent to lay a hand on a Wood Elf!</background>
+	</race>
 </races>

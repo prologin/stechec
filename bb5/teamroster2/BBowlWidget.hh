@@ -20,6 +20,8 @@
 #include "pglabel.h"
 #include "pglineedit.h"
 #include "pglistbox.h"
+#include "pgimage.h"
+#include "pgbutton.h"
 
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
@@ -37,6 +39,8 @@ public:
     void updateView();
 
 private:
+    void displayError(const char* msg);
+    void displayMessage(const char* title, const char* msg);
 
     // -----------------------------------------------------------------------
     //  GUI Handlers
@@ -52,6 +56,7 @@ private:
     bool handleEditFanFactor(PG_LineEdit* edit);
     bool handleEditAssistantCoach(PG_LineEdit* edit);
     bool handleEditCheerleader(PG_LineEdit* edit);
+    bool handleButtonSaveClick(PG_Button* button);
 
     // -----------------------------------------------------------------------
     //  Private data members
@@ -60,6 +65,7 @@ private:
     
 	PlayerLineWidget* playerWidget_[16];
 
+    PG_Image*         raceImg_;
 	PG_LineEdit*      teamName_;
 	PG_ListBox*       race_;
 	PG_LineEdit*      bank_;	
@@ -75,7 +81,9 @@ private:
 	PG_Label*         assistantCoachCost_;	
 	PG_Label*         cheerleaderCost_;	
 	PG_Label*         apothecaryCost_;	
-	PG_Label*         totalTeamValueCost_;		
+	PG_Label*         totalTeamValueCost_;	
+    
+    PG_Button*        saveBtn_;	
 };
 
 #endif /*BBOWLWIDGET_HH_*/

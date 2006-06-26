@@ -35,12 +35,16 @@ public:
 	Team(Race *race);
 	virtual ~Team();
     
+    void validateTeam();
+    
     // -----------------------------------------------------------------------
     //  Getters & Setters
     // -----------------------------------------------------------------------
     Player* getPlayer(unsigned int number);
     const char* getName();
     void setName(const char *name);
+    const char* getEmblem();
+    void setEmblem(const char *emblem);
     Race* getRace(); 
     void setRace(Race *race);
     long getBank();
@@ -73,6 +77,7 @@ private:
     Player* players_[TEAM_SIZE];
     
     const char *teamName_;
+    const char *emblem_;
     Race *race_;
     long bank_; 
     const char *headCoach_;

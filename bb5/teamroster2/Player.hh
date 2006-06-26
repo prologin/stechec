@@ -38,6 +38,7 @@ public:
     void setName(const char* name);  
     const char* getPositionTitle();
     void setPosition(const char* posistionTitle);
+    Position* getPosition();
     int getMovementAllowance();
     void setMovementAllowance(int ma);
     int getStrength();
@@ -65,6 +66,11 @@ public:
     long getValue();
     
 private:
+    // -----------------------------------------------------------------------
+    //  Private methods
+    // -----------------------------------------------------------------------
+    bool validateCharacteristicUpdate(int newVal, int positionVal);
+
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------

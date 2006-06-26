@@ -18,6 +18,10 @@
 #include <xercesc/parsers/SAXParser.hpp>
 #include <xercesc/util/OutOfMemoryException.hpp>
 
+#include <iostream.h>
+#include <vector.h>
+#include "Position.hh"
+
 #include "RaceParser.hh"
 #include "RaceHandler.hh"
 
@@ -52,8 +56,8 @@ void RaceParser::parseFile()
 //FIXME: Make schema validation
     parser->setValidationScheme(SAXParser::Val_Auto);
     parser->setDoNamespaces(false);
-    parser->setDoSchema(false);
-    parser->setValidationSchemaFullChecking(false);
+    parser->setDoSchema(true);
+    parser->setValidationSchemaFullChecking(true);
 
     //
     //  Create the handler object and install it as the document and error
@@ -66,6 +70,8 @@ void RaceParser::parseFile()
         parser->setDocumentHandler(&handler);
         parser->setErrorHandler(&handler);
         parser->parse("./data/races.xml");
+        
+        //printRaces();
     }
     catch (const OutOfMemoryException&)
     {
@@ -88,4 +94,22 @@ void RaceParser::parseFile()
 
 }
 
+void RaceParser::printRaces()
+{
+    for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
+    {
+        std::cout << RaceHandler::vRaces_[i].getName() << std::endl;
+        vector<Position> vp = RaceHandler::vRaces_[i].getPositions();
+        for (unsigned int j=0; j<vp.size(); j++)
+        {
+            std::cout << "getSkillsAsString:"<< vp[j].getSkillsAsString() << std::endl;
 
+            vector<const char*> sk = vp[j].getSkills();
+            for (unsigned int k=0; k<sk.size(); k++)
+            {
+               std::cout << sk[k] << std::endl; 
+            }
+
+        } 
+    }
+}

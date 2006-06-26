@@ -1,15 +1,11 @@
 Regles 
  - gestion des blessures (injuries)
- - calculer la valeur des joueurs modifiés 
- - Regles de validation d'une équipe avant de l'enregistrer : 
-     nombre de joueurs dans une position donnée
+ - calculer la valeur des joueurs modifiés (reste à gérer les skills)
      
 GUI 
  - evaluer QT
  - gestion des skills
  - gestion des blessures (injuries)
- - afficher une boite de dialogue pour exlpiquer quand l'apothicaire n'est pas disponible pour une race.
- - afficher l'icone de l'emblème de l'équipe
  - ajouter les boutons: load, save, quit
  - permettre de choisir une image pour les joueurs.
  
@@ -19,6 +15,5 @@ GUI
  XML
  - ajouter un schema XSD pour la validation du fichier "races.xml"
  - creer les classes pour parser/enregistrer le fichier team.xml  
- 
  
  Outil pour l'édition des positions. 

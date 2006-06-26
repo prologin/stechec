@@ -43,10 +43,7 @@ RaceHandler::~RaceHandler()
 //  RaceHandler: Overrides of the SAX DocumentHandler interface
 // ---------------------------------------------------------------------------
 void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attributes)
-{
-	// Initialise buffer for the element characters parsing.
- 	//buf_ = "";
-	
+{	
 	// A new race is found
 	if (strcmp(DualString(name).asCString(), "races") == 0)
  	{
@@ -57,6 +54,7 @@ void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attribut
  	{
   		Race* r = new Race();
 		r->setName(xercesc::XMLString::transcode(attributes.getValue("name")));
+        r->setEmblem(xercesc::XMLString::transcode(attributes.getValue("emblem")));
 
 		// Store pointer on the current race parsed.
  		currentRace_ = r;
@@ -78,28 +76,30 @@ void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attribut
  	{
  	  // Parse position element like above: 
 	  // <position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" skills="dodge" normal="g" double="asp" />
- 
- 	  Position* pos = new Position();
+ 	  currentPos_ = new Position();
 
-	  pos->setQuantity(atoi(DualString(attributes.getValue("qty")).asCString()));
-	  pos->setTitle(xercesc::XMLString::transcode(attributes.getValue("title")));
-	  pos->setCost(atol(DualString(attributes.getValue("cost")).asCString()));
-	  pos->setMovementAllowance(atoi(DualString(attributes.getValue("ma")).asCString()));
-	  pos->setStrength(atoi(DualString(attributes.getValue("st")).asCString()));
-	  pos->setAgility(atoi(DualString(attributes.getValue("ag")).asCString()));
-	  pos->setArmourValue(atoi(DualString(attributes.getValue("av")).asCString()));
-	  pos->setSkills(xercesc::XMLString::transcode(attributes.getValue("skills")));
-	  pos->setNormalSkills(xercesc::XMLString::transcode(attributes.getValue("normal")));
-	  pos->setDoubleSkills(xercesc::XMLString::transcode(attributes.getValue("double")));
-	  
-	  //add this position to the current race.
-	  currentRace_->addPosition(*pos);
+	  currentPos_->setQuantity(atoi(DualString(attributes.getValue("qty")).asCString()));
+	  currentPos_->setTitle(xercesc::XMLString::transcode(attributes.getValue("title")));
+	  currentPos_->setCost(atol(DualString(attributes.getValue("cost")).asCString()));
+	  currentPos_->setMovementAllowance(atoi(DualString(attributes.getValue("ma")).asCString()));
+	  currentPos_->setStrength(atoi(DualString(attributes.getValue("st")).asCString()));
+	  currentPos_->setAgility(atoi(DualString(attributes.getValue("ag")).asCString()));
+	  currentPos_->setArmourValue(atoi(DualString(attributes.getValue("av")).asCString()));
+	  currentPos_->setNormalSkills(xercesc::XMLString::transcode(attributes.getValue("normal")));
+	  currentPos_->setDoubleSkills(xercesc::XMLString::transcode(attributes.getValue("double")));
     	}
+    else if (strcmp(DualString(name).asCString(), "skill") == 0)
+    {
+        char* tmp = xercesc::XMLString::transcode(attributes.getValue("name"));
+        char* newSkill = new char[strlen(tmp)];
+        sprintf(newSkill,"%s",tmp);
+        currentPos_->addSkill(newSkill);
+    }      
  }
 
 void RaceHandler::characters(const XMLCh* const chars, const unsigned int length)
 {
-
+    chars_ = chars;
 }
 
 void RaceHandler::endElement(const XMLCh* const name)
@@ -107,13 +107,18 @@ void RaceHandler::endElement(const XMLCh* const name)
   	if (strcmp(DualString(name).asCString(), "background") == 0)
  	{
  		// Store the race's background 
-// 		currentRace_->setBackground(buf_);
+ 		currentRace_->setBackground(xercesc::XMLString::transcode(chars_));
  	}
 	else if (strcmp(DualString(name).asCString(), "race") == 0)
  	{
  		// Store the current race
   		RaceHandler::vRaces_.push_back(*currentRace_);
  	}
+    else if (strcmp(DualString(name).asCString(), "position") == 0)
+    {
+        //add the current position to the current race.
+        currentRace_->addPosition(*currentPos_);
+    }
 }
 
 

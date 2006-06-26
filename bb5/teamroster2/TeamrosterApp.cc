@@ -1,6 +1,7 @@
 #include "pgapplication.h"
 #include "pgnavigator.h"
 #include "TeamrosterApp.hh"
+
 #include <iostream.h>
 
 TeamrosterApp::TeamrosterApp()

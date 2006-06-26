@@ -13,10 +13,12 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
+#include <iostream.h>
 #include <string.h>
 #include <vector.h>
 #include "Race.hh"
 #include "Position.hh"
+#include "InvalidParameterException.hh"
 
 Race::Race()
 {
@@ -35,6 +37,16 @@ void Race::setName(char* name)
 {
 	
 	name_ = name;
+}
+
+const char* Race::getEmblem()
+{
+    return emblem_;
+}
+
+void Race::setEmblem(char* emblem)
+{
+    emblem_  = emblem;
 }
 
 bool Race::getApothecaryUse()
@@ -80,6 +92,21 @@ void Race::setBackground(char* bg)
 vector<Position> Race::getPositions()
 {
 	return vPos_;
+}
+
+Position* Race::getPosition(const char *title)
+{
+    for (unsigned int i=0; i<vPos_.size(); i++)
+    {
+        if (strcmp(title, vPos_[i].getTitle()) == 0)
+        {
+            return &vPos_[i];
+        }
+    }
+    
+    // selected position hasn't been found...
+    InvalidParameterException e("Position not found");
+    throw (e);    
 }
 
 void Race::addPosition(Position pos)

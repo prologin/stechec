@@ -36,13 +36,14 @@ public:
     // -----------------------------------------------------------------------
 	PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect, Player *player);
  	virtual ~PlayerLineWidget();
- 
+
     void updatePositionsList(vector<Position> vPos);
 
     void updateModel(Player* player);
     void updateView();
    
 private:
+    void displayError(const char* msg);
 
     // -----------------------------------------------------------------------
     //  GUI Handlers

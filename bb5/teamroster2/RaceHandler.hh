@@ -55,8 +55,8 @@ public :
     //  Private data members
     // -----------------------------------------------------------------------
     Race*                  currentRace_;
-    char*                  buf_;
-    
+    Position*              currentPos_;
+    const XMLCh*           chars_;
 };
 
 #endif /*RACEHANDLER_HH_*/

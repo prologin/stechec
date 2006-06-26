@@ -16,6 +16,7 @@
 
 #ifndef POSITION_HH_
 #define POSITION_HH_
+#include <vector.h>
 
 class Position
 {
@@ -43,8 +44,11 @@ public:
     void setAgility(int ag);
     int getArmourValue();
     void setArmourValue(int av);
-	const char* getSkills();
-    void setSkills(const char* skills);
+    
+	const char* getSkillsAsString();
+    vector<const char*> getSkills();
+    void addSkill(const char* skill);
+    
     const char* getNormalSkills();
     void setNormalSkills(const char* normalSkills);
     const char* getDoubleSkills();
@@ -61,7 +65,8 @@ private:
 	int strength_;
 	int agility_;
 	int armourValue_;
-	const char* skills_;
+    vector <const char*> vSkills_;
+	const char* skills_;  // Skills list as string
 	const char* normalSkills_;
 	const char* doubleSkills_;
 

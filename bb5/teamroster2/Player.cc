@@ -17,6 +17,7 @@
 #include "Race.hh"
 #include "Team.hh"
 #include "Player.hh"
+#include "InvalidParameterException.hh"
 
 #include <stdlib.h>
 #include <vector.h>
@@ -61,6 +62,11 @@ void Player::setName(const char *name) { name_ = name; }
 
 const char* Player::getPositionTitle() { return positionTitle_; }
 
+Position* Player::getPosition()
+{
+    return team_->getRace()->getPosition(positionTitle_);
+}
+
 /*
  * Update position and player's caracteristics 
  */
@@ -84,7 +90,7 @@ void Player::setPosition(const char *selectedPosition)
             strength_ = vPos[i].getStrength();
             agility_ = vPos[i].getAgility();
             armourValue_ = vPos[i].getArmourValue();
-            parseSkills(vPos[i].getSkills());
+            parseSkills(vPos[i].getSkillsAsString());
             value_ = vPos[i].getCost();
 
             break;
@@ -94,25 +100,46 @@ void Player::setPosition(const char *selectedPosition)
     if (posFound == false)
     {
         // selected position hasn't been found...
-        //FIXME: Generate Exception here...
+        InvalidParameterException e("Position not found");
+        throw (e);    
     }
 }
 
 int Player::getMovementAllowance() { return movementAllowance_; }
 
-void Player::setMovementAllowance(int ma) { movementAllowance_ = ma; }
+void Player::setMovementAllowance(int ma) { 
+    if (validateCharacteristicUpdate(ma, getPosition()->getMovementAllowance()))
+    {     
+        movementAllowance_ = ma; 
+    }
+}
 
 int Player::getStrength() { return strength_; }
 
-void Player::setStrength(int st) { strength_ = st; }
+void Player::setStrength(int st) { 
+    if (validateCharacteristicUpdate(st, getPosition()->getStrength()))
+    {     
+        strength_ = st; 
+    }
+}
 
 int Player::getAgility() { return agility_; }
 
-void Player::setAgility(int ag) { agility_ = ag;}
+void Player::setAgility(int ag) { 
+    if (validateCharacteristicUpdate(ag, getPosition()->getAgility()))
+    {     
+        agility_ = ag;
+    }
+}
 
 int Player::getArmourValue() { return armourValue_; }
 
-void Player::setArmourValue(int av) { armourValue_ = av;}
+void Player::setArmourValue(int av) { 
+    if (validateCharacteristicUpdate(av, getPosition()->getArmourValue()))
+    {     
+        armourValue_ = av;
+    }
+}
 
 vector <char*> Player::getSkills() { return vSkills_; }
 
@@ -177,6 +204,72 @@ int Player::getStarPlayerPoints()
 
 long Player::getValue() 
 { 
-    return value_; 
+    Position* pos;
+    try
+    {
+        pos = getPosition();
+    }
+    catch (InvalidParameterException &ex)
+    {
+        // If no position is defined return 0
+        return 0;
+    }
+    
+    // Initialize player value with the position cost
+    long playerValue = value_;
+    
+    // Eventually add value due to movement Allowance (see LBR5 p.34) 
+    int dMa = movementAllowance_ - pos->getMovementAllowance();
+    if (dMa > 0)
+    {
+       playerValue += dMa*30000;
+    }
+    
+    // Eventually add value due to armour value (see LBR5 p.34) 
+    int dAv = armourValue_ - pos->getArmourValue();
+    if (dAv > 0)
+    {
+       playerValue += dAv*30000;
+    }
+
+    // Eventually add value due to agility (see LBR5 p.34) 
+    int dAg = agility_ - pos->getAgility();
+    if (dAg > 0)
+    {
+       playerValue += dAg*40000;
+    }
+
+    // Eventually add value due to strength (see LBR5 p.34) 
+    int dSt = strength_ - pos->getStrength();
+    if (dSt > 0)
+    {
+       playerValue += dSt*50000;
+    }
+    
+    // Eventually add value due to new skill
+//FIXME: to be added after skill management.
+
+    // Eventually add value due to new skill with double
+//FIXME: to be added after skill ñmanagement.
+
+    return playerValue; 
 }
 
+bool Player::validateCharacteristicUpdate(int newVal, int positionVal)
+{
+    if (strcmp(positionTitle_,"") == 0)
+    {
+        InvalidParameterException e("Position must be fixed to update a charcateristic.");
+        throw (e);            
+    }
+    else if (newVal > 10)
+    {
+        InvalidParameterException e("Characteristics can never be greater than 10.");
+        throw (e);    
+    } else if (abs(newVal - positionVal) > 2) {
+        InvalidParameterException e("Characteristics can never be raised or reduce by more than 2 points.");
+        throw (e);            
+    } 
+    
+    return true; 
+}

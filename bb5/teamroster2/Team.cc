@@ -13,9 +13,13 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
+#include <stdio.h>
+#include <iostream.h>
+
 #include "Race.hh"
 #include "Player.hh"
 #include "Team.hh"
+#include "InvalidParameterException.hh"
 
 Team::Team(Race* race)
 {
@@ -48,13 +52,15 @@ Player* Team::getPlayer(unsigned int number) {
    }
    else 
    {
-    // FIXME: Generate an exception here...
-    return NULL;
+      InvalidParameterException e("Invalid player number.");
+      throw (e);            
    }
 }
 
 const char* Team::getName(){ return teamName_; }
 void Team::setName(const char *name){ teamName_ = name; }
+const char* Team::getEmblem(){ return emblem_; }
+void Team::setEmblem(const char *emblem){ emblem_ = emblem; }
 Race* Team::getRace(){ return race_; } 
 
 void Team::setRace(Race *race) { 
@@ -86,8 +92,9 @@ void Team::setApothecary(int apothecary)
 {
    if (race_->getApothecaryUse() == false)
    {
-      // FIXME: Generate Exception
       apothecary_ = 0;
+      InvalidParameterException e("This race can't have an apothecary.");
+      throw (e);            
    }
    else 
    {
@@ -120,4 +127,38 @@ long Team::getTotalValueCost()
   cost += getApothecaryCost();
   
   return cost;
+}
+
+void Team::validateTeam()
+{
+    vector<Position> vPos = race_->getPositions();
+    int pos[vPos.size()];
+    for (unsigned int j=0; j<vPos.size(); j++)
+    {
+        pos[j] = 0;
+    }
+    
+    for (int i=0; i<TEAM_SIZE; i++)
+    {
+        for (unsigned int j=0; j<vPos.size(); j++)
+        {
+            if (strcmp(vPos[j].getTitle(), players_[i]->getPositionTitle()) == 0)
+            {
+               pos[j]++;
+               break;
+            }
+        }
+    }
+    
+    for (unsigned int j=0; j<vPos.size(); j++)
+    {
+        if (pos[j] > vPos[j].getQuantity())
+        {
+            char* msg = new char[80];
+            sprintf(msg,"There are too much %s : %d > %d",vPos[j].getTitle(), 
+                                    pos[j],vPos[j].getQuantity());                
+            InvalidParameterException e(msg);
+            throw (e);            
+        }
+    }
 }

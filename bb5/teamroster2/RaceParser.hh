@@ -25,7 +25,10 @@ public:
 	RaceParser();
 	virtual ~RaceParser();
 
-	void parseFile();
+    void parseFile();
+    
+private:
+    void printRaces();
 };
 
 #endif /*RACEPARSER_HH_*/

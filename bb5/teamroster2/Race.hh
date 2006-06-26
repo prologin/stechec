@@ -33,6 +33,8 @@ public:
     // -----------------------------------------------------------------------
 	const char* getName();
 	void setName(char* name);
+    const char* getEmblem();
+    void setEmblem(char* emblem);
 	bool getApothecaryUse();
 	void setApothecaryUse(bool use);
     long getRerollCost();
@@ -42,6 +44,7 @@ public:
     const char* getBackground();
 	void setBackground(char* bg);
 	vector<Position> getPositions();
+    Position* getPosition(const char* title);
 	void addPosition(Position pos);
 	
 private:
@@ -49,6 +52,7 @@ private:
     //  Private data members
     // -----------------------------------------------------------------------
     char* name_;
+    char* emblem_;
     bool apothecaryUse_;
     long rerollCost_;
     int rerollQuantity_;

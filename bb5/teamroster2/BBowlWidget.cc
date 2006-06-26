@@ -24,6 +24,9 @@
 #include "pglineedit.h"
 #include "pglistbox.h"
 #include "pglistboxitem.h"
+#include "pgmessagebox.h"
+#include "pgimage.h"
+#include "pgbutton.h"
 
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
@@ -31,6 +34,7 @@
 #include "RaceHandler.hh"
 #include "BBowlWidget.hh"
 #include "Race.hh"
+#include "InvalidParameterException.hh"
 
 
 BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : PG_ThemeWidget(parent,rect, true)
@@ -39,7 +43,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
     // Parse races.xml file
     RaceParser parser;
     parser.parseFile();
-    
+            
     // Create a team instance with the first available race
     team_ = new Team(&RaceHandler::vRaces_[0]);
 	
@@ -50,6 +54,10 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
         item = new PG_ListBoxItem(race_, 10, RaceHandler::vRaces_[i].getName());
     }      
     
+    raceImg_ = new PG_Image (this, PG_Point(180,452),"emblems/amazon.jpg");
+
+    saveBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "validate");
+  
     PG_Color black(0,0,0);
 	
     teamName_ = new PG_LineEdit(this,PG_Rect(370,452,150,25),"LineEdit");
@@ -98,7 +106,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	
 	totalTeamValueCost_ = new PG_Label(this,PG_Rect(729,556,50,20),"0","Label");	
 	totalTeamValueCost_->SetAlignment(PG_Label::RIGHT);
-
+    
     // Create one line per player in the team
     for (int i=0; i<16; i++)
     {
@@ -145,6 +153,9 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	fanFactor_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditFanFactor));
 	cheerleader_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditCheerleader));
 
+     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
+       
+ 
     race_->sigSelectItem.connect(slot(*this, &BBowlWidget::handleSelectItemRace));
     race_->SelectFirstItem();
 
@@ -154,7 +165,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 BBowlWidget::~BBowlWidget()
 {	
     delete team_;
-    
+    delete raceImg_;
 	delete teamName_;
 	delete race_;
 	delete bank_;	
@@ -176,6 +187,29 @@ BBowlWidget::~BBowlWidget()
     {	
     		delete playerWidget_[i];
     }
+}
+
+void BBowlWidget::displayMessage(const char* title, const char* msg)
+{
+     PG_MessageBox msgbox(NULL, 
+      PG_Rect(200,50,240,100), title, msg, 
+      PG_Rect(100, 75, 20, 20), "OK");
+      
+      PG_Color white(255,255,255);
+      PG_Color black(0,0,0);
+      msgbox.SetTransparency(0, false);
+      msgbox.SetFontColor(black, true);
+      msgbox.SetSimpleBackground(true);
+      msgbox.SetBackgroundColor(white);
+      msgbox.Update();
+      msgbox.Show();          
+      msgbox.WaitForClick();  
+      msgbox.Hide();
+}    
+
+void BBowlWidget::displayError(const char* msg)
+{
+    displayMessage("Erreur",msg);
 }
 
 /*
@@ -271,7 +305,14 @@ bool BBowlWidget::handleEditApothecary(PG_LineEdit* edit)
 	const char* text = edit->GetText();
 	int val = (text != NULL) ? atoi(text) : 0;
 	
-    team_->setApothecary(val);
+    try 
+    {
+        team_->setApothecary(val);
+    } 
+    catch (InvalidParameterException &ex)
+    {
+        displayError(ex.msg);
+    }
     updateView();	
 	return true;
 }
@@ -316,6 +357,21 @@ bool BBowlWidget::handleEditCheerleader(PG_LineEdit* edit)
 	return true;
 }
 
+bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
+{
+   try
+   {
+      team_->validateTeam();
+      displayMessage("Validation","Team is validated !");
+   }
+   catch (InvalidParameterException &ex)
+   {
+      displayError(ex.msg);
+   }
+   
+   return true; 
+}
+
 bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
 {
     // if an old team exist...
@@ -330,6 +386,7 @@ bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
         // if the race has changed, remove old team 
         delete team_;
     }
+
     
     // Create team instance
  //   int idx = race_->GetSelectedIndex();
@@ -343,10 +400,18 @@ bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
             break;
         }
     }
-//std::cout << "selectIndex=" << idx << std::endl;
- 
+
+    // Create new team 
     team_ = new Team(&RaceHandler::vRaces_[idx]);
     
+    // Change team emblem
+    team_->setEmblem(RaceHandler::vRaces_[idx].getEmblem());
+    
+    char* filename = new char[80];
+    sprintf(filename,"emblems/%s", RaceHandler::vRaces_[idx].getEmblem());
+    raceImg_->LoadImage(filename);
+    delete filename;
+        
 	// Update apothecary use
 	if (RaceHandler::vRaces_[idx].getApothecaryUse())
 	{

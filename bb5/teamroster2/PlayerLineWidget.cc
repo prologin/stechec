@@ -23,6 +23,7 @@
 #include "pgdropdown.h"
 #include "pglineedit.h"
 #include "pglistboxbaseitem.h"
+#include "pgmessagebox.h"
 
 #include "TeamrosterApp.hh"
 #include "My_DropDown.hh"
@@ -30,6 +31,7 @@
 #include "PlayerLineWidget.hh" 
 #include "Position.hh"
 #include "Player.hh"
+#include "InvalidParameterException.hh"
 
 PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect, Player *player) : PG_ThemeWidget(parent,rect, true)
 {
@@ -193,6 +195,24 @@ std::cout<<"PlayerLineWidget::updateView()"<<std::endl;
     value_->SetText(cost);	
 }  
 
+void PlayerLineWidget::displayError(const char* msg)
+{
+      PG_MessageBox msgbox(parent_, 
+      PG_Rect(200,50,240,100), "Erreur", msg, 
+      PG_Rect(100, 75, 20, 20), "OK");
+      
+      PG_Color white(255,255,255);
+      PG_Color black(0,0,0);
+      msgbox.SetTransparency(0, false);
+      msgbox.SetFontColor(black, true);
+      msgbox.SetSimpleBackground(true);
+      msgbox.SetBackgroundColor(white);
+      msgbox.Update();
+      msgbox.Show();          
+      msgbox.WaitForClick();  
+      msgbox.Hide();
+}
+
 bool PlayerLineWidget::handleEditName(PG_LineEdit* edit)
 {
     player_->setName(edit->GetText());
@@ -202,41 +222,113 @@ bool PlayerLineWidget::handleEditName(PG_LineEdit* edit)
 
 bool PlayerLineWidget::handleEditMa(PG_LineEdit* edit)
 {
-    const char* text = edit->GetText();
-    int val = (text != NULL) ? atoi(text) : 0;
-
-    player_->setMovementAllowance(val);
+    if (position_->GetText() != NULL && 
+        strcmp(position_->GetText(), "") != 0)
+    {
+        const char* text = edit->GetText();
+        int val = (text != NULL) ? atoi(text) : 0;
+        
+        try 
+        {
+            player_->setMovementAllowance(val);
+        } 
+        catch (InvalidParameterException &ex)
+        {
+            displayError(ex.msg);
+        }
+    }
+    else if (strcmp(edit->GetText(), "0") != 0)
+    {
+        displayError("Position must be chosen first.");        
+    }
     updateView();
+            
+    // Refresh parent view to update totalTeamValue
+    ((BBowlWidget*)parent_)->updateView();
     return true;
 }
 
 bool PlayerLineWidget::handleEditSt(PG_LineEdit* edit)
 {
-    const char* text = edit->GetText();
-    int val = (text != NULL) ? atoi(text) : 0;
-
-    player_->setStrength(val);
+    if (position_->GetText() != NULL && 
+        strcmp(position_->GetText(), "") != 0)
+    {
+        const char* text = edit->GetText();
+        int val = (text != NULL) ? atoi(text) : 0;
+        
+        try 
+        {
+            player_->setStrength(val);
+         } 
+         catch (InvalidParameterException &ex)
+         {
+            displayError(ex.msg);
+         }
+    }
+    else if (strcmp(edit->GetText(), "0") != 0)
+    {
+        displayError("Position must be chosen first.");        
+    }
     updateView();
+            
+    // Refresh parent view to update totalTeamValue
+    ((BBowlWidget*)parent_)->updateView();
     return true;
 }
 
 bool PlayerLineWidget::handleEditAg(PG_LineEdit* edit)
 {
-    const char* text = edit->GetText();
-    int val = (text != NULL) ? atoi(text) : 0;
-
-    player_->setAgility(val);
+    if (position_->GetText() != NULL && 
+        strcmp(position_->GetText(), "") != 0)
+    {
+        const char* text = edit->GetText();
+        int val = (text != NULL) ? atoi(text) : 0;
+        
+        try 
+        {
+            player_->setAgility(val);
+        } 
+        catch (InvalidParameterException &ex)
+        {
+            displayError(ex.msg);
+        }
+    }
+    else if (strcmp(edit->GetText(), "0") != 0)
+    {
+        displayError("Position must be chosen first.");        
+    }
     updateView();
+            
+    // Refresh parent view to update totalTeamValue
+    ((BBowlWidget*)parent_)->updateView();
     return true;
 }
 
 bool PlayerLineWidget::handleEditAv(PG_LineEdit* edit)
 {
-    const char* text = edit->GetText();
-    int val = (text != NULL) ? atoi(text) : 0;
-
-    player_->setArmourValue(val);
+    if (position_->GetText() != NULL && 
+        strcmp(position_->GetText(), "") != 0)
+    {
+        const char* text = edit->GetText();
+        int val = (text != NULL) ? atoi(text) : 0;
+        
+        try 
+        {
+            player_->setArmourValue(val);
+        } 
+        catch (InvalidParameterException &ex)
+        {
+            displayError(ex.msg);
+        }
+    }
+    else if (strcmp(edit->GetText(), "0") != 0)
+    {
+        displayError("Position must be chosen first.");        
+    }
     updateView();
+            
+    // Refresh parent view to update totalTeamValue
+    ((BBowlWidget*)parent_)->updateView();
     return true;
 }
  
@@ -326,5 +418,4 @@ bool PlayerLineWidget::handleSelectItemPosition(PG_ListBoxBaseItem* item)
     return true;
 }
  
-
 PlayerLineWidget::~PlayerLineWidget()  { }
