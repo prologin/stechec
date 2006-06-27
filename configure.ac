@@ -161,7 +161,7 @@ TBT_CHECK_XML
 
 # Mysql (really optionnal)
 case $DEPENDS in
-    *mysql*) TBT_CHECK_MYSQL ;;
+    *mysql*) STECHEC_CHECK_MYSQL ;;
     *) AM_CONDITIONAL([HAVE_MYSQL], [false]) ;;
 esac
 
