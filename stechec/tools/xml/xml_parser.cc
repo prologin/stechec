@@ -67,19 +67,18 @@ namespace xml
     }
     catch (const SAXParseException& e) {
       delete err_handler;
-      ERR(e.getLineNumber() << "," << e.getColumnNumber() << ": "
-          << e.getMessage());
-      throw XMLError(Log::getLastMessage());
+      PRINT_AND_THROW(XMLError, e.getLineNumber() << ","
+                      << e.getColumnNumber() << ": " << e.getMessage());
     }
     catch (const XMLException& toCatch) {
       delete err_handler;
-      ERR("XML Exception message: " << toCatch.getMessage());
-      throw XMLError(Log::getLastMessage());
+      PRINT_AND_THROW(XMLError, "XML Exception message: "
+                      << toCatch.getMessage());
     }
     catch (const DOMException& toCatch) {
       delete err_handler;
-      ERR("DOM Exception message: " << toCatch.getMessage());
-      throw XMLError(Log::getLastMessage());
+      PRINT_AND_THROW(XMLError, "DOM Exception message: "
+                      << toCatch.getMessage());
     }
 
     root_ = doc->getDocumentElement();
@@ -88,10 +87,10 @@ namespace xml
     // Check it is the document we really want.
     if (xml2str(root_->getNodeName()) != expected_root)
       {
-        ERR("A wrong xml document were given (have root node: '"
-            << root_->getNodeName() << "', expected root node: "
-            << expected_root << "')");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError,
+                        "A wrong xml document were given (have root node: '"
+                        << root_->getNodeName() << "', expected root node: "
+                        << expected_root << "')");
       }
   }
 
@@ -107,8 +106,8 @@ namespace xml
     DOMNodeList* nl = root_->getElementsByTagName(str2xml(node_name));
     if (!nl->getLength())
       {
-        ERR("Failed to catch '"<< node_name <<"' in current document");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, "Failed to catch '"
+                        << node_name <<"' in current document");
       }
 
     // If there is more than one item... errr... pick the first,
@@ -123,8 +122,8 @@ namespace xml
     DOMNodeList* nl = root_->getElementsByTagName(str2xml(node_name));
     if (!nl->getLength())
       {
-        ERR("Failed to catch '"<< node_name <<"' in current document");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, "Failed to catch '"
+                        << node_name <<"' in current document");
       }
 
     const XMLCh* number_ch = str2xml("number");
@@ -153,8 +152,7 @@ namespace xml
   {
     if (curr_node_ == NULL)
       {
-        ERR("You forgot to set the current node. Abort.");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, "You forgot to set the current node. Abort.");
       }
     if (xml2str(curr_node_->getNodeName()) == node_name)
       return curr_node_;
@@ -169,8 +167,8 @@ namespace xml
     DOMNode* n = findNode(node_name);
     if (n == NULL)
       {
-        ERR("Node '" << node_name << "' must exists, and must not be duplicated.");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, "Node '" << node_name
+                        << "' must exists, and must not be duplicated.");
       }
     DOMNode* tn = n->getFirstChild();
     assert(tn != NULL && tn->getNodeType() == DOMNode::TEXT_NODE);
@@ -184,13 +182,13 @@ namespace xml
     DOMElement* elt = findNode(node_name);
     if (elt == NULL)
       {
-        ERR("Node '" << node_name << "' must exists, and must not be duplicated.");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, "Node '" << node_name
+                        << "' must exists, and must not be duplicated.");
       }
     if (!elt->hasAttribute(str2xml(attr_name)))
       {
-        ERR("Node '" << node_name << "' doesn't have attribute '" << attr_name << "'");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, "Node '" << node_name
+                        << "' doesn't have attribute '" << attr_name << "'");
       }
     return xml2str(elt->getAttribute(str2xml(attr_name)));
   }

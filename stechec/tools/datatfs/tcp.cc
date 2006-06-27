@@ -37,16 +37,13 @@ TcpCx::~TcpCx()
 void                TcpCx::checkError(int ret, const char* funcName)
 {
   if (ret < 0)
-    { 
-      sprintf(msgerr, "%s: %s", funcName, strerror(errno));
-      throw NetError(msgerr);
-    }
+    throw NetError(funcName);
 }
 
 void                TcpCx::setTimeout()
 {
-  struct timeval        to = {DEFAULT_NETCX_TO, 0};
-  int                        ret;
+  struct timeval    to = {DEFAULT_NETCX_TO, 0};
+  int               ret;
 
   ret = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (const char*) &to, sizeof(struct timeval));
   checkError(ret, "setsockopt(SO_RCVTIMEO)");
@@ -57,8 +54,8 @@ void                TcpCx::setTimeout()
 /* turn off Nagle's algorithm to speed up transfert */
 void                TcpCx::setSocketOptions()
 {
-  int                        tcpnodelay_flag = 1;
-  int                        ret;
+  int               tcpnodelay_flag = 1;
+  int               ret;
   
   ret = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *) &tcpnodelay_flag, sizeof(int));
   checkError(ret, "setsockopt(TCP_NODELAY)");
@@ -73,17 +70,15 @@ void                TcpCx::setSocketOptions()
 // Connect to a host
 void                TcpCx::connect(const char* host, int port)
 {
-  socklen_t                addrlen;
-  struct sockaddr_in        data_peer;
-  struct sockaddr_in        sin;
+  socklen_t             addrlen;
+  struct sockaddr_in    data_peer;
+  struct sockaddr_in    sin;
   struct hostent        *hp;
-  int                        ret;
+  int                   ret;
   
-  if ((hp = gethostbyname(host)) == NULL) 
-    {
-      sprintf(msgerr, "%s: host not found.", host);
-      throw NetError(msgerr);
-    }
+  if ((hp = gethostbyname(host)) == NULL)
+    THROW(NetError, host << ": host not found.");
+
   memcpy((char *)&sin.sin_addr, hp->h_addr, hp->h_length); 
   sin.sin_family = hp->h_addrtype;
   sin.sin_port = htons(port);

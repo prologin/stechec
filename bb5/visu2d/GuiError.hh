@@ -20,9 +20,9 @@ using namespace std;
 //! @brief Class thrown on error.
 class GUIError
 {
-    public:
+public:
   GUIError(const string& reason = "no reason");
   const string getMessage();
-    private:
+private:
   string msg;
 };

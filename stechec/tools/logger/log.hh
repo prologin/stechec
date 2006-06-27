@@ -84,9 +84,6 @@ public:
   //! @brief Enable or disable color (by default use them).
   void setUseColor(bool enable = true);
 
-  //! @brief Get the last printed line.
-  static std::string getLastMessage();
-
   //! @brief Used internally.
   static Log* getInst();
   //! @brief Used internally.
@@ -98,7 +95,6 @@ public:
   bool print_loc_;
   bool use_color_;
   char modsuffix_[64];
-  std::string last_message_;
 
 private:
   pthread_t pth_id_;
@@ -177,23 +173,22 @@ inline std::ostream& Log::getStream()
       else                                                                      \
         os__ << "Warning: ";                                                    \
     os__ << Msg;                                                                \
-    l__->last_message_ = os__.str();                                            \
     if (l__->print_loc_)                                                        \
       if (l__->use_color_)                                                      \
         l__->getStream() << "[" MODULE_COLOR MODULE_NAME << l__->modsuffix_     \
                        << C_NONE "] " << __FILE__ << ":" << __LINE__ << ": "    \
-                       << l__->last_message_ << std::endl;                      \
+                       << os__.str() << std::endl;                              \
       else                                                                      \
         l__->getStream() << "[" MODULE_NAME << l__->modsuffix_                  \
                        << "] " << __FILE__ << ":" << __LINE__ << ": "           \
-                       << l__->last_message_ << std::endl;                      \
+                       << os__.str() << std::endl;                              \
     else                                                                        \
       if (l__->use_color_)                                                      \
         l__->getStream() << "[" MODULE_COLOR MODULE_NAME << l__->modsuffix_     \
-                       << C_NONE "] " << l__->last_message_ << std::endl;       \
+                       << C_NONE "] " << os__.str() << std::endl;               \
       else                                                                      \
         l__->getStream() << "[" MODULE_NAME << l__->modsuffix_                  \
-                       << "] " << l__->last_message_ << std::endl;              \
+                       << "] " << os__.str() << std::endl;                      \
     pthread_mutex_unlock(&Log::lock_);                                          \
   }                                                                             \
 }

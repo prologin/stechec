@@ -196,7 +196,7 @@ bool GameHosting::process()
   try {
     nb_ready = clients_poll_.poll();
   } catch (const NetError& e) {
-    LOG2("Fatal network error: " << e.Str());
+    LOG2("Fatal network error: " << e);
     return false;
   }
 
@@ -209,8 +209,8 @@ bool GameHosting::process()
       try {
         remove_from_cl = processOne(cl);
       } catch (const NetError& e) {
-        remove_reason = std::string("Network error: ") + e.Str();
-        LOG2("Network error: " << e.Str());
+        remove_reason = std::string("Network error: ") + e.what();
+        LOG2("Network error: " << e);
         remove_from_cl = true;
       }
       if (remove_from_cl)
@@ -285,7 +285,7 @@ void GameHosting::run()
       sendPacket(GameFinished());
       outputStatistics();
     } catch (const NetError& e) {
-      LOG2("Network error: " << e.Str() << ". Aborting game.");
+      LOG2("Network error: " << e << ". Aborting game.");
     }
   
   // Force all remaining clients to disconnect, to ease thread cleaning.

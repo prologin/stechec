@@ -47,42 +47,26 @@ enum {
 # define DEFAULT_NETCX_TO       8
 
 /*!
-** \brief Exception class for network errors.
-** \author victor
-** \date 01/04/2005
+** @brief Exception class for network errors.
 */
-class NetError
+class NetError : public Exception
 {
-public:
-  
+public:  
   //! @brief Standard constructor.
   //! @param msg The failing message.
-  NetError(const char* msg) : msg_(msg) {};
-  //! @brief Get the error message. Use it when displaying the error.
-  //! @return The failing reason.
-  const char* Str() const { return msg_; }
-
-private:
-  const char* msg_;
+  NetError(const std::string& msg);
 };
 
+    
 /*!
-** \brief Exception class for file.
-** \author victor
-** \date 01/04/2005
+** @brief Exception class for file.
 */
-class FileIOError
+class FileIOError : public Exception
 {
 public:
-  //! \brief Standard constructor.
-  //! \param msg The failing message.
-  FileIOError(const char* msg) : msg_(msg) {}
-  //! \brief Get the error message. Use it when displaying the error.
-  //! \return The failing reason.
-  const char* Str() const { return msg_; }
-
-private:
-  const char* msg_;
+  //! @brief Standard constructor.
+  //! @param msg The failing message.
+  FileIOError(const std::string& msg);
 };
 
 

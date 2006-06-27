@@ -36,18 +36,19 @@ void FileCx::open(const std::string& filename, int mode)
     case CX_RO:
       f_.open(filename.c_str(), std::ios::in | std::ios::binary);
       if (!f_.is_open())
-        throw FileIOError(filename.c_str());
+        throw FileIOError(filename);
       break;
 
     case CX_WO:
       f_.open(filename.c_str(), std::ios::out | std::ios::binary);
       if (!f_.is_open())
-        throw FileIOError(filename.c_str());
+        throw FileIOError(filename);
       break;
 
     default:
       WARN("FileCx doesn't not support this mode");
       mode_ = 0;
+      break;
     }
 }
 

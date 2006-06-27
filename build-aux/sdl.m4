@@ -223,6 +223,7 @@ AC_DEFUN([TBT_CHECK_SDL],
 
       # make sure we have sdl.
       AM_CONDITIONAL([HAVE_SDL], [true])
+      AC_DEFINE([HAVE_SDL], [], [Have SDL])
       AM_PATH_SDL([$1],
           :,
 	  [AC_MSG_ERROR([

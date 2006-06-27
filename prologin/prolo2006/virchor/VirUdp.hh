@@ -7,7 +7,7 @@
 class NetUDPError : public NetError
 {
 public:
-  NetUDPError(const char* msg)
+  NetUDPError(const std::string& msg)
     : NetError(msg)
   {
   }
@@ -33,17 +33,13 @@ public:
     dist_len_ = sizeof(struct sockaddr_in);
   
     if ((hp = gethostbyname(host)) == NULL) 
-      {
-        char msgerr[256];
-        snprintf(msgerr, 255, "%s: host not found.", host);
-        throw NetUDPError(msgerr);
-      }
+      THROW(NetUDPError, host << ": host not found");
 
     memcpy((char *)&dist_.sin_addr, hp->h_addr, hp->h_length); 
     dist_.sin_family = hp->h_addrtype;
     dist_.sin_port = htons(send_port);
 
-    memset((char *)&dist2_, 0, dist_len_); 
+    memset((char *)&dist2_, 0, dist_len_);
     dist2_.sin_family = hp->h_addrtype;
     dist2_.sin_addr.s_addr = htonl(INADDR_ANY);
     dist2_.sin_port = htons(recv_port);
@@ -97,13 +93,8 @@ private:
 
   void checkError(int ret, const char* funcName)
   {
-    char msgerr[256];
-
     if (ret < 0)
-      { 
-        snprintf(msgerr, 255, "%s: %s", funcName, strerror(errno));
-        throw NetUDPError(msgerr);
-      }
+      throw NetUDPError(funcName);
   }
   
   struct sockaddr_in    dist_;

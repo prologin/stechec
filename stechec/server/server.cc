@@ -246,7 +246,7 @@ void        Server::run()
                 waiting_clients_.push_back(client_cx);
             } catch (const NetError& e) {
               LOG2("Network error on connection (from " << *client_cx
-                   << "): " << e.Str());
+                   << "): " << e);
               delete client_cx; // should not be pushed on waiting_clients_.
             }
           }
@@ -258,7 +258,7 @@ void        Server::run()
               remove_from_wc = serveClient(client_cx);
             } catch (const NetError& e) {
               LOG2("Network error on waiting client (from " << *client_cx
-                   << "): " << e.Str());
+                   << "): " << e);
               delete client_cx;
             }
             if (remove_from_wc)

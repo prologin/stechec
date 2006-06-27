@@ -86,8 +86,3 @@ void Log::setModuleSuffix(const char* name)
       orig_modsuffix_[0] = 0;
     }
 }
-
-std::string Log::getLastMessage()
-{
-  return getInst()->last_message_;
-}

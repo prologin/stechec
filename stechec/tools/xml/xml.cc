@@ -33,13 +33,8 @@ namespace xml
   */
 
   XMLError::XMLError(const std::string& reason)
-    : msg_(reason)
+    : Exception(reason)
   {
-  }
-
-  std::string XMLError::getMessage() const
-  {
-    return msg_;
   }
 
 
@@ -76,8 +71,7 @@ namespace xml
     if (stat(filename.c_str(), &st) < 0)
       {
         // FIXME: not thread-safe, but strerror_r gives strange results...
-        ERR(filename << ": " << strerror(errno));
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, filename << ": " << strerror(errno));
       }
 
     xml_parser_ = new XMLParser;
@@ -275,9 +269,8 @@ namespace xml
     splayer_id << player_id;
     if (!xml_parser_->getFormationAttr(sid.str(), splayer_id.str(), srow, scol))
       {
-        ERR("Can't get position for player '" << player_id << "' in xml file '"
-            << filename_ << "'.");
-        throw XMLError(Log::getLastMessage());
+        PRINT_AND_THROW(XMLError, "Can't get position for player `"
+                        << player_id << "' in xml file `" << filename_ << "'.");
       }
     std::istringstream isrow(srow), iscol(scol);
     Position pos;

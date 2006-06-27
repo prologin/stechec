@@ -24,13 +24,10 @@ namespace xml
   class XMLWriter;
 
   //! @brief Class thrown on error.
-  class XMLError
+  class XMLError : public Exception
   {
   public:
-    XMLError(const std::string& reason = "no reason");
-    std::string getMessage() const;
-  private:
-    std::string msg_;
+    XMLError(const std::string& reason);
   };
 
   /*! @brief Application interface for XML document reading/writing.

@@ -17,6 +17,23 @@
 #include <stdarg.h>
 #include <cassert>
 
+inline NetError::NetError(const std::string& msg)
+  : Exception(msg)
+{
+  // FIXME: use strerror_r
+  if (errno != 0)
+    msg_ = msg_ + ": " + strerror(errno);
+}
+
+inline FileIOError::FileIOError(const std::string& msg)
+  : Exception(msg)
+{
+  // FIXME: use strerror_r
+  if (errno != 0)
+    msg_ = msg_ + ": " + strerror(errno);
+}
+
+
 inline Cx::Cx()
   : fd(-1), method(CX_RW)
 {

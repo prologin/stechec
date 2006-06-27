@@ -24,31 +24,25 @@ int                Cx::finalizeSndTransfert(int cntr, int cntw, int snd_bytes)
 {
   if (cntw == -1 && errno == EAGAIN)
     {
-      sprintf(msgerr, "Transfer timeout (%d seconds, %d bytes transferred)",
-               DEFAULT_NETCX_TO, snd_bytes);
-      throw NetError(msgerr);
+      errno = 0;
+      THROW(NetError, "Transfer timeout (" << DEFAULT_NETCX_TO
+            << " seconds, " << snd_bytes << " bytes transferred)");
     }
 
   if (cntw <= 0)
-    {
-      sprintf(msgerr, "Write error: %s", strerror(errno));
-      throw NetError(msgerr);
-    }
+    THROW(NetError, "Write error");
 
   if (cntr < 0)
-    {
-      sprintf(msgerr, "File input error: %s", strerror(errno));
-      throw FileIOError(msgerr);
-    }
+    THROW(FileIOError, "File input error");
 
   return 0;
 }
 
 int                Cx::sendHeader(unsigned size)
 {
-  char                data_size[HEADER_SIZE] = {0};
+  char            data_size[HEADER_SIZE] = {0};
   unsigned        snd_bytes = 0;
-  int                cnt = -1;
+  int             cnt = -1;
 
   sprintf(data_size, "VODKAx");
 
@@ -64,7 +58,7 @@ int                Cx::sendHeader(unsigned size)
     }
 
   if (snd_bytes != HEADER_SIZE)
-    throw NetError("Can't send header");
+    THROW(NetError, "Can't send header");
   
   return 0;
 }
@@ -89,18 +83,18 @@ void                Cx::sendFile(const char* filename)
 
   filefd = open(filename, O_RDONLY);
   if (!filefd)
-    throw FileIOError(filename);
+    THROW(FileIOError, "Error while opening `" << filename << "'");
   
   if (fstat(filefd, &st) < 0)
     {
       close(filefd);
-      throw FileIOError(filename);
+      THROW(FileIOError, "Error on `" << filename << "'");
     }
   file_size = st.st_size;
 
   try {
     sendHeader(file_size);
-  } catch (NetError e) {
+  } catch (const NetError& e) {
     close(filefd);
     throw;
   }

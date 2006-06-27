@@ -216,7 +216,7 @@ extern "C" int run(xml::XMLConfig*, Api* api, ClientCx* ccx)
   try {
     return visu.run();
   } catch (const NetUDPError& e) {
-    ERR("UDP: " << e.Str());
+    ERR("UDP: " << e);
     return 1;
   }
 }

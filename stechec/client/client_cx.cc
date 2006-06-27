@@ -67,7 +67,7 @@ bool    ClientCx::openLog(const std::string& filename)
   try {
     cx->open(filename, CX_RO);
   } catch (const FileIOError& e) {
-    ERR(e.Str());
+    ERR(e);
     return false;
   }
   cx_ = cx;

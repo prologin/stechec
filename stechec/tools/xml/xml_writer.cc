@@ -105,8 +105,7 @@ namespace xml
       writer->writeNode(outfile , *xmlDoc);
         } catch (const XMLException& e) {
       delete writer;
-      ERR("XML Exception message: " << e.getMessage());
-      throw XMLError(Log::getLastMessage());
+      PRINT_AND_THROW(XMLError, "XML Exception message: " << e.getMessage());
     }
     delete writer;
   }

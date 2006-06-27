@@ -20,18 +20,15 @@
 
 int        Cx::finalizeRcvTransfert(int cnt, int snd_bytes)
 {
-  if (errno == EAGAIN)
+  if (cnt < 0 && errno == EAGAIN)
     {
-      sprintf(msgerr, "Transfer timeout (%d seconds, %d bytes transferred)",
-               DEFAULT_NETCX_TO, snd_bytes);
-      throw NetError(msgerr);
+      errno = 0;
+      THROW(NetError, "Transfer timeout (" << DEFAULT_NETCX_TO
+            << " seconds, " << snd_bytes << " bytes transferred)");
     }
 
   if (cnt < 0)
-    {
-      sprintf(msgerr, "Input error: %s", strerror(errno));
-      throw NetError(msgerr);
-    }
+    throw NetError("Input error");
 
   if (cnt == 0)
     throw NetError("Connection was unexpertly closed on other side.");
@@ -77,21 +74,21 @@ void                Cx::receiveFile(const char *filedest)
 
 #ifndef WIN32
 
-  int                cnt = 1;
-  int                recv_bytes = 0;
-  char                buf[BUFF_SIZE];
-  int                data_size;
-  char                method = 0;
-  int                netfd = fd;
-  int                filefd = 0;
+  int   cnt = 1;
+  int   recv_bytes = 0;
+  char  buf[BUFF_SIZE];
+  int   data_size;
+  char  method = 0;
+  int   netfd = fd;
+  int   filefd = 0;
 
   filefd = open(filedest, O_CREAT | O_WRONLY, 0644);
   if (filefd < 0)
-    throw FileIOError(filedest);
+    THROW(FileIOError, "Error while opening `" << filedest << "'");
 
   try {
     data_size = recvHeader(&method);
-  } catch (NetError e) {
+  } catch (const NetError& e) {
     close(filefd);
     throw;
   }

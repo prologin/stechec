@@ -14,11 +14,12 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "tools.hh"
+
 #ifdef HAVE_SDL
-#include <SDL.h>
+# include <SDL.h>
 #endif // !HAVE_SDL
 
-#include "tools.hh"
 #include "start_arbiter.hh"
 #include "client_cx.hh"
 #include "rules_loader.hh"
@@ -159,11 +160,11 @@ int main(int argc, char** argv)
     ret_value = cl.run(cfg, r, &ccx);
 
   } catch (const NetError& e) {
-    ERR("Network: " << e.Str());
+    ERR("Network: " << e);
     ret_value = 51;
     goto end;
   } catch (const FileIOError& e) {
-    ERR("File IO: " << e.Str());
+    ERR("File IO: " << e);
     ret_value = 51;
     goto end;
   } catch (const LibraryError&) {
