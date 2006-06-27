@@ -47,7 +47,7 @@ public:
 
   // Recupere le score
   virtual int	getScore(int uid);
-
+  void		calculScore();
 private:
   int		ParseOptions();
   int		LoadMap(const std::string& map_file);

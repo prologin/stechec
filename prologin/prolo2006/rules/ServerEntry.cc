@@ -555,8 +555,45 @@ bool        ServerEntry::isMatchFinished()
   return g_->player_turn >= g_->max_date;
 }
 
-int        ServerEntry::getScore(int uid)
+static int	*tab_score = NULL;
+
+void		ServerEntry::calculScore()
 {
-  return g_->players[uid].getScore();
+  for (int id = 0; id < g_->getNbPlayer(); ++id)
+    {
+      int score = g_->players[id].getScore();
+      for (int i = 0; i < 5; ++i)
+	if (tab_score[i] == -1)
+	  {
+	    tab_score[i] = score;
+	    break;
+	  }
+	else if (score == tab_score[i])
+	  break;
+	else if (score > tab_score[i])
+	  {
+	    int tmp2 = tab_score[i];
+	    for (int j = i, tmp = 0; j < 5; tmp = tab_score[j + 1],
+		   tab_score[j + 1] = tmp2, ++j, tmp2 = tmp)
+	      ;
+	    tab_score[i] = score;
+	    break;
+	  }
+    }
 }
 
+int        ServerEntry::getScore(int uid)
+{
+  if (tab_score == NULL)
+    {
+      tab_score = new int[6]();
+      for (int i = 0; i < 6; ++i)
+	tab_score[i] = -1;
+      calculScore();
+    }
+  // TODO gestion des ex aequo
+  for (int i = 0; i < 5; ++i)
+    if (g_->players[uid].getScore() == tab_score[i])
+      return (5 - i) * 200;
+  return 0;
+}
