@@ -56,7 +56,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
     
     raceImg_ = new PG_Image (this, PG_Point(180,452),"emblems/amazon.jpg");
 
-    saveBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "validate");
+ //   saveBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "save");
   
     PG_Color black(0,0,0);
 	
@@ -67,7 +67,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	headCoach_ = new PG_LineEdit(this,PG_Rect(370,556,150,25),"LineEdit");
 	
 	reroll_ = new PG_LineEdit(this,PG_Rect(639,452,24,15),"LineEdit",1);
-	reroll_->SetValidKeys("012345678");
+	reroll_->SetValidKeys("0123456789");
 	reroll_->SetText("0");
 	
 	rerollCost_ = new PG_Label(this,PG_Rect(681,452,45,15),"0","Label");
@@ -98,7 +98,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	cheerleaderCost_->SetAlignment(PG_Label::RIGHT);
 	
 	apothecary_ = new PG_LineEdit(this,PG_Rect(639,517,24,15),"LineEdit",1);
-	apothecary_->SetValidKeys("01");
+	apothecary_->SetValidKeys("0123456789");
 	apothecary_->SetText("0");
 	
 	apothecaryCost_ = new PG_Label(this,PG_Rect(729,517,50,20),"0","Label");	
@@ -153,7 +153,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	fanFactor_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditFanFactor));
 	cheerleader_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditCheerleader));
 
-     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
+//     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
        
  
     race_->sigSelectItem.connect(slot(*this, &BBowlWidget::handleSelectItemRace));
@@ -304,7 +304,6 @@ bool BBowlWidget::handleEditApothecary(PG_LineEdit* edit)
 {
 	const char* text = edit->GetText();
 	int val = (text != NULL) ? atoi(text) : 0;
-	
     try 
     {
         team_->setApothecary(val);
@@ -321,8 +320,12 @@ bool BBowlWidget::handleEditReroll(PG_LineEdit* edit)
 {
     const char* text = edit->GetText();
 	int val = (text != NULL) ? atoi(text) : 0;
-	
-    team_->setReroll(val);
+	if (val > 8) {
+        displayError("No more than 8 rerolls. That's enough ! And it's the rule. ;)");
+    }
+    else {    
+        team_->setReroll(val);
+    }
     updateView();   
 	return true;
 }
@@ -357,6 +360,7 @@ bool BBowlWidget::handleEditCheerleader(PG_LineEdit* edit)
 	return true;
 }
 
+/*
 bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
 {
    try
@@ -371,6 +375,7 @@ bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
    
    return true; 
 }
+*/
 
 bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
 {
@@ -411,17 +416,7 @@ bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
     sprintf(filename,"emblems/%s", RaceHandler::vRaces_[idx].getEmblem());
     raceImg_->LoadImage(filename);
     delete filename;
-        
-	// Update apothecary use
-	if (RaceHandler::vRaces_[idx].getApothecaryUse())
-	{
-	   apothecary_->SetValidKeys("01");
-	}
-	else
-	{
-	   apothecary_->SetValidKeys("0");
-	}	
-		
+        		
     // Retrieve Postions vector for the selected race.
     vector<Position> vPos = RaceHandler::vRaces_[idx].getPositions();
 

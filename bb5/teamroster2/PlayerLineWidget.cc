@@ -136,7 +136,13 @@ void PlayerLineWidget::updateModel(Player* player)
 void PlayerLineWidget::updatePositionsList(vector<Position> vPos)
 {
 	// Empty the dropdown list
-    position_->DeleteAll();
+    delete position_;
+    position_ = new My_DropDown(this, PG_Rect(90,0,92,26)); 
+    position_->SetEditable(false);
+    PG_Color black(0,0,0);
+    position_->SetFontColor(black, true);
+    position_->sigSelectItem.connect(slot(*this, &PlayerLineWidget::handleSelectItemPosition));
+    position_->Show();
     
     // Fill it with the new position
     position_->AddItem("");
@@ -144,6 +150,7 @@ void PlayerLineWidget::updatePositionsList(vector<Position> vPos)
     {
         position_->AddItem(vPos[i].getTitle());
     }
+    position_->SelectFirstItem();
 }
  
 /*
@@ -406,6 +413,17 @@ bool PlayerLineWidget::handleSelectItemPosition(PG_ListBoxBaseItem* item)
  	  {
             // Set player's position
             player_->setPosition(selectedPosition);
+            
+            // Validate update    
+            try {
+                player_->getTeam()->validateTeam();
+            } 
+            catch (InvalidParameterException &ex)
+            {
+                displayError(ex.msg);       
+                // Reset player caracteristics
+                player_->reset();
+            }
  	  }
  	
       // Refresh the view 

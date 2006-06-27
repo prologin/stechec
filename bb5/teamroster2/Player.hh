@@ -34,6 +34,8 @@ public:
     // -----------------------------------------------------------------------
     //  Getters & Setters
     // -----------------------------------------------------------------------
+    
+    Team* getTeam();
     const char* getName();
     void setName(const char* name);  
     const char* getPositionTitle();

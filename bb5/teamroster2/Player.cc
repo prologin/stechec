@@ -56,6 +56,8 @@ void Player::reset()
 // -----------------------------------------------------------------------
 //  Getters & Setters
 // -----------------------------------------------------------------------
+Team* Player::getTeam() { return team_; }
+
 const char* Player::getName() { return name_; }
     
 void Player::setName(const char *name) { name_ = name; }

@@ -1,4 +1,16 @@
-Regles 
+Know bugs: 
+ - Plante lorsque l'on quitte alors que le focus est dans une case de caracteristique
+ - Lorsque l'on modifie l'exp cela fait disparaitre les skills / le nom (cf. screenshot de tuxrouge) 
+ - Plantage lorsque l'on clique sur une race (bug aléatoire) : X Error of fail request: BadValue (integer parameter out of range for operation)
+       Major opcode of failed request: 146 (MIT-SHM)
+       Minor opcode of failed request: 3 (X_ShmPutImage)
+       Value in failed request: 0xfffe
+       Serial number of failed request: 129
+       Current serial number in output stream: 130 
+
+Regles
+ - gestion des mercenaires
+ - gestion du chef cuisto 
  - gestion des blessures (injuries)
  - calculer la valeur des joueurs modifiés (reste à gérer les skills)
      
@@ -7,7 +19,7 @@ GUI
  - gestion des skills
  - gestion des blessures (injuries)
  - ajouter les boutons: load, save, quit
- - permettre de choisir une image pour les joueurs.
+ - afficher / saisir le background de l'équipe
  
  Events
  - gestion des evenements boutons : load / save

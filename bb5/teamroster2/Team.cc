@@ -96,9 +96,13 @@ void Team::setApothecary(int apothecary)
       InvalidParameterException e("This race can't have an apothecary.");
       throw (e);            
    }
-   else 
+   else if (apothecary > 1) {
+      InvalidParameterException e("No more than 1 apothecary allowded.");
+      throw (e);            
+   } 
+   else
    {
-      apothecary_ = apothecary; 
+        apothecary_ = apothecary; 
    }
 }   
  
