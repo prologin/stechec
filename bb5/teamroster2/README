@@ -1,48 +1,51 @@
+******************
 Teamroster v.0.0.1 
+******************
 
-Voici l'éditeur d'équipe pour TBT. 
-
-Il est écrit en C++ / SDL (Paragui).
-
-Il nécessite alors d'installer la librairie : 
-  paragui-1.1.8
-
+…diteur d'Èquipe pour TBT, Ècrit en C++ / SDL (Paragui).
 
 ---------------------------
  Comment compiler et tester ?
 ---------------------------
-cd teamroster2
-./autogen.sh
-./configure 
-make
-./src/teamroster2
+Aller ‡ la racine de tbt:
+ - ./bootstrap
+ - ./configure [....]
+Voir le wiki de tbt (https://projects.nekeme.net/projects/tbt/) pour
+les paquets ‡ installer, les options a passer ‡ configure, etc...)
 
+ - cd bb5/teamroster2
+ - make
+ - ./teamroster
 
-Actuellement pour réaliser l'interface graphique la librairie ParaGui a été utilisée.
-L'avantage est qu'il s'agit d'une sur-couche de SDL offrant un ensemble de composants
-graphique de basiques tels que des zones de saisie, des dopdown lists, des boutons, etc.
+Actuellement pour rÈaliser l'interface graphique, la bibliothËque
+ParaGui a ÈtÈ utilisÈe. L'avantage est qu'il s'agit d'une sur-couche
+de SDL offrant un ensemble de composants graphique de basiques tels
+que des zones de saisie, des dopdown lists, des boutons, etc.
 
-Par contre les inconvénients sont nombreux: 
-  - Pas vraiment de programmation SDL car il s'agit d'une sur-couche de trop haut niveau. 
-     <=> Aucune expérience acquise en SDL à proprement parler.
-  - Les composants fournis sont très loin d'être mature et il y a pas mal de chose à se faire 
-    à la main. 
-    
+Par contre les inconvÈnients sont nombreux: 
+
+  - Pas vraiment de programmation SDL car il s'agit d'une sur-couche
+     de trop haut niveau.  
+  <=> Aucune experience acquise en SDL a proprement parler.
+  - Les composants fournis sont trËs loin d'etre mature et il y a pas
+    mal de chose ‡ se faire a la main.
+  - Le projet ParaGui ‡ l'air d'Ítre dans un coma profond, il est peu
+    probable que le prÈcÈdent point soit rÈglÈ un jour.
 
 ---------------------------
     Release notes
 ---------------------------
 - Prise en charge des races disponibles dans la version LBR 5: cf. fichier ./data/races.xml
 - Choix des races => remplissage des champs "position" + cout des rerolls
-- Choix d'une position pour un joueur => remplissage des caractéristiques + skills
+- Choix d'une position pour un joueur => remplissage des caractÈristiques + skills
 - Prise en charge de l'interdiction de prendre un apothicaire pour certaines races
-- Prise en charge le contrôle des caractères de saisie dans les zones numériques
+- Prise en charge le contrÙle des caractËres de saisie dans les zones numÈriques
 - Limitation du nombre de reroll : 8 max pour toutes les races
 - Limitation du nombre d'apothicaire : entre 0 et 1 en fonction des races
-- Calcul automatique de la valeur totale de l'équipe (seulement les coûts d'achat)
+- Calcul automatique de la valeur totale de l'Èquipe (seulement les co˚ts d'achat)
 - Calcul du PE (STAR PLAYER POINTS TABLE - LBR 5 p.33)
-- Posibilité de modification de l'ensemble des champs non calculés et non fixés de la feuille (Characteristic Increases - LBR 5 p.33)
-- Gestion des limitations sur les caractéristiques (max 10, ne peut pas être augmenté (Improvements & Player Values - LBR 5 p.34)
-- Affiche une boite de dialogue pour exlpiquer quand l'apothicaire n'est pas disponible pour une race.
-- Regles de validation d'une équipe avant de l'enregistrer : nombre de joueurs dans une position donnée
-- Affiche l'icone de l'emblème de l'équipe
+- PosibilitÈ de modification de l'ensemble des champs non calculÈs et non fixÈs de la feuille (Characteristic Increases - LBR 5 p.33)
+- Gestion des limitations sur les caractÈristiques (max 10, ne peut pas Ítre augmentÈ (Improvements & Player Values - LBR 5 p.34)
+- Affiche une boite de dialogue pour expliquer quand l'apothicaire n'est pas disponible pour une race.
+- Regles de validation d'une Èquipe avant de l'enregistrer : nombre de joueurs dans une position donnÈe
+- Affiche l'icone de l'emblËme de l'Èquipe
