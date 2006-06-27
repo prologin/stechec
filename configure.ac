@@ -145,7 +145,9 @@ esac
 # SDL
 case $DEPENDS in
     *sdl*) TBT_CHECK_SDL([1.2.0]) ;;
-    *) AM_CONDITIONAL([HAVE_SDL], [false]) ;;
+    *) AM_CONDITIONAL([HAVE_SDL], [false])
+       AM_CONDITIONAL([HAVE_PARAGUI], [false])
+     ;;
 esac
 
 # QT
