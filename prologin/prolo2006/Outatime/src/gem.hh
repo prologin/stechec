@@ -53,7 +53,7 @@ public:
   virtual ~Gem ();
 
   // Calls
-  virtual void		Render () const = 0;
+  virtual void		Render (const float) const = 0;
   virtual void		Update (const Matrix &);
 
   // Accessors

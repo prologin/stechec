@@ -35,10 +35,14 @@ DataCenter::DataCenter ():
   _current_frame(0)
 //   _world_width(0),
 //   _world_height(0)
-{}
+{
+  LOG1("DataCenter::DataCenter");
+}
 
 DataCenter::~DataCenter ()
 {
+  LOG1("DataCenter::~DataCenter");
+
   for (std::vector <Almanach *>::const_iterator it = _almanach.begin ();
        it != _almanach.end ();
        ++it)
@@ -81,6 +85,8 @@ DataCenter::~DataCenter ()
 //
 void			DataCenter::Init_world (Api * api)
 {
+  LOG1("DataCenter::Init_world");
+
 //   _world_width = api->taille_ville_x ();
 //   _world_height = api->taille_ville_y ();
 
@@ -179,6 +185,9 @@ void			DataCenter::Init_world (Api * api)
 	    break;
 	  }
       }
+
+  // Chargement du premier tour
+  New_frame (api);
 }
 
 //
@@ -186,6 +195,8 @@ void			DataCenter::Init_world (Api * api)
 //
 void			DataCenter::New_frame (Api * api)
 {
+  LOG1("DataCenter::New_frame --------------------------------------------");
+
   // Point de vue omniscient
   api->switchTeam (-1);
 
@@ -200,7 +211,7 @@ void			DataCenter::New_frame (Api * api)
   // Les joueurs
   Players_t players;
   const int num_players = api->equipes () * api->taille_equipe ();
-  for (int player = 0; player <= num_players; ++player)
+  for (int player = 0; player < num_players; ++player)
     {
       // Si le joueur est dans le temps, on passe
       if (api->etat_joueur (player) == STATE_TIME_WARP)
@@ -214,6 +225,7 @@ void			DataCenter::New_frame (Api * api)
 #warning "FIXME: obtenir (ou calculer selon) l'état du joueur"
       Player * new_player = new Player (api->position_joueur_x (player),
 					api->position_joueur_y (player),
+					true, // FIXME
 					player,
 					api->equipe (player),
 					possede_almanach,
@@ -230,13 +242,14 @@ void			DataCenter::New_frame (Api * api)
   // L'almanach
   Almanach * new_almanach = new Almanach (api->position_almanach_x (),
 					  api->position_almanach_y (),
+					  true, // FIXME
 					  almanach_owner);
 
   // La de Lorean
   DeLorean * new_delorean = new DeLorean (api->position_delorean_x (),
 					  api->position_delorean_y (),
+					  true, // FIXME
 					  delorean_owner,
-					  true,
 					  api->autonomie_delorean ());
 
   // Les casinos
@@ -280,8 +293,8 @@ void			DataCenter::New_frame (Api * api)
   // Ajout de la frame dans la pile
 //   _frames.push_back (new_frame);
 
-  if (_current_frame == Frames () - 1)
-    _current_frame++;
+//   if (_current_frame == Frames () - 1)
+//     _current_frame++;
 
   _date.push_back(date);
   _almanach.push_back(new_almanach);
@@ -302,6 +315,8 @@ unsigned int		DataCenter::Current_frame () const
 {
   return _current_frame;
 }
+
+// Elements pour le reste du monde :
 
 unsigned int		DataCenter::Date () const
 {
@@ -391,7 +406,7 @@ void			DataCenter::Previous_frame ()
 
 void			DataCenter::Next_frame ()
 {
-  if (_current_frame < Frames ())
+  if (_current_frame < Frames () - 1)
     ++_current_frame;
 }
 

@@ -31,16 +31,15 @@
 
 DeLorean::DeLorean (const unsigned int x,
 		    const unsigned int y,
-		    const Player * owner,
 		    const bool present,
+		    const Player * owner,
 		    const unsigned int autonomy):
-  Ownable(x, y, owner), _present(present), _autonomy(autonomy)
+  Ownable(x, y, present, owner), _autonomy(autonomy)
 {}
 
 
 // =================================================================== Accessor
 
-bool			DeLorean::Present () const	{ return _present; }
 unsigned int		DeLorean::Autonomy () const	{ return _autonomy; }
 
 // ============================================================================

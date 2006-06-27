@@ -40,7 +40,7 @@ public:
   PlayerGfx ();
 
   // Call
-  virtual void		Render ();
+  virtual void		Render (const float);
 
   // Modifiers
   void			Direction (const unsigned int);

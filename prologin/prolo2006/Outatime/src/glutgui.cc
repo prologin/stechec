@@ -48,9 +48,12 @@ GlutGUI *	GlutGUI::Instance (Api * api, ClientCx * ccx)
   if (0 == _glut_instance)
     {
       if (0 == api || 0 == ccx)
-	std::cerr << "Not fair NULL API T_T" << std::endl;
+	std::cerr << "Unfair NULL API T_T" << std::endl;
       else
-	_glut_instance = new GlutGUI (api, ccx);
+	{
+	  LOG1("New GlutGUI instance.");
+	  _glut_instance = new GlutGUI (api, ccx);
+	}
     }
   return _glut_instance;
 }
@@ -64,23 +67,31 @@ GlutGUI *	GlutGUI::Instance ()
 void		GlutGUI::Destroy ()
 {
   if (_glut_instance != 0)
-    delete _glut_instance;
+    {
+      delete _glut_instance;
+      LOG1("GlutGUI instance destroyed.");
+    }
 }
 
 
 //============================================================== Initialization
 
-int	GlutGUI::Init_GUI (int * argc,
-			   char ** argv,
+static int fake_argc = 1;
+static char *fake_argv[1] = {"run"};
+
+int	GlutGUI::Init_GUI (int *,
+			   char **,
 			   const unsigned int width,
 			   const unsigned int height,
 			   const char * title)
 {
+  LOG1("GlutGUI::Init_GUI");
+
   _window_width = width;
   _window_height = height;
 
   // Render window setting
-  glutInit (argc, argv);
+  glutInit (&fake_argc, fake_argv);
   glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
   glutInitWindowSize (width, height);
   glutCreateWindow (title);
@@ -96,15 +107,18 @@ int	GlutGUI::Init_GUI (int * argc,
   glutMotionFunc (&GlutMotionFunc);
 //   glutEntryFunc (EntryCallback);
 
-  std::cerr << "Window created!" << std::endl;
+  LOG1("Window created!");
+//   std::cerr << "Window created!" << std::endl;
   return 0;
 }
 
-void	GlutGUI::Run (const int delay, const int frame_delay)
+void	GlutGUI::Run (const int render_delay, const int frame_delay)
 {
-  GUI::Run (delay, frame_delay);
-  glutTimerFunc (delay, &GlutTimerFunc, delay);
+  LOG1("GlutGUI::Run");
+  GUI::Run (render_delay, frame_delay);
+  glutTimerFunc (render_delay, &GlutRenderTimerFunc, render_delay);
   glutTimerFunc (frame_delay, &GlutFrameTimerFunc, frame_delay);
+  LOG1("Entering glutMainLoop...");
   glutMainLoop ();
 }
 
@@ -113,6 +127,7 @@ void	GlutGUI::Run (const int delay, const int frame_delay)
 //
 void	GlutGUI::Redraw ()
 {
+  LOG1("GlutGUI::Redraw");
   glutPostRedisplay ();
 }
 
@@ -130,16 +145,16 @@ int	GlutGUI::Elapsed_time ()
 //
 // Called at a specific frequency
 //
-void	GlutGUI::GlutTimerFunc (int delay)
+void	GlutGUI::GlutRenderTimerFunc (int render_delay)
 {
-  GlutGUI::Instance ()->TimerCallback ();
-  glutTimerFunc (delay, &GlutTimerFunc, delay);
+  GlutGUI::Instance ()->RenderTimerCallback ();
+  glutTimerFunc (render_delay, &GlutRenderTimerFunc, render_delay);
 }
 
-void	GlutGUI::GlutFrameTimerFunc (int delay)
+void	GlutGUI::GlutFrameTimerFunc (int frame_delay)
 {
   GlutGUI::Instance ()->FrameTimerCallback ();
-  glutTimerFunc (delay, &GlutFrameTimerFunc, delay);
+  glutTimerFunc (frame_delay, &GlutFrameTimerFunc, frame_delay);
 }
 
 //

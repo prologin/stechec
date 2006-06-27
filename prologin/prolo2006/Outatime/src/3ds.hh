@@ -18,7 +18,7 @@
 
 //>------ Main Chunks
 #define OBJECTINFO	0x3D3D		// Version of the mesh
-#define VERSION		0x0002		// Version of the .3ds file
+#define VERSION_3DS	0x0002		// Version of the .3ds file
 #define EDITKEYFRAME	0xB000		// Header for all of the key frame info
 
 //>------ sub defines of OBJECTINFO

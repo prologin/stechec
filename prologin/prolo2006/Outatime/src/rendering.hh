@@ -31,6 +31,7 @@
 // {Rendering} est le noyau de l'interface graphique.
 
 #include		"Api.hh"
+#include		"composite.hh"
 #include		"matrix.hh"
 
 
@@ -52,6 +53,7 @@ public:
   ~Rendering ();
 
   // Init
+  bool			Init_objects ();
 //   int			Load_textures ();
   int			Init_API (const int, const int);
 
@@ -108,6 +110,7 @@ protected:
   bool			_update_projection;
 
   unsigned int		_letter_base;
+  unsigned int		_console_texture;
 
   float			_min_x;
   float			_min_y;
@@ -119,6 +122,8 @@ protected:
   Vector3D		_team_axis;
   Vector3D		_center;
   Vector3D *		_weights[MAX_TEAM];
+
+  Composite *		_delorean_representation;
 };
 
 #endif			// RENDERING_HH

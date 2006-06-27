@@ -29,8 +29,10 @@
 
 // ================================================================ Constructor
 
-Moving::Moving (const unsigned int x, const unsigned int y):
-  Element(x, y)
+Moving::Moving (const unsigned int x,
+		const unsigned int y,
+		const bool present):
+  Element(x, y), _present(present)
 {
   for (unsigned int i = 0; i < MAX_TEAM; ++i)
     _visible_by_team[i] = false;
@@ -38,6 +40,8 @@ Moving::Moving (const unsigned int x, const unsigned int y):
 
 
 // =================================================================== Accessor
+
+bool			Moving::Present () const	{ return _present; }
 
 bool			Moving::Visible_by_team (const unsigned int team) const
 {

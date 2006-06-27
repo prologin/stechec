@@ -30,6 +30,7 @@
 #include		<iostream>
 #include		<cstdio>
 #include		<cmath>
+#include		"3ds.hh"
 #include		"datacenter.hh"
 #include		"rendering.hh"
 #include		"texturemanager.hh"
@@ -56,9 +57,11 @@ Rendering::Rendering ():
   _display_players(true),
   _update_projection(true),
   _letter_base(0),
+  _console_texture(0),
   _time_axis(0),
   _team_axis(1, 0, 0),
-  _center(0, 0, 0)
+  _center(0, 0, 0),
+  _delorean_representation(0)
 {
   for (unsigned int i = 0; i < 6; ++i)
     _weights[i] = new Vector3D (0, 0, 0);
@@ -70,10 +73,41 @@ Rendering::~Rendering ()
 
   for (unsigned int i = 0; i < 6; ++i)
     delete _weights[i];
+
+  if (_delorean_representation != 0)
+    delete _delorean_representation;
 }
 
 
 //============================================================== Initialization
+
+bool			Rendering::Init_objects ()
+{
+  _console_texture = TextureManager::Instance ()->Load_texture ("console.jpg",
+								true,
+								false,
+								false);
+
+  // Load the 3DS in the messy structure
+  t3DModel delorean_3ds;
+  CLoad3DS loader;
+  if (loader.Import3DS (&delorean_3ds, "delorean.3ds"))
+    // Import it into a clean object
+    _delorean_representation = new Composite (delorean_3ds);
+
+  // Clean up all the mess
+  for (std::vector<t3DObject>::iterator it = delorean_3ds.pObject.begin ();
+       it != delorean_3ds.pObject.end ();
+       ++it)
+    {
+      delete it->pVerts;
+      delete it->pNormals;
+      delete it->pTexVerts;
+      delete it->pFaces;
+    }
+
+  return (_delorean_representation != 0);
+}
 
 // int	Rendering::Load_textures ()
 // {
@@ -101,8 +135,10 @@ Rendering::~Rendering ()
 //
 // Set OpenGL settings and compile the various display lists
 //
-int	Rendering::Init_API (const int width, const int height)
+int			Rendering::Init_API (const int width, const int height)
 {
+  LOG1("Rendering::Init_API");
+
   _window_width = width;
   _window_height = height;
 
@@ -178,8 +214,10 @@ int	Rendering::Init_API (const int width, const int height)
 
 //=================================================================== Rendering
 
-void	Rendering::Rendering_update ()
+void			Rendering::Rendering_update ()
 {
+  LOG1("Rendering::Rendering_update");
+
   TextureManager::Instance ()->Update ();
 
   if (_update_projection)
@@ -196,13 +234,20 @@ void	Rendering::Rendering_update ()
       glMatrixMode (GL_MODELVIEW);
       _update_projection = false;
     }
-
-#warning "FIXME: c'est ici qu'il faut mettre à jour les éléments graphiques"
 }
 
-void	Rendering::Animation_update (const float state)
+void			Rendering::Animation_update (const float state)
 {
+  LOG1("Rendering::Animation_update");
+
   DataCenter * data_center = DataCenter::Instance ();
+
+  LOG1("test");
+
+
+#warning "FIXME: c'est ici qu'il faut mettre à jour les éléments graphiques"
+//   for (Gems_t::iterator it = _gems.begin (); etc.
+
 
   // Animation of the water
 //   _water.Update_shape (_last_tick);
@@ -222,11 +267,14 @@ void	Rendering::Animation_update (const float state)
   // Automatic camera
   if (_auto_camera)
     {
-      Players_t::const_iterator first(data_center->Players ().begin ());
-      Players_t::const_iterator last(data_center->Players ().end ());
-      if (first != last)
+      Players_t::const_iterator begin(data_center->Players ().begin ());
+      Players_t::const_iterator end(data_center->Players ().end ());
+
+//       LOG1("test (" << data_center->Players ().size () << " joueurs)");
+
+      if (begin != end)
 	{
-	  Vector3D p((*first)->X (), (*first)->Y (), 0);
+	  Vector3D p((*begin)->X (), (*begin)->Y (), 0);
 	  _min_x = p.X ();
 	  _min_y = p.Y ();
 	  _min_z = p.Z ();
@@ -244,6 +292,8 @@ void	Rendering::Animation_update (const float state)
 	  _max_z = 0;
 	}
 
+      LOG1("test");
+
       int count[MAX_TEAM];
       for (unsigned int i = 0; i < MAX_TEAM; ++i)
 	{
@@ -251,12 +301,14 @@ void	Rendering::Animation_update (const float state)
 	  _weights[i]->Set (0, 0, 0);
 	}
 
+      LOG1("test");
+
       // Bounding-box
-      for (Players_t::const_iterator it = first; it != last; ++it)
+      for (Players_t::const_iterator it = begin; it != end; ++it)
 	{
 	  Vector3D p((*it)->X (), (*it)-> Y (), 0);
 
-	  const unsigned int i((*it)->Team () - 1);
+	  const unsigned int i((*it)->Team ());
 	  ++count[i];
 	  (*_weights[i]) = (*_weights[i]) + p;
 
@@ -274,6 +326,8 @@ void	Rendering::Animation_update (const float state)
 	    _max_z = p.Z ();
 	}
 
+      LOG1("test");
+
       Vector3D old_center(_center);
       // Center of the bounding-box
       _center.Set ((_min_x + _max_x) * 0.5f,
@@ -287,6 +341,8 @@ void	Rendering::Animation_update (const float state)
       if (length < 0.5f)
 	length = 0.5f;
 
+      LOG1("test");
+
       // Weights of each team
       unsigned int teams = 0;
       for (unsigned int i = 0; i < 6; ++i)
@@ -295,6 +351,8 @@ void	Rendering::Animation_update (const float state)
 	    (*_weights[i]) = (*_weights[i]) / count[i];
 	    ++teams;
 	  }
+
+      LOG1("test");
 
       Vector3D old_axis(_team_axis);
 
@@ -317,13 +375,17 @@ void	Rendering::Animation_update (const float state)
 		      }
 		  }
 	}
+
+      LOG1("test");
+
       // Special case: only one team...
       if (1 == teams)
 	{
 	  float max_len = 0;
-	  for (Players_t::const_iterator it = first; it != last; ++it)
-	    for (Players_t::const_iterator jt = it; jt != last; ++jt)
+	  for (Players_t::const_iterator it = begin; it != end; ++it)
+	    for (Players_t::const_iterator jt = it; jt != end; ++jt)
 	    {
+#warning "FIXME: cas où il n'y a qu'une unité, pour la caméra."
 	      Vector3D v = Vector3D ((*it)->X () - (*jt)->X (),
 				     (*it)->Y () - (*jt)->Y (),
 				     0);
@@ -336,6 +398,8 @@ void	Rendering::Animation_update (const float state)
 	    }
 	}
 
+      LOG1("test");
+
       // Filtering, to decrease shaking
       _team_axis.Normalize ();
       if (_team_axis * old_axis > 0.9)
@@ -344,6 +408,8 @@ void	Rendering::Animation_update (const float state)
 	  _center = (_center + old_center * 19) * 0.05;
 	  _time_axis = _last_tick;
 	}
+
+      LOG1("test");
 
       // Up vector
       Vector3D up(0, 0.1 + 0.5 * length * length, 0);
@@ -367,13 +433,14 @@ void	Rendering::Animation_update (const float state)
       _camera.Ortho_normalise ();
       _update_projection = true;
     }
+  LOG1(" * plip-plop *");
 }
 
 //
 // Returns a string telling the framerate
 //
-static char	fps_string[22]; // "Ough to be enough for everyone" (c)
-static char *	fps (const float value)
+static char fps_string[22]; // "Ough to be enough for everyone" (c)
+static char *			fps (const float value)
 {
   if (value > 1000)
     {
@@ -390,8 +457,10 @@ static char *	fps (const float value)
 //
 // Called when a redraw is requested
 //
-void	Rendering::Render (const int tick, const float state)
+void			Rendering::Render (const int tick, const float state)
 {
+  LOG1("Rendering::Render");
+
   glMatrixMode (GL_MODELVIEW);
 
   _average_delta_tick = (4 * _average_delta_tick + (tick - _last_tick)) / 5;
@@ -583,7 +652,6 @@ void	Rendering::Render (const int tick, const float state)
 
   glPopMatrix ();
 
-  glDisable (GL_TEXTURE_2D);
   glMatrixMode (GL_PROJECTION);
   glPopMatrix ();
   glMatrixMode (GL_MODELVIEW);
@@ -612,6 +680,8 @@ void			Rendering::Display_text (const float size,
 
 void			Rendering::Resize (const int width, const int height)
 {
+  LOG1("Rendering::Resize");
+
   _window_width = width;
   _window_height = height;
   glViewport (0, 0, _window_width, _window_height);
@@ -697,6 +767,7 @@ void			Rendering::Toggle_deLorean ()
 
 void			Rendering::Toggle_buildings ()
 {
+
   _display_buildings = !_display_buildings;
 }
 

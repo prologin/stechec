@@ -40,7 +40,7 @@ public:
   virtual ~Billboard ();
 
   // Calls
-  void			Render () const;
+  void			Render (const float) const;
   void			Update (const Matrix &);
 
 protected:

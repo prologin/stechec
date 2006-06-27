@@ -38,15 +38,17 @@ class			Moving : public Element
 {
 public:
   // Constructor
-  Moving (const unsigned int, const unsigned int);
+  Moving (const unsigned int, const unsigned int, const bool);
 
   // Accessor
+  bool			Present () const;
   bool			Visible_by_team (const unsigned int) const;
 
   // Modifier
   void			Visible_by_team (const unsigned int, const bool);
 
 private:
+  const bool		_present;
   bool			_visible_by_team[MAX_TEAM];
 };
 

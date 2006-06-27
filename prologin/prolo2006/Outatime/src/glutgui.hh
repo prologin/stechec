@@ -66,7 +66,7 @@ public:
 
 protected:
   // Glut callbacks
-  static void		GlutTimerFunc (int);
+  static void		GlutRenderTimerFunc (int);
   static void		GlutFrameTimerFunc (int);
   static void		GlutIdleFunc ();
   static void		GlutDisplayFunc ();

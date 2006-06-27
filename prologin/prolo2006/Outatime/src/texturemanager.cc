@@ -30,6 +30,7 @@
 #include		<jerror.h>
 #include		<GL/gl.h>
 #include		<GL/glu.h>
+#include		"Api.hh"
 #include		"texturemanager.hh"
 
 // ================================================================ Constructor
@@ -41,10 +42,14 @@ TextureManager::TextureManager ():
   _filtering(true),
   _mipmapping(true),
   _filtering_modified(true)
-{}
+{
+  LOG1("TextureManager::TextureManager");
+}
 
 TextureManager::~TextureManager ()
 {
+  LOG1("TextureManager::~TextureManager");
+
   for (Textures_t::const_iterator it = _textures.begin ();
        it != _textures.end ();
        ++it)
@@ -130,6 +135,8 @@ static void		Set_texture_filtering (const bool filtering,
 
 void			TextureManager::Update ()
 {
+  LOG1("TextureManager::Update");
+
   if (!_texturing || !_filtering_modified)
     return;
   for (Textures_t::const_iterator it = _textures.begin ();
@@ -176,6 +183,8 @@ unsigned int		TextureManager::Load_texture (const char * filename,
 						      const bool mipmapping,
 						      const bool repeat)
 {
+  LOG1("TextureManager::Load_texture");
+
   // First we check if the texture hasn't been loaded already
   for (Textures_t::const_iterator it = _textures.begin ();
        it != _textures.end ();

@@ -31,12 +31,13 @@
 
 Player::Player (const unsigned int x,
 		const unsigned int y,
+		const bool present,
 		const unsigned int id,
 		const unsigned int team,
 		const bool own_almanach,
 		const bool own_delorean,
 		const state_t state):
-  Moving(x, y),
+  Moving(x, y, present),
   _id(id),
   _team(team),
   _own_almanach(own_almanach),

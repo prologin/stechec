@@ -26,13 +26,36 @@
 //=============================================================================
 
 #include		"GL/gl.h"
+#include		<vector>
 #include		"composite.hh"
+#include		"mesh.hh"
+#include		"texturemanager.hh"
 
 // ================================================= Constructor and destructor
 
 Composite::Composite (Gems_t & objects):
+  Solid (),
   _objects(objects)
 {}
+
+Composite::Composite (const struct t3DModel & object):
+  Solid ()
+{
+  for (std::vector<t3DObject>::const_iterator it = object.pObject.begin ();
+       it != object.pObject.end ();
+       ++it)
+    {
+      Mesh * new_mesh = new Mesh (*it);
+      TextureManager * texturemanager = TextureManager::Instance ();
+      new_mesh->Texture (texturemanager->
+			 Load_texture (object.pMaterials[it->
+							 materialID].strName,
+				       true,
+				       true,
+				       false));
+      _objects.push_back (new_mesh);
+    }
+}
 
 Composite::~Composite ()
 {
@@ -51,7 +74,7 @@ const Gems_t &		Composite::Objects () const
 
 // ======================================================================= Call
 
-void			Composite::Render () const
+void			Composite::Render (const float state) const
 {
   glPushMatrix ();
   Load_position ();
@@ -59,7 +82,7 @@ void			Composite::Render () const
   for (Gems_t::const_iterator it = _objects.begin ();
        it != _objects.end ();
        ++it)
-    (*it)->Render ();
+    (*it)->Render (state);
   glPopMatrix ();
 }
 

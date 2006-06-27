@@ -28,9 +28,9 @@
 #include		"playergfx.hh"
 #include		"texturemanager.hh"
 
-static int		_idle[4];
-static int		_bored[4];
-static int		_ko[4];
+static std::vector<int>	_idle[4];
+static std::vector<int>	_bored[4];
+static std::vector<int>	_ko[4];
 static std::vector<int>	_moving[4];
 static std::vector<int>	_attacking[4];
 static std::vector<int>	_attacked[4];
@@ -49,20 +49,20 @@ PlayerGfx::PlayerGfx ():
   if (_textures_loaded)
     return;
 
-  _idle[0] = Load_texture ("immobile-dos.jpg");
-  _idle[1] = Load_texture ("immobile-droite.jpg");
-  _idle[2] = Load_texture ("immobile-face.jpg");
-  _idle[3] = Load_texture ("immobile-gauche.jpg");
+  _idle[0].push_back (Load_texture ("immobile-dos.jpg"));
+  _idle[1].push_back (Load_texture ("immobile-droite.jpg"));
+  _idle[2].push_back (Load_texture ("immobile-face.jpg"));
+  _idle[3].push_back (Load_texture ("immobile-gauche.jpg"));
 
-  _bored[0] = Load_texture ("ennui-dos.jpg");
-  _bored[1] = Load_texture ("ennui-droite.jpg");
-  _bored[2] = Load_texture ("ennui-face.jpg");
-  _bored[3] = Load_texture ("ennui-gauche.jpg");
+  _bored[0].push_back (Load_texture ("ennui-dos.jpg"));
+  _bored[1].push_back (Load_texture ("ennui-droite.jpg"));
+  _bored[2].push_back (Load_texture ("ennui-face.jpg"));
+  _bored[3].push_back (Load_texture ("ennui-gauche.jpg"));
 
-  _ko[0] = Load_texture ("ko-dos.jpg");
-  _ko[1] = Load_texture ("ko-droite.jpg");
-  _ko[2] = Load_texture ("ko-face.jpg");
-  _ko[3] = Load_texture ("ko-gauche.jpg");
+  _ko[0].push_back (Load_texture ("ko-dos.jpg"));
+  _ko[1].push_back (Load_texture ("ko-droite.jpg"));
+  _ko[2].push_back (Load_texture ("ko-face.jpg"));
+  _ko[3].push_back (Load_texture ("ko-gauche.jpg"));
 
   _moving[0].push_back (Load_texture ("marche-dos-1.jpg"));
   _moving[0].push_back (Load_texture ("marche-dos-2.jpg"));
@@ -117,25 +117,57 @@ PlayerGfx::PlayerGfx ():
 
 // ======================================================================= Call
 
-void			PlayerGfx::Render ()
+void			PlayerGfx::Render (const float state)
 {
+  TextureManager * texture_manager = TextureManager::Instance ();
   unsigned int direction = _direction + _camera_direction;
+
   while (direction >= 4)
     direction = direction - 4;
   switch (_state)
     {
     case Player::idle:
-      TextureManager::Instance ()->Activate_texture (_idle[direction]);
+      {
+	const unsigned int i = (unsigned int)(state *
+					      _idle[direction].size ());
+	texture_manager->Activate_texture (_idle[direction][i]);
+	break;
+      }
     case Player::bored:
-      TextureManager::Instance ()->Activate_texture (_bored[direction]);
+      {
+	const unsigned int i = (unsigned int)(state *
+					      _bored[direction].size ());
+	texture_manager->Activate_texture (_bored[direction][i]);
+	break;
+      }
     case Player::ko:
-      TextureManager::Instance ()->Activate_texture (_ko[direction]);
+      {
+	const unsigned int i = (unsigned int)(state *
+					      _ko[direction].size ());
+	texture_manager->Activate_texture (_ko[direction][i]);
+	break;
+      }
     case Player::moving:
-      TextureManager::Instance ()->Activate_texture (_moving[direction][0]);
+      {
+	const unsigned int i = (unsigned int)(state *
+					      _moving[direction].size ());
+	texture_manager->Activate_texture (_moving[direction][i]);
+	break;
+      }
     case Player::attacking:
-      TextureManager::Instance ()->Activate_texture (_attacking[direction][0]);
+      {
+	const unsigned int i = (unsigned int)(state *
+					      _attacking[direction].size ());
+	texture_manager->Activate_texture (_attacking[direction][i]);
+	break;
+      }
     case Player::attacked:
-      TextureManager::Instance ()->Activate_texture (_attacked[direction][0]);
+      {
+	const unsigned int i = (unsigned int)(state *
+					      _attacked[direction].size ());
+	texture_manager->Activate_texture (_attacked[direction][i]);
+	break;
+      }
     }
   WorldBillboard::Render ();
 }
@@ -160,7 +192,34 @@ void			PlayerGfx::ReAlign (const Matrix & camera)
   const float alpha(atan2f (y, x));
   _camera_direction = (int)(((alpha + M_PI) * 4) / M_PI);
 
-  WorldBillboard::ReAlign (camera);
+//   WorldBillboard::ReAlign (camera);
+
+  Vector3D Vy (0, 1, 0);
+  Vector3D Vx (camera.Vy () ^ camera.Vz ());
+  Vy = camera.Vz () ^ Vx;
+  Vx.Normalize ();
+  Vy.Normalize ();
+
+  const Vector3D A( Vx + Vy);
+  const Vector3D B(-Vx + Vy);
+  const Vector3D C(-Vx - Vy);
+  const Vector3D D( Vx - Vy);
+
+  _vertices[0] = A.X ();
+  _vertices[1] = A.Y ();
+  _vertices[2] = A.Z ();
+
+  _vertices[3] = B.X ();
+  _vertices[4] = B.Y ();
+  _vertices[5] = B.Z ();
+
+  _vertices[6] = C.X ();
+  _vertices[7] = C.Y ();
+  _vertices[8] = C.Z ();
+
+  _vertices[9] = D.X ();
+  _vertices[10] = D.Y ();
+  _vertices[11] = D.Z ();
 }
 
 // ============================================================================

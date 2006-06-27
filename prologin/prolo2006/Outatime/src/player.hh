@@ -50,6 +50,7 @@ public:
   // Constructor
   Player (const unsigned int,
 	  const unsigned int,
+	  const bool,
 	  const unsigned int,
 	  const unsigned int,
 	  const bool,

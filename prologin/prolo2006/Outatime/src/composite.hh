@@ -30,6 +30,7 @@
 
 // {Composite} est un groupe d'objets 3D.
 
+#include		"3ds.hh"
 #include		"solid.hh"
 
 class			Composite : public Solid
@@ -37,14 +38,15 @@ class			Composite : public Solid
 public:
   // Constructor and destructor
   Composite (Gems_t &);
+  Composite (const struct t3DModel &);
   virtual ~Composite ();
 
   // Accessor
   const Gems_t &	Objects () const;
 
   // Calls
-  void			Render () const;
-  void			Update (const Matrix &);
+  virtual void		Render (const float) const;
+  virtual void		Update (const Matrix &);
 
 private:
   Gems_t		_objects;

@@ -38,7 +38,10 @@ class			Ownable : public Moving
 {
 public:
   // Constructor
-  Ownable (const unsigned int, const unsigned int, const Player *);
+  Ownable (const unsigned int,
+	   const unsigned int,
+	   const bool,
+	   const Player *);
 
   // Accessors
   bool			Owned () const;

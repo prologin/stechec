@@ -42,6 +42,8 @@ GUI::GUI (Api * api, ClientCx * ccx):
   _right_button(false),
   _pause(false),
 //   _step(false),
+  _render_delay(100),
+  _frame_delay(500),
   _frame_start_time(0),
   _current_time(0),
   _pause_time(0),
@@ -57,21 +59,24 @@ GUI::~GUI ()
 
 int	GUI::Init_files ()
 {
-  return 0;
+  LOG1("GUI::Init_files");
+  return (_rendering.Init_objects () ? 0 : 1);
 }
 
 int	GUI::Init_API ()
 {
+  LOG1("GUI::Init_API");
   if (_rendering.Init_API (_window_width, _window_height) != 0)
     return 2;
   return 0;
 }
 
-void	GUI::Run (const int delay, const int frame_delay)
+void	GUI::Run (const int render_delay, const int frame_delay)
 {
-  _delay = delay;
+  LOG1("GUI::Run");
+  _render_delay = render_delay;
   _frame_delay = frame_delay;
-  std::cerr << "Running..." << std::endl;
+//   std::cerr << "Running..." << std::endl;
 }
 
 
@@ -80,9 +85,27 @@ void	GUI::Run (const int delay, const int frame_delay)
 //
 // Called at a specific frequency
 //
-void	GUI::TimerCallback ()
+void	GUI::RenderTimerCallback ()
 {
+  LOG1("GUI::RenderTimerCallback");
+
+  if (!_pause)//  || _step)
+    {
+      const float state((_current_time - _frame_start_time - _pause_time) /
+			(float)_render_delay);
+      _rendering.Animation_update ((state > 1) ? 1 : state);
+    }
+  _rendering.Rendering_update ();
+
+  Redraw ();
+}
+
+void	GUI::FrameTimerCallback ()
+{
+  LOG1("GUI::FrameTimerCallback");
+
   // We load the next frame
+  _ccx->setReady ();
   DataCenter::Instance ()->New_frame (_api);
 
   if (!_pause)//  || _step)
@@ -99,19 +122,6 @@ void	GUI::TimerCallback ()
 //     }
 }
 
-void	GUI::FrameTimerCallback ()
-{
-  if (!_pause)//  || _step)
-    {
-      const float state((_current_time - _frame_start_time - _pause_time) /
-			(float)_delay);
-      _rendering.Animation_update ((state > 1) ? 1 : state);
-    }
-  _rendering.Rendering_update ();
-
-  Redraw ();
-}
-
 //
 // Called when the application is idle
 //
@@ -124,6 +134,7 @@ void	GUI::IdleCallback ()
 //
 void	GUI::ResizeCallback (const int width, const int height)
 {
+  LOG1("GUI::ResizeCallback");
 //   std::cerr << "ResizeCallback" << std::endl;
 
   _window_width = width;
@@ -137,6 +148,7 @@ void	GUI::ResizeCallback (const int width, const int height)
 //
 void	GUI::DisplayCallback ()
 {
+  LOG1("GUI::DisplayCallback");
   _current_time = Elapsed_time ();
   if (_pause)//  && !_step)
     {
@@ -144,7 +156,7 @@ void	GUI::DisplayCallback ()
       _pause_start_time = _current_time;
     }
   const float state((_current_time - _frame_start_time - _pause_time) /
-		    (float)_delay);
+		    (float)_render_delay);
   _rendering.Render (_current_time, (state > 1) ? 1 : state);
 }
 
@@ -156,6 +168,7 @@ void	GUI::KeyboardCallback (const unsigned char key,
 			       const bool /* ctrl */,
 			       const bool /* alt */)
 {
+  LOG1("GUI::KeyboardCallback");
 //   std::cerr << "KeyboardCallback" << std::endl;
 
   switch (key)
@@ -195,6 +208,7 @@ void	GUI::SpecialKeyCallback (const SpecialKey specialkey,
 				 const bool /* ctrl */,
 				 const bool /* alt */)
 {
+  LOG1("GUI::SpecialKeyCallback");
 //   std::cerr << "SpecialKeyCallback" << std::endl;
 
   switch (specialkey)
@@ -264,6 +278,7 @@ void	GUI::MouseButtonCallback (const MouseButton button,
 				  const bool state,
 				  const int x, const int y)
 {
+  LOG1("GUI::MouseButtonCallback");
 //   std::cerr << "MouseButtonCallback" << std::endl;
 
   if (left_button == button)
@@ -281,6 +296,7 @@ void	GUI::MouseButtonCallback (const MouseButton button,
 //
 void	GUI::MouseMotionCallback (const int x, const int y)
 {
+  LOG1("GUI::MouseMotionCallback");
 //   std::cerr << "MouseMotionCallback" << std::endl;
 
   if (_left_button)

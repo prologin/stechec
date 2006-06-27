@@ -50,7 +50,7 @@ Billboard::~Billboard ()
 
 // ====================================================================== Calls
 
-void			Billboard::Render () const
+void			Billboard::Render (const float) const
 {
   glEnableClientState (GL_TEXTURE_COORD_ARRAY);
   glEnableClientState (GL_VERTEX_ARRAY);

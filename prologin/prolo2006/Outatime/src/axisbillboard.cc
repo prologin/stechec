@@ -66,7 +66,7 @@ void			AxisBillboard::Axis (const Vector3D & axis)
 void			AxisBillboard::ReAlign (const Matrix & camera)
 {
   Vector3D Vy (_axis);
-  Vector3D Vx (camera.Vy () ^ camera.Vz ());
+  Vector3D Vx (_axis ^ camera.Vz ());
   Vx.Normalize ();
   Vy.Normalize (_length);
 

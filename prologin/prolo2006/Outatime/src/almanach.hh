@@ -36,7 +36,10 @@ class			Almanach : public Ownable
 {
 public:
   // Constructor
-  Almanach (const unsigned int, const unsigned int, const Player *);
+  Almanach (const unsigned int,
+	    const unsigned int,
+	    const bool,
+	    const Player *);
 };
 
 #endif			// ALMANACH_HH

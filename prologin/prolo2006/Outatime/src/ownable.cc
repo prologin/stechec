@@ -31,8 +31,9 @@
 
 Ownable::Ownable (const unsigned int x,
 		  const unsigned int y,
+		  const bool present,
 		  const Player * owner):
-  Moving(x, y), _owner(owner)
+  Moving(x, y, present), _owner(owner)
 {}
 
 

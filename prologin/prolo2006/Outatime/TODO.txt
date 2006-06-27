@@ -1,3 +1,32 @@
+Trucs à faire :
+---------------
+
+Vérifier tout le bordel de connexion serveur (demander à Olivier)
+
+Mettre à jour les trucs graphiques par rapport aux données
+
+Rendering
+
+L'animation
+
+Tester le chargement de 3ds.
+
+
+
+Utiliser la libim au lieu de la libjpeg
+
+
+Implémenter une fonction de comparaison pour Gem
+
+Afficher dans l'ordre
+
+
+
+Plus tellement code :
+
+Terrain, bâtiments, casinos...
+
+
 Interaction avec le serveur :
 =============================
 Le wrapper pour les candidats : stechec/scripts/files/main.c
@@ -7,10 +36,9 @@ Dans le cas du candidat, sa fonction play_turn est appelée, mais dans
 le cas du client de rendu, c'est lui qui mène la danse à coups de
 setReady(). Les appels aux fonctions concernent le tour courant.
 
- * A faire : Voir pour la boucle du jeu dans gui.cc. Quand ce sera
-             fait, ligne droite affichage. Afficher des bidules au
-             départ et améliorer au fur et à mesure. Prévoir un bout
-             de code pour chunter le server et visualiser directement.
+ * A faire : Voir pourquoi la boucle du jeu ne tourne pas. Quand ce
+             sera fait, ligne droite affichage. Afficher des bidules
+             au départ et améliorer au fur et à mesure.
 
 
 Affichage d'un joueur :

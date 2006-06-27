@@ -51,8 +51,6 @@ RM		=	rm -f
 
 SRC		=	$(SRC_DIRECTORY)/3ds.cc			\
 			$(SRC_DIRECTORY)/almanach.cc		\
-			$(SRC_DIRECTORY)/axisbillboard.cc	\
-			$(SRC_DIRECTORY)/billboard.cc		\
 			$(SRC_DIRECTORY)/building.cc		\
 			$(SRC_DIRECTORY)/casino.cc		\
 			$(SRC_DIRECTORY)/composite.cc		\
@@ -69,13 +67,10 @@ SRC		=	$(SRC_DIRECTORY)/3ds.cc			\
 			$(SRC_DIRECTORY)/moving.cc		\
 			$(SRC_DIRECTORY)/ownable.cc		\
 			$(SRC_DIRECTORY)/player.cc		\
-			$(SRC_DIRECTORY)/playergfx.cc		\
 			$(SRC_DIRECTORY)/rendering.cc		\
-			$(SRC_DIRECTORY)/screenbillboard.cc	\
 			$(SRC_DIRECTORY)/solid.cc		\
 			$(SRC_DIRECTORY)/texturemanager.cc	\
-			$(SRC_DIRECTORY)/vector3d.cc		\
-			$(SRC_DIRECTORY)/worldbillboard.cc
+			$(SRC_DIRECTORY)/vector3d.cc
 
 DEBUG_FLAGS	=	-ggdb3
 

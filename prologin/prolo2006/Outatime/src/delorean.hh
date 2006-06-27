@@ -38,16 +38,14 @@ public:
   // Constructor
   DeLorean (const unsigned int,
 	    const unsigned int,
-	    const Player *,
 	    const bool,
+	    const Player *,
 	    const unsigned int);
 
   // Accessor
-  bool			Present () const;
   unsigned int		Autonomy () const;
 
 private:
-  const bool		_present;
   const unsigned int	_autonomy;
 };
 

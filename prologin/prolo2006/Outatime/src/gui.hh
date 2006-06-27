@@ -89,7 +89,7 @@ public:
   virtual void		Redraw () = 0;
 
   // Callbacks
-  void			TimerCallback ();
+  void			RenderTimerCallback ();
   void			FrameTimerCallback ();
   void			IdleCallback ();
   void			DisplayCallback ();
@@ -125,9 +125,9 @@ protected:
   bool			_right_button;
 
   bool			_pause;
-  bool			_step;
+//   bool			_step;
 
-  int			_delay;
+  int			_render_delay;
   int			_frame_delay;
   int			_frame_start_time;
   int			_current_time;

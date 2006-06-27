@@ -30,6 +30,7 @@
 
 // {Mesh} est un objet 3D solide composé d'un seul bloc.
 
+#include		"3ds.hh"
 #include		"solid.hh"
 
 class			Mesh : public Solid
@@ -37,22 +38,27 @@ class			Mesh : public Solid
 public:
   // Constructor and destructor
   Mesh ();
+  Mesh (const struct t3DObject &);
+
   virtual ~Mesh ();
 
   // Calls
-  void			Render () const;
+  virtual void		Render (const float) const;
+
+  // Modifier
+  void			Texture (const unsigned int);
 
 private:
   bool			_loaded;
   unsigned int		_number_vertices;
-  unsigned int		_number_faces;
-  unsigned int		_number_texcoord;
-  unsigned int		_material;
-  char *		_name;
+//   unsigned int		_number_faces;
+//   unsigned int		_number_texcoord;
+  unsigned int		_texture;
+  const char *		_name;
   float *		_vertices;
   float *		_normals;
-  float *		_texcoords;
-  unsigned int *	_faces; // man glDrawElements
+  float *		_texture_uv;
+//   unsigned int *	_faces; // man glDrawElements
 };
 
 #endif			// MESH_HH

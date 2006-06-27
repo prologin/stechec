@@ -31,8 +31,9 @@
 
 Almanach::Almanach (const unsigned int x,
 		    const unsigned int y,
+		    const bool present,
 		    const Player * owner):
-  Ownable(x, y, owner)
+  Ownable(x, y, present, owner)
 {}
 
 // ============================================================================

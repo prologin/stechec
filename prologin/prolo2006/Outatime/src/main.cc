@@ -36,15 +36,22 @@
 //
 extern "C" int		run (xml::XMLConfig *, Api * api, ClientCx * ccx)
 {
+  LOG1("GUI runned.");
+
   // Creation of the window
   GlutGUI * gui(GlutGUI::Instance (api, ccx));
 
+  LOG1("GlutGUI instanciated.");
+
   if (gui->Init_GUI (0 /* &argc */, 0 /* argv */,
-		     800, 300, "Prologin 2006") != 0)
+		     100, 100, "Prologin 2006") != 0)
     {
-      std::cerr << "GUI initialization failed T_T" << std::endl;
+      LOG1("GUI initialization failed T_T");
+//       std::cerr << "GUI initialization failed T_T" << std::endl;
       return 1;
     }
+
+  LOG1("GUI initialized.");
 
   // Creation of the world
   DataCenter::Instance ()->Init_world (api);
@@ -52,21 +59,29 @@ extern "C" int		run (xml::XMLConfig *, Api * api, ClientCx * ccx)
   // Loading of the textures and files
   if (gui->Init_files () != 0)
     {
-      std::cerr << "Files initialization failed T_T" << std::endl;
+      LOG1("Files initialization failed T_T");
+//       std::cerr << "Files initialization failed T_T" << std::endl;
       DataCenter::Destroy ();
       return 1;
     }
+
+  LOG1("Files initialized.");
 
   // Creation of the rendering
   if (gui->Init_API () != 0)
     {
-      std::cerr << "API initialization failed T_T" << std::endl;
+      LOG1("API initialization failed T_T");
+//       std::cerr << "API initialization failed T_T" << std::endl;
       DataCenter::Destroy ();
       return 1;
     }
 
+  LOG1("API initialized.");
+
   // Loop
-  gui->Run (500, 33);
+  gui->Run (100, 500);
+
+  LOG1("GUI finished.");
 
   // Never reached since GlutMainLoop is called
   return 0;

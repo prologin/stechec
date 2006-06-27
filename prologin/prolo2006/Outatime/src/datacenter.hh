@@ -42,7 +42,7 @@
 #include		"groundpart.hh"
 #include		"player.hh"
 
-#include		"worldbillboard.hh"
+// #include		"worldbillboard.hh"
 
 class			DataCenter : public Singleton<DataCenter>
 {
@@ -104,7 +104,7 @@ private:
 //   ScreenBillboard		_almanach_representation;
 //   std::vector <Mesh>		_buildings_representation;
 //   std::vector <Mesh>		_casinos_representation;
-  std::vector <WorldBillboard>	_players_representation;
+//   std::vector <WorldBillboard>	_players_representation;
 };
 
 #endif			// DATACENTER_HH
