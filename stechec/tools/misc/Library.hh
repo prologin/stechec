@@ -21,22 +21,17 @@
 
 /*!
 ** @brief Exception class for dynamic library loader errors.
-** @author victor
-** @date 01/03/2006
 */
-class LibraryError
+class LibraryError : public Exception
 {
 public:
   
-  //! @brief Standard constructor.
-  //! @param msg The failing message.
-  LibraryError(const char* msg) : msg_(msg) {};
-  //! @brief Get the error message. Use it when displaying the error.
-  //! @return The failing reason.
-  const char* Str() const { return msg_; }
+  //! @brief Standard constructor. Output of dlerror() stands for the reason.
+  LibraryError();
 
-private:
-  const char* msg_;
+  //! @brief Standard constructor. Output of dlerror() stands for the reason.
+  //! @param msg The failing message.
+  LibraryError(const std::string& msg);
 };
 
 
@@ -47,17 +42,17 @@ public:
   Library(const std::string& library_file);
   ~Library();
 
-  void                open(const std::string& library_file);
+  void          open(const std::string& library_file);
 
   //! @brief Get a symbol from this dynamic library.
   //! @throw LibraryError Thrown when the symbol was not found, and
   //!   it is required.
-  void*                getSymbol(const char* sym, bool required = true);
+  void*         getSymbol(const char* sym, bool required = true);
 
 private:
 
-  void*                hndl_;
-  std::string        library_file_; ///< Keep lib filename, for debug messages.
+  void*         hndl_;
+  std::string   library_file_; ///< Keep lib filename, for debug messages.
 };
 
 #endif /* !LIBRARY_HH_ */

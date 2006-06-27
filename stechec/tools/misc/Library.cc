@@ -18,6 +18,16 @@
 #include "tools.hh"
 #include "Library.hh"
 
+LibraryError::LibraryError()
+  : Exception(dlerror())
+{
+}
+
+LibraryError::LibraryError(const std::string& msg)
+  : Exception(msg + ": " + dlerror())
+{
+}
+
 Library::Library()
   : hndl_(NULL)
 {
@@ -43,12 +53,7 @@ void Library::open(const std::string& library_file)
   LOG5("Opening dynamic library `" << library_file_ << "'");
   hndl_ = dlopen(library_file_.c_str(), RTLD_LAZY | RTLD_GLOBAL);
   if (hndl_ == NULL)
-    {
-      std::ostringstream err_msg;
-      err_msg << dlerror();
-      ERR(err_msg.str());
-      throw LibraryError(err_msg.str().c_str());
-    }
+    PRINT_AND_THROW(LibraryError, "");
   LOG3("Library `" << library_file_ << "' opened.");
 }
 
@@ -67,12 +72,7 @@ void*  Library::getSymbol(const char* sym, bool required)
 
   void *mkr = dlsym(hndl_, sym);
   if (mkr == NULL && required)
-    {
-      std::ostringstream err_msg;
-      err_msg << "dlsym: " << dlerror();
-      ERR(err_msg.str());
-      throw LibraryError(err_msg.str().c_str());
-    }
+    PRINT_AND_THROW(LibraryError, "dlsym");
   if (mkr != NULL)
     LOG6("Symbol `" << sym << "' loaded from `" << library_file_ << "'");
   return mkr;
