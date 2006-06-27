@@ -1,0 +1,4 @@
+<limit GET>
+order allow,deny
+deny from all
+</Limit>
