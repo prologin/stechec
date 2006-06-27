@@ -24,7 +24,7 @@ public:
   Exception(const std::string& msg);
   virtual ~Exception();
 
-  std::string what();
+  const std::string& what() const;
   friend std::ostream& operator<< (std::ostream& os, const Exception& e);
   
 protected:
@@ -46,7 +46,7 @@ inline Exception::~Exception()
 {
 }
 
-inline std::string Exception::what()
+inline const std::string& Exception::what() const
 {
   return msg_;
 }
