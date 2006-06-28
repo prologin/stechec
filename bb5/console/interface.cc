@@ -43,6 +43,8 @@ void CmdLineInterface::hello()
 
 void CmdLineInterface::init()
 {
+  api_->setEventHandler(this);
+
   // Generic client may have already connected us.
   if (!ccx_->isConnected())
     {
