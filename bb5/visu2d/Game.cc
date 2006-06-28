@@ -196,7 +196,7 @@ int Game::run()
         case GS_COACH2: status.setText("Status: GS_COACH2"); break;
         case GS_PAUSE: status.setText("Status: GS_PAUSE"); break;
         default: status.setText("Status: other"); break;
-          }
+        }
     }
   return 0;
 }

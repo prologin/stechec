@@ -20,6 +20,11 @@
 # include "ResourceCenter.hh"
 # include "Surface.hh"
 
+/*
+** @brief Class that can draw text, similiar to a TextLabel.
+**
+** Support multi-line and autowrap.
+*/
 class TextSurface : public Surface
 {
 public:
@@ -29,8 +34,20 @@ public:
   TextSurface& operator= (const TextSurface& rhs);
   virtual ~TextSurface();
 
+  //! @brief Erase all lines.
+  void clearText();
+  
+  //! @brief Set text to be printed, clearing previous content.
   void setText(const std::string& text);
-  const std::string& getText() const;
+
+  //! @brief Add text to this object, on new line.
+  void addText(const std::string& text);
+
+  //! @brief Return the text currently hold.
+  std::string getText() const;
+
+  void setAutoWrap(bool enabled);
+  bool getAutoWrap() const;
   
   virtual void update();
 
@@ -38,11 +55,13 @@ private:
   TTF_Font*     font_;
   int           line_skip_;
 
-  std::string   previous_text_;
   int           ref_count_;
+  bool          auto_wrap_;
+  bool          content_changed_;
 
 protected:
-  std::string   text_;
+  typedef std::deque<std::string> LineList;
+  LineList      lines_;
 };
 
 #endif /* !TEXTSURFACE_HH_ */

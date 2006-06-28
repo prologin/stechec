@@ -47,7 +47,7 @@ bb5_visu_la_SOURCES =				\
 	VisuPlayer.hh				\
 	VisuPlayer.cc
 
-CXXFLAGS =					\
+CXXFLAGS +=					\
 	-DMODULE_NAME=\"visu2d\"		\
 	-DMODULE_COLOR=C_YELLOW			\
 	-DPKGDATADIR=\"$(datadir)/$(PACKAGE)\"	\
