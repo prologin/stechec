@@ -42,10 +42,6 @@ void VirtualSurface::addChild(Surface* child)
   child->parent_ = this;
   child_list_.push_back(child);
   updateChildZOrder();
-
-  // Some children may override this method to do something special
-  // with parent.
-  child->setPos(child->getPos());
 }
 
 void VirtualSurface::removeChild(Surface* child)

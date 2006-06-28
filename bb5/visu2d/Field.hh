@@ -31,6 +31,7 @@ public:
   VisuField(Game& g);
   virtual ~VisuField();
 
+  void playerDoingKickoff();
   void setBallPos(const Point& pos);
 
   virtual void update();
@@ -40,6 +41,8 @@ private:
   
   Surface       bg_;
   Sprite        ball_;
+
+  bool          doing_kickoff_;
 };
 
 #endif /* !GAMEFIELD_HH_ */

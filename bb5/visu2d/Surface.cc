@@ -170,8 +170,12 @@ SDL_Surface* Surface::getSDLSurface()
 
 void Surface::setPos(const Point& pos)
 {
+  if (parent_ != NULL)
+    parent_->invalidate(rect_);
   rect_.x = pos.x;
   rect_.y = pos.y;
+  if (parent_ != NULL)
+    parent_->invalidate(rect_);
 }
 
 void Surface::setPos(int x, int y)

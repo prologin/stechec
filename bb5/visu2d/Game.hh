@@ -52,8 +52,6 @@ public:
   Panel&                getPanel();
   VisuField&            getField();
 
-  bool                  isKickoff() const;
-  
   //! @brief To call when a player is selected.
   void selectPlayer(VisuPlayer* vp);
  
@@ -72,6 +70,7 @@ private:
   virtual void evKickOff();
   virtual void evNewTurn(bool our_turn);
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
+  virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evBallPos(const Point& pos);
 
   SDLWindow&            win_;    ///< The SDL window.
@@ -86,7 +85,6 @@ private:
   VisuPlayer*           player_[2][16]; ///< Players...
   bool                  our_turn_;
   bool                  is_playing_;
-  bool                  is_kickoff_;
 
   TextSurface           txt_status_;
   eAction               action_;

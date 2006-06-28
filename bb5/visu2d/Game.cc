@@ -25,7 +25,6 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
     ccx_(ccx),
     our_turn_(false),
     is_playing_(false),
-    is_kickoff_(false),
     action_(eActNone)
 {
   panel_ = new Panel(*this);
@@ -37,7 +36,7 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   win_.getScreen().addChild(field_);
 
   txt_status_ = TextSurface("font/Vera", 270, 65);
-  txt_status_.setZ(4);
+  txt_status_.setZ(6);
   txt_status_.setPos(3, 532);
   win_.getScreen().addChild(&txt_status_);
   
@@ -90,16 +89,10 @@ VisuField& Game::getField()
   return *field_;
 }
 
-bool Game::isKickoff() const
-{
-  return is_kickoff_;
-}
-
-
 void Game::evKickOff()
 {
   txt_status_.addText("Kickoff. Please place the ball.");
-  is_kickoff_ = true;
+  field_->playerDoingKickoff();
 }
 
 void Game::evNewTurn(bool our_turn)
@@ -109,7 +102,6 @@ void Game::evNewTurn(bool our_turn)
     txt_status_.addText("It is your turn... Play !");
     
   is_playing_ = true;
-  is_kickoff_ = false;
 }
 
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
@@ -135,6 +127,14 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
       field_->addChild(p);
     }
   p->setPos(pos * 40);
+}
+
+void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
+{
+  VisuPlayer* p = player_[team_id][player_id - 1];
+  assert(p != NULL);
+
+  p->move(pos, 20.);
 }
 
 void Game::evBallPos(const Point& pos)

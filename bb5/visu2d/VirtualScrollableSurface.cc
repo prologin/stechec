@@ -90,18 +90,12 @@ void VirtualScrollableSurface::update()
   if (vpos_.y < 0)
     vpos_.y = 0;
 
-  // Ask redraw if something moved.
+  // Ask redraw on all visible surface if the screen moved.
   if (vpos_ != last_pos)
     {
       Rect inv(getPos(), real_size_);
       parent_->invalidate(inv);
-
-      // Update children absolute position.
-      SurfaceList::iterator it;
-      for (it = child_list_.begin(); it != child_list_.end(); ++it)
-        (*it)->setPos((*it)->getPos());
     }
-
 
   // Render children
   for_all(child_list_, std::mem_fun(&Surface::update));
