@@ -17,10 +17,10 @@
 #ifndef PANEL_HH_
 # define PANEL_HH_
 
-# include "Api.hh"
-# include "Input.hh"
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
+
+class Game;
 
 /*
 ** Game panel (on the right).
@@ -28,7 +28,7 @@
 class Panel : public VirtualSurface
 {
 public:
-  Panel(Api* api, Input& input);
+  Panel(Game& g);
   virtual ~Panel();
 
   //! @brief Called by VisuField, when the user move the mouse on a player.
@@ -40,9 +40,8 @@ public:
   virtual void update();
 
 private:
-  Api*          api_;
-  Input&        inp_;
-
+  Game&         g_;
+  
   Surface       bg_;
   Sprite        wheel_;
 

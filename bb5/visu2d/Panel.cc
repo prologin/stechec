@@ -14,12 +14,12 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-# include "Panel.hh"
+#include "Game.hh"
+#include "Panel.hh"
 
-Panel::Panel(Api* api, Input& input)
+Panel::Panel(Game& g)
   : VirtualSurface("VPanel", 300, 600),
-    api_(api),
-    inp_(input),
+    g_(g),
     bg_("image/panel/panel"),
     wheel_("image/panel/wheels"),
     showing_player_info_(false)
@@ -43,8 +43,8 @@ void Panel::displayPlayerInfo(int team_id, int player_id)
   if (showing_player_info_)
     hidePlayerInfo();
 
-  api_->switchTeam(team_id);
-  const CPlayer* p = api_->getPlayer(player_id);
+  g_.getApi()->switchTeam(team_id);
+  const CPlayer* p = g_.getApi()->getPlayer(player_id);
   player_picture_ = Surface(std::string("image/figs/") + p->getPlayerPicture());
   player_picture_.setPos(45, 150);
   addChild(&player_picture_);

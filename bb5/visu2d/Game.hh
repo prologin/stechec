@@ -46,11 +46,14 @@ public:
   Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx);
   ~Game();
 
+  Api*                  getApi();
   Input&                getInput();
   VirtualSurface&       getScreen();
   Panel&                getPanel();
   VisuField&            getField();
 
+  bool                  isKickoff() const;
+  
   //! @brief To call when a player is selected.
   void selectPlayer(VisuPlayer* vp);
  
@@ -76,13 +79,14 @@ private:
   Api*                  api_;    ///< Interface with client's rules.
   ClientCx*             ccx_;    ///< Connection with the server.
 
-  Panel                 panel_;  ///< Game panel.
-  VisuField             field_;  ///< Game field.
-  ActionPopup           action_popup_;  ///< Action for player, on left click.
+  Panel*                panel_;  ///< Game panel.
+  VisuField*            field_;  ///< Game field.
+  ActionPopup*          action_popup_;  ///< Action for player, on left click.
 
   VisuPlayer*           player_[2][16]; ///< Players...
   bool                  our_turn_;
   bool                  is_playing_;
+  bool                  is_kickoff_;
 
   TextSurface           txt_status_;
   eAction               action_;

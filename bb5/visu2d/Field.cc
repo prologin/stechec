@@ -14,12 +14,12 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-# include "Field.hh"
+#include "Game.hh"
+#include "Field.hh"
 
-VisuField::VisuField(Api* api, Input& input)
-  : VirtualScrollableSurface("VVisuField", input, Point(500, 600), Point(725, 1100)),
-    api_(api),
-    inp_(input),
+VisuField::VisuField(Game& g)
+  : VirtualScrollableSurface("VVisuField", g.getInput(), Point(500, 600), Point(725, 1100)),
+    g_(g),
     bg_("image/general/playground_0"),
     ball_("image/general/ball")
 {
@@ -39,5 +39,13 @@ void VisuField::setBallPos(const Point& pos)
 
 void VisuField::update()
 {
+  Input& inp = g_.getInput();
+
+  if (g_.isKickoff() && inp.button_pressed_[1])
+    {
+      Point to((inp.mouse_ - getAbsolutePos()) / 40);
+      g_.getApi()->doPlaceBall(to);
+    }
+
   VirtualScrollableSurface::update();
 }

@@ -19,8 +19,6 @@
 
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
-# include "Input.hh"
-# include "Api.hh"
 
 enum eAction {
   eActNone,
@@ -43,7 +41,7 @@ class Game;
 class ActionPopup : public VirtualSurface
 {
 public:
-  ActionPopup(Api* api, Game& game);
+  ActionPopup(Game& g);
   virtual ~ActionPopup();
 
   void setVisuPlayer(VisuPlayer* vp);
@@ -56,8 +54,7 @@ public:
   virtual void update();
 
 private:
-  Api*                  api_;
-  Game&                 game_;
+  Game&                 g_;
 
   VisuPlayer*           vp_;
   Sprite                sprite_[12];

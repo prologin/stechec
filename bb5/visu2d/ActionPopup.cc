@@ -18,10 +18,9 @@
 #include "VisuPlayer.hh"
 #include "ActionPopup.hh"
 
-ActionPopup::ActionPopup(Api* api, Game& game)
+ActionPopup::ActionPopup(Game& g)
   : VirtualSurface("ActionPopup", 120, 40 * 12),
-    api_(api),
-    game_(game),
+    g_(g),
     vp_(NULL),
     show_(false)
 {
@@ -39,7 +38,7 @@ ActionPopup::ActionPopup(Api* api, Game& game)
 ActionPopup::~ActionPopup()
 {
   if (show_)
-    game_.getScreen().removeChild(this);
+    g_.getScreen().removeChild(this);
 }
 
 void ActionPopup::setVisuPlayer(VisuPlayer* vp)
@@ -66,12 +65,12 @@ void ActionPopup::show(const Point& pos)
 
   if (!show_)
     {
-      game_.getScreen().addChild(this);
+      g_.getScreen().addChild(this);
       redraw_all_ = true;
     }
   if (pos != getPos())
     {
-      game_.getScreen().invalidate(getRect());
+      g_.getScreen().invalidate(getRect());
       setPos(pos);
       redraw_all_ = true;
     }
@@ -82,8 +81,8 @@ void ActionPopup::hide()
 {
   if (show_)
     {
-      game_.getScreen().removeChild(this);
-      game_.getScreen().invalidate(getRect());
+      g_.getScreen().removeChild(this);
+      g_.getScreen().invalidate(getRect());
     }
   show_ = false;
 }
@@ -95,7 +94,7 @@ bool ActionPopup::isVisible() const
 
 void ActionPopup::update()
 {
-  Input& input(game_.getInput());
+  Input& input(g_.getInput());
   bool have_focus = getAbsoluteRect().inside(input.mouse_);
 
   // A player
@@ -104,7 +103,7 @@ void ActionPopup::update()
       if (input.button_pressed_[1])
         {
           int item = (input.mouse_.y - getRect().y) / 40;
-          game_.addAction(eActMove);
+          g_.addAction(eActMove);
         }
     }
 

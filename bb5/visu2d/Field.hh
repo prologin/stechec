@@ -17,10 +17,10 @@
 #ifndef GAMEFIELD_HH_
 # define GAMEFIELD_HH_
 
-# include "Api.hh"
-# include "Input.hh"
 # include "VirtualScrollableSurface.hh"
 # include "Sprite.hh"
+
+class Game;
 
 /*
 ** Game field (on the left).
@@ -28,7 +28,7 @@
 class VisuField : public VirtualScrollableSurface
 {
 public:
-  VisuField(Api* api, Input& input);
+  VisuField(Game& g);
   virtual ~VisuField();
 
   void setBallPos(const Point& pos);
@@ -36,9 +36,8 @@ public:
   virtual void update();
 
 private:
-  Api*          api_;
-  Input&        inp_;
-
+  Game&         g_;
+  
   Surface       bg_;
   Sprite        ball_;
 };

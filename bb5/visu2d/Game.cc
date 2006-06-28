@@ -23,22 +23,24 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
     xml_(xml),
     api_(api),
     ccx_(ccx),
-    panel_(api, win.getInput()),
-    field_(api, win.getInput()),
-    action_popup_(api, *this),
     our_turn_(false),
     is_playing_(false),
+    is_kickoff_(false),
     action_(eActNone)
 {
+  panel_ = new Panel(*this);
+  field_ = new VisuField(*this);
+  action_popup_ = new ActionPopup(*this);
+
   api_->setEventHandler(this);
-  win_.getScreen().addChild(&panel_);
-  win_.getScreen().addChild(&field_);
+  win_.getScreen().addChild(panel_);
+  win_.getScreen().addChild(field_);
 
   txt_status_ = TextSurface("font/Vera", 270, 65);
   txt_status_.setZ(4);
   txt_status_.setPos(3, 532);
   win_.getScreen().addChild(&txt_status_);
-
+  
   for (int i = 0; i < 16; i++)
     {
       player_[0][i] = NULL;
@@ -48,14 +50,24 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
 
 Game::~Game()
 {
-  win_.getScreen().removeChild(&panel_);
-  win_.getScreen().removeChild(&field_);
+  win_.getScreen().removeChild(panel_);
+  win_.getScreen().removeChild(field_);
+  win_.getScreen().removeChild(&txt_status_);
 
   for (int i = 0; i < 16; i++)
     {
       delete player_[0][i];
       delete player_[1][i];
     }
+
+  delete panel_;
+  delete field_;
+  delete action_popup_;
+}
+
+Api* Game::getApi()
+{
+  return api_;
 }
 
 Input& Game::getInput()
@@ -70,24 +82,34 @@ VirtualSurface& Game::getScreen()
 
 Panel& Game::getPanel()
 {
-  return panel_;
+  return *panel_;
 }
 
 VisuField& Game::getField()
 {
-  return field_;
+  return *field_;
+}
+
+bool Game::isKickoff() const
+{
+  return is_kickoff_;
 }
 
 
 void Game::evKickOff()
 {
   txt_status_.addText("Kickoff. Please place the ball.");
+  is_kickoff_ = true;
 }
 
 void Game::evNewTurn(bool our_turn)
 {
   our_turn_ = our_turn;
+  if (our_turn)
+    txt_status_.addText("It is your turn... Play !");
+    
   is_playing_ = true;
+  is_kickoff_ = false;
 }
 
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
@@ -110,20 +132,20 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
       p->splitSizeFrame(40, 40);
       p->setZ(3);
       p->setFrame(ap->getPlayerPosition() * 2 + 1);
-      field_.addChild(p);
+      field_->addChild(p);
     }
   p->setPos(pos * 40);
 }
 
 void Game::evBallPos(const Point& pos)
 {
-  field_.setBallPos(pos);
+  field_->setBallPos(pos);
 }
 
 void Game::selectPlayer(VisuPlayer* vp)
 {
-  action_popup_.hide();
-  action_popup_.setVisuPlayer(vp);
+  action_popup_->hide();
+  action_popup_->setVisuPlayer(vp);
 }
 
 void Game::unselectAllPlayer()
@@ -161,25 +183,25 @@ int Game::run()
       if (win_.processOneFrame())
         break;
 
-      if (win_.getInput().button_pressed_[3])
+      // Action popup window
+      if (is_playing_ && win_.getInput().button_pressed_[3])
         {
           action_ = eActNone;
-          action_popup_.show(win_.getInput().mouse_);
+          action_popup_->show(win_.getInput().mouse_);
         }
 
-      if (win_.getInput().button_pressed_[1])
+      if (is_playing_ && win_.getInput().button_pressed_[1])
         {
-          if (action_popup_.isVisible())
-            action_popup_.hide();
+          if (action_popup_->isVisible())
+            action_popup_->hide();
           else if (action_ != eActNone
-                   && action_popup_.getVisuPlayer() != NULL)
+                   && action_popup_->getVisuPlayer() != NULL)
             {
               LOG2("Do an action !");
-              action_popup_.getVisuPlayer()->action(action_);
+              action_popup_->getVisuPlayer()->action(action_);
               action_ = eActNone;
             }
         }
-
 
       // Print some things
       std::ostringstream os;
