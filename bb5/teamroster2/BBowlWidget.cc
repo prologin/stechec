@@ -15,9 +15,10 @@
 */
 #include <iostream.h>
 #include <vector.h>
-#include <string.h>
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
+
 
 #include "pgthemewidget.h"
 #include "pgcolor.h"
@@ -34,6 +35,7 @@
 #include "RaceHandler.hh"
 #include "BBowlWidget.hh"
 #include "Race.hh"
+#include "TeamWriter.hh"
 #include "InvalidParameterException.hh"
 
 
@@ -56,7 +58,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
     
     raceImg_ = new PG_Image (this, PG_Point(180,452),"emblems/amazon.jpg");
 
- //   saveBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "save");
+    saveBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "save");
   
     PG_Color black(0,0,0);
 	
@@ -147,13 +149,17 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	app->Add(apothecary_);
 		
 	// Create handlers
-	apothecary_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditApothecary));
+	headCoach_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditHeadCoach));
+    bank_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditBank));
+    teamName_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditName));
+    
+    apothecary_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditApothecary));
 	reroll_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditReroll));
 	assistantCoach_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditAssistantCoach));
 	fanFactor_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditFanFactor));
 	cheerleader_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditCheerleader));
 
-//     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
+     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
        
  
     race_->sigSelectItem.connect(slot(*this, &BBowlWidget::handleSelectItemRace));
@@ -182,6 +188,7 @@ BBowlWidget::~BBowlWidget()
 	delete cheerleaderCost_;	
 	delete apothecaryCost_;	
 	delete totalTeamValueCost_;	
+    delete saveBtn_;
 
 	for (int i=0; i<16; i++)
     {	
@@ -360,22 +367,25 @@ bool BBowlWidget::handleEditCheerleader(PG_LineEdit* edit)
 	return true;
 }
 
-/*
+
 bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
 {
-   try
+   if (strcmp(team_->getName(),"") == 0)
    {
-      team_->validateTeam();
-      displayMessage("Validation","Team is validated !");
+      displayError("Please fill the team name before saving. The file will be saved as teamName.xml");
    }
-   catch (InvalidParameterException &ex)
-   {
-      displayError(ex.msg);
+   else 
+   { 
+       TeamWriter writer;
+       std::string fileName = team_->getName();
+       fileName += ".xml";
+       writer.writeTeam(fileName.c_str(), team_);
+       std::string msg = "Successfully saved as "+fileName;
+       displayMessage("Save",msg.c_str());
    }
-   
    return true; 
 }
-*/
+
 
 bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
 {

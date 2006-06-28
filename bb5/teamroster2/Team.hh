@@ -18,6 +18,7 @@
 
 #include "Race.hh"
 #include "Player.hh"
+#include <string>
 
 #define TEAM_SIZE             16
 
@@ -76,11 +77,11 @@ private:
     // -----------------------------------------------------------------------
     Player* players_[TEAM_SIZE];
     
-    const char *teamName_;
-    const char *emblem_;
+    std::string teamName_;
+    std::string emblem_;
     Race *race_;
     long bank_; 
-    const char *headCoach_;
+    std::string headCoach_;
     int reroll_;
     int fanFactor_;
     int assistantCoach_;

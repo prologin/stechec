@@ -102,8 +102,6 @@ void RaceParser::printRaces()
         vector<Position> vp = RaceHandler::vRaces_[i].getPositions();
         for (unsigned int j=0; j<vp.size(); j++)
         {
-            std::cout << "getSkillsAsString:"<< vp[j].getSkillsAsString() << std::endl;
-
             vector<const char*> sk = vp[j].getSkills();
             for (unsigned int k=0; k<sk.size(); k++)
             {

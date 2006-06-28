@@ -24,6 +24,8 @@ teamroster_SOURCES = 				\
 	RaceHandler.hh				\
 	RaceParser.cc				\
 	RaceParser.hh				\
+	TeamWriter.cc				\
+	TeamWriter.hh				\
 	Teamroster.cc				\
 	TeamrosterApp.cc			\
 	TeamrosterApp.hh

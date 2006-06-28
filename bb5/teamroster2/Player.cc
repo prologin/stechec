@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <vector.h>
+#include <string>
 
 
 Player::Player(Team *team)
@@ -58,15 +59,15 @@ void Player::reset()
 // -----------------------------------------------------------------------
 Team* Player::getTeam() { return team_; }
 
-const char* Player::getName() { return name_; }
+const char* Player::getName() { return name_.c_str(); }
     
 void Player::setName(const char *name) { name_ = name; }
 
-const char* Player::getPositionTitle() { return positionTitle_; }
+const char* Player::getPositionTitle() { return positionTitle_.c_str(); }
 
 Position* Player::getPosition()
 {
-    return team_->getRace()->getPosition(positionTitle_);
+    return team_->getRace()->getPosition(positionTitle_.c_str());
 }
 
 /*
@@ -92,8 +93,14 @@ void Player::setPosition(const char *selectedPosition)
             strength_ = vPos[i].getStrength();
             agility_ = vPos[i].getAgility();
             armourValue_ = vPos[i].getArmourValue();
-            parseSkills(vPos[i].getSkillsAsString());
             value_ = vPos[i].getCost();
+            
+            vSkills_.clear();
+            vector<const char*> skills = vPos[i].getSkills();
+            for (unsigned int j=0; j<skills.size(); j++)
+            {
+                vSkills_.push_back(skills[j]);
+            }
 
             break;
         }
@@ -145,32 +152,23 @@ void Player::setArmourValue(int av) {
 
 vector <char*> Player::getSkills() { return vSkills_; }
 
-const char* Player::getSkillsAsString() { return skillsStr_; }
-
-/*
- * Parse coma sperated skills list 
- * @param skills = "skill1,skill2,skill3,etc."
- */
-void Player::parseSkills(const char* skills) 
-{ 
-    // Store skills as String
-    skillsStr_ = skills;
+const char* Player::getSkillsAsString() 
+{
+    std::string skills = "";
     
-    vSkills_.clear(); 
-    
-    char strTmp[strlen(skills)]; 
-    sprintf(strTmp, "%s", skills);
-    
-    char *result = NULL;
-    result = strtok(strTmp, ",");
-    while(result != NULL) 
+    for (unsigned int i=0; i<vSkills_.size(); i++)
     {
-       vSkills_.push_back(result);
-       result = strtok( NULL, "," );
-    }    
+        skills += vSkills_[i];
+        if (i<(vSkills_.size() - 1))
+        {
+            skills += ", ";    
+        }
+    }
+    return skills.c_str();
 }
 
-const char* Player::getInjuries() { return injuries_; }
+
+const char* Player::getInjuries() { return injuries_.c_str(); }
 
 void Player::setInjuries(const char* inj) { injuries_ = inj; }
  
@@ -259,7 +257,7 @@ long Player::getValue()
 
 bool Player::validateCharacteristicUpdate(int newVal, int positionVal)
 {
-    if (strcmp(positionTitle_,"") == 0)
+    if (positionTitle_.compare("") == 0)
     {
         InvalidParameterException e("Position must be fixed to update a charcateristic.");
         throw (e);            

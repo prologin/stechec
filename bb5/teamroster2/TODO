@@ -1,6 +1,5 @@
 Know bugs: 
  - Plante lorsque l'on quitte alors que le focus est dans une case de caracteristique
- - Lorsque l'on modifie l'exp cela fait disparaitre les skills / le nom (cf. screenshot de tuxrouge) 
  - Plantage lorsque l'on clique sur une race (bug aléatoire) : X Error of fail request: BadValue (integer parameter out of range for operation)
        Major opcode of failed request: 146 (MIT-SHM)
        Minor opcode of failed request: 3 (X_ShmPutImage)
@@ -12,20 +11,21 @@ Regles
  - gestion des mercenaires
  - gestion du chef cuisto 
  - gestion des blessures (injuries)
- - calculer la valeur des joueurs modifiés (reste à gérer les skills)
+ - calculer la valeur des joueurs modifiées (reste a geérer les skills)
      
 GUI 
  - evaluer QT
  - gestion des skills
  - gestion des blessures (injuries)
- - ajouter les boutons: load, save, quit
- - afficher / saisir le background de l'équipe
+ - ajouter les boutons: load, quit
+ - afficher / saisir le background de l'éequipe
  
  Events
- - gestion des evenements boutons : load / save
+ - gestion des evenements boutons : load / quit
  
  XML
  - ajouter un schema XSD pour la validation du fichier "races.xml"
  - creer les classes pour parser/enregistrer le fichier team.xml  
  
- Outil pour l'édition des positions. 
+ Outil pour l'éedition des positions. 
+ Outil pour la generation des .pkg contenant la liste des images : joueurs, coach exportable/ importable dans le jeu.

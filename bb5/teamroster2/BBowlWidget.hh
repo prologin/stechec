@@ -56,7 +56,7 @@ private:
     bool handleEditFanFactor(PG_LineEdit* edit);
     bool handleEditAssistantCoach(PG_LineEdit* edit);
     bool handleEditCheerleader(PG_LineEdit* edit);
-//    bool handleButtonSaveClick(PG_Button* button);
+    bool handleButtonSaveClick(PG_Button* button);
 
     // -----------------------------------------------------------------------
     //  Private data members
@@ -83,7 +83,7 @@ private:
 	PG_Label*         apothecaryCost_;	
 	PG_Label*         totalTeamValueCost_;	
     
-//    PG_Button*        saveBtn_;	
+    PG_Button*        saveBtn_;	
 };
 
 #endif /*BBOWLWIDGET_HH_*/

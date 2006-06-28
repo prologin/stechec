@@ -46,7 +46,7 @@ Team::~Team()
 
 
 Player* Team::getPlayer(unsigned int number) { 
-   if (number <= TEAM_SIZE)
+   if ((number <= TEAM_SIZE) && (number > 0))
    {
       return players_[number-1];
    }
@@ -57,9 +57,9 @@ Player* Team::getPlayer(unsigned int number) {
    }
 }
 
-const char* Team::getName(){ return teamName_; }
+const char* Team::getName(){ return teamName_.c_str(); }
 void Team::setName(const char *name){ teamName_ = name; }
-const char* Team::getEmblem(){ return emblem_; }
+const char* Team::getEmblem(){ return emblem_.c_str(); }
 void Team::setEmblem(const char *emblem){ emblem_ = emblem; }
 Race* Team::getRace(){ return race_; } 
 
@@ -76,7 +76,7 @@ void Team::setRace(Race *race) {
 
 long Team::getBank() { return bank_; }
 void Team::setBank(long bank) { bank_ = bank; }
-const char* Team::getHeadCoach() { return headCoach_; }
+const char* Team::getHeadCoach() { return headCoach_.c_str(); }
 void Team::setHeadCoach(const char *coach) { headCoach_ = coach; }
 int Team::getReroll() { return reroll_; }
 void Team::setReroll(int reroll) { reroll_ = reroll; }

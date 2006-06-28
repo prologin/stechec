@@ -6,25 +6,25 @@
 		<positions>
 			<position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
 				<skills>
-					<skill name="dodge"/>
+					<skill name="Dodge"/>
 				</skills>
 			</position>
 			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as">
 				<skills>
-					<skill name="dodge"/>
-					<skill name="pass"/>
+					<skill name="Dodge"/>
+					<skill name="Pass"/>
 				</skills>
 			</position>
 			<position qty="2" title="Catcher" cost="70000" ma="6" st="3" ag="3" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="dodge"/>
-					<skill name="catch"/>
+					<skill name="Dodge"/>
+					<skill name="Catch"/>
 				</skills>
 			</position>
 			<position qty="4" title="Blitzer" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap">
 				<skills>
-					<skill name="dodge"/>
-					<skill name="block"/>
+					<skill name="Dodge"/>
+					<skill name="Block"/>
 				</skills>
 			</position>
 		</positions>
@@ -36,7 +36,7 @@
 		<positions>
 			<position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap">
 				<skills>
-					<skill name="horns"/>
+					<skill name="Horns"/>
 				</skills>
 			</position>
 			<position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" normal="gsm" double="ap">
@@ -44,12 +44,12 @@
 			</position>
 			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="sm" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="frenzy"/>
-					<skill name="horns"/>
-					<skill name="mighty blow"/>
-					<skill name="thick skull"/>
-					<skill name="wild animal"/>
+					<skill name="Loner"/>
+					<skill name="Frenzy"/>
+					<skill name="Horns"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Thick Skull"/>
+					<skill name="Wild Animal"/>
 				</skills>
 			</position>
 		</positions>
@@ -64,26 +64,26 @@
 			</position>
 			<position qty="6" title="Chaos dwarf" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="apm">
 				<skills>
-					<skill name="block"/>
-					<skill name="tackle"/>
-					<skill name="thick skull"/>
+					<skill name="Block"/>
+					<skill name="Tackle"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 			<position qty="2" title="Bull centaurs" cost="130000" ma="6" st="4" ag="2" av="9" normal="gs" double="ap">
 				<skills>
-					<skill name="sprint"/>
-					<skill name="sure feet"/>
-					<skill name="thick skull"/>
+					<skill name="Sprint"/>
+					<skill name="Sure Feet"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="s" double="gapm">
 				<skills>
-					<skill name="loner"/>
-					<skill name="frenzy"/>
-					<skill name="horns"/>
-					<skill name="mighty blow"/>
-					<skill name="thick skull"/>
-					<skill name="wild animal"/>
+					<skill name="Loner"/>
+					<skill name="Frenzy"/>
+					<skill name="Horns"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Thick Skull"/>
+					<skill name="Wild Animal"/>
 				</skills>
 			</position>
 		</positions>
@@ -98,25 +98,25 @@
 			</position>
 			<position qty="2" title="Runner" cost="80000" ma="7" st="3" ag="4" av="7" normal="gap" double="s">
 				<skills>
-					<skill name="dump off"/>
+					<skill name="Dump Off"/>
 				</skills>
 			</position>
 			<position qty="2" title="Assassin" cost="90000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="shadowing"/>
-					<skill name="stab"/>
+					<skill name="Shadowing"/>
+					<skill name="Stab"/>
 				</skills>
 			</position>
 			<position qty="4" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
 				<skills>
-					<skill name="block"/>
+					<skill name="Block"/>
 				</skills>
 			</position>
 			<position qty="2" title="Witch elf" cost="110000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="frenzy"/>
-					<skill name="dodge"/>
-					<skill name="jump up"/>
+					<skill name="Frenzy"/>
+					<skill name="Dodge"/>
+					<skill name="Jump Up"/>
 				</skills>
 			</position>
 		</positions>
@@ -128,40 +128,40 @@
 		<positions>
 			<position qty="16" title="Blocker" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
-					<skill name="tackle"/>
-					<skill name="thick skull"/>
+					<skill name="Block"/>
+					<skill name="Tackle"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 			<position qty="2" title="Runner" cost="80000" ma="6" st="3" ag="3" av="8" normal="gp" double="as">
 				<skills>
-					<skill name="sure hands"/>
-					<skill name="thick skull"/>
+					<skill name="Sure Hands"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="80000" ma="5" st="3" ag="3" av="9" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
-					<skill name="thick skull"/>
+					<skill name="Block"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 			<position qty="2" title="Troll slayer" cost="90000" ma="5" st="3" ag="2" av="8" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
-					<skill name="dauntless"/>
-					<skill name="frenzy"/>
-					<skill name="thick skull"/>
+					<skill name="Block"/>
+					<skill name="Dauntless"/>
+					<skill name="Frenzy"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 			<position qty="1" title="Deathroller" cost="160000" ma="4" st="7" ag="1" av="10" normal="s" double="gap">
 				<skills>
-					<skill name="break tackle"/>
-					<skill name="dirty player"/>
-					<skill name="juggernaut"/>
-					<skill name="mighty blow"/>
-					<skill name="no hands"/>
-					<skill name="secret weapon"/>
-					<skill name="stand firm"/>
+					<skill name="Break Tackle"/>
+					<skill name="Dirty Player"/>
+					<skill name="Juggernaut"/>
+					<skill name="Mighty Blow"/>
+					<skill name="No Hands"/>
+					<skill name="Secret Weapon"/>
+					<skill name="Stand Firm"/>
 				</skills>
 			</position>
 		</positions>
@@ -176,19 +176,19 @@
 			</position>
 			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="4" av="7" normal="gap" double="s">
 				<skills>
-					<skill name="pass"/>
+					<skill name="Pass"/>
 				</skills>
 			</position>
 			<position qty="4" title="Catcher" cost="100000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="catch"/>
-					<skill name="nerves of steel"/>
+					<skill name="Catch"/>
+					<skill name="Nerves of Steel"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="110000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
 				<skills>
-					<skill name="block"/>
-					<skill name="side step"/>
+					<skill name="Block"/>
+					<skill name="Side Step"/>
 				</skills>
 			</position>
 		</positions>
@@ -200,58 +200,58 @@
 		<positions>
 			<position qty="16" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
 				<skills>
-					<skill name="dodge"/>
-					<skill name="right stuff"/>
-					<skill name="stunty"/>
+					<skill name="Dodge"/>
+					<skill name="Right Stuff"/>
+					<skill name="Stunty"/>
 				</skills>
 			</position>
 			<position qty="1" title="Bombardier" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
 				<skills>
-					<skill name="bombardier"/>
-					<skill name="dodge"/>
-					<skill name="no hands"/>
-					<skill name="secret weapon"/>
-					<skill name="stunty"/>
+					<skill name="Bombardier"/>
+					<skill name="Dodge"/>
+					<skill name="No Hands"/>
+					<skill name="Secret Weapon"/>
+					<skill name="Stunty"/>
 				</skills>
 			</position>
 			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp">
 				<skills>
-					<skill name="dirty player"/>
-					<skill name="dodge"/>
-					<skill name="leap"/>
-					<skill name="secret weapon"/>
-					<skill name="stunty"/>
-					<skill name="very long legs"/>
+					<skill name="Dirty Player"/>
+					<skill name="Dodge"/>
+					<skill name="Leap"/>
+					<skill name="Secret Weapon"/>
+					<skill name="Stunty"/>
+					<skill name="Very Long Legs"/>
 				</skills>
 			</position>
 			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
 				<skills>
-					<skill name="chainsaw"/>
-					<skill name="no hands"/>
-					<skill name="secret weapon"/>
-					<skill name="stunty"/>
+					<skill name="Chainsaw"/>
+					<skill name="No Hands"/>
+					<skill name="Secret Weapon"/>
+					<skill name="Stunty"/>
 				</skills>
 			</position>
 			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap">
 				<skills>
-					<skill name="ball and chain"/>
-					<skill name="no hands"/>
-					<skill name="secret weapon"/>
-					<skill name="stunty"/>
+					<skill name="Ball and Chain"/>
+					<skill name="No Hands"/>
+					<skill name="Secret Weapon"/>
+					<skill name="Stunty"/>
 				</skills>
 			</position>
 			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="always hungry"/>
-					<skill name="mighty blow"/>
-					<skill name="really stupid"/>
-					<skill name="regeneration"/>
-					<skill name="throw team-mate"/>
+					<skill name="Loner"/>
+					<skill name="Always Hungry"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Really Stupid"/>
+					<skill name="Regeneration"/>
+					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
 		</positions>
-		<background>A Goblin team's game plan owes much more to hope than potential. Goblins can make quite good catchers because they are small and agile, but the art of throwing is sadly lost to them, while the chances of their blocking anything larger than a Halfling are remote to say the least. Still, this never seems to bother Goblin players, and occasionally the use of a particularly devious secret weapon will even allow a Goblin team to win a match.</background>
+		<background>A Goblin team's game plan owes much more to hope than potential. Goblins can make quite good catchers because they are small and agile, but the art of throwing is sadly lost to them, while the chances of their blocking anything larger than a Halfling are remote to say the least. Still, this never seems to bother Goblin players, and occasionally the use of a particularly devious Secret Weapon will even allow a Goblin team to win a match.</background>
 	</race>
 	<race name="Halfling" emblem="halflings.jpg">
 		<apothecary use="true"/>
@@ -259,20 +259,20 @@
 		<positions>
 			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp">
 				<skills>
-					<skill name="dodge"/>
-					<skill name="right stuff"/>
-					<skill name="stunty"/>
+					<skill name="Dodge"/>
+					<skill name="Right Stuff"/>
+					<skill name="Stunty"/>
 				</skills>
 			</position>
 			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="mighty blow"/>
-					<skill name="stand firm"/>
-					<skill name="strong arm"/>
-					<skill name="take root"/>
-					<skill name="thick skull"/>
-					<skill name="throw team-mate"/>
+					<skill name="Loner"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Stand Firm"/>
+					<skill name="Strong Arm"/>
+					<skill name="Take Root"/>
+					<skill name="Thick Skull"/>
+					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
 		</positions>
@@ -287,18 +287,18 @@
 			</position>
 			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s">
 				<skills>
-					<skill name="pass"/>
-					<skill name="safe throw"/>
+					<skill name="Pass"/>
+					<skill name="Safe Throw"/>
 				</skills>
 			</position>
 			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="catch"/>
+					<skill name="Catch"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
 				<skills>
-					<skill name="block"/>
+					<skill name="Block"/>
 				</skills>
 			</position>
 		</positions>
@@ -313,28 +313,28 @@
 			</position>
 			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="catch"/>
-					<skill name="dodge"/>
+					<skill name="Catch"/>
+					<skill name="Dodge"/>
 				</skills>
 			</position>
 			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as">
 				<skills>
-					<skill name="sure hands"/>
-					<skill name="pass"/>
+					<skill name="Sure Hands"/>
+					<skill name="Pass"/>
 				</skills>
 			</position>
 			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
+					<skill name="Block"/>
 				</skills>
 			</position>
 			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="bone-head"/>
-					<skill name="mighty blow"/>
-					<skill name="thick skull"/>
-					<skill name="throw team-mate"/>
+					<skill name="Loner"/>
+					<skill name="Bone-Head"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Thick Skull"/>
+					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
 		</positions>
@@ -346,26 +346,26 @@
 		<positions>
 			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp">
 				<skills>
-					<skill name="regeneration"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="2" title="Thro-Ras" cost="70000" ma="6" st="3" ag="2" av="7" normal="gp" double="as">
 				<skills>
-					<skill name="pass"/>
-					<skill name="regeneration"/>
-					<skill name="sure hands"/>
+					<skill name="Pass"/>
+					<skill name="Regeneration"/>
+					<skill name="Sure Hands"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitz-Ras" cost="90000" ma="6" st="3" ag="2" av="8" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
-					<skill name="regeneration"/>
+					<skill name="Block"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="4" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap">
 				<skills>
-					<skill name="mighty blow"/>
-					<skill name="regeneration"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 		</positions>
@@ -377,8 +377,8 @@
 		<positions>
 			<position qty="16" title="Skinks" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp">
 				<skills>
-					<skill name="dodge"/>
-					<skill name="stunty"/>
+					<skill name="Dodge"/>
+					<skill name="Stunty"/>
 				</skills>
 			</position>
 			<position qty="6" title="Saurus" cost="80000" ma="6" st="4" ag="1" av="9" normal="gs" double="ap">
@@ -386,11 +386,11 @@
 			</position>
 			<position qty="1" title="Kroxigor" cost="140000" ma="6" st="5" ag="1" av="9" normal="s" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="bone-head"/>
-					<skill name="mighty blow"/>
-					<skill name="prehensile tail"/>
-					<skill name="thick skull"/>
+					<skill name="Loner"/>
+					<skill name="Bone-Head"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Prehensile Tail"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 		</positions>
@@ -402,32 +402,32 @@
 		<positions>
 			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp">
 				<skills>
-					<skill name="regeneration"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="2" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="dodge"/>
+					<skill name="Dodge"/>
 				</skills>
 			</position>
 			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
-					<skill name="regeneration"/>
+					<skill name="Block"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="2" title="Flesh golem" cost="110000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap">
 				<skills>
-					<skill name="regeneration"/>
-					<skill name="stand firm"/>
-					<skill name="thick skull"/>
+					<skill name="Regeneration"/>
+					<skill name="Stand Firm"/>
+					<skill name="Thick Skull"/>
 				</skills>
 			</position>
 			<position qty="2" title="Werewolf" cost="120000" ma="8" st="3" ag="3" av="8" normal="ga" double="sp">
 				<skills>
-					<skill name="claws"/>
-					<skill name="frenzy"/>
-					<skill name="regeneration"/>
+					<skill name="Claws"/>
+					<skill name="Frenzy"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 		</positions>
@@ -439,40 +439,40 @@
 		<positions>
 			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
 				<skills>
-					<skill name="block"/>
+					<skill name="Block"/>
 				</skills>
 			</position>
 			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as">
 				<skills>
-					<skill name="block"/>
-					<skill name="pass"/>
+					<skill name="Block"/>
+					<skill name="Pass"/>
 				</skills>
 			</position>
 			<position qty="2" title="Runner" cost="90000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="block"/>
-					<skill name="dauntless"/>
+					<skill name="Block"/>
+					<skill name="Dauntless"/>
 				</skills>
 			</position>
 			<position qty="2" title="Berserker" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
-					<skill name="frenzy"/>
-					<skill name="jump up"/>
+					<skill name="Block"/>
+					<skill name="Frenzy"/>
+					<skill name="Jump Up"/>
 				</skills>
 			</position>
 			<position qty="2" title="Ulfwerener" cost="110000" ma="6" st="4" ag="2" av="8" normal="gs" double="ap">
 				<skills>
-					<skill name="frenzy"/>
+					<skill name="Frenzy"/>
 				</skills>
 			</position>
 			<position qty="1" title="Snow troll" cost="140000" ma="5" st="5" ag="1" av="8" normal="s" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="claws"/>
-					<skill name="disturbing presence"/>
-					<skill name="frenzy"/>
-					<skill name="wild animal"/>
+					<skill name="Loner"/>
+					<skill name="Claws"/>
+					<skill name="Disturbing Presence"/>
+					<skill name="Frenzy"/>
+					<skill name="Wild Animal"/>
 				</skills>
 			</position>
 		</positions>
@@ -484,35 +484,35 @@
 		<positions>
 			<position qty="16" title="Rotter" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp">
 				<skills>
-					<skill name="decay"/>
-					<skill name="nurgle's rot"/>
+					<skill name="Decay"/>
+					<skill name="Nurgle's Rot"/>
 				</skills>
 			</position>
 			<position qty="4" title="Pestigor" cost="80000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap">
 				<skills>
-					<skill name="horns"/>
-					<skill name="nurgle's rot"/>
-					<skill name="regeneration"/>
+					<skill name="Horns"/>
+					<skill name="Nurgle's Rot"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="4" title="Nurgle warrior" cost="110000" ma="4" st="4" ag="2" av="9" normal="gsm" double="ap">
 				<skills>
-					<skill name="disturbing presence"/>
-					<skill name="foul appearance"/>
-					<skill name="nurgle's rot"/>
-					<skill name="regeneration"/>
+					<skill name="Disturbing Presence"/>
+					<skill name="Foul Appearance"/>
+					<skill name="Nurgle's Rot"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="1" title="Beast of Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" normal="s" double="gapm">
 				<skills>
-					<skill name="loner"/>
-					<skill name="disturbing presence"/>
-					<skill name="foul appearance"/>
-					<skill name="mighty blow"/>
-					<skill name="nurgle's rot"/>
-					<skill name="really stupid"/>
-					<skill name="regeneration"/>
-					<skill name="tentacles"/>
+					<skill name="Loner"/>
+					<skill name="Disturbing Presence"/>
+					<skill name="Foul Appearance"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Nurgle's Rot"/>
+					<skill name="Really Stupid"/>
+					<skill name="Regeneration"/>
+					<skill name="Tentacles"/>
 				</skills>
 			</position>
 		</positions>
@@ -524,19 +524,19 @@
 		<positions>
 			<position qty="16" title="Snotling" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp">
 				<skills>
-					<skill name="dodge"/>
-					<skill name="right stuff"/>
-					<skill name="side step"/>
-					<skill name="stunty"/>
-					<skill name="titchy"/>
+					<skill name="Dodge"/>
+					<skill name="Right Stuff"/>
+					<skill name="Side Step"/>
+					<skill name="Stunty"/>
+					<skill name="Titchy"/>
 				</skills>
 			</position>
 			<position qty="6" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap">
 				<skills>
-					<skill name="bone-head"/>
-					<skill name="mighty blow"/>
-					<skill name="thick skull"/>
-					<skill name="throw team-mate"/>
+					<skill name="Bone-Head"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Thick Skull"/>
+					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
 		</positions>
@@ -551,15 +551,15 @@
 			</position>
 			<position qty="4" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
 				<skills>
-					<skill name="right stuff"/>
-					<skill name="dodge"/>
-					<skill name="stunty"/>
+					<skill name="Right Stuff"/>
+					<skill name="Dodge"/>
+					<skill name="Stunty"/>
 				</skills>
 			</position>
 			<position qty="2" title="Thrower" cost="70000" ma="5" st="3" ag="3" av="8" normal="gp" double="as">
 				<skills>
-					<skill name="sure hands"/>
-					<skill name="pass"/>
+					<skill name="Sure Hands"/>
+					<skill name="Pass"/>
 				</skills>
 			</position>
 			<position qty="4" title="Black orc" cost="80000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap">
@@ -567,17 +567,17 @@
 			</position>
 			<position qty="4" title="Blitzer" cost="80000" ma="6" st="3" ag="3" av="9" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
+					<skill name="Block"/>
 				</skills>
 			</position>
 			<position qty="1" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="always hungry"/>
-					<skill name="mighty blow"/>
-					<skill name="really stupid"/>
-					<skill name="regeneration"/>
-					<skill name="throw team-mate"/>
+					<skill name="Loner"/>
+					<skill name="Always Hungry"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Really Stupid"/>
+					<skill name="Regeneration"/>
+					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
 		</positions>
@@ -592,27 +592,27 @@
 			</position>
 			<position qty="2" title="Thrower" cost="70000" ma="7" st="3" ag="3" av="7" normal="gp" double="asm">
 				<skills>
-					<skill name="sure hands"/>
-					<skill name="pass"/>
+					<skill name="Sure Hands"/>
+					<skill name="Pass"/>
 				</skills>
 			</position>
 			<position qty="4" title="Gutter runner" cost="80000" ma="9" st="2" ag="4" av="7" normal="ga" double="spm">
 				<skills>
-					<skill name="dodge"/>
+					<skill name="Dodge"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="apm">
 				<skills>
-					<skill name="block"/>
+					<skill name="Block"/>
 				</skills>
 			</position>
 			<position qty="1" title="Rat ogre" cost="160000" ma="6" st="5" ag="2" av="8" normal="s" double="gapm">
 				<skills>
-					<skill name="loner"/>
-					<skill name="frenzy"/>
-					<skill name="mighty blow"/>
-					<skill name="prehensile tail"/>
-					<skill name="wild animal"/>
+					<skill name="Loner"/>
+					<skill name="Frenzy"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Prehensile Tail"/>
+					<skill name="Wild Animal"/>
 				</skills>
 			</position>
 		</positions>
@@ -624,29 +624,29 @@
 		<positions>
 			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp">
 				<skills>
-					<skill name="regeneration"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp">
 				<skills>
-					<skill name="regeneration"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="4" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="dodge"/>
+					<skill name="Dodge"/>
 				</skills>
 			</position>
 			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap">
 				<skills>
-					<skill name="block"/>
-					<skill name="regeneration"/>
+					<skill name="Block"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 			<position qty="2" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap">
 				<skills>
-					<skill name="mighty blow"/>
-					<skill name="regeneration"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 		</positions>
@@ -661,9 +661,9 @@
 			</position>
 			<position qty="6" title="Vampire" cost="110000" ma="6" st="4" ag="4" av="8" normal="gas" double="p">
 				<skills>
-					<skill name="blood lust"/>
-					<skill name="hypnotic gaze"/>
-					<skill name="regeneration"/>
+					<skill name="Blood Lust"/>
+					<skill name="Hypnotic Gaze"/>
+					<skill name="Regeneration"/>
 				</skills>
 			</position>
 		</positions>
@@ -678,31 +678,31 @@
 			</position>
 			<position qty="4" title="Catcher" cost="90000" ma="9" st="2" ag="4" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="catch"/>
-					<skill name="dodge"/>
+					<skill name="Catch"/>
+					<skill name="Dodge"/>
 				</skills>
 			</position>
 			<position qty="2" title="Thrower" cost="90000" ma="7" st="3" ag="4" av="7" normal="gap" double="s">
 				<skills>
-					<skill name="pass"/>
+					<skill name="Pass"/>
 				</skills>
 			</position>
 			<position qty="2" title="Wardancer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
 				<skills>
-					<skill name="block"/>
-					<skill name="dodge"/>
-					<skill name="leap"/>
+					<skill name="Block"/>
+					<skill name="Dodge"/>
+					<skill name="Leap"/>
 				</skills>
 			</position>
 			<position qty="1" title="Treeman" cost="140000" ma="2" st="6" ag="1" av="10" normal="s" double="gap">
 				<skills>
-					<skill name="loner"/>
-					<skill name="mighty blow"/>
-					<skill name="stand firm"/>
-					<skill name="strong arm"/>
-					<skill name="take root"/>
-					<skill name="thick skull"/>
-					<skill name="throw team-mate"/>
+					<skill name="Loner"/>
+					<skill name="Mighty Blow"/>
+					<skill name="Stand Firm"/>
+					<skill name="Strong Arm"/>
+					<skill name="Take Root"/>
+					<skill name="Thick Skull"/>
+					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
 		</positions>

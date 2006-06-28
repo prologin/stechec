@@ -49,3 +49,4 @@ Par contre les inconvénients sont nombreux:
 - Affiche une boite de dialogue pour expliquer quand l'apothicaire n'est pas disponible pour une race.
 - Regles de validation d'une équipe avant de l'enregistrer : nombre de joueurs dans une position donnée
 - Affiche l'icone de l'emblème de l'équipe
+- Bouton Save implémenté : on enregistre le fichier team dans le répertoire courant avec "nomTeam.xml"

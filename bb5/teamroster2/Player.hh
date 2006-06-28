@@ -17,6 +17,7 @@
 #define PLAYER_HH_
 
 #include <vector.h>
+#include <string>
 
 class Team;
 
@@ -51,7 +52,6 @@ public:
     void setArmourValue(int av);
     vector <char*> getSkills();
     const char* getSkillsAsString();
-    void parseSkills(const char* skills);
     const char* getInjuries();
     void setInjuries(const char* inj);
     int getCompletions();
@@ -77,15 +77,15 @@ private:
     //  Private data members
     // -----------------------------------------------------------------------
     Team* team_;
-    const char* name_;
-    const char* positionTitle_;
+    std::string name_;
+    std::string positionTitle_;
     int movementAllowance_;
     int strength_;
     int agility_;
     int armourValue_;
     vector<char*> vSkills_;
-    const char* skillsStr_;
-    const char* injuries_; // FIXME: to be changed after injury management
+    std::string skillsStr_;
+    std::string injuries_; // FIXME: to be changed after injury management
     int completions_;
     int touchdowns_;
     int interceptions_;

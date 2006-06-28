@@ -1,8 +1,5 @@
 #include "Position.hh"
 #include <vector.h>
-#include <string>
-
-using std::string;
 
 Position::Position()
 {
@@ -85,21 +82,6 @@ void Position::setArmourValue(int av)
 vector<const char*> Position::getSkills()
 {
     return vSkills_;
-}
-
-const char* Position::getSkillsAsString() 
-{
-    string skills = "";
-    
-    for (unsigned int i=0; i<vSkills_.size(); i++)
-    {
-        skills += vSkills_[i];
-        if (i<(vSkills_.size() - 1))
-        {
-            skills += ", ";    
-        }
-    }
-	return skills.c_str();
 }
 
 void Position::addSkill(const char* skill)

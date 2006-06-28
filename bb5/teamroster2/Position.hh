@@ -45,7 +45,6 @@ public:
     int getArmourValue();
     void setArmourValue(int av);
     
-	const char* getSkillsAsString();
     vector<const char*> getSkills();
     void addSkill(const char* skill);
     
