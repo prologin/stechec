@@ -34,6 +34,11 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   win_.getScreen().addChild(&panel_);
   win_.getScreen().addChild(&field_);
 
+  txt_status_ = TextSurface("font/Vera", 270, 65);
+  txt_status_.setZ(4);
+  txt_status_.setPos(3, 532);
+  win_.getScreen().addChild(&txt_status_);
+
   for (int i = 0; i < 16; i++)
     {
       player_[0][i] = NULL;
@@ -76,11 +81,7 @@ VisuField& Game::getField()
 
 void Game::evKickOff()
 {
-  kickoff_notice_ = TextSurface("font/Vera", 160, 25);
-  kickoff_notice_.setZ(4);
-  kickoff_notice_.setPos(165, 575);
-  kickoff_notice_.setText("Kickoff. Place the ball.");
-  win_.getScreen().addChild(&kickoff_notice_);
+  txt_status_.addText("Kickoff. Please place the ball.");
 }
 
 void Game::evNewTurn(bool our_turn)
@@ -141,15 +142,13 @@ void Game::addAction(eAction action)
 
 int Game::run()
 {
+  int game_state = -1;
+
   TextSurface fps("font/Vera", 70, 25);
   fps.setZ(4);
   fps.setPos(720, 570);
   win_.getScreen().addChild(&fps);
 
-  TextSurface status("font/Vera", 160, 25);
-  status.setZ(4);
-  status.setPos(0, 575);
-  win_.getScreen().addChild(&status);
     
   // Sit back and see what's happening...
   while (api_->getState() != GS_END)
@@ -187,15 +186,21 @@ int Game::run()
       os << "FPS: " << win_.getFps();
       fps.setText(os.rdbuf()->str());
 
-      switch (api_->getState())
+      if (game_state != api_->getState())
         {
-        case GS_WAIT: status.setText("Status: GS_WAIT"); break;
-        case GS_INITGAME: status.setText("Status: GS_INITGAME"); break;
-        case GS_INITHALF: status.setText("Status: GS_INITHALF"); break;
-        case GS_COACH1: status.setText("Status: GS_COACH1"); break;
-        case GS_COACH2: status.setText("Status: GS_COACH2"); break;
-        case GS_PAUSE: status.setText("Status: GS_PAUSE"); break;
-        default: status.setText("Status: other"); break;
+          std::string status;
+          switch (api_->getState())
+            {
+            case GS_WAIT: status = "GS_WAIT"; break;
+            case GS_INITGAME: status = "GS_INITGAME"; break;
+            case GS_INITHALF: status = "GS_INITHALF"; break;
+            case GS_COACH1: status = "GS_COACH1"; break;
+            case GS_COACH2: status = "GS_COACH2"; break;
+            case GS_PAUSE: status = "GS_PAUSE"; break;
+            default: status = "other"; break;
+            }
+          txt_status_.addText("New game status: " + status);
+          game_state = api_->getState();
         }
     }
   return 0;

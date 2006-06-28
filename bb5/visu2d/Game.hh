@@ -84,7 +84,7 @@ private:
   bool                  our_turn_;
   bool                  is_playing_;
 
-  TextSurface           kickoff_notice_;
+  TextSurface           txt_status_;
   eAction               action_;
 };
 

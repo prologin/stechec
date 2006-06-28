@@ -76,6 +76,10 @@ void TextSurface::clearText()
 
 void TextSurface::setText(const std::string& text)
 {
+  // FIXME: kludge ? necessary to add a cache ?
+  if (lines_.size() == 1 && lines_[0] == text)
+    return;
+  
   lines_.clear();
   addText(text);
 }
@@ -84,16 +88,10 @@ void TextSurface::addText(const std::string& text_to_add)
 {
   using namespace std;
 
-  const char* search_string;
-  string text(text_to_add);
+  const char* search_string = auto_wrap_ ? " \n" : "\n";
+  string text(text_to_add + "\n");
   string::size_type index = 0;
   string::size_type prev_index = 0;
-
-  text = text + "\n";
-  if (auto_wrap_)
-    search_string = " \n";
-  else
-    search_string = "\n";
 
   while ((index = text.find_first_of(search_string, index + 1)) != string::npos)
     {
