@@ -39,7 +39,7 @@ bz2: distclean
 	@echo OK
 
 pdf: $(CODE_PDF)
-	TEXINPUTS=.:styles//:external//:/usr/share/texmf//:/sw/etc/texmf.local//:/sw/share/texmf-dist// ./latexmk.pl $(QUIETMK) -i -I -pdf $(ALL)
+	TEXINPUTS=.:styles//:external//:/usr/share/texmf//:/usr/share/texmf-tetex//:/sw/etc/texmf.local//:/sw/share/texmf-dist// ./latexmk.pl $(QUIETMK) -i -I -pdf $(ALL)
 
 clean:
 	$(RM) *.aux *.log *.out *.toc *~ *.bmt *.mtc*                   \
