@@ -1,0 +1,189 @@
+% ------------------------------------------------------------------------------
+% Made by ReeB 4 ACU
+%
+% Use the Beamer marvelous class
+% ------------------------------------------------------------------------------
+\documentclass[11pt, handout]{beamer}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage[skyblue]{acu-presentation}
+
+\setbeamertemplate{navigation symbols}{}
+
+% ------------------------------------------------------------------------------
+% Set here your personnal vars
+% ------------------------------------------------------------------------------
+\newcommand{\myauthor}{Mathieu \textsc{Betton} \\ Stéphane \textsc{Déspres} \\ Olivier \textsc{Gournet}}
+
+\newcommand{\mytitle}{\textbf{TowBowlTactics - The revival}}
+\newcommand{\myorg}{TBT Team}
+\newcommand{\mydate}{\includegraphics[width=5cm]{img/logotbt}\hspace{1cm}}
+% ------------------------------------------------------------------------------
+
+\title[TowBowlTactics]{\mytitle}
+\author[Mathieu, Stéphane]{\myauthor}
+%\institute[TBT Team]{\myorg}
+\date{\mydate}
+
+% ------------------------------------------------------------------------------
+% Some new command
+% ------------------------------------------------------------------------------
+\newcommand{\coloredblock}[2]{\color{#1}#2\color{black}}
+\newcommand{\red}[1]{\coloredblock{red}{#1}}
+\newcommand{\black}[1]{\coloredblock{black}{#1}}
+\newcommand{\green}[1]{\coloredblock{green}{#1}}
+\newcommand{\blue}[1]{\coloredblock{blue}{#1}}
+\newcommand{\trans}{}
+\newcommand{\lang}[1]{\textbf{\emph{#1}}}
+\newcommand{\rb}{\lang{Ruby}}
+\newcommand{\img}[2]{\scalebox{#1}[#1]{\includegraphics{#2}}}
+\newcommand{\codeimg}[1]{\img{1.0}{generated/#1}}
+% ------------------------------------------------------------------------------
+ 
+\begin{document}
+
+\frame{\titlepage}
+
+\logo{}
+
+
+\frame
+{
+	\frametitle{Plan de la présentation}
+	\tableofcontents[sections={<1-3>}]
+}
+
+\section{Le projet TowBowlTactics}
+
+\frame
+{
+  \begin{block}{Présentation de Blood Bowl}
+    \begin{itemize}
+      \item Jeu de plateau édité par Games Worshop depuis 1986.
+      \item Figurines, différentes races.
+      \item Allie convivialité, rapidité, hasard et stratégie.
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
+  \begin{block}{Blood Bowl tactics}
+    \begin{itemize}
+      \item Adaptation vidéo de Blood Bowl.
+      \item Née de la volontée d'une personne, Pascal Bourut, en 2001.
+      \item Programmé en C++/SDL, réalisé en 1 an.
+      \item Communautée se formant autour du jeu, mais pas
+        suffisamment de programmeur pour le faire vivre.
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
+  \begin{block}{Légalement}
+    \begin{itemize}
+      \item Projet entièrement en GPL.
+      \item Droits d'adaptation vis-à-vis de GW flou.
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
+  \begin{block}{Reprise fin 2005}
+    \begin{itemize}
+      \item Reprise amorcée par un fan: Mathieu.
+      \item Soutient technique de Nekeme prod.
+      \item Mise en place rapide d'une solide infrastructure:
+        \begin{itemize}
+          \item site web,
+          \item forum,
+          \item wiki,
+          \item subversion,
+          \item mailing-listes.
+        \end{itemize}
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
+  \begin{block}{Organisation de l'équipe}
+    \begin{itemize}
+      \item Pas d'organisation, à l'arrach.
+      \item C'est mieux comme ca.
+      \item Document de base décrivant du point de vue technique le
+        projet.
+    \end{itemize}
+  \end{block}
+}
+
+\section{Techniquement}
+
+
+\frame
+{
+  \begin{block}{Choix technologique}
+    \begin{itemize}
+      \item C++/SDL, XML pour la configuration et s'interfacer avec
+        d'autres projets.
+      \item Doxygen et \LaTeX pour la documentation.
+      \item Internationalisation prévue.
+      \item Le minimum de dépendances possible.
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
+  \begin{block}{Modélisation}
+    \begin{itemize}
+      \item Système modulaire, client/serveur distinct.
+      \item Connexion TCP/IP entre le client et le serveur.
+      \item Plusieurs interface possible, console, 2D, \ldots
+    \end{itemize}
+  \end{block}  
+}
+
+\frame
+{
+  \begin{block}{Multimédia}
+    \begin{itemize}
+      \item Graphisme.
+      \item Musique d'ambiance, son...
+    \end{itemize}
+  \end{block}
+}
+
+\section{Retour d'expérience, évolution}
+
+\frame
+{
+  \begin{block}{Vie du projet}
+    \begin{itemize}
+      \item Graphisme
+      \item Musique d'ambiance, son...
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
+  \begin{block}{Futur}
+    \begin{itemize}
+      \item Release de la première version à la fin de l'été.
+      \item Pleins d'idée ! ...
+      \item ... Mais trop peu de temps pour les concrétiser.
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
+  \begin{block}
+    \huge{Questions, remarques, choses pas claires ?}
+  \end{block}
+}
+
+\end{document}

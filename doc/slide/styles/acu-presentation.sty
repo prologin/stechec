@@ -1,0 +1,142 @@
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{acu-presentation}[2005/01/02]
+
+\RequirePackage{keyval}
+\RequirePackage{ifthen}
+
+\newcommand{\themecolor}{blue}
+\DeclareOption{black}{\renewcommand{\themecolor}{black}}
+\DeclareOption{orange}{\renewcommand{\themecolor}{orange}}
+\DeclareOption{blue}{\renewcommand{\themecolor}{blue}}
+\DeclareOption{purple}{\renewcommand{\themecolor}{purple}}
+\DeclareOption{skyblue}{\renewcommand{\themecolor}{skyblue}}
+\DeclareOption*{}
+\ProcessOptions
+
+\usetheme{acu}
+
+\RequirePackage{times}
+\usefonttheme{structurebold}
+
+\RequirePackage[francais]{babel}
+\RequirePackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage[latin1]{inputenc}
+
+\setbeamercovered{dynamic}
+
+\pgfdeclareimage{logo-bg}{img/acu-bg}
+\pgfdeclareimage[width=360pt,height=92pt]{logo-main-bg}{img/acu-bottom}
+
+\logo{}
+
+\newcommand{\exampleframe}[3]
+{
+	\frame{
+		\frametitle{#3}
+		\ifthenelse{\equal{#1}{1}}
+		{
+			% Then ( One frame )
+			\begin{onlyenv}<1>		
+				\codeimg{#2}
+			\end{onlyenv}
+		
+			\begin{onlyenv}<2>
+			\begin{small}
+				\input{generated/#2.tex}
+			\end{small}
+			\end{onlyenv}
+		}
+		{
+			% else ( 2 or 3 frames)
+			\begin{onlyenv}<1>		
+				\codeimg{#2-1}
+			\end{onlyenv}
+
+			\begin{onlyenv}<2>		
+				\codeimg{#2-2}
+			\end{onlyenv}
+		
+			\ifthenelse{\equal{#1}{2}}
+			{
+				%then (frame = 2)
+				\begin{onlyenv}<3>
+				\begin{small}
+					\input{generated/#2.tex}
+				\end{small}
+				\end{onlyenv}
+			}
+			{
+				% else ( frame = 3)
+				\begin{onlyenv}<3>		
+					\codeimg{#2-3}
+				\end{onlyenv}
+
+				\begin{onlyenv}<4>
+				\begin{tabular}{l}
+					\begin{small}
+						\input{generated/#2.tex}
+					\begin{small} \\
+				\end{tabular}
+				\end{onlyenv}
+			}
+		}
+	}
+}
+
+\newcommand{\exampleframesized}[4]
+{
+	\frame{
+		\frametitle{#3}
+		\ifthenelse{\equal{#1}{1}}
+		{
+			% Then ( One frame )
+			\begin{onlyenv}<1>		
+				\scalebox{#4}[#4]{\includegraphics{generated/#2}}
+			\end{onlyenv}
+		
+			\begin{onlyenv}<2>
+			\begin{small}
+				\input{generated/#2.tex}
+			\end{small}
+			\end{onlyenv}
+		}
+		{
+			% else ( 2 or 3 frames)
+			\begin{onlyenv}<1>		
+				\scalebox{#4}[#4]{\includegraphics{generated/#2-1}}
+			\end{onlyenv}
+
+			\begin{onlyenv}<2>		
+				\scalebox{#4}[#4]{\includegraphics{generated/#2-2}}
+			\end{onlyenv}
+		
+			\ifthenelse{\equal{#1}{2}}
+			{
+				%then (frame = 2)
+				\begin{onlyenv}<3>
+				\begin{small}
+					\input{generated/#2.tex}
+				\end{small}
+				\end{onlyenv}
+			}
+			{
+				% else ( frame = 3)
+				\begin{onlyenv}<3>		
+					\scalebox{#4}[#4]{\includegraphics{generated/#2-3}}
+				\end{onlyenv}
+				
+				\begin{onlyenv}<4>
+				\begin{tabular}{l}
+					\begin{small}
+						\input{generated/#2.tex}
+					\begin{small} \\
+				\end{tabular}
+				\end{onlyenv}
+			}
+		}
+	}
+}
+
+\endinput
+
