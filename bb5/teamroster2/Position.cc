@@ -1,5 +1,5 @@
 #include "Position.hh"
-#include <vector.h>
+#include <vector>
 
 Position::Position()
 {
@@ -79,7 +79,7 @@ void Position::setArmourValue(int av)
 	armourValue_ = av;
 }
     
-vector<const char*> Position::getSkills()
+std::vector<const char*> Position::getSkills()
 {
     return vSkills_;
 }

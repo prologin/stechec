@@ -18,16 +18,16 @@
 #include<xercesc/util/XMLString.hpp>
 #include <xercesc/sax/AttributeList.hpp>
 
-#include <iostream.h>
-#include <vector.h>
-#include <string.h>
+#include <iostream>
+#include <vector>
+#include <string>
 #include <stdlib.h>
 
 #include "Race.hh"
 #include "RaceHandler.hh"
 #include "Helper-classes.hh"
 
-vector<Race> RaceHandler::vRaces_;
+std::vector<Race> RaceHandler::vRaces_;
 char* RaceHandler::BBversion_;   
     
 RaceHandler::RaceHandler()

@@ -17,7 +17,7 @@
 #define RACEHANDLER_HH_
 
 #include    <xercesc/sax/HandlerBase.hpp>
-#include    <vector.h>
+#include    <vector>
 #include    "Race.hh"
 
 XERCES_CPP_NAMESPACE_USE
@@ -27,7 +27,7 @@ class RaceHandler : public HandlerBase
 {
 
 public :
-	static vector<Race> vRaces_;
+	static std::vector<Race> vRaces_;
     static char*        BBversion_;   
     
     // -----------------------------------------------------------------------

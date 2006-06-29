@@ -16,7 +16,7 @@
 #ifndef PLAYERLINEWIDGET_HH_
 #define PLAYERLINEWIDGET_HH_
 
-#include <vector.h>
+#include <vector>
 
 #include "pgthemewidget.h"
 #include "pglabel.h"
@@ -37,7 +37,7 @@ public:
 	PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect, Player *player);
  	virtual ~PlayerLineWidget();
 
-    void updatePositionsList(vector<Position> vPos);
+    void updatePositionsList(std::vector<Position> vPos);
 
     void updateModel(Player* player);
     void updateView();

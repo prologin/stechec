@@ -16,7 +16,7 @@
 #ifndef PLAYER_HH_
 #define PLAYER_HH_
 
-#include <vector.h>
+#include <vector>
 #include <string>
 
 class Team;
@@ -50,7 +50,7 @@ public:
     void setAgility(int ag);
     int getArmourValue();
     void setArmourValue(int av);
-    vector <char*> getSkills();
+    std::vector <const char*> getSkills();
     const char* getSkillsAsString();
     const char* getInjuries();
     void setInjuries(const char* inj);
@@ -83,7 +83,7 @@ private:
     int strength_;
     int agility_;
     int armourValue_;
-    vector<char*> vSkills_;
+    std::vector<const char*> vSkills_;
     std::string skillsStr_;
     std::string injuries_; // FIXME: to be changed after injury management
     int completions_;

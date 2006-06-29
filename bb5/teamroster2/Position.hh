@@ -16,7 +16,7 @@
 
 #ifndef POSITION_HH_
 #define POSITION_HH_
-#include <vector.h>
+#include <vector>
 
 class Position
 {
@@ -45,7 +45,7 @@ public:
     int getArmourValue();
     void setArmourValue(int av);
     
-    vector<const char*> getSkills();
+    std::vector<const char*> getSkills();
     void addSkill(const char* skill);
     
     const char* getNormalSkills();
@@ -64,7 +64,7 @@ private:
 	int strength_;
 	int agility_;
 	int armourValue_;
-    vector <const char*> vSkills_;
+    std::vector <const char*> vSkills_;
 	const char* skills_;  // Skills list as string
 	const char* normalSkills_;
 	const char* doubleSkills_;

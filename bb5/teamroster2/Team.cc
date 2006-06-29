@@ -14,7 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 #include <stdio.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "Race.hh"
 #include "Player.hh"
@@ -135,7 +135,7 @@ long Team::getTotalValueCost()
 
 void Team::validateTeam()
 {
-    vector<Position> vPos = race_->getPositions();
+    std::vector<Position> vPos = race_->getPositions();
     int pos[vPos.size()];
     for (unsigned int j=0; j<vPos.size(); j++)
     {

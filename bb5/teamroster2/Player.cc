@@ -20,7 +20,7 @@
 #include "InvalidParameterException.hh"
 
 #include <stdlib.h>
-#include <vector.h>
+#include <vector>
 #include <string>
 
 
@@ -76,7 +76,7 @@ Position* Player::getPosition()
 void Player::setPosition(const char *selectedPosition) 
 {     
     Race* race = team_->getRace();
-    vector<Position> vPos = race->getPositions();
+    std::vector<Position> vPos = race->getPositions();
     
     bool posFound = false;
     for (unsigned int i=0; i< vPos.size(); i++)
@@ -96,7 +96,7 @@ void Player::setPosition(const char *selectedPosition)
             value_ = vPos[i].getCost();
             
             vSkills_.clear();
-            vector<const char*> skills = vPos[i].getSkills();
+            std::vector<const char*> skills = vPos[i].getSkills();
             for (unsigned int j=0; j<skills.size(); j++)
             {
                 vSkills_.push_back(skills[j]);
@@ -150,7 +150,7 @@ void Player::setArmourValue(int av) {
     }
 }
 
-vector <char*> Player::getSkills() { return vSkills_; }
+std::vector <const char*> Player::getSkills() { return vSkills_; }
 
 const char* Player::getSkillsAsString() 
 {

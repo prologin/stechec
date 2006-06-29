@@ -13,9 +13,9 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
-#include <iostream.h>
-#include <string.h>
-#include <vector.h>
+#include <iostream>
+#include <string>
+#include <vector>
 #include "Race.hh"
 #include "Position.hh"
 #include "InvalidParameterException.hh"
@@ -89,7 +89,7 @@ void Race::setBackground(char* bg)
 	background_ = bg;
 }
 	
-vector<Position> Race::getPositions()
+std::vector<Position> Race::getPositions()
 {
 	return vPos_;
 }

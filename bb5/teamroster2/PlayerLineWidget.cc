@@ -14,9 +14,9 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 #include <stdlib.h>
-#include <iostream.h>
-#include <vector.h>
-#include <string.h>
+#include <iostream>
+#include <vector>
+#include <string>
 
 #include "pgthemewidget.h"
 #include "pglabel.h"
@@ -133,7 +133,7 @@ void PlayerLineWidget::updateModel(Player* player)
     updateView();
 }
 
-void PlayerLineWidget::updatePositionsList(vector<Position> vPos)
+void PlayerLineWidget::updatePositionsList(std::vector<Position> vPos)
 {
 	// Empty the dropdown list
     delete position_;

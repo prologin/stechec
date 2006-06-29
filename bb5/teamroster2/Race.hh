@@ -16,7 +16,7 @@
 #ifndef RACE_HH_
 #define RACE_HH_
 
-#include <vector.h>
+#include <vector>
 #include "Position.hh"
 
 class Race
@@ -43,7 +43,7 @@ public:
     void setRerollQuantity(int qty);
     const char* getBackground();
 	void setBackground(char* bg);
-	vector<Position> getPositions();
+	std::vector<Position> getPositions();
     Position* getPosition(const char* title);
 	void addPosition(Position pos);
 	
@@ -57,7 +57,7 @@ private:
     long rerollCost_;
     int rerollQuantity_;
     char* background_;
-    vector<Position> vPos_;
+    std::vector<Position> vPos_;
 };
 
 

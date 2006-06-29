@@ -13,8 +13,8 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
-#include <iostream.h>
-#include <vector.h>
+#include <iostream>
+#include <vector>
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
@@ -428,7 +428,7 @@ bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
     delete filename;
         		
     // Retrieve Postions vector for the selected race.
-    vector<Position> vPos = RaceHandler::vRaces_[idx].getPositions();
+    std::vector<Position> vPos = RaceHandler::vRaces_[idx].getPositions();
 
 	// Update all the dropdowns
 	for (int i=0; i<16; i++)

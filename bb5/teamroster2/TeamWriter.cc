@@ -16,7 +16,7 @@
 #include "RaceHandler.hh"
 #include "TeamWriter.hh"
 #include "Player.hh"
-#include <vector.h>
+#include <vector>
 #include <fstream>
   
   
@@ -30,7 +30,9 @@ TeamWriter::~TeamWriter()
 
 void TeamWriter::writeTeam(const char* filename, Team* team)
 {
-  std::ofstream fout(filename, ios::trunc);
+  using namespace std;
+  
+  ofstream fout(filename, ios::trunc);
   fout << "<?xml version=\"1.0\"?>" << endl;
   fout << "<team race=\"" << team->getRace()->getName() << "\" BBversion=\"" << RaceHandler::BBversion_ << "\" emblem=\"" << team->getEmblem() << "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"team.xsd\">" << endl;
   fout << "  <name>" << team->getName() << "</name>" << endl;
@@ -55,7 +57,7 @@ void TeamWriter::writeTeam(const char* filename, Team* team)
           fout << "       <av>" << player->getArmourValue() << "</av>" << endl;
           fout << "       <cost>" << player->getValue() << "</cost>" << endl;
           
-          vector<char*> skills = player->getSkills();
+          std::vector<const char*> skills = player->getSkills();
           if (skills.size() == 0)
           {
               fout << "       <skills />" << endl;                  

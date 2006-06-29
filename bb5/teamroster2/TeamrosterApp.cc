@@ -2,7 +2,7 @@
 #include "pgnavigator.h"
 #include "TeamrosterApp.hh"
 
-#include <iostream.h>
+#include <iostream>
 
 TeamrosterApp::TeamrosterApp()
 {

@@ -18,8 +18,8 @@
 #include <xercesc/parsers/SAXParser.hpp>
 #include <xercesc/util/OutOfMemoryException.hpp>
 
-#include <iostream.h>
-#include <vector.h>
+#include <iostream>
+#include <vector>
 #include "Position.hh"
 
 #include "RaceParser.hh"
@@ -99,10 +99,10 @@ void RaceParser::printRaces()
     for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
     {
         std::cout << RaceHandler::vRaces_[i].getName() << std::endl;
-        vector<Position> vp = RaceHandler::vRaces_[i].getPositions();
+        std::vector<Position> vp = RaceHandler::vRaces_[i].getPositions();
         for (unsigned int j=0; j<vp.size(); j++)
         {
-            vector<const char*> sk = vp[j].getSkills();
+            std::vector<const char*> sk = vp[j].getSkills();
             for (unsigned int k=0; k<sk.size(); k++)
             {
                std::cout << sk[k] << std::endl; 
