@@ -91,7 +91,7 @@ void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attribut
     else if (strcmp(DualString(name).asCString(), "skill") == 0)
     {
         char* tmp = xercesc::XMLString::transcode(attributes.getValue("name"));
-        char* newSkill = new char[strlen(tmp)];
+        char* newSkill = new char[strlen(tmp) + 1];
         sprintf(newSkill,"%s",tmp);
         currentPos_->addSkill(newSkill);
     }      
