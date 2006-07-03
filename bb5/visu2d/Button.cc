@@ -1,212 +1,224 @@
-/*
-** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
-** 
-** Copyright (C) 2006 The TBT Team.
-** 
-** This program is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License
-** as published by the Free Software Foundation; either version 2
-** of the License, or (at your option) any later version.
-** 
-** The complete GNU General Public Licence Notice can be found as the
-** `NOTICE' file in the root directory.
-** 
-** The TBT Team consists of people listed in the `AUTHORS' file.
-*/
+ /*
+ ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
+ ** 
+ ** Copyright (C) 2006 The TBT Team.
+ ** 
+ ** This program is free software; you can redistribute it and/or
+ ** modify it under the terms of the GNU General Public License
+ ** as published by the Free Software Foundation; either version 2
+ ** of the License, or (at your option) any later version.
+ ** 
+ ** The complete GNU General Public Licence Notice can be found as the
+ ** `NOTICE' file in the root directory.
+ ** 
+ ** The TBT Team consists of people listed in the `AUTHORS' file.
+ */
 
-#include "Button.hh"
-#include "GuiError.hh"
+ #include "Button.hh"
+ #include "GuiError.hh"
 
-Button::Button(const uint x, const uint y, const uint w, const uint h,
-               SDL_Surface* screen)
-{
-  this->screen = screen;
-  this->x = x; this->y = y;
-  this->w = w; this->h = h;
-  visible = false;
-  
-  old_surface = SDL_CreateRGBSurface(
-    SDL_HWSURFACE, 
-    this->w, this->h,
-    screen->format->BitsPerPixel,
-    screen->format->Rmask,
-    screen->format->Gmask,
-    screen->format->Bmask,
-    screen->format->Amask);
-  button = SDL_CreateRGBSurface(
-    SDL_HWSURFACE, 
-    this->w, this->h,
-    screen->format->BitsPerPixel,
-    screen->format->Rmask,
-    screen->format->Gmask,
-    screen->format->Bmask,
-    screen->format->Amask);
-}
+ //
+ // ImageButton
+ //
+ ImageButton::ImageButton (const uint x, const uint y, const uint w, const uint h,
+                         SDL_Surface * screen, Widget* father,
+                         const string filename, const ushort action):
+                         Widget(x, y, w, h, screen, father)
+ {
+   widget = LoadImage(filename, 1);
+   if (widget == NULL)
+   {
+     GUIError error(string("Not found ") + filename);
+     throw(error);
+   }
+   this->action=action;
+ }
 
-Button::~Button()
-{
-  SDL_FreeSurface(button);
-  SDL_FreeSurface(old_surface);
-}
+ ImageButton::ImageButton (const uint w, const uint h,
+                         SDL_Surface * screen, Widget* father,
+                         const string filename, const ushort action):
+                         Widget(w, h, screen, father)
+ {
+   widget = LoadImage(filename, 1);
+   if (widget == NULL)
+   {
+     GUIError error(string("Not found ") + filename);
+     throw(error);
+   }
+   this->action=action;
+ }
 
-void Button::erase(const uint posx, const uint posy)
-{
-  SDL_Rect r = {posx, posy, w, h};
-  SDL_BlitSurface(old_surface, NULL, screen, &r);
-  SDL_Flip(screen);
-}
+ ImageButton::ImageButton (SDL_Surface * screen, Widget* father,
+                           const string filename, const ushort action):
+                           Widget(screen, father)
+ {
+   widget = LoadImage(filename, 1);
+   if (widget == NULL)
+   {
+     GUIError error(string("Not found ") + filename);
+     throw(error);
+   }
+   this->action=action;
+ }
 
-ushort Button::mousebuttondown(const uint mousex,const uint mousey,
-                               const uint dialogx,const uint dialogy)
-{
-  return(inside(mousex, mousey, dialogx, dialogy));
-}
+ void ImageButton::draw()
+ {
+   SDL_Rect r = {get_wx(), get_wy(), w, h};
 
-ushort Button::inside(const uint mousex, const uint mousey,
-                      const uint dialogx, const uint dialogy)
-{
-  return((mousex >= (dialogx + x)) && (mousex <= (dialogx + x + w)) &&
-         (mousey >= (dialogy + y)) && (mousey <= (dialogy + y + h)));
-}
+   // First save background .. for erase
+   SDL_BlitSurface(screen, &r, old_screen, NULL);
+   // Then flip button
+   SDL_BlitSurface(widget, NULL, screen, &r);
+   SDL_Flip(screen);
+ }
 
+ void ImageButton::mousemotion(const uint mousex, const uint mousey)
+ {
+   if (inside(mousex, mousey))
+   {
+     if (visible == false)
+     {
+       draw();
+       visible = true;
+     }
+   }
+   else if (visible == true)
+   {
+     erase();
+     visible = false;
+   }
+ }
 
-uint Button::getx()
-{
-  return x;
-}
+ ushort ImageButton::mousebuttondown(const uint mousex, const uint mousey)
+ {
+         return(action);
+ }
 
-uint Button::gety()
-{
-  return y;
-}
+ //
+ // TextButton
+ //
 
-//
-// ImageButton
-//
+ TextButton::TextButton(const uint x, const uint y,
+                        const uint w, const uint h,
+                        SDL_Surface * screen, Widget* father,
+                        const string txt, const ushort action):
+                        Widget(x, y, w, h, screen, father)
+ {
+   font = TTF_OpenFont(ADD_FONTS_PATH ("Vera.ttf"), 14);
+   //If there was an error in loading the font 
+   if (font == NULL)
+   {
+     GUIError error(string ("Not found Vera.ttf"));
+     throw (error);
+   }
+   this->txt = txt;
+   textColor = black_color; textColorMotion = black_color;
+   bgColor = gainsboro_color; bgColorMotion = white_color;
+   this->action=action;
+   Focus globfocus;
+ }
 
-ImageButton::ImageButton(uint x, uint y, uint w, uint h,
-                         SDL_Surface* screen, const std::string filename):
-Button(x,y,w,h,screen)
-{
-  image = LoadImage(filename,1);
-  if (image == NULL) 
-  {
-    GUIError error(string("Not found ")+filename);
-    throw(error);
-  }
-}
+ TextButton::TextButton(const uint w, const uint h,
+                        SDL_Surface * screen, Widget* father,
+                        const string txt, const ushort action):
+                        Widget(w, h, screen, father)
+ {
+   font = TTF_OpenFont(ADD_FONTS_PATH ("Vera.ttf"), 14);
+   //If there was an error in loading the font 
+   if (font == NULL)
+   {
+     GUIError error(string ("Not found Vera.ttf"));
+     throw (error);
+   }
+   this->txt = txt;
+   textColor = black_color; textColorMotion = black_color;
+   bgColor = gainsboro_color; bgColorMotion = white_color;
+   this->action=action;
+   Focus globfocus;
+ }
 
-ImageButton::~ImageButton()
-{
-  SDL_FreeSurface(image);
-}
+ TextButton::TextButton(SDL_Surface * screen, Widget* father,
+                        const string txt, const ushort action):
+                        Widget(screen, father)
+ {
+   font = TTF_OpenFont(ADD_FONTS_PATH ("Vera.ttf"), 14);
+   //If there was an error in loading the font 
+   if (font == NULL)
+   {
+     GUIError error(string ("Not found Vera.ttf"));
+     throw (error);
+   }
+   this->txt = txt;
+   textColor = black_color; textColorMotion = black_color;
+   bgColor = gainsboro_color; bgColorMotion = white_color;
+   this->action=action;
+   Focus globfocus;
+ }
 
-void ImageButton::draw(const uint posx, const uint posy)
-{
-  SDL_Rect r = {posx, posy, w, h};
-  
-      // First save background
-  SDL_BlitSurface(screen, &r, old_surface, NULL);
-      // Then flip button
-  SDL_BlitSurface(image, NULL, button, NULL);
-  SDL_BlitSurface(button, NULL, screen, &r);
-  SDL_Flip(screen);
-}
+ TextButton::~TextButton()
+ {
+   TTF_CloseFont(font);
+ }
 
-void ImageButton::mousemotion(const uint mousex, const uint mousey,
-                              const uint dialogx, const uint dialogy)
-{
-  if (inside(mousex, mousey, dialogx, dialogy))
-  {
-    if (visible == false)
-    {
-      draw(dialogx + x, dialogy + y);
-      visible = true;
-    }
-  }
-  else if(visible == true)
-  {
-    erase(dialogx + x, dialogy + y);
-    visible = false;
-  }
-}
+ void TextButton::drawmotion(SDL_Color textColor, SDL_Color bgColor)
+ {
+   SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
+   SDL_Rect txtr = {0, 0, w, h};	//relative to button
+   // draw bg
+   SDL_BlitSurface(old_screen, NULL, widget, NULL);
+   // box
+   boxRGBA(widget, 0, 0, w, h, bgColor.r, bgColor.g, bgColor.b, BUTTON_ALPHA);
+   rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, BUTTON_ALPHA);
 
-//
-// TextButton
-//
+   //draw txt
+   PrintStrings(widget, font, txt, txtr, textColor);
+   //then flip
+   SDL_BlitSurface(widget, NULL, screen, &r);
+   SDL_Flip(screen);
+ }
 
-TextButton::TextButton(const uint x, const uint y, const uint w, const uint h,
-                       SDL_Surface* screen, const std::string txt):
-Button(x, y, w, h, screen)
-{
-  font = TTF_OpenFont(ADD_FONTS_PATH("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error(string("Not found Vera.ttf"));
-    throw(error);
-  }
-  this->txt = txt;
-  textColor = black_color;
-  textColorMotion = black_color;
-  bgColor = gainsboro_color;
-  bgColorMotion = white_color;
-}
+ void TextButton::draw()
+ {
+   SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
+   SDL_Rect txtr = {0, 0, w, h};	//relative to button
+   // First save background
+   SDL_BlitSurface(screen, &r, old_screen, NULL);
+   // draw bg
+   SDL_BlitSurface(screen, &r, widget, NULL);
+   // box
+   boxRGBA(widget, 0, 0, w, h, bgColor.r, bgColor.g, bgColor.b, BUTTON_ALPHA);
+   rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, BUTTON_ALPHA);
+   //draw txt
+   PrintStrings(widget, font, txt, txtr, textColor);
+   //then flip
+   SDL_BlitSurface(widget, NULL, screen, &r);
+   SDL_Flip(screen);
+ }
 
-TextButton::~TextButton()
-{
-  TTF_CloseFont(font);
-}
+ void TextButton::mousemotion(const uint mousex, const uint mousey)
+ {
+   if (inside(mousex, mousey))
+   {
+     if (visible == false)
+     {
+       drawmotion(textColorMotion, bgColorMotion);
+       visible = true;
+     }
+   }
+   else if (visible == true)
+   {
+     drawmotion(textColor, bgColor);
+     visible = false;
+   }
+ }
 
-void TextButton::drawmotion(const uint posx, const uint posy, SDL_Color textColor, SDL_Color bgColor)
-{
-  SDL_Rect r = {posx, posy, w, h}; //relative to window
-  SDL_Rect txtr = {0, 0, w, h}; //relative to button
-      // draw bg
-  SDL_BlitSurface(old_surface, NULL, button, NULL);
-      // box
-  boxRGBA(button, 0, 0, w, h,  bgColor.r, bgColor.g, bgColor.b, BUTTON_ALPHA);
-  rectangleRGBA(button, 0, 0, w - 1, h - 1, 0, 0, 0, BUTTON_ALPHA);
+ ushort TextButton::mousebuttondown(const uint mousex, const uint mousey)
+ {
+     if(inside(mousex, mousey))
+     {
+         globfocus.set_focus(this);
+         return(action);
+     }
+     return 0;
 
-      //draw txt
-  PrintStrings(button, font, txt, txtr, textColor);
-      //then flip
-  SDL_BlitSurface(button, NULL, screen, &r);
-  SDL_Flip(screen);
-}
-
-void TextButton::draw(const uint posx, const uint posy)
-{
-  SDL_Rect r = {posx, posy, w, h}; //relative to window
-  SDL_Rect txtr = {0, 0, w, h}; //relative to button
-      // First save background
-  SDL_BlitSurface(screen, &r, old_surface, NULL);
-      // draw bg
-  SDL_BlitSurface(screen, &r, button, NULL);
-      // box
-  boxRGBA(button, 0, 0, w, h,  bgColor.r, bgColor.g, bgColor.b, BUTTON_ALPHA);
-  rectangleRGBA(button, 0, 0, w - 1, h - 1, 0, 0, 0, BUTTON_ALPHA);
-      //draw txt
-  PrintStrings(button, font, txt, txtr, textColor);
-      //then flip
-  SDL_BlitSurface(button, NULL, screen, &r);
-  SDL_Flip(screen);
-}
-
-void TextButton::mousemotion(const uint mousex, const uint mousey,
-                             const uint dialogx, const uint dialogy)
-{
-  if (inside(mousex, mousey, dialogx, dialogy))
-  {
-    if (visible == false)
-    {
-      drawmotion(x + dialogx, y + dialogy, textColorMotion, bgColorMotion);
-      visible = true;
-    }
-  }
-  else if(visible == true)
-  {
-    drawmotion(x + dialogx, y + dialogy, textColor, bgColor);
-    visible = false;
-  }
-}
+ }
