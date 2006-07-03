@@ -14,205 +14,205 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
- #include "Widget.hh"
+#include "Widget.hh"
 
- Focus Widget::globfocus;
+Focus Widget::globfocus;
 
- Widget::Widget(SDL_Surface* screen, Widget* father)
- {
-   this->screen = screen;
-   this->x = 0;  this->y = 0;
-   this->w = WIDGET_WIDTH;  this->h = WIDGET_HEIGHT;
-   visible = false;
-   focus = false;
-   this->father = father;
+Widget::Widget(SDL_Surface* screen, Widget* father)
+{
+  this->screen = screen;
+  this->x = 0;  this->y = 0;
+  this->w = WIDGET_WIDTH;  this->h = WIDGET_HEIGHT;
+  visible = false;
+  focus = false;
+  this->father = father;
 
-   old_screen = SDL_CreateRGBSurface (SDL_HWSURFACE,
-                      this->w, this->h,
-                      screen->format->BitsPerPixel,
-                      screen->format->Rmask,
-                      screen->format->Gmask,
-                      screen->format->Bmask,
-                      screen->format->Amask);
+  old_screen = SDL_CreateRGBSurface (SDL_HWSURFACE,
+                                     this->w, this->h,
+                                     screen->format->BitsPerPixel,
+                                     screen->format->Rmask,
+                                     screen->format->Gmask,
+                                     screen->format->Bmask,
+                                     screen->format->Amask);
 
-   widget = SDL_CreateRGBSurface (SDL_HWSURFACE,
-                  this->w, this->h,
-                  screen->format->BitsPerPixel,
-                  screen->format->Rmask,
-                  screen->format->Gmask,
-                  screen->format->Bmask,
-                  screen->format->Amask);
- }
+  widget = SDL_CreateRGBSurface (SDL_HWSURFACE,
+                                 this->w, this->h,
+                                 screen->format->BitsPerPixel,
+                                 screen->format->Rmask,
+                                 screen->format->Gmask,
+                                 screen->format->Bmask,
+                                 screen->format->Amask);
+}
 
- Widget::Widget(const uint w, const uint h, SDL_Surface * screen, Widget* father)
- {
-   this->screen = screen;
-   this->x = 0;  this->y = 0;
-   this->w = w;  this->h = h;
-   visible = false;
-   Widget::focus = false;
-   this->father = father;
-   Focus globfocus();
+Widget::Widget(const uint w, const uint h, SDL_Surface * screen, Widget* father)
+{
+  this->screen = screen;
+  this->x = 0;  this->y = 0;
+  this->w = w;  this->h = h;
+  visible = false;
+  Widget::focus = false;
+  this->father = father;
+  Focus globfocus();
 
-   old_screen = SDL_CreateRGBSurface (SDL_HWSURFACE,
-                      this->w, this->h,
-                      screen->format->BitsPerPixel,
-                      screen->format->Rmask,
-                      screen->format->Gmask,
-                      screen->format->Bmask,
-                      screen->format->Amask);
+  old_screen = SDL_CreateRGBSurface (SDL_HWSURFACE,
+                                     this->w, this->h,
+                                     screen->format->BitsPerPixel,
+                                     screen->format->Rmask,
+                                     screen->format->Gmask,
+                                     screen->format->Bmask,
+                                     screen->format->Amask);
 
-   widget = SDL_CreateRGBSurface (SDL_HWSURFACE,
-                  this->w, this->h,
-                  screen->format->BitsPerPixel,
-                  screen->format->Rmask,
-                  screen->format->Gmask,
-                  screen->format->Bmask,
-                  screen->format->Amask);
- }
+  widget = SDL_CreateRGBSurface (SDL_HWSURFACE,
+                                 this->w, this->h,
+                                 screen->format->BitsPerPixel,
+                                 screen->format->Rmask,
+                                 screen->format->Gmask,
+                                 screen->format->Bmask,
+                                 screen->format->Amask);
+}
 
- Widget::Widget(const uint x, const uint y, const uint w, const uint h,
-                 SDL_Surface * screen, Widget* father)
- {
-   this->screen = screen;
-   this->x = x;  this->y = y;
-   this->w = w;  this->h = h;
-   visible = false;
-   Widget::focus = false;
-   this->father = father;
-   Focus globfocus();
+Widget::Widget(const uint x, const uint y, const uint w, const uint h,
+               SDL_Surface * screen, Widget* father)
+{
+  this->screen = screen;
+  this->x = x;  this->y = y;
+  this->w = w;  this->h = h;
+  visible = false;
+  Widget::focus = false;
+  this->father = father;
+  Focus globfocus();
 
-   old_screen = SDL_CreateRGBSurface (SDL_HWSURFACE,
-                      this->w, this->h,
-                      screen->format->BitsPerPixel,
-                      screen->format->Rmask,
-                      screen->format->Gmask,
-                      screen->format->Bmask,
-                      screen->format->Amask);
+  old_screen = SDL_CreateRGBSurface (SDL_HWSURFACE,
+                                     this->w, this->h,
+                                     screen->format->BitsPerPixel,
+                                     screen->format->Rmask,
+                                     screen->format->Gmask,
+                                     screen->format->Bmask,
+                                     screen->format->Amask);
 
-   widget = SDL_CreateRGBSurface (SDL_HWSURFACE,
-                  this->w, this->h,
-                  screen->format->BitsPerPixel,
-                  screen->format->Rmask,
-                  screen->format->Gmask,
-                  screen->format->Bmask,
-                  screen->format->Amask);
- }
+  widget = SDL_CreateRGBSurface (SDL_HWSURFACE,
+                                 this->w, this->h,
+                                 screen->format->BitsPerPixel,
+                                 screen->format->Rmask,
+                                 screen->format->Gmask,
+                                 screen->format->Bmask,
+                                 screen->format->Amask);
+}
 
- Widget::~Widget()
- {
-     if(hasfocus())
-     {
-         globfocus.set_focus(NULL);
-     }
-     SDL_FreeSurface(widget);
-     SDL_FreeSurface(old_screen);
- }
+Widget::~Widget()
+{
+  if(hasfocus())
+  {
+    globfocus.set_focus(NULL);
+  }
+  SDL_FreeSurface(widget);
+  SDL_FreeSurface(old_screen);
+}
 
- void Widget::erase()
- {
-   SDL_Rect r = {get_wx(), get_wy(), w, h};
-   SDL_BlitSurface(old_screen, NULL, screen, &r);
-   SDL_Flip(screen);
- }
+void Widget::erase()
+{
+  SDL_Rect r = {get_wx(), get_wy(), w, h};
+  SDL_BlitSurface(old_screen, NULL, screen, &r);
+  SDL_Flip(screen);
+}
 
- ushort Widget::inside(const uint mousex, const uint mousey)
- {
-   const uint wx = get_wx();
-   const uint wy = get_wy();
-   return((mousex >= wx) && (mousex <= (wx + w)) && (mousey >= wy) && (mousey <= (wy + h)));
- }
+ushort Widget::inside(const uint mousex, const uint mousey)
+{
+  const uint wx = get_wx();
+  const uint wy = get_wy();
+  return((mousex >= wx) && (mousex <= (wx + w)) && (mousey >= wy) && (mousey <= (wy + h)));
+}
 
- ushort Widget::mousebuttondown(const uint mousex, const uint mousey)
- {
-     if(inside(mousex, mousey))
-     {
-         globfocus.set_focus(this);
-         return 1;
-     }
-     return 0;
- }
+ushort Widget::mousebuttondown(const uint mousex, const uint mousey)
+{
+  if(inside(mousex, mousey))
+  {
+    globfocus.set_focus(this);
+    return 1;
+  }
+  return 0;
+}
 
- void Widget::gainfocus()
- {
-     focus=true;
- }
+void Widget::gainfocus()
+{
+  focus=true;
+}
 
- void Widget::losefocus()
- {
-     focus=false;
- }
+void Widget::losefocus()
+{
+  focus=false;
+}
 
- bool Widget::hasfocus()
- {
-     return(focus);
- }
+bool Widget::hasfocus()
+{
+  return(focus);
+}
 
- Focus& Widget::get_focus()
- { 
-     return globfocus;
- }
+Focus& Widget::get_focus()
+{ 
+  return globfocus;
+}
 
- uint Widget::get_x()
- {
-   return x;
- }
+uint Widget::get_x()
+{
+  return x;
+}
 
- uint Widget::get_wx()
- {
-     if(father != NULL)
-     {
-         return((father->get_wx()) + x);
-     }
-     else
-     {
-         return(x);
-     }
- }
+uint Widget::get_wx()
+{
+  if(father != NULL)
+  {
+    return((father->get_wx()) + x);
+  }
+  else
+  {
+    return(x);
+  }
+}
 
- void Widget::set_x(const uint x)
- {
-     this->x = x;
- }
+void Widget::set_x(const uint x)
+{
+  this->x = x;
+}
 
- uint Widget::get_y()
- {
-   return y;
- }
+uint Widget::get_y()
+{
+  return y;
+}
 
- void Widget::set_y(const uint y)
- {
-     this->y = y;
- }
+void Widget::set_y(const uint y)
+{
+  this->y = y;
+}
 
- uint Widget::get_wy()
- {
-    if(father != NULL)
-     {
-         return((father->get_wy()) + y);
-     }
-     else
-     {
-         return(y);
-     } 
- }
+uint Widget::get_wy()
+{
+  if(father != NULL)
+  {
+    return((father->get_wy()) + y);
+  }
+  else
+  {
+    return(y);
+  } 
+}
 
- uint Widget::get_height()
- {
-   return h;
- }
+uint Widget::get_height()
+{
+  return h;
+}
 
- void Widget::set_height(const uint height)
- {
-     h = height;
- }
+void Widget::set_height(const uint height)
+{
+  h = height;
+}
 
- uint Widget::get_width()
- {
-   return w;
- }
+uint Widget::get_width()
+{
+  return w;
+}
 
- void Widget::set_width(const uint width)
- {
-     w = width;
- }
+void Widget::set_width(const uint width)
+{
+  w = width;
+}

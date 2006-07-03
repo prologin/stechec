@@ -14,12 +14,12 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
- #include "GuiError.hh"
+#include "GuiError.hh"
 
- GUIError::GUIError(const string& reason) : msg(reason)
- {}
+GUIError::GUIError(const string& reason) : msg(reason)
+{}
 
- const string GUIError::getMessage()
- {
-   return msg;
- }
+const string GUIError::getMessage()
+{
+  return msg;
+}
