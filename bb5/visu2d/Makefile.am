@@ -6,18 +6,17 @@ lib_LTLIBRARIES	= bb5_visu.la
 
 
 bb5_visu_SOURCES =				\
-	main.cc					\
-	Button.cc				\
-	Button.hh				\
-	Colors.hh				\
-	DialogBox.cc				\
-	DialogBox.hh				\
-	Global.cc				\
-	Global.hh				\
-	GuiError.cc				\
-	GuiError.hh				\
-	Menu.cc					\
-	Menu.hh
+	main.cc \
+	Widget.cc Widget.hh \
+	Focus.cc FOcus.hh \
+	GuiError.cc GuiError.hh \
+	Button.cc Button.hh \
+	DialogBox.cc DialogBox.hh \
+	Global.cc Global.hh \
+	Menu.cc Menu.hh \
+	Label.cc Label.hh \
+	Entry.cc Entry.hh \
+	LabelEntry.cc LabelEntry.hh
 
 bb5_visu_la_SOURCES =				\
 	ResourceCenter.hh			\
