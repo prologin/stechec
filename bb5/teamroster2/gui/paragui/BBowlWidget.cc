@@ -29,18 +29,18 @@
 #include "pgimage.h"
 #include "pgbutton.h"
 
+#include "BBowlWidget.hh"
 #include "InputDialog.hh"
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
-#include "TeamParser.hh"
-#include "TeamHandler.hh"
-#include "RaceParser.hh"
-#include "RaceHandler.hh"
-#include "BBowlWidget.hh"
-#include "Team.hh"
-#include "Race.hh"
-#include "TeamWriter.hh"
-#include "InvalidParameterException.hh"
+#include "../../xml/TeamParser.hh"
+#include "../../xml/TeamHandler.hh"
+#include "../../xml/RaceParser.hh"
+#include "../../xml/RaceHandler.hh"
+#include "../../xml/TeamWriter.hh"
+#include "../../common/Team.hh"
+#include "../../common/Race.hh"
+#include "../../common/InvalidParameterException.hh"
 
 #define LINE_HEIGHT  10
 

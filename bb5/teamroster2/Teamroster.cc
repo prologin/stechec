@@ -17,8 +17,8 @@
 #include "pgapplication.h"
 #include "pgthemewidget.h"
 
-#include "TeamrosterApp.hh"
-#include "BBowlWidget.hh"
+#include "gui/paragui/TeamrosterApp.hh"
+#include "gui/paragui/BBowlWidget.hh"
 
 #define RESX 800
 #define RESY 600

@@ -23,7 +23,6 @@
 #include <string>
 #include <stdlib.h>
 
-#include "Race.hh"
 #include "RaceHandler.hh"
 #include "Helper-classes.hh"
 

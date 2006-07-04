@@ -18,7 +18,7 @@
 
 #include    <xercesc/sax/HandlerBase.hpp>
 #include    <vector>
-#include    "Race.hh"
+#include    "common/Race.hh"
 
 XERCES_CPP_NAMESPACE_USE
 

@@ -29,9 +29,9 @@
 #include "My_DropDown.hh"
 #include "BBowlWidget.hh"
 #include "PlayerLineWidget.hh" 
-#include "Position.hh"
-#include "Player.hh"
-#include "InvalidParameterException.hh"
+#include "../../common/Position.hh"
+#include "../../common/Player.hh"
+#include "../../common/InvalidParameterException.hh"
 
 PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect, Player *player) : PG_ThemeWidget(parent,rect, true)
 {

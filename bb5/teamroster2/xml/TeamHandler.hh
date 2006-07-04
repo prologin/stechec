@@ -19,8 +19,8 @@
 #include    <xercesc/sax/HandlerBase.hpp>
 #include    <vector>
 #include    <string>
-#include    "Team.hh"
-#include    "Player.hh"
+#include    "common/Team.hh"
+#include    "common/Player.hh"
 
 XERCES_CPP_NAMESPACE_USE
 

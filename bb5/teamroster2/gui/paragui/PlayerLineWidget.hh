@@ -25,8 +25,8 @@
 #include "pglistboxbaseitem.h"
 
 #include "TeamrosterApp.hh"
-#include "Position.hh"
-#include "Player.hh"
+#include "../../common/Position.hh"
+#include "../../common/Player.hh"
 
 class PlayerLineWidget : public PG_ThemeWidget 
 {

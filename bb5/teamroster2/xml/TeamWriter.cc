@@ -15,7 +15,8 @@
 */
 #include "RaceHandler.hh"
 #include "TeamWriter.hh"
-#include "Player.hh"
+#include "common/Player.hh"
+
 #include <vector>
 #include <fstream>
   

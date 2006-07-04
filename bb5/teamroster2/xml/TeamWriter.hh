@@ -16,7 +16,7 @@
 #ifndef TEAMWRITER_HH_
 #define TEAMWRITER_HH_
 
-#include "Team.hh"
+#include "common/Team.hh"
 
 class TeamWriter
 {

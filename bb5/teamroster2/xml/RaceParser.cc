@@ -20,18 +20,20 @@
 
 #include <iostream>
 #include <vector>
-#include "TeamParser.hh"
-#include "TeamHandler.hh"
 
-TeamParser::TeamParser()
+#include "common/Position.hh"
+#include "RaceParser.hh"
+#include "RaceHandler.hh"
+
+RaceParser::RaceParser()
 {
 }
 
-TeamParser::~TeamParser()
+RaceParser::~RaceParser()
 {
 }
 
-void TeamParser::parse(const char* filename)
+void RaceParser::parseFile()
 {
     // Initialize the XML4C2 system
     try
@@ -45,7 +47,7 @@ void TeamParser::parse(const char* filename)
               << toCatch.getMessage() << std::endl;
     }
 
-    //
+	//
     //  Create a SAX parser object. Then, according to what we were told on
     //  the command line, set it to validate or not.
     //
@@ -62,12 +64,12 @@ void TeamParser::parse(const char* filename)
     //  handler for the parser-> Then parse the file and catch any exceptions
     //  that propogate out
     //
-    TeamHandler handler;
+    RaceHandler handler;
     try
     {
         parser->setDocumentHandler(&handler);
         parser->setErrorHandler(&handler);
-        parser->parse(filename);
+        parser->parse("./data/races.xml");
         
         //printRaces();
     }
@@ -88,6 +90,24 @@ void TeamParser::parse(const char* filename)
     delete parser;
 
     // And call the termination method
-    XMLPlatformUtils::Terminate();  
+    XMLPlatformUtils::Terminate();	
 
+}
+
+void RaceParser::printRaces()
+{
+    for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
+    {
+        std::cout << RaceHandler::vRaces_[i].getName() << std::endl;
+        std::vector<Position> vp = RaceHandler::vRaces_[i].getPositions();
+        for (unsigned int j=0; j<vp.size(); j++)
+        {
+            std::vector<const char*> sk = vp[j].getSkills();
+            for (unsigned int k=0; k<sk.size(); k++)
+            {
+               std::cout << sk[k] << std::endl; 
+            }
+
+        } 
+    }
 }

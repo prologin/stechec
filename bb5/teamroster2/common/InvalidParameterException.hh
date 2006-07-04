@@ -13,20 +13,20 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
-#include "pgdropdown.h"
-#include "pglineedit.h"
-#include "pgbutton.h"
-#include "My_DropDown.hh"
+#ifndef INVALIDPARAMETEREXCEPTION_HH_
+#define INVALIDPARAMETEREXCEPTION_HH_
 
-My_DropDown::My_DropDown(PG_Widget* parent, const PG_Rect& r, int id, const char* style) : PG_DropDown(parent, r, id, style)
+class InvalidParameterException
 {
-	PG_Rect rect(0, 0, r.my_width - 15, r.my_height);
-	my_EditBox->MoveWidget(rect);
+public:
+    const char* msg; 
 
-	PG_Rect rbutton(abs(r.my_width - 15), 0, 15, r.my_height);
-	my_DropButton->MoveWidget(rbutton);
-}
+    InvalidParameterException(const char* m);
+	virtual ~InvalidParameterException();
+};
 
-My_DropDown::~My_DropDown()
-{
-}
+inline InvalidParameterException::InvalidParameterException(const char* m) { msg = m; }
+
+inline InvalidParameterException::~InvalidParameterException() { }
+
+#endif /*INVALIDPARAMETEREXCEPTION_HH_*/

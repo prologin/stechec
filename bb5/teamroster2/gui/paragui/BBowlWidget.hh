@@ -25,7 +25,7 @@
 
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
-#include "Team.hh"
+#include "../../common/Team.hh"
 
 class BBowlWidget : public PG_ThemeWidget
 {
