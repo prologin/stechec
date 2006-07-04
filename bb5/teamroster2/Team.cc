@@ -57,6 +57,20 @@ Player* Team::getPlayer(unsigned int number) {
    }
 }
 
+void Team::setPlayer(unsigned int number, Player* player) {
+   if ((number <= TEAM_SIZE) && (number > 0))
+   {
+      players_[number-1] = player;
+   }
+   else 
+   {
+      InvalidParameterException e("Invalid player number.");
+      throw (e);            
+   }
+}
+
+
+
 const char* Team::getName(){ return teamName_.c_str(); }
 void Team::setName(const char *name){ teamName_ = name; }
 const char* Team::getEmblem(){ return emblem_.c_str(); }

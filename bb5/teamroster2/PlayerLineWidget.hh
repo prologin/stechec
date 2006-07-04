@@ -37,7 +37,7 @@ public:
 	PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect, Player *player);
  	virtual ~PlayerLineWidget();
 
-    void updatePositionsList(std::vector<Position> vPos);
+    void updatePositionsList(std::vector<Position> vPoss);
 
     void updateModel(Player* player);
     void updateView();

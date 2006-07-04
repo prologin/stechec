@@ -3,6 +3,8 @@
 bin_PROGRAMS = teamroster
 
 teamroster_SOURCES = 				\
+	InputDialog.cc				\
+	InputDialog.hh				\
 	BBowlWidget.cc				\
 	BBowlWidget.hh				\
 	Helper-classes.cc			\
@@ -24,6 +26,10 @@ teamroster_SOURCES = 				\
 	RaceHandler.hh				\
 	RaceParser.cc				\
 	RaceParser.hh				\
+	TeamHandler.cc				\
+	TeamHandler.hh				\
+	TeamParser.cc				\
+	TeamParser.hh				\
 	TeamWriter.cc				\
 	TeamWriter.hh				\
 	Teamroster.cc				\

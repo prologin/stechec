@@ -51,7 +51,8 @@ public:
     int getArmourValue();
     void setArmourValue(int av);
     std::vector <const char*> getSkills();
-    const char* getSkillsAsString();
+    void addSkill(const char* skill);
+    const char* getSkillsAsString();    
     const char* getInjuries();
     void setInjuries(const char* inj);
     int getCompletions();

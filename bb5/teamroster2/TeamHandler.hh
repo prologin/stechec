@@ -13,32 +13,31 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
-#ifndef RACEHANDLER_HH_
-#define RACEHANDLER_HH_
+#ifndef TEAMHANDLER_HH_
+#define TEAMHANDLER_HH_
 
 #include    <xercesc/sax/HandlerBase.hpp>
 #include    <vector>
-#include    "Race.hh"
+#include    <string>
+#include    "Team.hh"
+#include    "Player.hh"
 
 XERCES_CPP_NAMESPACE_USE
 
-
-class RaceHandler : public HandlerBase
+class TeamHandler: public HandlerBase
 {
+public:
+    static Team* team_;
 
-public :
-	static std::vector<Race> vRaces_;
-    static char*        BBversion_;   
-    
     // -----------------------------------------------------------------------
     //  Constructors
     // -----------------------------------------------------------------------
-    RaceHandler();
-    ~RaceHandler();
-
+	TeamHandler();
+	virtual ~TeamHandler();
     // -----------------------------------------------------------------------
     //  Handlers for the SAX DocumentHandler interface
     // -----------------------------------------------------------------------
+    void startDocument();
     void startElement(const XMLCh* const name, AttributeList& attributes);
     void characters(const XMLCh* const chars, const unsigned int length);
     void endElement(const XMLCh* const name);
@@ -54,9 +53,9 @@ private:
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------
-    Race*                  currentRace_;
-    Position*              currentPos_;
-    const XMLCh*           chars_;
+    std::string    currentNode_;
+    Player*        currentPlayer_;
+    int            currentPlayerNumber_;
 };
 
-#endif /*RACEHANDLER_HH_*/
+#endif /*TEAMHANDLER_HH_*/

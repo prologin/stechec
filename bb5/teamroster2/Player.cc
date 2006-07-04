@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <string>
+#include <iostream>
 
 
 Player::Player(Team *team)
@@ -51,7 +52,8 @@ void Player::reset()
     interceptions_ = 0;
     casualties_ = 0;
     mostValuablePlayer_ = 0;
-    value_ = 0;       
+    value_ = 0;     
+    vSkills_.clear();  
 }
 
 // -----------------------------------------------------------------------
@@ -151,6 +153,27 @@ void Player::setArmourValue(int av) {
 }
 
 std::vector <const char*> Player::getSkills() { return vSkills_; }
+
+void Player::addSkill(const char* skill)
+{
+    // Avoid double skills
+    bool found = false;
+    for (unsigned int i=0; i<vSkills_.size(); i++)
+    {
+        if (strcmp(vSkills_[i], skill) == 0)
+        {
+            found = true;
+            break;
+        }        
+    }
+    
+    // If the skill is not already present, just add it.
+    if (!found)
+    {
+        std::string s = skill;
+        vSkills_.push_back(s.c_str());
+    }
+}
 
 const char* Player::getSkillsAsString() 
 {

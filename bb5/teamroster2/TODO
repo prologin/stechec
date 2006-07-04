@@ -1,12 +1,6 @@
 Know bugs: 
  - Plante lorsque l'on quitte alors que le focus est dans une case de caracteristique
- - Plantage lorsque l'on clique sur une race (bug aléatoire) : X Error of fail request: BadValue (integer parameter out of range for operation)
-       Major opcode of failed request: 146 (MIT-SHM)
-       Minor opcode of failed request: 3 (X_ShmPutImage)
-       Value in failed request: 0xfffe
-       Serial number of failed request: 129
-       Current serial number in output stream: 130 
-
+ 
 Regles
  - gestion des mercenaires
  - gestion du chef cuisto 
@@ -17,11 +11,11 @@ GUI
  - evaluer QT
  - gestion des skills
  - gestion des blessures (injuries)
- - ajouter les boutons: load, quit
+ - ajouter les boutons: quit
  - afficher / saisir le background de l'éequipe
  
  Events
- - gestion des evenements boutons : load / quit
+ - gestion des evenements boutons : quit
  
  XML
  - ajouter un schema XSD pour la validation du fichier "races.xml"

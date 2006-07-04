@@ -145,12 +145,11 @@ void PlayerLineWidget::updatePositionsList(std::vector<Position> vPos)
     position_->Show();
     
     // Fill it with the new position
-    position_->AddItem("");
+    position_->AddItem("");    
     for (unsigned int i=0; i<vPos.size(); i++)
     {
         position_->AddItem(vPos[i].getTitle());
     }
-    position_->SelectFirstItem();
 }
  
 /*

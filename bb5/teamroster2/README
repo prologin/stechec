@@ -50,3 +50,4 @@ Par contre les inconvénients sont nombreux:
 - Regles de validation d'une équipe avant de l'enregistrer : nombre de joueurs dans une position donnée
 - Affiche l'icone de l'emblème de l'équipe
 - Bouton Save implémenté : on enregistre le fichier team dans le répertoire courant avec "nomTeam.xml"
+- Bouton Load implémenté : on charge le fichier team depuis le répertoire courant.

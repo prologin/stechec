@@ -42,6 +42,7 @@ public:
     //  Getters & Setters
     // -----------------------------------------------------------------------
     Player* getPlayer(unsigned int number);
+    void setPlayer(unsigned int number, Player* player);
     const char* getName();
     void setName(const char *name);
     const char* getEmblem();

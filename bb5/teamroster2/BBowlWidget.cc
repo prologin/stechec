@@ -29,15 +29,20 @@
 #include "pgimage.h"
 #include "pgbutton.h"
 
+#include "InputDialog.hh"
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
+#include "TeamParser.hh"
+#include "TeamHandler.hh"
 #include "RaceParser.hh"
 #include "RaceHandler.hh"
 #include "BBowlWidget.hh"
+#include "Team.hh"
 #include "Race.hh"
 #include "TeamWriter.hh"
 #include "InvalidParameterException.hh"
 
+#define LINE_HEIGHT  10
 
 BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : PG_ThemeWidget(parent,rect, true)
 {
@@ -53,11 +58,12 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
     PG_ListBoxItem* item;
     for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
     {
-        item = new PG_ListBoxItem(race_, 10, RaceHandler::vRaces_[i].getName());
+        item = new PG_ListBoxItem(race_, LINE_HEIGHT, RaceHandler::vRaces_[i].getName());
     }      
     
     raceImg_ = new PG_Image (this, PG_Point(180,452),"emblems/amazon.jpg");
 
+    loadBtn_ = new PG_Button(this, PG_Rect(100,530,50,20), "load");
     saveBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "save");
   
     PG_Color black(0,0,0);
@@ -110,7 +116,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	totalTeamValueCost_->SetAlignment(PG_Label::RIGHT);
     
     // Create one line per player in the team
-    for (int i=0; i<16; i++)
+    for (int i=0; i<TEAM_SIZE; i++)
     {
       playerWidget_[i]= new PlayerLineWidget(app, this,PG_Rect(42,32+26*i,737,25), team_->getPlayer(i+1));
       playerWidget_[i]->updatePositionsList(RaceHandler::vRaces_[0].getPositions());
@@ -159,8 +165,8 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	fanFactor_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditFanFactor));
 	cheerleader_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditCheerleader));
 
-     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
-       
+    loadBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonLoadClick));
+    saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
  
     race_->sigSelectItem.connect(slot(*this, &BBowlWidget::handleSelectItemRace));
     race_->SelectFirstItem();
@@ -190,7 +196,7 @@ BBowlWidget::~BBowlWidget()
 	delete totalTeamValueCost_;	
     delete saveBtn_;
 
-	for (int i=0; i<16; i++)
+	for (int i=0; i<TEAM_SIZE; i++)
     {	
     		delete playerWidget_[i];
     }
@@ -367,9 +373,79 @@ bool BBowlWidget::handleEditCheerleader(PG_LineEdit* edit)
 	return true;
 }
 
+bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
+{
+   button->SetInputFocus();
+     
+   InputDialog iDialog(NULL, 
+      PG_Rect(240,50,240,170), "Load", "Please enter the filename to load:", 
+      PG_Rect(70, 125, 30, 20), "OK",
+      PG_Rect(120, 125, 60, 20), "CANCEL",
+      PG_Rect(20, 75, 200, 20), "");
+      
+   PG_Color white(255,255,255);  
+   PG_Color black(0,0,0);
+   iDialog.SetTransparency(0, false);
+   iDialog.SetFontColor(black, true);
+   iDialog.SetSimpleBackground(true);
+   iDialog.SetBackgroundColor(white);
+   iDialog.Update();
+   iDialog.Show();          
+   iDialog.WaitForClick();  
+   iDialog.Hide();
+
+   std::cout << "Parse file: " << iDialog.getText();
+   
+   // Parse team XML file
+   TeamParser parser;
+   parser.parse(iDialog.getText());
+   std::cout << " ... OK" << std::endl;
+      
+    // Update the team with the new one. 
+    team_ = TeamHandler::team_;
+    
+    std::cout << " race_->GetWidgetCount():"<< race_->GetWidgetCount() << std::endl;
+        
+    // select appropriate race 
+    for (unsigned int i=0; i<race_->GetWidgetCount(); i++)
+    {
+        PG_ListBoxBaseItem* item = (PG_ListBoxBaseItem*)race_->FindWidget(i);
+        
+        if (strcmp(item->GetText(), team_->getRace()->getName()) == 0)
+        {
+            std::cout << " item found i:"<< i << std::endl;
+            
+            item->Select(true);
+            race_->SelectItem(item, true);
+            race_->ScrollTo(i*LINE_HEIGHT);
+            break;
+        }
+    }
+
+    // load team emblen  
+    char* filename = new char[80];
+    sprintf(filename,"emblems/%s", team_->getEmblem());
+    raceImg_->LoadImage(filename);
+    delete filename;
+                
+    // Retrieve Postions vector for the selected race.
+    std::vector<Position> vPos = team_->getRace()->getPositions();
+
+    // Update all the dropdowns
+    for (int i=0; i<TEAM_SIZE; i++)
+    {
+        playerWidget_[i]->updatePositionsList(vPos);
+        playerWidget_[i]->updateModel(team_->getPlayer(i+1));
+    }
+    
+    updateView(); 
+    return true; 
+}
 
 bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
 {
+   button->SetInputFocus();
+ 
    if (strcmp(team_->getName(),"") == 0)
    {
       displayError("Please fill the team name before saving. The file will be saved as teamName.xml");
@@ -404,8 +480,8 @@ bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
 
     
     // Create team instance
- //   int idx = race_->GetSelectedIndex();
- // workaround to solve paragui bug which returns always 0
+    //   int idx = race_->GetSelectedIndex();
+    // workaround to solve paragui bug which returns always 0
     int idx=0; 
     for (unsigned int i=0; i<RaceHandler::vRaces_.size(); i++)
     {
@@ -431,7 +507,7 @@ bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
     std::vector<Position> vPos = RaceHandler::vRaces_[idx].getPositions();
 
 	// Update all the dropdowns
-	for (int i=0; i<16; i++)
+	for (int i=0; i<TEAM_SIZE; i++)
 	{
         playerWidget_[i]->updatePositionsList(vPos);
         playerWidget_[i]->updateModel(team_->getPlayer(i+1));

@@ -15,7 +15,7 @@
 */
 #include <xercesc/util/XMLUniDefs.hpp>
 #include <xercesc/util/XMLUni.hpp>
-#include<xercesc/util/XMLString.hpp>
+#include <xercesc/util/XMLString.hpp>
 #include <xercesc/sax/AttributeList.hpp>
 
 #include <iostream>
@@ -29,7 +29,8 @@
 
 std::vector<Race> RaceHandler::vRaces_;
 char* RaceHandler::BBversion_;   
-    
+
+        
 RaceHandler::RaceHandler()
 {
 }
