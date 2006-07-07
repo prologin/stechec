@@ -57,6 +57,7 @@
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
+			<xs:attribute name="display" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="positions">
@@ -135,58 +136,58 @@
 			<xs:attribute name="name" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:enumeration value="always hungry"/>
-						<xs:enumeration value="ball and chain"/>
-						<xs:enumeration value="block"/>
-						<xs:enumeration value="blood lust"/>
-						<xs:enumeration value="bombardier"/>
-						<xs:enumeration value="bone-head"/>
-						<xs:enumeration value="break tackle"/>
-						<xs:enumeration value="catch"/>
-						<xs:enumeration value="chainsaw"/>
-						<xs:enumeration value="claws"/>
-						<xs:enumeration value="dauntless"/>
-						<xs:enumeration value="decay"/>
-						<xs:enumeration value="dirty player"/>
-						<xs:enumeration value="disturbing presence"/>
-						<xs:enumeration value="dodge"/>
-						<xs:enumeration value="dump off"/>
-						<xs:enumeration value="foul appearance"/>
-						<xs:enumeration value="frenzy"/>
-						<xs:enumeration value="horns"/>
-						<xs:enumeration value="hypnotic gaze"/>
-						<xs:enumeration value="juggernaut"/>
-						<xs:enumeration value="jump up"/>
-						<xs:enumeration value="leap"/>
-						<xs:enumeration value="loner"/>
-						<xs:enumeration value="mighty blow"/>
-						<xs:enumeration value="nerves of steel"/>
-						<xs:enumeration value="no hands"/>
-						<xs:enumeration value="nurgle's rot"/>
-						<xs:enumeration value="pass"/>
-						<xs:enumeration value="prehensile tail"/>
-						<xs:enumeration value="really stupid"/>
-						<xs:enumeration value="regeneration"/>
-						<xs:enumeration value="right stuff"/>
-						<xs:enumeration value="safe throw"/>
-						<xs:enumeration value="secret weapon"/>
-						<xs:enumeration value="shadowing"/>
-						<xs:enumeration value="side step"/>
-						<xs:enumeration value="sprint"/>
-						<xs:enumeration value="stab"/>
-						<xs:enumeration value="stand firm"/>
-						<xs:enumeration value="strong arm"/>
-						<xs:enumeration value="stunty"/>
-						<xs:enumeration value="sure feet"/>
-						<xs:enumeration value="sure hands"/>
-						<xs:enumeration value="tackle"/>
-						<xs:enumeration value="take root"/>
-						<xs:enumeration value="tentacles"/>
-						<xs:enumeration value="thick skull"/>
-						<xs:enumeration value="throw team-mate"/>
-						<xs:enumeration value="titchy"/>
-						<xs:enumeration value="very long legs"/>
-						<xs:enumeration value="wild animal"/>
+						<xs:enumeration value="Always Hungry"/>
+						<xs:enumeration value="Ball and Chain"/>
+						<xs:enumeration value="Block"/>
+						<xs:enumeration value="Blood Lust"/>
+						<xs:enumeration value="Bombardier"/>
+						<xs:enumeration value="Bone-Head"/>
+						<xs:enumeration value="Break Tackle"/>
+						<xs:enumeration value="Catch"/>
+						<xs:enumeration value="Chainsaw"/>
+						<xs:enumeration value="Claws"/>
+						<xs:enumeration value="Dauntless"/>
+						<xs:enumeration value="Decay"/>
+						<xs:enumeration value="Dirty Player"/>
+						<xs:enumeration value="Disturbing Presence"/>
+						<xs:enumeration value="Dodge"/>
+						<xs:enumeration value="Dump Off"/>
+						<xs:enumeration value="Foul Appearance"/>
+						<xs:enumeration value="Frenzy"/>
+						<xs:enumeration value="Horns"/>
+						<xs:enumeration value="Hypnotic Gaze"/>
+						<xs:enumeration value="Juggernaut"/>
+						<xs:enumeration value="Jump Up"/>
+						<xs:enumeration value="Leap"/>
+						<xs:enumeration value="Loner"/>
+						<xs:enumeration value="Mighty Blow"/>
+						<xs:enumeration value="Nerves of Steel"/>
+						<xs:enumeration value="No Hands"/>
+						<xs:enumeration value="Nurgle's Rot"/>
+						<xs:enumeration value="Pass"/>
+						<xs:enumeration value="Prehensile Tail"/>
+						<xs:enumeration value="Really Stupid"/>
+						<xs:enumeration value="Regeneration"/>
+						<xs:enumeration value="Right Stuff"/>
+						<xs:enumeration value="Safe Throw"/>
+						<xs:enumeration value="Secret Weapon"/>
+						<xs:enumeration value="Shadowing"/>
+						<xs:enumeration value="Side Step"/>
+						<xs:enumeration value="Sprint"/>
+						<xs:enumeration value="Stab"/>
+						<xs:enumeration value="Stand Firm"/>
+						<xs:enumeration value="Strong Arm"/>
+						<xs:enumeration value="Stunty"/>
+						<xs:enumeration value="Sure Feet"/>
+						<xs:enumeration value="Sure Hands"/>
+						<xs:enumeration value="Tackle"/>
+						<xs:enumeration value="Take Root"/>
+						<xs:enumeration value="Tentacles"/>
+						<xs:enumeration value="Thick Skull"/>
+						<xs:enumeration value="Throw Team-Mate"/>
+						<xs:enumeration value="Titchy"/>
+						<xs:enumeration value="Very Long Legs"/>
+						<xs:enumeration value="Wild Animal"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>

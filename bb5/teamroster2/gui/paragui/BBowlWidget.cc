@@ -33,9 +33,8 @@
 #include "InputDialog.hh"
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
-#include "../../xml/TeamParser.hh"
+#include "../../xml/TRParser.hh"
 #include "../../xml/TeamHandler.hh"
-#include "../../xml/RaceParser.hh"
 #include "../../xml/RaceHandler.hh"
 #include "../../xml/TeamWriter.hh"
 #include "../../common/Team.hh"
@@ -48,8 +47,8 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 {
     
     // Parse races.xml file
-    RaceParser parser;
-    parser.parseFile();
+    TRParser parser;
+    parser.parseRaceFile();
             
     // Create a team instance with the first available race
     team_ = new Team(&RaceHandler::vRaces_[0]);
@@ -397,8 +396,8 @@ bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
    std::cout << "Parse file: " << iDialog.getText();
    
    // Parse team XML file
-   TeamParser parser;
-   parser.parse(iDialog.getText());
+   TRParser parser;
+   parser.parseTeamFile(iDialog.getText());
    std::cout << " ... OK" << std::endl;
       
     // Update the team with the new one. 

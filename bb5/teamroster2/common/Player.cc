@@ -46,6 +46,7 @@ void Player::reset()
     armourValue_ = 0;
     skillsStr_ = "";
     vSkills_.clear();
+    display_="";
     injuries_ = "";   
     completions_ = 0;
     touchdowns_ = 0;
@@ -104,6 +105,7 @@ void Player::setPosition(const char *selectedPosition)
                 vSkills_.push_back(skills[j]);
             }
 
+            display_ = vPos[i].getDisplay();
             break;
         }
     }
@@ -190,6 +192,10 @@ const char* Player::getSkillsAsString()
     return skills.c_str();
 }
 
+
+const char* Player::getDisplay() { return display_.c_str(); }
+
+void Player::setDisplay(const char* display) { display_ = display; }
 
 const char* Player::getInjuries() { return injuries_.c_str(); }
 

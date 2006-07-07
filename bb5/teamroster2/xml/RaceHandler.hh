@@ -42,13 +42,6 @@ public :
     void startElement(const XMLCh* const name, AttributeList& attributes);
     void characters(const XMLCh* const chars, const unsigned int length);
     void endElement(const XMLCh* const name);
-  
-    // -----------------------------------------------------------------------
-    //  Implementations of the SAX ErrorHandler interface
-    // -----------------------------------------------------------------------
-    void warning(const SAXParseException& exc);
-    void error(const SAXParseException& exc);
-    void fatalError(const SAXParseException& exc);
 
 private:
     // -----------------------------------------------------------------------

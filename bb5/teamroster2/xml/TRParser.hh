@@ -13,22 +13,24 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
-#ifndef RACEPARSER_HH_
-#define RACEPARSER_HH_
+#ifndef TRPARSER_HH_
+#define TRPARSER_HH_
 
-class RaceParser
+class TRParser
 {
 public:
     // -----------------------------------------------------------------------
     //  Constructors
     // -----------------------------------------------------------------------
-	RaceParser();
-	virtual ~RaceParser();
+	TRParser();
+	virtual ~TRParser();
 
-    void parseFile();
+    void parseTeamFile(const char* filename);
+    void parseRaceFile();
+    void parseParametersFile();
     
 private:
     void printRaces();
 };
 
-#endif /*RACEPARSER_HH_*/
+#endif /*TRPARSER_HH_*/

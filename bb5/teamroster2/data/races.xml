@@ -4,24 +4,24 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+			<position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
 				<skills>
 					<skill name="Dodge"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as">
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="amazon_t.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="2" title="Catcher" cost="70000" ma="6" st="3" ag="3" av="7" normal="ga" double="sp">
+			<position qty="2" title="Catcher" cost="70000" ma="6" st="3" ag="3" av="7" normal="ga" double="sp" display="amazon_c.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Catch"/>
 				</skills>
 			</position>
-			<position qty="4" title="Blitzer" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap">
+			<position qty="4" title="Blitzer" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap" display="amazon_b.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Block"/>
@@ -34,15 +34,15 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap">
+			<position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
 				<skills>
 					<skill name="Horns"/>
 				</skills>
 			</position>
-			<position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" normal="gsm" double="ap">
+			<position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" normal="gsm" double="ap" display="chaos_w.png">
 				<skills/>
 			</position>
-			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="sm" double="gap">
+			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="sm" double="gap" display="minautor.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Frenzy"/>
@@ -59,24 +59,24 @@
 		<apothecary use="true"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Hobgoblin" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+			<position qty="16" title="Hobgoblin" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
 				<skills/>
 			</position>
-			<position qty="6" title="Chaos dwarf" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="apm">
+			<position qty="6" title="Chaos dwarf" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="apm" display="chaosdwarf_b.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Tackle"/>
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="2" title="Bull centaurs" cost="130000" ma="6" st="4" ag="2" av="9" normal="gs" double="ap">
+			<position qty="2" title="Bull centaurs" cost="130000" ma="6" st="4" ag="2" av="9" normal="gs" double="ap" display="centaur.png">
 				<skills>
 					<skill name="Sprint"/>
 					<skill name="Sure Feet"/>
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="s" double="gapm">
+			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="s" double="gapm" display="minautor.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Frenzy"/>
@@ -93,26 +93,26 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp">
+			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Runner" cost="80000" ma="7" st="3" ag="4" av="7" normal="gap" double="s">
+			<position qty="2" title="Runner" cost="80000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="darkelf_t.png">
 				<skills>
 					<skill name="Dump Off"/>
 				</skills>
 			</position>
-			<position qty="2" title="Assassin" cost="90000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp">
+			<position qty="2" title="Assassin" cost="90000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="assasin.png">
 				<skills>
 					<skill name="Shadowing"/>
 					<skill name="Stab"/>
 				</skills>
 			</position>
-			<position qty="4" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
+			<position qty="4" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_b.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="2" title="Witch elf" cost="110000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp">
+			<position qty="2" title="Witch elf" cost="110000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="darkelf_w.png">
 				<skills>
 					<skill name="Frenzy"/>
 					<skill name="Dodge"/>
@@ -126,26 +126,26 @@
 		<apothecary use="true"/>
 		<reroll cost="40000" qty="8"/>
 		<positions>
-			<position qty="16" title="Blocker" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap">
+			<position qty="16" title="Blocker" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Tackle"/>
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="2" title="Runner" cost="80000" ma="6" st="3" ag="3" av="8" normal="gp" double="as">
+			<position qty="2" title="Runner" cost="80000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="dwarf_r.png">
 				<skills>
 					<skill name="Sure Hands"/>
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="80000" ma="5" st="3" ag="3" av="9" normal="gs" double="ap">
+			<position qty="2" title="Blitzer" cost="80000" ma="5" st="3" ag="3" av="9" normal="gs" double="ap" display="dwarf_lb.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="2" title="Troll slayer" cost="90000" ma="5" st="3" ag="2" av="8" normal="gs" double="ap">
+			<position qty="2" title="Troll slayer" cost="90000" ma="5" st="3" ag="2" av="8" normal="gs" double="ap" display="dwarf_ts.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Dauntless"/>
@@ -153,7 +153,7 @@
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="1" title="Deathroller" cost="160000" ma="4" st="7" ag="1" av="10" normal="s" double="gap">
+			<position qty="1" title="Deathroller" cost="160000" ma="4" st="7" ag="1" av="10" normal="s" double="gap" display="deathroller.png">
 				<skills>
 					<skill name="Break Tackle"/>
 					<skill name="Dirty Player"/>
@@ -171,21 +171,21 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp">
+			<position qty="16" title="Lineman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="4" av="7" normal="gap" double="s">
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="4" av="7" normal="gap" double="s" display="elf_t.png">
 				<skills>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="4" title="Catcher" cost="100000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
+			<position qty="4" title="Catcher" cost="100000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_c.png">
 				<skills>
 					<skill name="Catch"/>
 					<skill name="Nerves of Steel"/>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="110000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
+			<position qty="2" title="Blitzer" cost="110000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="elf_b.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Side Step"/>
@@ -198,14 +198,14 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+			<position qty="16" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Right Stuff"/>
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="1" title="Bombardier" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+			<position qty="1" title="Bombardier" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="bombardier.png">
 				<skills>
 					<skill name="Bombardier"/>
 					<skill name="Dodge"/>
@@ -214,7 +214,7 @@
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp">
+			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp"  display="pogoer.png">
 				<skills>
 					<skill name="Dirty Player"/>
 					<skill name="Dodge"/>
@@ -224,7 +224,7 @@
 					<skill name="Very Long Legs"/>
 				</skills>
 			</position>
-			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp"  display="looney.png">
 				<skills>
 					<skill name="Chainsaw"/>
 					<skill name="No Hands"/>
@@ -232,7 +232,7 @@
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap">
+			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap"  display="fanatic.png">
 				<skills>
 					<skill name="Ball and Chain"/>
 					<skill name="No Hands"/>
@@ -240,7 +240,7 @@
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap">
+			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap"  display="troll.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Always Hungry"/>
@@ -257,14 +257,14 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp">
+			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp"  display="halfling_h.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Right Stuff"/>
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap">
+			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap"  display="treeman.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Mighty Blow"/>
@@ -282,21 +282,21 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp">
+			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp"  display="highelf_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s">
+			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s"  display="highelf_t.png">
 				<skills>
 					<skill name="Pass"/>
 					<skill name="Safe Throw"/>
 				</skills>
 			</position>
-			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
+			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp"  display="highelf_c.png">
 				<skills>
 					<skill name="Catch"/>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp">
+			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp"  display="highelf_b.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
@@ -308,27 +308,27 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp">
+			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp"  display="human_l.png">
 				<skills/>
 			</position>
-			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp">
+			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp"  display="human_c.png">
 				<skills>
 					<skill name="Catch"/>
 					<skill name="Dodge"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as">
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as"  display="human_t.png">
 				<skills>
 					<skill name="Sure Hands"/>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap">
+			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap"  display="human_b.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap">
+			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap"  display="ogre.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Bone-Head"/>
@@ -344,25 +344,25 @@
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp">
+			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
 				<skills>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thro-Ras" cost="70000" ma="6" st="3" ag="2" av="7" normal="gp" double="as">
+			<position qty="2" title="Thro-Ras" cost="70000" ma="6" st="3" ag="2" av="7" normal="gp" double="as" display="khemri_t.png">
 				<skills>
 					<skill name="Pass"/>
 					<skill name="Regeneration"/>
 					<skill name="Sure Hands"/>
 				</skills>
 			</position>
-			<position qty="2" title="Blitz-Ras" cost="90000" ma="6" st="3" ag="2" av="8" normal="gs" double="ap">
+			<position qty="2" title="Blitz-Ras" cost="90000" ma="6" st="3" ag="2" av="8" normal="gs" double="ap" display="khemri_b.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="4" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap">
+			<position qty="4" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="khemri_m.png">
 				<skills>
 					<skill name="Mighty Blow"/>
 					<skill name="Regeneration"/>
@@ -375,16 +375,16 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Skinks" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp">
+			<position qty="16" title="Skinks" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="6" title="Saurus" cost="80000" ma="6" st="4" ag="1" av="9" normal="gs" double="ap">
+			<position qty="6" title="Saurus" cost="80000" ma="6" st="4" ag="1" av="9" normal="gs" double="ap" display="lizardmen_sa.png">
 				<skills/>
 			</position>
-			<position qty="1" title="Kroxigor" cost="140000" ma="6" st="5" ag="1" av="9" normal="s" double="gap">
+			<position qty="1" title="Kroxigor" cost="140000" ma="6" st="5" ag="1" av="9" normal="s" double="gap" display="kroxigor.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Bone-Head"/>
@@ -400,30 +400,30 @@
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp">
+			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="necromantic_z.png">
 				<skills>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="2" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
+			<position qty="2" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="necromantic_g.png">
 				<skills>
 					<skill name="Dodge"/>
 				</skills>
 			</position>
-			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap">
+			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="necromantic_wi.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="2" title="Flesh golem" cost="110000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap">
+			<position qty="2" title="Flesh golem" cost="110000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="necromantic_fg.png">
 				<skills>
 					<skill name="Regeneration"/>
 					<skill name="Stand Firm"/>
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="2" title="Werewolf" cost="120000" ma="8" st="3" ag="3" av="8" normal="ga" double="sp">
+			<position qty="2" title="Werewolf" cost="120000" ma="8" st="3" ag="3" av="8" normal="ga" double="sp" display="necromantic_ww.png">
 				<skills>
 					<skill name="Claws"/>
 					<skill name="Frenzy"/>
@@ -437,36 +437,36 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as">
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="norse_t.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="2" title="Runner" cost="90000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
+			<position qty="2" title="Runner" cost="90000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="norse_r.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Dauntless"/>
 				</skills>
 			</position>
-			<position qty="2" title="Berserker" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap">
+			<position qty="2" title="Berserker" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap" display="norse_b.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Frenzy"/>
 					<skill name="Jump Up"/>
 				</skills>
 			</position>
-			<position qty="2" title="Ulfwerener" cost="110000" ma="6" st="4" ag="2" av="8" normal="gs" double="ap">
+			<position qty="2" title="Ulfwerener" cost="110000" ma="6" st="4" ag="2" av="8" normal="gs" double="ap" display="norse_u.png">
 				<skills>
 					<skill name="Frenzy"/>
 				</skills>
 			</position>
-			<position qty="1" title="Snow troll" cost="140000" ma="5" st="5" ag="1" av="8" normal="s" double="gap">
+			<position qty="1" title="Snow troll" cost="140000" ma="5" st="5" ag="1" av="8" normal="s" double="gap" display="snow_troll.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Claws"/>
@@ -482,20 +482,20 @@
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Rotter" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp">
+			<position qty="16" title="Rotter" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
 				<skills>
 					<skill name="Decay"/>
 					<skill name="Nurgle's Rot"/>
 				</skills>
 			</position>
-			<position qty="4" title="Pestigor" cost="80000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap">
+			<position qty="4" title="Pestigor" cost="80000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="nurgle_p.png">
 				<skills>
 					<skill name="Horns"/>
 					<skill name="Nurgle's Rot"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="4" title="Nurgle warrior" cost="110000" ma="4" st="4" ag="2" av="9" normal="gsm" double="ap">
+			<position qty="4" title="Nurgle warrior" cost="110000" ma="4" st="4" ag="2" av="9" normal="gsm" double="ap" display="nurgle_w.png">
 				<skills>
 					<skill name="Disturbing Presence"/>
 					<skill name="Foul Appearance"/>
@@ -503,7 +503,7 @@
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="1" title="Beast of Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" normal="s" double="gapm">
+			<position qty="1" title="Beast of Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" normal="s" double="gapm" display="nurgle_b.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Disturbing Presence"/>
@@ -522,7 +522,7 @@
 		<apothecary use="true"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Snotling" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp">
+			<position qty="16" title="Snotling" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Right Stuff"/>
@@ -531,7 +531,7 @@
 					<skill name="Titchy"/>
 				</skills>
 			</position>
-			<position qty="6" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap">
+			<position qty="6" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap" display="ogre.png">
 				<skills>
 					<skill name="Bone-Head"/>
 					<skill name="Mighty Blow"/>
@@ -546,31 +546,31 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp">
+			<position qty="16" title="Lineman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
 				<skills/>
 			</position>
-			<position qty="4" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp">
+			<position qty="4" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
 				<skills>
 					<skill name="Right Stuff"/>
 					<skill name="Dodge"/>
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="5" st="3" ag="3" av="8" normal="gp" double="as">
+			<position qty="2" title="Thrower" cost="70000" ma="5" st="3" ag="3" av="8" normal="gp" double="as" display="orc_t.png">
 				<skills>
 					<skill name="Sure Hands"/>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="4" title="Black orc" cost="80000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap">
+			<position qty="4" title="Black orc" cost="80000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="orc_bo.png">
 				<skills/>
 			</position>
-			<position qty="4" title="Blitzer" cost="80000" ma="6" st="3" ag="3" av="9" normal="gs" double="ap">
+			<position qty="4" title="Blitzer" cost="80000" ma="6" st="3" ag="3" av="9" normal="gs" double="ap" display="orc_b.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="1" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap">
+			<position qty="1" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap" display="troll.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Always Hungry"/>
@@ -587,26 +587,26 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm">
+			<position qty="16" title="Lineman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="7" st="3" ag="3" av="7" normal="gp" double="asm">
+			<position qty="2" title="Thrower" cost="70000" ma="7" st="3" ag="3" av="7" normal="gp" double="asm" display="skaven_t.png">
 				<skills>
 					<skill name="Sure Hands"/>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="4" title="Gutter runner" cost="80000" ma="9" st="2" ag="4" av="7" normal="ga" double="spm">
+			<position qty="4" title="Gutter runner" cost="80000" ma="9" st="2" ag="4" av="7" normal="ga" double="spm" display="skaven_gr.png">
 				<skills>
 					<skill name="Dodge"/>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="apm">
+			<position qty="2" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="apm" display="skaven_b.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="1" title="Rat ogre" cost="160000" ma="6" st="5" ag="2" av="8" normal="s" double="gapm">
+			<position qty="1" title="Rat ogre" cost="160000" ma="6" st="5" ag="2" av="8" normal="s" double="gapm" display="ratogre.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Frenzy"/>
@@ -622,28 +622,28 @@
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp">
+			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
 				<skills>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp">
+			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="undead_z.png">
 				<skills>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="4" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp">
+			<position qty="4" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="undead_g.png">
 				<skills>
 					<skill name="Dodge"/>
 				</skills>
 			</position>
-			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap">
+			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="undead_w.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="2" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap">
+			<position qty="2" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="undead_m.png">
 				<skills>
 					<skill name="Mighty Blow"/>
 					<skill name="Regeneration"/>
@@ -656,10 +656,10 @@
 		<apothecary use="true"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Thrall" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp">
+			<position qty="16" title="Thrall" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
 				<skills/>
 			</position>
-			<position qty="6" title="Vampire" cost="110000" ma="6" st="4" ag="4" av="8" normal="gas" double="p">
+			<position qty="6" title="Vampire" cost="110000" ma="6" st="4" ag="4" av="8" normal="gas" double="p" display="vampire_v.png">
 				<skills>
 					<skill name="Blood Lust"/>
 					<skill name="Hypnotic Gaze"/>
@@ -673,28 +673,28 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp">
+			<position qty="16" title="Lineman" cost="70000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
 				<skills/>
 			</position>
-			<position qty="4" title="Catcher" cost="90000" ma="9" st="2" ag="4" av="7" normal="ga" double="sp">
+			<position qty="4" title="Catcher" cost="90000" ma="9" st="2" ag="4" av="7" normal="ga" double="sp" display="woodelf_c.png">
 				<skills>
 					<skill name="Catch"/>
 					<skill name="Dodge"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="90000" ma="7" st="3" ag="4" av="7" normal="gap" double="s">
+			<position qty="2" title="Thrower" cost="90000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="woodelf_t.png">
 				<skills>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="2" title="Wardancer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp">
+			<position qty="2" title="Wardancer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_w.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Dodge"/>
 					<skill name="Leap"/>
 				</skills>
 			</position>
-			<position qty="1" title="Treeman" cost="140000" ma="2" st="6" ag="1" av="10" normal="s" double="gap">
+			<position qty="1" title="Treeman" cost="140000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Mighty Blow"/>

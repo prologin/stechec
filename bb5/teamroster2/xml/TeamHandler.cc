@@ -192,31 +192,3 @@ void TeamHandler::endElement(const XMLCh* const name)
     }
 }
 
-
-// ---------------------------------------------------------------------------
-//  RaceHandler: Overrides of the SAX ErrorHandler interface
-// ---------------------------------------------------------------------------
-void TeamHandler::error(const SAXParseException& e)
-{
-    XERCES_STD_QUALIFIER cerr << "\nError at file " << e.getSystemId()
-         << ", line " << e.getLineNumber()
-         << ", char " << e.getColumnNumber()
-         << "\n  Message: " << e.getMessage() << XERCES_STD_QUALIFIER endl;
-}
-
-void TeamHandler::fatalError(const SAXParseException& e)
-{
-    XERCES_STD_QUALIFIER cerr << "\nFatal Error at file " << e.getSystemId()
-         << ", line " << e.getLineNumber()
-         << ", char " << e.getColumnNumber()
-         << "\n  Message: " << e.getMessage() << XERCES_STD_QUALIFIER endl;
-}
-
-void TeamHandler::warning(const SAXParseException& e)
-{
-    XERCES_STD_QUALIFIER cerr << "\nWarning at file " << e.getSystemId()
-         << ", line " << e.getLineNumber()
-         << ", char " << e.getColumnNumber()
-         << "\n  Message: " << e.getMessage() << XERCES_STD_QUALIFIER endl;
-}
-

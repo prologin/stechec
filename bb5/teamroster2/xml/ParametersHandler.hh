@@ -13,43 +13,42 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
-#ifndef TEAMHANDLER_HH_
-#define TEAMHANDLER_HH_
+#ifndef PARAMETERSHANDLER_HH_
+#define PARAMETERSHANDLER_HH_
 
 #include    <xercesc/sax/HandlerBase.hpp>
-#include    <vector>
-#include    <string>
-#include    "common/Team.hh"
-#include    "common/Player.hh"
 
 XERCES_CPP_NAMESPACE_USE
 
-class TeamHandler: public HandlerBase
+class ParametersHandler : public HandlerBase
 {
 public:
-    static Team* team_;
+    static std::vector<std::string> vSkillsGeneral_;
+    static std::vector<std::string> vSkillsAgility_;
+    static std::vector<std::string> vSkillsPassing_;
+    static std::vector<std::string> vSkillsStrength_;
+    static std::vector<std::string> vSkillsMutation_;
+
+    static std::string BBversion_;   
 
     // -----------------------------------------------------------------------
     //  Constructors
     // -----------------------------------------------------------------------
-	TeamHandler();
-	virtual ~TeamHandler();
-    
+	ParametersHandler();
+	virtual ~ParametersHandler();
+
     // -----------------------------------------------------------------------
     //  Handlers for the SAX DocumentHandler interface
     // -----------------------------------------------------------------------
-    void startDocument();
     void startElement(const XMLCh* const name, AttributeList& attributes);
     void characters(const XMLCh* const chars, const unsigned int length);
     void endElement(const XMLCh* const name);
   
+
 private:
-    // -----------------------------------------------------------------------
-    //  Private data members
-    // -----------------------------------------------------------------------
-    std::string    currentNode_;
-    Player*        currentPlayer_;
-    int            currentPlayerNumber_;
+   static std::vector<std::string> *vCurrent_;
+   
+   std::string    currentNode_;
 };
 
-#endif /*TEAMHANDLER_HH_*/
+#endif /*PARAMETERSHANDLER_HH_*/

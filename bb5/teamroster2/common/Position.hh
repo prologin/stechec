@@ -52,6 +52,8 @@ public:
     void setNormalSkills(const char* normalSkills);
     const char* getDoubleSkills();
     void setDoubleSkills(const char* doubleSkills);
+    const char* getDisplay();
+    void setDisplay(const char* display);
      
 private: 
     // -----------------------------------------------------------------------
@@ -68,6 +70,7 @@ private:
 	const char* skills_;  // Skills list as string
 	const char* normalSkills_;
 	const char* doubleSkills_;
+    const char* display_;
 
 };
 

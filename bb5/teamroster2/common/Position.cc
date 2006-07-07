@@ -123,4 +123,13 @@ void Position::setDoubleSkills(const char* doubleSkills)
 {
 	doubleSkills_ = doubleSkills;
 }
-     
+   
+const char* Position::getDisplay()
+{
+    return display_;
+}
+
+void Position::setDisplay(const char* display)
+{
+    display_ = display;
+}     

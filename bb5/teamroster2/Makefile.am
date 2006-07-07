@@ -24,14 +24,15 @@ teamroster_SOURCES = 						\
 	common/Team.hh						\
 	xml/Helper-classes.cc					\
 	xml/Helper-classes.hh					\
+	xml/TRParser.cc						\
+	xml/TRParser.hh						\
+	xml/ParametersHandler.hh				\
+	xml/ParametersHandler.cc				\
+	xml/RaceHandler.hh					\
 	xml/RaceHandler.cc					\
 	xml/RaceHandler.hh					\
-	xml/RaceParser.cc					\
-	xml/RaceParser.hh					\
 	xml/TeamHandler.cc					\
 	xml/TeamHandler.hh					\
-	xml/TeamParser.cc					\
-	xml/TeamParser.hh					\
 	xml/TeamWriter.cc					\
 	xml/TeamWriter.hh					\
 	Teamroster.cc				

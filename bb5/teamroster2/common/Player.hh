@@ -53,6 +53,8 @@ public:
     std::vector <const char*> getSkills();
     void addSkill(const char* skill);
     const char* getSkillsAsString();    
+    const char* getDisplay();
+    void setDisplay(const char* display);
     const char* getInjuries();
     void setInjuries(const char* inj);
     int getCompletions();
@@ -93,6 +95,8 @@ private:
     int casualties_;
     int mostValuablePlayer_;
     long value_;   
+    std::string display_;
 };
+    
 
 #endif /*PLAYER_HH_*/

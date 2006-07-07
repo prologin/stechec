@@ -87,6 +87,7 @@ void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attribut
 	  currentPos_->setArmourValue(atoi(DualString(attributes.getValue("av")).asCString()));
 	  currentPos_->setNormalSkills(xercesc::XMLString::transcode(attributes.getValue("normal")));
 	  currentPos_->setDoubleSkills(xercesc::XMLString::transcode(attributes.getValue("double")));
+      currentPos_->setDisplay(xercesc::XMLString::transcode(attributes.getValue("display")));
     	}
     else if (strcmp(DualString(name).asCString(), "skill") == 0)
     {
@@ -121,31 +122,4 @@ void RaceHandler::endElement(const XMLCh* const name)
     }
 }
 
-
-// ---------------------------------------------------------------------------
-//  RaceHandler: Overrides of the SAX ErrorHandler interface
-// ---------------------------------------------------------------------------
-void RaceHandler::error(const SAXParseException& e)
-{
-    XERCES_STD_QUALIFIER cerr << "\nError at file " << e.getSystemId()
-		 << ", line " << e.getLineNumber()
-		 << ", char " << e.getColumnNumber()
-         << "\n  Message: " << e.getMessage() << XERCES_STD_QUALIFIER endl;
-}
-
-void RaceHandler::fatalError(const SAXParseException& e)
-{
-    XERCES_STD_QUALIFIER cerr << "\nFatal Error at file " << e.getSystemId()
-		 << ", line " << e.getLineNumber()
-		 << ", char " << e.getColumnNumber()
-         << "\n  Message: " << e.getMessage() << XERCES_STD_QUALIFIER endl;
-}
-
-void RaceHandler::warning(const SAXParseException& e)
-{
-    XERCES_STD_QUALIFIER cerr << "\nWarning at file " << e.getSystemId()
-		 << ", line " << e.getLineNumber()
-		 << ", char " << e.getColumnNumber()
-         << "\n  Message: " << e.getMessage() << XERCES_STD_QUALIFIER endl;
-}
 

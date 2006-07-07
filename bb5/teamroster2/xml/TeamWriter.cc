@@ -51,7 +51,7 @@ void TeamWriter::writeTeam(const char* filename, Team* team)
       Player* player = team->getPlayer(i);
       if (strcmp("", player->getPositionTitle()) != 0)
       {
-          fout << "     <player name=\"" << player->getName() << "\" number=\"" << i << "\" position=\"" << player->getPositionTitle() << "\" display=\"" << "test.png" << "\">" << endl;
+          fout << "     <player name=\"" << player->getName() << "\" number=\"" << i << "\" position=\"" << player->getPositionTitle() << "\" display=\"" << player->getDisplay() << "\">" << endl;
           fout << "       <ma>" << player->getMovementAllowance() << "</ma>" << endl;
           fout << "       <st>" << player->getStrength() << "</st>" << endl;
           fout << "       <ag>" << player->getAgility() << "</ag>" << endl;
