@@ -211,7 +211,7 @@ AC_DEFUN([TBT_CHECK_SDL],
               [tbt_cv_sdl_prefix=""])
 
   if test "x$tbt_cv_sdl_prefix" = xno; then
-      # explicitly disabled by user.
+      # Explicitly disabled by user.
       AM_CONDITIONAL([HAVE_SDL], [false])
       AC_MSG_CHECKING([for SDL - version >= $1])
       AC_MSG_RESULT([disabled by user])
@@ -221,9 +221,9 @@ AC_DEFUN([TBT_CHECK_SDL],
       ac_save_CPPFLAGS="$CPPFLAGS"
       ac_save_LDFLAGS="$LDFLAGS"
 
-      # make sure we have sdl.
-      AM_CONDITIONAL([HAVE_SDL], [true])
-      AC_DEFINE([HAVE_SDL], [], [Have SDL])
+      #
+      # Make sure we have sdl. If not, this is an error.
+      #
       AM_PATH_SDL([$1],
           :,
 	  [AC_MSG_ERROR([
@@ -261,25 +261,14 @@ Warning: This is probably _not_ what you want.
       SDL_CHECK_EXT([SDL_gfx], [sdl-gfx], [SDL_rotozoom.h], [SDL_gfx], [rotozoomSurface],
           [http://www.ferzkopp.net/Software/SDL_gfx-2.0/])
 
-
-      #
       # Check for Paragui, only for bb5 module.
-      #
-      # FIXME: if paragui is not installed, aclocal will report helpless message:
-      #    "macro AM_PATH_PARAGUI not defined"
-      # I haven't time to do better, and since it may be removed, this is sufficient for now.
-      #
-      # Defines HAVE_PARAGUI, PARAGUI_CFLAGS and PARAGUI_LIBS.
-      #
       case $used_modules in
-          *bb5*)
-              AM_PATH_PARAGUI([1.1.8],
-                  :,
-	          AC_MSG_ERROR([*** PARAGUI version >= 1.1.8 not found!])
-              )
-              ;;
+          *bb5*)  STECHEC_CHECK_PARAGUI([1.1.8]) ;;
+          *)      AM_CONDITIONAL([HAVE_PARAGUI], [false]) ;;
       esac
 
+      AM_CONDITIONAL([HAVE_SDL], [true])
+      AC_DEFINE([HAVE_SDL], [], [Have SDL])
       AC_SUBST([SDL_CFLAGS])
       AC_SUBST([SDL_LIBS])
 
@@ -289,5 +278,4 @@ Warning: This is probably _not_ what you want.
       LDFLAGS="$ac_save_LDFLAGS"
 
   fi # !use_sdl
-  AM_CONDITIONAL([HAVE_PARAGUI], [test x"$PARAGUI_CFLAGS" != x])
 ])

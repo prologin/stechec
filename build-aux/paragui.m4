@@ -1,3 +1,5 @@
+# -*- shell-script -*-
+
 # Configure paths for ParaGUI
 # Alexander Pipelka 17.05.2000
 # stolen from Sam Lantinga 
@@ -5,55 +7,64 @@
 # stolen back from Frank Belew
 # stolen from Manish Singh
 # Shamelessly stolen from Owen Taylor
+#
+# Remodified by Victor (C) 2006
+#
 
-dnl AM_PATH_PARAGUI([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-dnl Test for PARAGUI, and define PARAGUI_CFLAGS and PARAGUI_LIBS
-dnl
-AC_DEFUN(AM_PATH_PARAGUI,
-[dnl 
-dnl Get the cflags and libraries from the paragui-config script
-dnl
-AC_ARG_WITH(paragui-prefix,[  --with-paragui-prefix=PFX   Prefix where PARAGUI is installed (optional)],
-            paragui_prefix="$withval", paragui_prefix="")
-AC_ARG_WITH(paragui-exec-prefix,[  --with-paragui-exec-prefix=PFX Exec prefix where PARAGUI is installed (optional)],
-            paragui_exec_prefix="$withval", paragui_exec_prefix="")
-AC_ARG_ENABLE(paraguitest, [  --disable-paraguitest       Do not try to compile and run a test PARAGUI program],
-		    , enable_paraguitest=yes)
+#
+# STECHEC_CHECK_PARAGUI([MINIMUM-VERSION])
+#
+# Purpose:
+#   Test for PARAGUI, a widget library for SDL.
+#
+# Defines:
+#   PARAGUI_CFLAGS
+#   PARAGUI_LIBS
+#   HAVE_PARAGUI
+#
+AC_DEFUN([STECHEC_CHECK_PARAGUI],
+[
 
-  if test x$paragui_exec_prefix != x ; then
-     paragui_args="$paragui_args --exec-prefix=$paragui_exec_prefix"
-     if test x${PARAGUI_CONFIG+set} != xset ; then
-        PARAGUI_CONFIG=$paragui_exec_prefix/bin/paragui-config
-     fi
-  fi
-  if test x$paragui_prefix != x ; then
-     paragui_args="$paragui_args --prefix=$paragui_prefix"
-     if test x${PARAGUI_CONFIG+set} != xset ; then
-        PARAGUI_CONFIG=$paragui_prefix/bin/paragui-config
-     fi
-  fi
+  AC_ARG_WITH([paragui],
+            AS_HELP_STRING([--with-paragui=DIR],
+                           [Prefix where PARAGUI is installed (optional)]),
+            [paragui_prefix="$withval"],
+            [paragui_prefix=""])
 
-  AC_PATH_PROG(PARAGUI_CONFIG, paragui-config, no, [$prefix/usr/bin:$prefix/bin:$PATH])
-  min_paragui_version=ifelse([$1], ,0.11.0,$1)
-  AC_MSG_CHECKING(for PARAGUI - version >= $min_paragui_version)
-  no_paragui=""
-  if test "$PARAGUI_CONFIG" = "no" ; then
-    no_paragui=yes
-  else
-    PARAGUI_CFLAGS=`$PARAGUI_CONFIG $paraguiconf_args --cflags`
-    PARAGUI_LIBS=`$PARAGUI_CONFIG $paraguiconf_args --libs`
+  AC_ARG_ENABLE([paraguitest], 
+              AS_HELP_STRING([--disable-paraguitest],
+                             [Do not try to compile and run a test PARAGUI program]),
+              [enable_paraguitest=yes])
 
-    paragui_major_version=`$PARAGUI_CONFIG $paragui_args --version | \
+  min_paragui_version=ifelse([$1], , 0.11.0, $1)
+  AC_MSG_CHECKING([for PARAGUI - version >= $min_paragui_version])
+
+  no_paragui=yes
+  if test x$paragui_prefix != xno; then
+    if test x$paragui_prefix != x ; then
+       paragui_args="$paragui_args --prefix=$paragui_prefix"
+       if test x${PARAGUI_CONFIG+set} != xset ; then
+          PARAGUI_CONFIG=$paragui_prefix/bin/paragui-config
+       fi
+    fi
+    AC_PATH_PROG([PARAGUI_CONFIG], [paragui-config], [no], [$prefix/usr/bin:$prefix/bin:$PATH])
+
+    if test "$PARAGUI_CONFIG" != "no" ; then
+      no_paragui=""
+      PARAGUI_CFLAGS=`$PARAGUI_CONFIG $paraguiconf_args --cflags`
+      PARAGUI_LIBS=`$PARAGUI_CONFIG $paraguiconf_args --libs`
+
+      paragui_major_version=`$PARAGUI_CONFIG $paragui_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    paragui_minor_version=`$PARAGUI_CONFIG $paragui_args --version | \
+      paragui_minor_version=`$PARAGUI_CONFIG $paragui_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    paragui_micro_version=`$PARAGUI_CONFIG $paragui_config_args --version | \
+      paragui_micro_version=`$PARAGUI_CONFIG $paragui_config_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test "x$enable_paraguitest" = "xyes" ; then
-      ac_save_CFLAGS="$CFLAGS"
-      ac_save_LIBS="$LIBS"
-      CXXFLAGS="$CFLAGS $PARAGUI_CFLAGS"
-      LIBS="$LIBS $PARAGUI_LIBS"
+      if test "x$enable_paraguitest" = "xyes" ; then
+        ac_save_CFLAGS="$CFLAGS"
+        ac_save_LIBS="$LIBS"
+        CFLAGS="$CFLAGS $PARAGUI_CFLAGS"
+        LIBS="$LIBS $PARAGUI_LIBS"
 dnl
 dnl Now check if the installed PARAGUI is sufficiently new. (Also sanity
 dnl checks the results of paragui-config to some extent
@@ -90,9 +101,6 @@ int main (int argc, char *argv[])
 
   PG_Application app;
   
-  /* This hangs on some systems (?)
-  system ("touch conf.paraguitest");
-  */
   { FILE *fp = fopen("conf.paraguitest", "a"); if ( fp ) fclose(fp); }
 
   /* HP/UX 9 (%@#!) writes to sscanf strings */
@@ -120,25 +128,37 @@ int main (int argc, char *argv[])
     }
 }
 
-],, no_paragui=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS"
-     fi
-  fi
-  if test "x$no_paragui" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
+],, [no_paragui=yes], [echo $ac_n "cross compiling; assumed OK... $ac_c"])
+         CFLAGS="$ac_save_CFLAGS"
+         LIBS="$ac_save_LIBS"
+       fi # $enable_paraguitest
+    fi # $PARAGUI_CONFIG != no
+  fi # $paragui_prefix != no
+
+
+  if test x$no_paragui = x ; then
+      # Yeah, it _is_ present !
+      AC_MSG_RESULT([yes])
+      AM_CONDITIONAL([HAVE_PARAGUI], [true])
   else
-     AC_MSG_RESULT(no)
-     if test "$PARAGUI_CONFIG" = "no" ; then
-       echo "*** The paragui-config script installed by PARAGUI could not be found"
-       echo "*** If PARAGUI was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the PARAGUI_CONFIG environment variable to the"
-       echo "*** full path to paragui-config."
-     else
-       if test -f conf.paraguitest ; then
-        :
-       else
+      # It is not present. Try to print why. This is not fatal.
+      AM_CONDITIONAL([HAVE_PARAGUI], [false])
+      if test x$paragui_prefix != xno; then
+          AC_MSG_RESULT([no])
+      else
+          AC_MSG_RESULT([no, disabled by user])
+      fi
+
+      if test x$paragui_prefix = xno; then
+          :
+      elif test "$PARAGUI_CONFIG" = "no" ; then
+          echo "*** The paragui-config script installed by PARAGUI could not be found"
+          echo "*** If PARAGUI was installed in PREFIX, make sure PREFIX/bin is in"
+          echo "*** your path, or set the PARAGUI_CONFIG environment variable to the"
+          echo "*** full path to paragui-config."
+      elif test -f conf.paraguitest ; then
+          :
+      else
           echo "*** Could not run PARAGUI test program, checking why..."
           CFLAGS="$CFLAGS $PARAGUI_CFLAGS"
           LIBS="$LIBS $PARAGUI_LIBS"
@@ -146,28 +166,27 @@ int main (int argc, char *argv[])
 #include "paragui.h"
 #include <stdio.h>
 ],      [ return 0; ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding PARAGUI or finding the wrong"
-          echo "*** version of PARAGUI. If it is not finding PARAGUI, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means PARAGUI was incorrectly installed"
-          echo "*** or that you have moved PARAGUI since it was installed. In the latter case, you"
-          echo "*** may want to edit the paragui-config script: $PARAGUI_CONFIG" ])
+              [ echo "*** The test program compiled, but did not run. This usually means"
+                  echo "*** that the run-time linker is not finding PARAGUI or finding the wrong"
+                  echo "*** version of PARAGUI. If it is not finding PARAGUI, you'll need to set your"
+                  echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
+                  echo "*** to the installed location  Also, make sure you have run ldconfig if that"
+                  echo "*** is required on your system"
+                  echo "***"
+                  echo "*** If you have an old version installed, it is best to remove it, although"
+                  echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"],
+              [ echo "*** The test program failed to compile or link. See the file config.log for the"
+                  echo "*** exact error that occured. This usually means PARAGUI was incorrectly installed"
+                  echo "*** or that you have moved PARAGUI since it was installed. In the latter case, you"
+                  echo "*** may want to edit the paragui-config script: $PARAGUI_CONFIG" ])
           CFLAGS="$ac_save_CFLAGS"
           LIBS="$ac_save_LIBS"
-       fi
-     fi
-     PARAGUI_CFLAGS=""
-     PARAGUI_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-  AC_SUBST(PARAGUI_CFLAGS)
-  AC_SUBST(PARAGUI_LIBS)
+      fi
+      PARAGUI_CFLAGS=""
+      PARAGUI_LIBS=""
+  fi # $no_paragui = yes
+
+  AC_SUBST([PARAGUI_CFLAGS])
+  AC_SUBST([PARAGUI_LIBS])
   rm -f conf.paraguitest
 ])

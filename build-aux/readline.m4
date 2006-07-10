@@ -17,43 +17,34 @@ AC_DEFUN([STECHEC_CHECK_READLINE],
    AC_ARG_WITH([readline],
                AS_HELP_STRING([--with-readline=DIR], 
                               [compile with the specified readline library]),
-               [stechec_cv_dir_readline="$withval"])
+               [dir_readline="$withval"])
 
-   if test x"$stechec_cv_dir_readline" = x; then
-       stechec_cv_dir_readline=yes
-   fi
-   AC_CACHE_CHECK([whether to use readline],
-       [stechec_cv_dir_readline],
-       [stechec_cv_dir_readline=yes])
-   if test x"$stechec_cv_dir_readline" = xyes; then
-       stechec_cv_dir_readline=""
+   if test x"$dir_readline" != x; then
+       READLINE_LIBS="-L$dir_readline/lib "
+       READLINE_CFLAGS="-I$dir_readline/include"
    fi
 
-   if test x"$stechec_cv_dir_readline" != x; then
-       readline_libdir="-L$stechec_cv_dir_readline/lib "
-       READLINE_CFLAGS="-I$stechec_cv_dir_readline/include"
-   fi
-
-   if test x"$stechec_cv_dir_readline" != xno; then
+   if test x"$dir_readline" != xno; then
+       READLINE_LIBS="${READLINE_LIBS}-lreadline"
        sav_LIBS="$LIBS"
        sav_CPPFLAGS="$CPPFLAGS"
-       LIBS="$LIBS ${readline_libdir}-lreadline"
+       LIBS="$LIBS $READLINE_LIBS"
        CPPFLAGS="$CPPFLAGS $READLINE_CFLAGS"
-       AC_CHECK_LIB([readline], 
-           [rl_completion_matches], 
-           [have_readline=yes])
-       if test x$have_readline = xyes; then
+
+       AC_CHECK_LIB([readline], [rl_completion_matches], 
+           [have_readline_lib=yes])
+       if test x$have_readline_lib != x; then
            AC_CHECK_HEADERS([readline.h readline/readline.h], 
                [have_readline_dev=yes])
        fi
        CPPFLAGS="$sav_CPPFLAGS"
        LIBS="$sav_LIBS"
 
-       if test x$have_readline_dev = xyes; then
-           AC_DEFINE([HAVE_READLINE], [1],
-               [Define if you have a readline compatible library])
-           AC_SUBST([READLINE_CFLAGS])
-           AC_SUBST([READLINE_LIBS], [${readline_libdir}-lreadline])
+       if test x$have_readline_dev != xyes ; then
+           READLINE_CFLAGS=""
+           READLINE_LIBS=""
        fi
+       AC_SUBST([READLINE_CFLAGS])
+       AC_SUBST([READLINE_LIBS])
    fi
 ])
