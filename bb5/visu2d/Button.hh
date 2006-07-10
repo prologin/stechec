@@ -41,7 +41,7 @@ class ImageButton: public Widget
   ImageButton(const uint w, const uint h,
               SDL_Surface* screen, Widget* father, const string filename, const ushort action = CLOSE);
   ImageButton(SDL_Surface* screen, Widget* father, const string filename, const ushort action = CLOSE);
-  ~ImageButton(){};
+  virtual ~ImageButton(){};
 
   //! @brief Method to draw the button
   //!
@@ -89,7 +89,7 @@ class TextButton : public Widget
   TextButton(const uint w, const uint h,
              SDL_Surface* screen, Widget* father, const string txt, const ushort action = CLOSE);
   TextButton(SDL_Surface* screen, Widget* father, const string txt, const ushort action = CLOSE);
-  ~TextButton();
+  virtual ~TextButton();
 
   //! @brief Method to draw the button when mouse pointer is inside
   //!
@@ -139,7 +139,9 @@ class TextButton : public Widget
 class BClose:public ImageButton
 {
     public:
-  BClose(SDL_Surface* screen, Widget* father):ImageButton(62,136,114,30,screen,father,ADD_IMG_PATH("dialog/close.jpg")){};
+  BClose(SDL_Surface* screen, Widget* father)
+    : ImageButton(62,136,114,30,screen,father,"image/dialog/close.jpg")
+  {}
 };
 
 /*! @brief Button Yes Class
@@ -152,7 +154,9 @@ class BClose:public ImageButton
 class BYes:public ImageButton
 {
     public:
-  BYes(SDL_Surface* screen, Widget* father):ImageButton(62,135,50,31,screen,father,ADD_IMG_PATH("dialog/yes.jpg")){};
+  BYes(SDL_Surface* screen, Widget* father)
+    : ImageButton(62,135,50,31,screen,father,"image/dialog/yes.jpg")
+  {}
 };
 
 /*! @brief Button No Class
@@ -165,7 +169,9 @@ class BYes:public ImageButton
 class BNo:public ImageButton
 {
 public:
-  BNo(SDL_Surface* screen, Widget* fathe):ImageButton(130,135,50,31,screen,father,ADD_IMG_PATH("dialog/no.jpg")){};
+  BNo(SDL_Surface* screen, Widget* fathe)
+    : ImageButton(130,135,50,31,screen,father, "image/dialog/no.jpg")
+  {};
 };
 
 #endif

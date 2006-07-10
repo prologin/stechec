@@ -14,6 +14,7 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
+#include "ResourceCenter.hh"
 #include "Button.hh"
 #include "GuiError.hh"
 
@@ -25,13 +26,9 @@ ImageButton::ImageButton (const uint x, const uint y, const uint w, const uint h
                           const string filename, const ushort action):
 Widget(x, y, w, h, screen, father)
 {
-  widget = LoadImage(filename, 1);
-  if (widget == NULL)
-  {
-    GUIError error(string("Not found ") + filename);
-    throw(error);
-  }
-  this->action=action;
+  widget = ResourceCenter::getInst()->getImage(filename).getSDLSurface();
+  widget->refcount++;
+  this->action = action;
 }
 
 ImageButton::ImageButton (const uint w, const uint h,
@@ -39,26 +36,18 @@ ImageButton::ImageButton (const uint w, const uint h,
                           const string filename, const ushort action):
 Widget(w, h, screen, father)
 {
-  widget = LoadImage(filename, 1);
-  if (widget == NULL)
-  {
-    GUIError error(string("Not found ") + filename);
-    throw(error);
-  }
-  this->action=action;
+  widget = ResourceCenter::getInst()->getImage(filename).getSDLSurface();
+  widget->refcount++;
+  this->action = action;
 }
 
 ImageButton::ImageButton (SDL_Surface * screen, Widget* father,
                           const string filename, const ushort action):
 Widget(screen, father)
 {
-  widget = LoadImage(filename, 1);
-  if (widget == NULL)
-  {
-    GUIError error(string("Not found ") + filename);
-    throw(error);
-  }
-  this->action=action;
+  widget = ResourceCenter::getInst()->getImage(filename).getSDLSurface();
+  widget->refcount++;
+  this->action = action;
 }
 
 void ImageButton::draw()
@@ -104,13 +93,7 @@ TextButton::TextButton(const uint x, const uint y,
                        const string txt, const ushort action):
 Widget(x, y, w, h, screen, father)
 {
-  font = TTF_OpenFont(ADD_FONTS_PATH ("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error(string ("Not found Vera.ttf"));
-    throw (error);
-  }
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   this->txt = txt;
   textColor = black_color; textColorMotion = black_color;
   bgColor = gainsboro_color; bgColorMotion = white_color;
@@ -123,13 +106,7 @@ TextButton::TextButton(const uint w, const uint h,
                        const string txt, const ushort action):
 Widget(w, h, screen, father)
 {
-  font = TTF_OpenFont(ADD_FONTS_PATH ("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error(string ("Not found Vera.ttf"));
-    throw (error);
-  }
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   this->txt = txt;
   textColor = black_color; textColorMotion = black_color;
   bgColor = gainsboro_color; bgColorMotion = white_color;
@@ -141,13 +118,7 @@ TextButton::TextButton(SDL_Surface * screen, Widget* father,
                        const string txt, const ushort action):
 Widget(screen, father)
 {
-  font = TTF_OpenFont(ADD_FONTS_PATH ("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error(string ("Not found Vera.ttf"));
-    throw (error);
-  }
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   this->txt = txt;
   textColor = black_color; textColorMotion = black_color;
   bgColor = gainsboro_color; bgColorMotion = white_color;
@@ -157,7 +128,7 @@ Widget(screen, father)
 
 TextButton::~TextButton()
 {
-  TTF_CloseFont(font);
+  ResourceCenter::getInst()->releaseFont(font);
 }
 
 void TextButton::drawmotion(SDL_Color textColor, SDL_Color bgColor)

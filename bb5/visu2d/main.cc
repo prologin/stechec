@@ -15,6 +15,9 @@
 */
 
 #include "tools.hh"
+#include "SDLWindow.hh"
+#include "ResourceCenter.hh"
+
 #include "Global.hh"
 #include "DialogBox.hh"
 #include "GuiError.hh"
@@ -34,8 +37,6 @@ const unsigned int SCREEN_BPP = 32;
 SDL_Surface *background = NULL;
 SDL_Surface *screen = NULL;
 
-const string icon = ADD_IMG_PATH ("general/tbt.ico");
-const string file = ADD_IMG_PATH ("screens/title_bg.jpg");
 
 vector <DialogBox*> list_box;
 Menu* menu;
@@ -47,69 +48,77 @@ struct Player
   string ip;
 } player;
 
-// Parse xml configuration file.
-static bool parse_config (const char *opt_file, xml::XMLConfig & cfg)
+
+struct CmdLineOption
 {
-  try
-  {
-    if (opt_file != NULL)
-      cfg.parse (opt_file);
-    else
-      cfg.parse ("");
-  }
-  catch (const xml::XMLError &)
-  {
-    ERR ("Sorry, I can't go further without a working configuration file...");
-    return false;
-  }
-  return true;
+  CmdLineOption()
+    : config_file(""),
+      client_gid(1)
+  {}
+
+  char* config_file;  ///< Optionnal configuration file to load.
+  int   client_gid;   ///< Client game id, as stored in meta-data.
+};
+
+// Very basic command line manager. We don't need anything more powerful.
+static void parse_option(int argc, char** argv, CmdLineOption& opt)
+{
+  if (argc >= 2 && (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h")))
+    {
+      std::cout << "usage: " << argv[0] << " [client_id] [config-file]\n";
+      exit(0);
+    }
+  if (argc >= 2 && (!strcmp(argv[1], "--version") || !strcmp(argv[1], "-v")))
+    {
+      std::cout << "TowBowlTactics visu2D v" PACKAGE_VERSION << "\n";
+      std::cout << "Copyright (C) 2006 TBT Team.\n";
+      exit(0);
+    }
+
+  if (argc >= 2)
+    {
+      char* endptr;
+      int client_gid = strtol(argv[1], &endptr, 10);
+      if (*endptr == 0)
+        {
+          opt.client_gid = client_gid;
+          if (argc >= 3)
+            opt.config_file = argv[2];
+        }
+      else
+        opt.config_file = argv[1];
+    }
 }
 
-    // Set some basic settings based on XML config file.
-static void set_opt(const char *section, xml::XMLConfig & cfg, Log & log)
+// Parse xml configuration file.
+static void parse_config(const CmdLineOption& opt, xml::XMLConfig& cfg)
 {
-  cfg.switchSection (section);
-  log.setVerboseLevel (cfg.getAttr <int>("debug", "verbose"));
-  log.setPrintLoc (cfg.getAttr <bool> ("debug", "printloc"));
+  try {
+    cfg.parse(opt.config_file);
+  } catch (const xml::XMLError& e) {
+    ERR("Sorry, I can't go further without a working configuration file...");
+    exit(3);
+  }
 }
+
+// Set some basic settings based on XML config file.
+static void set_opt(const CmdLineOption& opt, xml::XMLConfig& cfg, Log& log)
+{
+  cfg.switchClientSection(opt.client_gid);
+  log.setVerboseLevel(cfg.getAttr<int>("debug", "verbose"));
+  log.setPrintLoc(cfg.getAttr<bool>("debug", "printloc"));
+  cfg.switchSection("client");
+}
+
+
 
 // To clean and exit
 void Exit(void)
 {
-      // clean 
+  // clean 
   SDL_FreeSurface (background);
-  SDL_FreeSurface (screen);
-      //clean list
   list_box.clear ();
-      //quit SDL
-  SDL_Quit ();
   LOG1 ("Bye bye");
-}
-
-    // Init SDL
-bool initSDL (void)
-{
-  if (SDL_Init(SDL_INIT_VIDEO) < 0)
-  {
-    ERR("Error in initialisation of the SDL : " << SDL_GetError ());
-    return false;
-  }
-
-  SDL_WM_SetIcon(IMG_Load (icon.c_str ()), NULL);
-  screen = SDL_SetVideoMode (SCREEN_WIDTH_MIN, SCREEN_HEIGHT_MIN, SCREEN_BPP, SDL_SWSURFACE);
-
-  if(screen == NULL)
-  {
-    ERR("Impossible to activate graphic mode : " << SDL_GetError ());
-    return false;
-  }
-
-  SDL_WM_SetCaption("TBT", NULL);
-      // Mouse an keyboard are confined to the application window
-  SDL_WM_GrabInput(SDL_GRAB_OFF);
-      //Enables Unicode keyboard translation.
-  SDL_EnableUNICODE(1);
-  return true;
 }
 
 void addDialog(DialogBox * box)
@@ -192,6 +201,8 @@ void MainLoop(void)
                 }
                 break;
               }
+            default:
+              break;
             }
           }
         }
@@ -335,14 +346,15 @@ void MainLoop(void)
   }
 }
 
-bool initBackground (void)
+bool initBackground(void)
 {
-  background = LoadImage (file, 0);
-  if (background == NULL)
-  {
-    ERR("Error in initialisation of the background : " << SDL_GetError());
-    return false;
-  }
+  Surface s = ResourceCenter::getInst()->getImage("image/screens/title_bg.jpg");
+  background = s.getSDLSurface();
+  // At the end of the scope, 's' will be freed (not really, it is in cache,
+  //    but _may_ be freed).
+  // Explicitly give ownership to 'background'.
+  background->refcount++;
+
   SDL_Rect *srect = NULL;
   uint bgw = background->w;
   uint bgh = background->h;
@@ -381,18 +393,25 @@ int main (int argc, char *argv[])
 {
   Log log_client(5);
   xml::XMLConfig cfg;
+  CmdLineOption opt;
+  int ret_value = 1;
 
-  if (initSDL() == false)
-    return -1;
-  LOG1("Init SDL .. ok");
-  if (initTTF() == false)
-    return -1;
-  LOG1("Init SDL_ttf .. ok");
+  // FIXME: for now, we don't need 'cfg'. But it will change.
+  //parse_option(argc, argv, opt);
+  //parse_config(opt, cfg);
+  //set_opt(opt, cfg, log_client);
+
+  SDLWindow win(&cfg);
+  win.init();
+
+  screen = win.getScreen().getSDLSurface();
+  LOG1("Init SDL Window ok.");
+  
   if (initBackground() == false)
     return -1;
-  LOG1("Init background .. ok");
+  LOG1("Init background .. ok.");
 
-      //display a menu to test it
+  //display a menu to test it
   try
   {
     menu = new Menu (5, 5, screen, MENU_WIDTH, "MENU");

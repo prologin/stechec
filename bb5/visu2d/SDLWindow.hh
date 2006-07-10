@@ -36,8 +36,9 @@ public:
 
   Input&                getInput();
   VirtualSurface&       getScreen();
-  
-  void setFullscreen(bool enable);
+
+  bool isFullScreen() const;
+  void setFullScreen(bool enable);
 
   int getFps() const;
   

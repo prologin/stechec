@@ -14,6 +14,7 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
+#include "ResourceCenter.hh"
 #include "Menu.hh"
 #include "GuiError.hh"
 
@@ -31,13 +32,7 @@ Menu::Menu (const uint x, const uint y, SDL_Surface * screen,
   if (title != "")
   {
     h += MENU_WIDGET_HEIGHT;
-    font = TTF_OpenFont (ADD_FONTS_PATH ("Vera.ttf"), 18);
-        //If there was an error in loading the font 
-    if (font == NULL)
-    {
-      GUIError error (string ("Not found Vera.ttf"));
-      throw (error);
-    }
+    font = ResourceCenter::getInst()->getFont("Vera.ttf", 18);
   }
 
       // recreate widget and old_creen with correct height !
@@ -74,13 +69,7 @@ Menu::Menu (const uint x, const uint y, SDL_Surface * screen,
   if (title != "")
   {
     h += MENU_WIDGET_HEIGHT;
-    font = TTF_OpenFont (ADD_FONTS_PATH ("Vera.ttf"), 18);
-        //If there was an error in loading the font 
-    if (font == NULL)
-    {
-      GUIError error (string ("Not found Vera.ttf"));
-      throw (error);
-    }
+    font = ResourceCenter::getInst()->getFont("Vera.ttf", 18);
 
         // recreate widget and old_creen with correct height !
     SDL_FreeSurface(widget);

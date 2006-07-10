@@ -68,7 +68,7 @@ public:
   //! @param zoom Zoom level to apply, wrt the original image.
   //! @param angle Rotate image, wrt the original image (0-360 degre).
   //! @throw SDLError Thrown if the file could not be opened.
-  Surface getImage(const std::string& filename, double zoom, double angle);
+  Surface getImage(const std::string& filename, double zoom = 1., double angle = 0.);
 
   //! @brief Load a font file.
   //! @note Caller is reponsible of calling releaseFont when it has finished.

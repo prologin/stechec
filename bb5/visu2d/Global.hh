@@ -32,13 +32,11 @@ using namespace std;
 #endif
 
 #define TEAM_PATH TBTHOME "/data/team/"
-#define IMG_PATH TBTHOME "/data/image/"
 #define SAVES_PATH TBTHOME "/saves/"
 #define VIDEOS_PATH TBTHOME "/data/video/"
 #define SOUNDS_PATH TBTHOME "/data/sound/"
 #define I18N_PATH TBTHOME "/data/i18n/"
-#define FORMATIONS_PATH TBTHOME "/data/formatios/"
-#define FONTS_PATH TBTHOME "/data/font/"
+#define FORMATIONS_PATH TBTHOME "/data/formations/"
 
 #define CONFIG_FILE TBTHOME "/config.xml"
 
@@ -74,16 +72,6 @@ using namespace std;
 //FIXME: 
 typedef unsigned uint;
 typedef unsigned short ushort;
-
-/*! @brief Generiq Load Image function
-**
-** This function load an image in a SDL_Surface and return it.
-** If tansparency is choose, sets the color transparent pixel
-**
-** @author poltuiu
-** @date 2006-03-15
-*/
-SDL_Surface *LoadImage(const std::string filename, int transparency); 
 
 /*! @brief To print text in SDL_Surface
 **

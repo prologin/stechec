@@ -14,6 +14,7 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
+#include "ResourceCenter.hh"
 #include "Entry.hh"
 
 #include <iostream>
@@ -21,13 +22,7 @@
 Entry::Entry(const uint x, const uint y, const uint w, const uint h, string* ptxt,
              SDL_Surface * screen, Widget* father): Widget(x, y, w, h, screen, father)
 {
-  font = TTF_OpenFont (ADD_FONTS_PATH ("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error (string ("Not found Vera.ttf"));
-    throw (error);
-  }
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   txt = ptxt;
   (*txt) = " ";
   index = 0;
@@ -40,13 +35,7 @@ Entry::Entry(const uint x, const uint y, const uint w, const uint h, string* ptx
 Entry::Entry(const uint x, const uint y, string* ptxt,
              SDL_Surface* screen, Widget* father): Widget(x, y, screen, father)
 {
-  font = TTF_OpenFont (ADD_FONTS_PATH ("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error (string ("Not found Vera.ttf"));
-    throw (error);
-  }
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   txt = ptxt;(*txt) = " ";
       //  (this->txt)->insert((this->txt)->size(),1,' ');
   index = 0;
@@ -58,7 +47,7 @@ Entry::Entry(const uint x, const uint y, string* ptxt,
 
 Entry::~Entry ()
 {
-  TTF_CloseFont (font);
+  ResourceCenter::getInst()->releaseFont(font);
 }
 
 void Entry::draw()

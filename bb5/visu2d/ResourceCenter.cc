@@ -49,11 +49,19 @@ ResourceCenter::~ResourceCenter()
 void ResourceCenter::printStatistics()
 {
   ImageList::iterator it;
+  FontList::iterator fit;
   
   LOG3("*** ResourceCenter: " << image_list_.size() << " images in list.");
   for (it = image_list_.begin(); it != image_list_.end(); ++it)
     LOG4(" - " << it->filename_ << " (" << it->zoom_ << ", " << it->angle_
-         << ") refcount: " << it->surf_->refcount);
+         << ") refcount: " << it->surf_->refcount << " ptr: " << (void*)it->surf_);
+  if (!font_list_.empty())
+    {
+      LOG3("*** There is also " << font_list_.size() << " font(s) not released.");
+      for (fit = font_list_.begin(); fit != font_list_.end(); ++fit)
+        LOG4(" - " << fit->name_ << " (size " << fit->size_
+             << ") refcount: " << fit->ref_count_);
+    }
 }
 
 ResourceCenter* ResourceCenter::getInst()
@@ -89,13 +97,15 @@ Surface ResourceCenter::getImage(const std::string& filename, double zoom, doubl
       orig_surf = loadImage(filename);
       orig_surf->refcount = 0;
       image_list_.insert(Surface(orig_surf, 1., 0., filename));
+      // If there is no transformation to do, return now.
+      if (zoom == 1. && angle == 0.)    
+        return Surface(orig_surf, 1., 0., filename);
     }
 
   SDL_Surface* wanted_surf = transformImage(orig_surf, zoom, angle);
   wanted_surf->refcount = 0;
   Surface res_surf(wanted_surf, zoom, angle, filename);
   image_list_.insert(res_surf);
-
   return res_surf;
 }
 
@@ -103,25 +113,16 @@ SDL_Surface* ResourceCenter::loadImage(const std::string& filename)
 {
   SDL_Surface* loaded_image = NULL;
   SDL_Surface* surf = NULL;
-  std::string fn_base = std::string(PKGDATADIR) + "/" + filename;
-  std::string fn_loaded;
+  std::string fn_loaded = std::string(PKGDATADIR) + "/" + filename;
 
-  LOG3("Load `" << fn_base << ".png'");
-  loaded_image = IMG_Load((fn_base + ".png").c_str());
-  if (loaded_image != NULL)
-    fn_loaded = fn_base + ".png";
-  else
-    {
-      LOG3("Load `" << fn_base << ".jpg'");
-      loaded_image = IMG_Load((fn_base + ".jpg").c_str());
-      if (loaded_image == NULL)
-        PRINT_AND_THROW(SDLError, "Can't load image " << fn_base << ".{png,jpg}");
-      fn_loaded = fn_base + ".jpg";
-    }
+  LOG3("Load `" << fn_loaded << "'");
+  loaded_image = IMG_Load(fn_loaded.c_str());
+  if (loaded_image == NULL)
+    PRINT_AND_THROW(SDLError, "Can't load image `" << fn_loaded << "'");
   surf = SDL_DisplayFormatAlpha(loaded_image);
   SDL_FreeSurface(loaded_image);
   if (surf == NULL)
-    PRINT_AND_THROW(SDLError, "Can't convert " << fn_loaded << "to standard display");
+    PRINT_AND_THROW(SDLError, "Can't convert `" << fn_loaded << "' to standard display");
   return surf;
 }
 
@@ -147,8 +148,10 @@ TTF_Font* ResourceCenter::getFont(const std::string font_name, int font_size)
     }
 
   // Load this font, and add it to the cache.
+  LOG3("Load font `" << PKGDATADIR << "/font/" << font_name
+       << "' (size: " << font_size << ")");
   lf.ref_count_ = 1;
-  lf.font_ = TTF_OpenFont((std::string(PKGDATADIR) + "/" + font_name + ".ttf").c_str(),
+  lf.font_ = TTF_OpenFont((std::string(PKGDATADIR) + "/font/" + font_name).c_str(),
                           font_size);
   if (lf.font_ == NULL)
     PRINT_AND_THROW(TTFError, "OpenFont: ");

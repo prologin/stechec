@@ -14,30 +14,8 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
+#include "tools.hh"
 #include "Global.hh"
-#include <vector>
-
-#include <iostream>
-
-SDL_Surface *LoadImage(const string filename, int transparency) 
-{ 
-      //Temporary storage for the image that's loaded 
-  SDL_Surface* loadedImage = NULL;
-      //The optimized image that will be used
-  SDL_Surface* optimizedImage = NULL;
-  loadedImage = IMG_Load( filename.c_str() );
-  if (loadedImage != NULL)
-  { 
-    if (transparency)
-    {
-      SDL_SetColorKey(loadedImage, (SDL_SRCCOLORKEY|SDL_RLEACCEL),
-                      *(Uint8 *)loadedImage->pixels);
-    }
-    optimizedImage = SDL_DisplayFormatAlpha(loadedImage);
-    SDL_FreeSurface(loadedImage);
-  }
-  return optimizedImage;
-}
 
 void PrintStrings(SDL_Surface *dest, TTF_Font *font, string str,
                   SDL_Rect &rc, SDL_Color textColor)

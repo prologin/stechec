@@ -4,21 +4,9 @@ bin_PROGRAMS	= bb5_visu
 
 lib_LTLIBRARIES	= bb5_visu.la
 
+noinst_LTLIBRARIES = libbb5_visu_common.la
 
-bb5_visu_SOURCES =				\
-	main.cc \
-	Widget.cc Widget.hh \
-	Focus.cc FOcus.hh \
-	GuiError.cc GuiError.hh \
-	Button.cc Button.hh \
-	DialogBox.cc DialogBox.hh \
-	Global.cc Global.hh \
-	Menu.cc Menu.hh \
-	Label.cc Label.hh \
-	Entry.cc Entry.hh \
-	LabelEntry.cc LabelEntry.hh
-
-bb5_visu_la_SOURCES =				\
+libbb5_visu_common_la_SOURCES =			\
 	ResourceCenter.hh			\
 	ResourceCenter.cc			\
 	Surface.hh				\
@@ -37,8 +25,6 @@ bb5_visu_la_SOURCES =				\
 	SDLWindow.cc				\
 	ActionPopup.hh				\
 	ActionPopup.cc				\
-	Game.hh					\
-	Game.cc					\
 	Panel.hh				\
 	Panel.cc				\
 	Field.hh				\
@@ -46,27 +32,42 @@ bb5_visu_la_SOURCES =				\
 	VisuPlayer.hh				\
 	VisuPlayer.cc
 
+bb5_visu_la_SOURCES = 				\
+	Game.hh					\
+	Game.cc
+
+bb5_visu_SOURCES =				\
+	main.cc					\
+	Widget.cc Widget.hh			\
+	Focus.cc FOcus.hh			\
+	GuiError.cc GuiError.hh			\
+	Button.cc Button.hh			\
+	DialogBox.cc DialogBox.hh		\
+	Global.cc Global.hh			\
+	Menu.cc Menu.hh				\
+	Label.cc Label.hh			\
+	Entry.cc Entry.hh			\
+	LabelEntry.cc LabelEntry.hh
+
+bb5_visu_LDADD = 					\
+	$(top_builddir)/stechec/tools/libtools.la	\
+	libbb5_visu_common.la
+
+bb5_visu_LDFLAGS	=			\
+	$(SDL_LIBS)
+
+bb5_visu_la_LIBADD 	=			\
+	libbb5_visu_common.la
+
+bb5_visu_la_LDFLAGS	=			\
+	-module					\
+	$(SDL_LIBS)
+
 CXXFLAGS +=					\
 	-DMODULE_NAME=\"visu2d\"		\
 	-DMODULE_COLOR=C_YELLOW			\
 	-DPKGDATADIR=\"$(datadir)/$(PACKAGE)\"	\
 	$(SDL_CFLAGS)
-
-# bb5_visu_LDADD =					\
-#         ../common/libbb5_common.la			\
-#         ../client/bb5_client_rules.la			\
-#         ../arbiter/bb5_arbiter.la			\
-#         $(top_builddir)/stechec/tools/libtools.la
-
-# FIXME: lala
-bb5_visu_LDADD = $(top_builddir)/stechec/tools/libtools.la
-
-bb5_visu_LDFLAGS	=			\
-	$(SDL_LIBS)
-
-bb5_visu_la_LDFLAGS	=			\
-	-module					\
-	$(SDL_LIBS)
 
 INCLUDES        =				\
         -I$(top_srcdir)/stechec/tools		\

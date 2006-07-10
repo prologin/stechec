@@ -14,19 +14,14 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
+#include "ResourceCenter.hh"
 #include "Label.hh"
 
 
 Label::Label(const uint x, const uint y, SDL_Surface * screen, Widget* father, const string txt):
 Widget(x, y, 0, 0, screen, father)
 {
-  font = TTF_OpenFont (ADD_FONTS_PATH ("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error (string ("Not found Vera.ttf"));
-    throw (error);
-  }
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   fgColor = black_color;
   bgColor = fgColor;
   set_txt(txt);
@@ -35,13 +30,7 @@ Widget(x, y, 0, 0, screen, father)
 Label::Label(SDL_Surface * screen, Widget* father, const string txt):
 Widget(screen, father)
 {
-  font = TTF_OpenFont (ADD_FONTS_PATH ("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error (string ("Not found Vera.ttf"));
-    throw (error);
-  }
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   fgColor = black_color;
   bgColor = fgColor;
   set_txt(txt);
@@ -49,7 +38,7 @@ Widget(screen, father)
 
 Label::~Label()
 {
-  TTF_CloseFont(font);
+  ResourceCenter::getInst()->releaseFont(font);
 }
 
     // Draw

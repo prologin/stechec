@@ -25,7 +25,7 @@ class Focus;
 
 class Widget
 {
-    protected:
+protected:
   // screen is the father and old_screen a copy of screen
   SDL_Surface *screen, *old_screen, *widget;
   Widget* father; // father widget
@@ -35,11 +35,11 @@ class Widget
   bool focus;
   static Focus globfocus;
 
-    public:
+public:
   Widget(SDL_Surface* screen, Widget* father = NULL);
   Widget(const uint w, const uint h, SDL_Surface* screen, Widget* father = NULL);
   Widget(const uint x, const uint y, const uint w, const uint h, SDL_Surface* screen, Widget* father=NULL);
-  ~Widget();
+  virtual ~Widget();
 
   // Draw
   virtual void draw() = 0;

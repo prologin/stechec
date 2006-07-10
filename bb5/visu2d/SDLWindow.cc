@@ -15,6 +15,7 @@
 */
 
 #include <SDL_ttf.h>
+#include <SDL_image.h>
 
 #include "SDLWindow.hh"
 
@@ -38,14 +39,22 @@ VirtualSurface& SDLWindow::getScreen()
 
 SDLWindow::~SDLWindow()
 {
-  // FIXME: close SDL.
+  SDL_Quit();
 }
 
-void SDLWindow::setFullscreen(bool enable)
+bool SDLWindow::isFullScreen() const
 {
-  LOG3("Switch to fullscreen mode: " << enable);
-  is_fullscreen_ = enable;
-  // FIXME: todo.
+  return is_fullscreen_;
+}
+
+void SDLWindow::setFullScreen(bool enable)
+{
+  if (is_fullscreen_ != enable)
+    {
+      LOG3("Switch to fullscreen mode: " << enable);
+      is_fullscreen_ = enable;
+      SDL_WM_ToggleFullScreen(screen_.getSDLSurface());
+    }
 }
 
 int SDLWindow::getFps() const
@@ -56,7 +65,7 @@ int SDLWindow::getFps() const
 
 void SDLWindow::init()
 {
-  // FIXME: get fullscreen from xml, ...
+  // FIXME: get window size, fullscreen mode, ... from xml.
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
     PRINT_AND_THROW(SDLError, "Error initializing SDL");
@@ -64,6 +73,15 @@ void SDLWindow::init()
   if (TTF_Init() < 0)
     PRINT_AND_THROW(TTFError, "Error initializing TTF");
 
+  SDL_Surface* icon = IMG_Load(PKGDATADIR "/image/general/tbt.ico");
+  if (icon != NULL)
+    {
+      SDL_WM_SetIcon(icon, NULL);
+      SDL_FreeSurface(icon);
+    }
+  else
+    WARN("Can't set window's icon: " << SDL_GetError());
+  
   SDL_Surface* screen;
   screen = SDL_SetVideoMode(800, 600, 0, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
   if (screen == NULL)
@@ -72,6 +90,9 @@ void SDLWindow::init()
 
   SDL_WM_SetCaption("TBT Game", NULL);
   SDL_WM_GrabInput(SDL_GRAB_OFF);
+
+  // Enables Unicode keyboard translation.
+  SDL_EnableUNICODE(1);
 
   frame_previous_tick_ = frame_tick_fps_ = SDL_GetTicks();
 }

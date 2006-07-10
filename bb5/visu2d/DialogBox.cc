@@ -14,6 +14,7 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
+#include "ResourceCenter.hh"
 #include "DialogBox.hh"
 #include "GuiError.hh"
 
@@ -26,12 +27,9 @@ DialogBox::DialogBox(const uint x, const uint y, const uint w, const uint h,
                      SDL_Surface *screen, const string filename):
 Widget(x, y, w, h, screen)
 {
-  image=LoadImage(filename,1);
-  if (image == NULL) 
-  {
-    GUIError error(string("Not found ")+filename);
-    throw(error);
-  }
+  image = ResourceCenter::getInst()->getImage(filename).getSDLSurface();
+  image->refcount++;
+
   move_dialog = false;
 
       // the dialog_box_sav .. for refresh
@@ -165,39 +163,29 @@ ushort DialogBox::getnbButton()
 }
 
 DInfo::DInfo(SDL_Surface* screen, const string message):
-DialogBox(((screen->w - 240) / 2), ((screen->h - 170) / 2), 240, 170, screen, ADD_IMG_PATH("dialog/dialog_info.png"))
+DialogBox(((screen->w - 240) / 2), ((screen->h - 170) / 2), 240, 170, screen, "image/dialog/dialog_info.png")
 {
-  this->message=message;
-  font = TTF_OpenFont(ADD_FONTS_PATH("Vera.ttf"), 14);
-      //If there was an error in loading the font 
-  if (font == NULL)
-  {
-    GUIError error(string("Not found Vera.ttf"));
-    throw(error);
-  }
-      // init icone
-  icone = LoadImage(ADD_IMG_PATH("dialog/icons.jpg"),1);
-  if (icone == NULL)
-  {
-    GUIError error(string("Not found ") + ADD_IMG_PATH("dialog/icons.jpg"));
-    throw(error);
-  }
+  this->message = message;
+
+  font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
+  icone = ResourceCenter::getInst()->getImage("image/dialog/icons.jpg").getSDLSurface();
+  icone->refcount++;
 
   try
   {
     BClose* close = new BClose(screen, this);
     addButton(close);
   }
-  catch(GUIError& error)
+  catch(const GUIError&)
   {
-    TTF_CloseFont(font);
-    throw(error);
+    ResourceCenter::getInst()->releaseFont(font);
+    throw;
   }
 }
 
 DInfo::~DInfo()
 {
-  TTF_CloseFont(font);
+  ResourceCenter::getInst()->releaseFont(font);
 }
 
 void DInfo::draw()
