@@ -71,16 +71,16 @@ public:
   Point mouse_;             ///< Mouse position.
   bool button_[10];         ///< Mouse button currently down.
   bool button_pressed_[10]; ///< Mouse button pressed since last update.
-  bool key_[256];           ///< Keys currently pressed.
-  bool key_pressed_[256];   ///< Keys pressed between last updat and now.
+  bool key_[SDLK_LAST];           ///< Keys currently pressed.
+  bool key_pressed_[SDLK_LAST];   ///< Keys pressed between last updat and now.
 
 private:
   int modifier_;
   int modifier_pressed_;
 
   std::string lock_id_;
-  bool key_lock_[256];
-  bool key_pressed_lock_[256];
+  bool key_lock_[SDLK_LAST];
+  bool key_pressed_lock_[SDLK_LAST];
   std::string string_;
   std::string string_lock_;
 

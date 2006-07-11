@@ -104,6 +104,11 @@ void Game::evNewTurn(bool our_turn)
   is_playing_ = true;
 }
 
+void Game::evChat(const std::string& msg)
+{
+  txt_status_.addText(std::string("<chat> ") + msg);
+}
+
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
   VisuPlayer* p = player_[team_id][player_id - 1];
@@ -141,6 +146,7 @@ void Game::evBallPos(const Point& pos)
 {
   field_->setBallPos(pos);
 }
+
 
 void Game::selectPlayer(VisuPlayer* vp)
 {
@@ -181,10 +187,11 @@ int Game::run()
   test2.setZ(3);
   field_->addChild(&test2);
 
-//   InputTextSurface textbox("Vera.ttf", 100);
-//   textbox.setPos(100, 50);
-//   textbox.setZ(8);
-//   win_.getScreen().addChild(&textbox);
+  InputTextSurface textbox("Vera.ttf", 160);
+  textbox.setPos(50, 500);
+  textbox.setZ(6);
+  textbox.hide();
+  win_.getScreen().addChild(&textbox);
 
   TextSurface fps("Vera.ttf", 70, 25);
   fps.setZ(4);
@@ -202,16 +209,19 @@ int Game::run()
       if (win_.processOneFrame())
         break;
 
-//       if (win_.getInput().key_pressed_['y'])
-//         {
-//           LOG3("TEXTBOX acquire")
-//           textbox.acquireInput("mytest");
-//         }
-//       if (textbox.isAcquireFinished())
-//         {
-//           LOG3("TEXTBOX acquire finished: " << textbox.getText());
-//           textbox.resetAcquire();
-//         }
+      // Chat box.
+      if (win_.getInput().key_pressed_['y'])
+        {
+          textbox.acquireInput("mytchat");
+          textbox.show();
+        }
+      if (textbox.isAcquireFinished())
+        {
+          api_->sendChatMessage(textbox.getText());
+          textbox.resetAcquire();
+          textbox.clearText();
+          textbox.hide();
+        }
       
       // Action popup window
       if (is_playing_ && win_.getInput().button_pressed_[3])

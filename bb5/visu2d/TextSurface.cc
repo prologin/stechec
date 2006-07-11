@@ -21,66 +21,73 @@
 
 TextSurface::TextSurface()
   : font_(NULL),
+    font_size_(-1),
     line_skip_(-1),
-    ref_count_(0),
     auto_wrap_(true),
-    content_changed_(false)
+    content_changed_(true)
 {
 }
 
 TextSurface::TextSurface(const std::string& font_name, int surf_width, int surf_height)
   : Surface(surf_width, surf_height),
+    font_name_(font_name),
+    font_size_(12),
     auto_wrap_(true),
-    content_changed_(false)
+    content_changed_(true)
 {
   font_ = ResourceCenter::getInst()->getFont(font_name, 12);
   line_skip_ = TTF_FontLineSkip(font_);
-  ref_count_ = 1;
 }
 
 TextSurface::~TextSurface()
 {
-  if (--ref_count_ == 0)
-    ResourceCenter::getInst()->releaseFont(font_);
+  ResourceCenter::getInst()->releaseFont(font_);
 }
 
 TextSurface::TextSurface(const TextSurface& ts)
   : Surface(ts)
 {
-  font_ = ts.font_;
+  font_name_ = ts.font_name_;
+  font_size_ = ts.font_size_;
+  font_ = ResourceCenter::getInst()->getFont(font_name_, font_size_);
+  assert(font_ == ts.font_);
   line_skip_ = ts.line_skip_;
-  ref_count_ = ts.ref_count_ + 1;
   auto_wrap_ = ts.auto_wrap_;
   content_changed_ = !ts.lines_.empty();
   lines_ = ts.lines_;
+  text_ = ts.text_;
 }
 
 TextSurface& TextSurface::operator= (const TextSurface& rhs)
 {
   Surface::operator=(rhs);
 
-  font_ = rhs.font_;
+  font_name_ = rhs.font_name_;
+  font_size_ = rhs.font_size_;
+  font_ = ResourceCenter::getInst()->getFont(font_name_, font_size_);
+  assert(font_ == rhs.font_);
   line_skip_ = rhs.line_skip_;
-  ref_count_ = rhs.ref_count_ + 1;
   auto_wrap_ = rhs.auto_wrap_;
   content_changed_ = !rhs.lines_.empty();
   lines_ = rhs.lines_;
+  text_ = rhs.text_;
   return *this;
 }
 
 void TextSurface::clearText()
 {
   lines_.clear();
+  text_ = "";
   content_changed_ = true;
 }
 
 void TextSurface::setText(const std::string& text)
 {
-  // FIXME: kludge ? necessary to add a cache ?
-  if (lines_.size() == 1 && lines_[0] == text)
+  if (text_ == text)
     return;
   
   lines_.clear();
+  text_ = "";
   addText(text);
 }
 
@@ -131,13 +138,13 @@ void TextSurface::addText(const std::string& text_to_add)
       lines_.erase(lines_.begin(), it);
     }
 
+  text_ = text_ + text_to_add;
   content_changed_ = true;
 }
 
 std::string TextSurface::getText() const
 {
-  // FIXME: return the whole thing ?
-  return lines_.empty() ? "" : lines_[0];
+  return text_;
 }
 
 void TextSurface::setAutoWrap(bool enabled)

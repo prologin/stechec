@@ -53,15 +53,17 @@ public:
 
 private:
   TTF_Font*     font_;
+  std::string   font_name_;
+  int           font_size_;
   int           line_skip_;
 
-  int           ref_count_;
   bool          auto_wrap_;
   bool          content_changed_;
 
 protected:
   typedef std::deque<std::string> LineList;
   LineList      lines_;
+  std::string   text_;
 };
 
 #endif /* !TEXTSURFACE_HH_ */

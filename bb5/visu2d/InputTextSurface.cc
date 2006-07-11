@@ -21,7 +21,6 @@ InputTextSurface::InputTextSurface()
   : have_text_(false),
     index_(0)
 {
-  setText("");
 }
 
 InputTextSurface::InputTextSurface(const std::string& font_name, int surf_width)
@@ -29,7 +28,6 @@ InputTextSurface::InputTextSurface(const std::string& font_name, int surf_width)
     have_text_(false),
     index_(0)
 {
-  setText("");
 }
 
 InputTextSurface::~InputTextSurface()
@@ -65,21 +63,35 @@ void InputTextSurface::update()
         {
           have_text_ = true;
           lock_id_ = "";
-          LOG2("ok, finished...");
           TextSurface::update();
           return;
         }
 
+      // Special keys
       if (inp.key_pressed_[SDLK_LEFT])
         if (--index_ < 0)
           index_ = 0;
       if (inp.key_pressed_[SDLK_RIGHT])
-        if (++index_ >= (int)lines_[0].size())
+        if (++index_ >= (int)text_.size())
           index_--;
-
-      LOG3("input get string: " << inp.getString());
-      if (inp.getString() != "")
-        lines_[0].insert(index_, inp.getString());
+      if (inp.key_pressed_[SDLK_BACKSPACE] && index_ > 0)
+        {
+          std::string s(text_);
+          LOG1("index: " << index_ << " text: " << text_ );
+          setText(s.erase(index_ - 1, 1));
+          index_--;
+        }
+      else
+        {
+          // Add text
+          const std::string& new_text = inp.getString();
+          if (new_text != "")
+            {
+              std::string s(text_);
+              setText(s.insert(index_, new_text));
+              index_ += new_text.size();
+            }
+        }
 
       // Relock keyboard
       inp.lockKeyboard(lock_id_);

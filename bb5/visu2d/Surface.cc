@@ -215,11 +215,13 @@ void Surface::setZ(int z)
 void Surface::show()
 {
   show_ = true;
+  redraw_all_ = true;
 }
 
 void Surface::hide()
 {
   show_ = false;
+  redraw_all_ = true;
 }
 
 bool Surface::isShown() const

@@ -70,6 +70,7 @@ private:
   // Events
   virtual void evKickOff();
   virtual void evNewTurn(bool our_turn);
+  virtual void evChat(const std::string& msg);
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evBallPos(const Point& pos);

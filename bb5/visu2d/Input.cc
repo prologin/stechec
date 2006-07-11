@@ -49,7 +49,7 @@ bool Input::isModPressed(int mod) const
 
 void Input::reset()
 {
-  for (int i = 0; i < 256; i++)
+  for (int i = 0; i < SDLK_LAST; i++)
     {
       key_pressed_[i] = false;
       key_pressed_lock_[i] = false;
@@ -67,10 +67,12 @@ void Input::lockKeyboard(const std::string& lock_id)
   if (lock_id == "")
     return;
   lock_id_ = lock_id;
-  for (int i = 0; i < 256; i++)
+  for (int i = 0; i < SDLK_LAST; i++)
     {
       key_pressed_lock_[i] = key_pressed_[i];
       key_pressed_[i] = false;
+      key_lock_[i] = key_[i];
+      key_[i] = false;
     }
   string_lock_ = string_;
   string_ = "";
@@ -80,8 +82,11 @@ bool Input::unlockKeyboard(const std::string& lock_id)
 {
   if (lock_id_ == "" || lock_id != lock_id_)
     return false;
-  for (int i = 0; i < 256; i++)
-    key_pressed_[i] = key_pressed_lock_[i];
+  for (int i = 0; i < SDLK_LAST; i++)
+    {
+      key_pressed_[i] = key_pressed_lock_[i];
+      key_[i] = key_lock_[i];
+    }
   string_ = string_lock_;
   lock_id_ = "";
   return true;

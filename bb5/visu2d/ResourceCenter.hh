@@ -76,10 +76,10 @@ public:
 
   //! @brief Release a font.
   void releaseFont(TTF_Font* font);
-  
+
   //! @brief Print cache info.
   void printStatistics();
-  
+
 private:
   //! @brief Load an SDL_surface from a picture (png) file.
   //! @note No caching is done.

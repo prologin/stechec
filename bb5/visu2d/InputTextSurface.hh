@@ -22,6 +22,11 @@
 /*
 ** Implements a TextBox, to let user type text.
 **
+** This is implemented on top of TextSurface, and isn't really nice
+** to render custom text, ie a cursor.
+** Moreover, some problems may exists when user mix special keys
+** and text, especially when the framerate is low (because special
+** keys are not treated in the order they were typed).
 */
 class InputTextSurface: public TextSurface
 {
