@@ -32,10 +32,11 @@
 
 # define PRINT_AND_THROW(Excpt, Msg)            \
 {                                               \
-  ERR("Throwing " #Excpt ": " << Msg);          \
   std::ostringstream os;                        \
   os << Msg;                                    \
-  throw Excpt(os.rdbuf()->str());               \
+  Excpt e(os.rdbuf()->str());                   \
+  ERR("Throwing " #Excpt ": " << e);            \
+  throw e;                                      \
 }
 
 #endif /* !EXCEPTIONDEFINE_HH_ */
