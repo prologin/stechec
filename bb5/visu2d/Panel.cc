@@ -20,8 +20,8 @@
 Panel::Panel(Game& g)
   : VirtualSurface("VPanel", 300, 600),
     g_(g),
-    bg_("image/panel/panel"),
-    wheel_("image/panel/wheels"),
+    bg_("image/panel/panel.jpg"),
+    wheel_("image/panel/wheels.png"),
     showing_player_info_(false)
 {
   setPos(Point(500, 0));

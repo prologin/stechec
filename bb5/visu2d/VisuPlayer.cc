@@ -26,9 +26,9 @@ VisuPlayer::VisuPlayer(Api* api, Game& game, const CPlayer* p)
     p_(p),
     has_focus_(false),
     is_selected_(false),
-    circle_("image/general/circle"),
-    circle_selected_("image/general/circle_select"),
-    player_num_("image/general/player_num")
+    circle_("image/general/circle.png"),
+    circle_selected_("image/general/circle_select.png"),
+    player_num_("image/general/player_num.png")
 {
   circle_.setZ(5);
   circle_.splitNbFrame(3, 1);

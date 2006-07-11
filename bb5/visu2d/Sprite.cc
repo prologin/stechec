@@ -133,6 +133,36 @@ void Sprite::setZoom(double zoom)
   splitNbFrame(nb_anim_width_, nb_anim_width_);
 }
 
+void Sprite::setTransparency(int level)
+{
+  SDL_PixelFormat *fmt;
+  fmt = surf_->format;
+  if (fmt->BitsPerPixel != 32)
+    {
+      WARN("Surface not 32 bpp...");
+      return;
+    }
+
+  Uint32* pixels;
+  Uint32 temp;
+  unsigned surf_size = surf_->w * surf_->h;
+
+  LOG2("Set transparency to " << level << " surf: " << surf_size);
+
+  SDL_LockSurface(surf_);
+  pixels = (Uint32*)surf_->pixels;
+  for (unsigned i = 0; i < surf_size; i++)
+    {
+      temp = *pixels & fmt->Amask;
+      temp = temp >> fmt->Ashift;
+      temp = temp * level / 256;
+      *pixels = (*pixels & ~fmt->Amask) | temp << fmt->Ashift;
+      pixels++;
+    }
+  SDL_UnlockSurface(surf_);
+  redraw_all_ = true;
+}
+
 void Sprite::update()
 {
   if (is_moving_)

@@ -33,6 +33,8 @@
 **    if (key_['b']) {...} 
 ** * For keyboard modifier, use class convenience function.
 **
+** It also provides a easy way to gain exclusive access to the keyboard,
+** by locking and unlocking it.
 */
 class Input
 {
@@ -40,7 +42,7 @@ public:
   Input();
   ~Input();
 
-  static const Input* getInst();
+  static Input* getInst();
 
   //! @brief To call before a serie of update();
   void reset();
@@ -53,7 +55,18 @@ public:
   bool isModDown(int mod) const;
   //! @brief Same as isModDown, but since last update.
   bool isModPressed(int mod) const;
-  
+
+  //! @brief Locks the keyboard, so that key_ and key_pressed_
+  //!  will always be empty, until it is unlocked with the same lock_id.
+  void lockKeyboard(const std::string& lock_id);
+  //! @brief Unlock the keyboard.
+  //! @return true if unlock successful (same lock_id), else false.
+  bool unlockKeyboard(const std::string& lock_id);
+  //! @brief Check if the keyboard is locked.
+  bool isKeyboardLocked() const;
+
+  const std::string& getString() const;
+
   Point mouse_delta_;       ///< Mouse motion since last update.
   Point mouse_;             ///< Mouse position.
   bool button_[10];         ///< Mouse button currently down.
@@ -64,6 +77,12 @@ public:
 private:
   int modifier_;
   int modifier_pressed_;
+
+  std::string lock_id_;
+  bool key_lock_[256];
+  bool key_pressed_lock_[256];
+  std::string string_;
+  std::string string_lock_;
 
   static Input* inst_;
 };

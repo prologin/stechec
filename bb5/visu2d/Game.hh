@@ -29,6 +29,7 @@
 # include "VirtualSurface.hh"
 # include "VirtualScrollableSurface.hh"
 # include "TextSurface.hh"
+# include "InputTextSurface.hh"
 # include "Sprite.hh"
 # include "Panel.hh"
 # include "Field.hh"

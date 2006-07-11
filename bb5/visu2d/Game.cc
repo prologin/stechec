@@ -35,7 +35,7 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   win_.getScreen().addChild(panel_);
   win_.getScreen().addChild(field_);
 
-  txt_status_ = TextSurface("font/Vera", 270, 65);
+  txt_status_ = TextSurface("Vera.ttf", 270, 65);
   txt_status_.setZ(6);
   txt_status_.setPos(3, 532);
   win_.getScreen().addChild(&txt_status_);
@@ -120,10 +120,10 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
       player_[team_id][player_id - 1] = p;
 
       // Set its property
-      p->load("image/figs/amazon");
+      p->load("image/figs/amazon.png");
       p->splitSizeFrame(40, 40);
       p->setZ(3);
-      p->setFrame(ap->getPlayerPosition() * 2 + 1);
+      p->setFrame(ap->getPlayerPosition() * 2 + team_id + 1);
       field_->addChild(p);
     }
   p->setPos(pos * 40);
@@ -166,12 +166,31 @@ int Game::run()
 {
   int game_state = -1;
 
-  TextSurface fps("font/Vera", 70, 25);
+  Sprite test("image/general/map-move.png");
+  test.setTransparency(160); // FIXME: global effect for this picture.
+  test.splitNbFrame(3, 2);
+  test.setFrame(3);
+  test.setPos(40, 40);
+  test.setZ(3);
+  field_->addChild(&test);
+  
+  Sprite test2("image/general/map-move.png");
+  test2.splitNbFrame(3, 2);
+  test2.setFrame(4);
+  test2.setPos(80, 40);
+  test2.setZ(3);
+  field_->addChild(&test2);
+
+//   InputTextSurface textbox("Vera.ttf", 100);
+//   textbox.setPos(100, 50);
+//   textbox.setZ(8);
+//   win_.getScreen().addChild(&textbox);
+
+  TextSurface fps("Vera.ttf", 70, 25);
   fps.setZ(4);
   fps.setPos(720, 570);
   win_.getScreen().addChild(&fps);
 
-    
   // Sit back and see what's happening...
   while (api_->getState() != GS_END)
     {
@@ -183,6 +202,17 @@ int Game::run()
       if (win_.processOneFrame())
         break;
 
+//       if (win_.getInput().key_pressed_['y'])
+//         {
+//           LOG3("TEXTBOX acquire")
+//           textbox.acquireInput("mytest");
+//         }
+//       if (textbox.isAcquireFinished())
+//         {
+//           LOG3("TEXTBOX acquire finished: " << textbox.getText());
+//           textbox.resetAcquire();
+//         }
+      
       // Action popup window
       if (is_playing_ && win_.getInput().button_pressed_[3])
         {
@@ -226,27 +256,4 @@ int Game::run()
         }
     }
   return 0;
-}
-
-// Library entry point. Called by the generic client 'tbt'.
-extern "C" int run(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
-{
-  // First, create and open the SDL window.
-  SDLWindow win(xml);
-  try {
-    win.init();
-  } catch (...) {
-    LOG1("Sorry, I'm unable to open up a window... You're out of luck :/");
-    return 1;
-  }
-
-  try {
-    // Then, create our application (constructors can already use the window).
-    Game padaboum(win, xml, api, ccx);
-  
-    // Finally, run the app' !
-    return padaboum.run();
-  } catch (...) {
-    return 2;
-  }
 }

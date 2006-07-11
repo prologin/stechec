@@ -17,6 +17,8 @@ libbb5_visu_common_la_SOURCES =			\
 	VirtualScrollableSurface.cc		\
 	TextSurface.hh				\
 	TextSurface.cc				\
+	InputTextSurface.hh			\
+	InputTextSurface.cc			\
 	Sprite.hh				\
 	Sprite.cc				\
 	Input.hh				\
@@ -30,11 +32,12 @@ libbb5_visu_common_la_SOURCES =			\
 	Field.hh				\
 	Field.cc				\
 	VisuPlayer.hh				\
-	VisuPlayer.cc
-
-bb5_visu_la_SOURCES = 				\
+	VisuPlayer.cc				\
 	Game.hh					\
 	Game.cc
+
+bb5_visu_la_SOURCES = 				\
+	main_library.cc
 
 bb5_visu_SOURCES =				\
 	main.cc					\

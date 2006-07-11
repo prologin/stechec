@@ -26,7 +26,7 @@ ActionPopup::ActionPopup(Game& g)
 {
   for (int i = 0; i < 12; i++)
     {
-      sprite_[i].load("image/general/actions_on");
+      sprite_[i].load("image/general/actions_on.jpg");
       sprite_[i].splitNbFrame(1, 12);
       sprite_[i].setFrame(i + 1);
       sprite_[i].setZ(6);

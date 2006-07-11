@@ -20,8 +20,8 @@
 VisuField::VisuField(Game& g)
   : VirtualScrollableSurface("VVisuField", g.getInput(), Point(500, 600), Point(725, 1100)),
     g_(g),
-    bg_("image/general/playground_0"),
-    ball_("image/general/ball"),
+    bg_("image/general/playground_0.jpg"),
+    ball_("image/general/ball.png"),
     doing_kickoff_(false)
 {
   addChild(&bg_);

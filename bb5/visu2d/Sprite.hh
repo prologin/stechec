@@ -35,6 +35,7 @@ public:
   void anim(int delay, bool loop_forever = true);
   void stopAnim();
   void setFrame(int frame);
+  void setTransparency(int level);
 
   virtual void setZoom(double zoom);
 
