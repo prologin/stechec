@@ -73,7 +73,8 @@ inline bool Api::doMovePlayer(int p, const Point& to)
 
 inline void Api::sendChatMessage(const std::string& msg)
 {
-  assert(rules_->getState() != GS_WAIT);
+  if (rules_->getState() == GS_WAIT)
+    return;
   MsgChat pkt;
   stringToPacket(pkt.msg, msg, sizeof(pkt.msg));
   rules_->sendPacket(pkt);

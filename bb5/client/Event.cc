@@ -29,8 +29,10 @@ void EventProcess::dispatch(const CustomEvent& ie) const
       break;
     case eOurTurn:
       ev_->evNewTurn(true);
+      break;
     case eTheirTurn:
       ev_->evNewTurn(false);
+      break;
     }
 }
 
