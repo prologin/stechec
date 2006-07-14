@@ -63,7 +63,8 @@ bool SRules::afterHook(int res, const char* hook_name)
           int r = server_entry_->afterGame();
           afterHook(r, "afterGame");
         }
-      sendPacket(MsgAfterGame());
+      if (getState() != GS_BEFOREGAME)
+        sendPacket(MsgAfterGame());
       setState(GS_END);
       return false;
     }

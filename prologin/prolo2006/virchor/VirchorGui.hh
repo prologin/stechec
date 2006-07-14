@@ -36,8 +36,8 @@ private:
   */
   virtual void moveGoodman(int team_id, int unit_id, const Position& pos);
   virtual void endOfTurn();
-  int VirchorGui::jump();
-  int VirchorGui::translate();
+  int jump();
+  int translate();
 
   int init();
   

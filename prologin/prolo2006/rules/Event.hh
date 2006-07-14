@@ -41,7 +41,7 @@ inline void OutAnEvent::evStechecPkt(const StechecPkt& pkt)
     }
 }
 
-inline void OutAnEvent::moveGoodman(int player_id, int unit_id, const Position& pos) {}
-inline void OutAnEvent::changeDate(int date) {}
+inline void OutAnEvent::moveGoodman(int, int, const Position&) {}
+inline void OutAnEvent::changeDate(int) {}
 
 #endif /* !EVENT_HH_ */

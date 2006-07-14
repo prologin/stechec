@@ -3,7 +3,6 @@
 SUBDIRS =					\
 	data					\
 	rules					\
-	subject					\
 	test					\
 	virchor
 
@@ -14,3 +13,6 @@ endif
 if HAVE_SDL
 SUBDIRS += sdlvisu
 endif
+
+SUBDIRS += subject
+
