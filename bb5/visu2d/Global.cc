@@ -54,7 +54,9 @@ void PrintStrings(SDL_Surface *dest, TTF_Font *font, string str,
         // Get the height : (vLines.size() == Number of Lines)
     height = (vLines.size()-1) * lineSkip + height; 
     temp = TTF_RenderText_Solid(font, tmpstr.c_str(), textColor);
-
+    if (temp == NULL)
+      WARN("FAILED to render `" << tmpstr << "' on font: " << (int*)font);
+    
     SDL_Rect r = {rc.x + (rc.w - width) / 2, rc.y + (rc.h-height) / 2 + i * lineSkip, rc.w, rc.h};
 
     SDL_BlitSurface(temp, NULL, dest, &r);

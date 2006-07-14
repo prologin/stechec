@@ -17,11 +17,8 @@
 #include "Focus.hh"
 
 Focus::Focus(Widget* widget)
+  : focus(widget)
 {
-  if(focus == NULL)
-  {
-    focus = widget;
-  }
 }
 
 Widget* Focus::get_focus()

@@ -38,6 +38,7 @@ ResourceCenter::ResourceCenter()
   // Only one instance is allowed.
   assert(inst_ == NULL);
   inst_ = this;
+  LOG4("Prefix for resources: `" << PKGDATADIR << "'");
 }
 
 ResourceCenter::~ResourceCenter()
@@ -115,14 +116,14 @@ SDL_Surface* ResourceCenter::loadImage(const std::string& filename)
   SDL_Surface* surf = NULL;
   std::string fn_loaded = std::string(PKGDATADIR) + "/" + filename;
 
-  LOG3("Load `" << fn_loaded << "'");
+  LOG3("Load `" << filename << "'");
   loaded_image = IMG_Load(fn_loaded.c_str());
   if (loaded_image == NULL)
-    PRINT_AND_THROW(SDLError, "Can't load image `" << fn_loaded << "'");
+    PRINT_AND_THROW(SDLError, "Can't load image `" << filename << "'");
   surf = SDL_DisplayFormatAlpha(loaded_image);
   SDL_FreeSurface(loaded_image);
   if (surf == NULL)
-    PRINT_AND_THROW(SDLError, "Can't convert `" << fn_loaded << "' to standard display");
+    PRINT_AND_THROW(SDLError, "Can't convert `" << filename << "' to standard display");
   return surf;
 }
 
@@ -148,8 +149,7 @@ TTF_Font* ResourceCenter::getFont(const std::string font_name, int font_size)
     }
 
   // Load this font, and add it to the cache.
-  LOG3("Load font `" << PKGDATADIR << "/font/" << font_name
-       << "' (size: " << font_size << ")");
+  LOG3("Load font `font/" << font_name << "' (size: " << font_size << ")");
   lf.ref_count_ = 1;
   lf.font_ = TTF_OpenFont((std::string(PKGDATADIR) + "/font/" + font_name).c_str(),
                           font_size);
@@ -171,6 +171,7 @@ void ResourceCenter::releaseFont(TTF_Font* font)
             TTF_CloseFont(it->font_);
             font_list_.erase(it);
           }
-        break;
+        return;
       }
+  WARN("Trying to release font " << (void*)font << ", but wasn't loaded here !");
 }

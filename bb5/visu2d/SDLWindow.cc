@@ -39,6 +39,7 @@ VirtualSurface& SDLWindow::getScreen()
 
 SDLWindow::~SDLWindow()
 {
+  TTF_Quit();
   SDL_Quit();
 }
 
