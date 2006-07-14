@@ -403,7 +403,7 @@ bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
     // Update the team with the new one. 
     team_ = TeamHandler::team_;
     
-    std::cout << " race_->GetWidgetCount():"<< race_->GetWidgetCount() << std::endl;
+    //std::cout << " race_->GetWidgetCount():"<< race_->GetWidgetCount() << std::endl;
         
     // select appropriate race 
     for (unsigned int i=0; i<race_->GetWidgetCount(); i++)
@@ -412,7 +412,7 @@ bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
         
         if (strcmp(item->GetText(), team_->getRace()->getName()) == 0)
         {
-            std::cout << " item found i:"<< i << std::endl;
+            //std::cout << " item found i:"<< i << std::endl;
             
             item->Select(true);
             race_->SelectItem(item, true);

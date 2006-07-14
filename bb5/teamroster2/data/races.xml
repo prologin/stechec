@@ -276,7 +276,7 @@
 				</skills>
 			</position>
 		</positions>
-		<background>The technical deficiency of Halfling teams is legendary. They're too short to throw or catch, they run at half pace, and the whole team can spend all afternoon trying to block an Ogre without any chance of success. Most Halfling coaches try to make up for quality with quantity. After all, if you can get half a dozen players in the opposing team's End Zone and, by some miracle, manage to end up with the ball, then there is a small chance that one or two of them won�t be jelly by the time you throw the thing.</background>
+		<background>The technical deficiency of Halfling teams is legendary. They're too short to throw or catch, they run at half pace, and the whole team can spend all afternoon trying to block an Ogre without any chance of success. Most Halfling coaches try to make up for quality with quantity. After all, if you can get half a dozen players in the opposing team's End Zone and, by some miracle, manage to end up with the ball, then there is a small chance that one or two of them won't be jelly by the time you throw the thing.</background>
 	</race>
 	<race name="High Elf" emblem="highelves.jpg">
 		<apothecary use="true"/>

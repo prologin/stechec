@@ -58,8 +58,8 @@ void TRParser::parseTeamFile(const char* filename)
 //FIXME: Make schema validation
     parser->setValidationScheme(SAXParser::Val_Auto);
     parser->setDoNamespaces(false);
-    parser->setDoSchema(true);
-    parser->setValidationSchemaFullChecking(true);
+    parser->setDoSchema(false);
+    parser->setValidationSchemaFullChecking(false);
 
     //
     //  Create the handler object and install it as the document and error
@@ -117,8 +117,8 @@ void TRParser::parseRaceFile()
 //FIXME: Make schema validation
     parser->setValidationScheme(SAXParser::Val_Auto);
     parser->setDoNamespaces(false);
-    parser->setDoSchema(true);
-    parser->setValidationSchemaFullChecking(true);
+    parser->setDoSchema(false);
+    parser->setValidationSchemaFullChecking(false);
 
     //
     //  Create the handler object and install it as the document and error
@@ -177,8 +177,8 @@ void TRParser::parseParametersFile()
 //FIXME: Make schema validation
     parser->setValidationScheme(SAXParser::Val_Auto);
     parser->setDoNamespaces(false);
-    parser->setDoSchema(true);
-    parser->setValidationSchemaFullChecking(true);
+    parser->setDoSchema(false);
+    parser->setValidationSchemaFullChecking(false);
 
     //
     //  Create the handler object and install it as the document and error

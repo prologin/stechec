@@ -85,7 +85,7 @@ void Player::setPosition(const char *selectedPosition)
     for (unsigned int i=0; i< vPos.size(); i++)
     {
         if (strcmp(vPos[i].getTitle(), selectedPosition) == 0)
-        {
+        { 
             // The position has been found 
             posFound = true;
             

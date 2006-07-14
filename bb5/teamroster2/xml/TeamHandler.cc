@@ -81,12 +81,13 @@ void TeamHandler::startElement(const XMLCh* const name, AttributeList&  attribut
         TeamHandler::team_ = new Team(race);
         // Change team emblem
         TeamHandler::team_->setEmblem(emblem.c_str());
- //        std::cout << "Team found of race :" << TeamHandler::team_->getRace()->getName() << std::endl;
+        //     std::cout << "Team found of race :" << TeamHandler::team_->getRace()->getName() << std::endl;
   
     } else if (strcmp(DualString(name).asCString(), "player") == 0) 
     {
         currentPlayer_ = new Player(TeamHandler::team_);
         currentPlayer_->setName(xercesc::XMLString::transcode(attributes.getValue("name")));
+        //    std::cout << "position :" << xercesc::XMLString::transcode(attributes.getValue("position")) << ":" << std::endl;
         currentPlayer_->setPosition(xercesc::XMLString::transcode(attributes.getValue("position")));
         
         currentPlayerNumber_ = atoi(xercesc::XMLString::transcode(attributes.getValue("number")));
