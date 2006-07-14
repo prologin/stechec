@@ -40,7 +40,7 @@ public:
   bool move(const Position& to);
 
   //! @brief Set the player position.
-  void CPlayer::setPosition(const Position& pos);
+  void setPosition(const Position& pos);
 
 private:
   CRules* r_;
