@@ -57,9 +57,13 @@ public:
   const Position& getPosition() const;
   const std::string& getName() const;
 
+  //! @brief Get Movement Allowance.
   int getMa() const;
+  //! @brief Get Strenght.
   int getSt() const;
+  //! @brief Get Agility.
   int getAg() const;
+  //! @brief Get Armour Value.
   int getAv() const;
 
   bool hasDoneAction() const;

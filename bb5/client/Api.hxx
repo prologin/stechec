@@ -14,10 +14,32 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+
+#define CHECK_TEAM                              \
+{                                               \
+  if (selected_team_ == NULL)                   \
+    return BAD_TEAM;                            \
+}
+
+#define CHECK_PLAYER                            \
+{                                               \
+  if (selected_player_ == NULL)                 \
+    return BAD_PLAYER;                          \
+}
+
+#define CHECK_POS(X, Y)                         \
+{                                               \
+  if (X < 0 || X >= COLS || Y < 0 || Y >= ROWS) \
+    return BAD_ARGUMENT;                        \
+}
+
+
+
 inline Api::Api(CRules* rules)
-  : BaseApi<CRules>(rules)
+  : BaseApi<CRules>(rules),
+    selected_team_(NULL),
+    selected_player_(NULL)
 {
-  selected_team_ = NULL;
 }
 
 inline Api::~Api()
@@ -84,13 +106,15 @@ inline void Api::sendChatMessage(const std::string& msg)
 ** Accessors
 */
 
-// Const helper.
-inline void Api::switchTeam(int to_team)
+inline void Api::select_team(int team_id)
 {
   assert(rules_->getState() != GS_WAIT);
-  if (to_team == US || (to_team <= 1 && to_team == rules_->getTeamId()))
+  selected_team_ = NULL;
+  selected_player_ = NULL;
+
+  if (team_id == US || (team_id <= 1 && team_id == rules_->getTeamId()))
     selected_team_ = rules_->our_team_;
-  if (to_team == THEM || (to_team <= 1 && to_team != rules_->getTeamId()))
+  if (team_id == THEM || (team_id <= 1 && team_id != rules_->getTeamId()))
     selected_team_ = rules_->other_team_;
 }
 
@@ -143,4 +167,69 @@ inline const CField* Api::getField() const
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   return rules_->field_;
+}
+
+
+inline int Api::select_player(int player_id)
+{
+  CHECK_TEAM;
+  if (player_id <= 0 || player_id > selected_team_->getNbPlayer())
+    {
+      selected_player_ = NULL;
+      return BAD_PLAYER;
+    }
+  selected_player_ = selected_team_->getPlayer(player_id);
+  return SUCCESS;
+}
+
+inline int Api::move_lenght(int dst_x, int dst_y)
+{
+  CHECK_PLAYER;
+  CHECK_POS(dst_x, dst_y);
+
+  player_path_ = &rules_->field_->getPath(selected_player_->getPosition(),
+                                          Position(dst_y, dst_x),
+                                          selected_player_);
+  return player_path_->size();
+}
+
+inline int Api::move_difficulty(int step)
+{
+  CHECK_PLAYER;
+  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
+    return BAD_ARGUMENT;
+
+  Position step_pos((*player_path_)[step]);
+  int nbt = rules_->field_->getNbTackleZone(selected_team_->getTeamId(), step_pos);
+  if (nbt == 0)
+    return 0;
+  return (7 - std::min(selected_player_->getAg(), 6)) + nbt - 1;
+}
+
+inline int Api::move_path_x(int step)
+{
+  CHECK_PLAYER;
+  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
+    return BAD_ARGUMENT;
+
+  return (*player_path_)[step].getX();
+}
+
+inline int Api::move_path_y(int step)
+{
+  CHECK_PLAYER;
+  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
+    return BAD_ARGUMENT;
+
+  return (*player_path_)[step].getY();
+}
+
+inline int Api::move_possible(int dst_x, int dst_y)
+{
+  CHECK_PLAYER;
+  CHECK_POS(dst_x, dst_y);
+  
+  return rules_->field_->getPath(selected_player_->getPosition(),
+                                 Position(dst_y, dst_x),
+                                 selected_player_).empty() ? 0 : 1;
 }

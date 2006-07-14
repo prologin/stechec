@@ -92,11 +92,11 @@ void CmdLineInterface::printGlobal()
        << "  - our team  : '" << api_->getTeamName() << "', coached by '"
        << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
        << " players)\n";
-  api_->switchTeam(THEM);
+  api_->select_team(THEM);
   cout << "  - other team: '" << api_->getTeamName() << "', coached by '"
        << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
        << " players)" << endl;
-  api_->switchTeam(US);
+  api_->select_team(US);
 
 }
 
@@ -175,26 +175,26 @@ void CmdLineInterface::printPlayerList()
       p = api_->getPlayer(i);
       cout << "* " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
     }
-  api_->switchTeam(THEM);
+  api_->select_team(THEM);
   team_size = api_->getTeam()->getNbPlayer();
   for (int i = 1; i <= team_size; i++)
     {
       p = api_->getPlayer(i);
       cout << "+ " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
     }
-  api_->switchTeam(US);
+  api_->select_team(US);
 }
 
 void CmdLineInterface::printPlayer(int player_id, int team_id)
 {
-  api_->switchTeam(team_id);
+  api_->select_team(team_id);
   if (player_id <= 0 || player_id > api_->getTeam()->getNbPlayer())
     {
       cout << "player id " << player_id << ": out of bound." << endl;
       return;
     }
   cout << *api_->getPlayer(player_id);
-  api_->switchTeam(team_id);
+  api_->select_team(team_id);
 }
 
 //

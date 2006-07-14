@@ -39,7 +39,7 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   txt_status_.setZ(6);
   txt_status_.setPos(3, 532);
   win_.getScreen().addChild(&txt_status_);
-  
+
   for (int i = 0; i < 16; i++)
     {
       player_[0][i] = NULL;
@@ -117,7 +117,7 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
   if (player_[team_id][player_id - 1] == NULL)
     {
       // Get added player infos.
-      api_->switchTeam(team_id);  
+      api_->select_team(team_id);  
       const CPlayer* ap = api_->getPlayer(player_id);
 
       // Create it.

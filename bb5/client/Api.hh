@@ -57,7 +57,7 @@ public:
   //!   Further call to all other API function will return
   //!   information from that team.
   //! @see eSelTeam
-  void                  switchTeam(int to_team);
+  void                  select_team(int team_id);
 
   const std::string&    getCoachName() const;
   const std::string&    getTeamName() const;
@@ -68,9 +68,18 @@ public:
   const Weather*        getWeather() const;
   Point                 getBallPosition() const;
   const CField*         getField() const;
+
+  int                   select_player(int player_id);
+  int                   move_lenght(int dst_x, int dst_y);
+  int                   move_difficulty(int step);
+  int                   move_path_x(int step);
+  int                   move_path_y(int step);
+  int                   move_possible(int dst_x, int dst_y);
   
 private:
   CTeam*                selected_team_;
+  CPlayer*              selected_player_;
+  const PosList*        player_path_;
 };
 
 # include "Api.hxx"

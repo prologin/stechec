@@ -41,6 +41,12 @@ const int ROWS             = 26; ///< [| 0, 25 |]
 const int ACT_RES_TO       = 0xDEADBEEF; 
 
 
+//! @brief Constants that can be returned by the API.
+const int BAD_TEAM         = -3;
+const int BAD_PLAYER       = -2;
+const int BAD_ARGUMENT     = -1;
+const int SUCCESS          = 0;
+
 //! @brief Tokens used for the game.
 //! @see Packet.
 //! @note Keep this list below 250, otherwise you'll run into trouble.

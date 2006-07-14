@@ -102,7 +102,7 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
   LOG2("-- CRules: change state: GS_INITHALF");
 
   // Now, you can safely use Api fonctions referring to teams.
-  api_->switchTeam(US);
+  api_->select_team(US);
 
   if (m->client_id != getTeamId())
     {
