@@ -21,6 +21,9 @@ EXTRA_DIST =					\
 	conf.rb.in				\
 	meta_server/meta_cx.sh.in
 
+dist-hook:
+	rm -rf `find $(distdir) -name .svn`
+
 rubydir = $(pkglibdir)/ruby
 bashdir = $(pkglibdir)/bash
 

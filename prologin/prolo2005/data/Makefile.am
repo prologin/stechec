@@ -8,6 +8,9 @@ dist_prolo2005data_DATA =		\
 
 EXTRA_DIST = texture_2D
 
+dist-hook:
+	rm -rf `find $(distdir) -name .svn`
+
 install-data-hook:
 	-cp -r $(srcdir)/texture_2D $(DESTDIR)$(prolo2005datadir)
 

@@ -41,8 +41,9 @@ bb5_visu_la_SOURCES = 				\
 
 bb5_visu_SOURCES =				\
 	main.cc					\
+	Colors.hh				\
 	Widget.cc Widget.hh			\
-	Focus.cc FOcus.hh			\
+	Focus.cc Focus.hh			\
 	GuiError.cc GuiError.hh			\
 	Button.cc Button.hh			\
 	DialogBox.cc DialogBox.hh		\

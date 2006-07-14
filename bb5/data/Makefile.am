@@ -3,6 +3,9 @@
 DIRS	 	= formation font i18n image sound team video
 EXTRA_DIST	= $(DIRS)
 
+dist-hook:
+	rm -rf `find $(distdir) -name .svn`
+
 install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
 	-for i in $(DIRS); do \

@@ -71,6 +71,9 @@ CLEANFILES = $(libstechec_guiqt_la_MOC)
 
 EXTRA_DIST = sprites
 
+dist-hook:
+	rm -rf `find $(distdir) -name .svn`
+
 install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/pixmap
 	-chmod -R u+w $(DESTDIR)$(pkgdatadir)/pixmap
