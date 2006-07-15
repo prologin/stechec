@@ -14,6 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include <algorithm>
 #include "VirtualSurface.hh"
 
 VirtualSurface::VirtualSurface()
@@ -71,10 +72,22 @@ Point VirtualSurface::getAbsolutePos() const
     return getPos();
 }
 
+void VirtualSurface::setZoom(double zoom)
+{
+  double distortion = getZoom() / zoom;
+  Surface::setZoom(zoom);
+  for_all(child_list_, std::bind2nd(std::mem_fun(&Surface::setZoom), zoom));
+
+  SurfaceList::iterator it;
+  for (it = child_list_.begin(); it != child_list_.end(); ++it)
+    (*it)->setPos((int)((*it)->getPos().x * distortion),
+                  (int)((*it)->getPos().y * distortion));
+}
+
 void VirtualSurface::update()
 {
-  std::for_each(child_list_.begin(), child_list_.end(), std::mem_fun(&Surface::update));
-
+  for_all(child_list_, std::mem_fun(&Surface::update));
+  
   // Propagate invalidated surface to the parent.
   if (parent_ != NULL)
     {

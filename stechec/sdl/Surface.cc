@@ -22,6 +22,7 @@ Surface::Surface()
   : surf_(NULL),
     filename_(""),
     rect_(0, 0, -1, -1),
+    orig_size_(-1, -1),
     zoom_(1.),
     angle_(0.),
     z_(0),
@@ -35,6 +36,7 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
   : surf_(surf),
     filename_(filename),
     rect_(0, 0, -1, -1),
+    orig_size_(-1, -1),
     zoom_(zoom),
     angle_(angle),
     z_(0),
@@ -46,6 +48,8 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
     {
       rect_.w = surf->w;
       rect_.h = surf->h;
+      orig_size_.x = (int)(rect_.w * zoom);
+      orig_size_.y = (int)(rect_.h * zoom);
       surf_->refcount++;
     }
 }
@@ -53,6 +57,7 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
 Surface::Surface(const std::string filename, double zoom, double angle)
   : surf_(NULL),
     rect_(0, 0, -1, -1),
+    orig_size_(-1, -1),
     z_(0),
     show_(true),
     redraw_all_(true),
@@ -64,6 +69,7 @@ Surface::Surface(const std::string filename, double zoom, double angle)
 Surface::Surface(int width, int height)
   : surf_(NULL),
     rect_(0, 0, width, height),
+    orig_size_(-1, -1),
     zoom_(1.),
     angle_(0.),
     z_(0),
@@ -79,6 +85,7 @@ Surface::Surface(const Surface& s)
   surf_ = s.surf_;
   filename_ = s.filename_;
   rect_ = s.rect_;
+  orig_size_ = s.orig_size_;
   zoom_ = s.zoom_;
   angle_ = s.angle_;
   z_ = s.z_;
@@ -95,6 +102,7 @@ Surface& Surface::operator=(const Surface& s)
   surf_ = s.surf_;
   filename_ = s.filename_;
   rect_ = s.rect_;
+  orig_size_ = s.orig_size_;
   zoom_ = s.zoom_;
   angle_ = s.angle_;
   z_ = s.z_;
@@ -187,16 +195,20 @@ void Surface::setSize(const Point& size)
 {
   rect_.w = size.x;
   rect_.h = size.y;
+  orig_size_.x = (int)(size.x * zoom_);
+  orig_size_.y = (int)(size.y * zoom_);
 }
 
 void Surface::setZoom(double zoom)
 {
-  Surface ref(ResourceCenter::getInst()->getImage(filename_, zoom, angle_));
-  SDL_FreeSurface(surf_);
-  surf_ = ref.surf_;
-  rect_.w = surf_->w;
-  rect_.h = surf_->h;
-  zoom_ = zoom;
+  if (filename_ != "")
+    load(filename_, zoom, angle_);
+  else
+    {
+      create((int)(orig_size_.x / zoom),
+             (int)(orig_size_.y / zoom));
+      zoom_ = zoom;
+    }
 }
 
 void Surface::setAngle(double angle)
@@ -214,14 +226,16 @@ void Surface::setZ(int z)
 
 void Surface::show()
 {
+  if (!show_)
+    redraw_all_ = true;
   show_ = true;
-  redraw_all_ = true;
 }
 
 void Surface::hide()
 {
+  if (show_)
+    redraw_all_ = true;
   show_ = false;
-  redraw_all_ = true;
 }
 
 bool Surface::isShown() const
@@ -235,6 +249,7 @@ void Surface::create(int width, int height)
     SDL_FreeSurface(surf_);
 
   SDL_Surface* ref_surface = SDL_GetVideoSurface();
+  // Happen if it is called before SDL_SetVideoMode().
   assert(ref_surface != NULL);
 
   surf_ = SDL_CreateRGBSurface(SDL_HWSURFACE,
@@ -250,6 +265,11 @@ void Surface::create(int width, int height)
 
   rect_.w = width;
   rect_.h = height;
+  if (orig_size_.x == -1 && orig_size_.y == -1)
+    {
+      orig_size_.x = (int)(width * zoom_);
+      orig_size_.y = (int)(height * zoom_);
+    }
   redraw_all_ = true;
 }
 
@@ -265,8 +285,13 @@ void Surface::load(const std::string filename, double zoom, double angle)
   rect_.h = surf_->h;
   zoom_ = ref.zoom_;
   angle_ = ref.angle_;
-  redraw_all_ = true;
   surf_->refcount++;
+  if (orig_size_.x == -1 && orig_size_.y == -1)
+    {
+      orig_size_.x = (int)(rect_.w * zoom_);
+      orig_size_.y = (int)(rect_.h * zoom_);
+    }
+  redraw_all_ = true;
 }
 
 void Surface::update()

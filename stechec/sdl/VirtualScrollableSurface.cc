@@ -104,6 +104,19 @@ void VirtualScrollableSurface::update()
   if (vpos_.y < 0)
     vpos_.y = 0;
 
+  // Adjust vscreen on the center if vsize < realsize.
+  if (rect.w < real_size_.x && rect.x != (real_size_.x - rect.w) / 2)
+    setPos(Point((real_size_.x - rect.w) / 2, rect.y));
+  if (rect.h < real_size_.y && rect.y != (real_size_.y - rect.h) / 2)
+    setPos(Point(getPos().x, (real_size_.y - rect.h) / 2));
+  // Readjust vscreen to fit the screen
+  // FIXME: of course all wrong ! with this, object must be at (0,0)
+  if (rect.w >= real_size_.x && rect.x != 0)
+    setPos(Point(0, getPos().y));
+  if (rect.h >= real_size_.y && rect.y != 0)
+    setPos(Point(getPos().x, 0));
+
+  
   // Ask redraw on all visible surface if the screen moved.
   if (vpos_ != last_pos)
     {

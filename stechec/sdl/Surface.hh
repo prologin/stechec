@@ -115,6 +115,7 @@ private:
   std::string   filename_;
 
   Rect          rect_;
+  Point         orig_size_;  ///< Surf size with zoom_ == 1
   double        zoom_;
   double        angle_;
   int           z_;

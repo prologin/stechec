@@ -84,7 +84,7 @@ Surface ResourceCenter::getImage(const std::string& filename, double zoom, doubl
 
   // Search if reference image (without zoom and angle) was already loaded.
   // Don't reload it from file, but apply transformation.
-  if (zoom != 1. && angle != 0.)
+  if (zoom != 1. || angle != 0.)
     {
       const Surface ref_surf(NULL, 1., 0., filename);
       it = image_list_.find(ref_surf);

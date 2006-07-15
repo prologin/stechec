@@ -44,6 +44,8 @@ public:
   //! not relative to its parent.
   virtual Point getAbsolutePos() const;
 
+  virtual void setZoom(double zoom);
+
   virtual void update();
   virtual void render();
 

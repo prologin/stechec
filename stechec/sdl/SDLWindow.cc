@@ -98,6 +98,12 @@ void SDLWindow::init()
   frame_previous_tick_ = frame_tick_fps_ = SDL_GetTicks();
 }
 
+void SDLWindow::clearScreen()
+{
+  SDL_FillRect(screen_.getSDLSurface(), NULL, 0);
+  screen_.invalidate(screen_.getRect());
+}
+
 bool SDLWindow::processOneFrame()
 {
   // Process SDL events

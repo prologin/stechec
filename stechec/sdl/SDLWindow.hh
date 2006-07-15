@@ -44,6 +44,9 @@ public:
   //! @brief Initialize all the SDL stuff.
   void init();
 
+  //! @brief Fill the screen with black.
+  void clearScreen();
+
   //! @brief Update SDL events, update screen (and all his children),
   //!  and print one frame on the screen.
   //! @return true if the window is/was/want to be closed.

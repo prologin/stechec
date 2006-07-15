@@ -40,7 +40,7 @@ public:
 
   virtual void blit(Surface& to);
   virtual void blit(Surface& to, const Rect& to_rect, const Rect& from_rect);
-  
+
 private:
   Input&        inp_;
 
