@@ -1,23 +1,22 @@
 # -*- Makefile -*-
 
-lib_LTLIBRARIES		= outatime_sdlvisu.la
+lib_LTLIBRARIES	 = outatime_sdlvisu.la
 
 outatime_sdlvisu_la_SOURCES	=		\
 	OutAGui.cc				\
 	OutAGui.hh				\
 	Object.hh				\
-	Square.hh				\
 	Sprite.hh				\
-	InfoBox.hh				\
-	ResourceCenter.hh			\
-	VirtualScreen.cc			\
-	VirtualScreen.hh
+	InfoBox.hh
 
 outatime_sdlvisu_la_CXXFLAGS	=		\
 	$(SDL_CFLAGS)				\
 	-DMODULE_NAME=\"outagui\"		\
 	-DMODULE_COLOR=C_YELLOW			\
 	-DPKGDATADIR=\"$(pkgdatadir)/prolo2006/\"
+
+outatime_sdlvisu_la_LIBADD	=		\
+	$(top_builddir)/stechec/sdl/libstechec_sdl.la
 
 outatime_sdlvisu_la_LDFLAGS	=		\
 	-module					\
@@ -27,6 +26,6 @@ INCLUDES        =				\
         -I$(top_srcdir)/stechec/tools		\
         -I$(top_srcdir)/stechec/base_rules	\
 	-I$(top_srcdir)/stechec/client		\
+	-I$(top_srcdir)/stechec/sdl		\
 	-I$(top_srcdir)/prologin/common		\
-	-I$(top_srcdir)/prologin/gui_qt		\
 	-I$(srcdir)/../rules

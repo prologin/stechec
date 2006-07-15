@@ -21,11 +21,11 @@
 # include "Api.hh"
 # include "Event.hh"
 
+# include "SDLWindow.hh"
 # include "Square.hh"
-# include "Object.hh"
-# include "VirtualScreen.hh"
-# include "ResourceCenter.hh"
-# include "InfoBox.hh"
+# include "Sprite.hh"
+# include "VirtualScrollableSurface.hh"
+# include "TextSurface.hh"
 
 class OutAGui : public OutAnEvent
 {
@@ -41,31 +41,39 @@ private:
   ** Events from rules.
   */
   virtual void endOfTurn() {}
-  virtual void moveGoodman(int player_id, int unit_id, const Position& pos);
+  virtual void goodmanMove(int player_id, int unit_id, const Position& pos);
+  virtual void goodmanChangeState(int team_id, int unit_id, int new_state);
+  virtual void goodmanLostDelorean(int team_id, int unit_id);
+  virtual void goodmanGetDelorean(int team_id, int unit_id);
+  virtual void goodmanLostAlmanach(int team_id, int unit_id);
+  virtual void goodmanGetAlmanach(int team_id, int unit_id);
+  virtual void deloreanMove(const Position& pos);
+  virtual void almanachMove(const Position& pos);
 
   Api*          api_;
   ClientCx*     ccx_;
 
+  SDLWindow     win_;
+
   int           map_x_;
   int           map_y_;
+  int           case_size_;
 
-  // SDL specifics functions and variables.
-  bool          initSDL();
   void          init();
   void          initMapSquare(int x, int y);
   void          setZoom(int zoom);
-  bool          drawBG();
-  void          draw();
+  void          refreshInfoBox();
 
-  ResourceCenter resource_;
-  VirtualScreen* vscreen_;
-  InfoBox*       info_box_;
-  SDL_Surface*   screen_;
+  VirtualScrollableSurface*     vscreen_;
 
   Square        map_[MAX_MAP_SIZE][MAX_MAP_SIZE];
-  SDLObject     delorean_;
-  SDLObject     almanach_;
-  SDLObject     unit_[MAX_TEAM][MAX_GOODMEN];
+  Sprite        delorean_;
+  Sprite        almanach_;
+  Sprite        unit_[MAX_TEAM][MAX_GOODMEN];
+
+  TextSurface   txt_date_;
+  TextSurface   txt_fuel_;
+  TextSurface   txt_score_[MAX_TEAM];
 };
 
 #endif /* !OUTAGUI_HH_ */

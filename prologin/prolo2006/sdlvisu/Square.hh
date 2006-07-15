@@ -16,89 +16,79 @@
 # include <SDL_gfxPrimitives.h>
 
 # include "Api.hh"
-# include "Sprite.hh"
+# include "Surface.hh"
 
-class Square : public Sprite
+class Square : public Surface
 {
 public:
 
   Square()
-    : black_surf_(NULL),
-      visible_surf_(NULL),
-      is_black_(false),
-      api_(NULL)
+    : api_(NULL)
   {
   }
 
   ~Square()
   {
-    if (black_surf_)
-      SDL_FreeSurface(black_surf_);
   }
 
   void setGameInfo(Api* api, const Point& game_pos)
   {
     api_ = api;
     game_pos_ = game_pos;
+
+    // FIXME: kludge, highly order dependant.
+    black_surf_.create(128, 128);
+    blit(black_surf_);
+    boxRGBA(black_surf_.getSDLSurface(), 0, 0, 128, 128, 0, 0, 0, 170);
+    black_surf_.hide();
+    parent_->addChild(&black_surf_);
   }
   
-  virtual bool update(bool force = false)
+  virtual void setPos(const Point& pos)
   {
-    assert(api_ != NULL && surf_ != NULL);
+    black_surf_.setPos(pos);
+    Surface::setPos(pos);
+  }
+
+  virtual void setZoom(double zoom)
+  {
+    blit(black_surf_);
+    boxRGBA(black_surf_.getSDLSurface(), 0, 0, 128, 128, 0, 0, 0, 170);
+    Surface::setZoom(zoom);
+  }
+  
+  virtual void setZ(int z)
+  {
+    black_surf_.setZ(z + 1);
+    Surface::setZ(z);
+  }
+  
+  virtual void update()
+  {
+    assert(api_ != NULL);
 
     // Switch from hidden to visible
-    if (api_->visible(game_pos_.x, game_pos_.y) == 0 && !is_black_)
+    if (api_->visible(game_pos_.x, game_pos_.y) == 0 && !black_surf_.isShown())
       {
         LOG4("background, switch to black: " << game_pos_);
-        // Load the fog of war'ed surface, if not already done.
-        if (black_surf_ == NULL)
-          {
-            black_surf_ =
-              SDL_CreateRGBSurface(SDL_HWSURFACE,
-                                     surf_->w,
-                                     surf_->h,
-                                     screen_->format->BitsPerPixel,
-                                     screen_->format->Rmask,
-                                     screen_->format->Gmask,
-                                     screen_->format->Bmask,
-                                     screen_->format->Amask);
-              SDL_BlitSurface(surf_, NULL, black_surf_, NULL);
-              boxRGBA(black_surf_, 0, 0, surf_->w, surf_->h, 0, 0, 0, 170);
-          }
-        visible_surf_ = surf_;
-        surf_ = black_surf_;
-        is_black_ = true;
-        force = true;
+        black_surf_.show();
+        hide();
       }
 
     // Switch from visible to hidden
-    if (api_->visible(game_pos_.x, game_pos_.y) != 0 && is_black_)
+    if (api_->visible(game_pos_.x, game_pos_.y) != 0 && black_surf_.isShown())
       {
         LOG4("background, switch to visible: " << game_pos_);
-        surf_ = visible_surf_;
-        is_black_ = false;
-        force = true;
+        black_surf_.hide();
+        show();
       }
     
-    return Sprite::update(force);
+    Surface::update();
   }
 
 private:
-  virtual void changeSurface()
-  {
-    // surface changed... switch to visible, thus update() can
-    // switch to black again.
-    if (black_surf_ != NULL)
-      SDL_FreeSurface(black_surf_);
-    surf_ = visible_surf_;
-    black_surf_ = NULL;
-    is_black_ = false;
-  }
 
-  SDL_Surface*  black_surf_; ///< Fog of war.
-  SDL_Surface*  visible_surf_;
-  bool          is_black_;
-
+  Surface       black_surf_;    ///< Fog of war.
   Point         game_pos_;
   Api*          api_;
 };
