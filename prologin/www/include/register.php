@@ -224,7 +224,7 @@ function display_login_page($message)
   if ($message)
     $_login_message = $message;
   style_init(1);
-  include "content/login.php";
+  include "content/register.php";
   print("</body>");
   die;
 }

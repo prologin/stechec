@@ -278,4 +278,5 @@ Warning: This is probably _not_ what you want.
       LDFLAGS="$ac_save_LDFLAGS"
 
   fi # !use_sdl
+    AM_CONDITIONAL([HAVE_PARAGUI], [test x"$PARAGUI_CFLAGS" != x])
 ])

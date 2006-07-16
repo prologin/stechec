@@ -39,9 +39,6 @@ function strip_int ()
     $GLOBALS[$vars[$i]] = intval($GLOBALS[$vars[$i]]);
 }
 
-$_mail;
-$_last;
-$_first;
 $post_data = array("_login" => $_login);
 strip_int();
 
@@ -59,7 +56,7 @@ include "include/style.php";
 include "include/access.php";
 include "include/user.php";
 include "include/table.php";
-include "include/auth.php";
+include "include/register.php";
 
 
 // BEGIN MAINTENANCE MODE
@@ -77,6 +74,7 @@ do_auth();
 /* want delog ? */
 
 user_init($_login);
+
 if (strlen($_dl_type))
 {
   include "include/download.php";

@@ -25,6 +25,17 @@
 define (PROF_CANDIDAT,	1);
 define (PROF_ORGA,	2);
 
+
+function sendMail($name,$mail, $pass, $login)
+{
+   // l'	metteur
+   $tete = "From: Defi Prologin <info@prologin.org>\n";
+   $tete .= "Reply-To: info@prologin.org\n";
+   // et zou... false si erreur d'	mission
+   mail($name." <".$mail.">","Prologin defi de l'été",
+"Salut à toi ".$name." et bienvenue dans la grande aventure du défi de l'été.\n\n Sur ce site tu pourras soumettre des intelligences artificielles pour gagner à l'édition 2006 du défi de l'été.\n\nJe te rappelle juste que ton pass est : ".$pass." et ton login est :".$login." ne les perd pas ! :)\n\nBonne journée, bonne chance et bon code.\n\nCordialement, \n-- \nL'équipe Prologin",$tete);
+   }
+
 /*
 ** Retourne la ligne de la base de donnees correspondant au profil
 ** $profil_type: id du profil a recuperer
@@ -351,14 +362,29 @@ function user_init($login)
     } while (update_profil());
 }
 
+function is_mail_valid($mail)
+{
+  return ereg("^[a-z0-9._-]+@[a-z0-9.-]{2,}[.][a-z]{2,3}$", $mail);
+}
+
 function user_register()
 {
 	global $_login;
 	global $_pass;
+	global $_mail;
+	global $_last;
+	global $_first;
 
-	if (isset($_POST['register']) && isset($_login) && isset($_pass) && strcmp($_login, "") && strcmp($_pass, ""))
+	$query = db_query("SELECT nom FROM user WHERE `login`='$_login'");
+	$row = db_fetch_row($query);
+	if (strlen($row[0]) && isset($_POST['register']))
 	{
-		db_query("INSERT INTO user (id_profil, id_style, nom, prenom, nickname, login, passwd) VALUES (1, 1, 'Somebody', 'Someone', '$_login', '$_login', MD5('$_pass'))");
+	  return;
+	}
+	if (isset($_POST['register']) && isset($_login) && isset($_pass) && strcmp($_login, "") && strcmp($_pass, "") && strcmp($_last, "") && strcmp($_first, "") && is_mail_valid($_mail))
+	{
+	db_query("INSERT INTO user (id_profil, id_style, nom, prenom, nickname, login, passwd, email) VALUES (1, 1, '$_last', '$_first', '$_login', '$_login', MD5('$_pass'), '$_mail')");
+	sendMail($_last." ".$_first, $_mail, $_pass, $_login);
 	}
 }
 

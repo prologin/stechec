@@ -32,31 +32,66 @@
 
 <table cellpadding=0 cellspacing=0 width=100% height=100% border=0 bgcolor='#505060'><tr><td>
 <form method='post' action='index.php' name='logform'>
+
 <table class=login_table align=center valign=top cols=3>
-  <tr height=228><td colspan=3>&nbsp</td></tr>
+
+  <tr height=130><td colspan=3>&nbsp</td></tr>
+  <tr height=50><td width=150 ></td><td colspan=2>Les informations que vous saisissez, doivent etre correctes pour que l'association
+puisse vous envoyer un lot si vous faites parti des meilleurs de ce defi.</td></tr>
+  <tr height=20><td colspan=3>&nbsp</td></tr>
   <tr height=30>
      <td width=300>&nbsp</td>
-
      <td valign=middle align=left>
-       <input type='text' name='_login' maxlength=20>
+	Nom
      </td>
-     <td>
-      <input type='password' name='_pass' maxlength=50>
+     <td valign=middle align=left>
+       <input type='text' name='_last' maxlength=20>
      </td>
   </tr>
+  <tr height=30>
+	<td width=300>&nbsp</td>
+     <td valign=middle align=left>
+	Prenom
+     </td>
+     <td valign=middle align=left>
+      <input type='text' name='_first' maxlength=50>
+     </td>
+ </tr>
+  <tr height=30>
+	<td width=300>&nbsp</td>
+     <td valign=middle align=left>
+	E-mail
+     </td>
+     <td valign=middle align=left>
+      <input type='text' name='_mail' maxlength=50>
+     </td>
+ </tr>
+  <tr height=30>
+	<td width=300>&nbsp</td>
+     <td valign=middle align=left>
+	Login
+     </td>
+     <td valign=middle align=left>
+      <input type='Login' name='_login' maxlength=50>
+     </td>
+ </tr>
+  <tr height=30>
+	<td width=300>&nbsp</td>
+     <td valign=middle align=left>
+	Password
+     </td>
+     <td valign=middle align=left>
+      <input type='password' name='_pass' maxlength=50>
+     </td>
+ </tr>
 
   <tr height=20><td>&nbsp</td></tr>
 
   <tr height=30>
     <td >&nbsp</td>
 
-    <td valign=middle align=left width=200>
-      <input type='submit' name="login" value="Let me come in !">
-    </td>
-
-    <td>
-<!--      <input type='submit' name="register" value="Creer un compte" > -->
-	<a href="register-index.php">S'enregistrer</a>
+    <td valign=middle align=right width=200>
+      <input type='submit' name="register" value="Register me !">
     </td>
     </tr>
 

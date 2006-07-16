@@ -24,7 +24,7 @@
 
 $db_ip   = "localhost";
 $db_user = "prologin";
-$db_pass = "tty4ever";
+$db_pass = "prologin";
 $db_databases = "stechec";
 
 ?>

@@ -1,0 +1,65 @@
+** php
+in /etc/php4/apache2/php.ini
+set register_globals = on
+
+------------------------
+
+** Change define value in trunk/prologin/www/includes/config.php
+	Here is a path, just change it to the directory you want 
+	to store tarballs
+-------------------------
+
+** mysql
+localise stechec.sql and do : 
+stechec.sql | mysql -u root -p ******
+you just dumped the database
+
+** create user for mysql (user prologin, pass tty4ever)
+
+
+------------------------
+
+** configure with options : 
+ --without-sdl --without-qt --with-mysql --with-modules="modules you want" --prefix="the path you want to install binaries"
+
+/!\ the binaries' install path will be called $prefix /!\
+------------------------
+
+** Launching main_server
+	* in the prefix/etc : changes to make to stechec.yml : 
+		- database informations
+		(warning as it's a yml file, be careful	with the spaces)
+		- launching scripts : 
+			* compil : 
+		$prefix/lib/stechec/bash/compile_champion.sh
+			* triche : 
+		$prefix/lib/stechec/bash/check_cheating.sh
+			* client : 
+		$prefix/lib/stechec/bash/run_client.sh
+			* server : 
+		$prefix/lib/stechec/bash/run_server.sh
+			* contest_path : 
+		the path you decided to store your champions($contest_path)
+			* stechec_install_path : 
+		$prefix
+
+--------------------------
+
+** generate makefiles : 
+	$ cd $prefix/bin
+	$ ./generator server ../share/stechec/prolo200?/prolo200?.yml $prefix
+
+--------------------------
+
+** Allow access to meta server and apache on $contest_path: 
+	$ chmod -R 777 $contest_path
+
+---------------------------
+
+** Launching games : 
+ in a term launch : 
+ 	$ $prefix/bin/main_server -c $prefix/etc/stechec.yml
+ in another
+ 	$ $prefix/bin/meta_server -c $prefix/etc/stechec.yml
+
+---------------------------
