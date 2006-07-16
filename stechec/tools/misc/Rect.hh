@@ -43,6 +43,7 @@ public:
   friend Rect operator+ (const Rect& lhs, const Point& rhs);
   Rect& operator-= (const Point& rhs);
   friend Rect operator- (const Rect& lhs, const Point& rhs);
+  friend Rect operator* (const Rect& lhs, double factor);
   Rect& operator|= (const Rect& rhs);
   Rect& operator&= (const Rect& rhs);
   friend Rect operator| (const Rect& lhs, const Rect& rhs);
@@ -156,6 +157,12 @@ inline Rect& Rect::operator|= (const Rect& rhs)
   w = x2 - x;
   h = y2 - y;
   return *this;
+}
+
+inline Rect operator* (const Rect& lhs, double factor)
+{
+  return Rect((int)(lhs.x * factor), (int)(lhs.y * factor),
+              (int)(lhs.w * factor), (int)(lhs.h * factor));
 }
 
 inline Rect& Rect::operator&= (const Rect& rhs)

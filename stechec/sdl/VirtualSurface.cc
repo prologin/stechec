@@ -74,14 +74,19 @@ Point VirtualSurface::getAbsolutePos() const
 
 void VirtualSurface::setZoom(double zoom)
 {
-  double distortion = getZoom() / zoom;
+  // Propagate setZoom on all children.
   Surface::setZoom(zoom);
   for_all(child_list_, std::bind2nd(std::mem_fun(&Surface::setZoom), zoom));
 
+  // Adjust child position.
   SurfaceList::iterator it;
   for (it = child_list_.begin(); it != child_list_.end(); ++it)
-    (*it)->setPos((int)((*it)->getPos().x * distortion),
-                  (int)((*it)->getPos().y * distortion));
+    {
+      Rect orig((*it)->orig_rect_); // Save to avoid setPos() round error.
+      (*it)->setPos((int)(orig.x / zoom),
+                    (int)(orig.y / zoom));
+      (*it)->orig_rect_ = orig;
+    }
 }
 
 void VirtualSurface::update()

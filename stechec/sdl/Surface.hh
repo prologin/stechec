@@ -114,8 +114,8 @@ protected:
 private:
   std::string   filename_;
 
-  Rect          rect_;
-  Point         orig_size_;  ///< Surf size with zoom_ == 1
+  Rect          rect_;          ///< Position & Size of surface, relative to its parent.
+  Rect          orig_rect_;     ///< Rect size with zoom_ == 1.
   double        zoom_;
   double        angle_;
   int           z_;
