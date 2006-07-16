@@ -21,6 +21,18 @@
 # include "VirObject.hh"
 # include "VirUdp.hh"
 
+/*!
+** Proxy between Stechec and Virchor.
+**
+** Virchor must be separately launched before, and listening
+** for udp connection, with appropriate xml files.
+**
+** Sadly, no documentation on it exists at that time. Some information
+** may be taken out nfs00...
+**
+** @author cat
+** @date april 2006
+*/
 class VirchorGui : public OutAnEvent
 {
 public:
@@ -30,17 +42,15 @@ public:
   int run();
 
 private:
-  
-  /*!
-  ** Events from rules.
-  */
-  virtual void moveGoodman(int team_id, int unit_id, const Position& pos);
-  virtual void endOfTurn();
-  int jump();
-  int translate();
 
   int init();
-  
+
+  //! @brief Called at the end of the turn.
+  virtual void endOfTurn();
+
+  int jump();
+  int translate();
+ 
   Api*          api_;
   ClientCx*     ccx_;
   VirUDP        v;

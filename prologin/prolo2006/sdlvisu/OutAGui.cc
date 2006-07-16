@@ -14,7 +14,7 @@
 
 
 //
-// Resources
+// Resource listing.
 //
 
 static const char* streets[] = {
@@ -63,7 +63,7 @@ static const int nb_player = sizeof(players) / sizeof(char*);
 static const char* building_bet = "/prolo2006/texture_2D/building_bet.png";
 
 //
-// End of resources.
+// End of resource listing.
 //
 
 

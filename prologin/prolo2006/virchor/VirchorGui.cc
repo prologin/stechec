@@ -143,13 +143,6 @@ int VirchorGui::init()
   return 0;
 }
 
-// This function is called each time a player move.
-void VirchorGui::moveGoodman(int team_id, int unit_id, const Position& pos)
-{
-  LOG3("++++++++ goodman: move team: " << team_id << " uid " << unit_id
-       << " from " << unit_[team_id][unit_id] << " to " << Point(pos));
-}
-
 // This function is called at the end of any turn.
 void VirchorGui::endOfTurn()
 {

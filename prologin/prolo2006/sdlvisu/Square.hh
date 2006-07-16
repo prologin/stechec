@@ -52,14 +52,16 @@ public:
 
   virtual void setZoom(double zoom)
   {
-    blit(black_surf_);
-    boxRGBA(black_surf_.getSDLSurface(), 0, 0, 128, 128, 0, 0, 0, 170);
     Surface::setZoom(zoom);
+
+    blit(black_surf_, Rect(), Rect(0, 0, getRect().w, getRect().h));
+    boxRGBA(black_surf_.getSDLSurface(), 0, 0,
+            getRect().w, getRect().h, 0, 0, 0, 170);
   }
-  
+
   virtual void setZ(int z)
   {
-    black_surf_.setZ(z + 1);
+    black_surf_.setZ(z - 1);
     Surface::setZ(z);
   }
   
@@ -70,7 +72,6 @@ public:
     // Switch from hidden to visible
     if (api_->visible(game_pos_.x, game_pos_.y) == 0 && !black_surf_.isShown())
       {
-        LOG4("background, switch to black: " << game_pos_);
         black_surf_.show();
         hide();
       }
@@ -78,7 +79,6 @@ public:
     // Switch from visible to hidden
     if (api_->visible(game_pos_.x, game_pos_.y) != 0 && black_surf_.isShown())
       {
-        LOG4("background, switch to visible: " << game_pos_);
         black_surf_.hide();
         show();
       }
