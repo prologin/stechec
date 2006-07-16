@@ -1,0 +1,79 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+config.status: configure
+	dh_testdir
+	./configure					\
+	  --host=$(DEB_HOST_GNU_TYPE)			\
+	  --build=$(DEB_BUILD_GNU_TYPE)			\
+          --prefix=/usr					\
+          --mandir=\$${prefix}/share/man		\
+          --infodir=\$${prefix}/share/info		\
+	  --with-modules=ant,prolo2005,prolo2006	\
+          CFLAGS="$(CFLAGS)"
+
+#Architecture
+build: build-stamp
+
+build-stamp:  config.status
+	dh_testdir
+	$(MAKE)
+	touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	-$(MAKE) distclean
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+	dh_clean
+
+install:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -s
+	dh_installdirs -s --package=stechec
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+
+binary: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installexamples
+	dh_installman
+	dh_install --sourcedir=debian/tmp --exclude=.svn
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+.PHONY: build clean binary install
