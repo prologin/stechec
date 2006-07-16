@@ -37,7 +37,7 @@ DEPENDS_bb5="sdl,readline"
 DEPENDS_prologin="sdl,mysql"
 DEPENDS_ant="prologin,qt"
 DEPENDS_prolo2005="prologin,qt"
-DEPENDS_prolo2006="prologin,qt"
+DEPENDS_prolo2006="prologin"
 
 # Can select which module(s) to build
 AC_MSG_CHECKING([for modules to build])
@@ -249,7 +249,6 @@ AC_CONFIG_FILES([
   prologin/prolo2006/data/Makefile
   prologin/prolo2006/test/Makefile
   prologin/prolo2006/visu/Makefile
-  prologin/prolo2006/sdlvisu/Makefile
   prologin/prolo2006/virchor/Makefile
 ])
 fi

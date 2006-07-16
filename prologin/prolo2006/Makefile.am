@@ -7,7 +7,7 @@ SUBDIRS =					\
 	virchor
 
 if HAVE_SDL
-SUBDIRS += sdlvisu
+SUBDIRS += visu
 endif
 
 SUBDIRS += subject
