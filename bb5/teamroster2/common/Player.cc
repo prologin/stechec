@@ -24,6 +24,8 @@
 #include <string>
 #include <iostream>
 
+using std::vector;
+using std::string;
 
 Player::Player(Team *team)
 {
@@ -54,7 +56,6 @@ void Player::reset()
     casualties_ = 0;
     mostValuablePlayer_ = 0;
     value_ = 0;     
-    vSkills_.clear();  
 }
 
 // -----------------------------------------------------------------------
@@ -79,7 +80,7 @@ Position* Player::getPosition()
 void Player::setPosition(const char *selectedPosition) 
 {     
     Race* race = team_->getRace();
-    std::vector<Position> vPos = race->getPositions();
+    vector<Position> vPos = race->getPositions();
     
     bool posFound = false;
     for (unsigned int i=0; i< vPos.size(); i++)
@@ -98,12 +99,8 @@ void Player::setPosition(const char *selectedPosition)
             armourValue_ = vPos[i].getArmourValue();
             value_ = vPos[i].getCost();
             
+            // We need to remove any old player specific skills
             vSkills_.clear();
-            std::vector<const char*> skills = vPos[i].getSkills();
-            for (unsigned int j=0; j<skills.size(); j++)
-            {
-                vSkills_.push_back(skills[j]);
-            }
 
             display_ = vPos[i].getDisplay();
             break;
@@ -154,12 +151,80 @@ void Player::setArmourValue(int av) {
     }
 }
 
-std::vector <const char*> Player::getSkills() { return vSkills_; }
+/**
+ * Return all player's skills : normal + double
+ */
+vector<const char*> Player::getSkills() 
+{ 
+    vector<const char*>* vTmp = new vector<const char*>();
+    vTmp->clear();
+    
+    // Add all skills coming with the Position
+    vector<const char*> skills = getPosition()->getSkills();
+    for (unsigned int j=0; j<skills.size(); j++)
+    {
+        vTmp->push_back(skills[j]);
+    }
 
-void Player::addSkill(const char* skill)
+    // Add all additional skills for the player
+    for (unsigned int i=0; i<vSkills_.size(); i++)
+    {
+        vTmp->push_back(vSkills_[i]);
+    }
+
+    // Add all additional skills double for the player
+    for (unsigned int i=0; i<vSkillsDouble_.size(); i++)
+    {
+        vTmp->push_back(vSkillsDouble_[i]);
+    }
+
+    return *vTmp; 
+}
+
+vector<const char*> Player::getSkillsNormal() 
+{ 
+    vector<const char*>* vTmp = new vector<const char*>();
+    vTmp->clear();
+    
+    // Add all skills coming with the Position
+    vector<const char*> skills = getPosition()->getSkills();
+    for (unsigned int j=0; j<skills.size(); j++)
+    {
+        vTmp->push_back(skills[j]);
+    }
+
+    // Add all additional skills for the player
+    for (unsigned int i=0; i<vSkills_.size(); i++)
+    {
+        vTmp->push_back(vSkills_[i]);
+    }
+
+    return *vTmp; 
+}
+
+vector<const char*> Player::getSkillsDouble() 
+{ 
+    vector<const char*>* vTmp = new vector<const char*>();
+    vTmp->clear();
+    
+    // Add all additional skills double for the player
+    for (unsigned int i=0; i<vSkillsDouble_.size(); i++)
+    {
+        vTmp->push_back(vSkillsDouble_[i]);
+    }
+
+    return *vTmp; 
+}
+
+/**
+ * Used to add a new skill for the player other than the skill from his position
+ */
+void Player::addSkillNormal(const char* skill)
 {
-    // Avoid double skills
+    // Avoid double skills...
     bool found = false;
+    
+    // Search the skills in the additional skills of the player
     for (unsigned int i=0; i<vSkills_.size(); i++)
     {
         if (strcmp(vSkills_[i], skill) == 0)
@@ -169,29 +234,89 @@ void Player::addSkill(const char* skill)
         }        
     }
     
-    // If the skill is not already present, just add it.
+    // Search in skill coming from the position 
+    if (!found) 
+    {
+        vector<const char*> skills = getPosition()->getSkills();
+        for (unsigned int j=0; j<skills.size(); j++)
+        {
+            if (strcmp(skills[j], skill) == 0)
+            {
+                found = true;
+                break;
+            }   
+        }     
+    }
+    
+    // If the skill is not already present, just add it as additional skill.
     if (!found)
     {
-        std::string s = skill;
-        vSkills_.push_back(s.c_str());
+//        std::cout << skill << " added" << std::endl;
+        vSkills_.push_back(skill);
+    }
+}
+
+/**
+ * Used to add a new skill for the player other than the skill from his position
+ */
+void Player::addSkillDouble(const char* skill)
+{
+    // Avoid double skills...
+    bool found = false;
+    
+    // Search the skills in the additional skills of the player
+    for (unsigned int i=0; i<vSkillsDouble_.size(); i++)
+    {
+        if (strcmp(vSkillsDouble_[i], skill) == 0)
+        {
+            found = true;
+            break;
+        }        
+    }
+    
+    // Search in skill coming from the position 
+    if (!found) 
+    {
+        vector<const char*> skills = getPosition()->getSkills();
+        for (unsigned int j=0; j<skills.size(); j++)
+        {
+            if (strcmp(skills[j], skill) == 0)
+            {
+                found = true;
+                break;
+            }   
+        }     
+    }
+    
+    // If the skill is not already present, just add it as additional skill.
+    if (!found)
+    {
+//        std::cout << skill << " added" << std::endl;
+        vSkillsDouble_.push_back(skill);
     }
 }
 
 const char* Player::getSkillsAsString() 
 {
-    std::string skills = "";
+    string skills = "";
     
-    for (unsigned int i=0; i<vSkills_.size(); i++)
+    if (positionTitle_.compare("") != 0)
     {
-        skills += vSkills_[i];
-        if (i<(vSkills_.size() - 1))
+        vector<const char*> vSkills = getSkills();
+        for (unsigned int i=0; i<vSkills.size(); i++)
         {
-            skills += ", ";    
+            skills += vSkills[i];
+            if (i<(vSkills.size() - 1))
+            {
+                skills += ", ";    
+            }
         }
-    }
+    } 
     return skills.c_str();
 }
 
+void Player::removeAllSkillsNormal() { vSkills_.clear(); }
+void Player::removeAllSkillsDouble() { vSkillsDouble_.clear(); }
 
 const char* Player::getDisplay() { return display_.c_str(); }
 
@@ -276,10 +401,10 @@ long Player::getValue()
     }
     
     // Eventually add value due to new skill
-//FIXME: to be added after skill management.
+    playerValue += vSkills_.size()*20000;
 
     // Eventually add value due to new skill with double
-//FIXME: to be added after skill ñmanagement.
+    playerValue += vSkillsDouble_.size()*30000;
 
     return playerValue; 
 }

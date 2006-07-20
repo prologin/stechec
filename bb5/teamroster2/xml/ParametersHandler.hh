@@ -28,6 +28,7 @@ public:
     static std::vector<std::string> vSkillsPassing_;
     static std::vector<std::string> vSkillsStrength_;
     static std::vector<std::string> vSkillsMutation_;
+    static std::vector<std::string> vSkillsExtraordinary_;
 
     static std::string BBversion_;   
 

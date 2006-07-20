@@ -26,6 +26,7 @@
 #include "pgmessagebox.h"
 
 #include "TeamrosterApp.hh"
+#include "SkillsDialog.hh"
 #include "My_DropDown.hh"
 #include "BBowlWidget.hh"
 #include "PlayerLineWidget.hh" 
@@ -55,9 +56,11 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	armourValue_ = new PG_LineEdit(this,PG_Rect(258,0,26,26),"LineEdit",2);
 	armourValue_->SetValidKeys("0123456789");
 	
-	skills_ = new PG_LineEdit(this,PG_Rect(285,0,194,26));
+	skills_ = new PG_LineEdit(this,PG_Rect(285,0,184,26));
     skills_->SetEditable(false);
 	
+    skillsBtn_ = new PG_Button(this, PG_Rect(469,0,10,26), "+");
+    
 	injuries_ = new PG_LineEdit(this,PG_Rect(479,0,37,26));
 	
 	completions_ = new PG_LineEdit(this,PG_Rect(517,0,37,26),"LineEdit",2);
@@ -87,6 +90,7 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	AddChild(agility_);
 	AddChild(armourValue_);
 	AddChild(skills_);
+    AddChild(skillsBtn_);
 	AddChild(injuries_);
 	AddChild(completions_);
 	AddChild(touchdowns_);
@@ -103,6 +107,7 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	app->Add(strength_);
 	app->Add(agility_);
 	app->Add(armourValue_);
+    app->Add(skillsBtn_);
 	app->Add(injuries_);
 	app->Add(completions_);
 	app->Add(touchdowns_);
@@ -123,6 +128,7 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	interceptions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditInter));
 	casualties_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditCasual));
 	mostValuablePlayer_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditMvp));
+    skillsBtn_->sigClick.connect(slot(*this, &PlayerLineWidget::handleButtonSkillsClick));
 
     updateView();
 }
@@ -157,7 +163,7 @@ void PlayerLineWidget::updatePositionsList(std::vector<Position> vPos)
  */
 void PlayerLineWidget::updateView()
 {  
-std::cout<<"PlayerLineWidget::updateView()"<<std::endl;
+//std::cout<<"PlayerLineWidget::updateView()"<<std::endl;
     name_->SetText(player_->getName());
     position_->SetText(player_->getPositionTitle());
     
@@ -213,6 +219,8 @@ void PlayerLineWidget::displayError(const char* msg)
       msgbox.SetFontColor(black, true);
       msgbox.SetSimpleBackground(true);
       msgbox.SetBackgroundColor(white);
+      msgbox.SetTitlebarColor(white);
+   
       msgbox.Update();
       msgbox.Show();          
       msgbox.WaitForClick();  
@@ -435,4 +443,63 @@ bool PlayerLineWidget::handleSelectItemPosition(PG_ListBoxBaseItem* item)
     return true;
 }
  
-PlayerLineWidget::~PlayerLineWidget()  { }
+bool PlayerLineWidget::handleButtonSkillsClick(PG_Button* button)
+{
+   button->SetInputFocus();
+   if (strcmp(player_->getPositionTitle(),"") == 0)
+   {
+        displayError("Position must be fixed to add a new skill.");
+   }
+   else
+   {
+        SkillsDialog iDialog(NULL, PG_Rect(180,50,400,270), "Skills", player_);
+        iDialog.Show();          
+        int btnClickedID = iDialog.WaitForClick();  
+        iDialog.Hide();
+        
+        // If OK was clicked...
+        if (btnClickedID == 1)
+        {
+            // Remove all normal skills
+            player_->removeAllSkillsNormal();
+            std::vector<std::string> skills = iDialog.getPlayerSkills();
+            for (unsigned int i=0; i<skills.size(); i++)
+            {
+                //std::cout << skills[i] << std::endl;
+                player_->addSkillNormal(skills[i].c_str());
+            }
+
+            player_->removeAllSkillsDouble();
+            std::vector<std::string> skillsDouble = iDialog.getPlayerSkillsDouble();
+            for (unsigned int i=0; i<skillsDouble.size(); i++)
+            {
+                //std::cout << skillsDouble[i] << std::endl;
+                player_->addSkillDouble(skillsDouble[i].c_str());
+            }
+        }
+        updateView();
+   }
+   return true;
+} 
+
+
+PlayerLineWidget::~PlayerLineWidget()  
+{ 
+    Hide();
+    delete name_;
+    delete position_;
+    delete movementAllowance_;
+    delete strength_;
+    delete agility_;
+    delete armourValue_;
+    delete skills_;
+    delete skillsBtn_;    
+    delete injuries_;
+    delete completions_;
+    delete touchdowns_;
+    delete interceptions_;
+    delete casualties_;
+    delete mostValuablePlayer_;
+    delete starPlayerPoints_;
+    delete value_;
+}

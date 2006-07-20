@@ -42,7 +42,8 @@ Par contre les inconvénients sont nombreux:
 - Prise en charge le contrôle des caractères de saisie dans les zones numériques
 - Limitation du nombre de reroll : 8 max pour toutes les races
 - Limitation du nombre d'apothicaire : entre 0 et 1 en fonction des races
-- Calcul automatique de la valeur totale de l'équipe (seulement les coûts d'achat)
+- Calcul automatique de la valeur totale de l'équipe 
+- Calcul automatique de la valeur des joueurs modifiée avec les amélioration (cf. LBR 5 p.27)
 - Calcul du PE (STAR PLAYER POINTS TABLE - LBR 5 p.33)
 - Posibilité de modification de l'ensemble des champs non calculés et non fixés de la feuille (Characteristic Increases - LBR 5 p.33)
 - Gestion des limitations sur les caractéristiques (max 10, ne peut pas être augmenté (Improvements & Player Values - LBR 5 p.34)
@@ -51,3 +52,5 @@ Par contre les inconvénients sont nombreux:
 - Affiche l'icone de l'emblème de l'équipe
 - Bouton Save implémenté : on enregistre le fichier team dans le répertoire courant avec "nomTeam.xml"
 - Bouton Load implémenté : on charge le fichier team depuis le répertoire courant.
+- Bouton Quit implémenté : on quitte l'application.
+- Gestion des skills

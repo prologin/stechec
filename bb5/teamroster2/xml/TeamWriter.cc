@@ -58,7 +58,7 @@ void TeamWriter::writeTeam(const char* filename, Team* team)
           fout << "       <av>" << player->getArmourValue() << "</av>" << endl;
           fout << "       <cost>" << player->getValue() << "</cost>" << endl;
           
-          std::vector<const char*> skills = player->getSkills();
+          std::vector<const char*> skills = player->getSkillsNormal();
           if (skills.size() == 0)
           {
               fout << "       <skills />" << endl;                  
@@ -71,6 +71,20 @@ void TeamWriter::writeTeam(const char* filename, Team* team)
                 fout << "         <skill>" << skills[j] << "</skill>" << endl;
               }
               fout << "       </skills>" << endl;
+          }
+          std::vector<const char*> skillsDouble = player->getSkillsDouble();
+          if (skillsDouble.size() == 0)
+          {
+              fout << "       <skills_double />" << endl;                  
+          }
+          else
+          {
+              fout << "       <skills_double>" << endl;
+              for (unsigned int j=0; j<skillsDouble.size(); j++)
+              { 
+                fout << "         <skill_double>" << skillsDouble[j] << "</skill_double>" << endl;
+              }
+              fout << "       </skills_double>" << endl;
           }
           fout << "       <inj>" << player->getInjuries() << "</inj>" << endl;
           fout << "       <com>" << player->getCompletions() << "</com>" << endl;

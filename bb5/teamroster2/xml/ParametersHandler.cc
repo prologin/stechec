@@ -33,6 +33,7 @@ vector<string> ParametersHandler::vSkillsAgility_;
 vector<string> ParametersHandler::vSkillsPassing_;
 vector<string> ParametersHandler::vSkillsStrength_;
 vector<string> ParametersHandler::vSkillsMutation_;
+vector<string> ParametersHandler::vSkillsExtraordinary_;
 vector<string>* ParametersHandler::vCurrent_ = NULL;
 
 string  ParametersHandler::BBversion_;   
@@ -79,6 +80,10 @@ void ParametersHandler::startElement(const XMLCh* const name, AttributeList&  at
     {
         // Set current vector to store the skills
         ParametersHandler::vCurrent_ = &ParametersHandler::vSkillsMutation_;
+    } else if (strcmp(DualString(name).asCString(), "Extraordinary") == 0)
+    {
+        // Set current vector to store the skills
+        ParametersHandler::vCurrent_ = &ParametersHandler::vSkillsExtraordinary_;
     }
  }
 
@@ -87,6 +92,7 @@ void ParametersHandler::characters(const XMLCh* const chars, const unsigned int 
     if (currentNode_ == "skill")
     {
       ParametersHandler::vCurrent_->push_back(xercesc::XMLString::transcode(chars));
+//std::cout <<  xercesc::XMLString::transcode(chars) << std::endl;     
     }
 }
 

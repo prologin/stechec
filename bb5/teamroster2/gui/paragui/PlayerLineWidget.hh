@@ -23,6 +23,7 @@
 #include "pgdropdown.h"
 #include "pglineedit.h"
 #include "pglistboxbaseitem.h"
+#include "pgbutton.h"
 
 #include "TeamrosterApp.hh"
 #include "../../common/Position.hh"
@@ -63,6 +64,8 @@ private:
     bool handleEditCasual(PG_LineEdit* edit);
     bool handleEditMvp(PG_LineEdit* edit);
     
+    bool handleButtonSkillsClick(PG_Button* button);
+    
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------
@@ -77,6 +80,7 @@ private:
 	PG_LineEdit* agility_;
 	PG_LineEdit* armourValue_;
 	PG_LineEdit* skills_;
+    PG_Button*   skillsBtn_;    
 	PG_LineEdit* injuries_;
 	PG_LineEdit* completions_;
 	PG_LineEdit* touchdowns_;

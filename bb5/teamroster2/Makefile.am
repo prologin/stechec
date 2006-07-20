@@ -3,6 +3,8 @@
 bin_PROGRAMS = teamroster
 
 teamroster_SOURCES = 						\
+	gui/paragui/SkillsDialog.cc			\
+	gui/paragui/SkillsDialog.hh			\
 	gui/paragui/InputDialog.cc			\
 	gui/paragui/InputDialog.hh			\
 	gui/paragui/BBowlWidget.cc			\

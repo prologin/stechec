@@ -58,6 +58,7 @@ private:
     bool handleEditCheerleader(PG_LineEdit* edit);
     bool handleButtonSaveClick(PG_Button* button);
     bool handleButtonLoadClick(PG_Button* button);
+    bool handleButtonQuitClick(PG_Button* button);
 
     // -----------------------------------------------------------------------
     //  Private data members
@@ -66,6 +67,7 @@ private:
     
 	PlayerLineWidget* playerWidget_[16];
 
+    PG_Application*   app_;
     PG_Image*         raceImg_;
 	PG_LineEdit*      teamName_;
 	PG_ListBox*       race_;
@@ -86,6 +88,7 @@ private:
     
     PG_Button*        loadBtn_; 
     PG_Button*        saveBtn_;	
+    PG_Button*        quitBtn_; 
 };
 
 #endif /*BBOWLWIDGET_HH_*/

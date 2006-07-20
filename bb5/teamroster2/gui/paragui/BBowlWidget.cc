@@ -45,9 +45,14 @@
 
 BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : PG_ThemeWidget(parent,rect, true)
 {
+    app_ = app;
+    
+    TRParser parser;
+    
+    // Parse parameters.xml file
+    parser.parseParametersFile();
     
     // Parse races.xml file
-    TRParser parser;
     parser.parseRaceFile();
             
     // Create a team instance with the first available race
@@ -62,8 +67,9 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
     
     raceImg_ = new PG_Image (this, PG_Point(180,452),"emblems/amazon.jpg");
 
-    loadBtn_ = new PG_Button(this, PG_Rect(100,530,50,20), "load");
-    saveBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "save");
+    loadBtn_ = new PG_Button(this, PG_Rect(100,510,50,20), "Load");
+    saveBtn_ = new PG_Button(this, PG_Rect(100,535,50,20), "Save");
+    quitBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "Quit");
   
     PG_Color black(0,0,0);
 	
@@ -166,6 +172,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 
     loadBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonLoadClick));
     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
+    quitBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonQuitClick));
  
     race_->sigSelectItem.connect(slot(*this, &BBowlWidget::handleSelectItemRace));
     race_->SelectFirstItem();
@@ -175,6 +182,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 
 BBowlWidget::~BBowlWidget()
 {	
+    Hide();
     delete team_;
     delete raceImg_;
 	delete teamName_;
@@ -213,6 +221,7 @@ void BBowlWidget::displayMessage(const char* title, const char* msg)
       msgbox.SetFontColor(black, true);
       msgbox.SetSimpleBackground(true);
       msgbox.SetBackgroundColor(white);
+      msgbox.SetTitlebarColor(white);
       msgbox.Update();
       msgbox.Show();          
       msgbox.WaitForClick();  
@@ -229,7 +238,7 @@ void BBowlWidget::displayError(const char* msg)
  */
 void BBowlWidget::updateView()
 {     
-std::cout<<"BBowlWidget::updateView()"<<std::endl;
+//std::cout<<"BBowlWidget::updateView()"<<std::endl;
 
     teamName_->SetText(team_->getName());
     
@@ -382,62 +391,60 @@ bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
       PG_Rect(120, 125, 60, 20), "CANCEL",
       PG_Rect(20, 75, 200, 20), "");
       
-   PG_Color white(255,255,255);  
-   PG_Color black(0,0,0);
-   iDialog.SetTransparency(0, false);
-   iDialog.SetFontColor(black, true);
-   iDialog.SetSimpleBackground(true);
-   iDialog.SetBackgroundColor(white);
-   iDialog.Update();
    iDialog.Show();          
-   iDialog.WaitForClick();  
+   int btnClickedID = iDialog.WaitForClick();  
    iDialog.Hide();
-
-   std::cout << "Parse file: " << iDialog.getText();
+   // If OK was clicked...
+   if (btnClickedID == 1)
+   { 
+       std::cout << "Parse file: " << iDialog.getText();
    
-   // Parse team XML file
-   TRParser parser;
-   parser.parseTeamFile(iDialog.getText());
-   std::cout << " ... OK" << std::endl;
+        // Parse team XML file
+        TRParser parser;
+        parser.parseTeamFile(iDialog.getText());
+        std::cout << " ... OK" << std::endl;
       
-    // Update the team with the new one. 
-    team_ = TeamHandler::team_;
+        // Update the team with the new one. 
+        team_ = TeamHandler::team_;
     
-    //std::cout << " race_->GetWidgetCount():"<< race_->GetWidgetCount() << std::endl;
+        //std::cout << " race_->GetWidgetCount():"<< race_->GetWidgetCount() << std::endl;
         
-    // select appropriate race 
-    for (unsigned int i=0; i<race_->GetWidgetCount(); i++)
-    {
-        PG_ListBoxBaseItem* item = (PG_ListBoxBaseItem*)race_->FindWidget(i);
-        
-        if (strcmp(item->GetText(), team_->getRace()->getName()) == 0)
+        // select appropriate race 
+        for (unsigned int i=0; i<race_->GetWidgetCount(); i++)
         {
-            //std::cout << " item found i:"<< i << std::endl;
+            PG_ListBoxBaseItem* item = (PG_ListBoxBaseItem*)race_->FindWidget(i);
+        
+            if (strcmp(item->GetText(), team_->getRace()->getName()) == 0)
+            {
+                //std::cout << " item found i:"<< i << std::endl;
             
-            item->Select(true);
-            race_->SelectItem(item, true);
-            race_->ScrollTo(i*LINE_HEIGHT);
-            break;
+                item->Select(true);
+                race_->SelectItem(item, true);
+                race_->ScrollTo(i*LINE_HEIGHT);
+                break;
+            }
         }
-    }
 
-    // load team emblen  
-    char* filename = new char[80];
-    sprintf(filename,"emblems/%s", team_->getEmblem());
-    raceImg_->LoadImage(filename);
-    delete filename;
+        // load team emblen  
+        char* filename = new char[80];
+        sprintf(filename,"emblems/%s", team_->getEmblem());
+        raceImg_->LoadImage(filename);
+        delete filename;
                 
-    // Retrieve Postions vector for the selected race.
-    std::vector<Position> vPos = team_->getRace()->getPositions();
+        // Retrieve Postions vector for the selected race.
+        std::vector<Position> vPos = team_->getRace()->getPositions();
 
-    // Update all the dropdowns
-    for (int i=0; i<TEAM_SIZE; i++)
-    {
-        playerWidget_[i]->updatePositionsList(vPos);
-        playerWidget_[i]->updateModel(team_->getPlayer(i+1));
-    }
+        // Update all the dropdowns
+        for (int i=0; i<TEAM_SIZE; i++)
+        {
+            playerWidget_[i]->Hide();
+            playerWidget_[i]->updatePositionsList(vPos);
+            playerWidget_[i]->updateModel(team_->getPlayer(i+1));
+            playerWidget_[i]->Show();
+        }
     
-    updateView(); 
+        updateView();
+   } 
     return true; 
 }
 
@@ -461,6 +468,12 @@ bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
    return true; 
 }
 
+bool BBowlWidget::handleButtonQuitClick(PG_Button* button)
+{
+   button->SetInputFocus();
+   app_->Quit();
+   return true;
+}
 
 bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
 {
@@ -508,8 +521,10 @@ bool BBowlWidget::handleSelectItemRace(PG_ListBoxBaseItem* item)
 	// Update all the dropdowns
 	for (int i=0; i<TEAM_SIZE; i++)
 	{
+        playerWidget_[i]->Hide();
         playerWidget_[i]->updatePositionsList(vPos);
         playerWidget_[i]->updateModel(team_->getPlayer(i+1));
+        playerWidget_[i]->Show();
 	}
     
     updateView();

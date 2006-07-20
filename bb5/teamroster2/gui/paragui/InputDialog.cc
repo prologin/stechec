@@ -34,6 +34,15 @@ PG_Window(parent, r, windowtitle, MODAL) {
     btncancel_->sigClick.connect(slot(*this, &InputDialog::handleButton));
 
     Init(windowtext, textalign, style);
+
+    PG_Color white(255,255,255);  
+    PG_Color black(0,0,0);
+    SetTransparency(0, false);
+    SetFontColor(black, true);
+    SetSimpleBackground(true);
+    SetBackgroundColor(white);
+    SetTitlebarColor(white);
+    Update();
 }
     
 InputDialog::~InputDialog()

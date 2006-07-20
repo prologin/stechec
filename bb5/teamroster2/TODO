@@ -1,25 +1,14 @@
 Know bugs: 
- - Plante lorsque l'on quitte alors que le focus est dans une case de caracteristique
- 
+  Notifier lorsque le fichier n'est pas trouvÈ dans le load...
+  
 Regles
  - gestion des mercenaires
  - gestion du chef cuisto 
  - gestion des blessures (injuries)
- - calculer la valeur des joueurs modifiées (reste a geérer les skills)
      
 GUI 
- - evaluer QT
- - gestion des skills
  - gestion des blessures (injuries)
- - ajouter les boutons: quit
  - afficher / saisir le background de l'éequipe
- 
- Events
- - gestion des evenements boutons : quit
- 
- XML
- - ajouter un schema XSD pour la validation du fichier "races.xml"
- - creer les classes pour parser/enregistrer le fichier team.xml  
- 
+  
  Outil pour l'éedition des positions. 
  Outil pour la generation des .pkg contenant la liste des images : joueurs, coach exportable/ importable dans le jeu.

@@ -50,9 +50,19 @@ public:
     void setAgility(int ag);
     int getArmourValue();
     void setArmourValue(int av);
+    
+    // Return all the player's skills (normal + double)
     std::vector <const char*> getSkills();
-    void addSkill(const char* skill);
+    
+    std::vector <const char*> getSkillsNormal();
+    std::vector <const char*> getSkillsDouble();
+    
+    void removeAllSkillsNormal();
+    void removeAllSkillsDouble();
+    void addSkillNormal(const char* skill);
+    void addSkillDouble(const char* skill);
     const char* getSkillsAsString();    
+    
     const char* getDisplay();
     void setDisplay(const char* display);
     const char* getInjuries();
@@ -87,6 +97,7 @@ private:
     int agility_;
     int armourValue_;
     std::vector<const char*> vSkills_;
+    std::vector<const char*> vSkillsDouble_;
     std::string skillsStr_;
     std::string injuries_; // FIXME: to be changed after injury management
     int completions_;

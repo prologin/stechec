@@ -179,7 +179,12 @@ void TeamHandler::characters (const XMLCh* const chars, const unsigned int lengt
     else if (currentNode_ == "skill")
     {
     //    std::cout << "add skill:" << xercesc::XMLString::transcode(chars) <<":" << std::endl;
-        currentPlayer_->addSkill(xercesc::XMLString::transcode(chars));
+        currentPlayer_->addSkillNormal(xercesc::XMLString::transcode(chars));
+    }
+    else if (currentNode_ == "skill_double")
+    {
+    //    std::cout << "add skill:" << xercesc::XMLString::transcode(chars) <<":" << std::endl;
+        currentPlayer_->addSkillDouble(xercesc::XMLString::transcode(chars));
     }
 }
 
