@@ -28,13 +28,16 @@ define (PROF_ORGA,	2);
 
 function sendMail($name,$mail, $pass, $login)
 {
-   // l'	metteur
-   $tete = "From: Defi Prologin <info@prologin.org>\n";
+   // l'émetteur
+   $tete = "From: Prologin <info@prologin.org>\n";
    $tete .= "Reply-To: info@prologin.org\n";
-   // et zou... false si erreur d'	mission
-   mail($name." <".$mail.">","Prologin defi de l'été",
-"Salut à toi ".$name." et bienvenue dans la grande aventure du défi de l'été.\n\n Sur ce site tu pourras soumettre des intelligences artificielles pour gagner à l'édition 2006 du défi de l'été.\n\nJe te rappelle juste que ton pass est : ".$pass." et ton login est :".$login." ne les perd pas ! :)\n\nBonne journée, bonne chance et bon code.\n\nCordialement, \n-- \nL'équipe Prologin",$tete);
-   }
+ 
+   // et zou... false si erreur d'émission
+   mail($name." <".$mail.">",
+	"Prologin, défi de l'été",
+	"Salut à toi, ".$name.", et bienvenue dans la grande aventure du défi de l'été.\n\nTu pourra participer (et peut être gagner !) à l'édition 2006 du défi de l'été, en soumettant des intelligences artificielles.\n\nVoici un rappel de ton inscription:\n  - site: www.prologin.epita.fr\n  - login: $login\n  - pass: $pass\n\nBonne journée, bonne chance et bon code.\n\nCordialement, \n-- \nL'équipe Prologin",
+	$tete);
+}
 
 /*
 ** Retourne la ligne de la base de donnees correspondant au profil
@@ -384,7 +387,7 @@ function user_register()
 	if (isset($_POST['register']) && isset($_login) && isset($_pass) && strcmp($_login, "") && strcmp($_pass, "") && strcmp($_last, "") && strcmp($_first, "") && is_mail_valid($_mail))
 	{
 	db_query("INSERT INTO user (id_profil, id_style, nom, prenom, nickname, login, passwd, email) VALUES (1, 1, '$_last', '$_first', '$_login', '$_login', MD5('$_pass'), '$_mail')");
-	sendMail($_last." ".$_first, $_mail, $_pass, $_login);
+	sendMail($_first." ".$_last, $_mail, $_pass, $_login);
 	}
 }
 
