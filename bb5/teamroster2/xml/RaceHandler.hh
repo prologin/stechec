@@ -18,6 +18,7 @@
 
 #include    <xercesc/sax/HandlerBase.hpp>
 #include    <vector>
+#include    <string>
 #include    "common/Race.hh"
 
 XERCES_CPP_NAMESPACE_USE
@@ -47,9 +48,9 @@ private:
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------
+    std::string            currentNode_;
     Race*                  currentRace_;
     Position*              currentPos_;
-    const XMLCh*           chars_;
 };
 
 #endif /*RACEHANDLER_HH_*/

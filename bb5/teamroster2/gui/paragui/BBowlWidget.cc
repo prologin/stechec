@@ -67,6 +67,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
     
     raceImg_ = new PG_Image (this, PG_Point(180,452),"emblems/amazon.jpg");
 
+    backgroundBtn_ = new PG_Button(this, PG_Rect(70,485,80,20), "Background");
     loadBtn_ = new PG_Button(this, PG_Rect(100,510,50,20), "Load");
     saveBtn_ = new PG_Button(this, PG_Rect(100,535,50,20), "Save");
     quitBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "Quit");
@@ -170,6 +171,7 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
 	fanFactor_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditFanFactor));
 	cheerleader_->sigEditEnd.connect(slot(*this, &BBowlWidget::handleEditCheerleader));
 
+    backgroundBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonBackgroundClick));
     loadBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonLoadClick));
     saveBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonSaveClick));
     quitBtn_->sigClick.connect(slot(*this, &BBowlWidget::handleButtonQuitClick));
@@ -472,6 +474,15 @@ bool BBowlWidget::handleButtonQuitClick(PG_Button* button)
 {
    button->SetInputFocus();
    app_->Quit();
+   return true;
+}
+
+bool BBowlWidget::handleButtonBackgroundClick(PG_Button* button)
+{
+   button->SetInputFocus();
+   
+
+
    return true;
 }
 

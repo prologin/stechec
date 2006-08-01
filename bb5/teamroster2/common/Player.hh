@@ -19,6 +19,8 @@
 #include <vector>
 #include <string>
 
+#include "Position.hh"
+
 class Team;
 
 class Player
@@ -65,8 +67,21 @@ public:
     
     const char* getDisplay();
     void setDisplay(const char* display);
-    const char* getInjuries();
-    void setInjuries(const char* inj);
+    
+    bool getMissNextMatch();
+    void setMissNextMatch(bool b);
+    int getNigglingInjuries();
+    void setNigglingInjuries(int ni);
+    int getMaReducted();
+    void setMaReducted(int n);
+    int getAvReducted();
+    void setAvReducted(int n);
+    int getAgReducted();
+    void setAgReducted(int n);
+    int getStReducted();
+    void setStReducted(int n);
+    const char* getInjuriesAsString();
+    
     int getCompletions();
     void setCompletions(int com);
     int getTouchDowns();
@@ -98,8 +113,14 @@ private:
     int armourValue_;
     std::vector<const char*> vSkills_;
     std::vector<const char*> vSkillsDouble_;
-    std::string skillsStr_;
-    std::string injuries_; // FIXME: to be changed after injury management
+    
+    bool missNextMatch_;
+    int nigglingInjuries_;
+    int maReducted_;
+    int avReducted_;
+    int agReducted_;
+    int stReducted_;
+     
     int completions_;
     int touchdowns_;
     int interceptions_;

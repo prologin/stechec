@@ -63,6 +63,8 @@ public:
     void setCheerleader(int cheerleader);
     int getApothecary();
     void setApothecary(int apothecary);
+    const char* getBackground();
+    void setBackground(const char *bg);
     
     long getRerollUnitaryCost();
     long getRerollTotalCost();
@@ -88,6 +90,7 @@ private:
     int assistantCoach_;
     int cheerleader_;
     int apothecary_;
+    std::string background_;
 };
 
 #endif /*TEAM_HH_*/

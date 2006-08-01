@@ -55,8 +55,6 @@ private:
     bool handleEditSt(PG_LineEdit* edit);
     bool handleEditAg(PG_LineEdit* edit);
     bool handleEditAv(PG_LineEdit* edit);
- 
-    bool handleEditInj(PG_LineEdit* edit);
 
     bool handleEditComp(PG_LineEdit* edit);
     bool handleEditTd(PG_LineEdit* edit);
@@ -65,30 +63,32 @@ private:
     bool handleEditMvp(PG_LineEdit* edit);
     
     bool handleButtonSkillsClick(PG_Button* button);
+    bool handleButtonInjuriesClick(PG_Button* button);
     
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------
     Player*      player_;
     
-	PG_Widget*   parent_;
+    PG_Widget*   parent_;
     
     PG_LineEdit* name_;
-	PG_DropDown* position_;
-	PG_LineEdit* movementAllowance_;
-	PG_LineEdit* strength_;
-	PG_LineEdit* agility_;
-	PG_LineEdit* armourValue_;
-	PG_LineEdit* skills_;
+    PG_DropDown* position_;
+    PG_LineEdit* movementAllowance_;
+    PG_LineEdit* strength_;
+    PG_LineEdit* agility_;
+    PG_LineEdit* armourValue_;
+    PG_LineEdit* skills_;
     PG_Button*   skillsBtn_;    
-	PG_LineEdit* injuries_;
-	PG_LineEdit* completions_;
-	PG_LineEdit* touchdowns_;
-	PG_LineEdit* interceptions_;
-	PG_LineEdit* casualties_;
-	PG_LineEdit* mostValuablePlayer_;
-	PG_Label*    starPlayerPoints_;
-	PG_Label*    value_;	
+    PG_LineEdit* injuries_;
+    PG_Button*   injuriesBtn_;    
+    PG_LineEdit* completions_;
+    PG_LineEdit* touchdowns_;
+    PG_LineEdit* interceptions_;
+    PG_LineEdit* casualties_;
+    PG_LineEdit* mostValuablePlayer_;
+    PG_Label*    starPlayerPoints_;
+    PG_Label*    value_;	
 };
 
 #endif /*PLAYERLINEWIDGET_HH_*/

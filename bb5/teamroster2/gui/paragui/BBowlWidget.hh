@@ -59,6 +59,7 @@ private:
     bool handleButtonSaveClick(PG_Button* button);
     bool handleButtonLoadClick(PG_Button* button);
     bool handleButtonQuitClick(PG_Button* button);
+    bool handleButtonBackgroundClick(PG_Button* button);
 
     // -----------------------------------------------------------------------
     //  Private data members
@@ -86,6 +87,7 @@ private:
 	PG_Label*         apothecaryCost_;	
 	PG_Label*         totalTeamValueCost_;	
     
+    PG_Button*        backgroundBtn_; 
     PG_Button*        loadBtn_; 
     PG_Button*        saveBtn_;	
     PG_Button*        quitBtn_; 

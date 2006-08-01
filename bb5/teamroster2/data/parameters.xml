@@ -86,24 +86,4 @@
 			<skill>Wild Animal</skill>
 		</Extraordinary>
 	</skills>
-	<casualties>
-		<casualty name="Badly Hurt" effect="No long term effect" />
-		<casualty name="Broken Ribs" effect="Miss next game" />
-		<casualty name="Groin Strain" effect="Miss next game" />
-		<casualty name="Gouged Eye" effect="Miss next game" />
-		<casualty name="Broken Jaw" effect="Miss next game" />
-		<casualty name="Fractured Arm" effect="Miss next game" />
-		<casualty name="Fractured Leg" effect="Miss next game" />
-		<casualty name="Smashed Hand" effect="Miss next game" />
-		<casualty name="Pinched Nerve" effect="Miss next game" />
-		<casualty name="Damaged Back" effect="Niggling Injury" />
-		<casualty name="Smashed Knee" effect="Niggling Injury" />
-		<casualty name="Smashed Hip" effect="-1 MA" />
-		<casualty name="Smashed Ankle" effect="-1 MA" />
-		<casualty name="Serious Concussion" effect="-1 AV" />
-		<casualty name="Fractured Skull" effect="-1 AV" />
-		<casualty name="Broken Neck" effect="-1 AG" />
-		<casualty name="Smashed Collar Bone" effect="-1 ST" />
-		<casualty name="DEAD" effect="Dead!" />
-	</casualties>
 </parameters>

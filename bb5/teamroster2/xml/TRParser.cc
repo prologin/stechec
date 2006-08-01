@@ -132,7 +132,7 @@ void TRParser::parseRaceFile()
         parser->parse("./data/races.xml");
         
         //printRaces();
-    }
+   }
     catch (const OutOfMemoryException&)
     {
          std::cerr << "OutOfMemoryException" << std::endl;
@@ -143,8 +143,8 @@ void TRParser::parseRaceFile()
              << toCatch.getMessage()
              << "\n" << std::endl;
     } 
-     
-    //
+    
+     //
     //  Delete the parser itself.  Must be done prior to calling Terminate, below.
     //
     delete parser;
@@ -228,5 +228,7 @@ void TRParser::printRaces()
             }
 
         } 
+        std::cout << RaceHandler::vRaces_[i].getBackground() << std::endl;
+        
     }
 }

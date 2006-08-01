@@ -16,7 +16,6 @@
 #include "SkillsDialog.hh"
 #include "../../xml/ParametersHandler.hh"
 
-#include "pglog.h"
 #include "pgwindow.h"
 #include "pglistbox.h"
 #include "pglistboxitem.h"
@@ -53,7 +52,6 @@ PG_Window(parent, r, windowtitle, MODAL)
 
     // Initialize available skills for that specific player
     availableSkills_ = new PG_ListBox(this, PG_Rect(230,60,150,70));
-   
  
     l3_ = new PG_Label(this, PG_Rect(20,130,150,20), "Player's skills Double");
     l4_ = new PG_Label(this, PG_Rect(230,130,150,20), "Available skills Double");

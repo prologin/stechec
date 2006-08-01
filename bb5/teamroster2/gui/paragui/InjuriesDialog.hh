@@ -13,24 +13,19 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
-#ifndef SKILLSDIALOG_HH_
-#define SKILLSDIALOG_HH_
-
-#include <vector>
-#include <string>
-
-#include "pglineedit.h"
+#ifndef INJURIESDIALOG_HH_
+#define INJURIESDIALOG_HH_
 
 #include "paragui.h"
-#include "pglabel.h"
 #include "pgwindow.h"
 #include "pgbutton.h"
-#include "pglistbox.h"
+#include "pglabel.h"
+#include "pglineedit.h"
+#include "pgcheckbutton.h"
 
-#include "../../common/Position.hh"
 #include "../../common/Player.hh"
 
-class DECLSPEC SkillsDialog : public PG_Window 
+class DECLSPEC InjuriesDialog : public PG_Window 
 {
 public:
    /**
@@ -42,12 +37,12 @@ public:
     * @param player Player 
     * @param style widgetstyle to use (default "MessageBox")
     */
-    SkillsDialog(PG_Widget* parent, 
+    InjuriesDialog(PG_Widget* parent, 
                 const PG_Rect& r, const char* windowtitle,
                 Player* player,
                 const char* style="MessageBox");
-
-    virtual ~SkillsDialog();
+    
+	virtual ~InjuriesDialog();
     
     void LoadThemeStyle(const char* widgettype);
 
@@ -59,52 +54,48 @@ public:
         return RunModal();
     }
     
-    // Return the list of the player's skills
-    std::vector<std::string> getPlayerSkills();
-    
-    // Return the list of the player's skills double
-    std::vector<std::string> getPlayerSkillsDouble();
-    
+    bool getMissNextMatch();
+    int getNigglingInjuries();
+    int getMaReducted();
+    int getAvReducted();
+    int getAgReducted();
+    int getStReducted();
     
 private:
+    template<typename T>
+    std::string to_string( const T & Value );
 
     /**
      * Handle OK/Cancel buttons 
      */
-    bool handleButton(PG_Button* button);
-        
-    bool handleButtonAddClick();
-    bool handleButtonRemoveClick();
-    bool handleButtonAddDoubleClick();
-    bool handleButtonRemoveDoubleClick();
-   
+    bool handleButton(PG_Button* button);    
+    bool handleEditCharacteristicReducted(PG_LineEdit* edit);
+
+    void displayError(const char* msg);
+    void Init(const char* style);
+
     // -----------------------------------------------------------------------
     //  Private data members
     // -----------------------------------------------------------------------
-    Player*    player_;
+    PG_Widget*      parent_;
 
-    PG_Button* btnOk_;
-    PG_Button* btnCancel_;
+    Player*         player_;
 
-    PG_Button* btnAdd_;
-    PG_Button* btnRemove_;
-    PG_Button* btnAddDouble_;
-    PG_Button* btnRemoveDouble_;
+    PG_Button*      btnOk_;
+    PG_Button*      btnCancel_;
+    PG_CheckButton* cbtnMissNextMatch_;
 
-    PG_ListBox* selectedSkills_;
-    PG_ListBox* availableSkills_;
-    
-    PG_ListBox* selectedSkillsDouble_;
-    PG_ListBox* availableSkillsDouble_;
-    PG_Label*   l1_;
-    PG_Label*   l2_;
-    PG_Label*   l3_;
-    PG_Label*   l4_;
+    PG_Label*       lblNigglingInjuries_;
+    PG_Label*       lblMaReducted_;
+    PG_Label*       lblAvReducted_;
+    PG_Label*       lblAgReducted_;
+    PG_Label*       lblStReducted_;
 
-    void Init(const char* style);
-    void FillAvailableSkills();
-    void InsertSkillsFromVector(std::vector<std::string> v, PG_ListBox* list);
-    bool IsPlayerSkill(const char* s);
-    
+    PG_LineEdit*    leNigglingInjuries_;
+    PG_LineEdit*    leMaReducted_;
+    PG_LineEdit*    leAvReducted_;
+    PG_LineEdit*    leAgReducted_;
+    PG_LineEdit*    leStReducted_;
 };
-#endif /*SKILLSDIALOG_HH_*/
+
+#endif /*INJURIESDIALOG_HH_*/

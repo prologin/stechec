@@ -27,6 +27,7 @@
 
 #include "TeamrosterApp.hh"
 #include "SkillsDialog.hh"
+#include "InjuriesDialog.hh"
 #include "My_DropDown.hh"
 #include "BBowlWidget.hh"
 #include "PlayerLineWidget.hh" 
@@ -56,13 +57,15 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
 	armourValue_ = new PG_LineEdit(this,PG_Rect(258,0,26,26),"LineEdit",2);
 	armourValue_->SetValidKeys("0123456789");
 	
-	skills_ = new PG_LineEdit(this,PG_Rect(285,0,184,26));
+    skills_ = new PG_LineEdit(this,PG_Rect(285,0,184,26));
     skills_->SetEditable(false);
 	
     skillsBtn_ = new PG_Button(this, PG_Rect(469,0,10,26), "+");
     
-	injuries_ = new PG_LineEdit(this,PG_Rect(479,0,37,26));
-	
+    injuries_ = new PG_LineEdit(this,PG_Rect(479,0,27,26));
+    injuries_->SetEditable(false);
+    injuriesBtn_ = new PG_Button(this, PG_Rect(506,0,10,26), "+");
+    
 	completions_ = new PG_LineEdit(this,PG_Rect(517,0,37,26),"LineEdit",2);
 	completions_->SetValidKeys("0123456789");
 	
@@ -122,13 +125,13 @@ PlayerLineWidget::PlayerLineWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect
     strength_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditSt));
     agility_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditAg));
     armourValue_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditAv));
-    injuries_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditInj));
     	completions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditComp));
 	touchdowns_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditTd));
 	interceptions_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditInter));
 	casualties_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditCasual));
 	mostValuablePlayer_->sigEditEnd.connect(slot(*this, &PlayerLineWidget::handleEditMvp));
     skillsBtn_->sigClick.connect(slot(*this, &PlayerLineWidget::handleButtonSkillsClick));
+    injuriesBtn_->sigClick.connect(slot(*this, &PlayerLineWidget::handleButtonInjuriesClick));
 
     updateView();
 }
@@ -168,21 +171,21 @@ void PlayerLineWidget::updateView()
     position_->SetText(player_->getPositionTitle());
     
     char ma[2];
-    sprintf(ma, "%d", player_->getMovementAllowance());
+    sprintf(ma, "%d", player_->getMovementAllowance() - player_->getMaReducted());
     movementAllowance_->SetText(ma);
     char st[2];
-    sprintf(st, "%d", player_->getStrength());
+    sprintf(st, "%d", player_->getStrength() - player_->getStReducted());
     strength_->SetText(st);
     char ag[2];
-    sprintf(ag, "%d", player_->getAgility());
+    sprintf(ag, "%d", player_->getAgility() - player_->getAgReducted());
     agility_->SetText(ag);
     char av[2];
-    sprintf(av, "%d", player_->getArmourValue());
+    sprintf(av, "%d", player_->getArmourValue() - player_->getAvReducted());
     armourValue_->SetText(av);
     
     skills_->SetText(player_->getSkillsAsString());
  	
-    injuries_->SetText(player_->getInjuries());
+    injuries_->SetText(player_->getInjuriesAsString());
     
     char com[2];
     sprintf(com, "%d", player_->getCompletions());
@@ -242,6 +245,8 @@ bool PlayerLineWidget::handleEditMa(PG_LineEdit* edit)
         const char* text = edit->GetText();
         int val = (text != NULL) ? atoi(text) : 0;
         
+        // add reduction due to injuries
+        val = val + player_->getMaReducted();
         try 
         {
             player_->setMovementAllowance(val);
@@ -270,6 +275,8 @@ bool PlayerLineWidget::handleEditSt(PG_LineEdit* edit)
         const char* text = edit->GetText();
         int val = (text != NULL) ? atoi(text) : 0;
         
+        // add reduction due to injuries
+        val = val + player_->getStReducted();
         try 
         {
             player_->setStrength(val);
@@ -297,6 +304,9 @@ bool PlayerLineWidget::handleEditAg(PG_LineEdit* edit)
     {
         const char* text = edit->GetText();
         int val = (text != NULL) ? atoi(text) : 0;
+        
+        // add reduction due to injuries
+        val = val + player_->getAgReducted();
         
         try 
         {
@@ -326,6 +336,8 @@ bool PlayerLineWidget::handleEditAv(PG_LineEdit* edit)
         const char* text = edit->GetText();
         int val = (text != NULL) ? atoi(text) : 0;
         
+        // add reduction due to injuries
+        val = val + player_->getAvReducted();
         try 
         {
             player_->setArmourValue(val);
@@ -346,13 +358,6 @@ bool PlayerLineWidget::handleEditAv(PG_LineEdit* edit)
     return true;
 }
  
-bool PlayerLineWidget::handleEditInj(PG_LineEdit* edit)
-{
-    player_->setInjuries(edit->GetText());
-    updateView();
-    return true;
-}
-
 bool PlayerLineWidget::handleEditComp(PG_LineEdit* edit)
 {
     const char* text = edit->GetText();
@@ -477,11 +482,40 @@ bool PlayerLineWidget::handleButtonSkillsClick(PG_Button* button)
                 player_->addSkillDouble(skillsDouble[i].c_str());
             }
         }
-        updateView();
+        updateView(); 
    }
    return true;
 } 
 
+bool PlayerLineWidget::handleButtonInjuriesClick(PG_Button* button)
+{
+   button->SetInputFocus();
+   if (strcmp(player_->getPositionTitle(),"") == 0)
+   {
+        displayError("Position must be fixed to set injuries.");
+   }
+   else
+   {
+        InjuriesDialog iDialog(NULL, PG_Rect(180,50,210,270), "Injuries", player_);
+        iDialog.Show();          
+        int btnClickedID = iDialog.WaitForClick();  
+        iDialog.Hide();
+        
+        // If OK was clicked...
+        if (btnClickedID == 1)
+        {
+            // Update player
+           player_->setMissNextMatch(iDialog.getMissNextMatch());
+           player_->setNigglingInjuries(iDialog.getNigglingInjuries());
+           player_->setMaReducted(iDialog.getMaReducted());
+           player_->setAvReducted(iDialog.getAvReducted());
+           player_->setAgReducted(iDialog.getAgReducted());
+           player_->setStReducted(iDialog.getStReducted());
+        }
+        updateView();
+   }
+   return true;
+} 
 
 PlayerLineWidget::~PlayerLineWidget()  
 { 

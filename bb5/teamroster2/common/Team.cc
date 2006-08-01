@@ -31,8 +31,9 @@ Team::Team(Race* race)
     assistantCoach_ = 0;
     cheerleader_ = 0;
     apothecary_ = 0;
-
+    
     setRace(race);
+    background_ = race->getBackground();
     
     for (int i=0; i<TEAM_SIZE; i++)
     {
@@ -79,7 +80,7 @@ Race* Team::getRace(){ return race_; }
 
 void Team::setRace(Race *race) { 
   
-  race_ = race;
+   race_ = race;
  
    // Reset apothecary if the current race can't have apothecary
    if (race_->getApothecaryUse() == false)
@@ -126,6 +127,9 @@ long Team::getFanFactorCost() { return (FAN_FACTOR_COST * fanFactor_); }
 long Team::getAssistantCoachCost() { return (ASSISTANT_COACH_COST * assistantCoach_); }
 long Team::getCheerleaderCost() { return (CHEERLEADER_COST * cheerleader_); }
 long Team::getApothecaryCost() { return (APOTHECARY_COST * apothecary_); }
+
+const char* Team::getBackground(){ return background_.c_str(); }
+void Team::setBackground(const char *bg){ background_ = bg; }
 
 long Team::getTotalValueCost() 
 { 

@@ -86,7 +86,36 @@ void TeamWriter::writeTeam(const char* filename, Team* team)
               }
               fout << "       </skills_double>" << endl;
           }
-          fout << "       <inj>" << player->getInjuries() << "</inj>" << endl;
+          
+          // add information for injuries 
+          fout << "       <inj ";
+                  
+          if (player->getMissNextMatch())
+          {
+             fout << " missNextMatch=\"true\"";
+          }
+          if (player->getNigglingInjuries() > 0)
+          {
+             fout << " nigglingInjuries=\"" << player->getNigglingInjuries() << "\"";
+          }
+          if (player->getMaReducted() > 0)
+          {
+             fout << " MaReduction=\"" << player->getMaReducted() << "\"";
+          }
+          if (player->getStReducted() > 0)
+          {
+             fout << " StReduction=\"" << player->getStReducted() << "\"";
+          }
+          if (player->getAgReducted() > 0)
+          {
+             fout << " AgReduction=\"" << player->getAgReducted() << "\"";
+          }
+          if (player->getAvReducted() > 0)
+          {
+             fout << " AvReduction=\"" << player->getAvReducted() << "\"";
+          }
+          fout << " />" << endl; 
+
           fout << "       <com>" << player->getCompletions() << "</com>" << endl;
           fout << "       <td>" << player->getTouchDowns() << "</td>" << endl;
           fout << "       <int>" << player->getInterceptions() << "</int>" << endl;
@@ -97,6 +126,12 @@ void TeamWriter::writeTeam(const char* filename, Team* team)
       }
   }
   fout << "  </players>" << endl;
+  
+  if (strcmp("", team->getBackground()) != 0)
+  {
+    fout << "    <background>" << team->getBackground() << "</background>" << endl;
+  }
+  
   fout << "</team>" << endl;
   
   fout.close();     

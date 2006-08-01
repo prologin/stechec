@@ -14,7 +14,16 @@
 	<xs:element name="com" type="xs:byte"/>
 	<xs:element name="cost" type="xs:long"/>
 	<xs:element name="fanfactor" type="xs:byte"/>
-	<xs:element name="inj" type="xs:string"/>
+	<xs:element name="inj">
+		<xs:complexType>
+			<xs:attribute name="missNextMatch" type="xs:string" use="optional"/>
+			<xs:attribute name="nigglingInjuries" type="xs:string" use="optional"/>
+			<xs:attribute name="MaReduction" type="xs:string" use="optional"/>
+			<xs:attribute name="StReduction" type="xs:string" use="optional"/>
+			<xs:attribute name="AvReduction" type="xs:string" use="optional"/>
+			<xs:attribute name="AgReduction" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="int" type="xs:byte"/>
 	<xs:element name="ma" type="xs:byte"/>
 	<xs:element name="mpv" type="xs:byte"/>
@@ -27,6 +36,13 @@
 				<xs:element ref="av"/>
 				<xs:element ref="cost"/>
 				<xs:element ref="skills"/>
+				<xs:element name="skills_double">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="skill_double" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				<xs:element ref="inj"/>
 				<xs:element ref="com"/>
 				<xs:element ref="td"/>
@@ -37,9 +53,7 @@
 			</xs:sequence>
 			<xs:attribute name="name" use="required">
 				<xs:simpleType>
-					<xs:restriction base="xs:string">
-						<xs:enumeration value="toto"/>
-					</xs:restriction>
+					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
 			<xs:attribute name="number" use="required">
@@ -79,7 +93,7 @@
 	<xs:element name="players">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="player"/>
+				<xs:element ref="player" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -146,7 +160,7 @@
 	<xs:element name="skills">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="skill" maxOccurs="unbounded"/>
+				<xs:element ref="skill" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -166,6 +180,7 @@
 				<xs:element ref="cheerleader"/>
 				<xs:element ref="apothecary"/>
 				<xs:element ref="players"/>
+				<xs:element name="background" type="xs:string" minOccurs="0"/>
 			</xs:sequence>
 			<xs:attribute name="race" use="required">
 				<xs:simpleType>

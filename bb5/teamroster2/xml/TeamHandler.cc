@@ -55,7 +55,7 @@ void TeamHandler::startElement(const XMLCh* const name, AttributeList&  attribut
     
     // The team is found
     // <team race="Orc" BBversion="5" emblem="orc.jpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="team.xsd">
-    if (strcmp(DualString(name).asCString(), "team") == 0)
+    if (currentNode_ == "team")
     {
         std::string BBversion = xercesc::XMLString::transcode(attributes.getValue("BBversion"));
         if (BBversion.compare(RaceHandler::BBversion_) != 0)
@@ -83,7 +83,7 @@ void TeamHandler::startElement(const XMLCh* const name, AttributeList&  attribut
         TeamHandler::team_->setEmblem(emblem.c_str());
         //     std::cout << "Team found of race :" << TeamHandler::team_->getRace()->getName() << std::endl;
   
-    } else if (strcmp(DualString(name).asCString(), "player") == 0) 
+    } else if (currentNode_ == "player")
     {
         currentPlayer_ = new Player(TeamHandler::team_);
         currentPlayer_->setName(xercesc::XMLString::transcode(attributes.getValue("name")));
@@ -91,6 +91,33 @@ void TeamHandler::startElement(const XMLCh* const name, AttributeList&  attribut
         currentPlayer_->setPosition(xercesc::XMLString::transcode(attributes.getValue("position")));
         
         currentPlayerNumber_ = atoi(xercesc::XMLString::transcode(attributes.getValue("number")));
+    }
+    else if (currentNode_ == "inj")
+    {
+       if (attributes.getValue("missNextMatch") != NULL)
+       {
+            currentPlayer_->setMissNextMatch(true); 
+       }
+       if (attributes.getValue("nigglingInjuries") != NULL)
+       {
+            currentPlayer_->setNigglingInjuries(atoi(xercesc::XMLString::transcode(attributes.getValue("nigglingInjuries"))));
+       }
+       if (attributes.getValue("MaReduction") != NULL)
+       {
+            currentPlayer_->setMaReducted(atoi(xercesc::XMLString::transcode(attributes.getValue("MaReduction"))));
+       }
+       if (attributes.getValue("StReduction") != NULL)
+       {
+            currentPlayer_->setStReducted(atoi(xercesc::XMLString::transcode(attributes.getValue("StReduction"))));
+       }
+       if (attributes.getValue("AvReduction") != NULL)
+       {
+            currentPlayer_->setAvReducted(atoi(xercesc::XMLString::transcode(attributes.getValue("AvReduction"))));
+       }
+       if (attributes.getValue("AgReduction") != NULL)
+       {
+            currentPlayer_->setAgReducted(atoi(xercesc::XMLString::transcode(attributes.getValue("AgReduction"))));
+       }
     }
   }
 
@@ -148,10 +175,6 @@ void TeamHandler::characters (const XMLCh* const chars, const unsigned int lengt
     {
         // Ignored. The cost will be automatically computed.
     }
-    else if (currentNode_ == "inj")
-    {
-        currentPlayer_->setInjuries(xercesc::XMLString::transcode(chars));
-    }
     else if (currentNode_ == "com")
     {
         currentPlayer_->setCompletions(atoi(xercesc::XMLString::transcode(chars)));
@@ -185,6 +208,11 @@ void TeamHandler::characters (const XMLCh* const chars, const unsigned int lengt
     {
     //    std::cout << "add skill:" << xercesc::XMLString::transcode(chars) <<":" << std::endl;
         currentPlayer_->addSkillDouble(xercesc::XMLString::transcode(chars));
+    }
+    else if (currentNode_ == "background")
+    {
+    //    std::cout << "background:" << xercesc::XMLString::transcode(chars) <<":" << std::endl;
+        TeamHandler::team_->setBackground(xercesc::XMLString::transcode(chars));
     }
 }
 

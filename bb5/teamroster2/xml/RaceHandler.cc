@@ -44,27 +44,34 @@ RaceHandler::~RaceHandler()
 // ---------------------------------------------------------------------------
 void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attributes)
 {	
-	// A new race is found
-	if (strcmp(DualString(name).asCString(), "races") == 0)
+    currentNode_ =  xercesc::XMLString::transcode(name);
+    //std::cout << "startElement: name="<< xercesc::XMLString::transcode(name) << "currentNode_="<< currentNode_ << std::endl;    
+    
+	if (currentNode_ == "races")
  	{
   		RaceHandler::BBversion_ = 
   			xercesc::XMLString::transcode(attributes.getValue("BBversion"));
 
- 	} else if (strcmp(DualString(name).asCString(), "race") == 0)
+ 	}
+    // A new race is found
+    else if (currentNode_ == "race")
  	{
-  		Race* r = new Race();
-		r->setName(xercesc::XMLString::transcode(attributes.getValue("name")));
+        Race* r = new Race();
+        r->setName(xercesc::XMLString::transcode(attributes.getValue("name")));
+//    std::cout << "name :" << r->getName() << std::endl;
         r->setEmblem(xercesc::XMLString::transcode(attributes.getValue("emblem")));
 
-		// Store pointer on the current race parsed.
- 		currentRace_ = r;
+        // Store pointer on the current race parsed.
+        currentRace_ = r;
  	}
- 	else if (strcmp(DualString(name).asCString(), "apothecary") == 0)
+ 	else if (currentNode_ == "apothecary")
  	{
  		bool canUse = strcmp(DualString(attributes.getValue("use")).asCString(), "true") == 0;
+
+//    std::cout << "apothecary :" << canUse << std::endl;
  		currentRace_->setApothecaryUse(canUse);
  	}
- 	else if (strcmp(DualString(name).asCString(), "reroll") == 0)
+ 	else if (currentNode_ == "reroll")
  	{
  		long cost = atol(DualString(attributes.getValue("cost")).asCString());
  		currentRace_->setRerollCost(cost);
@@ -72,7 +79,7 @@ void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attribut
  		int qty = atoi(DualString(attributes.getValue("qty")).asCString());
  		currentRace_->setRerollQuantity(qty);
  	}
- 	else if (strcmp(DualString(name).asCString(), "position") == 0)
+ 	else if (currentNode_ == "position")
  	{
  	  // Parse position element like above: 
 	  // <position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" skills="dodge" normal="g" double="asp" />
@@ -89,7 +96,7 @@ void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attribut
 	  currentPos_->setDoubleSkills(xercesc::XMLString::transcode(attributes.getValue("double")));
       currentPos_->setDisplay(xercesc::XMLString::transcode(attributes.getValue("display")));
     	}
-    else if (strcmp(DualString(name).asCString(), "skill") == 0)
+    else if (currentNode_ == "skill")
     {
         char* tmp = xercesc::XMLString::transcode(attributes.getValue("name"));
         char* newSkill = new char[strlen(tmp) + 1];
@@ -100,22 +107,24 @@ void RaceHandler::startElement(const XMLCh* const name, AttributeList&  attribut
 
 void RaceHandler::characters(const XMLCh* const chars, const unsigned int length)
 {
-    chars_ = chars;
+    if (currentNode_ == "background")
+    {
+        currentRace_->setBackground(xercesc::XMLString::transcode(chars));
+    }
 }
 
 void RaceHandler::endElement(const XMLCh* const name)
 {
-  	if (strcmp(DualString(name).asCString(), "background") == 0)
- 	{
- 		// Store the race's background 
- 		currentRace_->setBackground(xercesc::XMLString::transcode(chars_));
- 	}
-	else if (strcmp(DualString(name).asCString(), "race") == 0)
+    currentNode_ = "";
+    //std::cout << "endElement: name="<< xercesc::XMLString::transcode(name) << "currentNode_="<< currentNode_ << std::endl;    
+    if (strcmp(xercesc::XMLString::transcode(name), "race") == 0)
  	{
  		// Store the current race
   		RaceHandler::vRaces_.push_back(*currentRace_);
+        //std::cout << "add race" << std::endl; 
+   
  	}
-    else if (strcmp(DualString(name).asCString(), "position") == 0)
+    else if (strcmp(xercesc::XMLString::transcode(name), "position") == 0)
     {
         //add the current position to the current race.
         currentRace_->addPosition(*currentPos_);

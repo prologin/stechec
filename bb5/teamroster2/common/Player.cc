@@ -23,9 +23,11 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 using std::vector;
 using std::string;
+using std::ostringstream;
 
 Player::Player(Team *team)
 {
@@ -46,10 +48,14 @@ void Player::reset()
     strength_ = 0;
     agility_ = 0;
     armourValue_ = 0;
-    skillsStr_ = "";
     vSkills_.clear();
     display_="";
-    injuries_ = "";   
+    missNextMatch_ = false;
+    nigglingInjuries_ = 0;
+    maReducted_ = 0;
+    avReducted_ = 0;
+    agReducted_ = 0;
+    stReducted_ = 0;
     completions_ = 0;
     touchdowns_ = 0;
     interceptions_ = 0;
@@ -322,9 +328,58 @@ const char* Player::getDisplay() { return display_.c_str(); }
 
 void Player::setDisplay(const char* display) { display_ = display; }
 
-const char* Player::getInjuries() { return injuries_.c_str(); }
+bool Player::getMissNextMatch() { return missNextMatch_; }
 
-void Player::setInjuries(const char* inj) { injuries_ = inj; }
+void Player::setMissNextMatch(bool b) { missNextMatch_ = b; }
+
+int Player::getNigglingInjuries() { return nigglingInjuries_; }
+
+void Player::setNigglingInjuries(int n) { nigglingInjuries_ = n; }
+
+int Player::getMaReducted() { return maReducted_; }
+
+void Player::setMaReducted(int n) { maReducted_ = n; }
+
+int Player::getAvReducted() { return avReducted_; }
+
+void Player::setAvReducted(int n) { avReducted_ = n; }
+
+int Player::getAgReducted() { return agReducted_; }
+
+void Player::setAgReducted(int n) { agReducted_ = n; }
+
+int Player::getStReducted() { return stReducted_; }
+
+void Player::setStReducted(int n) { stReducted_ = n; }
+
+const char* Player::getInjuriesAsString() { 
+    // create output stream 
+    ostringstream oss;
+    
+    if (getMissNextMatch())
+    { 
+        oss << "M";
+    }
+    
+    if (getNigglingInjuries() > 0)
+    {
+        if (getNigglingInjuries() > 1)
+        {
+            oss << getNigglingInjuries();
+        }
+        oss << "N";
+    }
+    
+    if ((getMaReducted() > 0) ||
+        (getAvReducted() > 0) ||
+        (getAgReducted() > 0) ||
+        (getStReducted() > 0))
+        {
+            oss << "+";
+        }
+        
+    return oss.str().c_str(); 
+}
  
 int Player::getCompletions() { return completions_; }
 
@@ -420,8 +475,11 @@ bool Player::validateCharacteristicUpdate(int newVal, int positionVal)
     {
         InvalidParameterException e("Characteristics can never be greater than 10.");
         throw (e);    
-    } else if (abs(newVal - positionVal) > 2) {
-        InvalidParameterException e("Characteristics can never be raised or reduce by more than 2 points.");
+    } else if (newVal < positionVal) {
+        InvalidParameterException e("Characteristics can only be lower with injuries.");
+        throw (e);            
+    }  else if ((newVal - positionVal) > 2) {
+        InvalidParameterException e("Characteristics can never be raised more than 2 points.");
         throw (e);            
     } 
     
