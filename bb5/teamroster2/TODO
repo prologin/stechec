@@ -5,8 +5,5 @@ Regles
  - gestion des mercenaires
  - gestion du chef cuisto 
      
-GUI 
- - afficher / saisir le background de l'Žequipe
-  
  Outil pour l'Žedition des positions. 
  Outil pour la generation des .pkg contenant la liste des images : joueurs, coach exportable/ importable dans le jeu.

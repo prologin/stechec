@@ -9,6 +9,8 @@ teamroster_SOURCES = 						\
 	gui/paragui/SkillsDialog.hh			\
 	gui/paragui/InputDialog.cc			\
 	gui/paragui/InputDialog.hh			\
+	gui/paragui/BackgroundDialog.cc		\
+	gui/paragui/BackgroundDialog.hh		\
 	gui/paragui/BBowlWidget.cc			\
 	gui/paragui/BBowlWidget.hh			\
 	gui/paragui/My_DropDown.cc			\

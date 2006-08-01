@@ -31,6 +31,7 @@
 
 #include "BBowlWidget.hh"
 #include "InputDialog.hh"
+#include "BackgroundDialog.hh"
 #include "TeamrosterApp.hh"
 #include "PlayerLineWidget.hh"
 #include "../../xml/TRParser.hh"
@@ -481,7 +482,19 @@ bool BBowlWidget::handleButtonBackgroundClick(PG_Button* button)
 {
    button->SetInputFocus();
    
-
+   BackgroundDialog iDialog(NULL, PG_Rect(180,50,310,270), "Background", team_->getBackground());
+   iDialog.Show();          
+   int btnClickedID = iDialog.WaitForClick();  
+   iDialog.Hide();
+        
+   // If OK was clicked...
+   if (btnClickedID == 1)
+   {
+       // Update team background  
+       team_->setBackground(iDialog.getBackground());
+   }
+   
+   updateView();
 
    return true;
 }
