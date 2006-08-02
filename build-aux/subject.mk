@@ -9,9 +9,8 @@
 #
 
 PDF		= $(SRC:.tex=.pdf)
-EXTRA_DIST 	= $(SRC) $(PDF)
-CLEANFILES	= api.tex
-DISTCLEANFILES  = $(PDF)
+EXTRA_DIST 	= $(SRC) $(PDF) api.tex
+DISTCLEANFILES  = $(PDF) api.tex
 docdir		= $(datadir)/doc/$(PACKAGE)/subjects/
 doc_DATA	= $(PDF)
 
@@ -25,7 +24,7 @@ TEXI2DVI_FLAGS		= 			\
 clean-local::
 	rm -rf pdf
 
-api.tex :
+api.tex	: $(YAML)
 	$(RUBY) 					\
 	  -I$(top_srcdir)/stechec/scripts 		\
 	  -I$(top_builddir)/stechec/scripts		\

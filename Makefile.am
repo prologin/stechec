@@ -9,7 +9,7 @@ SUBDIRS		= 				\
 	$(BUILD_bb5)				\
 	$(BUILD_prologin)
 
-EXTRA_DIST	= README.stechec
+EXTRA_DIST	= README.stechec debian stechec.spec
 
 dist-hook:
 	rm -rf `find $(distdir)/debian -name .svn`

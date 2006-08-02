@@ -34,7 +34,7 @@ build: build-stamp
 
 build-stamp:  config.status
 	dh_testdir
-	$(MAKE)
+	$(MAKE) -j 2
 	touch $@
 
 clean:
