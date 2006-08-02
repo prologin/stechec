@@ -400,51 +400,59 @@ bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
    // If OK was clicked...
    if (btnClickedID == 1)
    { 
-       std::cout << "Parse file: " << iDialog.getText();
+        std::cout << "Parse file: " << iDialog.getText();
    
         // Parse team XML file
         TRParser parser;
-        parser.parseTeamFile(iDialog.getText());
-        std::cout << " ... OK" << std::endl;
+        try {
+            parser.parseTeamFile(iDialog.getText());
+            std::cout << " ... OK" << std::endl;
       
-        // Update the team with the new one. 
-        team_ = TeamHandler::team_;
-    
-        //std::cout << " race_->GetWidgetCount():"<< race_->GetWidgetCount() << std::endl;
-        
-        // select appropriate race 
-        for (unsigned int i=0; i<race_->GetWidgetCount(); i++)
-        {
-            PG_ListBoxBaseItem* item = (PG_ListBoxBaseItem*)race_->FindWidget(i);
-        
-            if (strcmp(item->GetText(), team_->getRace()->getName()) == 0)
-            {
-                //std::cout << " item found i:"<< i << std::endl;
+            // Update the team with the new one. 
+            team_ = TeamHandler::team_;
+
+            //std::cout << " race_->GetWidgetCount():"<< race_->GetWidgetCount() << std::endl;
             
-                item->Select(true);
-                race_->SelectItem(item, true);
-                race_->ScrollTo(i*LINE_HEIGHT);
-                break;
+            // select appropriate race 
+            for (unsigned int i=0; i<race_->GetWidgetCount(); i++)
+            {
+                PG_ListBoxBaseItem* item = (PG_ListBoxBaseItem*)race_->FindWidget(i);
+            
+                if (strcmp(item->GetText(), team_->getRace()->getName()) == 0)
+                {
+                    //std::cout << " item found i:"<< i << std::endl;
+                
+                    item->Select(true);
+                    race_->SelectItem(item, true);
+                    race_->ScrollTo(i*LINE_HEIGHT);
+                    break;
+                }
+            }
+    
+            // load team emblen  
+            char* filename = new char[80];
+            sprintf(filename,"emblems/%s", team_->getEmblem());
+            raceImg_->LoadImage(filename);
+            delete filename;
+                    
+            // Retrieve Postions vector for the selected race.
+            std::vector<Position> vPos = team_->getRace()->getPositions();
+    
+            // Update all the dropdowns
+            for (int i=0; i<TEAM_SIZE; i++)
+            {
+                playerWidget_[i]->Hide();
+                playerWidget_[i]->updatePositionsList(vPos);
+                playerWidget_[i]->updateModel(team_->getPlayer(i+1));
+                playerWidget_[i]->Show();
             }
         }
-
-        // load team emblen  
-        char* filename = new char[80];
-        sprintf(filename,"emblems/%s", team_->getEmblem());
-        raceImg_->LoadImage(filename);
-        delete filename;
-                
-        // Retrieve Postions vector for the selected race.
-        std::vector<Position> vPos = team_->getRace()->getPositions();
-
-        // Update all the dropdowns
-        for (int i=0; i<TEAM_SIZE; i++)
+        catch (const SAXException& toCatch)
         {
-            playerWidget_[i]->Hide();
-            playerWidget_[i]->updatePositionsList(vPos);
-            playerWidget_[i]->updateModel(team_->getPlayer(i+1));
-            playerWidget_[i]->Show();
-        }
+             std::cout << " ... Failed \nSAXException : An error occurred\n  Error: "
+                     << xercesc::XMLString::transcode(toCatch.getMessage())
+                     << "\n" << std::endl;
+        } 
     
         updateView();
    } 

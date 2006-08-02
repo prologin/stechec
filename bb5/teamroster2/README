@@ -1,5 +1,5 @@
 ******************
-Teamroster v.0.9.2 
+Teamroster v.0.9.3 
 ******************
 
 Éditeur d'équipe pour TBT, écrit en C++ / SDL (Paragui).
@@ -51,7 +51,7 @@ Par contre les inconvénients sont nombreux:
 - Regles de validation d'une équipe avant de l'enregistrer : nombre de joueurs dans une position donnée
 - Affiche l'icone de l'emblème de l'équipe
 - Bouton Save implémenté : on enregistre le fichier team dans le répertoire courant avec "nomTeam.xml"
-- Bouton Load implémenté : on charge le fichier team depuis le répertoire courant.
+- Bouton Load implémenté : on charge le fichier team depuis le répertoire courant + gestion de fichier non trouvé.
 - Bouton Quit implémenté : on quitte l'application.
 - Gestion des skills
 - Gestion des blessures (injuries)

@@ -483,6 +483,9 @@ bool PlayerLineWidget::handleButtonSkillsClick(PG_Button* button)
             }
         }
         updateView(); 
+
+        // Refresh parent view to update totalTeamValue
+        ((BBowlWidget*)parent_)->updateView();
    }
    return true;
 } 
@@ -513,6 +516,9 @@ bool PlayerLineWidget::handleButtonInjuriesClick(PG_Button* button)
            player_->setStReducted(iDialog.getStReducted());
         }
         updateView();
+        
+        // Refresh parent view to update totalTeamValue
+        ((BBowlWidget*)parent_)->updateView();
    }
    return true;
 } 

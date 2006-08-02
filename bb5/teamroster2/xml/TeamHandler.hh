@@ -36,6 +36,13 @@ public:
 	virtual ~TeamHandler();
     
     // -----------------------------------------------------------------------
+    //  Implementations of the SAX ErrorHandler interface
+    // -----------------------------------------------------------------------
+    void warning(const SAXParseException& exc);
+    void error(const SAXParseException& exc);
+    void fatalError(const SAXParseException& exc);
+
+    // -----------------------------------------------------------------------
     //  Handlers for the SAX DocumentHandler interface
     // -----------------------------------------------------------------------
     void startDocument();

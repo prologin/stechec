@@ -39,14 +39,28 @@ TeamHandler::~TeamHandler()
 }
 
 // ---------------------------------------------------------------------------
+//  SAXPrintHandlers: Overrides of the SAX ErrorHandler interface
+// ---------------------------------------------------------------------------
+void TeamHandler::error(const SAXParseException& e)
+{
+    throw (e);
+}
+
+void TeamHandler::fatalError(const SAXParseException& e)
+{
+    throw (e);
+}
+
+void TeamHandler::warning(const SAXParseException& e)
+{
+    throw (e);
+}
+
+// ---------------------------------------------------------------------------
 //  TeamHandler: Overrides of the SAX DocumentHandler interface
 // ---------------------------------------------------------------------------
 void TeamHandler::startDocument() 
 {
-    if (TeamHandler::team_ != NULL)
-    {
-        delete TeamHandler::team_;
-    }
 }
     
 void TeamHandler::startElement(const XMLCh* const name, AttributeList&  attributes)
@@ -57,6 +71,12 @@ void TeamHandler::startElement(const XMLCh* const name, AttributeList&  attribut
     // <team race="Orc" BBversion="5" emblem="orc.jpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="team.xsd">
     if (currentNode_ == "team")
     {
+        // This the first element. We need to clean previous team definition 
+        if (TeamHandler::team_ != NULL)
+        {
+            delete TeamHandler::team_;
+        }
+
         std::string BBversion = xercesc::XMLString::transcode(attributes.getValue("BBversion"));
         if (BBversion.compare(RaceHandler::BBversion_) != 0)
         {

@@ -16,7 +16,6 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/parsers/SAXParser.hpp>
-#include <xercesc/util/OutOfMemoryException.hpp>
 
 #include <iostream>
 #include <vector>
@@ -46,7 +45,7 @@ void TRParser::parseTeamFile(const char* filename)
     catch (const XMLException& toCatch)
     {
          std::cerr << "Error during initialization! :\n"
-              << toCatch.getMessage() << std::endl;
+              << xercesc::XMLString::transcode(toCatch.getMessage()) << std::endl;
     }
 
     //
@@ -70,19 +69,23 @@ void TRParser::parseTeamFile(const char* filename)
     try
     {
         parser->setDocumentHandler(&handler);
+        parser->setErrorHandler(&handler);
         parser->parse(filename);
     }
-    catch (const OutOfMemoryException&)
+    catch (const SAXException& toCatch)
     {
-         std::cerr << "OutOfMemoryException" << std::endl;
-    }
+        throw (toCatch);
+    } 
     catch (const XMLException& toCatch)
     {
-         std::cerr << "\nAn error occurred\n  Error: "
-             << toCatch.getMessage()
+         std::cout << "\nXMLException : An error occurred\n  Error: "
+             << xercesc::XMLString::transcode(toCatch.getMessage())
              << "\n" << std::endl;
     } 
-     
+    catch (...) {
+           std::cout << "Unexpected Exception \n" << std::endl; ;
+    }
+    
     //
     //  Delete the parser itself.  Must be done prior to calling Terminate, below.
     //
@@ -105,7 +108,7 @@ void TRParser::parseRaceFile()
     catch (const XMLException& toCatch)
     {
          std::cerr << "Error during initialization! :\n"
-              << toCatch.getMessage() << std::endl;
+              << xercesc::XMLString::transcode(toCatch.getMessage()) << std::endl;
     }
 
 	//
@@ -133,14 +136,10 @@ void TRParser::parseRaceFile()
         
         //printRaces();
    }
-    catch (const OutOfMemoryException&)
-    {
-         std::cerr << "OutOfMemoryException" << std::endl;
-    }
     catch (const XMLException& toCatch)
     {
          std::cerr << "\nAn error occurred\n  Error: "
-             << toCatch.getMessage()
+             << xercesc::XMLString::transcode(toCatch.getMessage())
              << "\n" << std::endl;
     } 
     
@@ -165,7 +164,7 @@ void TRParser::parseParametersFile()
     catch (const XMLException& toCatch)
     {
          std::cerr << "Error during initialization! :\n"
-              << toCatch.getMessage() << std::endl;
+              << xercesc::XMLString::transcode(toCatch.getMessage()) << std::endl;
     }
 
     //
@@ -191,14 +190,10 @@ void TRParser::parseParametersFile()
         parser->setDocumentHandler(&handler);
         parser->parse("./data/parameters.xml");
     }
-    catch (const OutOfMemoryException&)
-    {
-         std::cerr << "OutOfMemoryException" << std::endl;
-    }
     catch (const XMLException& toCatch)
     {
          std::cerr << "\nAn error occurred\n  Error: "
-             << toCatch.getMessage()
+             << xercesc::XMLString::transcode(toCatch.getMessage())
              << "\n" << std::endl;
     } 
      
