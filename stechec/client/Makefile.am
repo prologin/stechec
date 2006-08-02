@@ -20,10 +20,12 @@ tbt_CXXFLAGS =					\
 	-DMODULE_COLOR=C_YELLOW
 
 tbt_LDFLAGS =					\
-	-R $(libdir)				\
 	-export-dynamic				\
 	$(PTHREAD_CFLAGS)
 
+if USE_RPATH
+tbt_LDFLAGS += -R $(libdir)
+endif
 
 tbt_LDADD =							\
 	$(top_builddir)/stechec/base_rules/libbase_rules.la	\

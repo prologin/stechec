@@ -16,8 +16,11 @@ tbt_server_CXXFLAGS = 				\
 	-DMODULE_NAME=\"server\"
 
 tbt_server_LDFLAGS = 				\
-	-R $(libdir)				\
 	-export-dynamic
+
+if USE_RPATH
+tbt_server_LDFLAGS += -R $(libdir)
+endif
 
 tbt_server_LDADD =						\
 	$(top_builddir)/stechec/base_rules/libbase_rules.la	\

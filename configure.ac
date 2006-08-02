@@ -59,6 +59,9 @@ AC_ARG_ENABLE([debug],
          CXXFLAGS="-ggdb3 -W -Wall";
          CFLAGS="-ggdb3 -W -Wall"])
 
+# to follow debian policy, don't set rpath when prefix is /usr
+AM_CONDITIONAL([USE_RPATH], [test "$prefix" != "/usr"])
+
 #
 # Look for common programs
 #
