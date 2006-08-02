@@ -1,8 +1,4 @@
 # -*-Autconf-*-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# ++                           T B T                                ++
-# ++                        configure.ac                            ++
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Autconf init
 AC_PREREQ(2.59)
@@ -35,8 +31,8 @@ STECHEC_ADDMODULE([prolo2006])
 DEPENDS=""
 DEPENDS_bb5="sdl,readline"
 DEPENDS_prologin="sdl,mysql"
-DEPENDS_ant="prologin,qt"
-DEPENDS_prolo2005="prologin,qt"
+DEPENDS_ant="prologin"
+DEPENDS_prolo2005="prologin"
 DEPENDS_prolo2006="prologin"
 
 # Can select which module(s) to build
@@ -214,7 +210,6 @@ if test x$BUILD_prologin != x; then
 
 AC_CONFIG_FILES([
   prologin/Makefile
-  prologin/gui_qt/Makefile
   prologin/meta_server/Makefile
   prologin/main_server/Makefile
   prologin/common/Makefile
@@ -238,7 +233,6 @@ AC_CONFIG_FILES([
   prologin/prolo2005/subject/Makefile
   prologin/prolo2005/rules/Makefile
   prologin/prolo2005/test/Makefile
-  prologin/prolo2005/visu2d/Makefile
   prologin/prolo2005/editor/Makefile
   prologin/prolo2005/data/Makefile
 ])

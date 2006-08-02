@@ -5,9 +5,7 @@ lib_LTLIBRARIES	 = outatime_sdlvisu.la
 outatime_sdlvisu_la_SOURCES	=		\
 	OutAGui.cc				\
 	OutAGui.hh				\
-	Object.hh				\
-	Sprite.hh				\
-	InfoBox.hh
+	Square.hh
 
 outatime_sdlvisu_la_CXXFLAGS	=		\
 	$(SDL_CFLAGS)				\

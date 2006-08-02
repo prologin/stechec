@@ -11,6 +11,9 @@ SUBDIRS		= 				\
 
 EXTRA_DIST	= README.stechec
 
+dist-hook:
+	rm -rf `find $(distdir)/debian -name .svn`
+
 # FIXME: move to stechec.
 SUBDIRS		+= doc
 

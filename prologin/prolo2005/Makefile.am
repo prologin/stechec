@@ -6,7 +6,3 @@ SUBDIRS =					\
 	subject					\
 	editor					\
 	test
-
-if HAVE_QT
-SUBDIRS += visu2d
-endif
