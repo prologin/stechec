@@ -1,5 +1,5 @@
 ******************
-Teamroster v.0.9.3 
+Teamroster v.0.9.4 
 ******************
 
 Éditeur d'équipe pour TBT, écrit en C++ / SDL (Paragui).
@@ -56,4 +56,4 @@ Par contre les inconvénients sont nombreux:
 - Gestion des skills
 - Gestion des blessures (injuries)
 - Gestion du background de l'équipe 
-
+- La valeur d'un joueur manquant le prochain match n'est pas compté dans la valeur de l'équipe. Il a donc une valeur de 0. (cf. LBR 5 p.25 - Team Value).

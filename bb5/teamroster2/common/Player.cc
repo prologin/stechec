@@ -423,6 +423,12 @@ long Player::getValue()
         // If no position is defined return 0
         return 0;
     }
+  
+    // return 0 if the player will miss the next match
+    if (getMissNextMatch())
+    {
+        return 0;
+    }
     
     // Initialize player value with the position cost
     long playerValue = value_;
