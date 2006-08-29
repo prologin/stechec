@@ -46,14 +46,16 @@ pas trop l'esprit du jeu de plateau. D'autres tentatives ont été
 effectué, comme avec RudeBowl \cite{rudebowl.www}, 3dBowl
 \cite{3dbowl.www} ou pyBloodBowl \cite{pybloodbowl.www}, mais ces
 projets ont soit avorté, soit ne sont plus activement maintenu. La
-référence actuelle est JavaBB \cite{javabb.www}, utilisé par tous les joueurs en , mais
-souffre de quelques défauts. Le graphisme est assez austère, et les
-versions actuelles ne sont pas \emph{open source}, ce qui rend plus
-difficile l'ajout d'extensions. L'objectif\footnote{Ce que l'on
-  espère, il n'est pas dit que ca marchera :)} à long terme de
-\ac{tbt} est de combler ce trou, en proposant une adaptation de Blood
-Bowl libre, jolie, extensible, en essayant le plus possible de
-respecter le jeu plateau.
+référence actuelle est JavaBB \cite{javabb.www}, utilisé par tous les
+joueurs en , mais souffre de quelques défauts. Le graphisme est assez
+austère, et les versions actuelles ne sont pas \emph{open source}, ce
+qui rend plus difficile l'ajout d'extensions\footnote{Un problème
+majeur: le développeur, SkyJunkie, ne semble pas souhaiter pas
+intégrer les règles du LRB5, ce qui va surement fruster beaucoup de
+joueurs.}. L'objectif\footnote{Ce que l'on espère, il n'est pas dit que
+ca marchera :)} à long terme de \ac{tbt} est de combler ce trou, en
+proposant une adaptation de Blood Bowl libre, jolie, extensible, en
+essayant le plus possible de respecter le jeu plateau.
 
 Ce document établit une nouvelle architecture pour \ac{tbt} en
 repartant de zéro. Il contient la ligne directrice qu'il a été décidé
@@ -281,26 +283,71 @@ les besoins. Nous aurons besoin de:
 \end{itemize}
 
 Faites bien attention à la terminologie utilisée, qui porte souvent à
-confusion. Référez vous au glossaire \ref{chap:glossaire} pour plus de
-détails.
+confusion. Référez vous au glossaire (annexe \ref{chap:glossaire})
+pour plus de détails.
+
+En mode de fonctionnement \emph{client/serveur}, il sera possible de
+lier le serveur à un gestionnaire de ligue, comme décrit dans la
+partie \ref{chap:ligue}.
+
+\section{Emboitement des modules}
+
+La manière dont les modules s'assemblent et intéragissent, aussi bien
+à la compilation qu'à l'exécution, est une chose
+importante\footnote{Et pas simple. il arrive aussi très souvent que je
+m'y perde moi-même...}. A la base, n'oubliez pas qu'il y a deux
+morceaux principaux~: le client et le serveur, accompagnés d'un petit
+attirail (réseau, outils). Ensuite, le client est découpé en deux
+parties, une qui s'occupe du rendu à l'écran et l'autre qui gère les
+règles du jeu. De même, le serveur est découpé en deux parties, une
+qui gère les connexions réseau et l'autre qui s'occupe des règles du
+jeu. Ces deux morceaux (client et serveur) sont également liés au
+module transfert de données pour qu'ils puissent communiquer entre
+eux.
+
+En plus de ce découpages en entités logique, le code est aussi séparé
+en \emph{couches} (ce qui donne une sorte de
+\emph{stratification}). Par exemple, une partie du code concernant la
+gestion des règles côté client et serveur est identique\footnote{La
+duplication de code est quelque chose qui a été évitée au maximum. Dès
+qu'il est possible, le code commun (et qui pourrait resservir
+ailleurs) est rassemblé dans une bibliothèque, ce qui explique cette
+stratification (parfois, c'est trop. J'en conviens).}, et est
+rassemblée dans le paquet \emph{Règles de base}.
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=12cm]{global-clt-ser}
-  \caption{Emboitement des modules, en configuration \emph{client/serveur}.}
-  \label{fig:global_srv}
+  \includegraphics[width=13cm]{vue-statique}
+  \caption{Vue statique des paquets, dépendances à la compilation.}
+  \label{fig:static-view}
 \end{figure}
+
+La figure \ref{fig:static-view} résume cet assemblage. Le fait que le
+module soit inclus dans \texttt{stechec}\footnote{C'est du code non
+spécifique à TBT, qui me sert dans d'autres projets. Je mutualise...}
+indique que le code source se trouve dans le répertoire
+\texttt{stechec/}. De même, les modules inclus dans \texttt{TBT} se
+trouvent dans le répertoire \texttt{bb5}. Pour le module client, c'est
+un peu plus compliqué car il peut prendre plusieurs formes, le code
+est réparti un peu partout. Cette partie est décrite plus en détail
+dans la partie \ref{chap-client}.
+
+A l'exécution, la disposition des modules est montré dans la figure
+\ref{fig:dynamic-view}. Même remarque qu'avant, le client, qui peut
+revêtir plusieurs formes, sera vu plus en détails. Les communications
+entre les modules à l'intérieur se font avec de bêtes appels de
+fonctions (pas d'IPC ou autre bizarrerie du genre), suivant une
+interface bien définie. Mais actuellement, les interfaces ne sont pas
+vraiment bien définies, ce qui rend la chose plus compliquée (mais ne
+demande qu'à être corrigé).
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=12cm]{global-clt-only}
-  \caption{Emboitement des modules, en configuration \emph{standalone}.}
-  \label{fig:global_standalone}
+  \includegraphics[width=13cm]{vue-dynamique}
+  \caption{Vue dynamique des paquets, à l'execution. Les notes sont en
+  jaune.}
+  \label{fig:dynamic-view}
 \end{figure}
-
-A noter également qu'en mode de fonctionnement \emph{client/serveur},
-il sera possible de lier le serveur à un gestionnaire de ligue, comme
-décrit dans la partie \ref{chap:ligue}.
 
 \section{Fonctionnement général}
 
