@@ -13,7 +13,7 @@
 % ------------------------------------------------------------------------------
 % Set here your personnal vars
 % ------------------------------------------------------------------------------
-\newcommand{\myauthor}{Mathieu \textsc{Betton} \\ Stéphane \textsc{Despret} \\ Olivier \textsc{Gournet}}
+\newcommand{\myauthor}{Mathieu \textsc{Betton} \\ Stéphane \textsc{Despret}}
 
 \newcommand{\mytitle}{\textbf{TowBowlTactics - The revival}}
 \newcommand{\myorg}{TBT Team}
@@ -21,7 +21,7 @@
 % ------------------------------------------------------------------------------
 
 \title[TowBowlTactics]{\mytitle}
-\author[Mathieu, Stéphane, Olivier]{\myauthor}
+\author[Mathieu, Stéphane]{\myauthor}
 \institute[RMLL 2006]{\myorg}
 \date{\mydate}
 
@@ -75,6 +75,12 @@
       \item Programmé en C++/SDL, réalisé en 1 an.
       \item Communautée se formant autour du jeu, mais pas
         suffisamment de programmeur pour le faire vivre.
+      \item Problèmes :
+        \begin{itemize}
+          \item Code trop peu documenté et monolithique.
+          \item Unique développeur manquant de temps pour continuer
+            le développement et la maintenance du projet.
+        \end{itemize}
     \end{itemize}
   \end{block}
 }
@@ -101,7 +107,7 @@
           \item forum,
           \item wiki,
           \item subversion,
-          \item mailing-listes.
+          \item listes de diffusion.
         \end{itemize}
     \end{itemize}
   \end{block}
@@ -111,10 +117,10 @@
 {
   \begin{block}{Recrutement et organisation de l'équipe}
     \begin{itemize}
-      \item Pas d'organisation formelle.
-      \item Efficacité certaine.
-      \item Importance du document de base décrivant du point de vue technique le
-        projet.
+      \item Noyau de 3 personnes mais pas d'organisation formelle.
+      \item Proposition d'aide constante d'une communauté toujours active.
+      \item Élaboration d'une proposition technique qui servira de base aux
+        discutions.
     \end{itemize}
   \end{block}
 }
@@ -137,9 +143,23 @@
 
 \frame
 {
+  \begin{block}{Compatibilité}
+    \begin{itemize}
+      \item SDL est portable.
+      \item Choix du support de VC++ autant que possible.
+    \end{itemize}
+  \end{block}
+}
+
+\frame
+{
   \begin{block}{Modélisation}
     \begin{itemize}
       \item Système modulaire, client/serveur distinct.
+        \begin{itemize}
+          \item Serveur: gestion de l'arbitrage et transfert des données.
+          \item Client: gestion des joueurs et des données.
+        \end{itemize}
       \item Connexion TCP/IP entre le client et le serveur.
       \item Plusieurs interface possible, console, 2D, \ldots
     \end{itemize}
@@ -148,9 +168,14 @@
 
 \frame
 {
+  \includegraphics[width=10cm]{img/global-clt-ser}
+}
+
+\frame
+{
   \begin{block}{Multimédia}
     \begin{itemize}
-      \item Les figurines de GW sont pour l'instant utilisées.
+      \item Les figurines de GW sont pour l'instant toujours utilisées.
       \item Graphismes à refaire entièrement.
       \item Petite musique d'ambiance et son...
     \end{itemize}
@@ -167,8 +192,9 @@
 {
   \begin{block}{Vie du projet}
     \begin{itemize}
+      \item Difficulté pour tous de s'investir autant.
       \item Difficulté de motiver des gens ?
-      \item Un conseil: faire des backups régulier.
+      \item Arriver à composer avec chacun \ldots 
     \end{itemize}
   \end{block}
 }
@@ -186,7 +212,7 @@
 
 \frame
 {
-  \frametitle{}
+  \frametitle{The End}
 
   \begin{center}
     {\huge Questions, remarques, informations complémentaires ?}
