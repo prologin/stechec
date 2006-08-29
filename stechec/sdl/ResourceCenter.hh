@@ -23,7 +23,7 @@
 
 /*!
 ** @brief Exception thrown by SDL functions.
-**
+** @ingroup sdl_base
 */
 class SDLError : public Exception
 {
@@ -33,7 +33,7 @@ public:
 
 /*!
 ** @brief Exception thrown by TTF functions.
-**
+** @ingroup sdl_base
 */
 class TTFError : public Exception
 {
@@ -45,9 +45,11 @@ struct _TTF_Font;
 typedef struct _TTF_Font TTF_Font;
 
 /*!
-** @brief Provide cache for SDL resources.
+** @brief Provide loader (with cache) for SDL resources.
+** @ingroup sdl_base
 **
 ** This class is a singleton. You can access it from anywhere.
+** It provides image and font loader, with a transparent caching system.
 */
 class ResourceCenter
 {
@@ -82,7 +84,7 @@ public:
 
 private:
   //! @brief Load an SDL_surface from a picture (png) file.
-  //! @note No caching is done.
+  //! @note No caching is done, this is getImage job.
   //! @param filename Image file to load.
   //! @throw SDLError Thrown if the file could not be opened.
   SDL_Surface* loadImage(const std::string& filename);
@@ -91,6 +93,7 @@ private:
   //! @return A copy of @c from, with modification.
   SDL_Surface* transformImage(SDL_Surface* from, double zoom, double angle);
 
+  //! @brief Yes, ResourceCenter is a singleton.
   static ResourceCenter* inst_;
 
   typedef std::set<Surface, Surface::ImgSort> ImageList;

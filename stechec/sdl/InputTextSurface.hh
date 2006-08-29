@@ -20,7 +20,8 @@
 # include "TextSurface.hh"
 
 /*
-** Implements a TextBox, to let user type text.
+** @brief Implements a TextBox, to let user type text.
+** @ingroup sdl_base
 **
 ** This is implemented on top of TextSurface, and isn't really nice
 ** to render custom text, ie a cursor.

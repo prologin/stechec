@@ -24,7 +24,16 @@ class VirtualSurface;
 
 /*!
 ** @brief Basic encapsulation of SDL_Surface structure.
+** @ingroup sdl_base
 **
+** This is the base class to display something (in rectangular shape) on the screen.
+**
+** A simple example (assuming you already have a SDLWindow):
+** @code
+**  Surface surf("img/lala.png");
+**  surf.setPos(40, 30);
+**  win.getScreen.addChild(&surf);
+** @endcode
 */
 class Surface
 {
@@ -76,13 +85,21 @@ public:
   virtual void  setAngle(double angle);
   virtual void  setZ(int z);
 
-  // Whether a surface will be rendered or not. (update() is
-  // still called).
+  //! @brief Show this surface on the screen.
+  //! @note This is the default.
   void          show();
+  //! @brief Don't display this surface on the screen.
+  //! @note Function @c update() is still called, but not @c render().
   void          hide();
+  // !@brief Whether it is displayed or not.
   bool          isShown() const;
 
+  //! @brief Create an empty SDL Surface of the given size.
+  //! Used to do manual rendering with SDL functions and, at the same time,
+  //! have it in the surface hierarchy.
   void create(int width, int height);
+
+  //! @brief Load a image into this surface (.png, .jpg, .bmp, ...).
   void load(const std::string filename, double zoom = 1., double angle = 0.);
 
   //! @brief In this method you can do all you want with your object.

@@ -19,6 +19,12 @@
 
 # include "Surface.hh"
 
+/*!
+** @brief Enhancement of Surface, give life to object.
+** @ingroup sdl_base
+**
+** Have the same behavior of Surface, but can be animated, move, ...
+*/
 class Sprite : public Surface
 {
 public:

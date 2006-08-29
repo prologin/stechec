@@ -22,6 +22,7 @@
 
 /*
 ** @brief Class that can draw text, similiar to a TextLabel.
+** @ingroup sdl_base
 **
 ** Support multi-line and autowrap.
 */

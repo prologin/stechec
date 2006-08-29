@@ -17,6 +17,11 @@
 #ifndef INPUT_HH_
 # define INPUT_HH_
 
+/*!
+** @ingroup sdl_base
+** @{
+*/
+
 # include <SDL.h>
 # include "tools.hh"
 
@@ -86,5 +91,9 @@ private:
 
   static Input* inst_;
 };
+
+/*!
+** @}
+*/
 
 #endif /* !INPUT_HH_ */
