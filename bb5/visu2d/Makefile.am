@@ -7,24 +7,6 @@ lib_LTLIBRARIES	= bb5_visu.la
 noinst_LTLIBRARIES = libbb5_visu_common.la
 
 libbb5_visu_common_la_SOURCES =			\
-	ResourceCenter.hh			\
-	ResourceCenter.cc			\
-	Surface.hh				\
-	Surface.cc				\
-	VirtualSurface.hh			\
-	VirtualSurface.cc			\
-	VirtualScrollableSurface.hh		\
-	VirtualScrollableSurface.cc		\
-	TextSurface.hh				\
-	TextSurface.cc				\
-	InputTextSurface.hh			\
-	InputTextSurface.cc			\
-	Sprite.hh				\
-	Sprite.cc				\
-	Input.hh				\
-	Input.cc				\
-	SDLWindow.hh				\
-	SDLWindow.cc				\
 	ActionPopup.hh				\
 	ActionPopup.cc				\
 	Panel.hh				\
@@ -55,12 +37,14 @@ bb5_visu_SOURCES =				\
 
 bb5_visu_LDADD = 					\
 	$(top_builddir)/stechec/tools/libtools.la	\
+	$(top_builddir)/stechec/sdl/libstechec_sdl.la	\
 	libbb5_visu_common.la
 
 bb5_visu_LDFLAGS	=			\
 	$(SDL_LIBS)
 
-bb5_visu_la_LIBADD 	=			\
+bb5_visu_la_LIBADD 	=				\
+	$(top_builddir)/stechec/sdl/libstechec_sdl.la	\
 	libbb5_visu_common.la
 
 bb5_visu_la_LDFLAGS	=			\
@@ -77,5 +61,6 @@ INCLUDES        =				\
         -I$(top_srcdir)/stechec/tools		\
         -I$(top_srcdir)/stechec/base_rules	\
         -I$(top_srcdir)/stechec/client		\
+	-I$(top_srcdir)/stechec/sdl		\
         -I$(srcdir)/../client			\
 	-I$(srcdir)/../common
