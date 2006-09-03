@@ -49,3 +49,10 @@ inline SBall* SRules::getBall()
 {
   return ball_;
 }
+
+inline STeam* SRules::getTeam(int team_id)
+{
+  if (team_id == 0 || team_id == 1)
+    return team_[team_id];
+  return NULL;
+}

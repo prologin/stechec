@@ -27,23 +27,30 @@ class CRules;
 class CPlayer : public Player
 {
 public:
-  CPlayer(int id, int team_id, CRules* r);
+  CPlayer(CRules* r, const MsgPlayerInfo* m);
   virtual ~CPlayer();
-
-  //! @brief Load player configuration from xml.
-  void loadConfig(xml::XMLTeam& team);
-
-  //! @brief Get player information.
-  void msgPlayerInfo(const MsgPlayerInfo* m);
 
   //! @brief Move the player on the field.
   bool move(const Position& to);
 
+  //! @brief Block the player at the specified position.
+  bool block(const Position& to);
+  
   //! @brief Set the player position.
   void setPosition(const Position& pos);
 
 private:
   CRules* r_;
+
+  // Message from server.
+  void msgPlayerPos(const MsgPlayerPos* m);
+  void msgPlayerMove(const ActMove* m);
+  void msgPlayerKnocked(const MsgPlayerKnocked* m);
+
+  // Filter messages. Say yes if this message is for this player.
+  bool filterPlayerPos(const MsgPlayerPos* m);
+  bool filterPlayerMove(const ActMove* m);
+  bool filterPlayerKnocked(const MsgPlayerKnocked* m);
 };
 
 #endif /* !CPLAYER_HH_ */

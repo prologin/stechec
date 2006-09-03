@@ -7,6 +7,8 @@ bb5_client_rules_la_SOURCES	=		\
 	Api.hxx					\
 	CBall.hh				\
 	CBall.cc				\
+	CField.cc				\
+	CField.hh				\
 	CPlayer.cc				\
 	CPlayer.hh				\
 	CRules.cc				\

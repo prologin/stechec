@@ -155,7 +155,7 @@ TTF_Font* ResourceCenter::getFont(const std::string font_name, int font_size)
                           font_size);
   if (lf.font_ == NULL)
     PRINT_AND_THROW(TTFError, "OpenFont: ");
-
+  
   font_list_.insert(lf);
   return lf.font_;
 }

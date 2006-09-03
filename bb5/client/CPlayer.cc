@@ -17,17 +17,29 @@
 #include "CRules.hh"
 #include "CPlayer.hh"
 
-CPlayer::CPlayer(int id, int team_id, CRules* r)
-  : Player(id, team_id),
+CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
+  : Player(m->player_id, m->client_id),
     r_(r)
 {
+  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITHALF | GS_COACHBOTH);
+  r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH);
+
+  ma_ = m->ma;
+  st_ = m->st;
+  ag_ = m->ag;
+  av_ = m->av;
+  name_ = packetToString(m->name);
+  player_position_ = m->player_position;
+  player_picture_ = packetToString(m->player_img);
+
+  LOG6("Create player(" << (unsigned)this << "): id: " << id_ << " team_id " << team_id_);
 }
 
 CPlayer::~CPlayer()
 {
 }
 
-// sig... wanted it to be on Player.
 void CPlayer::setPosition(const Position& pos)
 {
   CField* f = r_->getField();
@@ -37,40 +49,10 @@ void CPlayer::setPosition(const Position& pos)
   f->setPlayer(pos_, this);
 }
 
-// Load player info from xml.
-// Do not store them right now, they will be returned by the server.
-void CPlayer::loadConfig(xml::XMLTeam& team)
-{
-  team.switchToPlayer(id_);
-
-  MsgPlayerInfo pkt;
-  pkt.player_id = id_;
-  stringToPacket(pkt.name, team.getAttr<std::string>("player", "name"), 32);
-  pkt.ma = team.getData<int>("ma");
-  pkt.st = team.getData<int>("st");
-  pkt.ag = team.getData<int>("ag");
-  pkt.av = team.getData<int>("av");
-  pkt.player_position = team.getData<int>("positionid");
-  stringToPacket(pkt.player_img, team.getAttr<std::string>("player", "display"), 32);
-  
-  r_->sendPacket(pkt);
-}
-
-// Receive player info from server. Now, store them.
-void CPlayer::msgPlayerInfo(const MsgPlayerInfo* m)
-{
-  LOG4("Get info for player " << m->player_id << " team " << m->client_id);
-  ma_ = m->ma;
-  st_ = m->st;
-  ag_ = m->ag;
-  av_ = m->av;
-  name_ = packetToString(m->name);
-  player_position_ = m->player_position;
-  player_picture_ = packetToString(m->player_img);
-}
-
 bool CPlayer::move(const Position& to)
 {
+  CField* f = r_->getField();
+
   if (to == pos_)
     {
       LOG2("You are already on " << pos_);
@@ -83,7 +65,6 @@ bool CPlayer::move(const Position& to)
     }
 
   ActMove pkt;
-  CField* f = r_->getField();
   const PosList& p = f->getPath(pos_, to, this);
   if (p.empty())
     {
@@ -104,9 +85,71 @@ bool CPlayer::move(const Position& to)
   return true;
 }
 
-// lalala...
-#include "Field.cc"
-void fou()
+bool CPlayer::block(const Position& to)
 {
-  Field<CPlayer> f;
+  CField* f = r_->getField();
+
+  CPlayer* opponent = f->getPlayer(to);
+  if (opponent == NULL
+      || opponent->getTeamId() == getTeamId()
+      || !getPosition().isNear(opponent->getPosition()))
+    return false;
+  ActBlock pkt;
+  pkt.player_id = id_;
+  pkt.opponent_id = opponent->getId();
+  r_->sendPacket(pkt);
+  return true;
+}
+
+
+/*
+** Messages.
+*/
+
+void CPlayer::msgPlayerPos(const MsgPlayerPos* m)
+{
+  Position pos(m->row, m->col);
+  setPosition(pos);
+  r_->onEvent(m);
+}
+
+void CPlayer::msgPlayerMove(const ActMove* m)
+{
+  // FIXME: should consider all steps, to have a smothing graphical effect.
+  Position pos;
+  pos.row = m->moves[m->nb_move - 1].row;
+  pos.col = m->moves[m->nb_move - 1].col;
+  setPosition(pos);
+  r_->onEvent(m);
+}
+
+void CPlayer::msgPlayerKnocked(const MsgPlayerKnocked* m)
+{
+  r_->onEvent(m);
+}
+
+
+/*
+** Message filters.
+*/
+
+bool CPlayer::filterPlayerPos(const MsgPlayerPos* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
+
+bool CPlayer::filterPlayerMove(const ActMove* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
+
+bool CPlayer::filterPlayerKnocked(const MsgPlayerKnocked* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
 }

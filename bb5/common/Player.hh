@@ -20,6 +20,46 @@
 # include "PacketHandler.hh"
 # include "Constants.hh"
 
+// Hard limit of move number, for a single packet.
+const int MAX_MOVE = 16;
+
+DECLARE_PACKET(ACT_MOVE, ActMove)
+  int player_id;
+  int nb_move;
+  struct {
+    int row;
+    int col;
+  } moves[MAX_MOVE];
+END_PACKET
+
+DECLARE_PACKET(ACT_BLOCK, ActBlock)
+  int player_id;
+  int opponent_id;
+END_PACKET
+
+DECLARE_PACKET(ACT_BLOCKPUSH, ActBlockPush)
+  int target_row;
+  int target_col;
+  int nb_choice;
+  struct {
+    int row;
+    int col;
+  } choice[3];
+END_PACKET
+
+DECLARE_PACKET(ACT_MULTIBLOCK, Act_MultiBlock)
+  int player_id;
+  int target_location;
+  int second_location;
+END_PACKET
+
+DECLARE_PACKET(ACT_PASS, ActPass)
+  int player_id;
+  int dest_row;
+  int dest_col;
+END_PACKET
+
+// Packet sent only once at the beginning (to create player)
 DECLARE_PACKET(MSG_PLAYERINFO, MsgPlayerInfo)
   int player_id;
   int ma;
@@ -27,8 +67,8 @@ DECLARE_PACKET(MSG_PLAYERINFO, MsgPlayerInfo)
   int ag;
   int av;
   int name[8];
-  int player_position; ///< Graphic info.
-  int player_img[8]; ///< Graphic info.
+  int player_position;	///< Graphic info.
+  int player_img[8];	///< Graphic info.
 END_PACKET
 
 DECLARE_PACKET(MSG_PLAYERPOS, MsgPlayerPos)
@@ -66,17 +106,31 @@ public:
   //! @brief Get Armour Value.
   int getAv() const;
 
+  //! @brief Get player status.
+  //! @see Constant.hh
+  enum eStatus getStatus() const;
+
+  //! @brief Check if the player has performed an action this turn.
   bool hasDoneAction() const;
+  //! @brief Check if the player has moved this turn.
+  bool hasDoneMove() const;
+  //! @brief Check if the player has blocked somebody this turn.
+  bool hasDoneBlock() const;
+
+  //! @brief Set the 'has played this turn' marker.
+  void setHasPlayed();
+
+  //! @brief Called on new turn.
   void resetTurn();
 
   friend std::ostream& operator<< (std::ostream& os, const Player& p);
 
 protected:
-  int         id_;      ///< Player unique identifier.
-  int         team_id_; ///< Team that this player belongs to (0 or 1).
-  Position    pos_;     ///< Position on the field. Read-only, please.
-  std::string name_;    ///< Player name.
-  int         status_;  ///< current player status (standing/prone/Stunned/KO...).
+  int		id_;      ///< Player unique identifier.
+  int		team_id_; ///< Team that this player belongs to (0 or 1).
+  Position	pos_;     ///< Position on the field. Read-only, please.
+  std::string	name_;    ///< Player name.
+  enum eStatus	status_;  ///< Current player status (standing/prone/Stunned/KO...).
 
   int ma_;
   int st_;
@@ -84,12 +138,13 @@ protected:
   int av_;
 
   int ma_remain_;
-  bool action_done_;
+  bool has_done_action_;
+  bool has_done_block_;
 
+public:
   //
   // Graphic infos, not stored by the server.
   //
-public:
   int getPlayerPosition() const;
   const std::string& getPlayerPicture() const;
   

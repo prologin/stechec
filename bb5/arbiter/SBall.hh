@@ -20,29 +20,33 @@
 # include "Ball.hh"
 
 class SRules;
+class SPlayer;
 
-/*! @brief Blood Bowl Ball for the server.
-**
-** @author victor
-** @date 30/12/2005
+/*!
+** @brief Blood Bowl Ball for the server.
 */
 class SBall : public Ball
 {
 public:
   SBall(SRules* r);
 
-  static void scatter(Position& pos, int nb=1);
   //! @brief Bounce the ball around.
-  void bounce(int nb=1);
-  //! @brief throwin in case the ball leave the field.
-  void throwin(const Position& pos, const Position& dest);
+  void bounce(int nb = 1);
+  //! @brief Player try to catch the ball.
+  bool catchBall(SPlayer *p, int modifier);
 
 
 private:
   void msgPlaceBall(const MsgBallPos* m);
-  void moveDelta(const Position& delta);
+  bool invalidBallPlacement();
+  void scatter(int nb);
+
+  void afterBounce(const Position& delta, int amplitude);
+  //! @brief throwin in case the ball leave the field.
+  void throwin();
 
   SRules* r_;
+  SPlayer* owner_; ///< Ball owner, or NULL if nobody
 };
   
 #endif /* !SBALL_H_ */

@@ -56,6 +56,8 @@ public:
   friend bool operator== (const Position& lhs, const Position& rhs);
   friend bool operator!= (const Position& lhs, const Position& rhs);
   friend Position operator+ (const Position& lhs, const Position& rhs);
+  friend Position operator- (const Position& lhs, const Position& rhs);
+  friend Position operator* (int factor, const Position& rhs);
   friend std::ostream& operator<< (std::ostream& os, const Position& p);
   Position& operator+= (const Position& rhs);
 
@@ -152,6 +154,16 @@ inline bool operator!= (const Position& lhs, const Position& rhs)
 inline Position operator+ (const Position& lhs, const Position& rhs)
 {
   return Position(lhs.row + rhs.row, lhs.col + rhs.col);
+}
+
+inline Position operator- (const Position& lhs, const Position& rhs)
+{
+  return Position(lhs.row - rhs.row, lhs.col - rhs.col);
+}
+
+inline Position operator* (int factor, const Position& rhs)
+{
+  return Position(rhs.row * factor, rhs.col * factor);
 }
 
 inline std::ostream& operator<< (std::ostream& os, const Position& p)

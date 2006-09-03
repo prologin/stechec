@@ -160,7 +160,7 @@ bool TextSurface::getAutoWrap() const
 
 void TextSurface::update()
 {
-  const SDL_Color darkmagenta_color = { 139, 0, 139, SDL_ALPHA_OPAQUE };
+  SDL_Color darkmagenta_color = { 139, 0, 139, SDL_ALPHA_OPAQUE};
   SDL_Surface *temp_surf = NULL;
   
   // Print the text, if changed.
@@ -176,9 +176,14 @@ void TextSurface::update()
       LineList::const_iterator it;
       for (it = lines_.begin(); it != lines_.end(); ++it)
         {
-          temp_surf = TTF_RenderText_Solid(font_, it->c_str(), darkmagenta_color);
+	  char hackme[256] = {0}; // XXX: grrr
+	  strncpy(hackme, it->c_str(), 255);
+	  for (int i = 0; hackme[i] != 0; i++)
+	    if (hackme[i] == ' ')
+	      hackme[i] = '_';
+          temp_surf = TTF_RenderText_Solid(font_, hackme, darkmagenta_color);
           if (temp_surf == NULL)
-            PRINT_AND_THROW(TTFError, "RenderText");
+	    PRINT_AND_THROW(TTFError, "RenderText '" << *it << "'");
           SDL_Rect dst = { 4, 4 + (index++ * line_skip_), 0, 0};
           SDL_BlitSurface(temp_surf, NULL, surf_, &dst);
           SDL_FreeSurface(temp_surf);

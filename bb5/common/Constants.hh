@@ -37,6 +37,9 @@ const int GS_COACHBOTH     = 0x000C; ///< Any coach turn.
 const int COLS             = 15; ///< [| 0, 14 |]
 const int ROWS             = 26; ///< [| 0, 25 |]
 
+//! @brief Maximum number of players
+const int MAX_PLAYER	   = 16;
+
 //! @brief Constant defining turnover action result.
 const int ACT_RES_TO       = 0xDEADBEEF; 
 
@@ -70,11 +73,14 @@ enum {
   ACT_ILLEGALPROC,
   ACT_MOVE,
   ACT_BLOCK,
+  ACT_BLOCKPUSH,
   ACT_MULTIBLOCK,
   ACT_PASS
 };
-  
-enum {
+
+enum eStatus {
+  STA_UNASSIGNED,
+
   // Common status
   STA_RESERVE,
   STA_STANDING,
@@ -85,6 +91,7 @@ enum {
   STA_SEVERE_INJURIED,
   STA_DEAD,
   STA_SENTOFF,
+
   // skill/trait related... for futur usage
   STA_ROOTED,
   STA_BONEHEAD,

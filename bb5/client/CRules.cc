@@ -30,6 +30,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, GS_ALL);
   HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, GS_ALL);
   HANDLE_WITH(MSG_TIMEEXCEEDED, CRules, this, msgTimeExceeded, GS_ALL);
+  HANDLE_WITH(MSG_ILLEGAL, CRules, this, msgIllegal, GS_ALL);
   HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, GS_ALL);
   HANDLE_WITH(ACT_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, GS_ALL);
   HANDLE_WITH(CUSTOM_EVENT, CRules, this, msgCustomEvent, GS_ALL);

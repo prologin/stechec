@@ -20,22 +20,16 @@
 STeam::STeam(int team_id, SRules* r)
   : Team<SPlayer>(team_id),
     state_(GS_INITGAME),
-    r_(r)
+    r_(r),
+    curr_acting_player_(-1)
 {
-  r_->HANDLE_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, GS_INITGAME);
-  r_->HANDLE_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, GS_INITGAME);
-  r_->HANDLE_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, GS_INITHALF);
-
-  r_->HANDLE_WITH(ACT_MOVE, STeam, this, msgMove, GS_COACHBOTH);
-  r_->HANDLE_WITH(ACT_BLOCK, STeam, this, msgBlock, GS_COACHBOTH);
-  r_->HANDLE_WITH(ACT_PASS, STeam, this, msgPass, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
+  r_->HANDLE_F_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
+  r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITHALF);
 }
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
 {
-  if (m->client_id != team_id_)
-    return;
-
   team_name_ = packetToString(m->team_name);
   coach_name_ = packetToString(m->coach_name);
   reroll_ = m->reroll;
@@ -44,32 +38,45 @@ void STeam::msgTeamInfo(const MsgTeamInfo* m)
   r_->sendPacket(*m);
 }
 
-void STeam::msgPlayerInfo(const MsgPlayerInfo* m)
+bool STeam::filterTeamInfo(const MsgTeamInfo* m)
 {
   if (m->client_id != team_id_)
-    return;
+    return false;
+  return true;
+}
 
-  // Check that we aren't out of vector bound.
-  if (m->player_id <= 0
-      || m->player_id > (int)player_.size() + 1
-      || m->player_id > 16)
+
+void STeam::msgPlayerInfo(const MsgPlayerInfo* m)
+{
+  // Create the player.
+  if (player_[m->player_id] == NULL)
     {
-      r_->sendIllegal(m->token, m->client_id);
-      return;
+      player_[m->player_id] = new SPlayer(r_, m, this);
+      if (player_[m->player_id]->acceptPlayerCreation())
+	{
+	  r_->sendPacket(*m);
+	}
+      else
+	{
+	  // FIXME: maybe we should be more radical if a player is
+	  //   invalid, like stopping the game.
+	  delete player_[m->player_id];
+	  player_[m->player_id] = NULL;
+	}
     }
-  if (m->player_id == (int)player_.size() + 1)
-    player_.push_back(SPlayer(m->player_id, team_id_, r_));
+  
+}
 
-  // Dispatch to the right player.
-  player_[m->player_id - 1].msgPlayerInfo(m);
+bool STeam::filterPlayerInfo(const MsgPlayerInfo* m)
+{
+  if (m->client_id != team_id_ || m->player_id < 0 || m->player_id >= MAX_PLAYER)
+    return false;
+  return true;
 }
 
 // Receive players initial position, on kick-off.
 void STeam::msgPlayerPos(const MsgPlayerPos* m)
 {
-  if (m->client_id != team_id_)
-    return;
-
   const Position pos(m->row, m->col);
   SPlayer* p = getPlayer(m->player_id);
   if (p == NULL || !r_->getField()->intoField(pos))
@@ -82,82 +89,69 @@ void STeam::msgPlayerPos(const MsgPlayerPos* m)
         r_->sendIllegal(m->token, m->client_id);
       else
         {
-          LOG5("Allow player position on " << pos << " (team " << team_id_ << ")");
-          p->setPosition(pos);
+          p->setPosition(pos, false);
           r_->sendPacket(*m);
         }
     }
 }
 
-SPlayer* STeam::checkPlayerAction(const Packet* pkt, unsigned player_id)
+bool STeam::filterPlayerPos(const MsgPlayerPos* m)
 {
-  // Check that the message is for us.
-  if (pkt->client_id != team_id_)
-    return NULL;
+  if (m->client_id != team_id_ || m->player_id < 0 || m->player_id >= MAX_PLAYER )
+    return false;
+  return true;
+}
 
+
+void STeam::resetTurn()
+{
+  curr_acting_player_ = -1;
+  blitz_or_pass_done_ = false;
+
+  for (int i = 0; i < MAX_PLAYER; i++)
+    if (player_[i] != NULL)
+      player_[i]->resetTurn();
+}
+
+bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
+{
   // Check if it's the team turn.
   if (r_->getCurrentTeamId() != pkt->client_id)
     {
-      LOG4("Can't do action: not team turn");
+      LOG4("Cannot do action: not team turn");
       r_->sendIllegal(pkt->token, pkt->client_id);
-      return NULL;
+      return false;
     }
 
-  // Check that we aren't out of vector bound.
-  SPlayer* p = getPlayer(player_id);
-  if (p == NULL)
+  if (p->hasDoneAction())
     {
-      LOG4("Can't do action: player " << player_id << " doesn't exist.");
+      LOG4("Cannot do action: this player already does something this turn");
       r_->sendIllegal(pkt->token, pkt->client_id);
-      return NULL;
+      return false;
     }
 
-  // Check this player hasn't performed action yet.
-  // FIXME: 
-  if (p->hasDoneAction() && false)
+  if (curr_acting_player_ != -1 && curr_acting_player_ != p->getId())
     {
-      LOG4("Can't do action: this player already done one this turn");
-      r_->sendIllegal(pkt->token, pkt->client_id);
-      return NULL;
+      player_[curr_acting_player_]->setHasPlayed();
     }
 
-  // Ok.
-  return p;
-}
-
-void STeam::checkActResult(int result)
-{
-  if (result == ACT_RES_TO)
+  bool blitz_detected = false;
+  if (pkt->token == ACT_BLOCK && p->hasDoneMove())
+    blitz_detected = true;
+  if (pkt->token == ACT_MOVE && p->hasDoneBlock())
+    blitz_detected = true;
+    
+  if (pkt->token == ACT_PASS || blitz_detected)
     {
-      // FIXME: Make the turnover.
-      setTurnMarker();
+      if (blitz_or_pass_done_)
+	{
+	  LOG4("Cannot do more than one pass/blitz in a single turn.")
+	  r_->sendIllegal(pkt->token, p->getId());
+	  return false;
+	}
+      blitz_or_pass_done_ = true;
     }
-}
 
-void STeam::msgMove(const ActMove* m)
-{
-  SPlayer* p = checkPlayerAction(m, m->player_id);
-  if (p != NULL)
-    checkActResult(p->doMove(m));
-}
-
-void STeam::msgBlock(const ActBlock* m)
-{
-  SPlayer* p = checkPlayerAction(m, m->player_id);
-  if (p != NULL)
-    checkActResult(p->doBlock(m));
-}
-
-void STeam::msgPass(const ActPass* m)
-{
-  SPlayer* p = checkPlayerAction(m, m->player_id);
-  if (p == NULL)
-    return;
-  if (pass_done_)
-    {
-      r_->sendIllegal(ACT_PASS, m->player_id);
-      return;
-    }
-  pass_done_ = true;
-  checkActResult(p->doPass(m));
+  curr_acting_player_ = p->getId();
+  return true;
 }

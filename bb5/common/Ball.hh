@@ -32,7 +32,7 @@
 DECLARE_PACKET(MSG_BALLPOS, MsgBallPos)
   int row;
   int col;
-};
+END_PACKET
 
 /*!
 ** @brief Represents the Blood Bowl Ball.

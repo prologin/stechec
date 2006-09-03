@@ -19,8 +19,8 @@
 inline Player::Player(int id, int team_id)
   : id_(id),
     team_id_(team_id),
-    ma_remain_(0),
-    action_done_(false)
+    status_(STA_UNASSIGNED),
+    ma_remain_(-1)
 {
 }
 
@@ -68,14 +68,36 @@ inline int Player::getAv() const
   return av_;
 }
 
+inline enum eStatus Player::getStatus() const
+{
+  return status_;
+}
+
+
 inline bool Player::hasDoneAction() const
 {
-  return action_done_;
+  return has_done_action_;
+}
+
+inline bool Player::hasDoneMove() const
+{
+  return ma_remain_ != ma_;
+}
+
+inline bool Player::hasDoneBlock() const
+{
+  return has_done_block_;
+}
+
+inline void Player::setHasPlayed()
+{
+  has_done_action_ = true;
 }
 
 inline void Player::resetTurn()
 {
-  action_done_ = false;
+  has_done_action_ = false;
+  has_done_block_ = false;
   ma_remain_ = ma_;
 }
 

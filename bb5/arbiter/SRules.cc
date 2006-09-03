@@ -25,8 +25,8 @@ SRules::SRules()
     ball_(NULL),
     field_(NULL)
 {
-  teams_[0] = NULL;
-  teams_[1] = NULL;
+  team_[0] = NULL;
+  team_[1] = NULL;
   timer_.setAllowedTime(60 * 4); // 4min per turn.
 
   // Register tokens that we must handle ourself.
@@ -40,8 +40,8 @@ SRules::SRules()
 
 SRules::~SRules()
 {
-  delete teams_[0];
-  delete teams_[1];
+  delete team_[0];
+  delete team_[1];
   delete weather_;
   delete ball_;
   delete field_;
@@ -79,8 +79,8 @@ void SRules::initGame()
   setState(GS_INITGAME);
   sendPacket(MsgInitGame());
 
-  teams_[0] = new STeam(0, this);
-  teams_[1] = new STeam(1, this);
+  team_[0] = new STeam(0, this);
+  team_[1] = new STeam(1, this);
 
   weather_ = new SWeather();
   ball_ = new SBall(this);
@@ -94,7 +94,7 @@ void SRules::initGame()
   // Decide who is the kicking team
   Dice d(2);
   coach_begin_ = d.roll() - 1; // team_id: base 0.
-  LOG3("Coach " << coach_begin_ + 1 << " plays first.");
+  LOG3("Coach " << coach_begin_ << " plays first (receiving team).");
 }
 
 void SRules::initHalf()
@@ -115,15 +115,20 @@ void SRules::initHalf()
   // Switch the kicking team on second period.
   if (cur_half_ != 1)
     coach_begin_ = (coach_begin_ + 1) % 2;
-  LOG3("Initialize half " << cur_half_ << ". Kicking team: " << coach_begin_ + 1);
+  LOG3("Initialize half " << cur_half_
+       << ". Kicking team: " << (coach_begin_ + 1) % 2);
 
   // Say that we are about to initialize the half.
-  // Kicking team is asked to place the ball.
   MsgInitHalf pkt(coach_begin_);
   pkt.cur_half = cur_half_;
   sendPacket(pkt);
 }
 
+void SRules::turnOver()
+{
+  LOG3("TURNOVER.");
+  msgPlayTurn(NULL);
+}
 
 
 /*
@@ -133,10 +138,10 @@ void SRules::initHalf()
 // A coach has finished to set up his game.
 void SRules::msgInitGame(const MsgInitGame* m)
 {
-  teams_[m->client_id]->state_ = GS_INITHALF;
+  team_[m->client_id]->state_ = GS_INITHALF;
 
-  if (teams_[0]->state_ == GS_INITHALF &&
-      teams_[1]->state_ == GS_INITHALF)
+  if (team_[0]->state_ == GS_INITHALF &&
+      team_[1]->state_ == GS_INITHALF)
     {
       initHalf();
     }
@@ -144,24 +149,24 @@ void SRules::msgInitGame(const MsgInitGame* m)
 
 void SRules::msgInitHalf(const MsgInitHalf* m)
 {
-  teams_[m->client_id]->state_ = GS_COACH1;
+  team_[m->client_id]->state_ = GS_COACH1;
 
-  if (teams_[0]->state_ == GS_COACH1 &&
-      teams_[1]->state_ == GS_COACH1)
+  if (team_[0]->state_ == GS_COACH1 &&
+      team_[1]->state_ == GS_COACH1)
     {
       if (coach_begin_ == 0)
-        setState(GS_COACH1);
-      else
         setState(GS_COACH2);
+      else
+        setState(GS_COACH1);
       msgPlayTurn(NULL);
     }
 }
 
 void SRules::msgPlayTurn(const MsgEndTurn*)
 {
-  // Next turn if this is the kick-off team.
-  if (getState() == GS_COACH1 && coach_begin_ == 0
-      || getState() == GS_COACH2 && coach_begin_ == 1)
+  // Next turn if this is the receiving team.
+  if (getState() == GS_COACH1 && coach_begin_ == 1
+      || getState() == GS_COACH2 && coach_begin_ == 0)
     {
       cur_turn_++;
       LOG2("=== Go on turn `" << cur_turn_ << "'");
@@ -176,7 +181,10 @@ void SRules::msgPlayTurn(const MsgEndTurn*)
       initHalf();
       return;
     }
-
+  
+  team_[0]->resetTurn();
+  team_[1]->resetTurn();
+  
   // Switch playing team
   setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
 
@@ -204,7 +212,7 @@ void SRules::msgMoveTurnMarker(const ActMoveTurnMarker* m)
     }
 
   // Ok. Acknowledge.
-  teams_[m->client_id]->setTurnMarker();
+  //team_[m->client_id]->setTurnMarker();
   sendPacket(*m);
 }
 

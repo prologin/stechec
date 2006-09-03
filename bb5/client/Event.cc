@@ -37,9 +37,9 @@ void EventProcess::dispatch(const CustomEvent& ie) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgIllegal&) const
+void EventProcess::dispatch(const MsgIllegal& m) const
 {
-  ev_->evIllegal();
+  ev_->evIllegal(m.was_token);
 }
 
 template <>
@@ -85,7 +85,7 @@ void EventProcess::dispatch(const ActMove& pkt) const
   Point pos;
   pos.y = pkt.moves[pkt.nb_move - 1].row;
   pos.x = pkt.moves[pkt.nb_move - 1].col;
-  ev_->evPlayerMove(pkt.client_id, pkt.player_id - 1, pos);
+  ev_->evPlayerMove(pkt.client_id, pkt.player_id, pos);
 }
 
 template <>

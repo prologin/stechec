@@ -59,6 +59,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"say", &Input::cmdSay, "<s>|chat with others"},
   {"kickoff", &Input::cmdKickOff, "<r> <c>|place the ball on <r, c>"},
   {"move", &Input::cmdMove, "<subcmd>|move something ('help move')"},
+  {"block", &Input::cmdBlock, "<id> <r> <c>|block with player 'id' at spcified position"},
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
   {"end", &Input::cmdEnd, "end turn"},
   {NULL, NULL, NULL}
@@ -176,6 +177,17 @@ void Input::cmdMove(const string& cmd, const string& args)
     cmdMoveTurnMarker(args);
   else
     cmdMovePlayer(cmd + " " + args);
+}
+
+void Input::cmdBlock(const string& cmd, const string& args)
+{
+  istringstream is(cmd + " " + args);
+  int p_id = -1;
+  Position pos;
+  is >> p_id;
+  is >> pos.row;
+  is >> pos.col;
+  api_->doBlockPlayer(p_id, pos);
 }
 
 void Input::cmdIllegal(const string&, const string&)

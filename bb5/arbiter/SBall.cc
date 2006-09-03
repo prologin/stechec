@@ -19,130 +19,196 @@
 #include "SBall.hh"
 
 SBall::SBall(SRules* r)
-  : r_(r)
+  : r_(r),
+    owner_(NULL)
 {
   r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITHALF);
 }
 
 void SBall::msgPlaceBall(const MsgBallPos* m)
 {
+  MsgBallPos mesg;
+  SPlayer* p;
+  
   // Called on half init. Check if this is the kicking team that
   // place the ball.
-  if (r_->getCurrentTeamId() == m->client_id)
+  if (r_->getCurrentOpponentTeamId() != m->client_id)
     {
-      LOG4("Unallowed kick-off from " << m->client_id << ".");
+      LOG4("Ball: unallowed kick-off from " << m->client_id << ".");
       r_->sendIllegal(MSG_BALLPOS, m->client_id);
       return;
     }
 
-  SField* f = r_->getField();
-  Position ball_pos(m->row, m->col);
-  if (!f->intoField(ball_pos))
+  // So everybody will be aware of where the kicker put it.
+  r_->sendPacket(*m);
+  
+  pos_.row = m->row;
+  pos_.col = m->col;
+  if (invalidBallPlacement())
     {
-      LOG4("Wrong kick-off from " << m->client_id << ". Not in field: " << ball_pos);
-      r_->sendIllegal(MSG_BALLPOS, m->client_id);
-      return;
+      LOG4("Ball: wrong kick-off from " << m->client_id
+	   << ". Not in receiver's field: " << pos_);
+      goto end;
     }
-  SBall::scatter(ball_pos, Dice(6).roll());
-  if (!f->intoField(ball_pos))
+
+  scatter(Dice(6).roll());
+  if (invalidBallPlacement())
     {
-      LOG4("kick-off from " << m->client_id << ". scattered out of field: " << ball_pos);
-      r_->sendIllegal(MSG_BALLPOS, m->client_id);
-      return;
+      LOG4("Ball: kick-off from " << m->client_id
+	   << ". Scattered out of receiver's field: " << pos_);
+      goto end;
     }
-  MsgBallPos mesg;
-  mesg.row = ball_pos.row;
-  mesg.col = ball_pos.col;
+
+  // Catch it if there is somebody, else bounce it.
+  p = r_->getField()->getPlayer(pos_);
+  if (p != NULL)
+    catchBall(p, 1);
+  else
+    bounce(1);
+
+ end:
+  mesg.row = pos_.row;
+  mesg.col = pos_.col;
   r_->sendPacket(mesg);
 }
 
-void SBall::moveDelta(const Position& delta)
+bool SBall::invalidBallPlacement()
 {
-  Position to(pos_ + delta);
-
-  if (r_->getField()->intoField(to))
+  SField* f = r_->getField();
+  if (!f->intoField(pos_)
+      || (r_->getCurrentTeamId() == 0 && pos_.row > ROWS / 2)
+      || (r_->getCurrentTeamId() == 1 && pos_.row < ROWS / 2))
     {
-      // FIXME: check if a player can catch it.
+      // FIXME: give the ball to one player of receiver team
+      pos_.col = COLS / 2;
+      pos_.row = r_->getCurrentTeamId() == 0 ? ROWS / 4 : ROWS * 3 / 4; 
+      return true;
+    }
+  return false;
+}
+
+void SBall::afterBounce(const Position& delta, int amplitude)
+{
+  SField* f = r_->getField();
+  Position to(pos_ + (amplitude * delta));
+
+  LOG5("Ball: bounce from " << pos_ << " to " << to);
+  assert(f->intoField(pos_)); // Ball must be in-field before.
+  
+  if (f->intoField(to))
+    {
       pos_ = to;
+      SPlayer *p = f->getPlayer(to);
+      if (p != NULL)
+	catchBall(p, 1);
     }
   else
     {
-      throwin(pos_, to);
+      // Find the border line, where the ball disappear.
+      for (int i = 0; i < amplitude; i++)
+	{
+	  pos_ += delta;
+	  if (pos_.col == 0 || pos_.col == COLS - 1
+	      || pos_.row == 0 || pos_.row == ROWS - 1)
+	    {
+	      throwin();
+	      break;
+	    }
+	}
     }
-}
 
-void SBall::scatter(Position& pos, int nb)
-{
-  Dice d(8);
-  switch(d.roll())
-    {
-    case N: pos += Position(-nb,0); break;
-    case S: pos += Position(+nb,0); break;
-    case E: pos += Position(0,+nb); break;
-    case W: pos += Position(0,-nb); break;
-    case NE: pos += Position(-nb,+nb); break;
-    case NW: pos += Position(-nb,-nb); break;
-    case SE: pos += Position(+nb,+nb); break;
-    case SW: pos += Position(+nb,-nb); break;
-    }
+  MsgBallPos mesg;
+  mesg.row = pos_.row;
+  mesg.col = pos_.col;
+  r_->sendPacket(mesg);
 }
 
 void SBall::bounce(int nb)
 {
+  owner_ = NULL;
   Dice d(8);
   switch(d.roll())
     {
-    case N: moveDelta(Position(-nb,0)); break;
-    case S: moveDelta(Position(+nb,0)); break;
-    case E: moveDelta(Position(0,+nb)); break;
-    case W: moveDelta(Position(0,-nb)); break;
-    case NE: moveDelta(Position(-nb,+nb)); break;
-    case NW: moveDelta(Position(-nb,-nb)); break;
-    case SE: moveDelta(Position(+nb,+nb)); break;
-    case SW: moveDelta(Position(+nb,-nb)); break;
+    case N: afterBounce(Position(-1, 0), nb); break;
+    case S: afterBounce(Position(+1, 0), nb); break;
+    case E: afterBounce(Position(0, +1), nb); break;
+    case W: afterBounce(Position(0, -1), nb); break;
+    case NE: afterBounce(Position(-1, +1), nb); break;
+    case NW: afterBounce(Position(-1, -1), nb); break;
+    case SE: afterBounce(Position(+1, +1), nb); break;
+    case SW: afterBounce(Position(+1, -1), nb); break;
     }
 }
 
-//FIXME:get the to position into account
-void SBall::throwin(const Position& from,const Position& to)
+void SBall::scatter(int nb)
+ {
+   Dice d(8);
+   switch(d.roll())
+     {
+     case N: pos_ += Position(-nb, 0); break;
+     case S: pos_ += Position(+nb, 0); break;
+     case E: pos_ += Position(0, +nb); break;
+     case W: pos_ += Position(0, -nb); break;
+     case NE: pos_ += Position(-nb, +nb); break;
+     case NW: pos_ += Position(-nb, -nb); break;
+     case SE: pos_ += Position(+nb, +nb); break;
+     case SW: pos_ += Position(+nb, -nb); break;
+     }
+ }
+
+// Player trying to catch the ball
+// Note: a player has not to be at ball position.
+bool SBall::catchBall(SPlayer *p, int modifier)
 {
-  Dice d(3);
-  int drow=0, dcol=0; //used to determine direction of the throw
-  int reach=Dice(6).roll();
-  //get the border we just crossed :
-  if (from.col == 0)
-  {
-    dcol = 1;
-  }
-  else if (from.col == (COLS-1))
-  {
-    dcol = -1;
-  }
-  if (from.row == 0)
-  {
-    drow = 1;
-  }
-  else if (from.row == (ROWS-1))
-  {
-    drow = -1;
-  }
-  //throw the ball
-  if (dcol)
-  {
-      switch(d.roll())
-      {
-      case 1: moveDelta(Position(reach,reach*dcol));  break;
-      case 2: moveDelta(Position(0,reach*dcol));      break;
-      case 3: moveDelta(Position(-reach,reach*dcol)); break;
-      }
-  }
-  else //drow
-  {
-      switch(d.roll())
-      {
-      case 1: moveDelta(Position(reach*drow,reach));  break;
-      case 2: moveDelta(Position(reach*drow,0));      break;
-      case 3: moveDelta(Position(reach*drow,-reach)); break;
-      }
-  }
+  SField* f = r_->getField();
+
+  int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+  if (!p->tryAction(modifier - nb_tackles))
+    {
+      LOG5("Ball: player has failed to pick it at " << pos_);
+      bounce();
+      return false;
+    }
+  LOG5("Ball: player successfully took it at " << pos_);
+  owner_ = p;
+  return true;
+}
+
+// Spectators throwing the ball
+void SBall::throwin()
+{
+  Position d(0, 0); // Direction of the throw.
+  int reach = Dice(6).roll();
+  LOG5("Ball: gets throwed by spectators at " << pos_);
+
+  // Get the border we just crossed:
+  if (pos_.col == 0)
+    d.col = 1;
+  else if (pos_.col == COLS - 1)
+    d.col = -1;
+
+  if (pos_.row == 0)
+    d.row = 1;
+  else if (pos_.row == ROWS - 1)
+    d.row = -1;
+
+  // Throw the ball
+  if (d.row)
+    {
+      switch(Dice(3).roll())
+	{
+	case 1: afterBounce(Position(1, d.col), reach); break;
+	case 2: afterBounce(Position(0, d.col), reach); break;
+	case 3: afterBounce(Position(-1, d.col), reach); break;
+	}
+    }
+  else
+    {
+      switch(Dice(3).roll())
+	{
+	case 1: afterBounce(Position(d.row, 1), reach); break;
+	case 2: afterBounce(Position(d.row, 0), reach); break;
+	case 3: afterBounce(Position(d.row, -1), reach); break;
+	}
+    }
 }

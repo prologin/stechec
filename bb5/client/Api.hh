@@ -46,6 +46,7 @@ public:
   void          doAskIllegalProcedure();
   bool          doPlaceBall(const Point& pos);
   bool          doMovePlayer(int p, const Point& to);
+  bool		doBlockPlayer(int p, const Point& to);
   void          sendChatMessage(const std::string& msg);
 
   /*
@@ -59,6 +60,7 @@ public:
   //! @see eSelTeam
   void                  select_team(int team_id);
 
+  const char*		getStateString() const;
   const std::string&    getCoachName() const;
   const std::string&    getTeamName() const;
   const CTeam*          getTeam() const;
@@ -69,6 +71,7 @@ public:
   Point                 getBallPosition() const;
   const CField*         getField() const;
 
+  
   int                   select_player(int player_id);
   int                   move_lenght(int dst_x, int dst_y);
   int                   move_difficulty(int step);

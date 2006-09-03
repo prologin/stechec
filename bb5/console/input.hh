@@ -61,6 +61,7 @@ private:
   void cmdSay(const std::string& cmd, const std::string& args);
   void cmdKickOff(const std::string& cmd, const std::string& args);
   void cmdMove(const std::string& cmd, const std::string& args);
+  void cmdBlock(const std::string& cmd, const std::string& args);
   void cmdIllegal(const std::string& cmd, const std::string& args);
   void cmdEnd(const std::string& cmd, const std::string& args);
 

@@ -43,7 +43,7 @@ private:
   bool                checkInput();
 
   // All callbacks.
-  virtual void          evIllegal();
+  virtual void          evIllegal(int was_token);
   virtual void          evNewTurn(bool our_turn);
   virtual void          evKickOff();
   virtual void          evMoveTurnMarker();

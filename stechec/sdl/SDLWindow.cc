@@ -71,9 +71,6 @@ void SDLWindow::init()
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
     PRINT_AND_THROW(SDLError, "Error initializing SDL");
 
-  if (TTF_Init() < 0)
-    PRINT_AND_THROW(TTFError, "Error initializing TTF");
-
   SDL_Surface* icon = IMG_Load(PKGDATADIR "/image/general/tbt.ico");
   if (icon != NULL)
     {
@@ -92,8 +89,11 @@ void SDLWindow::init()
   SDL_WM_SetCaption("TBT Game", NULL);
   SDL_WM_GrabInput(SDL_GRAB_OFF);
 
+  if (TTF_Init() < 0 || !TTF_WasInit())
+    PRINT_AND_THROW(TTFError, "Error initializing TTF");
+
   // Enables Unicode keyboard translation.
-  SDL_EnableUNICODE(1);
+  //SDL_EnableUNICODE(1);
 
   frame_previous_tick_ = frame_tick_fps_ = SDL_GetTicks();
 }

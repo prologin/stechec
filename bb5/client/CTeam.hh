@@ -29,8 +29,13 @@ class CTeam : public Team<CPlayer>
 {
 public:
   CTeam(int team_id, CRules *r);
+  virtual ~CTeam();
 
+  //! @brief Load team configuration from xml.
   void loadConfig(const std::string& team_file);
+
+  //! @brief Load player configuration from xml.
+  void loadPlayerConfig(xml::XMLTeam& team, int player_id);
 
   //! @brief Set the position of all players on the field.
   //! @param formation_id The xml formation id to fetch position from.
@@ -42,17 +47,35 @@ public:
   //!  Called from the UI.
   bool movePlayer(int player_id, const Position& to);
 
+  //! @brief Do a block.
+  //! @param player_id Player doing the block.
+  //! @param to Block will be made to this position.
+  bool blockPlayer(int player_id, const Position& to);
+  
+  //! @brief Get player
+  //! @note Temporary, wait for API cleaning.
+  const CPlayer* getPlayerConst(int id) const;
+  
 private:
   void msgTeamInfo(const MsgTeamInfo* m);
+  bool filterTeamInfo(const MsgTeamInfo* m);
   void msgPlayerInfo(const MsgPlayerInfo* m);
-  void msgPlayerPos(const MsgPlayerPos* m);
-  void msgPlayerMove(const ActMove* m);
-  void msgPlayerKnocked(const MsgPlayerKnocked* m);
+  bool filterPlayerInfo(const MsgPlayerInfo* m);
 
   CRules* r_;
   
   xml::XMLTeam xml_team_;
   xml::XMLFormation xml_formation_;
 };
+
+inline const CPlayer* CTeam::getPlayerConst(int id) const
+{
+  if (id >= 0 && id < MAX_PLAYER)
+    return player_[id];
+
+  LOG2("Wrong player_id: " << id << " (team: " << team_id_ << ")");
+  return NULL;
+}
+
 
 #endif /* !CTEAM_HH_ */

@@ -42,6 +42,7 @@ public:
   
   SField* getField();
   SBall* getBall();
+  STeam* getTeam(int team_id);
 
   //! @brief Return the current playing team.
   //! @return -1 if no one play, otherwise 0 or 1.
@@ -59,6 +60,9 @@ public:
   //! go on next turn.
   virtual void serverProcess();
 
+  //! @brief Cause a turn over. Call it when, eg, an action failed.
+  void turnOver();
+  
   virtual void serialize(std::ostream& os) const;
   virtual void unserialize(std::istream& is);
 
@@ -84,7 +88,7 @@ private:
 
   int       cur_turn_;
   int       cur_half_;
-  STeam*    teams_[2];
+  STeam*    team_[2];
   SWeather* weather_;
   SBall*    ball_;
   SField*   field_;

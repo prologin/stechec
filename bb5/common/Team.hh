@@ -19,42 +19,12 @@
 
 # include "PacketHandler.hh"
 
-// Hard limit of move number, for a single packet.
-const int MAX_MOVE = 16;
-
-//FIXME : arbitrary length team and coach name
 DECLARE_PACKET(MSG_TEAMINFO, MsgTeamInfo)
   int team_name[8];
   int coach_name[8];
   int reroll;
 END_PACKET
 
-DECLARE_PACKET(ACT_MOVE, ActMove)
-  int player_id;
-  int nb_move;
-  struct {
-    int row;
-    int col;
-  } moves[MAX_MOVE];
-END_PACKET
-
-    //block messages are location based
-DECLARE_PACKET(ACT_BLOCK, ActBlock)
-  int player_id;
-  Position target_location;
-END_PACKET
-    
-DECLARE_PACKET(ACT_MULTIBLOCK, Act_MultiBlock)
-  int player_id;
-  int target_location;
-  int second_location;
-END_PACKET
-
-DECLARE_PACKET(ACT_PASS, ActPass)
-  int player_id;
-  int dest_row;
-  int dest_col;
-END_PACKET
 
 /*!
 ** @brief Base class describing a BB team.
@@ -64,10 +34,10 @@ class Team
 {
 public:
   Team(int team_id);
-
+  virtual ~Team();
+  
   int getTeamId() const;
   int getNbPlayer() const;
-  const T* getPlayerConst(int id) const;
   T* getPlayer(int id);
   const std::string& getTeamName() const;
   const std::string& getCoachName() const;
@@ -76,11 +46,7 @@ public:
   
 protected:
   int team_id_;   ///< Team id (0 or 1).
-  
-  typedef typename std::vector<T> PlayerList;
-  typedef typename PlayerList::iterator PlayerIter;
-
-  PlayerList player_;  ///< List of this team players.
+  T* player_[MAX_PLAYER];  ///< List of this team players.
 
   std::string team_name_;
   std::string coach_name_;
@@ -88,8 +54,7 @@ protected:
   int score_;
   int reroll_;
 
-  bool blitz_done_;
-  bool pass_done_;
+  bool blitz_or_pass_done_;
 
   bool reroll_used_;
 };  

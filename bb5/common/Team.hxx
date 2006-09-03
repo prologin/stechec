@@ -21,13 +21,21 @@ inline Team<T>::Team(int team_id)
     score_(0),
     reroll_(0)
 {
+  for (int i = 0; i < MAX_PLAYER; i++)
+    player_[i] = NULL;
+}
+
+template <typename T>
+inline Team<T>::~Team()
+{
+  for (int i = 0; i < MAX_PLAYER; i++)
+    delete player_[i];
 }
 
 template <typename T>
 inline void Team<T>::resetTurn()
 {
-  blitz_done_ = false;
-  pass_done_ = false;
+  blitz_or_pass_done_ = false;
   reroll_used_ = false;
 }
 
@@ -40,29 +48,22 @@ inline int Team<T>::getTeamId() const
 template <typename T>
 inline int Team<T>::getNbPlayer() const
 {
-  return player_.size();
-}
+  int count = 0;
 
-template <typename T>
-inline const T* Team<T>::getPlayerConst(int id) const
-{
-  if (id <= 0 || id > (int)player_.size())
-    {
-      LOG2("Wrong player_id: " << id << " (team: " << team_id_ << ")");
-      return NULL;
-    }
-  return &player_[id - 1];
+  for (int i = 0; i < MAX_PLAYER; i++)
+    if (player_[i] != NULL)
+      count += 1;
+  return count;
 }
 
 template <typename T>
 inline T* Team<T>::getPlayer(int id)
 {
-  if (id <= 0 || id > (int)player_.size())
-    {
-      LOG2("Wrong player_id: " << id << " (team: " << team_id_ << ")");
-      return NULL;
-    }
-  return &player_[id - 1];
+  if (id >= 0 && id < MAX_PLAYER)
+    return player_[id];
+
+  LOG2("Wrong player_id: " << id << " (team: " << team_id_ << ")");
+  return NULL;
 }
 
 template <typename T>

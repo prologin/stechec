@@ -18,33 +18,54 @@
 #include "SRules.hh"
 #include "SPlayer.hh"
 
-SPlayer::SPlayer(int id, int team_id, SRules* r)
-  : Player(id, team_id),
-    r_(r)
+SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
+  : Player(m->player_id, m->client_id),
+    r_(r),
+    t_(t),
+    target_push_(NULL)
 {
-}
-
-// sig... wanted it to be on Player.
-void SPlayer::setPosition(const Position& pos)
-{
-  SField* f = r_->getField();
-  if (f->intoField(pos_))
-    f->setPlayer(pos_, NULL);
-  pos_ = pos;
-  f->setPlayer(pos_, this);
-}
-
-
-void SPlayer::msgPlayerInfo(const MsgPlayerInfo* m)
-{
+  r_->HANDLE_F_WITH(ACT_MOVE, SPlayer, this, msgMove, filterMove, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(ACT_BLOCK, SPlayer, this, msgBlock, filterBlock, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(ACT_PASS, SPlayer, this, msgPass, filterPass, GS_COACHBOTH);
+  
   ma_ = m->ma;
   st_ = m->st;
   ag_ = m->ag;
   av_ = m->av;
   name_ = packetToString(m->name);
+  status_ = STA_STANDING;
+}
 
-  // Ok, tell everybody we have accepted this player.
-  r_->sendPacket(*m);
+/*
+** Management, misc code.
+*/
+
+bool SPlayer::acceptPlayerCreation()
+{
+  // FIXME: some checks... ?
+
+  // Ok, player accepted
+  return true;
+}
+
+void SPlayer::setPosition(const Position& pos, bool advertise_client)
+{
+  SField* f = r_->getField();
+
+  if (f->intoField(pos_))
+    f->setPlayer(pos_, NULL);
+  if (advertise_client && pos_ != pos)
+    {
+      MsgPlayerPos pkt;
+      pkt.player_id = id_;
+      pkt.row = pos.row;
+      pkt.col = pos.col;
+      r_->sendPacket(pkt);
+    }
+  pos_ = pos;
+  f->setPlayer(pos, this);
+  if (!f->intoField(pos))
+    rollInjury(0);
 }
 
 // Standard action. Launch a D6:
@@ -70,22 +91,9 @@ bool SPlayer::tryAction(int modifier)
   return true;
 }
 
-bool SPlayer::pickBall(int modifier)
-{
-  SField* f = r_->getField();
-  SBall* b = r_->getBall();  
-
-  assert(pos_ == b->getPosition());
-  int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
-  if (!tryAction(modifier - nb_tackles))
-    {
-      LOG5("Player has failed to pick up ball at " << pos_);
-      b->bounce();
-      return false;
-    }
-  LOG5("Player successfully take the ball at " << pos_);
-  return true;
-}
+/*
+** Move action
+*/
 
 int SPlayer::doMove(const ActMove* m)
 {
@@ -106,6 +114,7 @@ int SPlayer::doMove(const ActMove* m)
       aim.col = m->moves[i].col;
       if (!pos_.isNear(aim))
         {
+	  LOG4("Move: not an adjacent case");
           illegal = 1;
           break;
         }
@@ -133,14 +142,14 @@ int SPlayer::doMove(const ActMove* m)
           }
         else
           {
-            picking_failed = !pickBall(1);
+            picking_failed = !b->catchBall(this, 1);
           }
 
       // Ok... Move on.
       res_move.nb_move++;
       res_move.moves[i].row = aim.row;
       res_move.moves[i].col = aim.col;
-      setPosition(aim);
+      setPosition(aim, false);
       if (knocked || picking_failed)
         break;
     }
@@ -155,53 +164,181 @@ int SPlayer::doMove(const ActMove* m)
       MsgPlayerKnocked pkt(m->client_id);
       pkt.player_id = id_;
       r_->sendPacket(pkt);
+      return 1;
     }
   if (picking_failed)
-    b->bounce();
-  action_done_ = true;
+    return 1;
   return 0;
 }
 
+/*
+** Block action
+*/
+
 int SPlayer::doBlock(const ActBlock* m)
 {
-  SPlayer* target = r_->getField()->getPlayer(m->target_location);
-  if ((target == NULL)
-      || (target->getTeamId() == getTeamId()) //prevent same team block??
-      || (target->status_ != STA_STANDING))
+  int other_team_id = m->client_id == 0 ? 1 : 0;
+  SPlayer* target = r_->getTeam(other_team_id)->getPlayer(m->opponent_id);
+  if (target == NULL
+      || target->getTeamId() == getTeamId()
+      || target->status_ != STA_STANDING
+      || !pos_.isNear(target->getPosition()))
   {
-    LOG3("cannot block player from " << m->target_location << ".");
+    LOG3("Cannot block player '" << other_team_id << "' at "
+	 << target->getPosition() << " (status: " << target->status_ << ").");
     return 0;
   }
+
   int mod_st_atk = getSt();
   int mod_st_df = target->getSt();
-  int nb_dice = 0;
-  if (mod_st_atk == mod_st_df)
+  int nb_dice;
+
+  if (mod_st_atk >= 2 * mod_st_df || mod_st_df >= 2 * mod_st_atk)
+    nb_dice = 3;
+  else if (mod_st_atk != mod_st_df)
+    nb_dice = 2;
+  else
+    nb_dice = 1;
+
+  Dice d(DBLOCK);
+  enum eBlockDiceFace result[3];
+  enum eBlockDiceFace best_result = BATTAKER_DOWN;
+  for (int i = 0; i < nb_dice; ++i)
     {
-      nb_dice = 1;
+      result[i] = (enum eBlockDiceFace)d.roll();
+      LOG5("Rolled block dice: " << Dice::getBlockDiceString(result[i]));
+      if (result[i] > best_result)
+	best_result = result[i];
     }
-  else if ((mod_st_atk >= 2*mod_st_df))
+  
+  switch (best_result)
     {
-      nb_dice = 3;
+    case BATTAKER_DOWN:
+      setStatus(STA_PRONE);
+      return 1;
+
+    case BBOTH_DOWN:
+      target->setStatus(STA_PRONE);
+      setStatus(STA_PRONE);
+      return 1;
+
+    case BPUSHED:
+      blockPushChoice(target);
+      return 0;
+
+    case BDEFENDER_STUMBLE:
+      blockPushChoice(target);
+      target->setStatus(STA_PRONE);
+      return 0;
+      
+    case BDEFENDER_DOWN:
+      blockPushChoice(target);
+      target->setStatus(STA_PRONE);
+      return 0;
     }
-  else if ((mod_st_df >= 2*mod_st_atk))
+  return 0;
+}
+
+
+void SPlayer::blockPushChoice(SPlayer* target)
+{
+  SField* f = r_->getField();
+  Position choice[3];
+  Position dt = target->getPosition();
+  Position d = dt - getPosition();
+
+  choice[1] = dt + d;
+  if (d.col == 0)
     {
-      nb_dice = -3;
+      choice[0] = dt + d + Position(0, -1);
+      choice[2] = dt + d + Position(0, 1);
+    }
+  else if (d.row == 0)
+    {
+      choice[0] = dt + d + Position(-1, 0);
+      choice[2] = dt + d + Position(1, 0);
     }
   else
     {
-      nb_dice=(mod_st_atk>mod_st_df)?2:-2;
-      int result[nb_dice];
-      Dice d(DBLOCK);
-      for (int i=0; i<nb_dice; ++i)
-        {
-          result[i] = d.roll();
-          LOG5("rolled block dice "+ result[i]);
-        }
+      choice[0] = dt + d + Position(-d.row, 0);
+      choice[2] = dt + d + Position(0, -d.col);
     }
-  // FIXME: apply results
-  action_done_ = true;
-  return 0;
+
+  LOG3("attacker: " << pos_ << "  defender: " << target->pos_);
+  LOG3("c1: " << choice[0] << " c2: " << choice[1] << " c3: " << choice[2]);
+
+  ActBlockPush pkt;
+  pkt.target_row = dt.row;
+  pkt.target_col = dt.col;
+  pkt.nb_choice = 0;
+
+  for (int i = 0; i < 3; i++)
+    if (f->intoField(choice[i]) && f->getPlayer(choice[i]) == NULL)
+      {
+	pkt.choice[pkt.nb_choice].row = choice[i].row;
+	pkt.choice[pkt.nb_choice].col = choice[i].col;
+	pkt.nb_choice++;
+      }
+
+  // If there is no choice, add all possibilities.
+  if (pkt.nb_choice == 0)
+    {
+      for (int i = 0; i < 3; i++)
+	{
+	  pkt.choice[pkt.nb_choice].row = choice[i].row;
+	  pkt.choice[pkt.nb_choice].col = choice[i].col;
+	  pkt.nb_choice++;
+	}
+    }
+
+  target_push_ = target;
+  // FIXME: may follow up move (then use setPosition).
+  f->setPlayer(dt, NULL);
+  
+  // FIXME: asks player, instead of doing the choice ourself.
+  //r_->sendPacket(pkt);
+  int my_choice = Dice(pkt.nb_choice).roll();
+  pkt.nb_choice = 1;
+  pkt.choice[0].row = pkt.choice[my_choice - 1].row;
+  pkt.choice[0].col = pkt.choice[my_choice - 1].col;
+
+  LOG3("pkt choices: " << pkt.nb_choice << " " << pkt.choice[my_choice - 1].row
+       << " " << pkt.choice[my_choice - 1].col);
+
+  blockPush(&pkt);
 }
+
+// FIXME: keep choices into memory, to check if user is
+// not sending us falsified choice.
+void SPlayer::blockPush(ActBlockPush* m)
+{
+  SField* f = r_->getField();
+  Position to(m->choice[0].row, m->choice[0].col);
+  SPlayer* other_target = f->getPlayer(to);
+
+  if (m->nb_choice != 1)
+    return;
+
+  LOG2("blockpush 2nd phase: " << to);
+  
+  // Kludge, don't override last pos field.
+  target_push_->pos_ = Point(-1, -1);
+  // Kludge, remove field warning.
+  f->setPlayer(to, NULL);
+
+  // Finally, it's over. Move to dest.
+  target_push_->setPosition(to);
+
+  // Oh, another player to move.
+  if (other_target != NULL)
+    target_push_->blockPushChoice(other_target);
+  else
+    target_push_ = NULL;
+}
+
+/*
+** Pass action.
+*/
 
 int SPlayer::doPass(const ActPass* m)
 {
@@ -235,18 +372,40 @@ int SPlayer::doPass(const ActPass* m)
 
   b->setPosition(dest);
   SPlayer* p = f->getPlayer(b->getPosition());
-  if (!p->pickBall(catch_mod))
+  if (!b->catchBall(p, catch_mod))
     {
-      while (true)
-        {
-          p = f->getPlayer(b->getPosition());
-          if (p == NULL || p->pickBall(0))
-            break;
-        }
+      return 1; // Turnover
     }
-  action_done_ = true;
-  // FIXME: turnover
   return 0;
+}
+
+
+/*
+** Player state, injuries...
+*/
+
+void SPlayer::setStatus(enum eStatus new_status)
+{
+  switch (new_status)
+    {
+    case STA_STANDING:
+      // ok... play again :p
+      status_ = STA_STANDING;
+      break;
+      
+    case STA_PRONE:
+      // FIXME: not sure...
+      rollInjury(0);
+      break;
+      
+    case STA_UNASSIGNED:
+      WARN("Can't set player in 'unassigned' state");
+      break;
+
+    default:
+      LOG3("You can't set this state from outside...");
+      break;
+    }
 }
 
 void SPlayer::checkArmor(int av_mod, int inj_mod)
@@ -256,10 +415,10 @@ void SPlayer::checkArmor(int av_mod, int inj_mod)
     rollInjury(inj_mod);
 }
 
-//FIXME: setStatus
-inline void SPlayer::rollInjury(int inj_mod)
+void SPlayer::rollInjury(int inj_mod)
 {
   Dice d(D6);
+
   int injury = d.roll(2) + inj_mod;
   if (injury <= 7)
     status_ = STA_STUNED;
@@ -269,7 +428,7 @@ inline void SPlayer::rollInjury(int inj_mod)
     status_ = rollCasualty();
 }
 
-inline int SPlayer::rollCasualty()
+enum eStatus SPlayer::rollCasualty()
 {
   switch (Dice(D6).roll())
     {
@@ -280,11 +439,59 @@ inline int SPlayer::rollCasualty()
     case 5: return STA_SEVERE_INJURIED;
     case 6: return STA_DEAD;
     }
+  return STA_UNASSIGNED;
 }
 
-// Explicit instanciation ? Hum :)
-#include "Field.cc"
-void foo()
+
+
+/*
+** Messages, filters
+*/
+
+void SPlayer::msgMove(const ActMove* m)
 {
-  Field<SPlayer> f;
+  if (!t_->canDoAction(m, this))
+    return;
+  if (doMove(m))
+    r_->turnOver();
+}
+
+void SPlayer::msgBlock(const ActBlock* m)
+{
+  if (!t_->canDoAction(m, this))
+    return;
+  if (doBlock(m))
+    r_->turnOver();
+  has_done_block_ = true;
+}
+
+void SPlayer::msgPass(const ActPass* m)
+{
+  if (!t_->canDoAction(m, this))
+    return;
+  if (doPass(m))
+    r_->turnOver();
+}
+
+
+
+bool SPlayer::filterMove(const ActMove* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
+
+bool SPlayer::filterBlock(const ActBlock* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
+
+bool SPlayer::filterPass(const ActPass* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
 }

@@ -85,7 +85,8 @@ void CmdLineInterface::run()
 
 void CmdLineInterface::printGlobal()
 {
-  cout << "  - current game state: " << api_->getState() << "\n"
+  cout << "  - you are coach '" << api_->getTeamId() << "'\n" 
+       << "  - current game state: " << api_->getStateString() << "\n"
        << "  - the weather is '" << api_->getWeather()->getWeatherStr()
        << "' (" << api_->getWeather()->getWeather() << ")\n"
        << "  - ball position: " << api_->getBallPosition() << "\n"
@@ -105,6 +106,9 @@ void CmdLineInterface::printGlobal()
 void CmdLineInterface::printField()
 {
   int row, col;
+
+  cout << "Your are coach " << api_->getTeamId() << ", you are on the ";
+  cout << (api_->getTeamId() == 0 ? "top" : "bottom") << " of the field.\n";
 
   // top (+ col count)
   cout << "      " << setiosflags(ios::left);
@@ -150,7 +154,8 @@ void CmdLineInterface::printField()
               cout << "   ";
 
           // Keep at least one space as separator.
-          cout << " ";
+	  if (p == NULL || p->getId() < 10)
+	    cout << " ";
         }
       cout << "|\n";
     }
@@ -170,14 +175,14 @@ void CmdLineInterface::printPlayerList()
 
   team_size = api_->getTeam()->getNbPlayer();
   cout << setiosflags(ios::left);
-  for (int i = 1; i <= team_size; i++)
+  for (int i = 0; i < team_size; i++)
     {
       p = api_->getPlayer(i);
       cout << "* " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
     }
   api_->select_team(THEM);
   team_size = api_->getTeam()->getNbPlayer();
-  for (int i = 1; i <= team_size; i++)
+  for (int i = 0; i < team_size; i++)
     {
       p = api_->getPlayer(i);
       cout << "+ " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
@@ -201,9 +206,9 @@ void CmdLineInterface::printPlayer(int player_id, int team_id)
 // Events (virtual methods called from Event).
 //
 
-void CmdLineInterface::evIllegal()
+void CmdLineInterface::evIllegal(int was_token)
 {
-  cout << "An illegal action was tried. Bouh." << endl;
+  cout << "An illegal action was tried (token: " << was_token << "). Bouh." << endl;
 }
 
 void CmdLineInterface::evNewTurn(bool our_turn)
@@ -235,7 +240,7 @@ void CmdLineInterface::evChat(const std::string& msg)
   cout << "<CHAT> " << msg << endl;
 }
 
-void CmdLineInterface::evPlayerMove(int team_id, int player_id, const Point& pos)
+void CmdLineInterface::evPlayerMove(int, int player_id, const Point& pos)
 {
   cout << "Player `" << player_id << "' has moved to `" << pos << "'" << endl;
 }

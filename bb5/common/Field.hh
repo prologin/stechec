@@ -19,16 +19,14 @@
 
 # include "Constants.hh"
 
-struct ScorePoint;
-
 /*!
 ** Game playing ground.
+**
+** Parameter T: Player type (CPlayer or SPlayer)
 */
 template <typename T>
 class Field
 {
-  typedef T PlayerType;
-  
 public:
   Field();
   ~Field();
@@ -37,45 +35,34 @@ public:
   //!   (ie: not outside the border).
   bool          intoField(const Position& pos) const;
 
-  //! @brief Get the player as the specified position, or NULL.
-  T*            getPlayer(const Position& pos);
-  //! @brief Same as getPlayer, but const.
-  const T*      getPlayerConst(const Position& pos) const;
-
-  //! @brief Get path from one point to another.
-  //! @return A list of point, describing the path. This list will be
-  //!   empty if no path is found.
-  //! @note The list is internally allocated and disallocated. Do not try
-  //!   to modify it.
-  const PosList& getPath(const Position& start,
-                         const Position& dest,
-                         T* p);
-
   //! @brief Get the number of tackle zones for the square made by
   //!    a team.
   //! @param team_id The team id of the team that tackle. (ie: The opposing team).
   //! @param pos Position in field to look for.
   int           getNbTackleZone(int team_id, const Position& pos);
 
+    //! @brief Get the player as the specified position, or NULL.
+  T*            getPlayer(const Position& pos);
+
   //! @brief Place a player on the field.
   //! @note Don't forget to manually set NULL its previous position.
   void          setPlayer(const Position& pos, T* p);
 
-private:
-  T**           tab_;
-
-  ScorePoint*   extractMin();
-  int           getScoreModifier(const ScorePoint& cur,
-                                 const ScorePoint& prev,
-                                 int team_id);
-  bool          getMinPath(int team_id);
-  
-  // Variables used by getPath()
-  PosList       path_;
-  ScorePoint*   path_tab_;
-  std::multimap<int, ScorePoint*> cur_pt_list_;
-  ScorePoint*   goal_;
+protected:
+  T*            tab_[COLS * ROWS];
 };
+
+template <typename T>
+inline Field<T>::Field()
+{
+  for (int i = 0; i < COLS * ROWS; i++)
+    tab_[i] = NULL;
+}
+
+template <typename T>
+inline Field<T>::~Field()
+{
+}
 
 template <typename T>
 inline bool Field<T>::intoField(const Position& pos) const
@@ -87,6 +74,11 @@ inline bool Field<T>::intoField(const Position& pos) const
 template <typename T>
 inline void Field<T>::setPlayer(const Position& pos, T* p)
 {
+  // Desynchronization between field and players for position can be
+  // _very_ critical.
+  if (p != NULL && tab_[pos.row * COLS + pos.col] != NULL)
+    WARN("Dessynchronization bewteen field and players!");
+      
   tab_[pos.row * COLS + pos.col] = p;
 }
 
@@ -97,9 +89,20 @@ inline T* Field<T>::getPlayer(const Position& pos)
 }
 
 template <typename T>
-inline const T* Field<T>::getPlayerConst(const Position& pos) const
+inline int Field<T>::getNbTackleZone(int team_id, const Position& pos)
 {
-  return tab_[pos.row * COLS + pos.col];
+  int res = 0;
+  Position p;
+
+  for (p.row = pos.row - 1; p.row <= pos.row + 1; p.row++)
+    for (p.col = pos.col - 1; p.col <= pos.col + 1; p.col++)
+      if (intoField(p)
+          && getPlayer(p) != NULL
+          && getPlayer(p)->getTeamId() == team_id)
+        res++;
+  return res;
 }
+
+
 
 #endif /* !FIELD_HH_ */

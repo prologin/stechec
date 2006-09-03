@@ -33,9 +33,9 @@ Dice::~Dice()
 {
 }
 
-int        Dice::roll(int nb_dice)
+int Dice::roll(int nb_dice)
 {
-  int        val = 0;
+  int val = 0;
 
   switch (type_)
     {
@@ -51,7 +51,7 @@ int        Dice::roll(int nb_dice)
       if (nb_dice > 1)  
         return -42;
 
-      val = ((int) (6.0 * rand() / (RAND_MAX + 1.0)));
+      val = 1 + (int)(6.0 * rand() / (RAND_MAX + 1.0));
       switch (val)
         {
         case 1: val=BATTAKER_DOWN; break;
@@ -72,6 +72,24 @@ int        Dice::roll(int nb_dice)
       break;
     }
   return val;
+}
+
+const char* Dice::getBlockDiceString(enum eBlockDiceFace face)
+{
+  switch (face)
+    {
+    case BATTAKER_DOWN:
+      return "BATTAKER_DOWN";
+    case BBOTH_DOWN:
+      return "BBOTH_DOWN";
+    case BPUSHED:
+      return "BPUSHED";
+    case BDEFENDER_STUMBLE:
+      return "BDEFENDER_STUMBLE";
+    case BDEFENDER_DOWN:
+      return "BDEFENDER_DOWN";
+    }
+  return "kikoolol";
 }
 
 int Dice::roll(bool reroll, int x)

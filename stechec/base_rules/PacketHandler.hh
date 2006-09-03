@@ -70,11 +70,15 @@ template <typename T>                                           \
 class PacketHandler<Cst, T> : public BasePacketHandler          \
 {                                                               \
 public:                                                         \
-  typedef void (T::*fct)(const PClass*);                        \
-  PacketHandler<Cst, T>(T* obj, fct f)                          \
-    : obj_(obj), f_(f) {}                                       \
+  typedef void (T::*fct_t)(const PClass*);                      \
+  typedef bool (T::*filter_fct_t)(const PClass*);               \
+  PacketHandler<Cst, T>(T* obj, fct_t f, filter_fct_t ff)       \
+    : obj_(obj), f_(f), filt_f_(ff) {}                          \
   virtual void handle(const Packet* p)                          \
   {                                                             \
+    if (filt_f_ &&						\
+	!(obj_->*filt_f_)(reinterpret_cast<const PClass*>(p)))	\
+      return;							\
     LOG5("PacketHandler gets message '"                         \
          #Cst "' (client_id: " << p->client_id << ")");         \
     (obj_->*f_)(reinterpret_cast<const PClass*>(p));            \
@@ -88,7 +92,8 @@ public:                                                         \
   }                                                             \
 private:                                                        \
   T* obj_;                                                      \
-  fct f_;                                                       \
+  fct_t f_;                                                     \
+  filter_fct_t filt_f_;						\
 };                                                              \
 struct PClass : public Packet                                   \
 {                                                               \
@@ -104,7 +109,10 @@ struct PClass : public Packet                                   \
   END_PACKET 
 
 #define HANDLE_WITH(Token, Class, Object, Method, When)                        \
-  handleWith(new PacketHandler<Token, Class>(Object, &Class::Method), When)
+  handleWith(new PacketHandler<Token, Class>(Object, &Class::Method, NULL), When)
+
+#define HANDLE_F_WITH(Token, Class, Object, Method, Filter, When)              \
+  handleWith(new PacketHandler<Token, Class>(Object, &Class::Method, &Class::Filter), When)
 
 
 #endif /* !PACKETHANDLER_HH_ */

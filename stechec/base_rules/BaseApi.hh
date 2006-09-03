@@ -40,6 +40,9 @@ public:
   //! @return A constant describing the current game state.
   int           getState() const;
 
+  //! @brief Get the current game state, stringinfied.
+  const char*	getStateString() const;
+  
   //! @brief Get the team id [0..nbTeams-1].
   int           getTeamId() const;
 
@@ -72,6 +75,19 @@ template <typename T>
 inline int BaseApi<T>::getState() const
 {
   return rules_->getState();
+}
+
+template <typename T>
+inline const char* BaseApi<T>::getStateString() const
+{
+  switch (rules_->getState())
+    {
+    case GS_WAIT:
+      return "GS_WAIT";
+    case GS_END:
+      return "GS_END";
+    }
+  return "Undefined";
 }
 
 template <typename T>

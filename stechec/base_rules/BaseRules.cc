@@ -44,7 +44,6 @@ void    BaseRules::handleWith(BasePacketHandler* bph, int when)
   pkt_hdl_[bph->getCstValue()].push_back(std::make_pair(when, bph));
 }
 
-
 int     BaseRules::getTeamNumber() const
 {
   return team_number_;

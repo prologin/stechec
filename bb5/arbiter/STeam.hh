@@ -35,24 +35,23 @@ class STeam : public Team<SPlayer>
 public:
   STeam(int team_id, SRules* r);
 
-  void setTurnMarker() {}
+  int state_;	///< Team state on client side.
 
-  int        state_;
+  //! @brief Check if this player can do this action
+  bool canDoAction(const Packet* pkt, SPlayer* p);
+
+  void resetTurn();
 
 private:
-  SRules* r_;
-
-  SPlayer* checkPlayerAction(const Packet* pkt, unsigned player_id);
-
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerInfo(const MsgPlayerInfo* m);
   void msgPlayerPos(const MsgPlayerPos* m);
+  bool filterTeamInfo(const MsgTeamInfo* m);
+  bool filterPlayerInfo(const MsgPlayerInfo* m);
+  bool filterPlayerPos(const MsgPlayerPos* m);
 
-  void msgMove(const ActMove* m);
-  void msgBlock(const ActBlock* m);
-  void msgPass(const ActPass* m);
-
-  void checkActResult(int result);
+  SRules* r_;
+  int curr_acting_player_;
 };
 
 #endif /* !STEAM_HH_ */

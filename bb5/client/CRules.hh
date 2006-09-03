@@ -19,7 +19,7 @@
 
 # include "BaseCRules.hh"
 # include "Weather.hh"
-# include "Field.hh"
+# include "CField.hh"
 # include "CBall.hh"
 # include "CTeam.hh"
 
@@ -34,7 +34,6 @@ enum eSelTeam {
 // Mostly a big hack, to have BaseCRules::onEvent(int) working.
 DECLARE_EMPTY_PACKET(CUSTOM_EVENT, CustomEvent);
 
-typedef Field<CPlayer> CField;
 class Api;
 
 /*!
@@ -59,7 +58,7 @@ public:
 
 private:
 
-  // Methods that mostly catch server response.
+  // Methods to catch server response.
   void msgIllegal(const MsgIllegal* m);
   void msgInitGame(const MsgInitGame* m);
   void msgInitHalf(const MsgInitHalf* m);

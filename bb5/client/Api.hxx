@@ -93,6 +93,12 @@ inline bool Api::doMovePlayer(int p, const Point& to)
   return rules_->our_team_->movePlayer(p, to);
 }
 
+inline bool Api::doBlockPlayer(int p, const Point& to)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->blockPlayer(p, to);
+}
+
 inline void Api::sendChatMessage(const std::string& msg)
 {
   if (rules_->getState() == GS_WAIT)
@@ -169,17 +175,29 @@ inline const CField* Api::getField() const
   return rules_->field_;
 }
 
+inline const char* Api::getStateString() const
+{
+  switch (rules_->getState())
+    {
+    case GS_INITGAME:
+      return "GS_INITGAME";
+    case GS_INITHALF:
+      return "GS_INITHALF";
+    case GS_COACH1:
+      return "GS_COACH1";
+    case GS_COACH2:
+      return "GS_COACH2";
+    case GS_PAUSE:
+      return "GS_PAUSE";
+    }
+  return BaseApi<CRules>::getStateString();
+}
 
 inline int Api::select_player(int player_id)
 {
   CHECK_TEAM;
-  if (player_id <= 0 || player_id > selected_team_->getNbPlayer())
-    {
-      selected_player_ = NULL;
-      return BAD_PLAYER;
-    }
   selected_player_ = selected_team_->getPlayer(player_id);
-  return SUCCESS;
+  return selected_player_ == NULL ? BAD_PLAYER : SUCCESS;
 }
 
 inline int Api::move_lenght(int dst_x, int dst_y)
