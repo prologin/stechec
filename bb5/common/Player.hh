@@ -99,6 +99,8 @@ public:
 
   //! @brief Get Movement Allowance.
   int getMa() const;
+  //! @brief Get Movement Allowance Remaining.
+  int getMaRemain() const;
   //! @brief Get Strenght.
   int getSt() const;
   //! @brief Get Agility.

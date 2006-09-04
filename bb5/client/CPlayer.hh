@@ -38,6 +38,9 @@ public:
   
   //! @brief Set the player position.
   void setPosition(const Position& pos);
+  
+  //! @brief Substract dep to ma_remain_.
+  void subMa(int dep);
 
 private:
   CRules* r_;

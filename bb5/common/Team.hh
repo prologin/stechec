@@ -54,7 +54,8 @@ protected:
   int score_;
   int reroll_;
 
-  bool blitz_or_pass_done_;
+  bool blitz_done_;
+  bool pass_done_;
 
   bool reroll_used_;
 };  

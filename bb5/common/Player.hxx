@@ -53,6 +53,11 @@ inline int Player::getMa() const
   return ma_;
 }
 
+inline int Player::getMaRemain() const
+{
+  return ma_remain_;
+}
+
 inline int Player::getSt() const
 {
   return st_;

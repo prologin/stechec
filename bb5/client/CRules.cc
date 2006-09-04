@@ -129,11 +129,13 @@ void        CRules::msgPlayTurn(const MsgNewTurn* m)
   if (m->client_id == getTeamId())
     {
       LOG2("-- CRules: change state: GS_COACH (Our turn)");
+      our_team_->resetTurn();
       onEvent(eOurTurn);
     }
   else
     {
       LOG2("-- CRules: change state: GS_COACH (Their turn)");
+      other_team_->resetTurn();
       onEvent(eTheirTurn);
     }
 }

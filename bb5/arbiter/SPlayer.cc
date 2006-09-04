@@ -118,6 +118,12 @@ int SPlayer::doMove(const ActMove* m)
           illegal = 1;
           break;
         }
+      if (ma_remain_ == 0)
+        {
+	  LOG4("Move: not enough movement remaining");
+          illegal = 1;
+          break;
+	}
 
       // Check tackle zones.
       int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
@@ -150,6 +156,7 @@ int SPlayer::doMove(const ActMove* m)
       res_move.moves[i].row = aim.row;
       res_move.moves[i].col = aim.col;
       setPosition(aim, false);
+      ma_remain_--;
       if (knocked || picking_failed)
         break;
     }

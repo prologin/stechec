@@ -49,6 +49,11 @@ void CPlayer::setPosition(const Position& pos)
   f->setPlayer(pos_, this);
 }
 
+void CPlayer::subMa(int dep)
+{
+  ma_remain_ -= dep;
+}
+
 bool CPlayer::move(const Position& to)
 {
   CField* f = r_->getField();
@@ -120,6 +125,7 @@ void CPlayer::msgPlayerMove(const ActMove* m)
   pos.row = m->moves[m->nb_move - 1].row;
   pos.col = m->moves[m->nb_move - 1].col;
   setPosition(pos);
+  subMa(m->nb_move);
   r_->onEvent(m);
 }
 

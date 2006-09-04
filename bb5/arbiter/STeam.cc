@@ -106,8 +106,9 @@ bool STeam::filterPlayerPos(const MsgPlayerPos* m)
 void STeam::resetTurn()
 {
   curr_acting_player_ = -1;
-  blitz_or_pass_done_ = false;
-
+  blitz_done_ = false;
+  pass_done_ = false;
+  reroll_used_ = false;
   for (int i = 0; i < MAX_PLAYER; i++)
     if (player_[i] != NULL)
       player_[i]->resetTurn();
@@ -141,15 +142,26 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
   if (pkt->token == ACT_MOVE && p->hasDoneBlock())
     blitz_detected = true;
     
-  if (pkt->token == ACT_PASS || blitz_detected)
+  if (pkt->token == ACT_PASS)
     {
-      if (blitz_or_pass_done_)
+      if (pass_done_)
 	{
-	  LOG4("Cannot do more than one pass/blitz in a single turn.")
+	  LOG4("Cannot do more than one pass in a single turn.")
 	  r_->sendIllegal(pkt->token, p->getId());
 	  return false;
 	}
-      blitz_or_pass_done_ = true;
+      pass_done_ = true;
+    }
+	
+  if (blitz_detected)
+    {
+      if (blitz_done_)
+	{
+	  LOG4("Cannot do more than one blitz in a single turn.")
+	  r_->sendIllegal(pkt->token, p->getId());
+	  return false;
+	}
+      blitz_done_ = true;
     }
 
   curr_acting_player_ = p->getId();

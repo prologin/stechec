@@ -35,8 +35,12 @@ inline Team<T>::~Team()
 template <typename T>
 inline void Team<T>::resetTurn()
 {
-  blitz_or_pass_done_ = false;
+  blitz_done_ = false;
+  pass_done_ = false;
   reroll_used_ = false;
+  for (int i = 0; i < MAX_PLAYER; i++)
+    if (player_[i] != NULL)
+      player_[i]->resetTurn();
 }
 
 template <typename T>

@@ -118,7 +118,7 @@ const PosList& CField::getPath(const Position& start,
   // Initialize start and dest points.
   ScorePoint* sp_start = &path_tab_[start.row * COLS + start.col];
   sp_start->score = 0;
-  sp_start->ma = p->getMa();
+  sp_start->ma = p->getMaRemain();
   cur_pt_list_.insert(std::make_pair(0, sp_start));
   goal_ = &path_tab_[dest.row * COLS + dest.col];
 
