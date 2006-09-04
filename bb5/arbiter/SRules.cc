@@ -182,11 +182,19 @@ void SRules::msgPlayTurn(const MsgEndTurn*)
       return;
     }
   
-  team_[0]->resetTurn();
-  team_[1]->resetTurn();
-  
   // Switch playing team
   setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
+
+  if (getState() == GS_COACH1)
+    {
+      team_[0]->resetTurn();
+      team_[1]->setProneStunned();
+    }
+  else
+    {
+      team_[1]->resetTurn();
+      team_[0]->setProneStunned();
+    }
 
   // Send the playing team_id to clients.
   MsgNewTurn pkt;

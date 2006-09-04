@@ -33,7 +33,8 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
   ag_ = m->ag;
   av_ = m->av;
   name_ = packetToString(m->name);
-  status_ = STA_STANDING;
+  setStatus(STA_STANDING);
+  will_prone_ = false;
 }
 
 /*
@@ -63,9 +64,16 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
       r_->sendPacket(pkt);
     }
   pos_ = pos;
-  f->setPlayer(pos, this);
+  // Check for the ball
+  if (r_->getBall()->getOwner() == this) 
+    {
+      r_->getBall()->setPosition(pos_);
+    }
+  
   if (!f->intoField(pos))
     rollInjury(0);
+  else
+    f->setPlayer(pos, this);
 }
 
 // Standard action. Launch a D6:
@@ -104,7 +112,14 @@ int SPlayer::doMove(const ActMove* m)
       r_->sendIllegal(ACT_MOVE, m->client_id);
       return 0;
     }
-
+  // Check the player is standing
+  if (status_ != STA_STANDING)
+    {
+      LOG4("Move: not in a standing position");
+      r_->sendIllegal(ACT_MOVE, m->client_id);
+      return 0;
+    }
+    
   ActMove res_move(team_id_);
   SField* f = r_->getField();
   SBall* b = r_->getBall();  
@@ -150,11 +165,6 @@ int SPlayer::doMove(const ActMove* m)
       res_move.moves[i].col = aim.col;
       setPosition(aim, false);
       ma_remain_--;
-      // Check for the ball
-      if (b->getOwner() == this) 
-        {
-          b->setPosition(pos_);
-        }
 
       // Check if can pick the ball.
       if (b->getPosition() == pos_&&b->getOwner() != this)
@@ -192,6 +202,9 @@ int SPlayer::doMove(const ActMove* m)
     }
   if (knocked)
     {
+      checkArmor(0, 0);
+      if (status_ == STA_STANDING)
+        setStatus(STA_PRONE);
       MsgPlayerKnocked pkt(m->client_id);
       pkt.player_id = id_;
       r_->sendPacket(pkt);
@@ -425,8 +438,27 @@ void SPlayer::setStatus(enum eStatus new_status)
       break;
       
     case STA_PRONE:
-      // FIXME: not sure...
-      rollInjury(0);
+      status_ = STA_PRONE;
+      break;
+      
+    case STA_STUNNED:
+      status_ = STA_STUNNED;
+      break;
+
+    case STA_KO:
+      status_ = STA_KO;
+      break;
+      
+    case STA_INJURIED:
+      status_ = STA_INJURIED;
+      break;
+      
+    case STA_SEVERE_INJURIED:
+      status_ = STA_SEVERE_INJURIED;
+      break;
+      
+    case STA_DEAD:
+      status_ = STA_DEAD;
       break;
       
     case STA_UNASSIGNED:
@@ -437,6 +469,16 @@ void SPlayer::setStatus(enum eStatus new_status)
       LOG3("You can't set this state from outside...");
       break;
     }
+  MsgPlayerStatus pkt(team_id_);
+  pkt.player_id = id_;
+  pkt.status = status_;
+  r_->sendPacket(pkt);
+}
+
+void SPlayer::setProne()
+{
+  if (will_prone_)
+    setStatus(STA_PRONE);
 }
 
 void SPlayer::checkArmor(int av_mod, int inj_mod)
@@ -452,11 +494,18 @@ void SPlayer::rollInjury(int inj_mod)
 
   int injury = d.roll(2) + inj_mod;
   if (injury <= 7)
-    status_ = STA_STUNED;
-  else if (injury <= 9)
-    status_ = STA_KO;
-  else
-    status_ = rollCasualty();
+    setStatus(STA_STUNNED);
+  else if (injury <= 9) 
+    {
+      setStatus(STA_KO);
+      r_->getField()->setPlayer(pos_, NULL);
+    }
+  else 
+    {
+      setStatus(rollCasualty());
+      r_->getField()->setPlayer(pos_, NULL);
+    }
+    LOG6("[" << id_ << "] Amor Passed, Injury : " << injury << ".");
 }
 
 enum eStatus SPlayer::rollCasualty()

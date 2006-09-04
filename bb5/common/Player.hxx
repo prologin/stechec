@@ -104,6 +104,7 @@ inline void Player::resetTurn()
   has_done_action_ = false;
   has_done_block_ = false;
   ma_remain_ = ma_;
+  will_prone_ = (status_ == STA_STUNNED);
 }
 
 // Todo: status, status string

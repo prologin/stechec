@@ -114,6 +114,13 @@ void STeam::resetTurn()
       player_[i]->resetTurn();
 }
 
+void STeam::setProneStunned()
+{
+  for (int i = 0; i < MAX_PLAYER; i++)
+    if (player_[i] != NULL)
+      player_[i]->setProne();  
+}
+
 bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
 {
   // Check if it's the team turn.

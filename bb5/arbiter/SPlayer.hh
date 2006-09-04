@@ -40,6 +40,9 @@ public:
 
   //! @brief Set new player status.
   void setStatus(enum eStatus new_status);
+
+  //! @brief Set status to prone if he has to
+  void setProne();
   
   //! @brief Try some action, consider player's agility.
   bool tryAction(int modifier);

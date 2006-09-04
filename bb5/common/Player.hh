@@ -81,6 +81,12 @@ DECLARE_PACKET(MSG_PLAYERKNOCKED, MsgPlayerKnocked);
   int player_id;
 END_PACKET
 
+DECLARE_PACKET(MSG_PLAYERSTATUS, MsgPlayerStatus);
+  int player_id;
+  enum eStatus status;
+END_PACKET
+
+
 
 /*!
 ** Base class describing a player.
@@ -142,6 +148,7 @@ protected:
   int ma_remain_;
   bool has_done_action_;
   bool has_done_block_;
+  bool will_prone_;
 
 public:
   //

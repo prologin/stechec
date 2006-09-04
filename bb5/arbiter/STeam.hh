@@ -41,6 +41,7 @@ public:
   bool canDoAction(const Packet* pkt, SPlayer* p);
 
   void resetTurn();
+  void setProneStunned();
 
 private:
   void msgTeamInfo(const MsgTeamInfo* m);

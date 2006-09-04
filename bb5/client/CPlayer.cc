@@ -24,7 +24,7 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITHALF | GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH);
-
+  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_COACHBOTH);
   ma_ = m->ma;
   st_ = m->st;
   ag_ = m->ag;
@@ -32,6 +32,7 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
   name_ = packetToString(m->name);
   player_position_ = m->player_position;
   player_picture_ = packetToString(m->player_img);
+  status_ = STA_STANDING;
 
   LOG6("Create player(" << (unsigned)this << "): id: " << id_ << " team_id " << team_id_);
 }
@@ -58,6 +59,11 @@ bool CPlayer::move(const Position& to)
 {
   CField* f = r_->getField();
 
+  if (status_ != STA_STANDING)
+    {
+      LOG2("You are not in a standing position.");
+      return false;
+    }
   if (to == pos_)
     {
       LOG2("You are already on " << pos_);
@@ -134,7 +140,31 @@ void CPlayer::msgPlayerKnocked(const MsgPlayerKnocked* m)
   r_->onEvent(m);
 }
 
-
+void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
+{
+  status_ = m->status;
+  switch (status_)
+    {
+    case STA_STANDING:
+    case STA_PRONE:
+    case STA_STUNNED:
+    break;
+    case STA_KO:
+    case STA_INJURIED:
+    case STA_SEVERE_INJURIED:
+    case STA_DEAD:
+      r_->getField()->setPlayer(pos_, NULL);
+      break;      
+    case STA_UNASSIGNED:
+      WARN("Can't set player in 'unassigned' state");
+      break;
+    default:
+      LOG3("You can't set this state from outside...");
+      break;
+    }
+// FIXME : it crashes if uncommented
+//  r_->onEvent(m);
+}
 /*
 ** Message filters.
 */
@@ -154,6 +184,13 @@ bool CPlayer::filterPlayerMove(const ActMove* m)
 }
 
 bool CPlayer::filterPlayerKnocked(const MsgPlayerKnocked* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
+
+bool CPlayer::filterPlayerStatus(const MsgPlayerStatus* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;
