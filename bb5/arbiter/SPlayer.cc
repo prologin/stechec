@@ -77,7 +77,7 @@ bool SPlayer::tryAction(int modifier)
   Dice d(6);
   int dice_res = d.roll();
   int dice_modif = dice_res + modifier;
-  int required = 6 - std::min(ag_, 6) + 1;
+  int required = 7 - std::min(ag_, 6);
   if (dice_res != 6 && (dice_modif < required || dice_res == 1))
     {
       LOG6("[" << id_ << "] Action _failed_, dice: " << dice_res
@@ -97,6 +97,14 @@ bool SPlayer::tryAction(int modifier)
 
 int SPlayer::doMove(const ActMove* m)
 {
+  // Check the player has enough ma remaining
+  if (ma_remain_ < m->nb_move)
+    {
+      LOG4("Move: not enough movement remaining");
+      r_->sendIllegal(ACT_MOVE, m->client_id);
+      return 0;
+    }
+
   ActMove res_move(team_id_);
   SField* f = r_->getField();
   SBall* b = r_->getBall();  
@@ -104,6 +112,7 @@ int SPlayer::doMove(const ActMove* m)
   bool knocked = false;
   bool picking_failed = false;
   Position aim;
+  Position pos_ball = b->getPosition();
 
   res_move.player_id = m->player_id;
   res_move.nb_move = 0;
@@ -118,21 +127,16 @@ int SPlayer::doMove(const ActMove* m)
           illegal = 1;
           break;
         }
-      if (ma_remain_ == 0)
-        {
-	  LOG4("Move: not enough movement remaining");
-          illegal = 1;
-          break;
-	}
 
       // Check tackle zones.
-      int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
-      if (nb_tackles > 0)
+      int nb_tackles_pos = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+      int nb_tackles_aim = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim);
+      if (nb_tackles_pos > 0)
         {
-          if (tryAction(1 - nb_tackles))
+          if (tryAction(1 - nb_tackles_aim))
             {
               LOG5("Player has successfully dodged out from " << pos_ << ".");
-        }
+            }
           else
             {
               LOG5("Player has been knocked out from " << pos_ << ".");
@@ -140,32 +144,52 @@ int SPlayer::doMove(const ActMove* m)
             }
         }
 
-      // Check if can pick the ball.
-      if (b->getPosition() == aim)
-        if (knocked)
-          {
-            picking_failed = true;
-          }
-        else
-          {
-            picking_failed = !b->catchBall(this, 1);
-          }
-
       // Ok... Move on.
       res_move.nb_move++;
       res_move.moves[i].row = aim.row;
       res_move.moves[i].col = aim.col;
       setPosition(aim, false);
       ma_remain_--;
+      // Check for the ball
+      if (b->getOwner() == this) 
+        {
+          b->setPosition(pos_);
+        }
+
+      // Check if can pick the ball.
+      if (b->getPosition() == pos_&&b->getOwner() != this)
+        if (knocked)
+          {
+            picking_failed = true;
+	    b->bounce();
+          }
+        else
+          {
+            picking_failed = !b->catchBall(this, 1);
+          }
+      
       if (knocked || picking_failed)
         break;
     }
-
+    
+  // If he falls with the ball
+  if (knocked&&b->getOwner() == this)
+    {
+      b->bounce();
+    }
+    
   // Send the results.
   if (res_move.nb_move > 0)
     r_->sendPacket(res_move);
   if (illegal)
     r_->sendIllegal(ACT_MOVE, m->client_id);
+  if (b->getPosition() != pos_ball)
+    {
+      MsgBallPos mesg;
+      mesg.row = b->getPosition().row;
+      mesg.col = b->getPosition().col;
+      r_->sendPacket(mesg);
+    }
   if (knocked)
     {
       MsgPlayerKnocked pkt(m->client_id);
@@ -200,7 +224,7 @@ int SPlayer::doBlock(const ActBlock* m)
   int mod_st_df = target->getSt();
   int nb_dice;
 
-  if (mod_st_atk >= 2 * mod_st_df || mod_st_df >= 2 * mod_st_atk)
+  if (mod_st_atk > 2 * mod_st_df || mod_st_df > 2 * mod_st_atk)
     nb_dice = 3;
   else if (mod_st_atk != mod_st_df)
     nb_dice = 2;

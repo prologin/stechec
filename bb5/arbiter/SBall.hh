@@ -34,7 +34,8 @@ public:
   void bounce(int nb = 1);
   //! @brief Player try to catch the ball.
   bool catchBall(SPlayer *p, int modifier);
-
+  //! @brief Return the ball owner, NULL if nobody
+  SPlayer* getOwner();
 
 private:
   void msgPlaceBall(const MsgBallPos* m);

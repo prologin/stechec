@@ -25,6 +25,11 @@ SBall::SBall(SRules* r)
   r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITHALF);
 }
 
+SPlayer* SBall::getOwner()
+{
+  return owner_;
+}
+
 void SBall::msgPlaceBall(const MsgBallPos* m)
 {
   MsgBallPos mesg;
@@ -100,7 +105,7 @@ void SBall::afterBounce(const Position& delta, int amplitude)
       pos_ = to;
       SPlayer *p = f->getPlayer(to);
       if (p != NULL)
-	catchBall(p, 1);
+	catchBall(p, 0);
     }
   else
     {
