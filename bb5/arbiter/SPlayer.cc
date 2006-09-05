@@ -25,6 +25,7 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
     target_push_(NULL)
 {
   r_->HANDLE_F_WITH(ACT_MOVE, SPlayer, this, msgMove, filterMove, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(ACT_STANDUP, SPlayer, this, msgStandUp, filterStandUp, GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_BLOCK, SPlayer, this, msgBlock, filterBlock, GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_PASS, SPlayer, this, msgPass, filterPass, GS_COACHBOTH);
   
@@ -212,6 +213,26 @@ int SPlayer::doMove(const ActMove* m)
     }
   if (picking_failed)
     return 1;
+  return 0;
+}
+
+/*
+** Stand up action
+*/
+
+int SPlayer::doStandUp(const ActStandUp* m)
+{
+  if (ma_ < 3)
+    {
+			ma_remain_ = 0;
+			if (Dice(D6).roll() > 3) 			
+				setStatus(STA_STANDING);
+    }
+	else
+	 	{
+	 		ma_remain_ = ma_ - 3;
+			setStatus(STA_STANDING);
+	 	}
   return 0;
 }
 
@@ -536,6 +557,14 @@ void SPlayer::msgMove(const ActMove* m)
     r_->turnOver();
 }
 
+void SPlayer::msgStandUp(const ActStandUp* m)
+{
+  if (!t_->canDoAction(m, this))
+    return;
+  if (doStandUp(m))
+    r_->turnOver();
+}
+
 void SPlayer::msgBlock(const ActBlock* m)
 {
   if (!t_->canDoAction(m, this))
@@ -556,6 +585,13 @@ void SPlayer::msgPass(const ActPass* m)
 
 
 bool SPlayer::filterMove(const ActMove* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
+
+bool SPlayer::filterStandUp(const ActStandUp* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;

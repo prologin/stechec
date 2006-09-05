@@ -50,15 +50,20 @@ public:
 private:
 
   void msgMove(const ActMove* m);
+	void msgStandUp(const ActStandUp* m);
   void msgBlock(const ActBlock* m);
   void msgPass(const ActPass* m);
   bool filterMove(const ActMove* m);
+  bool filterStandUp(const ActStandUp* m);
   bool filterBlock(const ActBlock* m);
   bool filterPass(const ActPass* m);
     
   //! @brief Move this player.
   //! @return non-zero if action failed.
   int doMove(const ActMove* m);
+	//! @brief Stand up this player.
+  //! @return non-zero if action failed.
+  int doStandUp(const ActStandUp* m);
   //! @brief Block a player.
   //! @return non-zero if action failed.
   int doBlock(const ActBlock* m);

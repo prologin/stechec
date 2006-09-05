@@ -93,6 +93,12 @@ inline bool Api::doMovePlayer(int p, const Point& to)
   return rules_->our_team_->movePlayer(p, to);
 }
 
+inline bool Api::doStandUpPlayer(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->standUpPlayer(p);
+}
+
 inline bool Api::doBlockPlayer(int p, const Point& to)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);

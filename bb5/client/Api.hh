@@ -46,7 +46,8 @@ public:
   void          doAskIllegalProcedure();
   bool          doPlaceBall(const Point& pos);
   bool          doMovePlayer(int p, const Point& to);
-  bool		doBlockPlayer(int p, const Point& to);
+  bool          doStandUpPlayer(int p);
+  bool					doBlockPlayer(int p, const Point& to);
   void          sendChatMessage(const std::string& msg);
 
   /*

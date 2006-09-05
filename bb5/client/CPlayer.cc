@@ -55,6 +55,20 @@ void CPlayer::subMa(int dep)
   ma_remain_ -= dep;
 }
 
+bool CPlayer::standUp()
+{
+ 	if (status_ != STA_PRONE)
+    {
+      LOG2("You are not prone.");
+      return false;
+    }
+		
+	ActStandUp pkt;
+  pkt.player_id = id_;
+  r_->sendPacket(pkt);
+  return true;
+}
+
 bool CPlayer::move(const Position& to)
 {
   CField* f = r_->getField();
@@ -142,10 +156,12 @@ void CPlayer::msgPlayerKnocked(const MsgPlayerKnocked* m)
 
 void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
 {
-  status_ = m->status;
-  switch (status_)
+
+  switch ((enum eStatus)m->status)
     {
-    case STA_STANDING:
+    case STA_STANDING: 
+			if (status_ == STA_PRONE)
+				ma_remain_ = ma_ - 3;
     case STA_PRONE:
     case STA_STUNNED:
     break;
@@ -162,8 +178,8 @@ void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
       LOG3("You can't set this state from outside...");
       break;
     }
-// FIXME : it crashes if uncommented
-//  r_->onEvent(m);
+  status_ = (enum eStatus)m->status;
+  r_->onEvent(m);
 }
 /*
 ** Message filters.

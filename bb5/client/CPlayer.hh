@@ -32,6 +32,9 @@ public:
 
   //! @brief Move the player on the field.
   bool move(const Position& to);
+	
+	//! @brief Stand up the player.
+  bool standUp();
 
   //! @brief Block the player at the specified position.
   bool block(const Position& to);

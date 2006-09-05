@@ -48,6 +48,7 @@ public:
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evPlayerKnocked(int team_id, int player_id);
+	virtual void evPlayerStatus(int team_id, enum eStatus status);
 };
 
 inline void Event::evIllegal(int) {}
@@ -57,5 +58,6 @@ inline void Event::evBallPos(const Point&) {}
 inline void Event::evPlayerPos(int, int, const Point&) {}
 inline void Event::evPlayerMove(int, int, const Point&) {}
 inline void Event::evPlayerKnocked(int, int) {}
+inline void Event::evPlayerStatus(int, enum eStatus) {}
 
 #endif /* !EVENT_HH_ */

@@ -32,6 +32,10 @@ DECLARE_PACKET(ACT_MOVE, ActMove)
   } moves[MAX_MOVE];
 END_PACKET
 
+DECLARE_PACKET(ACT_STANDUP, ActStandUp)
+  int player_id;
+END_PACKET
+
 DECLARE_PACKET(ACT_BLOCK, ActBlock)
   int player_id;
   int opponent_id;
@@ -83,7 +87,7 @@ END_PACKET
 
 DECLARE_PACKET(MSG_PLAYERSTATUS, MsgPlayerStatus);
   int player_id;
-  enum eStatus status;
+  int status;
 END_PACKET
 
 

@@ -98,6 +98,14 @@ bool CTeam::movePlayer(int player_id, const Position& to)
   return p->move(to);
 }
 
+bool CTeam::standUpPlayer(int player_id)
+{
+  CPlayer* p = getPlayer(player_id);
+  if (p == NULL)
+    return false;
+  return p->standUp();
+}
+
 bool CTeam::blockPlayer(int player_id, const Position& to)
 {
   CPlayer* p = getPlayer(player_id);

@@ -98,7 +98,8 @@ inline int Field<T>::getNbTackleZone(int team_id, const Position& pos)
     for (p.col = pos.col - 1; p.col <= pos.col + 1; p.col++)
       if (intoField(p)
           && getPlayer(p) != NULL
-          && getPlayer(p)->getTeamId() == team_id)
+          && getPlayer(p)->getTeamId() == team_id
+					&& getPlayer(p)->getStatus() == STA_STANDING);
         res++;
   return res;
 }

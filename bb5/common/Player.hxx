@@ -128,6 +128,46 @@ inline std::ostream& operator<< (std::ostream& os, const Player& p)
      << "st: " << p.st_ << " | "
      << "ag: " << p.ag_ << " | "
      << "av: " << p.av_ << "\n"
-     << "  ma_remain     : " << p.ma_remain_ << std::endl;
+     << "  ma_remain     : " << p.ma_remain_ << "\n"
+     << "status : ";
+  switch(p.status_)
+    {
+    case STA_STANDING:
+      os << "Standing";
+      break;
+      
+    case STA_PRONE:
+      os << "Prone";
+      break;
+      
+    case STA_STUNNED:
+      os << "Stunned";
+      break;
+
+    case STA_KO:
+      os << "KO";
+      break;
+      
+    case STA_INJURIED:
+      os << "Injuried";
+      break;
+      
+    case STA_SEVERE_INJURIED:
+      os << "Severely injuried";
+      break;
+      
+    case STA_DEAD:
+      os << "Dead";
+      break;
+      
+    case STA_UNASSIGNED:
+      os << "Warning -> No status!";
+      break;
+
+    default:
+      os << "Error -> unknown status";
+      break;
+  }
+  os << std::endl;
   return os;
 }

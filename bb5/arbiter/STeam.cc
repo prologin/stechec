@@ -143,6 +143,16 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
       player_[curr_acting_player_]->setHasPlayed();
     }
 
+	if (pkt->token == ACT_STANDUP)
+    {
+      if (curr_acting_player_ == p->getId()) 
+				{
+					LOG4("Cannot try to stand up more than once.")
+				  r_->sendIllegal(pkt->token, p->getId());
+					return false;
+				}
+    }
+
   bool blitz_detected = false;
   if (pkt->token == ACT_BLOCK && p->hasDoneMove())
     blitz_detected = true;

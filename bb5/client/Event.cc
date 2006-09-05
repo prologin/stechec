@@ -93,3 +93,9 @@ void EventProcess::dispatch(const MsgPlayerKnocked& pkt) const
 {
   ev_->evPlayerKnocked(pkt.client_id, pkt.player_id);
 }
+
+template <>
+void EventProcess::dispatch(const MsgPlayerStatus& pkt) const
+{
+  ev_->evPlayerStatus(pkt.client_id, (enum eStatus)pkt.player_id);
+}

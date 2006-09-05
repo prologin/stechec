@@ -62,6 +62,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"block", &Input::cmdBlock, "<id> <r> <c>|block with player 'id' at spcified position"},
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
   {"end", &Input::cmdEnd, "end turn"},
+	{"standup", &Input::cmdStandUp, "<id>|stand up the player'id'"},
   {NULL, NULL, NULL}
 };
 
@@ -200,6 +201,15 @@ void Input::cmdEnd(const string&, const string&)
   api_->doEndTurn();
 }
 
+void Input::cmdStandUp(const string& cmd, const string& args)
+{
+	istringstream is(cmd + " " + args);
+  int p = -1;
+  is >> p;
+  api_->doStandUpPlayer(p);
+}
+
+
 //
 // Print commands
 //
@@ -259,7 +269,6 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> pos.col;
   api_->doMovePlayer(p, pos);
 }
-
 
 //
 // Input main functions.

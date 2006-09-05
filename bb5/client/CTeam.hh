@@ -47,6 +47,10 @@ public:
   //!  Called from the UI.
   bool movePlayer(int player_id, const Position& to);
 
+  //! @brief Stand up a player
+  //!  Called from the UI.
+  bool standUpPlayer(int player_id);
+
   //! @brief Do a block.
   //! @param player_id Player doing the block.
   //! @param to Block will be made to this position.

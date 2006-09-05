@@ -167,7 +167,12 @@ bool SBall::catchBall(SPlayer *p, int modifier)
 {
   SField* f = r_->getField();
 
-  int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+	int opponent_team_id;
+	if ( p->getTeamId() == r_->getCurrentOpponentTeamId())
+		opponent_team_id = r_->getCurrentOpponentTeamId();
+	else
+	  opponent_team_id = r_->getCurrentTeamId();	
+  int nb_tackles = f->getNbTackleZone(opponent_team_id, pos_);
   if (!p->tryAction(modifier - nb_tackles))
     {
       LOG5("Ball: player has failed to pick it at " << pos_);
