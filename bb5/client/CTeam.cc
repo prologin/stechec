@@ -76,17 +76,17 @@ void CTeam::placeTeam(int formation_id)
 {
   xml_formation_.switchFormationId(formation_id);
   for (int i = 0; i < MAX_PLAYER; i++)
-    if (player_[i] != NULL)
+    if (player_[i] != NULL&&player_[i]->getStatus() == STA_RESERVE)
       {
-	MsgPlayerPos pkt;
-	Position pos = xml_formation_.getPos(player_[i]->getId() + 1);
-	pkt.player_id = player_[i]->getId();
-	pkt.row = pos.row;
-	pkt.col = pos.col;
-	// if this is team 2, mirror on rows [|13-25|].
-	if (team_id_ == 1)
-	  pkt.row = ROWS - pkt.row - 1;
-	r_->sendPacket(pkt);
+				MsgPlayerPos pkt;
+				Position pos = xml_formation_.getPos(player_[i]->getId() + 1);
+				pkt.player_id = player_[i]->getId();
+				pkt.row = pos.row;
+				pkt.col = pos.col;
+				// if this is team 2, mirror on rows [|13-25|].
+				if (team_id_ == 1)
+				  pkt.row = ROWS - pkt.row - 1;
+				r_->sendPacket(pkt);
       }
 }
 

@@ -34,7 +34,7 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
   ag_ = m->ag;
   av_ = m->av;
   name_ = packetToString(m->name);
-  setStatus(STA_STANDING);
+  status_ = STA_RESERVE;
   will_prone_ = false;
 }
 
@@ -213,6 +213,15 @@ int SPlayer::doMove(const ActMove* m)
     }
   if (picking_failed)
     return 1;
+	
+	// Check if the player scores a touchdown
+	if (b->getOwner() == this)
+	  {
+			// I know it's ugly, but it's late...
+			int row = 25 * (1 - team_id_);
+			if (pos_.row == row)
+				r_->touchdown();
+		}	
   return 0;
 }
 
@@ -451,8 +460,21 @@ int SPlayer::doPass(const ActPass* m)
 
 void SPlayer::setStatus(enum eStatus new_status)
 {
+
+	if (status_ != new_status)
+		{
+  		MsgPlayerStatus pkt(team_id_);
+		  pkt.player_id = id_;
+		  pkt.status = new_status;
+		  r_->sendPacket(pkt);
+		}
+	
   switch (new_status)
     {
+		case STA_RESERVE:
+		  status_ = STA_RESERVE;
+      break;
+    
     case STA_STANDING:
       // ok... play again :p
       status_ = STA_STANDING;
@@ -470,16 +492,8 @@ void SPlayer::setStatus(enum eStatus new_status)
       status_ = STA_KO;
       break;
       
-    case STA_INJURIED:
-      status_ = STA_INJURIED;
-      break;
-      
-    case STA_SEVERE_INJURIED:
-      status_ = STA_SEVERE_INJURIED;
-      break;
-      
-    case STA_DEAD:
-      status_ = STA_DEAD;
+    case STA_INJURED:
+      status_ = STA_INJURED;
       break;
       
     case STA_UNASSIGNED:
@@ -490,16 +504,31 @@ void SPlayer::setStatus(enum eStatus new_status)
       LOG3("You can't set this state from outside...");
       break;
     }
-  MsgPlayerStatus pkt(team_id_);
-  pkt.player_id = id_;
-  pkt.status = status_;
-  r_->sendPacket(pkt);
 }
 
 void SPlayer::setProne()
 {
   if (will_prone_)
     setStatus(STA_PRONE);
+}
+
+void SPlayer::prepareKickoff()
+{
+	switch(status_)
+	{
+	  case STA_STANDING :
+		case STA_PRONE :
+		case STA_STUNNED :
+			r_->getField()->setPlayer(pos_, NULL);
+			setStatus(STA_RESERVE);
+			break;
+		case STA_KO :
+			if (Dice(6).roll() < 4)
+				break;
+			setStatus(STA_RESERVE);
+			break;
+		default: break;
+	}
 }
 
 void SPlayer::checkArmor(int av_mod, int inj_mod)
@@ -535,10 +564,10 @@ enum eStatus SPlayer::rollCasualty()
     {
     case 1:
     case 2:
-    case 3: return STA_INJURIED;
+    case 3: 
     case 4:
-    case 5: return STA_SEVERE_INJURIED;
-    case 6: return STA_DEAD;
+    case 5: 
+    case 6: return STA_INJURED;
     }
   return STA_UNASSIGNED;
 }

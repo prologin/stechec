@@ -36,6 +36,8 @@ public:
   bool catchBall(SPlayer *p, int modifier);
   //! @brief Return the ball owner, NULL if nobody
   SPlayer* getOwner();
+	//! @brief remove ball from field (before a kickoff)
+	void removeFromField();
 
 private:
   void msgPlaceBall(const MsgBallPos* m);

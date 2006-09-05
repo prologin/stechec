@@ -42,6 +42,7 @@ public:
 
   void resetTurn();
   void setProneStunned();
+	void prepareKickoff();
 
 private:
   void msgTeamInfo(const MsgTeamInfo* m);

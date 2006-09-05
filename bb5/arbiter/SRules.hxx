@@ -27,8 +27,8 @@ inline int SRules::getCurrentTeamId() const
     return 0;
   if (getState() == GS_COACH2)
     return 1;
-  if (getState() == GS_INITHALF)
-    return coach_begin_;
+  if (getState() == GS_INITKICKOFF)
+    return coach_receiver_;
   return -1;
 }
 

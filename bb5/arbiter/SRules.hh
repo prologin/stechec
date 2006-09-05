@@ -63,6 +63,9 @@ public:
   //! @brief Cause a turn over. Call it when, eg, an action failed.
   void turnOver();
   
+	//! @brief Adapt score and launch the kickoff
+	void touchdown();
+
   virtual void serialize(std::ostream& os) const;
   virtual void unserialize(std::istream& is);
 
@@ -72,13 +75,15 @@ private:
   //! @brief Initialize rules and launch game.
   //! called once in a game.
   void initGame();
-  //!@ brief Called before a half.
+	//!@ brief Called before a half.
   void initHalf();
+  //!@ brief Called before a kickoff.
+  void initKickoff();
 
 
   
   void msgInitGame(const MsgInitGame* m);
-  void msgInitHalf(const MsgInitHalf* m);
+  void msgInitKickoff(const MsgInitKickoff* m);
   void msgPlayTurn(const MsgEndTurn* m);
   void msgForwardChat(const MsgChat* m);
   void msgMoveTurnMarker(const ActMoveTurnMarker* m);
@@ -93,6 +98,7 @@ private:
   SBall*    ball_;
   SField*   field_;
   int       coach_begin_;
+	int				coach_receiver_;	
 };
 
 # include "SRules.hxx"

@@ -22,7 +22,7 @@ SBall::SBall(SRules* r)
   : r_(r),
     owner_(NULL)
 {
-  r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITHALF);
+  r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITKICKOFF);
 }
 
 SPlayer* SBall::getOwner()
@@ -206,19 +206,29 @@ void SBall::throwin()
   if (d.row)
     {
       switch(Dice(3).roll())
-	{
-	case 1: afterBounce(Position(1, d.col), reach); break;
-	case 2: afterBounce(Position(0, d.col), reach); break;
-	case 3: afterBounce(Position(-1, d.col), reach); break;
-	}
+			{
+				case 1: afterBounce(Position(1, d.col), reach); break;
+				case 2: afterBounce(Position(0, d.col), reach); break;
+				case 3: afterBounce(Position(-1, d.col), reach); break;
+			}
     }
   else
     {
       switch(Dice(3).roll())
-	{
-	case 1: afterBounce(Position(d.row, 1), reach); break;
-	case 2: afterBounce(Position(d.row, 0), reach); break;
-	case 3: afterBounce(Position(d.row, -1), reach); break;
-	}
+			{
+				case 1: afterBounce(Position(d.row, 1), reach); break;
+				case 2: afterBounce(Position(d.row, 0), reach); break;
+				case 3: afterBounce(Position(d.row, -1), reach); break;
+			}
     }
+}
+
+void SBall::removeFromField()
+{
+	owner_ = NULL;
+	pos_ = Position(-1,-1);
+	MsgBallPos mesg;
+	mesg.row = pos_.row;
+  mesg.col = pos_.col;
+  r_->sendPacket(mesg);
 }

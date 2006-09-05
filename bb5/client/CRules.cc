@@ -26,7 +26,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
 {
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, CRules, this, msgInitGame, GS_WAIT);
-  HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, GS_ALL);
+  HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, GS_ALL);
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, GS_ALL);
   HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, GS_ALL);
   HANDLE_WITH(MSG_TIMEEXCEEDED, CRules, this, msgTimeExceeded, GS_ALL);
@@ -97,10 +97,11 @@ void        CRules::msgInitGame(const MsgInitGame* m)
   sendPacket(*m);
 }
 
-void        CRules::msgInitHalf(const MsgInitHalf* m)
+void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-  setState(GS_INITHALF);
-  LOG2("-- CRules: change state: GS_INITHALF");
+  cur_half_ = m->cur_half;
+  setState(GS_INITKICKOFF);
+  LOG2("-- CRules: change state: GS_INITKICKOFF");
 
   // Now, you can safely use Api fonctions referring to teams.
   api_->select_team(US);
@@ -118,7 +119,7 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
       // FIXME: wait that the first team has set up,
       // then place our team, then kick-off...
       our_team_->placeTeam(1);
-      sendPacket(*m);
+			sendPacket(*m);
     }
 }
 

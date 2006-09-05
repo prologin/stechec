@@ -44,6 +44,10 @@ public:
   //! @brief Set status to prone if he has to
   void setProne();
   
+  //! @brief player goes in reserve if he can.
+	// 		KO players try to regain consciousness
+  void prepareKickoff();
+	
   //! @brief Try some action, consider player's agility.
   bool tryAction(int modifier);
 

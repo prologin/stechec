@@ -255,7 +255,7 @@ int Game::run()
             {
             case GS_WAIT: status = "GS_WAIT"; break;
             case GS_INITGAME: status = "GS_INITGAME"; break;
-            case GS_INITHALF: status = "GS_INITHALF"; break;
+            case GS_INITKICKOFF: status = "GS_INITKICKOFF"; break;
             case GS_COACH1: status = "GS_COACH1"; break;
             case GS_COACH2: status = "GS_COACH2"; break;
             case GS_PAUSE: status = "GS_PAUSE"; break;

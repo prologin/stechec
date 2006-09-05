@@ -122,16 +122,29 @@ inline const std::string& Player::getPlayerPicture() const
 
 inline std::ostream& operator<< (std::ostream& os, const Player& p)
 {
-  os << "Player '" << p.id_ << "' (team " << p.team_id_ << ") - " << p.name_ << "\n"
-     << "  position      : " << p.pos_ << "\n"
-     << "  carateristics :  ma: " << p.ma_ << " | "
+  os << "Player '" << p.id_ << "' (team " << p.team_id_ << ") - " << p.name_ << "\n";
+	if (p.status_ != STA_STANDING
+			&&p.status_ != STA_PRONE
+			&&p.status_ != STA_STUNNED)
+		{
+			os << "  position      : out of the field\n";
+		}
+	else
+		{
+			os << "  position      : " << p.pos_ << "\n";
+		}
+  os << "  carateristics :  ma: " << p.ma_ << " | "
      << "st: " << p.st_ << " | "
      << "ag: " << p.ag_ << " | "
      << "av: " << p.av_ << "\n"
      << "  ma_remain     : " << p.ma_remain_ << "\n"
-     << "status : ";
+     << "  status : ";
   switch(p.status_)
     {
+		case STA_RESERVE:
+		  os << "Reserve";
+			break;
+		
     case STA_STANDING:
       os << "Standing";
       break;
@@ -148,16 +161,8 @@ inline std::ostream& operator<< (std::ostream& os, const Player& p)
       os << "KO";
       break;
       
-    case STA_INJURIED:
-      os << "Injuried";
-      break;
-      
-    case STA_SEVERE_INJURIED:
-      os << "Severely injuried";
-      break;
-      
-    case STA_DEAD:
-      os << "Dead";
+    case STA_INJURED:
+      os << "Injured";
       break;
       
     case STA_UNASSIGNED:

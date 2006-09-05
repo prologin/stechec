@@ -31,7 +31,7 @@ SRules::SRules()
 
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, SRules, this, msgInitGame, GS_INITGAME);
-  HANDLE_WITH(MSG_INITHALF, SRules, this, msgInitHalf, GS_INITHALF);
+  HANDLE_WITH(MSG_INITKICKOFF, SRules, this, msgInitKickoff, GS_INITKICKOFF);
   HANDLE_WITH(MSG_ENDTURN, SRules, this, msgPlayTurn, GS_COACHBOTH);
   HANDLE_WITH(MSG_CHAT, SRules, this, msgForwardChat, GS_ALL);
   HANDLE_WITH(ACT_MOVETURNMARKER, SRules, this, msgMoveTurnMarker, GS_COACHBOTH);
@@ -99,11 +99,10 @@ void SRules::initGame()
 
 void SRules::initHalf()
 {
-  setState(GS_INITHALF);
-  cur_turn_ = 0;
+	cur_turn_ = 0;
   cur_half_++;
-
-  if (cur_half_ > 2)
+  
+	if (cur_half_ > 2)
     {
       LOG4("End of game.");
       setState(GS_END);
@@ -115,13 +114,28 @@ void SRules::initHalf()
   // Switch the kicking team on second period.
   if (cur_half_ != 1)
     coach_begin_ = (coach_begin_ + 1) % 2;
-  LOG3("Initialize half " << cur_half_
-       << ". Kicking team: " << (coach_begin_ + 1) % 2);
+	coach_receiver_ = coach_begin_;
 
-  // Say that we are about to initialize the half.
-  MsgInitHalf pkt(coach_begin_);
+	LOG3("Initialize half " << cur_half_ << ".");
+	
+	initKickoff();
+}
+
+void SRules::initKickoff()
+{
+  setState(GS_INITKICKOFF);
+	team_[0]->state_ = GS_INITKICKOFF;
+	team_[1]->state_ = GS_INITKICKOFF;
+	team_[0]->prepareKickoff();
+	team_[1]->prepareKickoff();
+	ball_->removeFromField();
+
+  LOG3("Kicking team: " << (getCurrentTeamId() + 1) % 2);
+
+  // Say that we are about to initialize the kickoff.
+  MsgInitKickoff pkt(getCurrentTeamId());
   pkt.cur_half = cur_half_;
-  sendPacket(pkt);
+	sendPacket(pkt);
 }
 
 void SRules::turnOver()
@@ -130,6 +144,24 @@ void SRules::turnOver()
   msgPlayTurn(NULL);
 }
 
+void SRules::touchdown()
+{
+  LOG3("TOUCHDOWN!!!!!!!");
+	// For the moment, only the case of touchdowns score during the good turn
+	// TODO : update scores...
+	
+	// Check it is not the last turn of the half
+	if (cur_turn_ == 8
+		  &&(getState() == GS_COACH1 && coach_begin_ == 1
+      		|| getState() == GS_COACH2 && coach_begin_ == 0))
+		{
+			initHalf();
+			return;
+		}
+		
+	coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
+	initKickoff();
+}
 
 /*
 ** Handle messages received from the client
@@ -138,23 +170,23 @@ void SRules::turnOver()
 // A coach has finished to set up his game.
 void SRules::msgInitGame(const MsgInitGame* m)
 {
-  team_[m->client_id]->state_ = GS_INITHALF;
+  team_[m->client_id]->state_ = GS_INITKICKOFF;
 
-  if (team_[0]->state_ == GS_INITHALF &&
-      team_[1]->state_ == GS_INITHALF)
+  if (team_[0]->state_ == GS_INITKICKOFF &&
+      team_[1]->state_ == GS_INITKICKOFF)
     {
       initHalf();
     }
 }
 
-void SRules::msgInitHalf(const MsgInitHalf* m)
+void SRules::msgInitKickoff(const MsgInitKickoff* m)
 {
   team_[m->client_id]->state_ = GS_COACH1;
 
   if (team_[0]->state_ == GS_COACH1 &&
       team_[1]->state_ == GS_COACH1)
     {
-      if (coach_begin_ == 0)
+      if (coach_receiver_ == 0)
         setState(GS_COACH2);
       else
         setState(GS_COACH1);
@@ -176,7 +208,7 @@ void SRules::msgPlayTurn(const MsgEndTurn*)
 
   // Finished ? Go on the next half ? 
   // FIXME: 3 is for tests. must be 8.
-  if (cur_turn_ >= 3)
+  if (cur_turn_ > 3)
     {
       initHalf();
       return;
@@ -187,13 +219,13 @@ void SRules::msgPlayTurn(const MsgEndTurn*)
 
   if (getState() == GS_COACH1)
     {
-      team_[0]->resetTurn();
-      team_[1]->setProneStunned();
+			team_[1]->setProneStunned();
+      team_[0]->resetTurn();    
     }
   else
     {
-      team_[1]->resetTurn();
       team_[0]->setProneStunned();
+			team_[1]->resetTurn();
     }
 
   // Send the playing team_id to clients.

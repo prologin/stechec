@@ -21,10 +21,10 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
   : Player(m->player_id, m->client_id),
     r_(r)
 {
-  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITHALF | GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF | GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_INITKICKOFF | GS_COACHBOTH);
   ma_ = m->ma;
   st_ = m->st;
   ag_ = m->ag;
@@ -32,7 +32,7 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
   name_ = packetToString(m->name);
   player_position_ = m->player_position;
   player_picture_ = packetToString(m->player_img);
-  status_ = STA_STANDING;
+	status_ = STA_RESERVE;
 
   LOG6("Create player(" << (unsigned)this << "): id: " << id_ << " team_id " << team_id_);
 }
@@ -165,10 +165,13 @@ void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
     case STA_PRONE:
     case STA_STUNNED:
     break;
+		case STA_RESERVE:
+			if (status_ != STA_STANDING
+						&&status_ != STA_PRONE
+						&&status_ != STA_STUNNED)
+				break;
     case STA_KO:
-    case STA_INJURIED:
-    case STA_SEVERE_INJURIED:
-    case STA_DEAD:
+    case STA_INJURED:
       r_->getField()->setPlayer(pos_, NULL);
       break;      
     case STA_UNASSIGNED:

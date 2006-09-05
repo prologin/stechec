@@ -52,6 +52,9 @@ inline Api::~Api()
 
 inline void Api::doEndTurn()
 {
+	int team_id = rules_->getTeamId();
+	if ((rules_->getState() == GS_COACH1&&team_id == 0)
+			||(rules_->getState() == GS_COACH2&&team_id == 1))
   rules_->sendPacket(MsgEndTurn());
 }
 
@@ -82,7 +85,7 @@ inline bool Api::doPlaceBall(const Point& pos)
 
   // FIXME: that is all we have to do in inithalf right now.
   //  say we are ok.
-  MsgInitHalf pkt_endinit;
+  MsgInitKickoff pkt_endinit;
   rules_->sendPacket(pkt_endinit);  
   return true;
 }
@@ -187,8 +190,8 @@ inline const char* Api::getStateString() const
     {
     case GS_INITGAME:
       return "GS_INITGAME";
-    case GS_INITHALF:
-      return "GS_INITHALF";
+    case GS_INITKICKOFF:
+      return "GS_INITKICKOFF";
     case GS_COACH1:
       return "GS_COACH1";
     case GS_COACH2:

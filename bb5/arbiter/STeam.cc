@@ -25,7 +25,7 @@ STeam::STeam(int team_id, SRules* r)
 {
   r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITHALF);
+  r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF);
 }
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -89,8 +89,12 @@ void STeam::msgPlayerPos(const MsgPlayerPos* m)
         r_->sendIllegal(m->token, m->client_id);
       else
         {
-          p->setPosition(pos, false);
-          r_->sendPacket(*m);
+					if (p->getStatus() == STA_RESERVE)
+	    			{
+							p->setStatus(STA_STANDING);
+				      p->setPosition(pos, false);
+							r_->sendPacket(*m);
+						}
         }
     }
 }
@@ -119,6 +123,13 @@ void STeam::setProneStunned()
   for (int i = 0; i < MAX_PLAYER; i++)
     if (player_[i] != NULL)
       player_[i]->setProne();  
+}
+
+void STeam::prepareKickoff()
+{
+  for (int i = 0; i < MAX_PLAYER; i++)
+    if (player_[i] != NULL)
+      player_[i]->prepareKickoff();  
 }
 
 bool STeam::canDoAction(const Packet* pkt, SPlayer* p)

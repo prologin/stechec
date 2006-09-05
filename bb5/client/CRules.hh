@@ -61,7 +61,7 @@ private:
   // Methods to catch server response.
   void msgIllegal(const MsgIllegal* m);
   void msgInitGame(const MsgInitGame* m);
-  void msgInitHalf(const MsgInitHalf* m);
+  void msgInitKickoff(const MsgInitKickoff* m);
   void msgPlayTurn(const MsgNewTurn* m);
   void msgEndGame(const MsgEndGame* m);
   void msgTimeExceeded(const MsgTimeExceeded* m);
