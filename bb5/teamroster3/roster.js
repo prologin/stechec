@@ -356,6 +356,18 @@ function showSkillBox(row) {
 			eliminateDoubles(possible_skills_n,chosen_skills)
 			eliminateDoubles(possible_skills_d,chosen_skills)
 			
+			if ( isStringInArray('Grab',chosen_skills) ) { 
+				deleteArrayElement('Frenzy',possible_skills_n)
+				deleteArrayElement('Frenzy',possible_skills_d)
+				impossible_skills.push('Frenzy')
+			}
+
+			if ( isStringInArray('Frenzy',chosen_skills) ) { 
+				deleteArrayElement('Grab',possible_skills_n)
+				deleteArrayElement('Grab',possible_skills_d)
+				impossible_skills.push('Grab')
+			}
+			
 			arrayToOptions(impossible_skills,'SKILLSRCF',0)
 			arrayToOptions(possible_skills_n,'SKILLSRCN',20000)
 			arrayToOptions(possible_skills_d,'SKILLSRCD',30000)
@@ -380,10 +392,35 @@ function addskill(repertory) {
 		var x = document.getElementById('ROSTER').SKILLSRCF
 	}
 	
-	document.getElementById('ROSTER').SKILLDEST.options[document.getElementById('ROSTER').SKILLDEST.options.length] = new Option(x.options[x.selectedIndex].text, x.options[x.selectedIndex].value)
+	selected_name = x.options[x.selectedIndex].text
+	selected_value = x.options[x.selectedIndex].value
+	destination_index = document.getElementById('ROSTER').SKILLDEST.options.length
+	impossible_index = document.getElementById('ROSTER').SKILLSRCF.options.length
+	
+	if (selected_name == "Frenzy") {
+		if ( deleteSelectElement('Grab','SKILLSRCD') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Grab",0)
+		}
+		if ( deleteSelectElement('Grab','SKILLSRCN') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Grab",0)
+		}
+	}
+	
+	if (selected_name == "Grab") {
+		if ( deleteSelectElement('Frenzy','SKILLSRCD') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Frenzy",0)
+		}
+		if ( deleteSelectElement('Frenzy','SKILLSRCN') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Frenzy",0)
+		}
+	}
+	
+	document.getElementById('ROSTER').SKILLDEST.options[destination_index] = new Option(selected_name, selected_value)
+	
 	value_old = parseInt(document.getElementById('ROSTER').TEMP3.value)
 	value_add = parseInt(x.options[x.selectedIndex].value)
 	document.getElementById('ROSTER').TEMP3.value = value_old + value_add
+	
 	x.remove(x.selectedIndex)
 }
 

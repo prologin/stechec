@@ -41,3 +41,47 @@ function isStringInArray(String,Array) {
 	
 	return false
 }
+
+function findArrayElement(String,Array) {
+	
+	// much like isStringInArray but returns the index of the Array Element
+	// and not a boolean if found
+	
+	for (i=0; i < Array.length; i++) {
+		if (String == Array[i] ) {
+			return i
+		}
+	}
+	
+	return -1 
+	// that would be a problem so always use isStringInArray first
+	
+}
+		
+function deleteArrayElement(String,Array) {
+
+	// deletes an element of an array, element given by it's value
+	// this means the given String has to match the element to delete exactly
+	
+	for (i=0; i < Array.length; i++) {
+		if (String == Array[i]) {
+			Array.splice(i,1)
+		}
+	}
+	
+}
+
+function deleteSelectElement(String,Select) {
+
+	// removes an option from a select list
+	
+	for (i=0; i < document.getElementsByName(Select)[0].options.length; i++) {
+		if(String == document.getElementsByName(Select)[0].options[i].text) {
+			document.getElementsByName(Select)[0].remove(i)
+			return true
+		}
+	}
+	
+	return false
+	
+}

@@ -12,7 +12,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Marc probiert Javascript</title>
+<title>TBT Snore</title>
 <link rel="stylesheet" type="text/css" media="screen" href="styles.css" title="Default" />
 <script type="text/javascript" src="functions.js"></script>
 <script type="text/javascript" src="subroutines.js"></script>
@@ -95,10 +95,10 @@ END;
 
 ?>
 <tr class="thicker-top">
-      <td rowspan="6" colspan="2"><p>BLOODBOWL TEAM ROSTER<br />
-      <a href="javascript:save()">Save Roster</a><br />
-      <a href="javascript:show('pic_box')">Customize Teampics</a><br />
-      <input name="VERBOSE" type="checkbox" checked="checked" />Save statchanges to roster</p>
+      <td rowspan="6" colspan="2"><p><a href="javascript:show('pic_box')">Customize Teampics</a><br />
+      <a href="javascript:show('background_box')">Write Background</a><br /><br />
+      <input name="VERBOSE" type="checkbox" checked="checked" />Write statchanges to roster<br />
+      <a href="javascript:save()">Save Roster</a></p>
       </td>
       <td rowspan="6" colspan="2" style="text-align: center"><p><img alt="a colorful picture" id="BADGE" style="width:104px;height:140px;" src="" /></p></td>
       <td colspan="3" rowspan="2">TEAM</td>
@@ -188,7 +188,11 @@ END;
 	<p><a href="javascript:setSkillchanges()">Validate</a> / <a href="javascript:hideLayer('skill_box')">Cancel</a></p>
 </div>
 
-
+<div id="background_box" class="element_hidden">
+<p>Write a background for your team!</p>
+<p><textarea cols="60" rows="7"><?php print(nl2br($race['background'])); ?></textarea></p>
+<p><a href="javascript:hideLayer('background_box')">Close</a></p>
+</div>
 
 <div id="inj_box" class="element_hidden">
 	<p style="font-weight: bold;">Player: #<input class="bg1" name="TEMP2" type="text" readonly="readonly" size="2" /></p>

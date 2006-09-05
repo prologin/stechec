@@ -5,13 +5,16 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 <html>
 
 <head>
-    <title>Teamroster</title>
+    <title>TBT Online Editor</title>
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" title="Default" />
 </head>
 
 <body>
     
-<h1>Tow Bowl Tactics Teameditor</h1>
+<h1>SNORE - TBT Online Teameditor</h1>
+
+<p>This is the &quot;super new online roster editor&quot; in it's second complete version.<br />
+Snore now handles the background-story of a team (or race) and follows the LRB 5.0 more strictly.</p>
 
 <p>Start a new team, choosing one of these races:</p>
 
@@ -51,7 +54,11 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 </form>
 
 <?php
-/*  If you want to parse the races.xml again and generate the list above
+/*	List above is hardcoded so that the server doesn't has to parse
+ *	the list of teams each time the page is accessed only to pick
+ *	the race-names out of it.
+ *
+ *  If you want to parse the races.xml again and generate the list above
  *  just let the script below run and copy$paste the source
  *
  *  require_once('minixml.inc.php'); // XML Framework

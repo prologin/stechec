@@ -11,7 +11,7 @@ $xmlDoc = new MiniXMLDoc();
 $xmlDoc->fromFile('races.xml');
 $races = $xmlDoc->toArray();
  
-// $teamname = "Chaos"; for testing purposes
+// $teamname = "Chaos"; // for testing purposes
 
 for($i=0; $i <= $races['races']['race']['_num']; $i++) {
 
