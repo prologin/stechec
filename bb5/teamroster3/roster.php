@@ -190,7 +190,7 @@ END;
 
 <div id="background_box" class="element_hidden">
 <p>Write a background for your team!</p>
-<p><textarea cols="60" rows="7"><?php print(nl2br($race['background'])); ?></textarea></p>
+<p><textarea name="BACKGROUND" cols="60" rows="7"><?php print(nl2br($race['background'])); ?></textarea></p>
 <p><a href="javascript:hideLayer('background_box')">Close</a></p>
 </div>
 

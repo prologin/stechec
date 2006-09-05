@@ -22,6 +22,8 @@ function arrayToOptions(arr,Select,value) {
 	// text of each option will be the homologous array element
 	// value of each option will be the same
 	
+	document.getElementsByName(Select)[0].options.length = 0
+	
 	for (i=0; i < arr.length; i++) {
 		document.getElementsByName(Select)[0].options[i] = new Option(arr[i], value)
 	}

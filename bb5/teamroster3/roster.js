@@ -427,7 +427,10 @@ function addskill(repertory) {
 function remskill() {
 	row = parseInt(document.getElementById('ROSTER').TEMP1.value - 1)
 	position = getFromRoster(row,"POSITION[]")
-	selectedskill = document.getElementById('ROSTER').SKILLDEST.options[document.getElementById('ROSTER').SKILLDEST.selectedIndex].text
+	
+	var x = document.getElementById('ROSTER').SKILLDEST
+	selectedskill = x.options[x.selectedIndex].text
+	
 	if (isStringInArray(selectedskill,skills[position]) == true) {
 		alert("You cannot remove a starting skill.")
 	}
@@ -438,11 +441,56 @@ function remskill() {
 		repertory = findSkill(selectedskill,position)
 		if (repertory == "normal") {
 			document.getElementById('ROSTER').TEMP3.value = document.getElementById('ROSTER').TEMP3.value - 20000
+			
+			y = document.getElementById('ROSTER').SKILLSRCN.options
+			index = y.length
+			y[index] = new Option(selectedskill, 20000)
 		}
 		else if ( repertory == "double") {
 			document.getElementById('ROSTER').TEMP3.value = document.getElementById('ROSTER').TEMP3.value - 30000
+			
+			y = document.getElementById('ROSTER').SKILLSRCD.options
+			index = y.length
+			y[index] = new Option(selectedskill, 20000)			
 		}
-	document.getElementById('ROSTER').SKILLDEST.remove(document.getElementById('ROSTER').SKILLDEST.selectedIndex)
+		else if ( repertory == "forbidden") {
+			y = document.getElementById('ROSTER').SKILLSRCF.options
+			index = y.length
+			y[index] = new Option(selectedskill, 0)
+		}		
+		
+		if ( selectedskill == "Grab") {
+
+				if ( deleteSelectElement('Frenzy','SKILLSRCF') == true ) {
+
+					if ( isStringInArray('Frenzy',possible_skills_n) ) {
+						index = document.getElementById('ROSTER').SKILLSRCN.options.length
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Frenzy', 30000)
+					}
+					else if ( isStringInArray('Frenzy',possible_skills_n) ) {
+						index = document.getElementById('ROSTER').SKILLSRCN.options.length
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Frenzy', 20000)
+					}
+				}
+		}
+				
+		if ( selectedskill == "Frenzy") {
+
+				if ( deleteSelectElement('Grab','SKILLSRCF') == true ) {
+
+					if ( isStringInArray('Grab',possible_skills_n) ) {
+						index = document.getElementById('ROSTER').SKILLSRCN.options.length
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Grab', 30000)
+					}
+					else if ( isStringInArray('Grab',possible_skills_n) ) {
+						index = document.getElementById('ROSTER').SKILLSRCN.options.length
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Grab', 20000)
+					}
+				}
+		}
+		
+		x.remove(x.selectedIndex)
+		
 	}
 }
 

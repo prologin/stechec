@@ -32,6 +32,7 @@ $arr['team']['cheerleader'] = htmlentities($_POST['CHEERLEADERS']);
 $arr['team']['apothecary'] = htmlentities($_POST['APOTHECARY']);
 $arr['team']['players'] = array();
 $arr['team']['player'] = array();
+$arr['team']['background'] = htmlentities($_POST['BACKGROUND']);
 
 for( $i = 0; $i < 16; $i++) {
 
