@@ -66,8 +66,7 @@ private:
   //! @return non-zero if action failed.
   int doMove(const ActMove* m);
 	//! @brief Stand up this player.
-  //! @return non-zero if action failed.
-  int doStandUp(const ActStandUp* m);
+  void doStandUp(const ActStandUp* m);
   //! @brief Block a player.
   //! @return non-zero if action failed.
   int doBlock(const ActBlock* m);

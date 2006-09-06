@@ -21,10 +21,11 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
   : Player(m->player_id, m->client_id),
     r_(r)
 {
-  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF | GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_ALL | GS_INITKICKOFF | GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_INITKICKOFF | GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_ALL | GS_INITKICKOFF | GS_COACHBOTH);
+	r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_ALL);
   ma_ = m->ma;
   st_ = m->st;
   ag_ = m->ag;
@@ -184,6 +185,12 @@ void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
   status_ = (enum eStatus)m->status;
   r_->onEvent(m);
 }
+
+void CPlayer::msgPlayerKO(const MsgPlayerKO* m)
+{
+  r_->onEvent(m);
+}
+
 /*
 ** Message filters.
 */
@@ -210,6 +217,13 @@ bool CPlayer::filterPlayerKnocked(const MsgPlayerKnocked* m)
 }
 
 bool CPlayer::filterPlayerStatus(const MsgPlayerStatus* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
+
+bool CPlayer::filterPlayerKO(const MsgPlayerKO* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;

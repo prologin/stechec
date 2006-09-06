@@ -60,6 +60,9 @@ public:
   //! go on next turn.
   virtual void serverProcess();
 
+  //! @brief The ball is in game, receiving team can play
+  void kickoffFinished();
+
   //! @brief Cause a turn over. Call it when, eg, an action failed.
   void turnOver();
   

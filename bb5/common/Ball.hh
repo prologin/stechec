@@ -34,6 +34,12 @@ DECLARE_PACKET(MSG_BALLPOS, MsgBallPos)
   int col;
 END_PACKET
 
+//! @brief Client -> Server. Send the owner of the ball.
+DECLARE_PACKET(MSG_GIVEBALL, MsgGiveBall)
+  int player_id;
+END_PACKET
+
+
 /*!
 ** @brief Represents the Blood Bowl Ball.
 */

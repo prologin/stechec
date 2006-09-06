@@ -40,7 +40,9 @@ public:
   virtual void evIllegal(int was_token);
   virtual void evNewTurn(bool our_turn);
   virtual void evEndGame() {}
+  virtual void evHalf(int half);
   virtual void evKickOff() {}
+	virtual void evGiveBall();
   virtual void evMoveTurnMarker() {}
   virtual void evTimeExceeded() {}
   virtual void evChat(const std::string& msg);
@@ -49,15 +51,19 @@ public:
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evPlayerKnocked(int team_id, int player_id);
 	virtual void evPlayerStatus(int team_id, enum eStatus status);
+	virtual void evPlayerKO(int team_id, int player_id, int dice);
 };
 
 inline void Event::evIllegal(int) {}
 inline void Event::evNewTurn(bool) {}
+inline void Event::evHalf(int) {}
+inline void Event::evGiveBall() {}
 inline void Event::evChat(const std::string&) {}
 inline void Event::evBallPos(const Point&) {}
 inline void Event::evPlayerPos(int, int, const Point&) {}
 inline void Event::evPlayerMove(int, int, const Point&) {}
 inline void Event::evPlayerKnocked(int, int) {}
 inline void Event::evPlayerStatus(int, enum eStatus) {}
+inline void Event::evPlayerKO(int, int, int) {}
 
 #endif /* !EVENT_HH_ */

@@ -26,7 +26,9 @@ CRules::CRules(const xml::XMLConfig& cfg)
 {
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, CRules, this, msgInitGame, GS_WAIT);
+  HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, GS_ALL);
   HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, GS_ALL);
+	HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, GS_ALL);
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, GS_ALL);
   HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, GS_ALL);
   HANDLE_WITH(MSG_TIMEEXCEEDED, CRules, this, msgTimeExceeded, GS_ALL);
@@ -79,7 +81,7 @@ void        CRules::msgInitGame(const MsgInitGame* m)
   LOG2("-- CRules: change state: GS_INITGAME");
 
   // Create some objects.
-  weather_ = new Weather;
+  // weather_ = new Weather;
   ball_ = new CBall(this);
   field_ = new CField;
   HANDLE_WITH(MSG_WEATHER, Weather, weather_, setWeather, GS_INITGAME);
@@ -97,30 +99,48 @@ void        CRules::msgInitGame(const MsgInitGame* m)
   sendPacket(*m);
 }
 
+void        CRules::msgInitHalf(const MsgInitHalf* m)
+{
+	cur_turn_ == 0;
+	cur_half_ = m->cur_half;
+  LOG2("-- CRules: Initialize the half " << cur_half_);
+
+	our_team_->initRerolls();
+	other_team_->initRerolls();
+	
+	onEvent(m);
+}
+
 void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-  cur_half_ = m->cur_half;
-  setState(GS_INITKICKOFF);
-  LOG2("-- CRules: change state: GS_INITKICKOFF");
+	// It is not for our team
+	if (m->client_id != getTeamId())
+		return;
 
-  // Now, you can safely use Api fonctions referring to teams.
-  api_->select_team(US);
 
-  if (m->client_id != getTeamId())
-    {
-      // Place our team on the field.
-      our_team_->placeTeam(1);
-      // Ask the UI to place the ball.
-      onEvent(eKickOff);
-    }
-  else
-    {
-      // Otherwise, place our team and say we have finished.
-      // FIXME: wait that the first team has set up,
-      // then place our team, then kick-off...
+	if (getState() == GS_INITKICKOFF)
+	// Our team is allready placed, we can place the ball
+		{
+			onEvent(eKickOff);
+		}
+	else
+	// Our team has to enter the field
+		{
+		  setState(GS_INITKICKOFF);
+  		LOG2("-- CRules: change state: GS_INITKICKOFF");
+
+		  // Now, you can safely use Api fonctions referring to teams.
+		  api_->select_team(US);
+
       our_team_->placeTeam(1);
 			sendPacket(*m);
     }
+}
+
+void        CRules::msgGiveBall(const MsgGiveBall* m)
+{
+	setState(GS_TOUCHBACK);
+	onEvent(m);
 }
 
 void        CRules::msgPlayTurn(const MsgNewTurn* m)

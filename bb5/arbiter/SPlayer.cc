@@ -229,7 +229,7 @@ int SPlayer::doMove(const ActMove* m)
 ** Stand up action
 */
 
-int SPlayer::doStandUp(const ActStandUp* m)
+void SPlayer::doStandUp(const ActStandUp*)
 {
   if (ma_ < 3)
     {
@@ -242,7 +242,6 @@ int SPlayer::doStandUp(const ActStandUp* m)
 	 		ma_remain_ = ma_ - 3;
 			setStatus(STA_STANDING);
 	 	}
-  return 0;
 }
 
 /*
@@ -522,12 +521,16 @@ void SPlayer::prepareKickoff()
 			r_->getField()->setPlayer(pos_, NULL);
 			setStatus(STA_RESERVE);
 			break;
+	
 		case STA_KO :
-			if (Dice(6).roll() < 4)
-				break;
-			setStatus(STA_RESERVE);
+			int dice = Dice(6).roll();
+			MsgPlayerKO msg;
+			msg.player_id = id_;
+			msg.dice = dice;
+			r_->sendPacket(msg);
+			if (dice > 3)
+				setStatus(STA_RESERVE);
 			break;
-		default: break;
 	}
 }
 
@@ -590,8 +593,7 @@ void SPlayer::msgStandUp(const ActStandUp* m)
 {
   if (!t_->canDoAction(m, this))
     return;
-  if (doStandUp(m))
-    r_->turnOver();
+	doStandUp(m);
 }
 
 void SPlayer::msgBlock(const ActBlock* m)

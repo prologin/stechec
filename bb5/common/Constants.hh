@@ -27,6 +27,7 @@
 // Constants describing the current status of the game.
 const int GS_INITGAME      = 0x0001;
 const int GS_INITKICKOFF   = 0x0002;
+const int GS_TOUCHBACK     = 0x0003;
 const int GS_COACH1        = 0x0004; ///< Coach 1 turn.
 const int GS_COACH2        = 0x0008; ///< Coach 2 turn.
 const int GS_PAUSE         = 0x0010;
@@ -57,11 +58,13 @@ enum {
   MSG_CHAT = 10,
   MSG_ILLEGAL,
   MSG_INITGAME,
+	MSG_INITHALF,
   MSG_INITKICKOFF,
   MSG_NEWTURN,
   MSG_ENDTURN,
   MSG_ENDGAME,
   MSG_BALLPOS,
+	MSG_GIVEBALL,
   MSG_WEATHER,
   MSG_TIMEEXCEEDED,
   MSG_TEAMINFO,
@@ -69,6 +72,7 @@ enum {
   MSG_PLAYERPOS,
   MSG_PLAYERKNOCKED,
   MSG_PLAYERSTATUS,
+	MSG_PLAYERKO,
   MSG_ROOLINFO, // FIXME: complete usage
   ACT_MOVETURNMARKER,
   ACT_ILLEGALPROC,
@@ -104,9 +108,10 @@ enum eStatus {
 ** Messages (Packet) used to control game status.
 */
 DECLARE_EMPTY_PACKET(MSG_INITGAME, MsgInitGame);
-DECLARE_PACKET(MSG_INITKICKOFF, MsgInitKickoff)
+DECLARE_PACKET(MSG_INITHALF, MsgInitHalf)
   int cur_half;
 END_PACKET
+DECLARE_EMPTY_PACKET(MSG_INITKICKOFF, MsgInitKickoff);
 DECLARE_PACKET(MSG_NEWTURN, MsgNewTurn)
   int cur_turn;
 END_PACKET

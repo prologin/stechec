@@ -81,3 +81,42 @@ inline const std::string& Team<T>::getCoachName() const
 {
   return coach_name_;
 }
+
+template <typename T>
+inline int Team<T>::getScore()
+{
+  return score_;
+}
+
+template <typename T>
+inline int Team<T>::getRerollsRemain()
+{
+  return reroll_remain_;
+}
+
+template <typename T>
+inline void Team<T>::initRerolls()
+{
+  reroll_remain_ = reroll_;
+}
+
+template <typename T>
+inline bool Team<T>::isPlacementValid()
+{
+	int reserve = 0;
+	int injured_KO = 0;
+
+  for (int i = 0; i < MAX_PLAYER; i++)
+    if (player_[i] != NULL)
+			{
+				enum eStatus status = player_[i]->getStatus();
+				if (status == STA_INJURED||status == STA_KO)
+	      	injured_KO += 1;
+				if (status == STA_RESERVE)
+	      	reserve += 1;
+			}
+	
+	int on_field = getNbPlayer() - (reserve + injured_KO);
+
+	return (on_field == 11 || reserve == 0);
+}

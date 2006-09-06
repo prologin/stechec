@@ -23,6 +23,7 @@ SBall::SBall(SRules* r)
     owner_(NULL)
 {
   r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITKICKOFF);
+	r_->HANDLE_WITH(MSG_GIVEBALL, SBall, this, msgGiveBall, GS_INITKICKOFF);
 }
 
 SPlayer* SBall::getOwner()
@@ -52,8 +53,8 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
   if (invalidBallPlacement())
     {
       LOG4("Ball: wrong kick-off from " << m->client_id
-	   << ". Not in receiver's field: " << pos_);
-      goto end;
+					   << ". Not in receiver's field: " << pos_);
+			return;
     }
 
   scatter(Dice(6).roll());
@@ -61,20 +62,82 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
     {
       LOG4("Ball: kick-off from " << m->client_id
 	   << ". Scattered out of receiver's field: " << pos_);
-      goto end;
+      return;
     }
 
   // Catch it if there is somebody, else bounce it.
+	// Can't use the methods catchBall and bounce : must control if it goes out
+  bool has_scattered = false;
   p = r_->getField()->getPlayer(pos_);
-  if (p != NULL)
-    catchBall(p, 1);
-  else
-    bounce(1);
-
- end:
+	while (p != NULL||!has_scattered)
+		{
+			if (p == NULL)
+				{
+					scatter(1);
+					if (invalidBallPlacement())
+						return;
+					has_scattered = true;
+					p = r_->getField()->getPlayer(pos_);
+				}
+			else
+				{
+					int nb_tackles = r_->getField()->getNbTackleZone(1 - p->getTeamId(), pos_);
+				  if (!p->tryAction(0 - nb_tackles))
+    				{
+		      		LOG5("Ball: player has failed to catch it at " << pos_);
+							scatter(1);
+							if (invalidBallPlacement())
+								return;
+							has_scattered = true;
+							p = r_->getField()->getPlayer(pos_);
+						}
+					else
+						{
+						  LOG5("Ball: player successfully catch it at " << pos_);
+						  owner_ = p;
+							p = NULL;
+							has_scattered = true;
+						}
+				}
+		}
+		
   mesg.row = pos_.row;
   mesg.col = pos_.col;
   r_->sendPacket(mesg);
+	r_->kickoffFinished();
+}
+
+void SBall::msgGiveBall(const MsgGiveBall* m)
+{
+  MsgBallPos mesg;
+  SPlayer* p;
+  
+  // Called on half init, when the ball goes out of the pitch
+  if (r_->getCurrentTeamId() != m->client_id)
+    {
+      LOG4("Ball: coach " << m->client_id << " unallowed to give the ball.");
+      r_->sendIllegal(MSG_GIVEBALL, m->client_id);
+      return;
+    }
+
+	p = r_->getTeam(m->client_id)->getPlayer(m->player_id);
+
+	if (p->getStatus() != STA_STANDING)
+		{
+		  LOG4("Ball: player `" << p->getId() << "' can't carry the ball.");
+      r_->sendIllegal(MSG_GIVEBALL, m->client_id);
+      return;
+		}
+
+	mesg.row = p->getPosition().row;
+	mesg.col = p->getPosition().col;
+	
+	owner_ = p;
+	
+  // So everybody will be aware of where the kicker put it.
+  r_->sendPacket(mesg);
+	
+	r_->kickoffFinished();
 }
 
 bool SBall::invalidBallPlacement()
@@ -84,9 +147,9 @@ bool SBall::invalidBallPlacement()
       || (r_->getCurrentTeamId() == 0 && pos_.row > ROWS / 2)
       || (r_->getCurrentTeamId() == 1 && pos_.row < ROWS / 2))
     {
-      // FIXME: give the ball to one player of receiver team
-      pos_.col = COLS / 2;
-      pos_.row = r_->getCurrentTeamId() == 0 ? ROWS / 4 : ROWS * 3 / 4; 
+      pos_.col = -1;
+      pos_.row = -1;
+			r_->sendPacket(MsgGiveBall(r_->getCurrentTeamId()));
       return true;
     }
   return false;

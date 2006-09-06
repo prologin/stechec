@@ -90,6 +90,10 @@ DECLARE_PACKET(MSG_PLAYERSTATUS, MsgPlayerStatus);
   int status;
 END_PACKET
 
+DECLARE_PACKET(MSG_PLAYERKO, MsgPlayerKO);
+  int player_id;
+  int dice;
+END_PACKET
 
 
 /*!

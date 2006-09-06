@@ -99,3 +99,21 @@ void EventProcess::dispatch(const MsgPlayerStatus& pkt) const
 {
   ev_->evPlayerStatus(pkt.client_id, (enum eStatus)pkt.player_id);
 }
+
+template <>
+void EventProcess::dispatch(const MsgPlayerKO& pkt) const
+{
+  ev_->evPlayerKO(pkt.client_id, pkt.player_id, pkt.dice);
+}
+
+template <>
+void EventProcess::dispatch(const MsgInitHalf& pkt) const
+{
+  ev_->evHalf(pkt.cur_half);
+}
+
+template <>
+void EventProcess::dispatch(const MsgGiveBall& pkt) const
+{
+  ev_->evGiveBall();
+}

@@ -78,16 +78,45 @@ inline bool Api::doPlaceBall(const Point& pos)
       LOG2("Kickoff rejected. Ball not on the field: " << pos);
       return false;
     }
+  if ((selected_team_->getTeamId() == 0 && bpos.row < 13)
+			||(selected_team_->getTeamId() == 1 && bpos.row > 12))
+    {
+      LOG2("Kickoff rejected. Ball in your part of the field: " << pos);
+      return false;
+    }
   MsgBallPos pkt;
   pkt.row = bpos.row;
   pkt.col = bpos.col;
   rules_->sendPacket(pkt);
-
-  // FIXME: that is all we have to do in inithalf right now.
-  //  say we are ok.
-  MsgInitKickoff pkt_endinit;
-  rules_->sendPacket(pkt_endinit);  
+	
   return true;
+}
+
+inline bool Api::doGiveBall(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+	
+	if (rules_->getState() != GS_TOUCHBACK)
+		{
+			LOG2("There is no touchback.");
+			return false;
+		}
+	
+	if (getPlayer(p) == NULL) 
+		{
+			LOG2("Player `" << p << "' does not exist.");
+			return false;
+		}
+	
+	if (getPlayer(p)->getStatus() != STA_STANDING) 
+		{
+			LOG2("Player `" << p << "' can't carry the ball.");
+			return false;
+		}
+	MsgGiveBall pkt;
+	pkt.player_id = p;
+  rules_->sendPacket(pkt);
+	return true;
 }
 
 inline bool Api::doMovePlayer(int p, const Point& to)

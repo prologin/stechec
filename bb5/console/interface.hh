@@ -46,6 +46,7 @@ private:
   virtual void          evIllegal(int was_token);
   virtual void          evNewTurn(bool our_turn);
   virtual void          evKickOff();
+	virtual void          evGiveBall();
   virtual void          evMoveTurnMarker();
   virtual void          evTimeExceeded();
   virtual void          evChat(const std::string& msg);

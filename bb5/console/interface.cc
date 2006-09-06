@@ -85,10 +85,11 @@ void CmdLineInterface::run()
 
 void CmdLineInterface::printGlobal()
 {
+
   cout << "  - you are coach '" << api_->getTeamId() << "'\n" 
        << "  - current game state: " << api_->getStateString() << "\n"
-       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
-       << "' (" << api_->getWeather()->getWeather() << ")\n"
+//       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
+//       << "' (" << api_->getWeather()->getWeather() << ")\n"
        << "  - ball position: " << api_->getBallPosition() << "\n"
        << "  - our team  : '" << api_->getTeamName() << "', coached by '"
        << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
@@ -130,7 +131,7 @@ void CmdLineInterface::printField()
         cout << "   |";
       for (col = 0; col < 15; col++)
         {
-          if (col == 3 || col == 12)
+          if (col == 4 || col == 11)
             cout << "|";
           else
             cout << " ";
@@ -193,7 +194,7 @@ void CmdLineInterface::printPlayerList()
 void CmdLineInterface::printPlayer(int player_id, int team_id)
 {
   api_->select_team(team_id);
-  if (player_id <= 0 || player_id > api_->getTeam()->getNbPlayer())
+  if (player_id < 0 || player_id > api_->getTeam()->getNbPlayer())
     {
       cout << "player id " << player_id << ": out of bound." << endl;
       return;
@@ -248,4 +249,9 @@ void CmdLineInterface::evPlayerMove(int, int player_id, const Point& pos)
 void CmdLineInterface::evPlayerKnocked(int team_id, int player_id)
 {
   cout << "Player `" << player_id << "' has been knocked down." << endl;
+}
+
+void CmdLineInterface::evGiveBall()
+{
+  cout << "Touchback! receiving team can give the ball to any player on the field." << endl;
 }

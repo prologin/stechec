@@ -41,6 +41,7 @@ public:
 
 private:
   void msgPlaceBall(const MsgBallPos* m);
+  void msgGiveBall(const MsgGiveBall* m);
   bool invalidBallPlacement();
   void scatter(int nb);
 

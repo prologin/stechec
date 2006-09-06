@@ -82,14 +82,14 @@ void SRules::initGame()
   team_[0] = new STeam(0, this);
   team_[1] = new STeam(1, this);
 
-  weather_ = new SWeather();
+//  weather_ = new SWeather();
   ball_ = new SBall(this);
   field_ = new SField();
 
-  // Send some objects to clients.
-  MsgWeather pkt;
+  // Send some objects to clients -> weather wil be introduce with advanced Rules
+/*  MsgWeather pkt;
   pkt.weather = weather_->getWeather();
-  sendPacket(pkt);
+  sendPacket(pkt);*/
 
   // Decide who is the kicking team
   Dice d(2);
@@ -102,22 +102,62 @@ void SRules::initHalf()
 	cur_turn_ = 0;
   cur_half_++;
   
-	if (cur_half_ > 2)
+	// If there is a winner after 2 or 3 halfs
+	if (cur_half_ > 2 && team_[0]->getScore() != team_[1]->getScore())
     {
+			LOG4("Team " << (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1)
+						<< " win the game.");
       LOG4("End of game.");
-      setState(GS_END);
+			setState(GS_END);
       MsgEndGame pkt;
       sendPacket(pkt);
       return;
     }
-
+		
   // Switch the kicking team on second period.
-  if (cur_half_ != 1)
+  if (cur_half_ == 2)
     coach_begin_ = (coach_begin_ + 1) % 2;
-	coach_receiver_ = coach_begin_;
-
-	LOG3("Initialize half " << cur_half_ << ".");
+		
+	// New toss for the third period
+	if (cur_half_ == 3)
+    coach_begin_ = Dice(2).roll() - 1;
 	
+	// Match is decided by a penalty shoot-out
+	if (cur_half_ > 3) 
+		{
+			Dice d(6);
+			int coach0 = d.roll() + team_[0]->getRerollsRemain();
+			int coach1 = d.roll() + team_[1]->getRerollsRemain();
+			while (coach0 == coach1)
+				{
+					coach0 = d.roll() + team_[0]->getRerollsRemain();
+					coach1 = d.roll() + team_[1]->getRerollsRemain();
+				}
+			LOG4("Team " << (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1)
+						<< " win the game.");
+ 
+      LOG4("End of game.");
+			setState(GS_END);
+      MsgEndGame pkt;
+      sendPacket(pkt);
+      return;
+		}
+  	
+	// Coaches recover their Rerolls, except in overtime
+	if (cur_half_ != 3) 
+		{
+			team_[0]->initRerolls();
+			team_[1]->initRerolls();
+		}
+	
+	// Say we are in a new half	
+	MsgInitHalf pkt;
+	pkt.cur_half = cur_half_;
+	sendPacket(pkt);
+	
+	LOG3("Initialize half " << cur_half_ << ".");
+
+	coach_receiver_ = coach_begin_;
 	initKickoff();
 }
 
@@ -126,15 +166,20 @@ void SRules::initKickoff()
   setState(GS_INITKICKOFF);
 	team_[0]->state_ = GS_INITKICKOFF;
 	team_[1]->state_ = GS_INITKICKOFF;
+
+	// The ref takes the ball
+	ball_->removeFromField();
+
+	// Each KO player tries to regain consciousness
+	// and players on field go to the reserve
 	team_[0]->prepareKickoff();
 	team_[1]->prepareKickoff();
-	ball_->removeFromField();
+
 
   LOG3("Kicking team: " << (getCurrentTeamId() + 1) % 2);
 
   // Say that we are about to initialize the kickoff.
-  MsgInitKickoff pkt(getCurrentTeamId());
-  pkt.cur_half = cur_half_;
+  MsgInitKickoff pkt((getCurrentTeamId() + 1) % 2);
 	sendPacket(pkt);
 }
 
@@ -149,6 +194,10 @@ void SRules::touchdown()
   LOG3("TOUCHDOWN!!!!!!!");
 	// For the moment, only the case of touchdowns score during the good turn
 	// TODO : update scores...
+	
+	
+	// If it is the third period, the match is over
+	initHalf();
 	
 	// Check it is not the last turn of the half
 	if (cur_turn_ == 8
@@ -181,17 +230,40 @@ void SRules::msgInitGame(const MsgInitGame* m)
 
 void SRules::msgInitKickoff(const MsgInitKickoff* m)
 {
+	// The team is placed on the field
+	// Check the placement
+	if (!team_[m->client_id]->isPlacementValid()
+			||!field_->isPlacementValid(m->client_id))
+		{
+			sendIllegal(MSG_INITKICKOFF, m->client_id);
+			return;
+		}
+
   team_[m->client_id]->state_ = GS_COACH1;
+
 
   if (team_[0]->state_ == GS_COACH1 &&
       team_[1]->state_ == GS_COACH1)
     {
-      if (coach_receiver_ == 0)
-        setState(GS_COACH2);
-      else
-        setState(GS_COACH1);
-      msgPlayTurn(NULL);
+			// The two teams are ready, message to kick the ball
+      MsgInitKickoff pkt((getCurrentTeamId() + 1) % 2);
+			sendPacket(pkt);
     }
+	else
+		{
+			// The receiving team has to be placed
+			MsgInitKickoff pkt(getCurrentTeamId());
+			sendPacket(pkt);
+		}
+}
+
+void SRules::kickoffFinished()
+{
+	if (coach_receiver_ == 0)
+    setState(GS_COACH2);
+  else
+    setState(GS_COACH1);
+  msgPlayTurn(NULL);
 }
 
 void SRules::msgPlayTurn(const MsgEndTurn*)

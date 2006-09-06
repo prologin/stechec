@@ -63,6 +63,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
   {"end", &Input::cmdEnd, "end turn"},
 	{"standup", &Input::cmdStandUp, "<id>|stand up the player'id'"},
+	{"giveBall", &Input::cmdGiveBall, "<id>|give the ball to the player'id'"},
   {NULL, NULL, NULL}
 };
 
@@ -209,6 +210,14 @@ void Input::cmdStandUp(const string& cmd, const string& args)
   api_->doStandUpPlayer(p);
 }
 
+void Input::cmdGiveBall(const string& cmd, const string& args)
+{
+	istringstream is(cmd + " " + args);
+  int p = -1;
+  is >> p;
+  api_->doGiveBall(p);
+}
+
 
 //
 // Print commands
@@ -269,6 +278,7 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> pos.col;
   api_->doMovePlayer(p, pos);
 }
+
 
 //
 // Input main functions.

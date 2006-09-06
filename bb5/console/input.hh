@@ -65,6 +65,7 @@ private:
   void cmdIllegal(const std::string& cmd, const std::string& args);
   void cmdEnd(const std::string& cmd, const std::string& args);
   void cmdStandUp(const std::string& cmd, const std::string& args);
+	void cmdGiveBall(const std::string& cmd, const std::string& args);
 
   // Print commands
   void cmdPrintGlobal(const std::string& args);
