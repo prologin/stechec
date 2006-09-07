@@ -52,6 +52,8 @@ private:
   virtual void          evChat(const std::string& msg);
   virtual void          evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerKnocked(int team_id, int player_id);
+	virtual void 					evResult(int player_id, enum eRoll action_type, int result, 
+																	int modifier, int required, bool reroll);
 
   xml::XMLConfig*       cfg_;
   Api*                  api_;

@@ -40,6 +40,8 @@ public:
   virtual void evIllegal(int was_token);
   virtual void evNewTurn(bool our_turn);
   virtual void evEndGame() {}
+	virtual void evResult(int player_id, enum eRoll action_type, 
+												int result, int modifier, int required, bool reroll);
   virtual void evHalf(int half);
   virtual void evKickOff() {}
 	virtual void evGiveBall();
@@ -56,6 +58,7 @@ public:
 
 inline void Event::evIllegal(int) {}
 inline void Event::evNewTurn(bool) {}
+inline void Event::evResult(int, enum eRoll, int, int, int, bool) {}
 inline void Event::evHalf(int) {}
 inline void Event::evGiveBall() {}
 inline void Event::evChat(const std::string&) {}

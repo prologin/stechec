@@ -20,10 +20,11 @@
 
 SBall::SBall(SRules* r)
   : r_(r),
-    owner_(NULL)
+    owner_(NULL),
+		thrown_(false)
 {
   r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITKICKOFF);
-	r_->HANDLE_WITH(MSG_GIVEBALL, SBall, this, msgGiveBall, GS_INITKICKOFF);
+	r_->HANDLE_WITH(MSG_GIVEBALL, SBall, this, msgGiveBall, GS_TOUCHBACK);
 }
 
 SPlayer* SBall::getOwner()
@@ -149,6 +150,7 @@ bool SBall::invalidBallPlacement()
     {
       pos_.col = -1;
       pos_.row = -1;
+			r_->setState(GS_TOUCHBACK);
 			r_->sendPacket(MsgGiveBall(r_->getCurrentTeamId()));
       return true;
     }
@@ -168,7 +170,30 @@ void SBall::afterBounce(const Position& delta, int amplitude)
       pos_ = to;
       SPlayer *p = f->getPlayer(to);
       if (p != NULL)
-	catchBall(p, 0);
+				{
+					if (p->getStatus() == STA_STANDING)
+						{
+							p->action_attempted_ = R_CATCH;
+							p->reroll_enabled_ = (r_->getTeam(p->getTeamId())->canUseReroll()
+																			&&p->getTeamId() == r_->getCurrentTeamId());
+							if (catchBall(p, 0))
+								{
+									if (thrown_&&p->getTeamId() != r_->getCurrentTeamId())
+										r_->turnOver();
+									thrown_ = false;							
+								}
+						}
+					else
+						bounce();
+				}
+			else
+				{
+					if (thrown_)
+						{
+							r_->turnOver();
+							thrown_ = false;
+						}
+				}
     }
   else
     {
@@ -229,9 +254,8 @@ void SBall::scatter(int nb)
 bool SBall::catchBall(SPlayer *p, int modifier)
 {
   SField* f = r_->getField();
-
 	int opponent_team_id;
-	if ( p->getTeamId() == r_->getCurrentOpponentTeamId())
+	if ( p->getTeamId() == r_->getCurrentTeamId())
 		opponent_team_id = r_->getCurrentOpponentTeamId();
 	else
 	  opponent_team_id = r_->getCurrentTeamId();	
@@ -239,6 +263,8 @@ bool SBall::catchBall(SPlayer *p, int modifier)
   if (!p->tryAction(modifier - nb_tackles))
     {
       LOG5("Ball: player has failed to pick it at " << pos_);
+			if (p->reroll_enabled_)	
+				return false;
       bounce();
       return false;
     }
@@ -294,4 +320,9 @@ void SBall::removeFromField()
 	mesg.row = pos_.row;
   mesg.col = pos_.col;
   r_->sendPacket(mesg);
+}
+
+void SBall::setThrown()
+{
+	thrown_ = true;
 }

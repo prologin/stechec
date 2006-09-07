@@ -28,7 +28,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_INITGAME, CRules, this, msgInitGame, GS_WAIT);
   HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, GS_ALL);
   HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, GS_ALL);
-	HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, GS_ALL);
+	HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, GS_INITKICKOFF);
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, GS_ALL);
   HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, GS_ALL);
   HANDLE_WITH(MSG_TIMEEXCEEDED, CRules, this, msgTimeExceeded, GS_ALL);

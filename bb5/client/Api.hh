@@ -44,12 +44,26 @@ public:
   void          doEndTurn();
   void          doMoveTurnMarker();
   void          doAskIllegalProcedure();
+	bool 					doReroll();
+	bool 					doAccept();
   bool          doPlaceBall(const Point& pos);
 	bool          doGiveBall(int p);
-  bool          doMovePlayer(int p, const Point& to);
-  bool          doStandUpPlayer(int p);
-  bool					doBlockPlayer(int p, const Point& to);
   void          sendChatMessage(const std::string& msg);
+
+	bool doMovePlayer(int p, const Point& to);
+	bool doBlitzMovePlayer(int p, const Point& to);
+	bool doPassMovePlayer(int p, const Point& to);
+
+	bool doMoveStandUpPlayer(int p);
+	bool doBlockStandUpPlayer(int p);
+	bool doBlitzStandUpPlayer(int p);
+	bool doPassStandUpPlayer(int p);
+
+	bool doBlockPlayer(int p, const Point& to);
+	bool doBlitzBlockPlayer(int p, const Point& to);
+
+	bool doPassPlayer(int p, const Point& to);
+
 
   /*
   ** Following methods are all accessors... Feel free to call

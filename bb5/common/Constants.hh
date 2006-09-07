@@ -31,6 +31,8 @@ const int GS_TOUCHBACK     = 0x0003;
 const int GS_COACH1        = 0x0004; ///< Coach 1 turn.
 const int GS_COACH2        = 0x0008; ///< Coach 2 turn.
 const int GS_PAUSE         = 0x0010;
+const int GS_REROLL        = 0x0011; ///< wait for coach to use or not a reroll
+const int GS_BLOCK         = 0x0012; ///< wait for coach to choose a block dice
 
 const int GS_COACHBOTH     = 0x000C; ///< Any coach turn.
 
@@ -60,6 +62,8 @@ enum {
   MSG_INITGAME,
 	MSG_INITHALF,
   MSG_INITKICKOFF,
+	MSG_RESULT,
+	MSG_REROLL,
   MSG_NEWTURN,
   MSG_ENDTURN,
   MSG_ENDGAME,
@@ -103,6 +107,23 @@ enum eStatus {
   STA_GAZE
 };
 
+enum eActions {
+	NONE,
+	MOVE,
+	BLOCK,
+	BLITZ,
+	PASS
+};
+
+enum eRoll {
+	R_DODGE,
+	R_STANDUP,
+	R_PICKUP,
+	R_ARMOUR,
+	R_INJURY,
+	R_THROW,
+	R_CATCH
+};
 
 /*!
 ** Messages (Packet) used to control game status.
@@ -112,6 +133,9 @@ DECLARE_PACKET(MSG_INITHALF, MsgInitHalf)
   int cur_half;
 END_PACKET
 DECLARE_EMPTY_PACKET(MSG_INITKICKOFF, MsgInitKickoff);
+DECLARE_PACKET(MSG_REROLL, MsgReroll)
+  bool reroll;
+END_PACKET
 DECLARE_PACKET(MSG_NEWTURN, MsgNewTurn)
   int cur_turn;
 END_PACKET

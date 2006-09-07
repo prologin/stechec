@@ -50,6 +50,13 @@ public:
 	
   //! @brief Try some action, consider player's agility.
   bool tryAction(int modifier);
+	
+	//! @brief Finish the current action
+  void finishAction(bool reroll);
+
+	enum eRoll action_attempted_;
+	bool reroll_enabled_;
+
 
 private:
 
@@ -61,7 +68,9 @@ private:
   bool filterStandUp(const ActStandUp* m);
   bool filterBlock(const ActBlock* m);
   bool filterPass(const ActPass* m);
-    
+  
+	void sendRoll(int result, int modifier, int required);
+	
   //! @brief Move this player.
   //! @return non-zero if action failed.
   int doMove(const ActMove* m);
@@ -77,6 +86,12 @@ private:
   void blockPushChoice(SPlayer* target);
   void blockPush(ActBlockPush* m);
   
+	
+	int finishMove(bool reroll);
+	void finishStandUp(bool reroll);
+	int finishPickUp(bool reroll);
+	int finishThrow(bool reroll);
+		
   //! @brief Check for armor and eventually injury.
   void checkArmor(int arMod, int injMod);
   //! @brief Roll for injury.
@@ -84,6 +99,8 @@ private:
   //! @brief Roll for casualty.
   enum eStatus rollCasualty();
 
+	Position aim_;
+	
   SRules* r_;	///< Server rules.
   STeam* t_;	///< Player's team.
 

@@ -101,6 +101,12 @@ inline void Team<T>::initRerolls()
 }
 
 template <typename T>
+inline bool Team<T>::canUseReroll()
+{
+	return (reroll_remain_ > 0 && !reroll_used_);
+}
+
+template <typename T>
 inline bool Team<T>::isPlacementValid()
 {
 	int reserve = 0;

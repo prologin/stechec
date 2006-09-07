@@ -43,6 +43,7 @@ public:
   const std::string& getCoachName() const;
   int getScore();
 	int getRerollsRemain();
+	bool canUseReroll();
 	void initRerolls();
   void resetTurn();
 	bool isPlacementValid();

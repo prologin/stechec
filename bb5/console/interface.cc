@@ -255,3 +255,30 @@ void CmdLineInterface::evGiveBall()
 {
   cout << "Touchback! receiving team can give the ball to any player on the field." << endl;
 }
+
+void CmdLineInterface::evResult(int player_id, enum eRoll action_type, 
+																int result, int modifier, int required, 
+																bool reroll)
+{
+	cout << "Player `" << player_id << "' tried an action : `";
+	
+	switch(action_type)
+	{
+		case R_DODGE: cout << "DODGE";
+			break;
+		case R_STANDUP: cout << "STAND UP";
+			break;
+		case R_PICKUP: cout << "PICK UP";
+			break;
+		case R_THROW: cout << "THROW";
+			break;
+		case R_CATCH: cout << "CATCH";
+			break;
+		default: cout << "UNKNOWN";
+	}
+	cout << "' : roll [" << result << "] + ["<< modifier << "], required : ["
+			 << required << "]." << endl;
+	
+	if (result + modifier < required && reroll)
+		cout << "		You can use a 'reroll' or 'accept' this result." << endl;
+}

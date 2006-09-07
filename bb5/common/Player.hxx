@@ -78,31 +78,30 @@ inline enum eStatus Player::getStatus() const
   return status_;
 }
 
-
-inline bool Player::hasDoneAction() const
+inline bool Player::hasPlayed() const
 {
-  return has_done_action_;
+  return has_played_;
 }
-
-inline bool Player::hasDoneMove() const
-{
-  return ma_remain_ != ma_;
-}
-
-inline bool Player::hasDoneBlock() const
-{
-  return has_done_block_;
-}
-
+ 	
 inline void Player::setHasPlayed()
 {
-  has_done_action_ = true;
+  has_played_ = true;
+}
+
+inline enum eActions Player::getAction() const
+{
+  return action_;
+}
+
+inline void Player::setAction(enum eActions action)
+{
+  action_ = action;
 }
 
 inline void Player::resetTurn()
 {
-  has_done_action_ = false;
-  has_done_block_ = false;
+  action_ = NONE;
+	has_played_ = false;
   ma_remain_ = ma_;
   will_prone_ = (status_ == STA_STUNNED);
 }

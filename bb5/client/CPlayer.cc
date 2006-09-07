@@ -21,11 +21,11 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
   : Player(m->player_id, m->client_id),
     r_(r)
 {
-  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_ALL | GS_INITKICKOFF | GS_COACHBOTH);
-  r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_ALL | GS_INITKICKOFF | GS_COACHBOTH);
-	r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_ALL);
+  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
+  r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
+  r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
+  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
+	r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_INITKICKOFF);
   ma_ = m->ma;
   st_ = m->st;
   ag_ = m->ag;
@@ -56,7 +56,7 @@ void CPlayer::subMa(int dep)
   ma_remain_ -= dep;
 }
 
-bool CPlayer::standUp()
+bool CPlayer::standUp(enum eActions action)
 {
  	if (status_ != STA_PRONE)
     {
@@ -66,11 +66,12 @@ bool CPlayer::standUp()
 		
 	ActStandUp pkt;
   pkt.player_id = id_;
+	pkt.action = action;
   r_->sendPacket(pkt);
   return true;
 }
 
-bool CPlayer::move(const Position& to)
+bool CPlayer::move(const Position& to, enum eActions action)
 {
   CField* f = r_->getField();
 
@@ -98,6 +99,7 @@ bool CPlayer::move(const Position& to)
       return false;
     }
   pkt.player_id = id_;
+	pkt.action = action;
   pkt.nb_move = 0;
   PosIter it;
   for (it = p.begin(); it != p.end(); ++it)
@@ -111,7 +113,7 @@ bool CPlayer::move(const Position& to)
   return true;
 }
 
-bool CPlayer::block(const Position& to)
+bool CPlayer::block(const Position& to, enum eActions action)
 {
   CField* f = r_->getField();
 
@@ -122,7 +124,19 @@ bool CPlayer::block(const Position& to)
     return false;
   ActBlock pkt;
   pkt.player_id = id_;
+	pkt.action = action;
   pkt.opponent_id = opponent->getId();
+  r_->sendPacket(pkt);
+  return true;
+}
+
+bool CPlayer::pass(const Position& to)
+{
+	ActPass pkt;
+  pkt.player_id = id_;
+	pkt.action = PASS;
+  pkt.dest_row = to.row;
+  pkt.dest_col = to.col;
   r_->sendPacket(pkt);
   return true;
 }

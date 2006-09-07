@@ -38,12 +38,14 @@ public:
   SPlayer* getOwner();
 	//! @brief remove ball from field (before a kickoff)
 	void removeFromField();
+	void scatter(int nb);
+	void setThrown();
 
 private:
   void msgPlaceBall(const MsgBallPos* m);
   void msgGiveBall(const MsgGiveBall* m);
   bool invalidBallPlacement();
-  void scatter(int nb);
+  
 
   void afterBounce(const Position& delta, int amplitude);
   //! @brief throwin in case the ball leave the field.
@@ -51,6 +53,8 @@ private:
 
   SRules* r_;
   SPlayer* owner_; ///< Ball owner, or NULL if nobody
+	bool thrown_;
+
 };
   
 #endif /* !SBALL_H_ */

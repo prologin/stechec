@@ -68,6 +68,39 @@ inline void Api::doAskIllegalProcedure()
   rules_->sendPacket(ActIllegalProc());
 }
 
+inline bool Api::doReroll()
+{
+	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+	if (!selected_team_->canUseReroll())
+    {
+      LOG2("Can't use reroll (no one left or allready use one this turn).");
+      return false;
+    }
+	if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
+		{
+      LOG2("Can't use reroll (no dice to reroll).");
+      return false;
+    }
+		
+	MsgReroll msg(rules_->our_team_->getTeamId());
+	msg.reroll = true;
+	rules_->sendPacket(msg);	return true;
+}
+
+inline bool Api::doAccept()
+{
+	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+	if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
+		{
+      LOG2("You do not have the choice...");
+      return false;
+    }
+	MsgReroll msg(rules_->our_team_->getTeamId());
+	msg.reroll = false;
+	rules_->sendPacket(msg);
+	return true;
+}
+
 inline bool Api::doPlaceBall(const Point& pos)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
@@ -122,19 +155,62 @@ inline bool Api::doGiveBall(int p)
 inline bool Api::doMovePlayer(int p, const Point& to)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->movePlayer(p, to);
+  return rules_->our_team_->movePlayer(p, to, MOVE);
 }
 
-inline bool Api::doStandUpPlayer(int p)
+inline bool Api::doBlitzMovePlayer(int p, const Point& to)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->standUpPlayer(p);
+  return rules_->our_team_->movePlayer(p, to, BLITZ);
+}
+
+inline bool Api::doPassMovePlayer(int p, const Point& to)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->movePlayer(p, to, PASS);
+}
+
+inline bool Api::doMoveStandUpPlayer(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->standUpPlayer(p, MOVE);
+}
+
+inline bool Api::doBlockStandUpPlayer(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->standUpPlayer(p, BLOCK);
+}
+
+inline bool Api::doBlitzStandUpPlayer(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->standUpPlayer(p, BLITZ);
+}
+
+inline bool Api::doPassStandUpPlayer(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->standUpPlayer(p, PASS);
 }
 
 inline bool Api::doBlockPlayer(int p, const Point& to)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->blockPlayer(p, to);
+  return rules_->our_team_->blockPlayer(p, to, BLOCK);
+}
+
+
+inline bool Api::doBlitzBlockPlayer(int p, const Point& to)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->blockPlayer(p, to, BLITZ);
+}
+
+inline bool Api::doPassPlayer(int p, const Point& to)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->passPlayer(p, to);
 }
 
 inline void Api::sendChatMessage(const std::string& msg)

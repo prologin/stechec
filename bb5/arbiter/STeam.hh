@@ -38,22 +38,26 @@ public:
   int state_;	///< Team state on client side.
 
   //! @brief Check if this player can do this action
-  bool canDoAction(const Packet* pkt, SPlayer* p);
+  bool canDoAction(const Packet* pkt, SPlayer* p, enum eActions action);
 
   void resetTurn();
   void setProneStunned();
 	void prepareKickoff();
+	void setConcernedPlayer(SPlayer* p);
 
 private:
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerInfo(const MsgPlayerInfo* m);
   void msgPlayerPos(const MsgPlayerPos* m);
+	void msgReroll(const MsgReroll* m);
   bool filterTeamInfo(const MsgTeamInfo* m);
   bool filterPlayerInfo(const MsgPlayerInfo* m);
   bool filterPlayerPos(const MsgPlayerPos* m);
+  bool filterReroll(const MsgReroll* m);
 
   SRules* r_;
   int curr_acting_player_;
+	SPlayer* concerned_player_; // When we are waiting for a reroll decision
 };
 
 #endif /* !STEAM_HH_ */

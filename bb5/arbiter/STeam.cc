@@ -26,6 +26,7 @@ STeam::STeam(int team_id, SRules* r)
   r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF);
+	r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_REROLL);
 }
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -106,10 +107,39 @@ bool STeam::filterPlayerPos(const MsgPlayerPos* m)
   return true;
 }
 
+// Want to use a reroll
+void STeam::msgReroll(const MsgReroll* m)
+{
+	if (m->reroll&(reroll_used_||reroll_remain_ == 0))
+		{
+			r_->sendIllegal(MSG_REROLL, m->client_id);
+			return;
+		}
+		
+	r_->sendPacket(*m);
+	state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+	r_->setState(state_);
+	
+	if (m->reroll)
+	{
+		reroll_used_ = true;
+		reroll_remain_ = 	reroll_remain_ - 1;
+	}
+	concerned_player_->finishAction(m->reroll);
+}
+
+bool STeam::filterReroll(const MsgReroll* m)
+{
+  if (m->client_id != team_id_)
+    return false;
+  return true;
+}
+
 
 void STeam::resetTurn()
 {
   curr_acting_player_ = -1;
+  concerned_player_ = NULL;
   blitz_done_ = false;
   pass_done_ = false;
   reroll_used_ = false;
@@ -132,7 +162,12 @@ void STeam::prepareKickoff()
       player_[i]->prepareKickoff();  
 }
 
-bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
+void STeam::setConcernedPlayer(SPlayer* p)
+{
+	concerned_player_ = p;
+}
+
+bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eActions action)
 {
   // Check if it's the team turn.
   if (r_->getCurrentTeamId() != pkt->client_id)
@@ -142,55 +177,77 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
       return false;
     }
 
-  if (p->hasDoneAction())
+	// Check if the player has allready played this turn.
+  if (p->hasPlayed())
     {
       LOG4("Cannot do action: this player already does something this turn");
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }
 
+	// If it is not the current player, the previous one finishes this turn.
   if (curr_acting_player_ != -1 && curr_acting_player_ != p->getId())
     {
       player_[curr_acting_player_]->setHasPlayed();
     }
 
-	if (pkt->token == ACT_STANDUP)
-    {
-      if (curr_acting_player_ == p->getId()) 
-				{
-					LOG4("Cannot try to stand up more than once.")
-				  r_->sendIllegal(pkt->token, p->getId());
-					return false;
-				}
-    }
+	// If he is stunned or out of the field, he can't do it
+	if ((p->getStatus() != STA_STANDING	||pkt->token == ACT_STANDUP)
+			&&(p->getStatus() != STA_PRONE	||pkt->token != ACT_STANDUP))
+		return false;
 
-  bool blitz_detected = false;
-  if (pkt->token == ACT_BLOCK && p->hasDoneMove())
-    blitz_detected = true;
-  if (pkt->token == ACT_MOVE && p->hasDoneBlock())
-    blitz_detected = true;
-    
-  if (pkt->token == ACT_PASS)
-    {
-      if (pass_done_)
-	{
-	  LOG4("Cannot do more than one pass in a single turn.")
-	  r_->sendIllegal(pkt->token, p->getId());
-	  return false;
-	}
-      pass_done_ = true;
-    }
-	
-  if (blitz_detected)
-    {
-      if (blitz_done_)
-	{
-	  LOG4("Cannot do more than one blitz in a single turn.")
-	  r_->sendIllegal(pkt->token, p->getId());
-	  return false;
-	}
-      blitz_done_ = true;
-    }
+	// Check the action declared is fit to the action
+	if (  (action == MOVE 	&&(	pkt->token == ACT_PASS	||pkt->token == ACT_BLOCK))
+			||(action == BLOCK 	&&(	pkt->token == ACT_PASS	||pkt->token == ACT_MOVE))
+			||(action == BLITZ 	&&	pkt->token == ACT_PASS)
+			||(action == PASS 	&&	pkt->token == ACT_BLOCK))
+		return false;
+
+	// If he has not played before
+	if (p->getAction() == NONE)
+		{
+			if (action == BLITZ)
+				{ 
+					if (blitz_done_)
+						{
+						  LOG4("Cannot do more than one blitz in a single turn.")
+						  r_->sendIllegal(pkt->token, p->getId());
+						  return false;
+						}
+					blitz_done_ = true;
+				}
+				
+			if (action == PASS)
+				{ 
+					if (pass_done_)
+						{
+						  LOG4("Cannot do more than one pass in a single turn.")
+						  r_->sendIllegal(pkt->token, p->getId());
+						  return false;
+						}
+					pass_done_ = true;
+				}
+				
+				p->setAction(action);
+		}
+	// If he has played before
+	else
+		{
+			// He must play the action he declared
+			if (action != p->getAction())
+				return false;
+				
+			// Cannot try to stand up more than once
+			if (pkt->token == ACT_STANDUP)
+    		{
+      		if (curr_acting_player_ == p->getId()) 
+						{
+							LOG4("Cannot try to stand up more than once.")
+				  		r_->sendIllegal(pkt->token, p->getId());
+							return false;
+						}
+    		}
+		}
 
   curr_acting_player_ = p->getId();
   return true;

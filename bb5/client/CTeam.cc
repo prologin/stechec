@@ -23,6 +23,8 @@ CTeam::CTeam(int team_id, CRules* r)
 {
   r_->HANDLE_F_WITH(MSG_TEAMINFO, CTeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, CTeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
+  r_->HANDLE_F_WITH(MSG_RESULT, CTeam, this, msgResult, filterResult, GS_ALL);
+	r_->HANDLE_F_WITH(MSG_REROLL, CTeam, this, msgReroll, filterReroll, GS_REROLL);
 }
 
 CTeam::~CTeam()
@@ -90,28 +92,36 @@ void CTeam::placeTeam(int formation_id)
       }
 }
 
-bool CTeam::movePlayer(int player_id, const Position& to)
+bool CTeam::movePlayer(int player_id, const Position& to, enum eActions action)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
     return false;
-  return p->move(to);
+  return p->move(to, action);
 }
 
-bool CTeam::standUpPlayer(int player_id)
+bool CTeam::standUpPlayer(int player_id, enum eActions action)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
     return false;
-  return p->standUp();
+  return p->standUp(action);
 }
 
-bool CTeam::blockPlayer(int player_id, const Position& to)
+bool CTeam::blockPlayer(int player_id, const Position& to, enum eActions action)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
     return false;
-  return p->block(to);
+  return p->block(to, action);
+}
+
+bool CTeam::passPlayer(int player_id, const Position& to)
+{
+	CPlayer* p = getPlayer(player_id);
+  if (p == NULL)
+    return false;
+	return p->pass(to);
 }
 
 void CTeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -134,6 +144,32 @@ void CTeam::msgPlayerInfo(const MsgPlayerInfo* m)
 }
 
 bool CTeam::filterPlayerInfo(const MsgPlayerInfo* m)
+{
+  if (m->client_id != team_id_)
+    return false;
+  return true;
+}
+
+void CTeam::msgResult(const MsgResult* m)
+{
+	if (m->reroll == true&&m->result + m->modifier < m->required)
+		r_->setState(GS_REROLL);
+	r_->onEvent(m);
+}
+
+bool CTeam::filterResult(const MsgResult* m)
+{
+  if (m->client_id != team_id_)
+    return false;
+  return true;
+}
+
+void CTeam::msgReroll(const MsgReroll* m)
+{
+	r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+}
+
+bool CTeam::filterReroll(const MsgReroll* m)
 {
   if (m->client_id != team_id_)
     return false;

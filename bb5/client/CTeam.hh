@@ -45,17 +45,22 @@ public:
 
   //! @brief Move a player to a position (as far as player can go)
   //!  Called from the UI.
-  bool movePlayer(int player_id, const Position& to);
+  bool movePlayer(int player_id, const Position& to, enum eActions action);
 
   //! @brief Stand up a player
   //!  Called from the UI.
-  bool standUpPlayer(int player_id);
+  bool standUpPlayer(int player_id, enum eActions action);
 
   //! @brief Do a block.
   //! @param player_id Player doing the block.
   //! @param to Block will be made to this position.
-  bool blockPlayer(int player_id, const Position& to);
+  bool blockPlayer(int player_id, const Position& to, enum eActions action);
   
+	//! @brief Do a pass.
+  //! @param player_id Player doing the pass.
+  //! @param to The pass destination.
+  bool passPlayer(int player_id, const Position& to);
+	
   //! @brief Get player
   //! @note Temporary, wait for API cleaning.
   const CPlayer* getPlayerConst(int id) const;
@@ -65,7 +70,10 @@ private:
   bool filterTeamInfo(const MsgTeamInfo* m);
   void msgPlayerInfo(const MsgPlayerInfo* m);
   bool filterPlayerInfo(const MsgPlayerInfo* m);
-
+	void msgResult(const MsgResult* m);
+	bool filterResult(const MsgResult* m);
+	void msgReroll(const MsgReroll* m);
+	bool filterReroll(const MsgReroll* m);
   CRules* r_;
   
   xml::XMLTeam xml_team_;

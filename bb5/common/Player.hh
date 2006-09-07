@@ -25,6 +25,7 @@ const int MAX_MOVE = 16;
 
 DECLARE_PACKET(ACT_MOVE, ActMove)
   int player_id;
+	int action;
   int nb_move;
   struct {
     int row;
@@ -34,10 +35,12 @@ END_PACKET
 
 DECLARE_PACKET(ACT_STANDUP, ActStandUp)
   int player_id;
+	int action;
 END_PACKET
 
 DECLARE_PACKET(ACT_BLOCK, ActBlock)
   int player_id;
+	int action;
   int opponent_id;
 END_PACKET
 
@@ -59,6 +62,7 @@ END_PACKET
 
 DECLARE_PACKET(ACT_PASS, ActPass)
   int player_id;
+	int action;
   int dest_row;
   int dest_col;
 END_PACKET
@@ -95,6 +99,15 @@ DECLARE_PACKET(MSG_PLAYERKO, MsgPlayerKO);
   int dice;
 END_PACKET
 
+DECLARE_PACKET(MSG_RESULT, MsgResult)
+  int player_id;
+	int roll_type;
+	int result;
+	int modifier;
+	int required;
+	bool reroll;
+END_PACKET
+
 
 /*!
 ** Base class describing a player.
@@ -127,15 +140,17 @@ public:
   enum eStatus getStatus() const;
 
   //! @brief Check if the player has performed an action this turn.
-  bool hasDoneAction() const;
-  //! @brief Check if the player has moved this turn.
-  bool hasDoneMove() const;
-  //! @brief Check if the player has blocked somebody this turn.
-  bool hasDoneBlock() const;
-
+  bool hasPlayed() const;
+	
   //! @brief Set the 'has played this turn' marker.
   void setHasPlayed();
 
+  //! @brief Return the action of this player.
+	enum eActions getAction() const;
+
+  //! @brief Set the action.
+	void setAction(enum eActions action);
+	
   //! @brief Called on new turn.
   void resetTurn();
 
@@ -154,9 +169,9 @@ protected:
   int av_;
 
   int ma_remain_;
-  bool has_done_action_;
-  bool has_done_block_;
-  bool will_prone_;
+	bool has_played_;
+	enum eActions action_;
+	bool will_prone_;
 
 public:
   //

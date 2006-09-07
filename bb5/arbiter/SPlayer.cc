@@ -92,11 +92,13 @@ bool SPlayer::tryAction(int modifier)
       LOG6("[" << id_ << "] Action _failed_, dice: " << dice_res
            << ", w/modifiers: " << dice_modif << ", required: " << required
            << ", ag: " << ag_ << ".");
+			sendRoll(dice_res, modifier, required);
       return false;
     }
   LOG6("[" << id_ << "] Action succeed, dice: " << dice_res
        << ", w/modifiers: " << dice_modif << ", required: " << required
        << ", ag: " << ag_ << ".");
+	sendRoll(dice_res, modifier, required);
   return true;
 }
 
@@ -110,13 +112,6 @@ int SPlayer::doMove(const ActMove* m)
   if (ma_remain_ < m->nb_move)
     {
       LOG4("Move: not enough movement remaining");
-      r_->sendIllegal(ACT_MOVE, m->client_id);
-      return 0;
-    }
-  // Check the player is standing
-  if (status_ != STA_STANDING)
-    {
-      LOG4("Move: not in a standing position");
       r_->sendIllegal(ACT_MOVE, m->client_id);
       return 0;
     }
@@ -149,14 +144,29 @@ int SPlayer::doMove(const ActMove* m)
       int nb_tackles_aim = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim);
       if (nb_tackles_pos > 0)
         {
+					action_attempted_ = R_DODGE;
+					reroll_enabled_ = t_->canUseReroll();
           if (tryAction(1 - nb_tackles_aim))
             {
               LOG5("Player has successfully dodged out from " << pos_ << ".");
             }
           else
             {
-              LOG5("Player has been knocked out from " << pos_ << ".");
+              LOG5("Player fails to dodge out from " << pos_ << ".");
+							aim_ = aim;
+							if (reroll_enabled_) {
+								if (res_move.nb_move > 0)
+							    r_->sendPacket(res_move);
+								return 0;
+							}
+
               knocked = true;
+				      checkArmor(0, 0);
+      				if (status_ == STA_STANDING)
+				        setStatus(STA_PRONE);
+				      MsgPlayerKnocked pkt(m->client_id);
+				      pkt.player_id = id_;
+				      r_->sendPacket(pkt);
             }
         }
 
@@ -172,11 +182,19 @@ int SPlayer::doMove(const ActMove* m)
         if (knocked)
           {
             picking_failed = true;
-	    b->bounce();
+				    b->bounce();
           }
         else
           {
+						action_attempted_ = R_PICKUP;
+						reroll_enabled_ = t_->canUseReroll();
             picking_failed = !b->catchBall(this, 1);
+						if (picking_failed && reroll_enabled_)
+							{
+							  if (res_move.nb_move > 0)
+							    r_->sendPacket(res_move);
+								return 0;
+							}
           }
       
       if (knocked || picking_failed)
@@ -201,17 +219,7 @@ int SPlayer::doMove(const ActMove* m)
       mesg.col = b->getPosition().col;
       r_->sendPacket(mesg);
     }
-  if (knocked)
-    {
-      checkArmor(0, 0);
-      if (status_ == STA_STANDING)
-        setStatus(STA_PRONE);
-      MsgPlayerKnocked pkt(m->client_id);
-      pkt.player_id = id_;
-      r_->sendPacket(pkt);
-      return 1;
-    }
-  if (picking_failed)
+  if (knocked||picking_failed)
     return 1;
 	
 	// Check if the player scores a touchdown
@@ -234,7 +242,11 @@ void SPlayer::doStandUp(const ActStandUp*)
   if (ma_ < 3)
     {
 			ma_remain_ = 0;
-			if (Dice(D6).roll() > 3) 			
+			int result = Dice(D6).roll();
+			action_attempted_ = R_STANDUP;
+			reroll_enabled_ = t_->canUseReroll();
+			sendRoll(result, 0, 4);
+			if (result >= 4)
 				setStatus(STA_STANDING);
     }
 	else
@@ -418,6 +430,16 @@ int SPlayer::doPass(const ActPass* m)
   SField* f = r_->getField();
   SBall* b = r_->getBall();
 
+	// Player must own the ball
+	if (b->getOwner() != this)
+		{
+			LOG2("You must own the ball");
+      r_->sendIllegal(ACT_PASS, m->client_id);
+      return 0;
+    }
+	
+	ma_remain_ = 0;
+
   Position dest(m->dest_row, m->dest_col);
   float dist = pos_.distance(dest);
   int dist_modifier;
@@ -432,23 +454,257 @@ int SPlayer::doPass(const ActPass* m)
     dist_modifier = -2; // long bomb
   else
     {
+				LOG2("Too far");
       r_->sendIllegal(ACT_PASS, m->client_id);
       return 0;
     }
 
+	has_played_ = true;
   int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
   int modifier = dist_modifier - nb_tackles;
-  int catch_mod = 0;
-
-  if (tryAction(modifier))
-    catch_mod = 1; // accurate pass
+  int catch_mod = 1;
 
   b->setPosition(dest);
+	action_attempted_ = R_THROW;
+	reroll_enabled_ = t_->canUseReroll();
+  if (!tryAction(modifier))
+		{
+			if (reroll_enabled_) {
+				return 0;
+			}
+    	catch_mod = 0;
+			b->scatter(1);
+			b->scatter(1);
+			b->scatter(1);
+		}
+
+	MsgBallPos mesg;
+  mesg.row = b->getPosition().row;
+  mesg.col = b->getPosition().col;
+  r_->sendPacket(mesg);
+
   SPlayer* p = f->getPlayer(b->getPosition());
-  if (!b->catchBall(p, catch_mod))
+	if (p != NULL&&p->getStatus() == STA_STANDING)
+		{
+			p->action_attempted_ = R_CATCH;
+			p->reroll_enabled_ = t_->canUseReroll();
+	  	b->catchBall(p, catch_mod);
+		}
+	else
+		b->bounce();
+  
+	// The ball checks if a player of the current team catch it
+	
+  return 0;
+}
+
+/*
+** Sending roll result
+*/
+void SPlayer::sendRoll(int result, int modifier, int required)
+{
+	MsgResult msg(team_id_);
+	msg.player_id = id_;
+	msg.roll_type = action_attempted_;
+	msg.result = result;
+	msg.modifier = modifier;
+	msg.required = required;	
+	msg.reroll = reroll_enabled_;
+	r_->sendPacket(msg);
+	
+	if (reroll_enabled_ && modifier + result < required)
+		{
+			r_->setState(GS_REROLL);
+			t_->state_ = GS_REROLL;
+			t_->setConcernedPlayer(this);
+		}
+}
+
+/*
+** Use of reroll
+*/
+
+void SPlayer::finishAction(bool reroll)
+{
+	reroll_enabled_ = false;
+	int result = -1;
+	switch (action_attempted_)
+		{
+		case R_DODGE : result = finishMove(reroll);
+			break;
+		case R_STANDUP : finishStandUp(reroll);
+			result = 0;
+			break;
+		case R_PICKUP : result = finishPickUp(reroll);
+			break;
+		case R_THROW : finishThrow(reroll);
+			result = 0;
+			break;
+		case R_CATCH : finishPickUp(reroll);
+			result = 0;
+			break;
+		}
+		if (result == 1)
+			r_->turnOver();
+	assert(result != -1);
+}
+
+int SPlayer::finishMove(bool reroll)
+{
+  SField* f = r_->getField();
+  SBall* b = r_->getBall();  
+
+  bool knocked = false;
+  bool picking_failed = false;
+
+  Position pos_ball = b->getPosition();
+
+  // Check tackle zones.
+  int nb_tackles_aim = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim_);
+  if (reroll&&tryAction(1 - nb_tackles_aim))
     {
-      return 1; // Turnover
+      LOG5("Player has successfully dodged out from " << pos_ << ".");
     }
+  else
+    {
+      LOG5("Player has been knocked out from " << pos_ << ".");
+      knocked = true;
+			checkArmor(0, 0);
+      if (status_ == STA_STANDING)
+        setStatus(STA_PRONE);
+      MsgPlayerKnocked pkt(team_id_);
+      pkt.player_id = id_;
+      r_->sendPacket(pkt);
+    }
+
+  // Ok... Move on.
+	ActMove res_move(team_id_);
+  res_move.player_id = id_;
+  res_move.nb_move = 1;
+  res_move.moves[0].row = aim_.row;
+  res_move.moves[0].col = aim_.col;
+	
+  setPosition(aim_, true);
+  ma_remain_--;
+
+  // Check if can pick the ball.
+  if (b->getPosition() == pos_&&b->getOwner() != this)
+    if (knocked)
+      {
+        picking_failed = true;
+			  b->bounce();
+      }
+    else
+      {
+        picking_failed = !b->catchBall(this, 1);
+      }
+          
+  // If he falls with the ball
+  if (knocked&&b->getOwner() == this)
+    {
+      b->bounce();
+    }
+    
+  // Send the result.
+	r_->sendPacket(res_move);
+  if (b->getPosition() != pos_ball)
+    {
+      MsgBallPos mesg;
+      mesg.row = b->getPosition().row;
+      mesg.col = b->getPosition().col;
+      r_->sendPacket(mesg);
+    }
+  if (knocked||picking_failed)
+    return 1;
+	
+	// Check if the player scores a touchdown
+	if (b->getOwner() == this)
+	  {
+			// I know it's ugly, but it's late...
+			int row = 25 * (1 - team_id_);
+			if (pos_.row == row)
+				r_->touchdown();
+		}	
+  return 0;
+}
+
+void SPlayer::finishStandUp(bool reroll)
+{
+	if (reroll)
+    {
+			int result = Dice(D6).roll();
+			action_attempted_ = R_STANDUP;
+			sendRoll(result, 0, 4);
+			if (result >= 4)
+				setStatus(STA_STANDING);
+    }
+}
+
+int SPlayer::finishPickUp(bool reroll)
+{
+  SBall* b = r_->getBall();  
+
+  if (reroll)
+		{
+    	if (b->catchBall(this, 1))
+			  {
+					// I know it's ugly, but it's late...
+					int row = 25 * (1 - team_id_);
+					if (pos_.row == row)
+						r_->touchdown();
+					return 0;
+				}
+				
+			return 1;
+		}
+	
+	b->bounce();
+	return 1;
+}
+
+int SPlayer::finishThrow(bool reroll)
+{
+  SField* f = r_->getField();
+  SBall* b = r_->getBall();
+
+  float dist = pos_.distance(b->getPosition());
+  int dist_modifier;
+
+  if (dist < 4.f)
+    dist_modifier = 1; // quick pass
+  else if (dist < 8.f)
+    dist_modifier = 0; // short pass
+  else if (dist < 12.f)
+    dist_modifier = -1; // long pass
+  else if (dist < 16.f)
+    dist_modifier = -2; // long bomb
+
+  int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+  int modifier = dist_modifier - nb_tackles;
+  int catch_mod = 1;
+
+  if (!reroll||!tryAction(modifier))
+		{
+    	catch_mod = 0;
+			b->scatter(1);
+			b->scatter(1);
+			b->scatter(1);
+		}
+	b->setThrown();
+
+	MsgBallPos mesg;
+  mesg.row = b->getPosition().row;
+  mesg.col = b->getPosition().col;
+  r_->sendPacket(mesg);
+
+  SPlayer* p = f->getPlayer(b->getPosition());
+	if (p != NULL&&p->getStatus() == STA_STANDING)
+	  b->catchBall(p, catch_mod);
+	else
+		b->bounce();
+  
+	// The ball checks if a player of the current team catch it
+	
   return 0;
 }
 
@@ -583,7 +839,7 @@ enum eStatus SPlayer::rollCasualty()
 
 void SPlayer::msgMove(const ActMove* m)
 {
-  if (!t_->canDoAction(m, this))
+  if (!t_->canDoAction(m, this, (enum eActions)m->action))
     return;
   if (doMove(m))
     r_->turnOver();
@@ -591,23 +847,22 @@ void SPlayer::msgMove(const ActMove* m)
 
 void SPlayer::msgStandUp(const ActStandUp* m)
 {
-  if (!t_->canDoAction(m, this))
+  if (!t_->canDoAction(m, this, (enum eActions)m->action))
     return;
 	doStandUp(m);
 }
 
 void SPlayer::msgBlock(const ActBlock* m)
 {
-  if (!t_->canDoAction(m, this))
+  if (!t_->canDoAction(m, this, (enum eActions)m->action))
     return;
   if (doBlock(m))
     r_->turnOver();
-  has_done_block_ = true;
 }
 
 void SPlayer::msgPass(const ActPass* m)
 {
-  if (!t_->canDoAction(m, this))
+  if (!t_->canDoAction(m, this, PASS))
     return;
   if (doPass(m))
     r_->turnOver();
