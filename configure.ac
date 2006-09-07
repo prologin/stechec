@@ -2,7 +2,7 @@
 
 # Autconf init
 AC_PREREQ(2.59)
-AC_INIT([stechec], [3.0], [https://projects.nekeme.net/projects/tbt/newticket])
+AC_INIT([stechec], [3.1], [http://projects.nekeme.net/projects/tbt/newticket])
 
 # Auxiliary files
 AC_CONFIG_AUX_DIR([build-aux])
@@ -137,32 +137,37 @@ CFLAGS="$CFLAGS -pipe"
 CXXFLAGS="$CXXFLAGS -pipe"
 
 # Readline (optional)
+HAVE_READLINE=no
 case $DEPENDS in
-     *readline*) STECHEC_CHECK_READLINE() ;;
+     *readline*) STECHEC_CHECK_READLINE ;;
 esac
+AM_CONDITIONAL([HAVE_READLINE], [test x"$HAVE_READLINE" = xyes])
 
 # SDL
+HAVE_SDL=no
+HAVE_PARAGUI=no
 case $DEPENDS in
     *sdl*) TBT_CHECK_SDL([1.2.0]) ;;
-    *) AM_CONDITIONAL([HAVE_SDL], [false])
-       AM_CONDITIONAL([HAVE_PARAGUI], [false])
-     ;;
 esac
+AM_CONDITIONAL([HAVE_SDL], [test x"$HAVE_SDL" = xyes])
+AM_CONDITIONAL([HAVE_PARAGUI], [test x"$HAVE_PARAGUI" = xyes])
 
 # QT
+HAVE_QT=no
 case $DEPENDS in
-    *qt*) TBT_CHECK_QT ;;
-    *) AM_CONDITIONAL([HAVE_QT], [false]) ;;
+    *qt*) STECHEC_CHECK_QT ;;
 esac
+AM_CONDITIONAL([HAVE_QT], [test x"$HAVE_QT" = xyes])
 
 # Xerces (XML parser)
 TBT_CHECK_XML
 
 # Mysql (really optionnal)
+HAVE_MYSQL=no
 case $DEPENDS in
     *mysql*) STECHEC_CHECK_MYSQL ;;
-    *) AM_CONDITIONAL([HAVE_MYSQL], [false]) ;;
 esac
+AM_CONDITIONAL([HAVE_MYSQL], [test x"$HAVE_MYSQL" = xyes])
 
 # Check for pthread.
 TBT_CHECK_PTHREAD
@@ -253,3 +258,23 @@ fi
 fi # !BUILD_prologin
 
 AC_OUTPUT
+
+##
+## Print summary
+##
+
+echo "
+ ---{ $PACKAGE_NAME $VERSION }---
+
+   prefix:		${prefix}
+   compiler:		${CXX}
+   cxxflags:		${CXXFLAGS}
+
+   Building modules:	${used_modules}
+   Building extensions
+     readline:		${HAVE_READLINE}
+     sdl:		${HAVE_SDL}
+     paragui:		${HAVE_PARAGUI}
+     qt:		${HAVE_QT}
+     mysql:		${HAVE_MYSQL}
+"

@@ -43,7 +43,10 @@ AC_DEFUN([STECHEC_CHECK_READLINE],
        if test x$have_readline_dev != xyes ; then
            READLINE_CFLAGS=""
            READLINE_LIBS=""
+       else
+	   HAVE_READLINE=yes
        fi
+       
        AC_SUBST([READLINE_CFLAGS])
        AC_SUBST([READLINE_LIBS])
    fi

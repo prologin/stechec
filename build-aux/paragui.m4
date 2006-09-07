@@ -37,7 +37,6 @@ AC_DEFUN([STECHEC_CHECK_PARAGUI],
               [enable_paraguitest=yes])
 
   min_paragui_version=ifelse([$1], , 0.11.0, $1)
-  AC_MSG_CHECKING([for PARAGUI - version >= $min_paragui_version])
 
   no_paragui=yes
   if test x$paragui_prefix != xno; then
@@ -48,6 +47,8 @@ AC_DEFUN([STECHEC_CHECK_PARAGUI],
        fi
     fi
     AC_PATH_PROG([PARAGUI_CONFIG], [paragui-config], [no], [$prefix/usr/bin:$prefix/bin:$PATH])
+    
+    AC_MSG_CHECKING([for PARAGUI - version >= $min_paragui_version])
 
     if test "$PARAGUI_CONFIG" != "no" ; then
       no_paragui=""
@@ -119,11 +120,7 @@ int main (int argc, char *argv[])
   else
     {
       printf("\n*** 'paragui-config --version' returned %d.%d.%d, but the minimum version\n", $paragui_major_version, $paragui_minor_version, $paragui_micro_version);
-      printf("*** of PARAGUI required is %d.%d.%d. If paragui-config is correct, then it is\n", major, minor, micro);
-      printf("*** best to upgrade to the required version.\n");
-      printf("*** If paragui-config was wrong, set the environment variable PARAGUI_CONFIG\n");
-      printf("*** to point to the correct copy of paragui-config, and remove the file\n");
-      printf("*** config.cache before re-running configure\n");
+      printf("*** of PARAGUI required is %d.%d.%d.\n", major, minor, micro);
       return 1;
     }
 }
@@ -139,49 +136,15 @@ int main (int argc, char *argv[])
   if test x$no_paragui = x ; then
       # Yeah, it _is_ present !
       AC_MSG_RESULT([yes])
-      AM_CONDITIONAL([HAVE_PARAGUI], [true])
+      HAVE_PARAGUI=yes
   else
       # It is not present. Try to print why. This is not fatal.
-      AM_CONDITIONAL([HAVE_PARAGUI], [false])
       if test x$paragui_prefix != xno; then
           AC_MSG_RESULT([no])
       else
           AC_MSG_RESULT([no, disabled by user])
       fi
 
-      if test x$paragui_prefix = xno; then
-          :
-      elif test "$PARAGUI_CONFIG" = "no" ; then
-          echo "*** The paragui-config script installed by PARAGUI could not be found"
-          echo "*** If PARAGUI was installed in PREFIX, make sure PREFIX/bin is in"
-          echo "*** your path, or set the PARAGUI_CONFIG environment variable to the"
-          echo "*** full path to paragui-config."
-      elif test -f conf.paraguitest ; then
-          :
-      else
-          echo "*** Could not run PARAGUI test program, checking why..."
-          CFLAGS="$CFLAGS $PARAGUI_CFLAGS"
-          LIBS="$LIBS $PARAGUI_LIBS"
-          AC_TRY_LINK([
-#include "paragui.h"
-#include <stdio.h>
-],      [ return 0; ],
-              [ echo "*** The test program compiled, but did not run. This usually means"
-                  echo "*** that the run-time linker is not finding PARAGUI or finding the wrong"
-                  echo "*** version of PARAGUI. If it is not finding PARAGUI, you'll need to set your"
-                  echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-                  echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-                  echo "*** is required on your system"
-                  echo "***"
-                  echo "*** If you have an old version installed, it is best to remove it, although"
-                  echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"],
-              [ echo "*** The test program failed to compile or link. See the file config.log for the"
-                  echo "*** exact error that occured. This usually means PARAGUI was incorrectly installed"
-                  echo "*** or that you have moved PARAGUI since it was installed. In the latter case, you"
-                  echo "*** may want to edit the paragui-config script: $PARAGUI_CONFIG" ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-      fi
       PARAGUI_CFLAGS=""
       PARAGUI_LIBS=""
   fi # $no_paragui = yes

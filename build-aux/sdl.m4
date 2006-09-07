@@ -212,7 +212,6 @@ AC_DEFUN([TBT_CHECK_SDL],
 
   if test "x$tbt_cv_sdl_prefix" = xno; then
       # Explicitly disabled by user.
-      AM_CONDITIONAL([HAVE_SDL], [false])
       AC_MSG_CHECKING([for SDL - version >= $1])
       AC_MSG_RESULT([disabled by user])
   else
@@ -264,10 +263,9 @@ Warning: This is probably _not_ what you want.
       # Check for Paragui, only for bb5 module.
       case $used_modules in
           *bb5*)  STECHEC_CHECK_PARAGUI([1.1.8]) ;;
-          *)      AM_CONDITIONAL([HAVE_PARAGUI], [false]) ;;
       esac
 
-      AM_CONDITIONAL([HAVE_SDL], [true])
+      HAVE_SDL=yes
       AC_DEFINE([HAVE_SDL], [], [Have SDL])
       AC_SUBST([SDL_CFLAGS])
       AC_SUBST([SDL_LIBS])
@@ -278,5 +276,4 @@ Warning: This is probably _not_ what you want.
       LDFLAGS="$ac_save_LDFLAGS"
 
   fi # !use_sdl
-    AM_CONDITIONAL([HAVE_PARAGUI], [test x"$PARAGUI_CFLAGS" != x])
 ])

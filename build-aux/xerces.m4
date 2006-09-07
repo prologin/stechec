@@ -17,6 +17,8 @@ AC_DEFUN([TBT_CHECK_XML],
         fi])
     ])
 
+  HAVE_XERCES=no
+
    # User-specified directory overrides any other definition
    if test "x$tbt_cv_xml_user_hint" != xno; then
       XERCES_EXTRA_CPPFLAGS="-I$tbt_cv_xml_user_hint/include"
@@ -99,6 +101,7 @@ Or report this as a bug.
 
    AC_SUBST([XERCES_CPPFLAGS], ["$XERCES_EXTRA_CPPFLAGS"])
    AC_SUBST([XERCES_LDFLAGS], ["$XERCES_EXTRA_LDFLAGS -lxerces-c"])
+   HAVE_XERCES=yes
 
    AC_LANG_POP([C++])
 ])

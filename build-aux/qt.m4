@@ -306,7 +306,7 @@ AC_SUBST(QASSISTANTCLIENT_LDADD)
 ])
 
 #
-# TBT_CHECK_QT()
+# STECHEC_CHECK_QT()
 #
 # Define:
 #  QT_CFLAGS
@@ -314,13 +314,11 @@ AC_SUBST(QASSISTANTCLIENT_LDADD)
 #  HAVE_QT
 #
 # --------------------------------------------------------------
-AC_DEFUN([TBT_CHECK_QT],
+AC_DEFUN([STECHEC_CHECK_QT],
 [
   AC_ARG_WITH([qt],
 	[  --with-qt=DIR        Qt installation directory [default=$QTDIR]],
 	[QTDIR=$withval])
-
-  AM_CONDITIONAL([HAVE_QT], [test "x$QTDIR" != "xno"])
 
   if test "x$QTDIR" != "xno"; then
     QT_CHECK_QTDIR
@@ -343,5 +341,9 @@ AC_DEFUN([TBT_CHECK_QT],
     else
       QT_CHECK_OLD
     fi
+    
+    # Actually, if it was missing, an error is issued.
+    # Thus, going here means we have it. This should be fixed.
+    HAVE_QT=yes
   fi
 ])# QT_CHECK
