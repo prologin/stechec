@@ -411,7 +411,7 @@ bool Input::process()
   while (ret > 0)
     {
       ret = select(STDIN_FILENO + 1, &fds, NULL, NULL, &tval);
-      if (ret < 0)
+      if (ret < 0 && errno != EINTR)
         PRINT_AND_THROW(Exception, "stdin select");
       if (ret > 0)
         rl_callback_read_char();
