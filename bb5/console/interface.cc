@@ -138,7 +138,7 @@ void CmdLineInterface::printField()
 
           // print square content.
           Position pos(row, col);
-          Position ball_pos(api_->ballX(), api_->ballY());
+          Position ball_pos(api_->ballY(), api_->ballX());
           const CPlayer* p = api_->getPlayer(pos);
           if (p != NULL)
             {
