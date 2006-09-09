@@ -125,16 +125,6 @@ inline void Player::resetTurn()
 
 // Todo: status, status string
 
-inline int Player::getPlayerPosition() const
-{
-  return player_position_;
-}
-
-inline const std::string& Player::getPlayerPicture() const
-{
-  return player_picture_;
-}
-  
 
 inline std::ostream& operator<< (std::ostream& os, const Player& p)
 {

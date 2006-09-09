@@ -134,6 +134,17 @@ bool CPlayer::pass(const Position& to)
 }
 
 
+int CPlayer::getPlayerPosition() const
+{
+  return player_position_;
+}
+
+const std::string& CPlayer::getPlayerPicture() const
+{
+  return player_picture_;
+}
+
+
 /*
 ** Messages.
 */

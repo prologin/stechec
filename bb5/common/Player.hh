@@ -182,17 +182,6 @@ protected:
 private:
   typedef std::vector<enum eSkill> SkillList;
   SkillList	skill_list_; ///< List of skills that this player have.
-
-public:
-  //
-  // Graphic infos, not stored by the server.
-  //
-  int getPlayerPosition() const;
-  const std::string& getPlayerPicture() const;
-  
-protected:
-  int player_position_;
-  std::string player_picture_;
 };
 
 # include "Player.hxx"

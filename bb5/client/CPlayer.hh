@@ -48,6 +48,13 @@ public:
   //! @brief Substract dep to ma_remain_.
   void subMa(int dep);
 
+  //! @brief Graphic info (x-shift of player in the picture).
+  int getPlayerPosition() const;
+
+  //! @brief Graphic info.
+  const std::string& getPlayerPicture() const;
+
+  
 private:
   CRules* r_;
 
@@ -64,6 +71,10 @@ private:
   bool filterPlayerKnocked(const MsgPlayerKnocked* m);
   bool filterPlayerStatus(const MsgPlayerStatus* m);
   bool filterPlayerKO(const MsgPlayerKO* m);
+
+  // for graphic UI.
+  int player_position_;
+  std::string player_picture_;
 };
 
 #endif /* !CPLAYER_HH_ */
