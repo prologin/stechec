@@ -252,7 +252,7 @@ void                NutsBarrier::dumbLoop() const
   int                i, j, k;
 
   k = 42;
-  for (i = 0; i < 10000; ++i)  
+  for (i = 0; i < 10000; ++i)
     for (j = 0; j <= 8000; j++)
       k += i * j;
 }
