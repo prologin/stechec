@@ -39,7 +39,7 @@ public:
   void unselect();
 
   //! @brief Do an action.
-  void action(eAction item);
+  void action(eVisuAction item);
 
   virtual void setPos(const Point& pos);
   virtual void update();

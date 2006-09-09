@@ -162,7 +162,7 @@ void Game::unselectAllPlayer()
         player_[i][j]->unselect();
 }
 
-void Game::addAction(eAction action)
+void Game::addAction(eVisuAction action)
 {
   LOG2("PREPARE an action !");
   action_ = action;

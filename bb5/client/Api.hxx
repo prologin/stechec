@@ -298,12 +298,32 @@ inline int Api::ballY() const
   return rules_->ball_->getPosition().getY();
 }
 
-
 inline int Api::selectPlayer(int player_id)
 {
   CHECK_TEAM;
   selected_player_ = selected_team_->getPlayer(player_id);
   return selected_player_ == NULL ? BAD_PLAYER : SUCCESS;
+}
+
+inline int Api::playerStatus() const
+{
+  CHECK_PLAYER;
+  return (int)selected_player_->getStatus();
+}
+
+
+inline int Api::actionPossibleNumber() const
+{
+  CHECK_PLAYER;
+  // FIXME: todo
+  return 0;
+}
+
+inline int Api::actionPossible(int index) const
+{
+  CHECK_PLAYER;
+  // FIXME: todo
+  return 0;
 }
 
 inline int Api::moveLength(int dst_x, int dst_y)

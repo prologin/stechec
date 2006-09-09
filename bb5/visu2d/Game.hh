@@ -61,7 +61,7 @@ public:
 
   //! @brief Coach choose an action to do (move, block,...),
   //! next click and it will be done.
-  void addAction(eAction action);
+  void addAction(eVisuAction action);
   
   int run();
 
@@ -89,7 +89,7 @@ private:
   bool                  is_playing_;
 
   TextSurface           txt_status_;
-  eAction               action_;
+  eVisuAction           action_;
 };
 
 #endif /* !GAME_HH_ */

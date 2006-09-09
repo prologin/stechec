@@ -17,10 +17,13 @@
 #ifndef CONSTANTS_HH_
 # define CONSTANTS_HH_
 
-/*! @file Constants.hh
-**
+/*!
+** @file Constants.hh
+** 
 ** Put here some meaningful constants here.
+** @defgroup rules Blood Bowl rules manager (according to LRB5).
 */
+//@{
 
 # include "PacketHandler.hh"
 
@@ -44,9 +47,6 @@ const int ROWS             = 26; ///< [| 0, 25 |]
 
 //! @brief Maximum number of players
 const int MAX_PLAYER	   = 16;
-
-//! @brief Constant defining turnover action result.
-const int ACT_RES_TO       = 0xDEADBEEF; 
 
 
 //! @brief Constants that can be returned by the API.
@@ -93,8 +93,11 @@ enum {
   ACT_PASS
 };
 
+//! @brief Player status.
+//! @note You can get a stringified version into the
+//!   class Player.
 enum eStatus {
-  STA_UNASSIGNED,
+  STA_UNASSIGNED = 0,
 
   // Common status
   STA_RESERVE,
@@ -106,31 +109,40 @@ enum eStatus {
   STA_SENTOFF,
 
   // skill/trait related... for futur usage
-  STA_ROOTED,
-  STA_BONEHEAD,
-  STA_STUPID,
-  STA_GAZE
+  //STA_ROOTED,
+  //STA_BONEHEAD,
+  //STA_STUPID,
+  //STA_GAZE
 };
 
-enum eActions {
-	NONE,
-	MOVE,
-	BLOCK,
-	BLITZ,
-	PASS
+//! @brief Player actions.
+//! @note You can get a stringified version into the
+//!   class Player.
+enum eAction {
+  NONE = 0,
+  MOVE,
+  BLOCK,
+  BLITZ,
+  PASS
 };
 
+//! @brief Type of dice Roll
+//! @note You can get a stringified version into the
+//!   class Dice.
 enum eRoll {
-	R_DODGE,
-	R_STANDUP,
-	R_PICKUP,
-	R_ARMOUR,
-	R_INJURY,
-	R_THROW,
-	R_CATCH,
-	R_BLOCK
+  R_DODGE,
+  R_STANDUP,
+  R_PICKUP,
+  R_ARMOUR,
+  R_INJURY,
+  R_THROW,
+  R_CATCH,
+  R_BLOCK
 };
 
+//! @brief List of player skills.
+//! @note You can get a stringified version into the
+//!   class Player.
 enum eSkill {
   SK_BLOCK = 0,
   SK_CATCH,
@@ -169,5 +181,6 @@ DECLARE_PACKET(MSG_ILLEGAL, MsgIllegal)
   int was_token;
 END_PACKET
 
+//@}
 
 #endif /* !CONSTANTS_HH_ */

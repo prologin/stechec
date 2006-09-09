@@ -31,13 +31,13 @@ public:
   virtual ~CPlayer();
 
   //! @brief Move the player on the field.
-  bool move(const Position& to, enum eActions action);
+  bool move(const Position& to, enum eAction action);
 	
 	//! @brief Stand up the player.
-  bool standUp(enum eActions action);
+  bool standUp(enum eAction action);
 
   //! @brief Block the player at the specified position.
-  bool block(const Position& to, enum eActions action);
+  bool block(const Position& to, enum eAction action);
 	
   //! @brief Block the player at the specified position.
   bool pass(const Position& to);

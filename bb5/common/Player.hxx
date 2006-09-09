@@ -100,12 +100,12 @@ inline void Player::setHasPlayed()
   has_played_ = true;
 }
 
-inline enum eActions Player::getAction() const
+inline enum eAction Player::getAction() const
 {
   return action_;
 }
 
-inline void Player::setAction(enum eActions action)
+inline void Player::setAction(enum eAction action)
 {
   action_ = action;
 }
@@ -124,6 +124,66 @@ inline void Player::resetTurn()
 }
 
 // Todo: status, status string
+
+inline const char* Player::stringify(enum eStatus status)
+{
+  switch (status)
+    {
+    case STA_UNASSIGNED:
+      return "Unassigned (!!!)";
+    case STA_RESERVE:
+      return "Reserve";
+    case STA_STANDING:
+      return "Standing";
+    case STA_PRONE:
+      return "Prone";
+    case STA_STUNNED:
+      return "Stunned";
+    case STA_KO:
+      return "KO";
+    case STA_INJURED:
+      return "Injured";
+    case STA_SENTOFF:
+      return "Sent Off";
+    }
+  return "kikoolol";
+}
+
+inline const char* Player::stringify(enum eAction action)
+{
+  switch (action)
+    {
+    case NONE:
+      return "None";
+    case MOVE:
+      return "Move";
+    case BLOCK:
+      return "Block";
+    case BLITZ:
+      return "Blitz";
+    case PASS:
+      return "Pass";
+    }
+  return "kikoolol";
+}
+
+inline const char* Player::stringify(enum eSkill skill)
+{
+  switch (skill)
+    {
+    case SK_BLOCK:
+      return "SK_BLOCK";
+    case SK_CATCH:
+      return "SK_CATCH";
+    case SK_DODGE:
+      return "SK_DODGE";
+    case SK_PASS:
+      return "SK_PASS";
+    case SK_SUREHANDS:
+      return "SK_SUREHANDS";
+    }
+  return "kikoolol";
+}
 
 
 inline std::ostream& operator<< (std::ostream& os, const Player& p)
@@ -144,41 +204,8 @@ inline std::ostream& operator<< (std::ostream& os, const Player& p)
      << "ag: " << p.ag_ << " | "
      << "av: " << p.av_ << "\n"
      << "  ma_remain     : " << p.ma_remain_ << "\n"
-     << "  status : ";
-  switch(p.status_)
-    {
-		case STA_RESERVE:
-		  os << "Reserve";
-			break;
-		
-    case STA_STANDING:
-      os << "Standing";
-      break;
-      
-    case STA_PRONE:
-      os << "Prone";
-      break;
-      
-    case STA_STUNNED:
-      os << "Stunned";
-      break;
+     << "  status : " << p.stringify(p.status_);
 
-    case STA_KO:
-      os << "KO";
-      break;
-      
-    case STA_INJURED:
-      os << "Injured";
-      break;
-      
-    case STA_UNASSIGNED:
-      os << "Warning -> No status!";
-      break;
-
-    default:
-      os << "Error -> unknown status";
-      break;
-  }
   os << std::endl;
   return os;
 }

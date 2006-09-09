@@ -91,7 +91,6 @@ public:
   //! @brief Return the ball Y position, -1 if outside.
   int			ballY() const;
 
-  
   //! @brief Select team to fetch information from.
   //!   Further call to all other API function will return
   //!   information for that team.
@@ -106,6 +105,18 @@ public:
   //! @param player_id Player identifier, in the range [0, MAX_PLAYER - 1].
   //! @attention It is reset when selectTeam is called.
   int                   selectPlayer(int player_id);
+
+  //! @brief Get the player status
+  //! @return Player status.
+  int			playerStatus() const;
+
+  //! @brief Get the number of possible action for the selected player.
+  //! @return The number of possible action
+  int			actionPossibleNumber() const;
+
+  //! @brief Get a possible action for the selected player.
+  //! @param index Action index, in the range [0 - actionPossibleNumber() - 1]
+  int			actionPossible(int index) const;
 
   //! @brief Length that a move will take to the specified destination
   //!   for the for selected player.

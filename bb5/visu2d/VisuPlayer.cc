@@ -59,7 +59,7 @@ void VisuPlayer::unselect()
     }
 }
 
-void VisuPlayer::action(eAction item)
+void VisuPlayer::action(eVisuAction item)
 {
   Point to((game_.getInput().mouse_ + game_.getField().getRealAbsoluteRect().getPos()) / 40);
   int player_id = p_->getId();

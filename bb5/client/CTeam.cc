@@ -111,7 +111,7 @@ void CTeam::placeTeam(int formation_id)
       }
 }
 
-bool CTeam::movePlayer(int player_id, const Position& to, enum eActions action)
+bool CTeam::movePlayer(int player_id, const Position& to, enum eAction action)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
@@ -119,7 +119,7 @@ bool CTeam::movePlayer(int player_id, const Position& to, enum eActions action)
   return p->move(to, action);
 }
 
-bool CTeam::standUpPlayer(int player_id, enum eActions action)
+bool CTeam::standUpPlayer(int player_id, enum eAction action)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
@@ -127,7 +127,7 @@ bool CTeam::standUpPlayer(int player_id, enum eActions action)
   return p->standUp(action);
 }
 
-bool CTeam::blockPlayer(int player_id, const Position& to, enum eActions action)
+bool CTeam::blockPlayer(int player_id, const Position& to, enum eAction action)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
@@ -169,15 +169,14 @@ bool CTeam::filterPlayerInfo(const MsgPlayerInfo* m)
   return true;
 }
 
-void CTeam::msgReroll(const MsgReroll*)
+void CTeam::msgReroll(const MsgReroll* m)
 {
-	r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
-	if (m->reroll)
-		{
-			reroll_used_ == true;
-			reroll_remain_ = reroll_remain_ - 1;
-		}
-		
+  r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+  if (m->reroll)
+    {
+      reroll_used_ = true;
+      reroll_remain_ = reroll_remain_ - 1;
+    }
 }
 
 bool CTeam::filterReroll(const MsgReroll* m)

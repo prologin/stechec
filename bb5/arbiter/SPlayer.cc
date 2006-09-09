@@ -291,7 +291,7 @@ int SPlayer::doBlock(const ActBlock* m)
   for (int i = 0; i < nb_dice_; ++i)
     {
       result_[i] = (enum eBlockDiceFace)d.roll();
-   	  LOG5("Rolled block dice: " << Dice::getBlockDiceString(result_[i]));
+   	  LOG5("Rolled block dice: " << Dice::stringify(result_[i]));
 			msg.results[i] = result_[i];
    }
 
@@ -644,6 +644,8 @@ void SPlayer::finishAction(bool reroll)
 		case R_BLOCK : finishBlock(reroll);
 			result = 0;
 			break;
+		default:
+		  break;
 		}
 		if (result == 1)
 			r_->turnOver();
@@ -829,7 +831,7 @@ void SPlayer::finishBlock(bool reroll)
   		for (int i = 0; i < nb_dice_; ++i)
     		{
 	      	result_[i] = (enum eBlockDiceFace)d.roll();
-	  	 	  LOG5("Rolled block dice: " << Dice::getBlockDiceString(result_[i]));
+	  	 	  LOG5("Rolled block dice: " << Dice::stringify(result_[i]));
 					msg.results[i] = result_[i];
 	  	}
 		}
@@ -917,31 +919,37 @@ void SPlayer::setProne()
 
 void SPlayer::prepareKickoff()
 {
-	switch(status_)
-	{
-	  case STA_STANDING :
-		case STA_PRONE :
-		case STA_STUNNED :
-			r_->getField()->setPlayer(pos_, NULL);
-			setStatus(STA_RESERVE);
-			break;
-	
-		case STA_KO :
-			int dice = Dice(6).roll();
-			MsgPlayerKO msg;
-			msg.player_id = id_;
-			msg.dice = dice;
-			r_->sendPacket(msg);
-			if (dice > 3)
-				setStatus(STA_RESERVE);
-			break;
-	}
+  MsgPlayerKO msg;
+  int dice;
+  
+  switch (status_)
+    {
+    case STA_STANDING:
+    case STA_PRONE:
+    case STA_STUNNED:
+      r_->getField()->setPlayer(pos_, NULL);
+      setStatus(STA_RESERVE);
+      break;
+
+    case STA_KO:
+      dice = Dice(6).roll();
+      msg.player_id = id_;
+      msg.dice = dice;
+      r_->sendPacket(msg);
+      if (dice > 3)
+	setStatus(STA_RESERVE);
+      break;
+
+    default:
+      WARN("case not handled...");
+      break;
+    }
 }
 
 void SPlayer::checkArmor(int av_mod, int inj_mod)
 {
   Dice d(D6);
-	int result = d.roll(2);
+  int result = d.roll(2);
   if (result + av_mod > av_)
     rollInjury(inj_mod);
 }
@@ -988,7 +996,7 @@ enum eStatus SPlayer::rollCasualty()
 
 void SPlayer::msgMove(const ActMove* m)
 {
-  if (!t_->canDoAction(m, this, (enum eActions)m->action))
+  if (!t_->canDoAction(m, this, (enum eAction)m->action))
     return;
   if (doMove(m))
     r_->turnOver();
@@ -996,14 +1004,14 @@ void SPlayer::msgMove(const ActMove* m)
 
 void SPlayer::msgStandUp(const ActStandUp* m)
 {
-  if (!t_->canDoAction(m, this, (enum eActions)m->action))
+  if (!t_->canDoAction(m, this, (enum eAction)m->action))
     return;
 	doStandUp(m);
 }
 
 void SPlayer::msgBlock(const ActBlock* m)
 {
-  if (!t_->canDoAction(m, this, (enum eActions)m->action))
+  if (!t_->canDoAction(m, this, (enum eAction)m->action))
     return;
   if (doBlock(m))
     r_->turnOver();

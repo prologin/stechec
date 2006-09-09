@@ -48,7 +48,7 @@ void CPlayer::subMa(int dep)
   ma_remain_ -= dep;
 }
 
-bool CPlayer::standUp(enum eActions action)
+bool CPlayer::standUp(enum eAction action)
 {
  	if (status_ != STA_PRONE)
     {
@@ -63,7 +63,7 @@ bool CPlayer::standUp(enum eActions action)
   return true;
 }
 
-bool CPlayer::move(const Position& to, enum eActions action)
+bool CPlayer::move(const Position& to, enum eAction action)
 {
   CField* f = r_->getField();
 
@@ -105,7 +105,7 @@ bool CPlayer::move(const Position& to, enum eActions action)
   return true;
 }
 
-bool CPlayer::block(const Position& to, enum eActions action)
+bool CPlayer::block(const Position& to, enum eAction action)
 {
   CField* f = r_->getField();
 

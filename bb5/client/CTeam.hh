@@ -45,16 +45,16 @@ public:
 
   //! @brief Move a player to a position (as far as player can go)
   //!  Called from the UI.
-  bool movePlayer(int player_id, const Position& to, enum eActions action);
+  bool movePlayer(int player_id, const Position& to, enum eAction action);
 
   //! @brief Stand up a player
   //!  Called from the UI.
-  bool standUpPlayer(int player_id, enum eActions action);
+  bool standUpPlayer(int player_id, enum eAction action);
 
   //! @brief Do a block.
   //! @param player_id Player doing the block.
   //! @param to Block will be made to this position.
-  bool blockPlayer(int player_id, const Position& to, enum eActions action);
+  bool blockPlayer(int player_id, const Position& to, enum eAction action);
   
 	//! @brief Do a pass.
   //! @param player_id Player doing the pass.

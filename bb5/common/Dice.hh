@@ -17,6 +17,8 @@
 #ifndef _DICE_HH_
 # define _DICE_HH_
 
+# include "Constants.hh"
+
 /*!
 ** @file dice.hh
 */
@@ -68,7 +70,8 @@ class Dice
 
   int roll(bool reroll, int x = 1);
 
-  static const char* getBlockDiceString(enum eBlockDiceFace face);
+  static const char* stringify(enum eBlockDiceFace face);
+  static const char* stringify(enum eRoll roll);
   
 private:
   int type_; 

@@ -20,8 +20,8 @@
 STeam::STeam(int team_id, SRules* r)
   : Team<SPlayer>(team_id),
     state_(GS_INITGAME),
-    r_(r),
-    curr_acting_player_(-1)
+    curr_acting_player_(-1),
+    r_(r)
 {
   r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
@@ -159,7 +159,7 @@ void STeam::msgBlockDice(const MsgBlockDice* m)
 	concerned_player_->resolveBlock(m->dice);
 }
 
-bool STeam::filterBlockDice(const MsgBlockDice* m)
+bool STeam::filterBlockDice(const MsgBlockDice*)
 {
   if (r_->getCurrentTeamId() != team_id_)
     return false;
@@ -227,7 +227,7 @@ void STeam::setConcernedPlayer(SPlayer* p)
 	concerned_player_ = p;
 }
 
-bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eActions action)
+bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eAction action)
 {
   // Check if it's the team turn.
   if (r_->getCurrentTeamId() != pkt->client_id)

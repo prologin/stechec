@@ -74,7 +74,7 @@ int Dice::roll(int nb_dice)
   return val;
 }
 
-const char* Dice::getBlockDiceString(enum eBlockDiceFace face)
+const char* Dice::stringify(enum eBlockDiceFace face)
 {
   switch (face)
     {
@@ -88,6 +88,30 @@ const char* Dice::getBlockDiceString(enum eBlockDiceFace face)
       return "BDEFENDER_STUMBLE";
     case BDEFENDER_DOWN:
       return "BDEFENDER_DOWN";
+    }
+  return "kikoolol";
+}
+
+const char* Dice::stringify(enum eRoll roll)
+{
+  switch (roll)
+    {
+    case R_DODGE:
+      return "R_DODGE";
+    case R_STANDUP:
+      return "R_STANDUP";
+    case R_PICKUP:
+      return "R_PICKUP";
+    case R_ARMOUR:
+      return "R_ARMOUR";
+    case R_INJURY:
+      return "R_INJURY";
+    case R_THROW:
+      return "R_THROW";
+    case R_CATCH:
+      return "R_CATCH";
+    case R_BLOCK:
+      return "R_BLOCK";
     }
   return "kikoolol";
 }

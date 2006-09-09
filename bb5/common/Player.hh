@@ -167,10 +167,10 @@ public:
   void setHasPlayed();
 
   //! @brief Return the action of this player.
-  enum eActions getAction() const;
+  enum eAction getAction() const;
 
   //! @brief Set the action.
-  void setAction(enum eActions action);
+  void setAction(enum eAction action);
 
   //! @brief Check if this player has this skill.
   bool hasSkill(enum eSkill skill) const;
@@ -178,6 +178,10 @@ public:
   //! @brief Called on new turn.
   void resetTurn();
 
+  static const char* stringify(enum eStatus status);
+  static const char* stringify(enum eAction action);
+  static const char* stringify(enum eSkill skill);
+  
   friend std::ostream& operator<< (std::ostream& os, const Player& p);
 
 protected:
@@ -194,7 +198,7 @@ protected:
 
   int ma_remain_;
   bool has_played_;
-  enum eActions action_;
+  enum eAction action_;
   bool will_prone_;
 
 private:

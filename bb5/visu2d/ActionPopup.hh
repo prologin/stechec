@@ -20,7 +20,7 @@
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
 
-enum eAction {
+enum eVisuAction {
   eActNone,
   eActMove,
   eActBlock,
