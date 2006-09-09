@@ -27,7 +27,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 #else
-# error Sorry, fallback when readline not present is not implemented yet.
+# define NO_READLINE 1
 #endif
 
 #include "interface.hh"
@@ -39,13 +39,14 @@ using namespace std;
 // Realine forward declaration.
 //
 
+#ifndef NO_READLINE
 // Yes, easier.
 static Input* input_inst = NULL;
 
 void get_line(char* line);
 char** cmd_completion(const char* text, int start, int end);
 char* cmd_completion_foo(const char*, int);
-
+#endif // !NO_READLINE
 
 //
 // List of commands.
@@ -378,6 +379,7 @@ Input::Input(CmdLineInterface* i, Api* gc)
 {
   ios_base::sync_with_stdio(true);
 
+#ifndef NO_READLINE
   // Initialize readline
   rl_callback_handler_install(NULL, &get_line);
   rl_attempted_completion_function = cmd_completion;
@@ -385,12 +387,15 @@ Input::Input(CmdLineInterface* i, Api* gc)
 
   assert(input_inst == NULL);
   input_inst = this;
+#endif // !NO_READLINE
 }
 
 Input::~Input()
 {
+#ifndef NO_READLINE
   input_inst = NULL;
   rl_callback_handler_remove();
+#endif // !NO_READLINE
 }
 
 bool Input::process()
@@ -414,7 +419,32 @@ bool Input::process()
       if (ret < 0 && errno != EINTR)
         PRINT_AND_THROW(Exception, "stdin select");
       if (ret > 0)
-        rl_callback_read_char();
+	{
+#ifdef NO_READLINE
+	  int read_size;
+	  char buf[1024];
+
+	  read_size = read(STDIN_FILENO, buf, 1024);
+	  if (read_size < 0)
+	    PRINT_AND_THROW(Exception, "stdin read");
+	  if (read_size == 0)
+	    return true;
+
+	  for (int i = 0; i < read_size; i++)
+	    {
+	      if (buf[i] == '\n')
+		{
+		  if (cmd_ != "")
+		    processCommand(cmd_);
+		  cmd_ = "";
+		}
+	      else
+		cmd_ += buf[i];
+	    }
+#else
+	  rl_callback_read_char();
+#endif // !NO_READLINE
+	}
     }
   return want_exit_;
 }
@@ -452,6 +482,8 @@ void Input::processCommand(const std::string& s)
 //
 // Realine related functions.
 //
+
+#ifndef NO_READLINE
 
 // Callback. Called by readline when a line is completed.
 void get_line(char* line)
@@ -564,3 +596,6 @@ char* cmd_completion_foo(const char*, int)
 {
   return NULL;
 }
+
+
+#endif // !NO_READLINE

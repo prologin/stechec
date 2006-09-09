@@ -93,6 +93,7 @@ private:
   Api*                  api_;
   CmdLineInterface*     i_;
   bool                  want_exit_;
+  std::string		cmd_;   ///< What we read from stdin, when no using libreadline.
 };
 
 #endif /* !INPUT_HH_ */
