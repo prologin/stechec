@@ -62,23 +62,23 @@ Input::InputCommand Input::main_cmd_[] = {
   {"giveBall", &Input::cmdGiveBall, "<id>|give the ball to the player'id'"},
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
   {"reroll", &Input::cmdReroll, "reroll the dice(s)"},
-	{"accept", &Input::cmdAccept, "accept result of the dice(s)"},
+  {"accept", &Input::cmdAccept, "accept result of the dice(s)"},
   {"end", &Input::cmdEnd, "end turn"},
-	{"move", &Input::cmdMove, "<subcmd>|move something ('help move')"},
+  {"move", &Input::cmdMove, "<subcmd>|move something ('help move')"},
   {"moveBz", &Input::cmdMoveBz, "<p> <r> <c>|move player for a blitz <p> to <r,c>"},
   {"moveP", &Input::cmdMoveP, "<p> <r> <c>|move player for a pass <p> to <r,c>"},
   {"standupM", &Input::cmdStandUpM, "<id>|stand up the player'id' for a move action"},
   {"standupBk", &Input::cmdStandUpBk, "<id>|stand up the player'id' for a block"},
   {"standupBz", &Input::cmdStandUpBz, "<id>|stand up the player'id' for a blitz"},
   {"standupP", &Input::cmdStandUpP, "<id>|stand up the player'id' for a pass"},
-	{"block", &Input::cmdBlock, "<id> <r> <c>|block with player 'id' at specified position"},
-	{"blockBz", &Input::cmdBlockBz, "<id> <r> <c>|block with player 'id' at specified position in a blitz action"},
-	{"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
-	{"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
-	{"follow", &Input::cmdFollow, "follow after a block."},
-	{"stay", &Input::cmdStay, "stay after a block."},
-	{"push", &Input::cmdPush, "<n>|choose the square to push the player in."},
-	{NULL, NULL, NULL}
+  {"block", &Input::cmdBlock, "<id> <r> <c>|block with player 'id' at specified position"},
+  {"blockBz", &Input::cmdBlockBz, "<id> <r> <c>|block with player 'id' at specified position in a blitz action"},
+  {"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
+  {"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
+  {"follow", &Input::cmdFollow, "follow after a block."},
+  {"stay", &Input::cmdStay, "stay after a block."},
+  {"push", &Input::cmdPush, "<n>|choose the square to push the player in."},
+  {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::print_cmd_[] = {
@@ -229,7 +229,7 @@ void Input::cmdMoveP(const string& cmd, const string& args)
 
 void Input::cmdStandUpM(const string& cmd, const string& args)
 {
-	istringstream is(cmd + " " + args);
+  istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
   api_->doMoveStandUpPlayer(p);
@@ -237,7 +237,7 @@ void Input::cmdStandUpM(const string& cmd, const string& args)
 
 void Input::cmdStandUpBk(const string& cmd, const string& args)
 {
-	istringstream is(cmd + " " + args);
+  istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
   api_->doBlockStandUpPlayer(p);
@@ -245,7 +245,7 @@ void Input::cmdStandUpBk(const string& cmd, const string& args)
 
 void Input::cmdStandUpBz(const string& cmd, const string& args)
 {
-	istringstream is(cmd + " " + args);
+  istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
   api_->doBlitzStandUpPlayer(p);
@@ -253,7 +253,7 @@ void Input::cmdStandUpBz(const string& cmd, const string& args)
 
 void Input::cmdStandUpP(const string& cmd, const string& args)
 {
-	istringstream is(cmd + " " + args);
+  istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
   api_->doPassStandUpPlayer(p);
@@ -304,7 +304,7 @@ void Input::cmdEnd(const string&, const string&)
 
 void Input::cmdDice(const string& cmd, const string& args)
 {
-	istringstream is(cmd + " " + args);
+  istringstream is(cmd + " " + args);
   int n = -1;
   is >> n;
   api_->doChooseBlockDice(n);
@@ -322,7 +322,7 @@ void Input::cmdStay(const string&, const string&)
 
 void Input::cmdPush(const string& cmd, const string& args)
 {
-	istringstream is(cmd + " " + args);
+  istringstream is(cmd + " " + args);
   int n = -1;
   is >> n;
   api_->doBlockPush(n);
@@ -330,7 +330,7 @@ void Input::cmdPush(const string& cmd, const string& args)
 
 void Input::cmdGiveBall(const string& cmd, const string& args)
 {
-	istringstream is(cmd + " " + args);
+  istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
   api_->doGiveBall(p);

@@ -14,6 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "Dice.hh"
 
 #define CHECK_TEAM                              \
 {                                               \
@@ -323,7 +324,7 @@ inline int Api::actionPossible(int index) const
 {
   CHECK_PLAYER;
   // FIXME: todo
-  return 0;
+  return index = 0;
 }
 
 inline int Api::moveLength(int dst_x, int dst_y)
@@ -387,6 +388,16 @@ inline int Api::movePossible(int dst_x, int dst_y)
 inline const std::string& Api::getCoachName() const
 {
   return selected_team_->getCoachName();
+}
+
+inline const char* Api::getActionString(int action) const
+{
+  return Player::stringify(static_cast<enum eAction>(action)); 
+}
+
+inline const char* Api::getRollString(int roll) const
+{
+  return Dice::stringify(static_cast<enum eRoll>(roll));
 }
 
 inline const std::string& Api::getTeamName() const

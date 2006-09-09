@@ -88,8 +88,8 @@ void CmdLineInterface::printGlobal()
 
   cout << "  - you are coach '" << api_->getTeamId() << "'\n" 
        << "  - current game state: " << api_->getStateString() << "\n"
-//       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
-//       << "' (" << api_->getWeather()->getWeather() << ")\n"
+    //       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
+    //       << "' (" << api_->getWeather()->getWeather() << ")\n"
        << "  - ball position: " << Point(api_->ballX(), api_->ballY()) << "\n"
        << "  - our team  : '" << api_->getTeamName() << "', coached by '"
        << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
@@ -244,7 +244,8 @@ void CmdLineInterface::evChat(const std::string& msg)
 
 void CmdLineInterface::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
-  cout << "Player `" << player_id << "' of team `" << team_id << "' has moved to `" << pos << "'" << endl;
+  cout << "Player `" << player_id << "' of team `"
+       << team_id << "' has moved to `" << pos << "'" << endl;
 }
 
 void CmdLineInterface::evPlayerMove(int, int player_id, const Point& pos)
@@ -270,85 +271,69 @@ void CmdLineInterface::evFollow()
 void CmdLineInterface::evBlockPush(Position pos, int nb_choice, Position choices[])
 {
   cout << "You can push the player from the square" << pos << " to : " << endl;
-	for (int i = 0; i < nb_choice; i++)
-	  {
-		  cout << "  'push " << i << " : " << choices[i] << endl;
-		}
+  for (int i = 0; i < nb_choice; i++)
+    cout << "  'push " << i << " : " << choices[i] << endl;
 }
 
 void CmdLineInterface::evResult(int player_id, enum eRoll action_type, 
-																int result, int modifier, int required, 
-																bool reroll)
+				int result, int modifier, int required, 
+				bool reroll)
 {
-	cout << "Player `" << player_id << "' tried an action : `";
+  cout << "Player `" << player_id << "' tried an action : `"
+       << api_->getRollString(action_type)
+       << "' : roll [" << result << "] + ["<< modifier << "], required : ["
+       << required << "]." << endl;
 	
-	switch(action_type)
-	{
-		case R_DODGE: cout << "DODGE";
-			break;
-		case R_STANDUP: cout << "STAND UP";
-			break;
-		case R_PICKUP: cout << "PICK UP";
-			break;
-		case R_THROW: cout << "THROW";
-			break;
-		case R_CATCH: cout << "CATCH";
-			break;
-		default: cout << "UNKNOWN";
-	}
-	cout << "' : roll [" << result << "] + ["<< modifier << "], required : ["
-			 << required << "]." << endl;
-	
-	if (result + modifier < required && reroll)
-		cout << "		You can use a 'reroll' or 'accept' this result." << endl;
+  if (result + modifier < required && reroll)
+    cout << "		You can use a 'reroll' or 'accept' this result." << endl;
 }
 
 void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id, 
-																	int nb_dice, enum eBlockDiceFace result[3],
-																	int choose, bool reroll)
+				     int nb_dice, enum eBlockDiceFace result[3],
+				     int choose, bool reroll)
 {
-	if (team_id != api_->getTeamId())
-		cout << "Opponent ";
+  if (team_id != api_->getTeamId())
+    cout << "Opponent ";
 	
-	cout << "Player `" << player_id << "' tried to block " << "player `" 
-			 << opponent_id << "'" << endl;
+  cout << "Player `" << player_id << "' tried to block " << "player `" 
+       << opponent_id << "'" << endl;
 	
-	cout << "Result : ";
-	for (int i = 0; i < nb_dice; i++)
-		{
-			cout << i << "-";
-			switch (result[i])
-			{
-				case BATTAKER_DOWN :
-					cout << " Attacker Down";
-					break;
-				case BBOTH_DOWN :
-					cout << " Both Down";
-					break;
-				case BPUSHED :
-					cout << " Defender Pushed";
-					break;
-				case BDEFENDER_STUMBLE :
-					cout << " Defender Strumble";
-					break;
-				case BDEFENDER_DOWN : 
-					cout << " Defender Down";
-					break;
-			}
-			if (i != nb_dice - 1)
-				cout << ", ";
-		}
-	cout << endl;
+  cout << "Result : ";
+  for (int i = 0; i < nb_dice; i++)
+    {
+      cout << i << "-";
+      switch (result[i])
+	{
+	case BATTAKER_DOWN :
+	  cout << " Attacker Down";
+	  break;
+	case BBOTH_DOWN :
+	  cout << " Both Down";
+	  break;
+	case BPUSHED :
+	  cout << " Defender Pushed";
+	  break;
+	case BDEFENDER_STUMBLE :
+	  cout << " Defender Strumble";
+	  break;
+	case BDEFENDER_DOWN : 
+	  cout << " Defender Down";
+	  break;
+	}
+      if (i != nb_dice - 1)
+	cout << ", ";
+    }
+  cout << endl;
 
-	if (team_id == api_->getTeamId()&&choose == api_->getTeamId()&&reroll)
-		cout << " You can use a 'reroll' or choose a 'dice <n>'" << endl;
-	if (team_id == api_->getTeamId()&&choose == api_->getTeamId()&&!reroll)
-		cout << " You must choose a 'dice <n>'" << endl;
-	if (team_id == api_->getTeamId()&&choose != api_->getTeamId()&&reroll)
-		cout << "		You can use a 'reroll' or 'accept' this result." << endl;
-	if (team_id != api_->getTeamId()&&choose != api_->getTeamId()&&reroll)
-		cout << " Wait for opponent reroll decision" << endl;
-	if (team_id != api_->getTeamId()&&!reroll
-				&&choose != api_->getTeamId()&&choose != -1)
-		cout << " You must choose a 'dice <n>'" << endl;	
+  if (team_id == api_->getTeamId() && choose == api_->getTeamId() && reroll)
+    cout << " You can use a 'reroll' or choose a 'dice <n>'" << endl;
+  if (team_id == api_->getTeamId() && choose == api_->getTeamId() && !reroll)
+    cout << " You must choose a 'dice <n>'" << endl;
+  if (team_id == api_->getTeamId() && choose != api_->getTeamId() && reroll)
+    cout << "		You can use a 'reroll' or 'accept' this result." << endl;
+  if (team_id != api_->getTeamId() && choose != api_->getTeamId() && reroll)
+    cout << " Wait for opponent reroll decision" << endl;
+  if (team_id != api_->getTeamId() && !reroll
+      && choose != api_->getTeamId() && choose != -1)
+    cout << " You must choose a 'dice <n>'" << endl;	
 }
