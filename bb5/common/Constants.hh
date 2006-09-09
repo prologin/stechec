@@ -125,6 +125,14 @@ enum eRoll {
 	R_CATCH
 };
 
+enum eSkill {
+  SK_BLOCK = 0,
+  SK_CATCH,
+  SK_DODGE,
+  SK_PASS,
+  SK_SUREHANDS
+};
+
 /*!
 ** Messages (Packet) used to control game status.
 */

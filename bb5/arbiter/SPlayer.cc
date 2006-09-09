@@ -19,7 +19,7 @@
 #include "SPlayer.hh"
 
 SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
-  : Player(m->player_id, m->client_id),
+  : Player(m),
     r_(r),
     t_(t),
     target_push_(NULL)
@@ -28,14 +28,6 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
   r_->HANDLE_F_WITH(ACT_STANDUP, SPlayer, this, msgStandUp, filterStandUp, GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_BLOCK, SPlayer, this, msgBlock, filterBlock, GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_PASS, SPlayer, this, msgPass, filterPass, GS_COACHBOTH);
-  
-  ma_ = m->ma;
-  st_ = m->st;
-  ag_ = m->ag;
-  av_ = m->av;
-  name_ = packetToString(m->name);
-  status_ = STA_RESERVE;
-  will_prone_ = false;
 }
 
 /*

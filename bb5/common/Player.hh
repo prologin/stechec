@@ -20,8 +20,9 @@
 # include "PacketHandler.hh"
 # include "Constants.hh"
 
-// Hard limit of move number, for a single packet.
+// Hard limit of move/skill number, for a single packet.
 const int MAX_MOVE = 16;
+const int MAX_SKILL = 16;
 
 DECLARE_PACKET(ACT_MOVE, ActMove)
   int player_id;
@@ -74,6 +75,8 @@ DECLARE_PACKET(MSG_PLAYERINFO, MsgPlayerInfo)
   int st;
   int ag;
   int av;
+  int skill[MAX_SKILL];
+  int skill_nb;
   int name[8];
   int player_position;	///< Graphic info.
   int player_img[8];	///< Graphic info.
@@ -116,7 +119,7 @@ END_PACKET
 class Player
 {
 public:
-  Player(int id, int team_id);
+  Player(const MsgPlayerInfo* m);
   virtual ~Player();
 
   int getId() const;
@@ -146,11 +149,14 @@ public:
   void setHasPlayed();
 
   //! @brief Return the action of this player.
-	enum eActions getAction() const;
+  enum eActions getAction() const;
 
   //! @brief Set the action.
-	void setAction(enum eActions action);
-	
+  void setAction(enum eActions action);
+
+  //! @brief Check if this player has this skill.
+  bool hasSkill(enum eSkill skill) const;
+  
   //! @brief Called on new turn.
   void resetTurn();
 
@@ -169,9 +175,13 @@ protected:
   int av_;
 
   int ma_remain_;
-	bool has_played_;
-	enum eActions action_;
-	bool will_prone_;
+  bool has_played_;
+  enum eActions action_;
+  bool will_prone_;
+
+private:
+  typedef std::vector<enum eSkill> SkillList;
+  SkillList	skill_list_; ///< List of skills that this player have.
 
 public:
   //

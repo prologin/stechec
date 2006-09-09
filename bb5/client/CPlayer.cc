@@ -18,22 +18,14 @@
 #include "CPlayer.hh"
 
 CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
-  : Player(m->player_id, m->client_id),
+  : Player(m),
     r_(r)
 {
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
-	r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_INITKICKOFF);
-  ma_ = m->ma;
-  st_ = m->st;
-  ag_ = m->ag;
-  av_ = m->av;
-  name_ = packetToString(m->name);
-  player_position_ = m->player_position;
-  player_picture_ = packetToString(m->player_img);
-	status_ = STA_RESERVE;
+  r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_INITKICKOFF);
 
   LOG6("Create player(" << (unsigned)this << "): id: " << id_ << " team_id " << team_id_);
 }

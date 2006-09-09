@@ -66,6 +66,26 @@ void CTeam::loadPlayerConfig(xml::XMLTeam& xml_team, int player_id)
   pkt.st = xml_team.getData<int>("st");
   pkt.ag = xml_team.getData<int>("ag");
   pkt.av = xml_team.getData<int>("av");
+
+  // FIXME: don't think my parser can handle lists.
+  try {
+    std::string skill = xml_team.getData<std::string>("skill");
+    pkt.skill_nb = 1;
+
+    if (skill == "block")
+      pkt.skill[0] = SK_BLOCK;
+    if (skill == "catch")
+      pkt.skill[0] = SK_CATCH;
+    if (skill == "dodge")
+      pkt.skill[0] = SK_DODGE;
+    if (skill == "pass")
+      pkt.skill[0] = SK_PASS;
+    if (skill == "surehand")
+      pkt.skill[0] = SK_SUREHANDS;
+  }  catch (xml::XMLError&) {
+    pkt.skill_nb = 0;
+  }
+  
   pkt.player_position = xml_team.getData<int>("positionid");
   stringToPacket(pkt.player_img, xml_team.getAttr<std::string>("player", "display"), 32);
   
@@ -164,7 +184,7 @@ bool CTeam::filterResult(const MsgResult* m)
   return true;
 }
 
-void CTeam::msgReroll(const MsgReroll* m)
+void CTeam::msgReroll(const MsgReroll*)
 {
 	r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
 }

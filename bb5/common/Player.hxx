@@ -16,12 +16,24 @@
 
 # include "Field.hh"
 
-inline Player::Player(int id, int team_id)
-  : id_(id),
-    team_id_(team_id),
-    status_(STA_UNASSIGNED),
-    ma_remain_(-1)
+inline Player::Player(const MsgPlayerInfo* m)
+  : id_(m->player_id),
+    team_id_(m->client_id),
+    status_(STA_RESERVE),
+    ma_(m->ma),
+    st_(m->st),
+    ag_(m->ag),
+    av_(m->av),
+    ma_remain_(-1),
+    has_played_(false),
+    action_(NONE),
+    will_prone_(false)
 {
+  name_ = packetToString(m->name);
+
+  int nb = m->skill_nb > MAX_SKILL ? MAX_SKILL : m->skill_nb;
+  for (int i = 0; i < nb; i++)
+    skill_list_.push_back(static_cast<eSkill>(m->skill[i]));
 }
 
 inline Player::~Player()
@@ -96,6 +108,11 @@ inline enum eActions Player::getAction() const
 inline void Player::setAction(enum eActions action)
 {
   action_ = action;
+}
+
+inline bool Player::hasSkill(enum eSkill skill) const
+{
+  return std::find(skill_list_.begin(), skill_list_.end(), skill) != skill_list_.end();
 }
 
 inline void Player::resetTurn()
