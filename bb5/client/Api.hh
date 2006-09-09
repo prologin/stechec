@@ -53,6 +53,9 @@ public:
 	bool 					doAccept();
   bool          doPlaceBall(const Point& pos);
 	bool          doGiveBall(int p);
+	bool					doChooseBlockDice(int n);
+	bool          doBlockPush(int n);
+	bool          doFollow(bool follow);
   void          sendChatMessage(const std::string& msg);
 
 	bool doMovePlayer(int p, const Point& to);

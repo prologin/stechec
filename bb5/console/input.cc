@@ -74,6 +74,10 @@ Input::InputCommand Input::main_cmd_[] = {
 	{"block", &Input::cmdBlock, "<id> <r> <c>|block with player 'id' at specified position"},
 	{"blockBz", &Input::cmdBlockBz, "<id> <r> <c>|block with player 'id' at specified position in a blitz action"},
 	{"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
+	{"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
+	{"follow", &Input::cmdFollow, "follow after a block."},
+	{"stay", &Input::cmdStay, "stay after a block."},
+	{"push", &Input::cmdPush, "<n>|choose the square to push the player in."},
 	{NULL, NULL, NULL}
 };
 
@@ -296,6 +300,32 @@ void Input::cmdIllegal(const string&, const string&)
 void Input::cmdEnd(const string&, const string&)
 {
   api_->doEndTurn();
+}
+
+void Input::cmdDice(const string& cmd, const string& args)
+{
+	istringstream is(cmd + " " + args);
+  int n = -1;
+  is >> n;
+  api_->doChooseBlockDice(n);
+}
+
+void Input::cmdFollow(const string&, const string&)
+{
+  api_->doFollow(true);
+}
+
+void Input::cmdStay(const string&, const string&)
+{
+  api_->doFollow(false);
+}
+
+void Input::cmdPush(const string& cmd, const string& args)
+{
+	istringstream is(cmd + " " + args);
+  int n = -1;
+  is >> n;
+  api_->doBlockPush(n);
 }
 
 void Input::cmdGiveBall(const string& cmd, const string& args)

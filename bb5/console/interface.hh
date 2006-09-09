@@ -50,10 +50,17 @@ private:
   virtual void          evMoveTurnMarker();
   virtual void          evTimeExceeded();
   virtual void          evChat(const std::string& msg);
+	virtual void 					evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerKnocked(int team_id, int player_id);
 	virtual void 					evResult(int player_id, enum eRoll action_type, int result, 
 																	int modifier, int required, bool reroll);
+	virtual void 					evBlockResult(int team_id, int player_id, int opponent_id, 
+																	int nb_dice, enum eBlockDiceFace result[3],
+																	int choose, bool reroll);
+  virtual void          evFollow();
+	virtual void          evBlockPush(Position pos, int nb_choice, Position choices[]);
+
 
   xml::XMLConfig*       cfg_;
   Api*                  api_;

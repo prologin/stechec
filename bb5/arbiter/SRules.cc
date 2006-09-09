@@ -163,6 +163,7 @@ void SRules::initHalf()
 
 void SRules::initKickoff()
 {
+
   setState(GS_INITKICKOFF);
 	team_[0]->state_ = GS_INITKICKOFF;
 	team_[1]->state_ = GS_INITKICKOFF;
@@ -184,8 +185,7 @@ void SRules::initKickoff()
 }
 
 void SRules::turnOver()
-{
-  LOG3("TURNOVER.");
+{	
   msgPlayTurn(NULL);
 }
 
@@ -263,6 +263,7 @@ void SRules::kickoffFinished()
     setState(GS_COACH2);
   else
     setState(GS_COACH1);
+		
   msgPlayTurn(NULL);
 }
 
@@ -285,11 +286,10 @@ void SRules::msgPlayTurn(const MsgEndTurn*)
       initHalf();
       return;
     }
-  
   // Switch playing team
   setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
-
-  if (getState() == GS_COACH1)
+	
+	if (getState() == GS_COACH1)
     {
 			team_[1]->setProneStunned();
       team_[0]->resetTurn();    

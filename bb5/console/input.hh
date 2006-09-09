@@ -65,6 +65,10 @@ private:
 	void cmdReroll(const std::string& cmd, const std::string& args);
 	void cmdAccept(const std::string& cmd, const std::string& args);
 	void cmdGiveBall(const std::string& cmd, const std::string& args);
+	void cmdDice(const std::string& cmd, const std::string& args);
+  void cmdStay(const std::string& cmd, const std::string& args);
+  void cmdFollow(const std::string& cmd, const std::string& args);
+  void cmdPush(const std::string& cmd, const std::string& args);
 
 	// Action command
 	void cmdMove(const std::string& cmd, const std::string& args);

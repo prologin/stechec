@@ -18,6 +18,7 @@
 # define EVENT_HH_
 
 # include "EventProcess.hh"
+# include "Dice.hh"
 
 enum {
   eKickOff,
@@ -42,6 +43,9 @@ public:
   virtual void evEndGame() {}
 	virtual void evResult(int player_id, enum eRoll action_type, 
 												int result, int modifier, int required, bool reroll);
+	virtual void evBlockResult(int team_id, int player_id, int opponent_id, 
+															int nb_dice,enum eBlockDiceFace result[3],
+															int choose, bool reroll);
   virtual void evHalf(int half);
   virtual void evKickOff() {}
 	virtual void evGiveBall();
@@ -54,11 +58,14 @@ public:
   virtual void evPlayerKnocked(int team_id, int player_id);
 	virtual void evPlayerStatus(int team_id, enum eStatus status);
 	virtual void evPlayerKO(int team_id, int player_id, int dice);
+	virtual void evFollow();
+	virtual void evBlockPush(Position pos, int nb_choice, Position choices[]);
 };
 
 inline void Event::evIllegal(int) {}
 inline void Event::evNewTurn(bool) {}
 inline void Event::evResult(int, enum eRoll, int, int, int, bool) {}
+inline void Event::evBlockResult(int, int, int,	int, enum eBlockDiceFace[], int, bool){}
 inline void Event::evHalf(int) {}
 inline void Event::evGiveBall() {}
 inline void Event::evChat(const std::string&) {}
@@ -68,5 +75,6 @@ inline void Event::evPlayerMove(int, int, const Point&) {}
 inline void Event::evPlayerKnocked(int, int) {}
 inline void Event::evPlayerStatus(int, enum eStatus) {}
 inline void Event::evPlayerKO(int, int, int) {}
-
+inline void Event::evFollow() {}
+inline void Event::evBlockPush(Position, int, Position[]) {}
 #endif /* !EVENT_HH_ */

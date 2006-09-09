@@ -23,7 +23,6 @@ CTeam::CTeam(int team_id, CRules* r)
 {
   r_->HANDLE_F_WITH(MSG_TEAMINFO, CTeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, CTeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_RESULT, CTeam, this, msgResult, filterResult, GS_ALL);
 	r_->HANDLE_F_WITH(MSG_REROLL, CTeam, this, msgReroll, filterReroll, GS_REROLL);
 }
 
@@ -170,23 +169,15 @@ bool CTeam::filterPlayerInfo(const MsgPlayerInfo* m)
   return true;
 }
 
-void CTeam::msgResult(const MsgResult* m)
-{
-	if (m->reroll == true&&m->result + m->modifier < m->required)
-		r_->setState(GS_REROLL);
-	r_->onEvent(m);
-}
-
-bool CTeam::filterResult(const MsgResult* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
-}
-
 void CTeam::msgReroll(const MsgReroll*)
 {
 	r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+	if (m->reroll)
+		{
+			reroll_used_ == true;
+			reroll_remain_ = reroll_remain_ - 1;
+		}
+		
 }
 
 bool CTeam::filterReroll(const MsgReroll* m)

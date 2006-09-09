@@ -17,6 +17,7 @@
 #ifndef SPLAYER_HH_
 # define SPLAYER_HH_
 
+# include "Dice.hh"
 # include "Team.hh"
 # include "Player.hh"
 
@@ -54,9 +55,14 @@ public:
 	//! @brief Finish the current action
   void finishAction(bool reroll);
 
+	void resolveBlock(int choosen_dice);
+	void blockPush(int chosens_square);
+  void follow(bool follow);
+	
 	enum eRoll action_attempted_;
 	bool reroll_enabled_;
-
+	int nb_dice_;
+	SPlayer* pusher_; ///< Player who pushes you.
 
 private:
 
@@ -83,14 +89,18 @@ private:
   //! @return non-zero if action failed.
   int doPass(const ActPass* m);
 
+	void resolveBlock(int choosen_dice, SPlayer* target);
+
   void blockPushChoice(SPlayer* target);
-  void blockPush(ActBlockPush* m);
   
+  void blockFollow();
+
 	
 	int finishMove(bool reroll);
 	void finishStandUp(bool reroll);
 	int finishPickUp(bool reroll);
 	int finishThrow(bool reroll);
+	void finishBlock(bool reroll);
 		
   //! @brief Check for armor and eventually injury.
   void checkArmor(int arMod, int injMod);
@@ -100,11 +110,17 @@ private:
   enum eStatus rollCasualty();
 
 	Position aim_;
+
+	bool choose_block_;
+	enum eBlockDiceFace result_[3];
+	Position choices_[3];
+	bool target_knocked_;
 	
   SRules* r_;	///< Server rules.
   STeam* t_;	///< Player's team.
 
-  SPlayer* target_push_; ///< Player that is being pushed after a block.
+  SPlayer* target_; ///< Player that is the target of a block.
+	
 };
 
 

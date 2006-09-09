@@ -27,12 +27,14 @@
 // Constants describing the current status of the game.
 const int GS_INITGAME      = 0x0001;
 const int GS_INITKICKOFF   = 0x0002;
-const int GS_TOUCHBACK     = 0x0003;
 const int GS_COACH1        = 0x0004; ///< Coach 1 turn.
 const int GS_COACH2        = 0x0008; ///< Coach 2 turn.
 const int GS_PAUSE         = 0x0010;
-const int GS_REROLL        = 0x0011; ///< wait for coach to use or not a reroll
-const int GS_BLOCK         = 0x0012; ///< wait for coach to choose a block dice
+const int GS_TOUCHBACK     = 0x0020;
+const int GS_REROLL        = 0x0040; ///< wait for coach to use or not a reroll
+const int GS_BLOCK         = 0x0080; ///< wait for coach to choose a block dice
+const int GS_PUSH          = 0x0100; ///< wait for coach to choose a square
+const int GS_FOLLOW        = 0x0200; ///< wait for coach to decide
 
 const int GS_COACHBOTH     = 0x000C; ///< Any coach turn.
 
@@ -62,25 +64,28 @@ enum {
   MSG_INITGAME,
 	MSG_INITHALF,
   MSG_INITKICKOFF,
-	MSG_RESULT,
+	MSG_RESULT,			// 15
+	MSG_BLOCKRESULT,
+	MSG_BLOCKDICE,
+	MSG_FOLLOW,
 	MSG_REROLL,
-  MSG_NEWTURN,
-  MSG_ENDTURN,
+  MSG_NEWTURN,	// 20
+  MSG_ENDTURN,		
   MSG_ENDGAME,
   MSG_BALLPOS,
 	MSG_GIVEBALL,
-  MSG_WEATHER,
+  MSG_WEATHER,	//25
   MSG_TIMEEXCEEDED,
   MSG_TEAMINFO,
   MSG_PLAYERINFO,
   MSG_PLAYERPOS,
-  MSG_PLAYERKNOCKED,
-  MSG_PLAYERSTATUS,
+  MSG_PLAYERKNOCKED,//30
+  MSG_PLAYERSTATUS,	
 	MSG_PLAYERKO,
   MSG_ROOLINFO, // FIXME: complete usage
   ACT_MOVETURNMARKER,
-  ACT_ILLEGALPROC,
-  ACT_MOVE,
+  ACT_ILLEGALPROC,	//35
+  ACT_MOVE,				
 	ACT_STANDUP,
   ACT_BLOCK,
   ACT_BLOCKPUSH,
@@ -122,7 +127,8 @@ enum eRoll {
 	R_ARMOUR,
 	R_INJURY,
 	R_THROW,
-	R_CATCH
+	R_CATCH,
+	R_BLOCK
 };
 
 enum eSkill {

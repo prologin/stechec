@@ -101,6 +101,48 @@ inline bool Api::doAccept()
 	return true;
 }
 
+inline bool Api::doChooseBlockDice(int n)
+{
+	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+	if (rules_->getState() != GS_BLOCK)
+		{
+      LOG2("You do not have the choice...");
+      return false;
+    }
+	MsgBlockDice msg(rules_->our_team_->getTeamId());
+	msg.dice = n;
+	rules_->sendPacket(msg);
+	return true;
+}
+
+inline bool Api::doFollow(bool follow)
+{
+	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+	if (rules_->getState() != GS_FOLLOW)
+		{
+      LOG2("You do not have the choice...");
+      return false;
+    }
+	MsgFollow msg(rules_->our_team_->getTeamId());
+	msg.follow = follow;
+	rules_->sendPacket(msg);
+	return true;
+}
+
+inline bool Api::doBlockPush(int n)
+{
+	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+	if (rules_->getState() != GS_PUSH)
+		{
+      LOG2("You do not have the choice...");
+      return false;
+    }
+	ActBlockPush msg(rules_->our_team_->getTeamId());
+	msg.square_chosen = n;
+	rules_->sendPacket(msg);
+	return true;
+}
+
 inline bool Api::doPlaceBall(const Point& pos)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);

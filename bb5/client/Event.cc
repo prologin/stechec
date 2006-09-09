@@ -123,3 +123,33 @@ void EventProcess::dispatch(const MsgResult& pkt) const
 {
   ev_->evResult(pkt.player_id, (enum eRoll)pkt.roll_type, pkt.result, pkt.modifier, pkt.required, pkt.reroll);
 }
+
+template <>
+void EventProcess::dispatch(const MsgBlockResult& pkt) const
+{
+	enum eBlockDiceFace results[3];
+	for (int i = 0; i < pkt.nb_dice; i++)
+		{
+			results[i] = (enum eBlockDiceFace) pkt.results[i];
+		}
+  ev_->evBlockResult(pkt.client_id, pkt.player_id, pkt.opponent_id, pkt.nb_dice,
+											results, pkt.choose_team_id, pkt.reroll);
+}
+
+template <>
+void EventProcess::dispatch(const MsgFollow& pkt) const
+{
+	ev_->evFollow();
+}
+
+template <>
+void EventProcess::dispatch(const ActBlockPush& pkt) const
+{
+  Position pos(pkt.target_row, pkt.target_col);
+	Position choices[3];
+	for (int i = 0; i < pkt.nb_choice; i++)
+	  {
+		  choices[i] = Position(pkt.choice[i].row, pkt.choice[i].col);
+		}
+	ev_->evBlockPush(pos, pkt.nb_choice, choices);
+}

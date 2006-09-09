@@ -36,6 +36,11 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, GS_ALL);
   HANDLE_WITH(ACT_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, GS_ALL);
   HANDLE_WITH(CUSTOM_EVENT, CRules, this, msgCustomEvent, GS_ALL);
+	HANDLE_WITH(MSG_RESULT, CRules, this, msgResult, GS_ALL);
+	HANDLE_WITH(MSG_BLOCKRESULT, CRules, this, msgBlockResult, GS_COACHBOTH | GS_REROLL | GS_BLOCK);
+	HANDLE_WITH(MSG_BLOCKDICE, CRules, this, msgBlockDice, GS_BLOCK);
+	HANDLE_WITH(ACT_BLOCKPUSH, CRules, this, actBlockPush, GS_PUSH | GS_COACHBOTH | GS_BLOCK);
+	HANDLE_WITH(MSG_FOLLOW, CRules, this, msgFollow, GS_PUSH | GS_COACHBOTH | GS_BLOCK | GS_FOLLOW);
   
   api_ = new Api(this);
 }
@@ -101,7 +106,7 @@ void        CRules::msgInitGame(const MsgInitGame* m)
 
 void        CRules::msgInitHalf(const MsgInitHalf* m)
 {
-	cur_turn_ == 0;
+	cur_turn_ = 0;
 	cur_half_ = m->cur_half;
   LOG2("-- CRules: Initialize the half " << cur_half_);
 
@@ -186,6 +191,70 @@ void        CRules::msgMoveTurnMarker(const ActMoveTurnMarker* m)
 void        CRules::msgCustomEvent(const CustomEvent* m)
 {
   onEvent(m);
+}
+
+
+void CRules::msgResult(const MsgResult* m)
+{
+	if (m->client_id != getTeamId())
+{
+	if (m->reroll == true&&m->result + m->modifier < m->required)
+		{
+			setState(GS_REROLL);
+			LOG2("-- CRules: change state: GS_REROLL");
+		}
+	
+	onEvent(m);
+	}
+}
+
+
+void CRules::msgBlockResult(const MsgBlockResult* m)
+{
+	if (m->client_id == getTeamId())
+		{
+			if (m->choose_team_id == getTeamId())
+				setState(GS_BLOCK);
+			else if (m->reroll)
+				setState(GS_REROLL);
+		}
+	else
+		{
+			if (m->choose_team_id == getTeamId()&&!m->reroll)
+				setState(GS_BLOCK);
+		}
+	onEvent(m);
+}
+
+void CRules::msgBlockDice(const MsgBlockDice* m)
+{
+	setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+}
+
+void CRules::actBlockPush(const ActBlockPush* m)
+{
+  if (getState() == GS_PUSH)
+	  {
+		  setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+		}
+	else if (m->client_id == getTeamId())
+	  {
+		  setState(GS_PUSH);
+		  onEvent(m);
+		}
+}
+
+void CRules::msgFollow(const MsgFollow* m)
+{
+  if (getState() == GS_FOLLOW)
+	  {
+		  setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+		}
+	else if (m->client_id == getTeamId())
+	  {
+		  setState(GS_FOLLOW);
+		  onEvent(m);
+		}
 }
 
 // If client_rules is loaded as a dynamic library, this is the

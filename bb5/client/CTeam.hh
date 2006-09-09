@@ -70,8 +70,6 @@ private:
   bool filterTeamInfo(const MsgTeamInfo* m);
   void msgPlayerInfo(const MsgPlayerInfo* m);
   bool filterPlayerInfo(const MsgPlayerInfo* m);
-	void msgResult(const MsgResult* m);
-	bool filterResult(const MsgResult* m);
 	void msgReroll(const MsgReroll* m);
 	bool filterReroll(const MsgReroll* m);
   CRules* r_;

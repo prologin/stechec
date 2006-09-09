@@ -21,7 +21,7 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
   : Player(m),
     r_(r)
 {
-  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_ALL | GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
@@ -112,7 +112,8 @@ bool CPlayer::block(const Position& to, enum eActions action)
   CPlayer* opponent = f->getPlayer(to);
   if (opponent == NULL
       || opponent->getTeamId() == getTeamId()
-      || !getPosition().isNear(opponent->getPosition()))
+      || !getPosition().isNear(opponent->getPosition())
+			|| opponent->getStatus() != STA_STANDING)
     return false;
   ActBlock pkt;
   pkt.player_id = id_;

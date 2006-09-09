@@ -53,6 +53,7 @@ DECLARE_PACKET(ACT_BLOCKPUSH, ActBlockPush)
     int row;
     int col;
   } choice[3];
+	int square_chosen;
 END_PACKET
 
 DECLARE_PACKET(ACT_MULTIBLOCK, Act_MultiBlock)
@@ -109,6 +110,23 @@ DECLARE_PACKET(MSG_RESULT, MsgResult)
 	int modifier;
 	int required;
 	bool reroll;
+END_PACKET
+
+DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
+  int choose_team_id;
+	int player_id;
+  int opponent_id;
+	int nb_dice;
+	int results[3];
+	bool reroll;
+END_PACKET
+
+DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)
+  int dice;
+END_PACKET
+
+DECLARE_PACKET(MSG_FOLLOW, MsgFollow)
+  bool follow;
 END_PACKET
 
 

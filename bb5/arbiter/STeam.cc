@@ -26,7 +26,10 @@ STeam::STeam(int team_id, SRules* r)
   r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF);
-	r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_REROLL);
+	r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_REROLL | GS_BLOCK);
+	r_->HANDLE_F_WITH(MSG_BLOCKDICE, STeam, this, msgBlockDice, filterBlockDice, GS_BLOCK);
+	r_->HANDLE_F_WITH(MSG_FOLLOW, STeam, this, msgFollow, filterFollow, GS_FOLLOW);
+	r_->HANDLE_F_WITH(ACT_BLOCKPUSH, STeam, this, msgBlockPush, filterBlockPush, GS_PUSH);
 }
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -115,11 +118,18 @@ void STeam::msgReroll(const MsgReroll* m)
 			r_->sendIllegal(MSG_REROLL, m->client_id);
 			return;
 		}
-		
-	r_->sendPacket(*m);
-	state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
-	r_->setState(state_);
 	
+	if (!canUseReroll()||(state_ != GS_REROLL&&state_ != GS_BLOCK))
+		{
+			r_->sendIllegal(MSG_REROLL, m->client_id);
+			return;
+		}
+
+	r_->sendPacket(*m);
+	if (state_ != GS_BLOCK)
+		state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+	r_->setState(state_);
+
 	if (m->reroll)
 	{
 		reroll_used_ = true;
@@ -135,6 +145,56 @@ bool STeam::filterReroll(const MsgReroll* m)
   return true;
 }
 
+void STeam::msgBlockDice(const MsgBlockDice* m)
+{
+	if (concerned_player_->nb_dice_ <= m->dice)
+		{
+			r_->sendIllegal(MSG_BLOCKDICE, m->client_id);
+			return;
+		}
+	MsgBlockDice msg(r_->getCurrentTeamId());
+	r_->sendPacket(*m);
+	r_->getTeam(m->client_id)->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+	r_->setState(state_);
+	concerned_player_->resolveBlock(m->dice);
+}
+
+bool STeam::filterBlockDice(const MsgBlockDice* m)
+{
+  if (r_->getCurrentTeamId() != team_id_)
+    return false;
+  return true;
+}
+
+void STeam::msgFollow(const MsgFollow* m)
+{
+	r_->sendPacket(*m);
+	state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
+	r_->setState(state_);
+	concerned_player_->follow(m->follow);
+}
+
+bool STeam::filterFollow(const MsgFollow* m)
+{
+  if (m->client_id != team_id_)
+    return false;
+  return true;
+}
+
+void STeam::msgBlockPush(const ActBlockPush* m)
+{
+	r_->sendPacket(*m);
+	state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
+	r_->setState(state_);
+	concerned_player_->blockPush(m->square_chosen);
+}
+
+bool STeam::filterBlockPush(const ActBlockPush* m)
+{
+  if (m->client_id != team_id_)
+    return false;
+  return true;
+}
 
 void STeam::resetTurn()
 {
@@ -173,6 +233,7 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eActions action)
   if (r_->getCurrentTeamId() != pkt->client_id)
     {
       LOG4("Cannot do action: not team turn");
+			LOG4(r_->getCurrentTeamId() << ", " << r_->getState());
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }

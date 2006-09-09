@@ -44,19 +44,24 @@ public:
   void setProneStunned();
 	void prepareKickoff();
 	void setConcernedPlayer(SPlayer* p);
+	int curr_acting_player_;
 
 private:
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerInfo(const MsgPlayerInfo* m);
   void msgPlayerPos(const MsgPlayerPos* m);
 	void msgReroll(const MsgReroll* m);
+	void msgBlockDice(const MsgBlockDice* m);
+	void msgFollow(const MsgFollow* m);
+  void msgBlockPush(const ActBlockPush* m);
   bool filterTeamInfo(const MsgTeamInfo* m);
   bool filterPlayerInfo(const MsgPlayerInfo* m);
   bool filterPlayerPos(const MsgPlayerPos* m);
   bool filterReroll(const MsgReroll* m);
-
+  bool filterBlockDice(const MsgBlockDice* m);
+  bool filterFollow(const MsgFollow* m);
+  bool filterBlockPush(const ActBlockPush* m);
   SRules* r_;
-  int curr_acting_player_;
 	SPlayer* concerned_player_; // When we are waiting for a reroll decision
 };
 
