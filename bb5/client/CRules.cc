@@ -28,7 +28,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_INITGAME, CRules, this, msgInitGame, GS_WAIT);
   HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, GS_ALL);
   HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, GS_ALL);
-	HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, GS_INITKICKOFF);
+  HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, GS_INITKICKOFF);
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, GS_ALL);
   HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, GS_ALL);
   HANDLE_WITH(MSG_TIMEEXCEEDED, CRules, this, msgTimeExceeded, GS_ALL);
@@ -36,11 +36,11 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, GS_ALL);
   HANDLE_WITH(ACT_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, GS_ALL);
   HANDLE_WITH(CUSTOM_EVENT, CRules, this, msgCustomEvent, GS_ALL);
-	HANDLE_WITH(MSG_RESULT, CRules, this, msgResult, GS_ALL);
-	HANDLE_WITH(MSG_BLOCKRESULT, CRules, this, msgBlockResult, GS_COACHBOTH | GS_REROLL | GS_BLOCK);
-	HANDLE_WITH(MSG_BLOCKDICE, CRules, this, msgBlockDice, GS_BLOCK);
-	HANDLE_WITH(ACT_BLOCKPUSH, CRules, this, actBlockPush, GS_PUSH | GS_COACHBOTH | GS_BLOCK);
-	HANDLE_WITH(MSG_FOLLOW, CRules, this, msgFollow, GS_PUSH | GS_COACHBOTH | GS_BLOCK | GS_FOLLOW);
+  HANDLE_WITH(MSG_RESULT, CRules, this, msgResult, GS_ALL);
+  HANDLE_WITH(MSG_BLOCKRESULT, CRules, this, msgBlockResult, GS_COACHBOTH | GS_REROLL | GS_BLOCK);
+  HANDLE_WITH(MSG_BLOCKDICE, CRules, this, msgBlockDice, GS_BLOCK);
+  HANDLE_WITH(ACT_BLOCKPUSH, CRules, this, actBlockPush, GS_PUSH | GS_COACHBOTH | GS_BLOCK);
+  HANDLE_WITH(MSG_FOLLOW, CRules, this, msgFollow, GS_PUSH | GS_COACHBOTH | GS_BLOCK | GS_FOLLOW);
   
   api_ = new Api(this);
 }
@@ -106,46 +106,46 @@ void        CRules::msgInitGame(const MsgInitGame* m)
 
 void        CRules::msgInitHalf(const MsgInitHalf* m)
 {
-	cur_turn_ = 0;
-	cur_half_ = m->cur_half;
+  cur_turn_ = 0;
+  cur_half_ = m->cur_half;
   LOG2("-- CRules: Initialize the half " << cur_half_);
 
-	our_team_->initRerolls();
-	other_team_->initRerolls();
+  our_team_->initRerolls();
+  other_team_->initRerolls();
 	
-	onEvent(m);
+  onEvent(m);
 }
 
 void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-	// It is not for our team
-	if (m->client_id != getTeamId())
-		return;
+  // It is not for our team
+  if (m->client_id != getTeamId())
+    return;
 
 
-	if (getState() == GS_INITKICKOFF)
-	// Our team is allready placed, we can place the ball
-		{
-			onEvent(eKickOff);
-		}
-	else
-	// Our team has to enter the field
-		{
-		  setState(GS_INITKICKOFF);
-  		LOG2("-- CRules: change state: GS_INITKICKOFF");
+  if (getState() == GS_INITKICKOFF)
+    // Our team is allready placed, we can place the ball
+    {
+      onEvent(eKickOff);
+    }
+  else
+    // Our team has to enter the field
+    {
+      setState(GS_INITKICKOFF);
+      LOG2("-- CRules: change state: GS_INITKICKOFF");
 
-		  // Now, you can safely use Api fonctions referring to teams.
-		  api_->selectTeam(US);
+      // Now, you can safely use Api fonctions referring to teams.
+      api_->selectTeam(US);
 
       our_team_->placeTeam(1);
-			sendPacket(*m);
+      sendPacket(*m);
     }
 }
 
 void        CRules::msgGiveBall(const MsgGiveBall* m)
 {
-	setState(GS_TOUCHBACK);
-	onEvent(m);
+  setState(GS_TOUCHBACK);
+  onEvent(m);
 }
 
 void        CRules::msgPlayTurn(const MsgNewTurn* m)
@@ -196,65 +196,65 @@ void        CRules::msgCustomEvent(const CustomEvent* m)
 
 void CRules::msgResult(const MsgResult* m)
 {
-	if (m->client_id != getTeamId())
-{
-	if (m->reroll == true&&m->result + m->modifier < m->required)
-		{
-			setState(GS_REROLL);
-			LOG2("-- CRules: change state: GS_REROLL");
-		}
-	
-	onEvent(m);
+  if (m->client_id != getTeamId())
+    {
+      if (m->reroll == true&&m->result + m->modifier < m->required)
+	{
+	  setState(GS_REROLL);
+	  LOG2("-- CRules: change state: GS_REROLL");
 	}
+	
+      onEvent(m);
+    }
 }
 
 
 void CRules::msgBlockResult(const MsgBlockResult* m)
 {
-	if (m->client_id == getTeamId())
-		{
-			if (m->choose_team_id == getTeamId())
-				setState(GS_BLOCK);
-			else if (m->reroll)
-				setState(GS_REROLL);
-		}
-	else
-		{
-			if (m->choose_team_id == getTeamId()&&!m->reroll)
-				setState(GS_BLOCK);
-		}
-	onEvent(m);
+  if (m->client_id == getTeamId())
+    {
+      if (m->choose_team_id == getTeamId())
+	setState(GS_BLOCK);
+      else if (m->reroll)
+	setState(GS_REROLL);
+    }
+  else
+    {
+      if (m->choose_team_id == getTeamId()&&!m->reroll)
+	setState(GS_BLOCK);
+    }
+  onEvent(m);
 }
 
 void CRules::msgBlockDice(const MsgBlockDice* m)
 {
-	setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+  setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
 }
 
 void CRules::actBlockPush(const ActBlockPush* m)
 {
   if (getState() == GS_PUSH)
-	  {
-		  setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
-		}
-	else if (m->client_id == getTeamId())
-	  {
-		  setState(GS_PUSH);
-		  onEvent(m);
-		}
+    {
+      setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+    }
+  else if (m->client_id == getTeamId())
+    {
+      setState(GS_PUSH);
+      onEvent(m);
+    }
 }
 
 void CRules::msgFollow(const MsgFollow* m)
 {
   if (getState() == GS_FOLLOW)
-	  {
-		  setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
-		}
-	else if (m->client_id == getTeamId())
-	  {
-		  setState(GS_FOLLOW);
-		  onEvent(m);
-		}
+    {
+      setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+    }
+  else if (m->client_id == getTeamId())
+    {
+      setState(GS_FOLLOW);
+      onEvent(m);
+    }
 }
 
 // If client_rules is loaded as a dynamic library, this is the

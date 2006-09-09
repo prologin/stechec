@@ -21,10 +21,10 @@
 SBall::SBall(SRules* r)
   : r_(r),
     owner_(NULL),
-		thrown_(false)
+    thrown_(false)
 {
   r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITKICKOFF);
-	r_->HANDLE_WITH(MSG_GIVEBALL, SBall, this, msgGiveBall, GS_TOUCHBACK);
+  r_->HANDLE_WITH(MSG_GIVEBALL, SBall, this, msgGiveBall, GS_TOUCHBACK);
 }
 
 SPlayer* SBall::getOwner()
@@ -54,8 +54,8 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
   if (invalidBallPlacement())
     {
       LOG4("Ball: wrong kick-off from " << m->client_id
-					   << ". Not in receiver's field: " << pos_);
-			return;
+	   << ". Not in receiver's field: " << pos_);
+      return;
     }
 
   scatter(Dice(6).roll());
@@ -67,45 +67,45 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
     }
 
   // Catch it if there is somebody, else bounce it.
-	// Can't use the methods catchBall and bounce : must control if it goes out
+  // Can't use the methods catchBall and bounce : must control if it goes out
   bool has_scattered = false;
   p = r_->getField()->getPlayer(pos_);
-	while (p != NULL||!has_scattered)
-		{
-			if (p == NULL)
-				{
-					scatter(1);
-					if (invalidBallPlacement())
-						return;
-					has_scattered = true;
-					p = r_->getField()->getPlayer(pos_);
-				}
-			else
-				{
-					int nb_tackles = r_->getField()->getNbTackleZone(1 - p->getTeamId(), pos_);
-				  if (!p->tryAction(0 - nb_tackles))
-    				{
-		      		LOG5("Ball: player has failed to catch it at " << pos_);
-							scatter(1);
-							if (invalidBallPlacement())
-								return;
-							has_scattered = true;
-							p = r_->getField()->getPlayer(pos_);
-						}
-					else
-						{
-						  LOG5("Ball: player successfully catch it at " << pos_);
-						  owner_ = p;
-							p = NULL;
-							has_scattered = true;
-						}
-				}
-		}
+  while (p != NULL||!has_scattered)
+    {
+      if (p == NULL)
+	{
+	  scatter(1);
+	  if (invalidBallPlacement())
+	    return;
+	  has_scattered = true;
+	  p = r_->getField()->getPlayer(pos_);
+	}
+      else
+	{
+	  int nb_tackles = r_->getField()->getNbTackleZone(1 - p->getTeamId(), pos_);
+	  if (!p->tryAction(0 - nb_tackles))
+	    {
+	      LOG5("Ball: player has failed to catch it at " << pos_);
+	      scatter(1);
+	      if (invalidBallPlacement())
+		return;
+	      has_scattered = true;
+	      p = r_->getField()->getPlayer(pos_);
+	    }
+	  else
+	    {
+	      LOG5("Ball: player successfully catch it at " << pos_);
+	      owner_ = p;
+	      p = NULL;
+	      has_scattered = true;
+	    }
+	}
+    }
 		
   mesg.row = pos_.row;
   mesg.col = pos_.col;
   r_->sendPacket(mesg);
-	r_->kickoffFinished();
+  r_->kickoffFinished();
 }
 
 void SBall::msgGiveBall(const MsgGiveBall* m)
@@ -121,24 +121,24 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
       return;
     }
 
-	p = r_->getTeam(m->client_id)->getPlayer(m->player_id);
+  p = r_->getTeam(m->client_id)->getPlayer(m->player_id);
 
-	if (p->getStatus() != STA_STANDING)
-		{
-		  LOG4("Ball: player `" << p->getId() << "' can't carry the ball.");
+  if (p->getStatus() != STA_STANDING)
+    {
+      LOG4("Ball: player `" << p->getId() << "' can't carry the ball.");
       r_->sendIllegal(MSG_GIVEBALL, m->client_id);
       return;
-		}
+    }
 
-	mesg.row = p->getPosition().row;
-	mesg.col = p->getPosition().col;
+  mesg.row = p->getPosition().row;
+  mesg.col = p->getPosition().col;
 	
-	owner_ = p;
+  owner_ = p;
 	
   // So everybody will be aware of where the kicker put it.
   r_->sendPacket(mesg);
 	
-	r_->kickoffFinished();
+  r_->kickoffFinished();
 }
 
 bool SBall::invalidBallPlacement()
@@ -150,8 +150,8 @@ bool SBall::invalidBallPlacement()
     {
       pos_.col = -1;
       pos_.row = -1;
-			r_->setState(GS_TOUCHBACK);
-			r_->sendPacket(MsgGiveBall(r_->getCurrentTeamId()));
+      r_->setState(GS_TOUCHBACK);
+      r_->sendPacket(MsgGiveBall(r_->getCurrentTeamId()));
       return true;
     }
   return false;
@@ -170,30 +170,30 @@ void SBall::afterBounce(const Position& delta, int amplitude)
       pos_ = to;
       SPlayer *p = f->getPlayer(to);
       if (p != NULL)
-				{
-					if (p->getStatus() == STA_STANDING)
-						{
-							p->action_attempted_ = R_CATCH;
-							p->reroll_enabled_ = (r_->getTeam(p->getTeamId())->canUseReroll()
-																			&&p->getTeamId() == r_->getCurrentTeamId());
-							if (catchBall(p, 0))
-								{
-									if (thrown_&&p->getTeamId() != r_->getCurrentTeamId())
-										r_->turnOver();
-									thrown_ = false;							
-								}
-						}
-					else
-						bounce();
-				}
-			else
-				{
-					if (thrown_)
-						{
-							r_->turnOver();
-							thrown_ = false;
-						}
-				}
+	{
+	  if (p->getStatus() == STA_STANDING)
+	    {
+	      p->action_attempted_ = R_CATCH;
+	      p->reroll_enabled_ = (r_->getTeam(p->getTeamId())->canUseReroll()
+				    &&p->getTeamId() == r_->getCurrentTeamId());
+	      if (catchBall(p, 0))
+		{
+		  if (thrown_&&p->getTeamId() != r_->getCurrentTeamId())
+		    r_->turnOver();
+		  thrown_ = false;							
+		}
+	    }
+	  else
+	    bounce();
+	}
+      else
+	{
+	  if (thrown_)
+	    {
+	      r_->turnOver();
+	      thrown_ = false;
+	    }
+	}
     }
   else
     {
@@ -234,37 +234,37 @@ void SBall::bounce(int nb)
 }
 
 void SBall::scatter(int nb)
- {
-   Dice d(8);
-   switch(d.roll())
-     {
-     case N: pos_ += Position(-nb, 0); break;
-     case S: pos_ += Position(+nb, 0); break;
-     case E: pos_ += Position(0, +nb); break;
-     case W: pos_ += Position(0, -nb); break;
-     case NE: pos_ += Position(-nb, +nb); break;
-     case NW: pos_ += Position(-nb, -nb); break;
-     case SE: pos_ += Position(+nb, +nb); break;
-     case SW: pos_ += Position(+nb, -nb); break;
-     }
- }
+{
+  Dice d(8);
+  switch(d.roll())
+    {
+    case N: pos_ += Position(-nb, 0); break;
+    case S: pos_ += Position(+nb, 0); break;
+    case E: pos_ += Position(0, +nb); break;
+    case W: pos_ += Position(0, -nb); break;
+    case NE: pos_ += Position(-nb, +nb); break;
+    case NW: pos_ += Position(-nb, -nb); break;
+    case SE: pos_ += Position(+nb, +nb); break;
+    case SW: pos_ += Position(+nb, -nb); break;
+    }
+}
 
 // Player trying to catch the ball
 // Note: a player has not to be at ball position.
 bool SBall::catchBall(SPlayer *p, int modifier)
 {
   SField* f = r_->getField();
-	int opponent_team_id;
-	if ( p->getTeamId() == r_->getCurrentTeamId())
-		opponent_team_id = r_->getCurrentOpponentTeamId();
-	else
-	  opponent_team_id = r_->getCurrentTeamId();	
+  int opponent_team_id;
+  if ( p->getTeamId() == r_->getCurrentTeamId())
+    opponent_team_id = r_->getCurrentOpponentTeamId();
+  else
+    opponent_team_id = r_->getCurrentTeamId();	
   int nb_tackles = f->getNbTackleZone(opponent_team_id, pos_);
   if (!p->tryAction(modifier - nb_tackles))
     {
       LOG5("Ball: player has failed to pick it at " << pos_);
-			if (p->reroll_enabled_)	
-				return false;
+      if (p->reroll_enabled_)	
+	return false;
       bounce();
       return false;
     }
@@ -295,34 +295,34 @@ void SBall::throwin()
   if (d.row)
     {
       switch(Dice(3).roll())
-			{
-				case 1: afterBounce(Position(1, d.col), reach); break;
-				case 2: afterBounce(Position(0, d.col), reach); break;
-				case 3: afterBounce(Position(-1, d.col), reach); break;
-			}
+	{
+	case 1: afterBounce(Position(1, d.col), reach); break;
+	case 2: afterBounce(Position(0, d.col), reach); break;
+	case 3: afterBounce(Position(-1, d.col), reach); break;
+	}
     }
   else
     {
       switch(Dice(3).roll())
-			{
-				case 1: afterBounce(Position(d.row, 1), reach); break;
-				case 2: afterBounce(Position(d.row, 0), reach); break;
-				case 3: afterBounce(Position(d.row, -1), reach); break;
-			}
+	{
+	case 1: afterBounce(Position(d.row, 1), reach); break;
+	case 2: afterBounce(Position(d.row, 0), reach); break;
+	case 3: afterBounce(Position(d.row, -1), reach); break;
+	}
     }
 }
 
 void SBall::removeFromField()
 {
-	owner_ = NULL;
-	pos_ = Position(-1,-1);
-	MsgBallPos mesg;
-	mesg.row = pos_.row;
+  owner_ = NULL;
+  pos_ = Position(-1,-1);
+  MsgBallPos mesg;
+  mesg.row = pos_.row;
   mesg.col = pos_.col;
   r_->sendPacket(mesg);
 }
 
 void SBall::setThrown()
 {
-	thrown_ = true;
+  thrown_ = true;
 }

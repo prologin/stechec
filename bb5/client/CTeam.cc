@@ -23,7 +23,7 @@ CTeam::CTeam(int team_id, CRules* r)
 {
   r_->HANDLE_F_WITH(MSG_TEAMINFO, CTeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, CTeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
-	r_->HANDLE_F_WITH(MSG_REROLL, CTeam, this, msgReroll, filterReroll, GS_REROLL);
+  r_->HANDLE_F_WITH(MSG_REROLL, CTeam, this, msgReroll, filterReroll, GS_REROLL);
 }
 
 CTeam::~CTeam()
@@ -99,15 +99,15 @@ void CTeam::placeTeam(int formation_id)
   for (int i = 0; i < MAX_PLAYER; i++)
     if (player_[i] != NULL&&player_[i]->getStatus() == STA_RESERVE)
       {
-				MsgPlayerPos pkt;
-				Position pos = xml_formation_.getPos(player_[i]->getId() + 1);
-				pkt.player_id = player_[i]->getId();
-				pkt.row = pos.row;
-				pkt.col = pos.col;
-				// if this is team 2, mirror on rows [|13-25|].
-				if (team_id_ == 1)
-				  pkt.row = ROWS - pkt.row - 1;
-				r_->sendPacket(pkt);
+	MsgPlayerPos pkt;
+	Position pos = xml_formation_.getPos(player_[i]->getId() + 1);
+	pkt.player_id = player_[i]->getId();
+	pkt.row = pos.row;
+	pkt.col = pos.col;
+	// if this is team 2, mirror on rows [|13-25|].
+	if (team_id_ == 1)
+	  pkt.row = ROWS - pkt.row - 1;
+	r_->sendPacket(pkt);
       }
 }
 
@@ -137,7 +137,7 @@ bool CTeam::blockPlayer(int player_id, const Position& to, enum eAction action)
 
 bool CTeam::passPlayer(int player_id, const Position& to)
 {
-	CPlayer* p = getPlayer(player_id);
+  CPlayer* p = getPlayer(player_id);
   if (p == NULL)
     return false;
 	return p->pass(to);

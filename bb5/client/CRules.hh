@@ -70,12 +70,12 @@ private:
   void msgChatMessage(const MsgChat* m);
   void msgMoveTurnMarker(const ActMoveTurnMarker* m);
   void msgCustomEvent(const CustomEvent* m);
-	void msgResult(const MsgResult* m);
-	void msgBlockResult(const MsgBlockResult* m);
-	void msgBlockDice(const MsgBlockDice* m);
-	void msgFollow(const MsgFollow* m);
+  void msgResult(const MsgResult* m);
+  void msgBlockResult(const MsgBlockResult* m);
+  void msgBlockDice(const MsgBlockDice* m);
+  void msgFollow(const MsgFollow* m);
 	
-	void actBlockPush(const ActBlockPush* m);
+  void actBlockPush(const ActBlockPush* m);
 
   const xml::XMLConfig& cfg_;
   Api*                  api_;

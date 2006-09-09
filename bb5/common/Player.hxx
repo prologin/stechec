@@ -189,16 +189,16 @@ inline const char* Player::stringify(enum eSkill skill)
 inline std::ostream& operator<< (std::ostream& os, const Player& p)
 {
   os << "Player '" << p.id_ << "' (team " << p.team_id_ << ") - " << p.name_ << "\n";
-	if (p.status_ != STA_STANDING
-			&&p.status_ != STA_PRONE
-			&&p.status_ != STA_STUNNED)
-		{
-			os << "  position      : out of the field\n";
-		}
-	else
-		{
-			os << "  position      : " << p.pos_ << "\n";
-		}
+  if (p.status_ != STA_STANDING
+      &&p.status_ != STA_PRONE
+      &&p.status_ != STA_STUNNED)
+    {
+      os << "  position      : out of the field\n";
+    }
+  else
+    {
+      os << "  position      : " << p.pos_ << "\n";
+    }
   os << "  carateristics :  ma: " << p.ma_ << " | "
      << "st: " << p.st_ << " | "
      << "ag: " << p.ag_ << " | "

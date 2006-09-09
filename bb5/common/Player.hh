@@ -26,7 +26,7 @@ const int MAX_SKILL = 16;
 
 DECLARE_PACKET(ACT_MOVE, ActMove)
   int player_id;
-	int action;
+  int action;
   int nb_move;
   struct {
     int row;
@@ -36,12 +36,12 @@ END_PACKET
 
 DECLARE_PACKET(ACT_STANDUP, ActStandUp)
   int player_id;
-	int action;
+  int action;
 END_PACKET
 
 DECLARE_PACKET(ACT_BLOCK, ActBlock)
   int player_id;
-	int action;
+  int action;
   int opponent_id;
 END_PACKET
 
@@ -64,7 +64,7 @@ END_PACKET
 
 DECLARE_PACKET(ACT_PASS, ActPass)
   int player_id;
-	int action;
+  int action;
   int dest_row;
   int dest_col;
 END_PACKET
@@ -105,20 +105,20 @@ END_PACKET
 
 DECLARE_PACKET(MSG_RESULT, MsgResult)
   int player_id;
-	int roll_type;
-	int result;
-	int modifier;
-	int required;
-	bool reroll;
+  int roll_type;
+  int result;
+  int modifier;
+  int required;
+  bool reroll;
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
   int choose_team_id;
-	int player_id;
+  int player_id;
   int opponent_id;
-	int nb_dice;
-	int results[3];
-	bool reroll;
+  int nb_dice;
+  int results[3];
+  bool reroll;
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)

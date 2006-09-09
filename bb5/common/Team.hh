@@ -42,11 +42,11 @@ public:
   const std::string& getTeamName() const;
   const std::string& getCoachName() const;
   int getScore();
-	int getRerollsRemain();
-	bool canUseReroll();
-	void initRerolls();
+  int getRerollsRemain();
+  bool canUseReroll();
+  void initRerolls();
   void resetTurn();
-	bool isPlacementValid();
+  bool isPlacementValid();
   
 protected:
   int team_id_;   ///< Team id (0 or 1).
@@ -57,7 +57,7 @@ protected:
 
   int score_;
   int reroll_;
-	int reroll_remain_;
+  int reroll_remain_;
 	
   bool blitz_done_;
   bool pass_done_;

@@ -56,7 +56,7 @@ public:
   //! @param to Block will be made to this position.
   bool blockPlayer(int player_id, const Position& to, enum eAction action);
   
-	//! @brief Do a pass.
+  //! @brief Do a pass.
   //! @param player_id Player doing the pass.
   //! @param to The pass destination.
   bool passPlayer(int player_id, const Position& to);
@@ -70,8 +70,8 @@ private:
   bool filterTeamInfo(const MsgTeamInfo* m);
   void msgPlayerInfo(const MsgPlayerInfo* m);
   bool filterPlayerInfo(const MsgPlayerInfo* m);
-	void msgReroll(const MsgReroll* m);
-	bool filterReroll(const MsgReroll* m);
+  void msgReroll(const MsgReroll* m);
+  bool filterReroll(const MsgReroll* m);
   CRules* r_;
   
   xml::XMLTeam xml_team_;

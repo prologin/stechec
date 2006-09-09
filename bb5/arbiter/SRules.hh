@@ -26,10 +26,9 @@
 
 typedef Field<SPlayer> SField;
 
-/*! @brief Rules implementation for the server.
-**
-** @author victor
-** @date 30/12/2005
+/*!
+** @brief Rules implementation for the server.
+** @ingroup rules
 */
 class SRules : public BaseSRules
 {
@@ -66,8 +65,8 @@ public:
   //! @brief Cause a turn over. Call it when, eg, an action failed.
   void turnOver();
   
-	//! @brief Adapt score and launch the kickoff
-	void touchdown();
+  //! @brief Adapt score and launch the kickoff
+  void touchdown();
 
   virtual void serialize(std::ostream& os) const;
   virtual void unserialize(std::istream& is);
@@ -78,7 +77,7 @@ private:
   //! @brief Initialize rules and launch game.
   //! called once in a game.
   void initGame();
-	//!@ brief Called before a half.
+  //!@ brief Called before a half.
   void initHalf();
   //!@ brief Called before a kickoff.
   void initKickoff();
@@ -101,7 +100,7 @@ private:
   SBall*    ball_;
   SField*   field_;
   int       coach_begin_;
-	int				coach_receiver_;	
+  int	    coach_receiver_;	
 };
 
 # include "SRules.hxx"

@@ -50,15 +50,15 @@ void CPlayer::subMa(int dep)
 
 bool CPlayer::standUp(enum eAction action)
 {
- 	if (status_ != STA_PRONE)
+  if (status_ != STA_PRONE)
     {
       LOG2("You are not prone.");
       return false;
     }
 		
-	ActStandUp pkt;
+  ActStandUp pkt;
   pkt.player_id = id_;
-	pkt.action = action;
+  pkt.action = action;
   r_->sendPacket(pkt);
   return true;
 }
@@ -91,7 +91,7 @@ bool CPlayer::move(const Position& to, enum eAction action)
       return false;
     }
   pkt.player_id = id_;
-	pkt.action = action;
+  pkt.action = action;
   pkt.nb_move = 0;
   PosIter it;
   for (it = p.begin(); it != p.end(); ++it)
@@ -113,11 +113,11 @@ bool CPlayer::block(const Position& to, enum eAction action)
   if (opponent == NULL
       || opponent->getTeamId() == getTeamId()
       || !getPosition().isNear(opponent->getPosition())
-			|| opponent->getStatus() != STA_STANDING)
+      || opponent->getStatus() != STA_STANDING)
     return false;
   ActBlock pkt;
   pkt.player_id = id_;
-	pkt.action = action;
+  pkt.action = action;
   pkt.opponent_id = opponent->getId();
   r_->sendPacket(pkt);
   return true;
@@ -125,9 +125,9 @@ bool CPlayer::block(const Position& to, enum eAction action)
 
 bool CPlayer::pass(const Position& to)
 {
-	ActPass pkt;
+  ActPass pkt;
   pkt.player_id = id_;
-	pkt.action = PASS;
+  pkt.action = PASS;
   pkt.dest_row = to.row;
   pkt.dest_col = to.col;
   r_->sendPacket(pkt);
@@ -179,16 +179,16 @@ void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
   switch ((enum eStatus)m->status)
     {
     case STA_STANDING: 
-			if (status_ == STA_PRONE)
-				ma_remain_ = ma_ - 3;
+      if (status_ == STA_PRONE)
+	ma_remain_ = ma_ - 3;
     case STA_PRONE:
     case STA_STUNNED:
-    break;
-		case STA_RESERVE:
-			if (status_ != STA_STANDING
-						&&status_ != STA_PRONE
-						&&status_ != STA_STUNNED)
-				break;
+      break;
+    case STA_RESERVE:
+      if (status_ != STA_STANDING
+	  &&status_ != STA_PRONE
+	  &&status_ != STA_STUNNED)
+	break;
     case STA_KO:
     case STA_INJURED:
       r_->getField()->setPlayer(pos_, NULL);

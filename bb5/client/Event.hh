@@ -41,14 +41,14 @@ public:
   virtual void evIllegal(int was_token);
   virtual void evNewTurn(bool our_turn);
   virtual void evEndGame() {}
-	virtual void evResult(int player_id, enum eRoll action_type, 
-												int result, int modifier, int required, bool reroll);
-	virtual void evBlockResult(int team_id, int player_id, int opponent_id, 
-															int nb_dice,enum eBlockDiceFace result[3],
+  virtual void evResult(int player_id, enum eRoll action_type, 
+			int result, int modifier, int required, bool reroll);
+  virtual void evBlockResult(int team_id, int player_id, int opponent_id, 
+			     int nb_dice,enum eBlockDiceFace result[3],
 															int choose, bool reroll);
   virtual void evHalf(int half);
   virtual void evKickOff() {}
-	virtual void evGiveBall();
+  virtual void evGiveBall();
   virtual void evMoveTurnMarker() {}
   virtual void evTimeExceeded() {}
   virtual void evChat(const std::string& msg);
@@ -56,10 +56,10 @@ public:
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evPlayerKnocked(int team_id, int player_id);
-	virtual void evPlayerStatus(int team_id, enum eStatus status);
-	virtual void evPlayerKO(int team_id, int player_id, int dice);
-	virtual void evFollow();
-	virtual void evBlockPush(Position pos, int nb_choice, Position choices[]);
+  virtual void evPlayerStatus(int team_id, enum eStatus status);
+  virtual void evPlayerKO(int team_id, int player_id, int dice);
+  virtual void evFollow();
+  virtual void evBlockPush(Position pos, int nb_choice, Position choices[]);
 };
 
 inline void Event::evIllegal(int) {}

@@ -44,7 +44,7 @@ public:
   //! @param pos Position in field to look for.
   int           getNbTackleZone(int team_id, const Position& pos);
 
-    //! @brief Get the player as the specified position, or NULL.
+  //! @brief Get the player as the specified position, or NULL.
   T*            getPlayer(const Position& pos);
 
   //! @brief Place a player on the field.
@@ -102,7 +102,7 @@ inline int Field<T>::getNbTackleZone(int team_id, const Position& pos)
       if (intoField(p)
           && getPlayer(p) != NULL
           && getPlayer(p)->getTeamId() == team_id
-					&& getPlayer(p)->getStatus() == STA_STANDING)
+	  && getPlayer(p)->getStatus() == STA_STANDING)
         res++;
   return res;
 }
@@ -112,71 +112,71 @@ inline int Field<T>::isPlacementValid(int team_id)
 {
   Position p;
 
-	// Check the other half of the field
+  // Check the other half of the field
   for (p.row = (1 - team_id)*13; p.row <= (1 - team_id)*13 + 12; p.row++)
     for (p.col = 0; p.col <= 14; p.col++)
       if (getPlayer(p) != NULL
-					&& getPlayer(p)->getTeamId() == team_id)
-				return false;
+	  && getPlayer(p)->getTeamId() == team_id)
+	return false;
 
-	int nb_player = 0;
-	int nb_player_wide = 0;
-	// Check the left wide zone
+  int nb_player = 0;
+  int nb_player_wide = 0;
+  // Check the left wide zone
   for (p.row = team_id*12 + 1; p.row <= team_id*12 + 12; p.row++)
     for (p.col = 0; p.col <= 3; p.col++)
       if (getPlayer(p) != NULL 
-					&& getPlayer(p)->getTeamId() == team_id)
-				{
-					nb_player_wide++;
-					nb_player++;
-				}
-	if (nb_player_wide > 2)
-		return false;
+	  && getPlayer(p)->getTeamId() == team_id)
+	{
+	  nb_player_wide++;
+	  nb_player++;
+	}
+  if (nb_player_wide > 2)
+    return false;
 	
-	nb_player_wide = 0;
-	// Check the right wide zone
+  nb_player_wide = 0;
+  // Check the right wide zone
   for (p.row = team_id*12 + 1; p.row <= team_id*12 + 12; p.row++)
     for (p.col = 11; p.col <= 14; p.col++)
       if (getPlayer(p) != NULL 
-					&& getPlayer(p)->getTeamId() == team_id)
-				{
-					nb_player_wide++;
-					nb_player++;
-				}
-	if (nb_player_wide > 2)
-		return false;
+	  && getPlayer(p)->getTeamId() == team_id)
+	{
+	  nb_player_wide++;
+	  nb_player++;
+	}
+  if (nb_player_wide > 2)
+    return false;
 	
-	int nb_player_LoS = 0;
-	// Check the LoS
+  int nb_player_LoS = 0;
+  // Check the LoS
   p.row = team_id + 12;
   for (p.col = 4; p.col <= 10; p.col++)
     if (getPlayer(p) != NULL 
-				&& getPlayer(p)->getTeamId() == team_id)
-			{
-				nb_player_LoS++;
-				nb_player++;
-			}
+	&& getPlayer(p)->getTeamId() == team_id)
+      {
+	nb_player_LoS++;
+	nb_player++;
+      }
 
-	// Check the end zone
+  // Check the end zone
   p.row = team_id*25;
   for (p.col = 0; p.col <= 14; p.col++)
     if (getPlayer(p) != NULL 
-				&& getPlayer(p)->getTeamId() == team_id)
-			{
-				nb_player++;
-			}
+	&& getPlayer(p)->getTeamId() == team_id)
+      {
+	nb_player++;
+      }
 	
-	// Check the middle of the field
+  // Check the middle of the field
   for (p.row = team_id*13 + 1; p.row <= team_id*13 + 11; p.row++)
     for (p.col = 4; p.col <= 10; p.col++)
       if (getPlayer(p) != NULL 
-					&& getPlayer(p)->getTeamId() == team_id)
-				{
-					nb_player++;
-				}
+	  && getPlayer(p)->getTeamId() == team_id)
+	{
+	  nb_player++;
+	}
 	
-	// The where the team has less than 11 players is treated in Team
-	return (nb_player < 12 &&(nb_player_LoS >= 3 ||nb_player_LoS == nb_player));
+  // The where the team has less than 11 players is treated in Team
+  return (nb_player < 12 &&(nb_player_LoS >= 3 ||nb_player_LoS == nb_player));
 }
 
 #endif /* !FIELD_HH_ */

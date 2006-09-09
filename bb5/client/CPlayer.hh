@@ -33,7 +33,7 @@ public:
   //! @brief Move the player on the field.
   bool move(const Position& to, enum eAction action);
 	
-	//! @brief Stand up the player.
+  //! @brief Stand up the player.
   bool standUp(enum eAction action);
 
   //! @brief Block the player at the specified position.
@@ -63,7 +63,7 @@ private:
   void msgPlayerMove(const ActMove* m);
   void msgPlayerKnocked(const MsgPlayerKnocked* m);
   void msgPlayerStatus(const MsgPlayerStatus* m);
-	void msgPlayerKO(const MsgPlayerKO* m);
+  void msgPlayerKO(const MsgPlayerKO* m);
 
   // Filter messages. Say yes if this message is for this player.
   bool filterPlayerPos(const MsgPlayerPos* m);
