@@ -223,10 +223,10 @@ inline void Api::sendChatMessage(const std::string& msg)
 }
 
 /*
-** Accessors
+** Accessors, for the game
 */
 
-inline void Api::select_team(int team_id)
+inline void Api::selectTeam(int team_id)
 {
   assert(rules_->getState() != GS_WAIT);
   selected_team_ = NULL;
@@ -237,6 +237,90 @@ inline void Api::select_team(int team_id)
   if (team_id == THEM || (team_id <= 1 && team_id != rules_->getTeamId()))
     selected_team_ = rules_->other_team_;
 }
+
+
+inline int Api::myTeamId() const
+{
+  return rules_->getTeamId();
+}
+
+inline int Api::ballX() const
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->ball_->getPosition().getX();
+}
+
+inline int Api::ballY() const
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->ball_->getPosition().getY();
+}
+
+
+inline int Api::selectPlayer(int player_id)
+{
+  CHECK_TEAM;
+  selected_player_ = selected_team_->getPlayer(player_id);
+  return selected_player_ == NULL ? BAD_PLAYER : SUCCESS;
+}
+
+inline int Api::moveLength(int dst_x, int dst_y)
+{
+  CHECK_PLAYER;
+  CHECK_POS(dst_x, dst_y);
+
+  player_path_ = &rules_->field_->getPath(selected_player_->getPosition(),
+                                          Position(dst_y, dst_x),
+                                          selected_player_);
+  return player_path_->size();
+}
+
+inline int Api::moveDifficulty(int step)
+{
+  CHECK_PLAYER;
+  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
+    return BAD_ARGUMENT;
+
+  Position step_pos((*player_path_)[step]);
+  int nbt = rules_->field_->getNbTackleZone(selected_team_->getTeamId(), step_pos);
+  if (nbt == 0)
+    return 0;
+  return (7 - std::min(selected_player_->getAg(), 6)) + nbt - 1;
+}
+
+inline int Api::movePathX(int step)
+{
+  CHECK_PLAYER;
+  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
+    return BAD_ARGUMENT;
+
+  return (*player_path_)[step].getX();
+}
+
+inline int Api::movePathY(int step)
+{
+  CHECK_PLAYER;
+  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
+    return BAD_ARGUMENT;
+
+  return (*player_path_)[step].getY();
+}
+
+inline int Api::movePossible(int dst_x, int dst_y)
+{
+  CHECK_PLAYER;
+  CHECK_POS(dst_x, dst_y);
+
+  // FIXME: better implementation.
+  return rules_->field_->getPath(selected_player_->getPosition(),
+                                 Position(dst_y, dst_x),
+                                 selected_player_).empty() ? 0 : 1;
+}
+
+
+/*
+** Accessors, for debug
+*/
 
 inline const std::string& Api::getCoachName() const
 {
@@ -251,11 +335,6 @@ inline const std::string& Api::getTeamName() const
 inline const CTeam* Api::getTeam() const
 {
   return selected_team_;
-}
-
-inline int Api::getTeamId() const
-{
-  return rules_->getTeamId();
 }
 
 inline const CPlayer* Api::getPlayer(int player_id) const
@@ -277,19 +356,13 @@ inline const Weather* Api::getWeather() const
   return rules_->weather_;
 }
 
-inline Point Api::getBallPosition() const
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return Point(rules_->ball_->getPosition());
-}
-
 inline const CField* Api::getField() const
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   return rules_->field_;
 }
 
-inline const char* Api::getStateString() const
+inline const char* Api::getGameStateString() const
 {
   switch (rules_->getState())
     {
@@ -305,63 +378,4 @@ inline const char* Api::getStateString() const
       return "GS_PAUSE";
     }
   return BaseApi<CRules>::getStateString();
-}
-
-inline int Api::select_player(int player_id)
-{
-  CHECK_TEAM;
-  selected_player_ = selected_team_->getPlayer(player_id);
-  return selected_player_ == NULL ? BAD_PLAYER : SUCCESS;
-}
-
-inline int Api::move_lenght(int dst_x, int dst_y)
-{
-  CHECK_PLAYER;
-  CHECK_POS(dst_x, dst_y);
-
-  player_path_ = &rules_->field_->getPath(selected_player_->getPosition(),
-                                          Position(dst_y, dst_x),
-                                          selected_player_);
-  return player_path_->size();
-}
-
-inline int Api::move_difficulty(int step)
-{
-  CHECK_PLAYER;
-  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
-    return BAD_ARGUMENT;
-
-  Position step_pos((*player_path_)[step]);
-  int nbt = rules_->field_->getNbTackleZone(selected_team_->getTeamId(), step_pos);
-  if (nbt == 0)
-    return 0;
-  return (7 - std::min(selected_player_->getAg(), 6)) + nbt - 1;
-}
-
-inline int Api::move_path_x(int step)
-{
-  CHECK_PLAYER;
-  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
-    return BAD_ARGUMENT;
-
-  return (*player_path_)[step].getX();
-}
-
-inline int Api::move_path_y(int step)
-{
-  CHECK_PLAYER;
-  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
-    return BAD_ARGUMENT;
-
-  return (*player_path_)[step].getY();
-}
-
-inline int Api::move_possible(int dst_x, int dst_y)
-{
-  CHECK_PLAYER;
-  CHECK_POS(dst_x, dst_y);
-  
-  return rules_->field_->getPath(selected_player_->getPosition(),
-                                 Position(dst_y, dst_x),
-                                 selected_player_).empty() ? 0 : 1;
 }

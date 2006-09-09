@@ -130,7 +130,7 @@ void        CRules::msgInitKickoff(const MsgInitKickoff* m)
   		LOG2("-- CRules: change state: GS_INITKICKOFF");
 
 		  // Now, you can safely use Api fonctions referring to teams.
-		  api_->select_team(US);
+		  api_->selectTeam(US);
 
       our_team_->placeTeam(1);
 			sendPacket(*m);

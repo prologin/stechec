@@ -79,6 +79,9 @@ void VisuPlayer::action(eAction item)
     case eActAggress:
       LOG2("AGGRESS to " << to << " - not implemented yet");
       break;
+    default:
+      LOG2("not implemented yet...");
+      break;
     }
 }
 
@@ -121,7 +124,7 @@ void VisuPlayer::update()
     }
 
   // Debug
-  if (now_focus && inp.key_pressed_['d'])
+  if (now_focus && inp.key_pressed_[(unsigned char)'d'])
     LOG3(*p_);
   
   has_focus_ = now_focus;

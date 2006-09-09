@@ -578,7 +578,6 @@ char** cmd_completion(const char* text, int start, int)
 {
   char **matches = NULL;   
 
-  // FIXME: is 'completion_matches' on mac.
   if (start == 0)
     matches = rl_completion_matches(text, cmd_generator);
   else if (strncmp(rl_line_buffer, "print", 5) == 0)

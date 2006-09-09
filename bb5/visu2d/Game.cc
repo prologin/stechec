@@ -117,7 +117,7 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
   if (player_[team_id][player_id - 1] == NULL)
     {
       // Get added player infos.
-      api_->select_team(team_id);  
+      api_->selectTeam(team_id);  
       const CPlayer* ap = api_->getPlayer(player_id);
 
       // Create it.
@@ -210,7 +210,7 @@ int Game::run()
         break;
 
       // Chat box.
-      if (win_.getInput().key_pressed_['y'])
+      if (win_.getInput().key_pressed_[(unsigned)'y'])
         {
           textbox.acquireInput("mytchat");
           textbox.show();

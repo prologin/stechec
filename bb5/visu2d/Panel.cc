@@ -43,7 +43,7 @@ void Panel::displayPlayerInfo(int team_id, int player_id)
   if (showing_player_info_)
     hidePlayerInfo();
 
-  g_.getApi()->select_team(team_id);
+  g_.getApi()->selectTeam(team_id);
   const CPlayer* p = g_.getApi()->getPlayer(player_id);
   player_picture_ = Surface(std::string("image/figs/") + p->getPlayerPicture());
   player_picture_.setPos(45, 150);

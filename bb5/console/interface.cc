@@ -90,15 +90,15 @@ void CmdLineInterface::printGlobal()
        << "  - current game state: " << api_->getStateString() << "\n"
 //       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
 //       << "' (" << api_->getWeather()->getWeather() << ")\n"
-       << "  - ball position: " << api_->getBallPosition() << "\n"
+       << "  - ball position: " << Point(api_->ballX(), api_->ballY()) << "\n"
        << "  - our team  : '" << api_->getTeamName() << "', coached by '"
        << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
        << " players)\n";
-  api_->select_team(THEM);
+  api_->selectTeam(THEM);
   cout << "  - other team: '" << api_->getTeamName() << "', coached by '"
        << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
        << " players)" << endl;
-  api_->select_team(US);
+  api_->selectTeam(US);
 
 }
 
@@ -138,7 +138,7 @@ void CmdLineInterface::printField()
 
           // print square content.
           Position pos(row, col);
-          Position ball_pos(api_->getBallPosition());
+          Position ball_pos(api_->ballX(), api_->ballY());
           const CPlayer* p = api_->getPlayer(pos);
           if (p != NULL)
             {
@@ -181,26 +181,27 @@ void CmdLineInterface::printPlayerList()
       p = api_->getPlayer(i);
       cout << "* " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
     }
-  api_->select_team(THEM);
+  api_->selectTeam(THEM);
   team_size = api_->getTeam()->getNbPlayer();
   for (int i = 0; i < team_size; i++)
     {
       p = api_->getPlayer(i);
       cout << "+ " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
     }
-  api_->select_team(US);
+  api_->selectTeam(US);
 }
 
 void CmdLineInterface::printPlayer(int player_id, int team_id)
 {
-  api_->select_team(team_id);
+  api_->selectTeam(team_id);
   if (player_id < 0 || player_id > api_->getTeam()->getNbPlayer())
     {
       cout << "player id " << player_id << ": out of bound." << endl;
+      api_->selectTeam(US);
       return;
     }
   cout << *api_->getPlayer(player_id);
-  api_->select_team(team_id);
+  api_->selectTeam(US);
 }
 
 //
@@ -246,7 +247,7 @@ void CmdLineInterface::evPlayerMove(int, int player_id, const Point& pos)
   cout << "Player `" << player_id << "' has moved to `" << pos << "'" << endl;
 }
 
-void CmdLineInterface::evPlayerKnocked(int team_id, int player_id)
+void CmdLineInterface::evPlayerKnocked(int, int player_id)
 {
   cout << "Player `" << player_id << "' has been knocked down." << endl;
 }
