@@ -121,7 +121,8 @@ void EventProcess::dispatch(const MsgGiveBall&) const
 template <>
 void EventProcess::dispatch(const MsgResult& pkt) const
 {
-  ev_->evResult(pkt.player_id, (enum eRoll)pkt.roll_type, pkt.result, pkt.modifier, pkt.required, pkt.reroll);
+  ev_->evResult(pkt.client_id, pkt.player_id, (enum eRoll)pkt.roll_type,
+                  pkt.result, pkt.modifier, pkt.required, pkt.reroll);
 }
 
 template <>

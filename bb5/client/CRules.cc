@@ -196,16 +196,15 @@ void        CRules::msgCustomEvent(const CustomEvent* m)
 
 void CRules::msgResult(const MsgResult* m)
 {
-  if (m->client_id != getTeamId())
+  if (m->client_id == getTeamId())
     {
       if (m->reroll == true&&m->result + m->modifier < m->required)
 	{
 	  setState(GS_REROLL);
 	  LOG2("-- CRules: change state: GS_REROLL");
 	}
-	
-      onEvent(m);
     }
+  onEvent(m);
 }
 
 

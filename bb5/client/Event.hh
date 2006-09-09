@@ -41,7 +41,7 @@ public:
   virtual void evIllegal(int was_token);
   virtual void evNewTurn(bool our_turn);
   virtual void evEndGame() {}
-  virtual void evResult(int player_id, enum eRoll action_type, 
+  virtual void evResult(int team_id, int player_id, enum eRoll action_type, 
 			int result, int modifier, int required, bool reroll);
   virtual void evBlockResult(int team_id, int player_id, int opponent_id, 
 			     int nb_dice,enum eBlockDiceFace result[3],
@@ -64,7 +64,7 @@ public:
 
 inline void Event::evIllegal(int) {}
 inline void Event::evNewTurn(bool) {}
-inline void Event::evResult(int, enum eRoll, int, int, int, bool) {}
+inline void Event::evResult(int, int, enum eRoll, int, int, int, bool) {}
 inline void Event::evBlockResult(int, int, int,	int, enum eBlockDiceFace[], int, bool){}
 inline void Event::evHalf(int) {}
 inline void Event::evGiveBall() {}

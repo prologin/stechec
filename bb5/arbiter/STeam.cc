@@ -26,10 +26,10 @@ STeam::STeam(int team_id, SRules* r)
   r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF);
-  r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_REROLL | GS_BLOCK);
-  r_->HANDLE_F_WITH(MSG_BLOCKDICE, STeam, this, msgBlockDice, filterBlockDice, GS_BLOCK);
-  r_->HANDLE_F_WITH(MSG_FOLLOW, STeam, this, msgFollow, filterFollow, GS_FOLLOW);
-  r_->HANDLE_F_WITH(ACT_BLOCKPUSH, STeam, this, msgBlockPush, filterBlockPush, GS_PUSH);
+  r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_BLOCKDICE, STeam, this, msgBlockDice, filterBlockDice, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_FOLLOW, STeam, this, msgFollow, filterFollow, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(ACT_BLOCKPUSH, STeam, this, msgBlockPush, filterBlockPush, GS_COACHBOTH);
 }
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -128,7 +128,6 @@ void STeam::msgReroll(const MsgReroll* m)
   r_->sendPacket(*m);
   if (state_ != GS_BLOCK)
     state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
-  r_->setState(state_);
 
   if (m->reroll)
     {
@@ -152,10 +151,10 @@ void STeam::msgBlockDice(const MsgBlockDice* m)
       r_->sendIllegal(MSG_BLOCKDICE, m->client_id);
       return;
     }
+
   MsgBlockDice msg(r_->getCurrentTeamId());
-  r_->sendPacket(*m);
+  r_->sendPacket(msg);
   r_->getTeam(m->client_id)->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
-  r_->setState(state_);
   concerned_player_->resolveBlock(m->dice);
 }
 
@@ -170,7 +169,6 @@ void STeam::msgFollow(const MsgFollow* m)
 {
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
-  r_->setState(state_);
   concerned_player_->follow(m->follow);
 }
 
@@ -185,7 +183,6 @@ void STeam::msgBlockPush(const ActBlockPush* m)
 {
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
-  r_->setState(state_);
   concerned_player_->blockPush(m->square_chosen);
 }
 
@@ -271,7 +268,7 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eAction action)
 	{ 
 	  if (blitz_done_)
 	    {
-	      LOG4("Cannot do more than one blitz in a single turn.")
+	      LOG4("Cannot do more than one blitz in a single turn.");
 		r_->sendIllegal(pkt->token, p->getId());
 	      return false;
 	    }
@@ -282,7 +279,7 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eAction action)
 	{ 
 	  if (pass_done_)
 	    {
-	      LOG4("Cannot do more than one pass in a single turn.")
+	      LOG4("Cannot do more than one pass in a single turn.");
 		r_->sendIllegal(pkt->token, p->getId());
 	      return false;
 	    }
@@ -303,7 +300,7 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eAction action)
 	{
 	  if (curr_acting_player_ == p->getId()) 
 	    {
-	      LOG4("Cannot try to stand up more than once.")
+	      LOG4("Cannot try to stand up more than once.");
 		r_->sendIllegal(pkt->token, p->getId());
 	      return false;
 	    }

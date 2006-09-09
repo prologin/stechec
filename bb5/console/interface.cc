@@ -275,16 +275,15 @@ void CmdLineInterface::evBlockPush(Position pos, int nb_choice, Position choices
     cout << "  'push " << i << " : " << choices[i] << endl;
 }
 
-void CmdLineInterface::evResult(int player_id, enum eRoll action_type, 
-				int result, int modifier, int required, 
-				bool reroll)
+void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_type, 
+				int result, int modifier, int required, bool reroll)
 {
   cout << "Player `" << player_id << "' tried an action : `"
        << api_->getRollString(action_type)
        << "' : roll [" << result << "] + ["<< modifier << "], required : ["
        << required << "]." << endl;
 	
-  if (result + modifier < required && reroll)
+  if (result + modifier < required && reroll && api_->getTeamId() == team_id)
     cout << "		You can use a 'reroll' or 'accept' this result." << endl;
 }
 
