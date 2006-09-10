@@ -138,7 +138,7 @@ inline bool Position::isNear(const Position& from, int dist) const
 inline float Position::distance(const Position& to) const
 {
   return sqrtf((float) (to.row - row)*(to.row - row)
-		  - (to.col - col)*(to.col - col));
+		  	+ (to.col - col)*(to.col - col));
 }
 
 inline bool operator== (const Position& lhs, const Position& rhs)
