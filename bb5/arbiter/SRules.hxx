@@ -56,3 +56,8 @@ inline STeam* SRules::getTeam(int team_id)
     return team_[team_id];
   return NULL;
 }
+
+inline Dice* SRules::getDice()
+{
+  return dice_;
+}

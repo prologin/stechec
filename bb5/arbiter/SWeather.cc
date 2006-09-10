@@ -19,7 +19,7 @@
 
 SWeather::SWeather()
 {
-  Dice d6;
+  //Dice d6;
 
-  weather_ = d6.roll(2);
+  //weather_ = d6.roll(2);
 }

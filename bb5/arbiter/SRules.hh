@@ -42,6 +42,7 @@ public:
   SField* getField();
   SBall* getBall();
   STeam* getTeam(int team_id);
+  Dice* getDice();
 
   //! @brief Return the current playing team.
   //! @return -1 if no one play, otherwise 0 or 1.
@@ -99,6 +100,7 @@ private:
   SWeather* weather_;
   SBall*    ball_;
   SField*   field_;
+  Dice*	    dice_;
   int       coach_begin_;
   int	    coach_receiver_;	
 };

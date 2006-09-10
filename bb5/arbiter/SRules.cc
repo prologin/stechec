@@ -29,6 +29,8 @@ SRules::SRules()
   team_[1] = NULL;
   timer_.setAllowedTime(60 * 4); // 4min per turn.
 
+  dice_ = new Dice(this);
+  
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, SRules, this, msgInitGame, GS_INITGAME);
   HANDLE_WITH(MSG_INITKICKOFF, SRules, this, msgInitKickoff, GS_INITKICKOFF);
@@ -45,6 +47,7 @@ SRules::~SRules()
   delete weather_;
   delete ball_;
   delete field_;
+  delete dice_;
 }
 
 void        SRules::serialize(std::ostream& os) const
@@ -92,8 +95,7 @@ void SRules::initGame()
       sendPacket(pkt);*/
 
   // Decide who is the kicking team
-  Dice d(2);
-  coach_begin_ = d.roll() - 1; // team_id: base 0.
+  coach_begin_ = dice_->roll("kicking team", D2) - 1; // team_id: base 0.
   LOG3("Coach " << coach_begin_ << " plays first (receiving team).");
 }
 
@@ -120,18 +122,17 @@ void SRules::initHalf()
 		
   // New toss for the third period
   if (cur_half_ == 3)
-    coach_begin_ = Dice(2).roll() - 1;
+    coach_begin_ = dice_->roll("kicking team",  D2) - 1;
 	
   // Match is decided by a penalty shoot-out
   if (cur_half_ > 3) 
     {
-      Dice d(6);
-      int coach0 = d.roll() + team_[0]->getRerollsRemain();
-      int coach1 = d.roll() + team_[1]->getRerollsRemain();
+      int coach0 = dice_->roll("3th half coach0") + team_[0]->getRerollsRemain();
+      int coach1 = dice_->roll("3th half coach1") + team_[1]->getRerollsRemain();
       while (coach0 == coach1)
 	{
-	  coach0 = d.roll() + team_[0]->getRerollsRemain();
-	  coach1 = d.roll() + team_[1]->getRerollsRemain();
+	  coach0 = dice_->roll("3th half coach0") + team_[0]->getRerollsRemain();
+	  coach1 = dice_->roll("3th half coach1") + team_[1]->getRerollsRemain();
 	}
       LOG4("Team " << (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1)
 	   << " win the game.");

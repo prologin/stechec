@@ -72,6 +72,8 @@ public:
   
   bool		doPassPlayer(int p, const Point& to);
 
+  void		doCheatDice(int roll);
+  
   //@}
 
   /**

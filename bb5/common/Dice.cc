@@ -15,29 +15,25 @@
 */
 
 #include "tools.hh"
+#include "BaseRules.hh"
 #include "Dice.hh"
 
-Dice::Dice(int type)
-  : type_(type)
+Dice::Dice(BaseRules* r)
 {
-  static bool srand_done = false;
+  srand((unsigned)time(0));
 
-  if (!srand_done)
-    {
-      srand((unsigned)time(0));
-      srand_done = true;
-    }
+  r->HANDLE_WITH(MSG_CHEATDICE, Dice, this, msgCheatDice, GS_ALL);
 }
 
 Dice::~Dice()
 {
 }
 
-int Dice::roll(int nb_dice)
+int Dice::roll(enum eDiceFaceNumber type, int nb_dice)
 {
   int val = 0;
 
-  switch (type_)
+  switch (type)
     {
     case D66:
       while (nb_dice-- > 0)
@@ -61,17 +57,40 @@ int Dice::roll(int nb_dice)
         case 5: val=BDEFENDER_STUMBLE; break;
         case 6: val=BDEFENDER_DOWN; break;
         default:
-          ERR("!!!!! DBLOCK dice weird error !!!! returned -> " << val);
+	  return -42;
           break;
         }
       break;
  
     default:
       while (nb_dice-- > 0)
-        val += (1+(int) (((double)type_)*rand()/(RAND_MAX+1.0)));
+        val += (1+(int) (((double)type)*rand()/(RAND_MAX+1.0)));
       break;
     }
   return val;
+}
+
+int Dice::roll(const std::string& msg, enum eDiceFaceNumber type, int nb_dice)
+{
+  int res;
+
+  if (cheat_dice_.empty())
+    {
+      res = roll(type, nb_dice);
+      LOG3(" + Roll `" << nb_dice << "' dice D" << type << ": " << res << " (" << msg << ")");
+    }
+  else
+    {
+      res = cheat_dice_.front();
+      cheat_dice_.pop_front();
+      LOG3("Cheat `" << nb_dice << "' dice D" << type << ": " << res << " (" << msg << ")");
+    }
+  return res;
+}
+
+void Dice::msgCheatDice(const MsgCheatDice* m)
+{
+  cheat_dice_.push_back(m->next_result);
 }
 
 const char* Dice::stringify(enum eBlockDiceFace face)
@@ -114,15 +133,4 @@ const char* Dice::stringify(enum eRoll roll)
       return "R_BLOCK";
     }
   return "kikoolol";
-}
-
-int Dice::roll(bool reroll, int x)
-{
-  int result = roll(x);
-  if (reroll)
-    {
-      // FIXME: ask current player for reroll
-      //sendAcceptMessage(result);
-    }
-  return result;
 }

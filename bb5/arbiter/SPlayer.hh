@@ -23,6 +23,7 @@
 
 class SRules;
 class STeam;
+typedef Field<SPlayer> SField;
 
 class SPlayer : public Player
 {
@@ -118,7 +119,9 @@ private:
 	
   SRules* r_;	///< Server rules.
   STeam* t_;	///< Player's team.
-
+  SField* f_;   ///< Game field (same as SRules' one, it is used quite frequently).
+  Dice* d_;	///< The dice (same remark).
+  
   SPlayer* target_; ///< Player that is the target of a block.
 	
 };

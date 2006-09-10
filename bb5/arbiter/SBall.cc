@@ -58,7 +58,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
       return;
     }
 
-  scatter(Dice(6).roll());
+  scatter(r_->getDice()->roll("scatter len"));
   if (invalidBallPlacement())
     {
       LOG4("Ball: kick-off from " << m->client_id
@@ -219,8 +219,7 @@ void SBall::afterBounce(const Position& delta, int amplitude)
 void SBall::bounce(int nb)
 {
   owner_ = NULL;
-  Dice d(8);
-  switch(d.roll())
+  switch (r_->getDice()->roll("bounce", D8))
     {
     case N: afterBounce(Position(-1, 0), nb); break;
     case S: afterBounce(Position(+1, 0), nb); break;
@@ -235,8 +234,7 @@ void SBall::bounce(int nb)
 
 void SBall::scatter(int nb)
 {
-  Dice d(8);
-  switch(d.roll())
+  switch (r_->getDice()->roll("scatter", D8))
     {
     case N: pos_ += Position(-nb, 0); break;
     case S: pos_ += Position(+nb, 0); break;
@@ -277,7 +275,7 @@ bool SBall::catchBall(SPlayer *p, int modifier)
 void SBall::throwin()
 {
   Position d(0, 0); // Direction of the throw.
-  int reach = Dice(6).roll();
+  int reach = r_->getDice()->roll("ball throwin");
   LOG5("Ball: gets throwed by spectators at " << pos_);
 
   // Get the border we just crossed:
@@ -294,7 +292,7 @@ void SBall::throwin()
   // Throw the ball
   if (d.row)
     {
-      switch(Dice(3).roll())
+      switch (r_->getDice()->roll("throwin dir", D3))
 	{
 	case 1: afterBounce(Position(1, d.col), reach); break;
 	case 2: afterBounce(Position(0, d.col), reach); break;
@@ -303,7 +301,7 @@ void SBall::throwin()
     }
   else
     {
-      switch(Dice(3).roll())
+      switch (r_->getDice()->roll("throwin dir", D3))
 	{
 	case 1: afterBounce(Position(d.row, 1), reach); break;
 	case 2: afterBounce(Position(d.row, 0), reach); break;

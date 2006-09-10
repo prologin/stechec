@@ -17,13 +17,14 @@
 #ifndef _DICE_HH_
 # define _DICE_HH_
 
+# include "PacketHandler.hh"
 # include "Constants.hh"
 
 /*!
 ** @file dice.hh
+** @ingroup rules
 */
-
-// FIXME: to move to arbiter. Client rules doesn't need it.
+//@{
 
 //! @brief Some Dice number of face.
 enum eDiceFaceNumber {
@@ -39,6 +40,7 @@ enum eDiceFaceNumber {
   D66 = 666 // :)
 };
 
+//! @brief Faces of block dice.
 enum eBlockDiceFace {
   BATTAKER_DOWN,
   BBOTH_DOWN,
@@ -47,34 +49,43 @@ enum eBlockDiceFace {
   BDEFENDER_DOWN
 };
 
-//DECLARE_PACKET(MSG_ROLLINFO, MsgRollInfo)
-//    int dice_result[3]; //maximum 3 result dices
-//    bool rerollable;
-//END_PACKET
+DECLARE_PACKET(MSG_CHEATDICE, MsgCheatDice)
+  int next_result;
+END_PACKET
+
+class BaseRules;
 
 /*!
-** Classe représentant un dé à X faces.
+** @brief Classe représentant un dé à X faces.
 */
 class Dice
 {
  public:
   //! @brief Constructeur
   //! @param t type du de a fabriquer
-  Dice(int t = D6);
+  Dice(BaseRules* r);
   ~Dice();
 
   //! @brief Pour effectuer un lancer de plusieurs des.
   //! @param x Nombre de des a lancer.
   //! @return Resultat cumule des X des.
-  int roll(int x = 1);
+  int roll(enum eDiceFaceNumber type = D6, int nb_dice = 1);
 
-  int roll(bool reroll, int x = 1);
+  //! @brief Same as roll(x), but print 'msg' as debug to
+  //!   see why this dice is rolled, and can use some previous
+  //!   cheating results given instead of 'rand'.
+  int roll(const std::string& msg, enum eDiceFaceNumber type = D6, int nb_dice = 1);
+
 
   static const char* stringify(enum eBlockDiceFace face);
   static const char* stringify(enum eRoll roll);
   
 private:
-  int type_; 
+  void msgCheatDice(const MsgCheatDice* m);
+  
+  std::deque<int> cheat_dice_;
 };
+
+//@}
 
 #endif // !_DICE_HH_

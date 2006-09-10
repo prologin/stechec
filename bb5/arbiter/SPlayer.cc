@@ -22,6 +22,8 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
   : Player(m),
     r_(r),
     t_(t),
+    f_(r->getField()),
+    d_(r->getDice()),
     target_(NULL)
 {
   r_->HANDLE_F_WITH(ACT_MOVE, SPlayer, this, msgMove, filterMove, GS_COACHBOTH);
@@ -44,10 +46,8 @@ bool SPlayer::acceptPlayerCreation()
 
 void SPlayer::setPosition(const Position& pos, bool advertise_client)
 {
-  SField* f = r_->getField();
-
-  if (f->intoField(pos_))
-    f->setPlayer(pos_, NULL);
+  if (f_->intoField(pos_))
+    f_->setPlayer(pos_, NULL);
   if (advertise_client && pos_ != pos)
     {
       MsgPlayerPos pkt(team_id_);
@@ -63,10 +63,10 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
       r_->getBall()->setPosition(pos_);
     }
   
-  if (!f->intoField(pos))
+  if (!f_->intoField(pos))
     rollInjury(0);
   else
-    f->setPlayer(pos, this);
+    f_->setPlayer(pos, this);
 }
 
 // Standard action. Launch a D6:
@@ -75,8 +75,7 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
 //  - else -> apply modifier and compare with agility.
 bool SPlayer::tryAction(int modifier)
 {
-  Dice d(6);
-  int dice_res = d.roll();
+  int dice_res = d_->roll("action");
   int dice_modif = dice_res + modifier;
   int required = 7 - std::min(ag_, 6);
   if (dice_res != 6 && (dice_modif < required || dice_res == 1))
@@ -109,7 +108,6 @@ int SPlayer::doMove(const ActMove* m)
     }
     
   ActMove res_move(team_id_);
-  SField* f = r_->getField();
   SBall* b = r_->getBall();  
   int illegal = 0;
   bool knocked = false;
@@ -132,8 +130,8 @@ int SPlayer::doMove(const ActMove* m)
         }
 
       // Check tackle zones.
-      int nb_tackles_pos = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
-      int nb_tackles_aim = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim);
+      int nb_tackles_pos = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+      int nb_tackles_aim = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim);
       if (nb_tackles_pos > 0)
         {
 	  action_attempted_ = R_DODGE;
@@ -234,7 +232,7 @@ void SPlayer::doStandUp(const ActStandUp*)
   if (ma_ < 3)
     {
       ma_remain_ = 0;
-      int result = Dice(D6).roll();
+      int result = d_->roll("standup");
       action_attempted_ = R_STANDUP;
       reroll_enabled_ = t_->canUseReroll();
       sendRoll(result, 0, 4);
@@ -287,10 +285,9 @@ int SPlayer::doBlock(const ActBlock* m)
   msg.opponent_id = m->opponent_id;
   msg.nb_dice = nb_dice_;
 
-  Dice d(DBLOCK);
   for (int i = 0; i < nb_dice_; ++i)
     {
-      result_[i] = (enum eBlockDiceFace)d.roll();
+      result_[i] = (enum eBlockDiceFace)d_->roll("block", DBLOCK);
       LOG5("Rolled block dice: " << Dice::stringify(result_[i]));
       msg.results[i] = result_[i];
     }
@@ -388,7 +385,6 @@ LOG4("Resolve block.");
 
 void SPlayer::blockPushChoice(SPlayer* target)
 {
-  SField* f = r_->getField();
   Position choice[3];
   Position dt = target->getPosition();
   Position d = dt - getPosition();
@@ -421,7 +417,7 @@ void SPlayer::blockPushChoice(SPlayer* target)
   pkt.nb_choice = 0;
 
   for (int i = 0; i < 3; i++)
-    if (f->intoField(choice[i]) && f->getPlayer(choice[i]) == NULL)
+    if (f_->intoField(choice[i]) && f_->getPlayer(choice[i]) == NULL)
       {
 	pkt.choice[pkt.nb_choice].row = choice[i].row;
 	pkt.choice[pkt.nb_choice].col = choice[i].col;
@@ -433,7 +429,7 @@ void SPlayer::blockPushChoice(SPlayer* target)
   if (pkt.nb_choice == 0)
     {
       for (int i = 0; i < 3; i++)
-	if (!f->intoField(choice[i]))
+	if (!f_->intoField(choice[i]))
 	  {
 	    pkt.choice[pkt.nb_choice].row = choice[i].row;
 	    pkt.choice[pkt.nb_choice].col = choice[i].col;
@@ -466,9 +462,8 @@ void SPlayer::blockPushChoice(SPlayer* target)
 
 void SPlayer::blockPush(int chosen_square)
 {
-  SField* f = r_->getField();
   Position to(choices_[chosen_square].row, choices_[chosen_square].col);
-  SPlayer* other_target = f->getPlayer(to);
+  SPlayer* other_target = f_->getPlayer(to);
 
   LOG2("blockpush 2nd phase: " << to);
   
@@ -507,7 +502,7 @@ void SPlayer::follow(bool follow)
 {
   if (follow)
     {
-      r_->getField()->setPlayer(pos_, NULL);
+      f_->setPlayer(pos_, NULL);
       setPosition(aim_, true);
     }
   if (target_knocked_)
@@ -529,7 +524,6 @@ void SPlayer::follow(bool follow)
 
 int SPlayer::doPass(const ActPass* m)
 {
-  SField* f = r_->getField();
   SBall* b = r_->getBall();
 
   // Player must own the ball
@@ -562,7 +556,7 @@ int SPlayer::doPass(const ActPass* m)
     }
 
   has_played_ = true;
-  int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+  int nb_tackles = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
   int modifier = dist_modifier - nb_tackles;
   int catch_mod = 1;
 
@@ -585,7 +579,7 @@ int SPlayer::doPass(const ActPass* m)
   mesg.col = b->getPosition().col;
   r_->sendPacket(mesg);
 
-  SPlayer* p = f->getPlayer(b->getPosition());
+  SPlayer* p = f_->getPlayer(b->getPosition());
   if (p != NULL&&p->getStatus() == STA_STANDING)
     {
       p->action_attempted_ = R_CATCH;
@@ -657,7 +651,6 @@ void SPlayer::finishAction(bool reroll)
 
 int SPlayer::finishMove(bool reroll)
 {
-  SField* f = r_->getField();
   SBall* b = r_->getBall();  
 
   bool knocked = false;
@@ -666,7 +659,7 @@ int SPlayer::finishMove(bool reroll)
   Position pos_ball = b->getPosition();
 
   // Check tackle zones.
-  int nb_tackles_aim = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim_);
+  int nb_tackles_aim = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim_);
   if (reroll&&tryAction(1 - nb_tackles_aim))
     {
       LOG5("Player has successfully dodged out from " << pos_ << ".");
@@ -738,7 +731,7 @@ void SPlayer::finishStandUp(bool reroll)
 {
   if (reroll)
     {
-      int result = Dice(D6).roll();
+      int result = d_->roll("finishstandup");
       action_attempted_ = R_STANDUP;
       sendRoll(result, 0, 4);
       if (result >= 4)
@@ -770,7 +763,6 @@ int SPlayer::finishPickUp(bool reroll)
 
 int SPlayer::finishThrow(bool reroll)
 {
-  SField* f = r_->getField();
   SBall* b = r_->getBall();
 
   float dist = pos_.distance(b->getPosition());
@@ -785,7 +777,7 @@ int SPlayer::finishThrow(bool reroll)
   else if (dist < 16.f)
     dist_modifier = -2; // long bomb
 
-  int nb_tackles = f->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+  int nb_tackles = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
   int modifier = dist_modifier - nb_tackles;
   int catch_mod = 1;
 
@@ -803,7 +795,7 @@ int SPlayer::finishThrow(bool reroll)
   mesg.col = b->getPosition().col;
   r_->sendPacket(mesg);
 
-  SPlayer* p = f->getPlayer(b->getPosition());
+  SPlayer* p = f_->getPlayer(b->getPosition());
   if (p != NULL&&p->getStatus() == STA_STANDING)
     b->catchBall(p, catch_mod);
   else
@@ -830,10 +822,9 @@ void SPlayer::finishBlock(bool reroll)
 
   if (reroll)
     {
-      Dice d(DBLOCK);
       for (int i = 0; i < nb_dice_; ++i)
 	{
-	  result_[i] = (enum eBlockDiceFace)d.roll();
+	  result_[i] = (enum eBlockDiceFace)d_->roll("finishblock", DBLOCK);
 	  LOG5("Rolled block dice: " << Dice::stringify(result_[i]));
 	  msg.results[i] = result_[i];
 	}
@@ -928,12 +919,12 @@ void SPlayer::prepareKickoff()
     case STA_STANDING:
     case STA_PRONE:
     case STA_STUNNED:
-      r_->getField()->setPlayer(pos_, NULL);
+      f_->setPlayer(pos_, NULL);
       setStatus(STA_RESERVE);
       break;
 
     case STA_KO:
-      dice = Dice(6).roll();
+      dice = d_->roll("ko");
       msg.player_id = id_;
       msg.dice = dice;
       r_->sendPacket(msg);
@@ -949,35 +940,32 @@ void SPlayer::prepareKickoff()
 
 void SPlayer::checkArmor(int av_mod, int inj_mod)
 {
-  Dice d(D6);
-  int result = d.roll(2);
+  int result = d_->roll("checkarmor", D6, 2);
   if (result + av_mod > av_)
     rollInjury(inj_mod);
 }
 
 void SPlayer::rollInjury(int inj_mod)
 {
-  Dice d(D6);
-
-  int injury = d.roll(2) + inj_mod;
+  int injury = d_->roll("injury", D6, 2) + inj_mod;
   if (injury <= 7)
     setStatus(STA_STUNNED);
   else if (injury <= 9) 
     {
       setStatus(STA_KO);
-      r_->getField()->setPlayer(pos_, NULL);
+      f_->setPlayer(pos_, NULL);
     }
   else 
     {
       setStatus(rollCasualty());
-      r_->getField()->setPlayer(pos_, NULL);
+      f_->setPlayer(pos_, NULL);
     }
   LOG6("[" << id_ << "] Amor Passed, Injury : " << injury << ".");
 }
 
 enum eStatus SPlayer::rollCasualty()
 {
-  switch (Dice(D6).roll())
+  switch (d_->roll("casualty"))
     {
     case 1:
     case 2:

@@ -53,10 +53,10 @@ inline Api::~Api()
 
 inline void Api::doEndTurn()
 {
-	int team_id = rules_->getTeamId();
-	if ((rules_->getState() == GS_COACH1&&team_id == 0)
-			||(rules_->getState() == GS_COACH2&&team_id == 1))
-  rules_->sendPacket(MsgEndTurn());
+  int team_id = rules_->getTeamId();
+  if ((rules_->getState() == GS_COACH1&&team_id == 0)
+      ||(rules_->getState() == GS_COACH2&&team_id == 1))
+    rules_->sendPacket(MsgEndTurn());
 }
 
 inline void Api::doMoveTurnMarker()
@@ -71,77 +71,77 @@ inline void Api::doAskIllegalProcedure()
 
 inline bool Api::doReroll()
 {
-	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-	if (!selected_team_->canUseReroll())
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (!selected_team_->canUseReroll())
     {
       LOG2("Can't use reroll (no one left or allready use one this turn).");
       return false;
     }
-	if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
-		{
+  if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
+    {
       LOG2("Can't use reroll (no dice to reroll).");
       return false;
     }
 		
-	MsgReroll msg(rules_->our_team_->getTeamId());
-	msg.reroll = true;
-	rules_->sendPacket(msg);	return true;
+  MsgReroll msg(rules_->our_team_->getTeamId());
+  msg.reroll = true;
+  rules_->sendPacket(msg);	return true;
 }
 
 inline bool Api::doAccept()
 {
-	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-	if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
-		{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
+    {
       LOG2("You do not have the choice...");
       return false;
     }
-	MsgReroll msg(rules_->our_team_->getTeamId());
-	msg.reroll = false;
-	rules_->sendPacket(msg);
-	return true;
+  MsgReroll msg(rules_->our_team_->getTeamId());
+  msg.reroll = false;
+  rules_->sendPacket(msg);
+  return true;
 }
 
 inline bool Api::doChooseBlockDice(int n)
 {
-	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-	if (rules_->getState() != GS_BLOCK)
-		{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_BLOCK)
+    {
       LOG2("You do not have the choice...");
       return false;
     }
-	MsgBlockDice msg(rules_->our_team_->getTeamId());
-	msg.dice = n;
-	rules_->sendPacket(msg);
-	return true;
+  MsgBlockDice msg(rules_->our_team_->getTeamId());
+  msg.dice = n;
+  rules_->sendPacket(msg);
+  return true;
 }
 
 inline bool Api::doFollow(bool follow)
 {
-	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-	if (rules_->getState() != GS_FOLLOW)
-		{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_FOLLOW)
+    {
       LOG2("You do not have the choice...");
       return false;
     }
-	MsgFollow msg(rules_->our_team_->getTeamId());
-	msg.follow = follow;
-	rules_->sendPacket(msg);
-	return true;
+  MsgFollow msg(rules_->our_team_->getTeamId());
+  msg.follow = follow;
+  rules_->sendPacket(msg);
+  return true;
 }
 
 inline bool Api::doBlockPush(int n)
 {
-	assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-	if (rules_->getState() != GS_PUSH)
-		{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_PUSH)
+    {
       LOG2("You do not have the choice...");
       return false;
     }
-	ActBlockPush msg(rules_->our_team_->getTeamId());
-	msg.square_chosen = n;
-	rules_->sendPacket(msg);
-	return true;
+  ActBlockPush msg(rules_->our_team_->getTeamId());
+  msg.square_chosen = n;
+  rules_->sendPacket(msg);
+  return true;
 }
 
 inline bool Api::doPlaceBall(const Point& pos)
@@ -155,7 +155,7 @@ inline bool Api::doPlaceBall(const Point& pos)
       return false;
     }
   if ((selected_team_->getTeamId() == 0 && bpos.row < 13)
-			||(selected_team_->getTeamId() == 1 && bpos.row > 12))
+      ||(selected_team_->getTeamId() == 1 && bpos.row > 12))
     {
       LOG2("Kickoff rejected. Ball in your part of the field: " << pos);
       return false;
@@ -172,27 +172,27 @@ inline bool Api::doGiveBall(int p)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
 	
-	if (rules_->getState() != GS_TOUCHBACK)
-		{
-			LOG2("There is no touchback.");
-			return false;
-		}
+  if (rules_->getState() != GS_TOUCHBACK)
+    {
+      LOG2("There is no touchback.");
+      return false;
+    }
 	
-	if (getPlayer(p) == NULL) 
-		{
-			LOG2("Player `" << p << "' does not exist.");
-			return false;
-		}
+  if (getPlayer(p) == NULL) 
+    {
+      LOG2("Player `" << p << "' does not exist.");
+      return false;
+    }
 	
-	if (getPlayer(p)->getStatus() != STA_STANDING) 
-		{
-			LOG2("Player `" << p << "' can't carry the ball.");
-			return false;
-		}
-	MsgGiveBall pkt;
-	pkt.player_id = p;
+  if (getPlayer(p)->getStatus() != STA_STANDING) 
+    {
+      LOG2("Player `" << p << "' can't carry the ball.");
+      return false;
+    }
+  MsgGiveBall pkt;
+  pkt.player_id = p;
   rules_->sendPacket(pkt);
-	return true;
+  return true;
 }
 
 inline bool Api::doMovePlayer(int p, const Point& to)
@@ -262,6 +262,13 @@ inline void Api::sendChatMessage(const std::string& msg)
     return;
   MsgChat pkt;
   stringToPacket(pkt.msg, msg, sizeof(pkt.msg));
+  rules_->sendPacket(pkt);
+}
+
+inline void Api::doCheatDice(int roll)
+{
+  MsgCheatDice pkt;
+  pkt.next_result = roll;
   rules_->sendPacket(pkt);
 }
 

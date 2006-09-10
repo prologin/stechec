@@ -78,6 +78,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"follow", &Input::cmdFollow, "follow after a block."},
   {"stay", &Input::cmdStay, "stay after a block."},
   {"push", &Input::cmdPush, "<n>|choose the square to push the player in."},
+  {"cheat", &Input::cmdCheat, "<n>|next dice roll will give this result (cheat)."},
   {NULL, NULL, NULL}
 };
 
@@ -336,6 +337,14 @@ void Input::cmdGiveBall(const string& cmd, const string& args)
   api_->doGiveBall(p);
 }
 
+void Input::cmdCheat(const string& cmd, const string& args)
+{
+  istringstream is(cmd + " " + args);
+  int roll = -1;
+  is >> roll;
+  if (roll != -1)
+    api_->doCheatDice(roll);
+}
 
 //
 // Print commands

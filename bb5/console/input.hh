@@ -62,25 +62,26 @@ private:
   void cmdKickOff(const std::string& cmd, const std::string& args);
   void cmdIllegal(const std::string& cmd, const std::string& args);
   void cmdEnd(const std::string& cmd, const std::string& args);
-	void cmdReroll(const std::string& cmd, const std::string& args);
-	void cmdAccept(const std::string& cmd, const std::string& args);
-	void cmdGiveBall(const std::string& cmd, const std::string& args);
-	void cmdDice(const std::string& cmd, const std::string& args);
+  void cmdReroll(const std::string& cmd, const std::string& args);
+  void cmdAccept(const std::string& cmd, const std::string& args);
+  void cmdGiveBall(const std::string& cmd, const std::string& args);
+  void cmdDice(const std::string& cmd, const std::string& args);
   void cmdStay(const std::string& cmd, const std::string& args);
   void cmdFollow(const std::string& cmd, const std::string& args);
   void cmdPush(const std::string& cmd, const std::string& args);
+  void cmdCheat(const std::string& cmd, const std::string& args);
 
-	// Action command
-	void cmdMove(const std::string& cmd, const std::string& args);
-	void cmdMoveBz(const std::string& cmd, const std::string& args);
-	void cmdMoveP(const std::string& cmd, const std::string& args);
-	void cmdStandUpM(const std::string& cmd, const std::string& args);
-	void cmdStandUpBk(const std::string& cmd, const std::string& args);
-	void cmdStandUpBz(const std::string& cmd, const std::string& args);
-	void cmdStandUpP(const std::string& cmd, const std::string& args);
-	void cmdBlock(const std::string& cmd, const std::string& args);
-	void cmdBlockBz(const std::string& cmd, const std::string& args);
-	void cmdPass(const std::string& cmd, const std::string& args);
+  // Action command
+  void cmdMove(const std::string& cmd, const std::string& args);
+  void cmdMoveBz(const std::string& cmd, const std::string& args);
+  void cmdMoveP(const std::string& cmd, const std::string& args);
+  void cmdStandUpM(const std::string& cmd, const std::string& args);
+  void cmdStandUpBk(const std::string& cmd, const std::string& args);
+  void cmdStandUpBz(const std::string& cmd, const std::string& args);
+  void cmdStandUpP(const std::string& cmd, const std::string& args);
+  void cmdBlock(const std::string& cmd, const std::string& args);
+  void cmdBlockBz(const std::string& cmd, const std::string& args);
+  void cmdPass(const std::string& cmd, const std::string& args);
 
   // Print commands
   void cmdPrintGlobal(const std::string& args);
