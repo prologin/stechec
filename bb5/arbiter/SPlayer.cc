@@ -64,7 +64,11 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
     }
   
   if (!f_->intoField(pos))
-    rollInjury(0);
+		{
+    	rollInjury(0);
+			if (status_ == STA_STUNNED)
+				setStatus(STA_RESERVE);
+		}
   else
     f_->setPlayer(pos, this);
 }
@@ -264,6 +268,11 @@ int SPlayer::doBlock(const ActBlock* m)
       return 0;
     }
 
+  if (getAction() == BLOCK)
+    setHasPlayed();
+  else
+    ma_remain_ = ma_remain_ - 1;
+  
   int mod_st_atk = getSt();
   int mod_st_df = target_->getSt();
 	
@@ -429,7 +438,7 @@ void SPlayer::blockPushChoice(SPlayer* target)
   if (pkt.nb_choice == 0)
     {
       for (int i = 0; i < 3; i++)
-	if (!f_->intoField(choice[i]))
+	if (!f_->intoField(choice[i])&&pkt.nb_choice == 0)
 	  {
 	    pkt.choice[pkt.nb_choice].row = choice[i].row;
 	    pkt.choice[pkt.nb_choice].col = choice[i].col;
@@ -505,7 +514,7 @@ void SPlayer::follow(bool follow)
       f_->setPlayer(pos_, NULL);
       setPosition(aim_, true);
     }
-  if (target_knocked_)
+  if (target_knocked_&& target_->status_ == STA_STANDING)
     {
       MsgPlayerKnocked pkt(r_->getCurrentOpponentTeamId());
       target_->checkArmor(0, 0);

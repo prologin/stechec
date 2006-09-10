@@ -330,9 +330,8 @@ void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id
     cout << " You must choose a 'dice <n>'" << endl;
   if (team_id == api_->getTeamId() && choose != api_->getTeamId() && reroll)
     cout << "		You can use a 'reroll' or 'accept' this result." << endl;
-  if (team_id != api_->getTeamId() && choose != api_->getTeamId() && reroll)
+  if (team_id != api_->getTeamId() && choose == api_->getTeamId() && reroll)
     cout << " Wait for opponent reroll decision" << endl;
-  if (team_id != api_->getTeamId() && !reroll
-      && choose != api_->getTeamId() && choose != -1)
+  if (team_id != api_->getTeamId() && choose == api_->getTeamId() && !reroll)
     cout << " You must choose a 'dice <n>'" << endl;	
 }

@@ -88,6 +88,8 @@ inline void Field<T>::setPlayer(const Position& pos, T* p)
 template <typename T>
 inline T* Field<T>::getPlayer(const Position& pos)
 {
+	if (!intoField(pos))
+		return NULL;
   return tab_[pos.row * COLS + pos.col];
 }
 
