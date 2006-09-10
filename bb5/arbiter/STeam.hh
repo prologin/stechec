@@ -48,14 +48,14 @@ public:
 
 private:
   void msgTeamInfo(const MsgTeamInfo* m);
-  void msgPlayerInfo(const MsgPlayerInfo* m);
+  void msgPlayerCreate(const MsgPlayerCreate* m);
   void msgPlayerPos(const MsgPlayerPos* m);
   void msgReroll(const MsgReroll* m);
   void msgBlockDice(const MsgBlockDice* m);
   void msgFollow(const MsgFollow* m);
   void msgBlockPush(const ActBlockPush* m);
   bool filterTeamInfo(const MsgTeamInfo* m);
-  bool filterPlayerInfo(const MsgPlayerInfo* m);
+  bool filterPlayerCreate(const MsgPlayerCreate* m);
   bool filterPlayerPos(const MsgPlayerPos* m);
   bool filterReroll(const MsgReroll* m);
   bool filterBlockDice(const MsgBlockDice* m);

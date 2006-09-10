@@ -27,7 +27,7 @@ class CRules;
 class CPlayer : public Player
 {
 public:
-  CPlayer(CRules* r, const MsgPlayerInfo* m);
+  CPlayer(CRules* r, const MsgPlayerCreate* m);
   virtual ~CPlayer();
 
   //! @brief Move the player on the field.

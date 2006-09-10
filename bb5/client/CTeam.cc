@@ -22,7 +22,7 @@ CTeam::CTeam(int team_id, CRules* r)
     r_(r)
 {
   r_->HANDLE_F_WITH(MSG_TEAMINFO, CTeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_PLAYERINFO, CTeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
+  r_->HANDLE_F_WITH(MSG_PLAYERCREATE, CTeam, this, msgPlayerCreate, filterPlayerCreate, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_REROLL, CTeam, this, msgReroll, filterReroll, GS_REROLL);
 }
 
@@ -58,7 +58,7 @@ void CTeam::loadPlayerConfig(xml::XMLTeam& xml_team, int player_id)
 {
   xml_team.switchToPlayer(player_id + 1);
 
-  MsgPlayerInfo pkt;
+  MsgPlayerCreate pkt;
   pkt.player_id = player_id;
   stringToPacket(pkt.name, xml_team.getAttr<std::string>("player", "name"), 32);
   pkt.ma = xml_team.getData<int>("ma");
@@ -157,12 +157,12 @@ bool CTeam::filterTeamInfo(const MsgTeamInfo* m)
   return true;
 }
 
-void CTeam::msgPlayerInfo(const MsgPlayerInfo* m)
+void CTeam::msgPlayerCreate(const MsgPlayerCreate* m)
 {
   player_[m->player_id] = new CPlayer(r_, m);
 }
 
-bool CTeam::filterPlayerInfo(const MsgPlayerInfo* m)
+bool CTeam::filterPlayerCreate(const MsgPlayerCreate* m)
 {
   if (m->client_id != team_id_)
     return false;

@@ -17,7 +17,7 @@
 #include "CRules.hh"
 #include "CPlayer.hh"
 
-CPlayer::CPlayer(CRules* r, const MsgPlayerInfo* m)
+CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   : Player(m),
     r_(r)
 {

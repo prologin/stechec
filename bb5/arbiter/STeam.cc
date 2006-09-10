@@ -24,7 +24,7 @@ STeam::STeam(int team_id, SRules* r)
     r_(r)
 {
   r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_PLAYERINFO, STeam, this, msgPlayerInfo, filterPlayerInfo, GS_INITGAME);
+  r_->HANDLE_F_WITH(MSG_PLAYERCREATE, STeam, this, msgPlayerCreate, filterPlayerCreate, GS_INITGAME);
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF);
   r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_BLOCKDICE, STeam, this, msgBlockDice, filterBlockDice, GS_COACHBOTH);
@@ -50,7 +50,7 @@ bool STeam::filterTeamInfo(const MsgTeamInfo* m)
 }
 
 
-void STeam::msgPlayerInfo(const MsgPlayerInfo* m)
+void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
 {
   // Create the player.
   if (player_[m->player_id] == NULL)
@@ -71,7 +71,7 @@ void STeam::msgPlayerInfo(const MsgPlayerInfo* m)
   
 }
 
-bool STeam::filterPlayerInfo(const MsgPlayerInfo* m)
+bool STeam::filterPlayerCreate(const MsgPlayerCreate* m)
 {
   if (m->client_id != team_id_ || m->player_id < 0 || m->player_id >= MAX_PLAYER)
     return false;

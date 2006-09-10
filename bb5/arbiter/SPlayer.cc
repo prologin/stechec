@@ -18,7 +18,7 @@
 #include "SRules.hh"
 #include "SPlayer.hh"
 
-SPlayer::SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t)
+SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t)
   : Player(m),
     r_(r),
     t_(t),

@@ -28,7 +28,7 @@ typedef Field<SPlayer> SField;
 class SPlayer : public Player
 {
 public:
-  SPlayer(SRules* r, const MsgPlayerInfo* m, STeam* t);
+  SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t);
 
   //! @brief Check some thing, if this player could be valid.
   bool acceptPlayerCreation();

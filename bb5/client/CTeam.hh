@@ -67,13 +67,14 @@ public:
   
 private:
   void msgTeamInfo(const MsgTeamInfo* m);
-  bool filterTeamInfo(const MsgTeamInfo* m);
-  void msgPlayerInfo(const MsgPlayerInfo* m);
-  bool filterPlayerInfo(const MsgPlayerInfo* m);
+  void msgPlayerCreate(const MsgPlayerCreate* m);
   void msgReroll(const MsgReroll* m);
+
+  bool filterTeamInfo(const MsgTeamInfo* m);
+  bool filterPlayerCreate(const MsgPlayerCreate* m);
   bool filterReroll(const MsgReroll* m);
+
   CRules* r_;
-  
   xml::XMLTeam xml_team_;
   xml::XMLFormation xml_formation_;
 };

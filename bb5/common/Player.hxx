@@ -16,7 +16,7 @@
 
 # include "Field.hh"
 
-inline Player::Player(const MsgPlayerInfo* m)
+inline Player::Player(const MsgPlayerCreate* m)
   : id_(m->player_id),
     team_id_(m->client_id),
     status_(STA_RESERVE),

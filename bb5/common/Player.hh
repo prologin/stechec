@@ -70,7 +70,7 @@ DECLARE_PACKET(ACT_PASS, ActPass)
 END_PACKET
 
 // Packet sent only once at the beginning (to create player)
-DECLARE_PACKET(MSG_PLAYERINFO, MsgPlayerInfo)
+DECLARE_PACKET(MSG_PLAYERCREATE, MsgPlayerCreate)
   int player_id;
   int ma;
   int st;
@@ -137,7 +137,7 @@ END_PACKET
 class Player
 {
 public:
-  Player(const MsgPlayerInfo* m);
+  Player(const MsgPlayerCreate* m);
   virtual ~Player();
 
   int getId() const;
