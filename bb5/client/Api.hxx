@@ -237,17 +237,19 @@ inline bool Api::doPassStandUpPlayer(int p)
   return rules_->our_team_->standUpPlayer(p, PASS);
 }
 
-inline bool Api::doBlockPlayer(int p, const Point& to)
+inline bool Api::doBlockPlayer(int p, int def_p)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->blockPlayer(p, to, BLOCK);
+  CPlayer* opponent = rules_->other_team_->getPlayer(def_p);
+  return rules_->our_team_->blockPlayer(p, opponent, BLOCK);
 }
 
 
-inline bool Api::doBlitzBlockPlayer(int p, const Point& to)
+inline bool Api::doBlitzBlockPlayer(int p, int def_p)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->blockPlayer(p, to, BLITZ);
+  CPlayer* opponent = rules_->other_team_->getPlayer(def_p);
+  return rules_->our_team_->blockPlayer(p, opponent, BLITZ);
 }
 
 inline bool Api::doPassPlayer(int p, const Point& to)
@@ -284,7 +286,7 @@ inline void Api::selectTeam(int team_id)
 
   if (team_id == US || (team_id <= 1 && team_id == rules_->getTeamId()))
     selected_team_ = rules_->our_team_;
-  if (team_id == THEM || (team_id <= 1 && team_id != rules_->getTeamId()))
+  if (team_id == THEM || ((team_id == 0 || team_id == 1) && team_id != rules_->getTeamId()))
     selected_team_ = rules_->other_team_;
 }
 
@@ -305,6 +307,25 @@ inline int Api::ballY() const
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   return rules_->ball_->getPosition().getY();
 }
+
+inline int Api::teamId(int x, int y)
+{
+  CHECK_POS(x, y);
+  CPlayer* p = rules_->field_->getPlayer(Position(y, x));
+  if (p != NULL)
+    return p->getTeamId();
+  return -1;
+}
+
+inline int Api::playerId(int x, int y)
+{
+  CHECK_POS(x, y);
+  CPlayer* p = rules_->field_->getPlayer(Position(y, x));
+  if (p != NULL)
+    return p->getId();
+  return -1;
+}
+
 
 inline int Api::selectPlayer(int player_id)
 {
@@ -456,6 +477,16 @@ inline const char* Api::getGameStateString() const
       return "GS_COACH2";
     case GS_PAUSE:
       return "GS_PAUSE";
+    case GS_TOUCHBACK:
+      return "GS_TOUCHBACK";
+    case GS_REROLL:
+      return "GS_REROLL";
+    case GS_BLOCK:
+      return "GS_BLOCK";
+    case GS_PUSH:
+      return "GS_PUSH";
+    case GS_FOLLOW:
+      return "GS_FOLLOW";
     }
   return BaseApi<CRules>::getStateString();
 }

@@ -127,12 +127,12 @@ bool CTeam::standUpPlayer(int player_id, enum eAction action)
   return p->standUp(action);
 }
 
-bool CTeam::blockPlayer(int player_id, const Position& to, enum eAction action)
+bool CTeam::blockPlayer(int player_id, CPlayer* opponent, enum eAction action)
 {
   CPlayer* p = getPlayer(player_id);
-  if (p == NULL)
+  if (p == NULL || opponent == NULL)
     return false;
-  return p->block(to, action);
+  return p->block(opponent, action);
 }
 
 bool CTeam::passPlayer(int player_id, const Position& to)

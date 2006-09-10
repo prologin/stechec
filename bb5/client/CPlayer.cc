@@ -106,11 +106,8 @@ bool CPlayer::move(const Position& to, enum eAction action)
   return true;
 }
 
-bool CPlayer::block(const Position& to, enum eAction action)
+bool CPlayer::block(CPlayer* opponent, enum eAction action)
 {
-  CField* f = r_->getField();
-
-  CPlayer* opponent = f->getPlayer(to);
   if (opponent == NULL
       || opponent->getTeamId() == getTeamId()
       || !getPosition().isNear(opponent->getPosition())
@@ -187,8 +184,8 @@ void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
       break;
     case STA_RESERVE:
       if (status_ != STA_STANDING
-	  &&status_ != STA_PRONE
-	  &&status_ != STA_STUNNED)
+	  && status_ != STA_PRONE
+	  && status_ != STA_STUNNED)
 	break;
     case STA_KO:
     case STA_INJURED:

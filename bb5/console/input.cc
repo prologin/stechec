@@ -71,8 +71,8 @@ Input::InputCommand Input::main_cmd_[] = {
   {"standupBk", &Input::cmdStandUpBk, "<id>|stand up the player'id' for a block"},
   {"standupBz", &Input::cmdStandUpBz, "<id>|stand up the player'id' for a blitz"},
   {"standupP", &Input::cmdStandUpP, "<id>|stand up the player'id' for a pass"},
-  {"block", &Input::cmdBlock, "<id> <r> <c>|block with player 'id' at specified position"},
-  {"blockBz", &Input::cmdBlockBz, "<id> <r> <c>|block with player 'id' at specified position in a blitz action"},
+  {"block", &Input::cmdBlock, "<id> <d_id>|block with player 'id' player 'd_id'"},
+  {"blockBz", &Input::cmdBlockBz, "<id> <d_id>|block with player 'id' player 'd_id' in a blitz action"},
   {"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
   {"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
   {"follow", &Input::cmdFollow, "follow after a block."},
@@ -264,22 +264,20 @@ void Input::cmdBlock(const string& cmd, const string& args)
 {
   istringstream is(cmd + " " + args);
   int p_id = -1;
-  Position pos;
+  int p_did = -1;
   is >> p_id;
-  is >> pos.row;
-  is >> pos.col;
-  api_->doBlockPlayer(p_id, pos);
+  is >> p_did;
+  api_->doBlockPlayer(p_id, p_did);
 }
 
 void Input::cmdBlockBz(const string& cmd, const string& args)
 {
   istringstream is(cmd + " " + args);
   int p_id = -1;
-  Position pos;
+  int p_did = -1;
   is >> p_id;
-  is >> pos.row;
-  is >> pos.col;
-  api_->doBlitzBlockPlayer(p_id, pos);
+  is >> p_did;
+  api_->doBlitzBlockPlayer(p_id, p_did);
 }
 
 void Input::cmdPass(const string& cmd, const string& args)

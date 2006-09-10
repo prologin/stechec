@@ -67,8 +67,8 @@ public:
   bool		doBlitzStandUpPlayer(int p);
   bool		doPassStandUpPlayer(int p);
   
-  bool		doBlockPlayer(int p, const Point& to);
-  bool		doBlitzBlockPlayer(int p, const Point& to);
+  bool		doBlockPlayer(int p, int def_p);
+  bool		doBlitzBlockPlayer(int p, int def_p);
   
   bool		doPassPlayer(int p, const Point& to);
 
@@ -87,12 +87,23 @@ public:
   //! @return A team identifiant, in the range [0, 1].
   int                   myTeamId() const;
   //! @brief Get ball X position.
-  //! @brief Return the ball X position, -1 if outside.
+  //! @return Return the ball X position, -1 if outside.
   int                   ballX() const;
   //! @brief Get ball Y position.
-  //! @brief Return the ball Y position, -1 if outside.
+  //! @return Return the ball Y position, -1 if outside.
   int			ballY() const;
 
+  //! @brief Get the player team id at the specified position.
+  //! @param x A x coordinate.
+  //! @param y A y coordinate.
+  //! @return A team id, or -1 if there is nobody at this position.
+  int			teamId(int x, int y);
+  //! @brief Get the player id at the specified position.
+  //! @param x A x coordinate.
+  //! @param y A y coordinate.
+  //! @return A player id, or -1 if there is nobody at this position.
+  int			playerId(int x, int y);
+  
   //! @brief Select team to fetch information from.
   //!   Further call to all other API function will return
   //!   information for that team.

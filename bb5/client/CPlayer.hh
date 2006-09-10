@@ -37,7 +37,7 @@ public:
   bool standUp(enum eAction action);
 
   //! @brief Block the player at the specified position.
-  bool block(const Position& to, enum eAction action);
+  bool block(CPlayer* opponent, enum eAction action);
 	
   //! @brief Block the player at the specified position.
   bool pass(const Position& to);

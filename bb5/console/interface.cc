@@ -137,25 +137,30 @@ void CmdLineInterface::printField()
             cout << " ";
 
           // print square content.
-          Position pos(row, col);
-          Position ball_pos(api_->ballY(), api_->ballX());
-          const CPlayer* p = api_->getPlayer(pos);
-          if (p != NULL)
+	  int team_id = api_->teamId(col, row);
+	  int player_id = api_->playerId(col, row);
+	  api_->selectTeam(team_id);
+	  api_->selectPlayer(player_id);
+          if (player_id > -1)
             {
-              char pdb = p->getTeamId() == api_->getTeamId() ? '<' : '{';
-              char pde = p->getTeamId() == api_->getTeamId() ? '>' : '}';
-              if (ball_pos == pos)
+              char pdb, pde;
+	      if (api_->playerStatus() != STA_STANDING)
+		pdb = '[';
+	      else
+		pdb = team_id == api_->myTeamId() ? '<' : '{';
+	      pde = team_id == api_->myTeamId() ? '>' : '}';
+              if (api_->ballX() == col && api_->ballY() == row)
                 pde = '@';
-              cout << pdb << p->getId() << pde;
+              cout << pdb << player_id << pde;
             }
           else
-            if (ball_pos == pos)
+            if (api_->ballX() == col && api_->ballY() == row)
               cout << " @ ";
             else
               cout << "   ";
 
           // Keep at least one space as separator.
-	  if (p == NULL || p->getId() < 10)
+	  if (player_id < 10)
 	    cout << " ";
         }
       cout << "|\n";
@@ -167,6 +172,7 @@ void CmdLineInterface::printField()
   for (col = 0; col < 15; col++)
     cout << setw(5) << col;
   cout << endl;
+  api_->selectTeam(US);
 }
 
 void CmdLineInterface::printPlayerList()
