@@ -61,26 +61,31 @@ class BaseRules;
 class Dice
 {
  public:
-  //! @brief Constructeur
-  //! @param t type du de a fabriquer
+  //! @brief Dice contructor.
+  //! @param r Pointer to Rules class.
   Dice(BaseRules* r);
+  //! @brief Standart destructor.
   ~Dice();
 
-  //! @brief Pour effectuer un lancer de plusieurs des.
-  //! @param x Nombre de des a lancer.
-  //! @return Resultat cumule des X des.
-  int roll(enum eDiceFaceNumber type = D6, int nb_dice = 1);
-
-  //! @brief Same as roll(x), but print 'msg' as debug to
-  //!   see why this dice is rolled, and can use some previous
-  //!   cheating results given instead of 'rand'.
+  //! @brief Roll dices of selected type, and print a debug to
+  //!   see which dice/result is used.
+  //! @param msg A debug message, printed.
+  //! @param type Type of dice(s) to roll.
+  //! @param nb_dice Number of dice to roll.
+  //! @return A (maybe :p) random number, in the specified range.
+  //! @note if type == DBLOCK, only one dice can be rolled.
+  //! @note Predefined results are used, if any.
   int roll(const std::string& msg, enum eDiceFaceNumber type = D6, int nb_dice = 1);
-
 
   static const char* stringify(enum eBlockDiceFace face);
   static const char* stringify(enum eRoll roll);
   
 private:
+  //! @brief Pour effectuer un lancer de plusieurs des.
+  //! @param x Nombre de des a lancer.
+  //! @return Resultat cumule des X des.
+  int roll(enum eDiceFaceNumber type = D6, int nb_dice = 1);
+
   void msgCheatDice(const MsgCheatDice* m);
   
   std::deque<int> cheat_dice_;
