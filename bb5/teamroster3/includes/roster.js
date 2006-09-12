@@ -2,11 +2,30 @@ function setSelects() {
 		for ( i=0; i < 16; i++) {
 			document.getElementsByName("POSITION[]")[i].selectedIndex = arrpositions[i]
 		}
-}		
+}
+
+function countHealthyPlayers() {
+	healthy_players = 0
+	for ( i=0; i<16; i++ ) {
+		if ( isPlayerAssigned(i) == true && isPlayerInjured(i) == false ) {
+			healthy_players++
+		}
+	}
+	document.getElementsByName("HEALTHY")[0].value = healthy_players
+}
+
+function isPlayerInjured(row) {
+	if ( document.getElementsByName("INJ[]")[row].value.charAt(0) == "M" ) {
+		return true
+	}
+	else {
+		return false
+	}
+}			
 
 function findInjuredPlayers() {
 	for ( i=0; i<16; i++) {
-		if ( document.getElementsByName("INJ[]")[i].value.charAt(0) == "M" ) {
+		if ( isPlayerInjured(i) == true ) {
 			document.getElementsByName("VALUE[]")[i].className = 'injured'
 		}
 		else {
@@ -73,6 +92,7 @@ function setInjury() {
 		concatRoster(row,"INJ[]","-AG")
 	}
 	calcTeamValue()
+	countHealthyPlayers()
 	hideLayer('inj_box')
 }
 

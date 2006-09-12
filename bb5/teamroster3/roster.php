@@ -88,29 +88,39 @@ else {
 ?>
 
 <tr class="thicker-top">
-      <td rowspan="6" colspan="2"><p><a href="javascript:show('pic_box')">Customize Teampics</a><br />
-      <a href="javascript:show('background_box')">Write Background</a><br /><br />
-      <input name="VERBOSE" type="checkbox" checked="checked" />Write statchanges to roster<br />
-      <a href="javascript:save()">Save Roster</a><br />
-      <a href="index.php">Return to Start.</a>
+      <td rowspan="6" colspan="2">
+      	<p><a href="javascript:show('pic_box')">Customize Teampics</a><br />
+      	<a href="javascript:show('background_box')">Write Background</a><br /><br />
+      	<input name="VERBOSE" type="checkbox" checked="checked" />Write statchanges to roster<br />
+      	<a href="javascript:save()">Save Roster</a><br />
+      	<a href="index.php">Return to Start.</a>
       </td>
+      
       <td rowspan="6" colspan="2" style="text-align: center">
       	<p><img alt="a colorful picture" id="BADGE" style="width:104px;height:140px;" src="" /></p>
       </td>
+      
       <td colspan="3" rowspan="2">TEAM</td>
+      
       <td rowspan="2">
       	<input name="TEAM" type="text" size="20" value="<?php ifLoadedEcho('name',$team); ?>" />
       </td>
+      
       <td colspan="3" class="bg1">RE-ROLLS</td>
+      
       <td colspan="1">
       	<input class="center" name="REROLLS" onchange="calcExtraValue(16)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('reroll',$team); ?>" />
       </td>
+
       <td colspan="3" class="bg1">x 
       	<input class="bg1" name="REROLLCOST" type="text" size="5" value="<?php echo number_format($race['reroll_cost'], 0, ",", "."); ?>" readonly="readonly" /> gp
       </td>
-      <td><input name="VALUE[]" type="text" size="6" readonly="readonly" value="" /></td>
-    </tr>
-    <tr>
+
+      <td>
+      	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
+      </td>
+</tr>
+<tr>
       <td colspan="3" class="bg1">FAN FACTOR</td>
       <td colspan="1">
       	<input class="center" name="FANFACTOR" onchange="calcExtraValue(17)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('fanfactor',$team); ?>" />
@@ -119,12 +129,10 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-    </tr>
-    <tr>
-      <td colspan="3" rowspan="2">RACE</td>
-      <td rowspan="2">
-      	<input name="RACE" type="text" size="8" value="<?php echo $chosen_race ?>" readonly="readonly" />
-      </td>
+</tr>
+<tr>
+	  <td colspan="3">healthy players</td>
+	  <td colspan="1"><input name="HEALTHY" type="text" size="2" readonly="readonly" /></td>
       <td colspan="3" class="bg1">ASSISTANTS</td>
       <td colspan="1">
       	<input class="center" name="COACHES" onchange="calcExtraValue(18)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('assistant',$team); ?>" />
@@ -133,8 +141,14 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-    </tr>
-    <tr>
+</tr>
+<tr>
+
+
+      <td colspan="3">RACE</td>
+      <td>
+      	<input name="RACE" type="text" size="8" value="<?php echo $chosen_race ?>" readonly="readonly" />
+      </td>
       <td colspan="3" class="bg1">CHEERLEADERS</td>
       <td colspan="1">
       	<input class="center" name="CHEERLEADERS" onchange="calcExtraValue(19)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('cheerleader',$team); ?>" />
@@ -143,9 +157,11 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-    </tr>
-    <tr>
-      <td colspan="3">TREASURY</td>
+</tr>
+<tr>
+
+
+ <td colspan="3">TREASURY</td>
       <td><input name="TREASURY" type="text" size="6" value="" /></td>
       <td colspan="3" class="bg1">APOTHECARY</td>
       <td colspan="1">
@@ -155,8 +171,10 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-    </tr>
-    <tr>
+</tr>
+<tr>
+
+
       <td colspan="3">HEADCOACH</td>
       <td>
       	<input name="HEADCOACH" type="text" size="8" value="" />
@@ -165,7 +183,7 @@ else {
       <td>
       	<input name="TEAMVALUE" type="text" size="6" readonly="readonly" value="" />
       </td>
-    </tr>
+</tr>
 </table>
 
 
