@@ -7,7 +7,9 @@ body, p, h1, h2, a {
 	}
 
 /* ################################################ */
-/* title contains the first header and the subtitle */
+/* title contains the first header and the subtitle	*/
+/*   additionally, it includes the flags used to	*/
+/* 				select the language					*/		
 /* ################################################ */
 
 #title {
@@ -29,6 +31,10 @@ p.subtitle {
 	margin-left: 40px;
 	}
 	
+a.imagelink {
+	border-style: none;
+}
+	
 /* ################################################ */
 /*	content holds some text, two level-2-headers	*/
 /*	the racelist and the upload form				*/
@@ -40,6 +46,12 @@ p.subtitle {
 	margin-top: 30px;
 	margin-left: 20px;
 	}
+	
+#list {
+	margin-left: 20px;
+	width: 500px;
+	height: 250px;
+}
 
 h2 {
 	font-size: 130%;
@@ -49,16 +61,13 @@ h2 {
 	margin-bottom: 30px;
 	}
 
-table.list {
-	margin-left: 10px;
-	border-style: none;
-	}
-
 a.block {
+	float: left;
 	cursor: pointer;
 	display: block;
 	width: 150px;
 	border: 1px dotted black;
+	margin: 1px;
 	padding: 3px;
 	background-color: #EFEFEF;
 	}
