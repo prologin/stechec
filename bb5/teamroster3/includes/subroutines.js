@@ -2,11 +2,14 @@ function isPlayerAssigned(row) {
 
 	pos = parseInt(document.getElementsByName("POSITION[]")[row].value)
 	
-	if (pos != positions) { // the last position-array is the empty one
-		return true
+	if (pos == positions) { // the last position-array is the empty one
+		return false
 	} 
 	else {
-		return false
+		if ( pos == positions - 1 ) {
+			return 2
+		}
+		return true
 	}
 }
 
