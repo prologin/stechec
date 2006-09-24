@@ -24,15 +24,20 @@
 
 	require_once('includes/minixml.php');
 	require_once('includes/parse_xml.php');
-
-	$lang = htmlentities($_GET['lang']);
-	$lang_valid = true;
 	
-	if ( $lang != 'en' && $lang != 'fr' && $lang != 'de' ) {
-		$lang = 'en';
-		$lang_valid = false;
+	if ( isset($_COOKIE['lang']) ) {
+	
+		$lang = $_COOKIE['lang'];
+		
+		if ( !($lang == 'en' || $lang == 'fr' || $lang == 'de') ) {
+			$lang = 'en';
+		}
+		
 	}
-	
+	else {
+		$lang = 'en';
+	}
+
 	$interface = parseInterface('interface_'.$lang.'.xml');
 
 	function sprint($string) {	// sprint like in "Special characters PRINT"
@@ -44,9 +49,18 @@
 <div id="title">
 
 	<div id="flags" style="float: right;">
-		<a class="imagelink" href="index.php?lang=en"><img src="english_flag.jpg" /></a>
-		<a class="imagelink" href="index.php?lang=fr"><img src="french_flag.jpg" /></a>
-		<a class="imagelink" href="index.php?lang=de"><img src="german_flag.jpg" /></a>
+	  <form action="cookie.php" method="POST" style="float: left">
+	  <input type="hidden" name="lang" value="en"></input>
+	  <button type="submit"><img src="english_flag.jpg" /></button>
+	  </form>
+	  <form action="cookie.php" method="POST" style="float: left">
+	  <input type="hidden" name="lang" value="fr"></input>
+	  <button type="submit"><img src="french_flag.jpg" /></button>
+	  </form>
+	  <form action="cookie.php" method="POST" style="float: left">
+	  <input type="hidden" name="lang" value="de"></input>
+	  <button type="submit"><img src="german_flag.jpg" /></button>
+	  </form>
 	</div>
 	
 	<h1>TBT - SNORE</h1>
@@ -55,11 +69,6 @@
 </div>
 
 <div id="content">
-
-	<?php 
-	if ( $lang_valid == false ) { 
-		echo "<p><i>Language not supported. Falling back to english.</i></p> \n"; } 
-	?>
 
 <p><?php sprint($interface['index']['intro']) ?></p>
 

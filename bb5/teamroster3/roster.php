@@ -18,6 +18,26 @@ require_once('includes/parse_xml.php');
 require_once('includes/echo_html.php');
 require_once('includes/echo_js.php');
 
+if ( isset($_COOKIE['lang']) ) {
+	
+	$lang = $_COOKIE['lang'];
+		
+	if ( !($lang == 'en' || $lang == 'fr' || $lang == 'de') ) {
+		$lang = 'en';
+	}
+	
+}
+else {
+	$lang = 'en';
+}
+
+$interface = parseInterface('interface_'.$lang.'.xml');
+
+function sprint($string) {	// sprint like in "Special characters PRINT"
+	echo htmlentities($string, ENT_QUOTES, 'UTF-8');
+}
+
+
 if (isset($_POST['upload']) && $_POST['upload'] == true) {
 	$team = parseTeamRoster($_FILES['userfile']['tmp_name']);
 	$chosen_race = $team['race'];
@@ -62,11 +82,21 @@ else {
 <table>
 
 	<tr class="bg1 center thicker-bottom">
-		<td>#</td><td>PLAYER'S NAME</td><td>POSITION</td>
-		<td>MA</td><td>ST</td><td>AG</td><td>AV</td>
-		<td>SKILLS</td><td>INJ</td>
-		<td class="bg3">COM</td><td class="bg3">TD</td><td class="bg3">INT</td>
-		<td class="bg3">CAS</td><td class="bg3">MVP</td><td class="bg3">SPP</td><td>VALUE</td>
+		<td>#</td><td><?php sprint($interface['roster']['name']) ?></td>
+		<td><?php sprint($interface['roster']['position']) ?></td>
+		<td><?php sprint($interface['roster']['MA']) ?></td>
+		<td><?php sprint($interface['roster']['ST']) ?></td>
+		<td><?php sprint($interface['roster']['AG']) ?></td>
+		<td><?php sprint($interface['roster']['AV']) ?></td>
+		<td><?php sprint($interface['roster']['skills']) ?></td>
+		<td><?php sprint($interface['roster']['inj']) ?></td>
+		<td class="bg3"><?php sprint($interface['roster']['comp']) ?></td>
+		<td class="bg3"><?php sprint($interface['roster']['td']) ?></td>
+		<td class="bg3"><?php sprint($interface['roster']['int']) ?></td>
+		<td class="bg3"><?php sprint($interface['roster']['cas']) ?></td>
+		<td class="bg3"><?php sprint($interface['roster']['mvp']) ?></td>
+		<td class="bg3"><?php sprint($interface['roster']['spp']) ?></td>
+		<td><?php sprint($interface['roster']['value']) ?></td>
 	</tr>
 		
 <?php
@@ -88,25 +118,25 @@ else {
 ?>
 
 <tr class="thicker-top">
-      <td rowspan="6" colspan="2">
-      	<p><a href="javascript:show('pic_box')">Customize Teampics</a><br />
-      	<a href="javascript:show('background_box')">Write Background</a><br /><br />
-      	<input name="VERBOSE" type="checkbox" checked="checked" />Write statchanges to roster<br />
-      	<a href="javascript:save()">Save Roster</a><br />
-      	<a href="index.php">Return to Start.</a>
+      <td rowspan="6" colspan="2" style="width: 200px">
+      	<p><a href="javascript:show('pic_box')"><?php sprint($interface['roster']['teampics']['label']) ?></a><br />
+      	<a href="javascript:show('background_box')"><?php sprint($interface['roster']['background']['label']) ?></a><br /><br />
+      	<input name="VERBOSE" type="checkbox" checked="checked" /><?php sprint($interface['roster']['statchanges']) ?><br />
+      	<a href="javascript:save()"><?php sprint($interface['roster']['save']) ?></a><br />
+      	<a href="index.php"><?php sprint($interface['roster']['return']) ?></a>
       </td>
       
       <td rowspan="6" colspan="2" style="text-align: center">
       	<p><img alt="a colorful picture" id="BADGE" style="width:104px;height:140px;" src="" /></p>
       </td>
       
-      <td colspan="3" rowspan="2">TEAM</td>
+      <td colspan="3" rowspan="2"><?php sprint($interface['roster']['team']) ?></td>
       
       <td rowspan="2">
       	<input name="TEAM" type="text" size="20" value="<?php ifLoadedEcho('name',$team); ?>" />
       </td>
       
-      <td colspan="3" class="bg1">RE-ROLLS</td>
+      <td colspan="3" class="bg1"><?php sprint($interface['roster']['rerolls']) ?></td>
       
       <td colspan="1">
       	<input class="center" name="REROLLS" onchange="calcExtraValue(16)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('reroll',$team); ?>" />
@@ -121,7 +151,7 @@ else {
       </td>
 </tr>
 <tr>
-      <td colspan="3" class="bg1">FAN FACTOR</td>
+      <td colspan="3" class="bg1"><?php sprint($interface['roster']['fanfactor']) ?></td>
       <td colspan="1">
       	<input class="center" name="FANFACTOR" onchange="calcExtraValue(17)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('fanfactor',$team); ?>" />
       </td>
@@ -131,9 +161,9 @@ else {
       </td>
 </tr>
 <tr>
-	  <td colspan="3">players (<a class="small blue" href="javascript:showJmBox()">manage</a>)</td>
+	  <td colspan="3"><?php sprint($interface['roster']['journeymen']['label']) ?> (<a class="small blue" href="javascript:showJmBox()"><?php sprint($interface['roster']['journeymen']['button']) ?></a>)</td>
 	  <td colspan="1"><input name="HEALTHY" type="text" size="2" readonly="readonly" /></td>
-      <td colspan="3" class="bg1">ASSISTANTS</td>
+      <td colspan="3" class="bg1"><?php sprint($interface['roster']['assistants']) ?></td>
       <td colspan="1">
       	<input class="center" name="COACHES" onchange="calcExtraValue(18)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('assistant',$team); ?>" />
       </td>
@@ -145,11 +175,11 @@ else {
 <tr>
 
 
-      <td colspan="3">RACE</td>
+      <td colspan="3"><?php sprint($interface['roster']['race']) ?></td>
       <td>
       	<input name="RACE" type="text" size="8" value="<?php echo $chosen_race ?>" readonly="readonly" />
       </td>
-      <td colspan="3" class="bg1">CHEERLEADERS</td>
+      <td colspan="3" class="bg1"><?php sprint($interface['roster']['cheerleaders']) ?></td>
       <td colspan="1">
       	<input class="center" name="CHEERLEADERS" onchange="calcExtraValue(19)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('cheerleader',$team); ?>" />
       </td>
@@ -161,9 +191,9 @@ else {
 <tr>
 
 
- <td colspan="3">TREASURY</td>
+ <td colspan="3"><?php sprint($interface['roster']['treasury']) ?></td>
       <td><input name="TREASURY" type="text" size="6" value="" /></td>
-      <td colspan="3" class="bg1">APOTHECARY</td>
+      <td colspan="3" class="bg1"><?php sprint($interface['roster']['apothecary']) ?></td>
       <td colspan="1">
       	<input class="center" name="APOTHECARY" onchange="calcExtraValue(20)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('apothecary',$team); ?>" />
       </td>
@@ -175,11 +205,11 @@ else {
 <tr>
 
 
-      <td colspan="3">HEADCOACH</td>
+      <td colspan="3"><?php sprint($interface['roster']['headcoach']) ?></td>
       <td>
       	<input name="HEADCOACH" type="text" size="8" value="" />
       </td>
-      <td colspan="7" class="bg1">TOTAL VALUE OF TEAM</td>
+      <td colspan="7" class="bg1"><?php sprint($interface['roster']['teamvalue']) ?></td>
       <td>
       	<input name="TEAMVALUE" type="text" size="6" readonly="readonly" value="" />
       </td>
@@ -188,8 +218,7 @@ else {
 
 
 <div id="pic_box" class="element_hidden">
-	<p>Why don't you just enter the filenames of the pictures you want to use.<br />
-	Player without custom pics will use the default pictures.</p>
+	<p><?php sprint($interface['roster']['teampics']['text']) ?></p>
 	<table>
 	<?php
 		echo "<tr><td>Team</td>";
@@ -215,28 +244,10 @@ else {
 </div>
 
 <div id="jm_box" class="element_hidden">
-<p>You may hire one or more of the journeymen you used after a match. <br />
-Simply click on the corresponding number (non-journeymen are not shown).</p>
+<p><?php sprint($interface['roster']['journeymen']['text']) ?></p>
 <table>
 <tr>
-<td class="jm"><a id="jm0" class="green" href="javascript:legalize(0)">1</a></td>
-<td class="jm"><a id="jm1" class="green" href="javascript:legalize(1)">2</a></td>
-<td class="jm"><a id="jm2" class="green" href="javascript:legalize(2)">3</a></td>
-<td class="jm"><a id="jm3" class="green" href="javascript:legalize(3)">4</a></td>
-<td class="jm"><a id="jm4" class="green" href="javascript:legalize(4)">5</a></td>
-<td class="jm"><a id="jm5" class="green" href="javascript:legalize(5)">6</a></td>
-<td class="jm"><a id="jm6" class="green" href="javascript:legalize(6)">7</a></td>
-<td class="jm"><a id="jm7" class="green" href="javascript:legalize(7)">8</a></td>
-</tr>
-<tr>
-<td class="jm"><a id="jm8" class="green" href="javascript:legalize(8)">9</a></td>
-<td class="jm"><a id="jm9" class="green" href="javascript:legalize(9)">10</a></td>
-<td class="jm"><a id="jm10" class="green" href="javascript:legalize(10)">11</a></td>
-<td class="jm"><a id="jm11" class="green" href="javascript:legalize(11)">12</a></td>
-<td class="jm"><a id="jm12" class="green" href="javascript:legalize(12)">13</a></td>
-<td class="jm"><a id="jm13" class="green"  href="javascript:legalize(13)">14</a></td>
-<td class="jm"><a id="jm14" class="green" href="javascript:legalize(14)">15</a></td>
-<td class="jm"><a id="jm15" class="green" href="javascript:legalize(15)">16</a></td>
+<?php writeLegalize(); ?>
 </tr>
 </table>
 <p><a href="javascript:hideLayer('jm_box')">Close</a></p>

@@ -91,7 +91,7 @@ input,select {
      top: 50px;
      left: 400px;
      z-index: 2;
-     width: auto;
+     width: 350px;
      height: auto;
      background-color: #D3D3D3;
      border: 3px solid black;
@@ -125,7 +125,7 @@ input,select {
 	top: 50px;
 	left: 50px;
 	z-index: 2;
-	width: auto;
+	width: 450px;
 	height: auto;
 	background-color: #D3D3D3;
 	border: 3px solid black;
@@ -137,7 +137,7 @@ input,select {
 	top: 100px;
 	left: 150px;
 	z-index: 2;
-	width: auto;
+	width: 400px;
 	height: auto;
 	background-color: #D3D3D3;
 	border: 3px solid black;
