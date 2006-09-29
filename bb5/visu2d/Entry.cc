@@ -17,15 +17,25 @@
 #include "ResourceCenter.hh"
 #include "Entry.hh"
 
-#include <iostream>
-
 Entry::Entry(const uint x, const uint y, const uint w, const uint h, string* ptxt,
              SDL_Surface * screen, Widget* father): Widget(x, y, w, h, screen, father)
 {
   font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
   txt = ptxt;
-  (*txt) = " ";
-  index = 0;
+  if(txt->empty())
+  {
+    (*txt) = " ";
+  }
+  else
+  {
+  	size_t last = txt->length() - 1;
+	if((*txt).at(last) != ' ')
+  	{
+      (*txt) += " ";
+    }
+  }
+  // Warning length() = last elt + 1 !
+  index = txt->length() - 1;
 
   fgColor = black_color;
   bgColor = lightgray_color;
@@ -36,8 +46,8 @@ Entry::Entry(const uint x, const uint y, string* ptxt,
              SDL_Surface* screen, Widget* father): Widget(x, y, screen, father)
 {
   font = ResourceCenter::getInst()->getFont("Vera.ttf", 14);
-  txt = ptxt;(*txt) = " ";
-      //  (this->txt)->insert((this->txt)->size(),1,' ');
+  txt = ptxt;
+  (*txt) = " ";
   index = 0;
 
   fgColor = black_color;
