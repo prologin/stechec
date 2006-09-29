@@ -37,7 +37,6 @@ const unsigned int SCREEN_BPP = 32;
 SDL_Surface *background = NULL;
 SDL_Surface *screen = NULL;
 
-
 vector <DialogBox*> list_box;
 Menu* menu;
 
@@ -130,6 +129,7 @@ void MainLoop(void)
 {
   SDL_Event event;
   bool quit = false;
+  SDL_EnableUNICODE(1);
   while (SDL_WaitEvent(&event) && quit == false)
   {				/* Loop until there are no events left on the queue */
     switch(event.type)
@@ -140,6 +140,7 @@ void MainLoop(void)
       case SDL_KEYDOWN:
       {
         SDL_keysym* keysym = &event.key.keysym;
+        
         Widget* focus = (Widget::get_focus()).get_focus();
         if(focus != NULL)
         {
@@ -190,19 +191,18 @@ void MainLoop(void)
                 focus->refresh(); 
                 break;
               }
-              case SDLK_RETURN:
-              {
-                    // hmm seems KMOD_MODE is Alt Gr key !
-                    // we need to ignore 0x1000 (KMOD_NUM) and 0x2000 (KMOD_CAPS)
-                ushort ModState = (SDL_GetModState() & 0x4FFF);
-                if (ModState == KMOD_LALT || ModState == KMOD_MODE)
-                {
-                  SDL_WM_ToggleFullScreen(screen);
-                }
+              default:
                 break;
+            }
+            if(keysym->sym == SDLK_RETURN)
+            {
+                  // hmm seems KMOD_MODE is Alt Gr key !
+                  // we need to ignore 0x1000 (KMOD_NUM) and 0x2000 (KMOD_CAPS)
+              ushort ModState = (SDL_GetModState() & 0x4FFF);
+              if (ModState == KMOD_LALT || ModState == KMOD_MODE)
+              {
+                SDL_WM_ToggleFullScreen(screen);
               }
-            default:
-              break;
             }
           }
         }
@@ -395,7 +395,7 @@ int main (int argc, char *argv[])
   xml::XMLConfig cfg;
   CmdLineOption opt;
   int ret_value = 1;
-
+ 
   // FIXME: for now, we don't need 'cfg'. But it will change.
   //parse_option(argc, argv, opt);
   //parse_config(opt, cfg);
@@ -434,7 +434,7 @@ int main (int argc, char *argv[])
   try
   {
     infobox = new DInfo(screen,
-                        "Bienvenue dans TBT\n\nAttention !!\nce programe est\nen développement\n");
+                        "Bienvenue dans TBT\n\nAttention !!\nce programe est\nen dï¿½veloppement\n");
   }
   catch(GUIError & error)
   {
