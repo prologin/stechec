@@ -15,7 +15,6 @@
  */
 
 #include "LabelEntry.hh"
-#include <iostream>
 
 LabelEntry::LabelEntry(const uint x, const uint y, const uint w, const uint h, 
                        SDL_Surface* screen, Widget* father, const string labeltxt, string* txt):
@@ -23,7 +22,7 @@ Widget(x, y, w, h, screen, father)
 {
   try
   {
-    label=new Label(screen, this, labeltxt);
+    label = new Label(screen, this, labeltxt);
   }
   catch(GUIError &lberror)
   {
@@ -97,17 +96,15 @@ void LabelEntry::refresh()
     // Focus
 void LabelEntry::gainfocus()
 {
-  focus = true;
-  entry->gainfocus();
+  globfocus.set_focus(entry);
 }
 
 void LabelEntry::losefocus()
 {
   focus = false;
-  entry->losefocus();
 }
 
-    // Txt
+/*    // Txt
 void LabelEntry::add_char(const char c)
 {
   entry->add_char(c);
@@ -136,5 +133,5 @@ void LabelEntry::set_txt(string* txt)
 string LabelEntry::get_txt()
 {
   return(entry->get_txt());
-}
+}*/
 
