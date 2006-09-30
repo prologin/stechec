@@ -51,6 +51,9 @@ public:
   ushort inside(const uint mousex, const uint mousey);
   virtual ushort mousebuttondown(const uint mousex, const uint mousey);
 
+	//keyboard
+	virtual void keydown(const SDL_keysym* keysym){};
+
   // Focus
   virtual void gainfocus();
   virtual void losefocus();
@@ -90,7 +93,7 @@ public:
   //!  in the father coordinate system
   void set_y(const uint y);
 
-  //! @brief Method to get the width the widget
+  //! @brief Method to get the width of the widget
   //!
   //! @return the width of the widget
   uint get_width();
@@ -104,10 +107,5 @@ public:
 
   void set_height(const uint height);
 
-  // Txt .. for textuals widgets
-  virtual void add_char(const char c){};
-  virtual void delete_char(){};
-  virtual ushort get_index(){return 0;}; 
-  virtual void set_index(const ushort i){};
 };
 #endif
