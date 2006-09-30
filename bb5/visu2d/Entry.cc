@@ -99,60 +99,27 @@ void Entry::refresh()
   boxRGBA(widget, 0, 0, w, h, (*bg).r, (*bg).g, (*bg).b, ENTRY_ALPHA);
   rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, ENTRY_ALPHA);
       // draw text
+	
   if(txt->size() > 0)
   {
     SDL_Surface *temp = NULL;
     int width = 0, height = 0;
-    if(index == 0)
-    {
-      string st1((*txt), 0, 1);
-      TTF_SizeText(font, st1.c_str(), &width, &height);
-      temp = TTF_RenderText_Shaded(font, st1.c_str(), bgColor, fgColor);
-      SDL_Rect rc = {5, height/ 2, width, height};
-      SDL_BlitSurface(temp, NULL, widget, &rc);
-      if(txt->size() > 1)
-      {
-        rc.x += width;
-        string st2((*txt), 1, txt->size() - 1);
-        TTF_SizeText(font, st2.c_str(), &width, &height);
-        temp = TTF_RenderText_Solid(font, st2.c_str(), fgColor);
-        rc.w=width; rc.h=height;
-        SDL_BlitSurface(temp, NULL, widget, &rc);
-      }
-    }
-    else if(index == txt->size() - 1)
-    {
-      string st1((*txt), 0, index);
-      TTF_SizeText(font, st1.c_str(), &width, &height);
-      temp = TTF_RenderText_Solid(font, st1.c_str(), fgColor);
-      SDL_Rect rc = {5, height / 2, width, height};
-      SDL_BlitSurface(temp, NULL, widget, &rc);
-      rc.x += width;
-      string st2((*txt), index, 1);
-      TTF_SizeText(font, st2.c_str(), &width, &height);
-      temp = TTF_RenderText_Shaded(font, st2.c_str(), bgColor, fgColor);
-      rc.w=width; rc.h=height;
-      SDL_BlitSurface(temp, NULL, widget, &rc);
-    }
-    else
-    {
-      string st1((*txt), 0, index);
-      TTF_SizeText(font, st1.c_str(), &width, &height);
-      temp = TTF_RenderText_Solid(font, st1.c_str(), fgColor);
-      SDL_Rect rc = {5, height / 2, width, height};
-      SDL_BlitSurface(temp, NULL, widget, &rc);
-      rc.x += width;
-      string st2((*txt), index, 1);
-      TTF_SizeText(font, st2.c_str(), &width, &height);
-      temp = TTF_RenderText_Shaded(font, st2.c_str(), bgColor, fgColor);
-      rc.w=width; rc.h=height;
-      SDL_BlitSurface(temp, NULL, widget, &rc);
-      rc.x += width;
-      string st3((*txt), index + 1, txt->size() - index);
-      temp = TTF_RenderText_Solid(font, st3.c_str(), fgColor);
-      rc.w=width; rc.h=height;
-      SDL_BlitSurface(temp, NULL, widget, &rc);
-    }
+    string st1((*txt), 0, index);
+    TTF_SizeText(font, st1.c_str(), &width, &height);
+    temp = TTF_RenderText_Solid(font, st1.c_str(), fgColor);
+    SDL_Rect rc = {5, height / 2, width, height};
+    SDL_BlitSurface(temp, NULL, widget, &rc);
+    rc.x += width;
+    string st2((*txt), index, 1);
+    TTF_SizeText(font, st2.c_str(), &width, &height);
+    temp = TTF_RenderText_Shaded(font, st2.c_str(), bgColor, fgColor);
+    rc.w=width; rc.h=height;
+    SDL_BlitSurface(temp, NULL, widget, &rc);
+    rc.x += width;
+    string st3((*txt), index + 1, txt->size() - index);
+    temp = TTF_RenderText_Solid(font, st3.c_str(), fgColor);
+    rc.w=width; rc.h=height;
+    SDL_BlitSurface(temp, NULL, widget, &rc);
     SDL_FreeSurface(temp);
   }
       // Then flip entry
