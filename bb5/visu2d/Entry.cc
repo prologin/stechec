@@ -28,15 +28,15 @@ Entry::Entry(const uint x, const uint y, const uint w, const uint h, string* ptx
   }
   else
   {
-  	size_t last = txt->length() - 1;
-	if((*txt).at(last) != ' ')
-  	{
+    size_t last = txt->length() - 1;
+    if((*txt).at(last) != ' ')
+    {
       (*txt) += " ";
     }
   }
-  // Warning length() = last elt + 1 !
+      // Warning length() = last elt + 1 !
   index = txt->length() - 1;
-
+  
   fgColor = black_color;
   bgColor = lightgray_color;
   bgColorFocus = white_color;
@@ -49,7 +49,7 @@ Entry::Entry(const uint x, const uint y, string* ptxt,
   txt = ptxt;
   (*txt) = " ";
   index = 0;
-
+  
   fgColor = black_color;
   bgColor = lightgray_color;
   bgColorFocus = white_color;
@@ -63,7 +63,7 @@ Entry::~Entry ()
 void Entry::draw()
 {
   SDL_Rect r = {get_wx(), get_wy(), w, h};
-
+  
       // First save background
   SDL_BlitSurface(screen, &r, old_screen, NULL);
       // draw bg
@@ -71,7 +71,7 @@ void Entry::draw()
       // Draw box entry
   boxRGBA(widget, 0, 0, w, h, bgColor.r, bgColor.g, bgColor.b, ENTRY_ALPHA);
   rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, ENTRY_ALPHA);
-
+  
       // draw text
   int width = 0, height = 0;
   TTF_SizeText(font, txt->c_str(), &width, &height);
@@ -79,7 +79,7 @@ void Entry::draw()
   SDL_Rect rc = {5, height/ 2, width, height};
   SDL_BlitSurface(temp, NULL, widget, &rc);
   SDL_FreeSurface(temp);
-
+  
       // Then flip entry
   SDL_BlitSurface(widget, NULL, screen, &r);
   SDL_Flip(screen);
@@ -173,7 +173,57 @@ void Entry::losefocus()
   refresh();
 }
 
-    // Txt
+    // Keyboard
+void Entry::keydown(const SDL_keysym* keysym)
+{
+	if(keysym->unicode<127 and keysym->unicode>=32)
+  {
+  	// ASCII character
+    add_char(keysym->unicode & 0x7F);
+    set_index(++index);
+    refresh();   
+  }
+  else
+  {
+    switch(keysym->sym)
+    {
+      case SDLK_DELETE:
+      {
+      	delete_char();
+        refresh();
+        break;
+      }
+      case SDLK_BACKSPACE:
+      {
+        if(index > 0)
+        {
+          set_index(--index);
+          delete_char();
+          refresh();
+        }
+        break;
+      }
+      case SDLK_LEFT:
+      {
+        if(index > 0)
+        {
+          set_index(--index);
+          refresh();
+        }
+        break;
+      }
+      case SDLK_RIGHT:
+      {
+        set_index(++index);
+        refresh(); 
+        break;
+      }
+      default:
+        break;
+    }
+  }
+}
+      // Txt
 void Entry::add_char(const char c)
 {
   txt->insert(index, 1, c);
