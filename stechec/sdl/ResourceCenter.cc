@@ -38,7 +38,8 @@ ResourceCenter::ResourceCenter()
   // Only one instance is allowed.
   assert(inst_ == NULL);
   inst_ = this;
-  LOG4("Prefix for resources: `" << PKGDATADIR << "'");
+  prefix_ = PKGDATADIR;
+  LOG4("Prefix for resources: `" << prefix_ << "'");
 }
 
 ResourceCenter::~ResourceCenter()
@@ -46,6 +47,17 @@ ResourceCenter::~ResourceCenter()
   inst_ = NULL;
   printStatistics();
 }
+
+const std::string& ResourceCenter::getResourcePrefix() const
+{
+  return prefix_;
+}
+  
+void ResourceCenter::setResourcePrefix(const std::string& prefix)
+{
+  prefix_ = prefix;
+}
+
 
 void ResourceCenter::printStatistics()
 {
@@ -114,7 +126,7 @@ SDL_Surface* ResourceCenter::loadImage(const std::string& filename)
 {
   SDL_Surface* loaded_image = NULL;
   SDL_Surface* surf = NULL;
-  std::string fn_loaded = std::string(PKGDATADIR) + "/" + filename;
+  std::string fn_loaded = prefix_ + "/" + filename;
 
   LOG3("Load `" << filename << "'");
   loaded_image = IMG_Load(fn_loaded.c_str());
@@ -151,7 +163,7 @@ TTF_Font* ResourceCenter::getFont(const std::string font_name, int font_size)
   // Load this font, and add it to the cache.
   LOG3("Load font `font/" << font_name << "' (size: " << font_size << ")");
   lf.ref_count_ = 1;
-  lf.font_ = TTF_OpenFont((std::string(PKGDATADIR) + "/font/" + font_name).c_str(),
+  lf.font_ = TTF_OpenFont((prefix_ + "/font/" + font_name).c_str(),
                           font_size);
   if (lf.font_ == NULL)
     PRINT_AND_THROW(TTFError, "OpenFont: ");

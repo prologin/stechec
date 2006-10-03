@@ -60,6 +60,14 @@ public:
   //! @brief Get the instance of this class.
   static ResourceCenter* getInst();
 
+  //! @brief Get the ressource prefix path
+  //! @return Prefix path.
+  const std::string& getResourcePrefix() const;
+  
+  //! @brief Change the ressource prefix path
+  //! @param Prefix path to set.
+  void setResourcePrefix(const std::string& prefix);
+  
   //! @brief Load an image, with cache enabled.
   //!
   //! If the image, with specified angle and zoom level, can be found
@@ -96,6 +104,8 @@ private:
   //! @brief Yes, ResourceCenter is a singleton.
   static ResourceCenter* inst_;
 
+  std::string prefix_;
+  
   typedef std::set<Surface, Surface::ImgSort> ImageList;
   ImageList             image_list_;
 
