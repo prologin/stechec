@@ -45,6 +45,7 @@ private:
   // All callbacks.
   virtual void		evSync();
   virtual void          evIllegal(int was_token);
+  virtual void          evInitGame();
   virtual void          evNewTurn(bool our_turn);
   virtual void          evKickOff();
   virtual void          evGiveBall();

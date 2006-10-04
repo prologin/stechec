@@ -26,8 +26,6 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_ALL);
   r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_INITKICKOFF);
-
-  LOG6("Create player(" << (unsigned)this << "): id: " << id_ << " team_id " << team_id_);
 }
 
 CPlayer::~CPlayer()

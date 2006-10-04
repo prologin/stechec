@@ -225,6 +225,13 @@ void CmdLineInterface::evIllegal(int was_token)
   cout << "An illegal action was tried (token: " << was_token << "). Bouh." << endl;
 }
 
+void CmdLineInterface::evInitGame()
+{
+  // Cheat, player 0 will always begin.
+  if (api_->myTeamId() == 0)
+    api_->doCheatDice(1);
+}
+
 void CmdLineInterface::evNewTurn(bool our_turn)
 {
   if (our_turn)
@@ -316,25 +323,7 @@ void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id
   cout << "Result : ";
   for (int i = 0; i < nb_dice; i++)
     {
-      cout << i << "-";
-      switch (result[i])
-	{
-	case BATTAKER_DOWN :
-	  cout << " Attacker Down";
-	  break;
-	case BBOTH_DOWN :
-	  cout << " Both Down";
-	  break;
-	case BPUSHED :
-	  cout << " Defender Pushed";
-	  break;
-	case BDEFENDER_STUMBLE :
-	  cout << " Defender Strumble";
-	  break;
-	case BDEFENDER_DOWN : 
-	  cout << " Defender Down";
-	  break;
-	}
+      cout << i << "- " << Dice::stringify(result[i]);
       if (i != nb_dice - 1)
 	cout << ", ";
     }

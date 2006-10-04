@@ -24,6 +24,9 @@ void EventProcess::dispatch(const CustomEvent& ie) const
 {
   switch (ie.client_id)
     {
+    case eInitGame:
+      ev_->evInitGame();
+      break;
     case eKickOff:
       ev_->evKickOff();
       break;

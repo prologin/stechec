@@ -53,10 +53,7 @@ inline Api::~Api()
 
 inline void Api::doEndTurn()
 {
-  int team_id = rules_->getTeamId();
-  if ((rules_->getState() == GS_COACH1&&team_id == 0)
-      ||(rules_->getState() == GS_COACH2&&team_id == 1))
-    rules_->sendPacket(MsgEndTurn());
+  rules_->sendPacket(MsgEndTurn());
 }
 
 inline void Api::doMoveTurnMarker()

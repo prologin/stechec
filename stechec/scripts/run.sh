@@ -32,7 +32,7 @@ EOF
     exit 0
 elif [ "$1" == "--version" ]; then
     cat <<EOF
-run 3.0
+run 3.1
 
 Copyright (C) 2005, 2006 Prologin.
 This is free software; see the source for copying conditions.  There is NO
@@ -92,12 +92,14 @@ for id in $clients; do
     case $USE_VALGRIND in
 	*x${id}x*) VALGRIND=valgrind ;;
     esac
-    STDIN_REDIR=`echo "$output" | sed -nr "/CONFIG\/CLIENT_${id}\/STDIN:/ { s/.*: (.*)$/\1/p; q }"`
+    STDIN_REDIR=`echo "$output" | sed -nr "s!^CONFIG/CLIENT_${id}/REDIRECTION/stdin=(.*)!\1!p"`
+    STDOUT_REDIR=`echo "$output" | sed -nr "s!^CONFIG/CLIENT_${id}/REDIRECTION/stdout=(.*)!\1!p"`
     if [ "x$USE_GDB" = "x$id" ]; then
 	gdb -q --args tbt $id "$1"
     else
-	if [ "x$STDIN_REDIR" != "x" ]; then
-	    $VALGRIND tbt $id "$1" < $STDIN_REDIR &
+	if [[ "x$STDIN_REDIR" != "x" &&"x$STDOUT_REDIR" != "x"  ]]; then
+	    $VALGRIND tbt $id "$1" < $STDIN_REDIR > $STDOUT_REDIR &
+	    sleep 1 # BB5 Kludge. Be sure that clients have their uid.
 	else
 	    $VALGRIND tbt $id "$1" &
 	fi
@@ -128,6 +130,6 @@ wait $pid_server
 
 echo
 echo "[0m*** run: end ***"
-sleep 1
+#sleep 1
 
 exit $failure

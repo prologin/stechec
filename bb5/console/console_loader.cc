@@ -27,7 +27,7 @@ extern "C" int run(xml::XMLConfig* cfg, Api* api, ClientCx* client_cx)
   bool use_readline = true;
   try {
     cfg->switchClientSection();
-    cfg->getData<int>("stdin");
+    cfg->getAttr<int>("redirection", "stdin");
     use_readline = false;
   } catch (...) {
   }

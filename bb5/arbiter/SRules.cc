@@ -54,12 +54,12 @@ SRules::~SRules()
   delete dice_;
 }
 
-void        SRules::serialize(std::ostream& os) const
+void SRules::serialize(std::ostream& os) const
 {
   os << "foo";
 }
 
-void        SRules::unserialize(std::istream& is)
+void SRules::unserialize(std::istream& is)
 {
   int foo;
   is >> foo;
@@ -67,7 +67,16 @@ void        SRules::unserialize(std::istream& is)
 
 void SRules::serverStartup()
 {
-  initGame();
+  team_[0] = new STeam(0, this);
+  team_[1] = new STeam(1, this);
+
+  //  weather_ = new SWeather();
+  ball_ = new SBall(this);
+  field_ = new SField();
+
+  // Tell everybody that we are about to initialize the game.
+  setState(GS_INITGAME);
+  sendPacket(MsgInitGame());
 }
 
 void SRules::serverProcess()
@@ -78,29 +87,6 @@ void SRules::serverProcess()
       // go on next turn...
       msgPlayTurn(NULL);
     }
-}
-
-void SRules::initGame()
-{
-  // Tell everybody that we are about to initialize the game.
-  setState(GS_INITGAME);
-  sendPacket(MsgInitGame());
-
-  team_[0] = new STeam(0, this);
-  team_[1] = new STeam(1, this);
-
-  //  weather_ = new SWeather();
-  ball_ = new SBall(this);
-  field_ = new SField();
-
-  // Send some objects to clients -> weather wil be introduce with advanced Rules
-  /*  MsgWeather pkt;
-      pkt.weather = weather_->getWeather();
-      sendPacket(pkt);*/
-
-  // Decide who is the kicking team
-  coach_begin_ = dice_->roll("kicking team", D2) - 1; // team_id: base 0.
-  LOG3("Coach " << coach_begin_ << " plays first (receiving team).");
 }
 
 void SRules::initHalf()
@@ -229,6 +215,16 @@ void SRules::msgInitGame(const MsgInitGame* m)
   if (team_[0]->state_ == GS_INITKICKOFF &&
       team_[1]->state_ == GS_INITKICKOFF)
     {
+      // Decide who is the kicking team
+      coach_begin_ = dice_->roll("kicking team", D2) - 1; // team_id: base 0.
+      LOG3("Coach " << coach_begin_ << " plays first (receiving team).");
+
+  // Send some objects to clients -> weather wil be introduce with advanced Rules
+  /*  MsgWeather pkt;
+      pkt.weather = weather_->getWeather();
+      sendPacket(pkt);*/
+
+      
       initHalf();
     }
 }
@@ -272,8 +268,17 @@ void SRules::kickoffFinished()
   msgPlayTurn(NULL);
 }
 
-void SRules::msgPlayTurn(const MsgEndTurn*)
+void SRules::msgPlayTurn(const MsgEndTurn* m)
 {
+  // Check if it's the right team that asked for an EndTurn.
+  if (m != NULL &&
+      ((getState() != GS_COACH1 && m->client_id == 0)
+       || (getState() != GS_COACH2 && m->client_id == 1)))
+    {
+      sendIllegal(MSG_ENDTURN, m->client_id);
+      return;
+    }
+  
   // Next turn if this is the receiving team.
   if (getState() == GS_COACH1 && coach_begin_ == 1
       || getState() == GS_COACH2 && coach_begin_ == 0)

@@ -104,6 +104,9 @@ void        CRules::msgInitGame(const MsgInitGame* m)
 
   // Other team.
   other_team_ = new CTeam(getTeamId() == 0 ? 1 : 0, this);
+
+  // Kludge. Allow UI to do something while in GS_INITGAME.
+  onEvent(eInitGame);
   
   // Done. Inform the server that we are ok
   // by rethrowing the packet.
@@ -130,7 +133,7 @@ void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 
 
   if (getState() == GS_INITKICKOFF)
-    // Our team is allready placed, we can place the ball
+    // Our team is already placed, we can place the ball
     {
       onEvent(eKickOff);
     }

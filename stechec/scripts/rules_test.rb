@@ -76,6 +76,9 @@ class RuleTest
       else
         c['champion'] = @player_lib
       end
+      if c['input'] then
+        c['output'] = @tmpdir + (c['input'] + ".out")
+      end
     end
     abort if @nb_client == 0
   end
@@ -103,16 +106,16 @@ class RuleTest
   <server>
     <rules>#{@server_rule_lib}</rules>
     <options persistent="false" start_game_timeout="30" />
-    <listen port="25151" />
+    <listen port="25169" />
     <log enabled="false" file="match.log" />
     <nb_spectator>0</nb_spectator>
-    <debug verbose="3" printloc="false" />
-    <server_debug verbose="3" printloc="false" />
+    <debug verbose="4" printloc="false" />
+    <server_debug verbose="1" printloc="false" />
   </server>
 
   <client>
     <rules>#{@client_rule_lib}</rules>
-    <connect val="network" host="localhost" port="25151"
+    <connect val="network" host="localhost" port="25169"
              game_uid="42" connect_on_startup="true" />
   </client>
 
@@ -120,16 +123,18 @@ class RuleTest
 
      (1..@nb_client).each do |n|
        c = conf['client_' + n.to_s]
-       stdin_redir = ''
-       stdin_redir = '<stdin>' + c['input'] + '</stdin>' if c['input']
+       redir = ''
+       if c['input'] and c['output'] then
+         redir = "<redirection stdin=\"#{c['input']}\" stdout=\"#{c['output']}\" />"
+       end
        f.puts <<-EOF
   <client_#{n}>
     <champion>#{c['champion']}</champion>
     <team>#{c['team']}</team>
     <mode replay="false" spectator="false" />
     <limit memory="10000" time="500" time_reserve="2500" />
-    <debug valgrind="false" verbose="4" printloc="false" />
-    #{stdin_redir}
+    <debug valgrind="false" verbose="3" printloc="false" />
+    #{redir}
   </client_#{n}>
 
       EOF
@@ -139,6 +144,38 @@ class RuleTest
     f.close
   end
   
+  def post_run(conf)
+    res = 0
+    (1..@nb_client).each do |n|
+       c = conf['client_' + n.to_s]
+      if c['output'] and c['diff'] then
+        `sed -n '/^BEGIN DIFF/ { :n; n; /^END DIFF/d; p; b n } ' < #{c['output']} > #{c['output'].to_s + ".tmp"}`
+        `diff -u #{c['diff']} #{c['output'].to_s + ".tmp"} > #{@tmpdir + (c['input'] + '.diff')}`
+        res = res + $?.exitstatus
+      end
+    end
+    return res
+  end
+
+  # clean our temporary directory at exit
+  # (or keep it if DEBUG is defined in environnment)
+  def clean
+      if ENV['DEBUG']
+        puts @test_name + ": temporary directory left at " + @tmpdir
+        File.open(@tmpdir + "debug_me.sh", "w") do |f|
+          f.puts "#!/bin/sh"
+          f.puts "export PATH=#{ENV['PATH']}"
+          f.puts "export RUBYLIB=#{ENV['RUBYLIB']}"          
+          f.puts "export LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}"
+          f.puts "export xml_parser_path=#{ENV['BASHLIB']}/"
+          f.puts "bash #{ENV['BASHLIB']}/run.sh conf.xml"
+        end
+        `chmod +x #{@tmpdir + "debug_me.sh"}`
+      else
+        @tmpdir.rmtree if @tmpdir.directory?
+      end
+  end
+
   #
   # test the specified section of test_pool.yml.
   #
@@ -152,9 +189,18 @@ class RuleTest
 
     # eventually run the test.
     ENV['LD_LIBRARY_PATH'] = ENV['LD_LIBRARY_PATH'] + ":" + File.expand_path(@tmpdir)
-    lala=`bash #{ENV['BASHLIB']}/run.sh #{@tmpdir}/conf.xml`
-    puts lala
-    exit($?.exitstatus)
+    `bash #{ENV['BASHLIB']}/run.sh #{@tmpdir}/conf.xml`
+    res=$?.exitstatus
+
+    # run things after run
+    if res == 0 then
+      res = post_run conf
+    end
+
+    # some cleaning
+    clean
+
+    return res
   end
 
   public
@@ -186,24 +232,6 @@ class RuleTest
     check_prog_path('tbt')
     check_prog_path('tbt_server')
 
-    # clean our temporary directory at exit
-    # (or keep it if DEBUG is defined in environnment)
-    at_exit do
-      if ENV['DEBUG']
-        puts @test_name + ": temporary directory left at " + @tmpdir
-        File.open(@tmpdir + "debug_me.sh", "w") do |f|
-          f.puts "#!/bin/sh"
-          f.puts "export PATH=#{ENV['PATH']}"
-          f.puts "export RUBYLIB=#{ENV['RUBYLIB']}"          
-          f.puts "export LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}"
-          f.puts "export xml_parser_path=#{ENV['BASHLIB']}/"
-          f.puts "bash #{ENV['BASHLIB']}/run.sh conf.xml"
-        end
-        `chmod +x #{@tmpdir + "debug_me.sh"}`
-      else
-        system('rm', '-rf', @tmpdir)
-      end
-    end
   end
 
 
@@ -213,10 +241,11 @@ class RuleTest
 
     # temporary directory
     @tmpdir = Pathname.new(@test_name + "-rules-test")
-    @tmpdir.rmtree
+    @tmpdir.rmtree if @tmpdir.directory?
     @tmpdir.mkdir
 
-    test_stub pool[@test_name]
+    res = test_stub pool[@test_name]
+    exit(res)
   end
 end
 

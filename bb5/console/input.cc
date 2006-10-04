@@ -106,8 +106,19 @@ Input::InputSubCommand Input::move_cmd_[] = {
 // Main commands
 //
 
-void Input::cmdQuit(const std::string&, const std::string&)
+void Input::cmdQuit(const std::string& cmd, const std::string&)
 {
+  // Kludge zone ==>
+  istringstream is(cmd);
+  int delay = -1;
+  is >> delay;
+  if (delay > 0)
+    {
+      cout << "Exiting in " << delay << " second(s)." << endl;
+      sleep(delay);
+    }
+  // <==
+
   want_exit_ = true;
 }
 
@@ -542,10 +553,14 @@ bool Input::process()
 		  if (cmd_ != "")
 		    processCommand(cmd_);
 		  cmd_ = "";
+		  read_index_++;
+		  break;
 		}
 	      else
 		cmd_ += buf_[read_index_];
 	    }
+	  if (read_index_ == read_size_)
+	    read_size_ = 0;
 
 	}
     }

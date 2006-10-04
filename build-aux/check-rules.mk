@@ -26,7 +26,8 @@ clean-local::
 
 installcheck-local::
 	-@rm -rf log
-	@for t in $(MY_TESTS); do			\
+	@to=0;						\
+	for t in $(MY_TESTS); do			\
 	  LD_LIBRARY_PATH="$(libdir)"			\
 	  RUBYLIB="$(pkglibdir)/ruby"			\
 	  BASHLIB="$(pkglibdir)/bash"			\
@@ -35,6 +36,7 @@ installcheck-local::
 	  xml_parser_path="$(pkglibdir)/bash/"		\
 	  $(RUBY) $(pkglibdir)/ruby/rules_test.rb	\
 	    $(YAML_TEST_POOL) $(YAML_FILE) $$t		\
-	     >> log 2>&1;				\
-	  test $$? -eq 0 && echo "PASS: $$t" || echo "FAIL: $$t"; \
-	done
+	     >> log 2>&1; res=$$?; to=$$((to + res));	\
+	  test $$res -eq 0 && echo "PASS: $$t" || echo "FAIL: $$t"; \
+	done; 						\
+	test $$to -eq 0

@@ -21,6 +21,7 @@
 # include "Dice.hh"
 
 enum {
+  eInitGame,
   eKickOff,
   eOurTurn,
   eTheirTurn
@@ -40,6 +41,7 @@ public:
 
   virtual void evSync() {}
   virtual void evIllegal(int was_token);
+  virtual void evInitGame() {}
   virtual void evNewTurn(bool our_turn);
   virtual void evEndGame() {}
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, 

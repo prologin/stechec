@@ -1,5 +1,4 @@
-print hello
 print BEGIN DIFF
-print us 1
+print hello world from 1
 print END DIFF
-quit
+wait

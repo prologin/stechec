@@ -942,7 +942,7 @@ void SPlayer::prepareKickoff()
       break;
 
     default:
-      WARN("case not handled...");
+      WARN("case `" << stringify(status_) << "' not handled...");
       break;
     }
 }

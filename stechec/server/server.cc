@@ -23,7 +23,7 @@ Server* Server::inst = NULL;
 
 Server::Server(const xml::XMLConfig& cfg)
   : cfg_(cfg),
-    wcl_poll_(waiting_clients_, 3000),
+    wcl_poll_(waiting_clients_, 500),
     server_shutdown_(false)
 {
   LOG1(PACKAGE_NAME << " server v" PACKAGE_VERSION << " initializing...");
