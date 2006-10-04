@@ -267,13 +267,13 @@ void CmdLineInterface::evChat(const std::string& msg)
 
 void CmdLineInterface::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
-  cout << "Player `" << player_id << "' of team `"
+  cerr << "Player `" << player_id << "' of team `"
        << team_id << "' has moved to `" << pos << "'" << endl;
 }
 
 void CmdLineInterface::evPlayerMove(int, int player_id, const Point& pos)
 {
-  cout << "Player `" << player_id << "' has moved to `" << pos << "'" << endl;
+  cerr << "Player `" << player_id << "' has moved to `" << pos << "'" << endl;
 }
 
 void CmdLineInterface::evPlayerKnocked(int, int player_id)

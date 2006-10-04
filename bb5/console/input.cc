@@ -78,7 +78,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"follow", &Input::cmdFollow, "follow after a block."},
   {"stay", &Input::cmdStay, "stay after a block."},
   {"push", &Input::cmdPush, "<n>|choose the square to push the player in."},
-  {"cheat", &Input::cmdCheat, "<n>|next dice roll will give this result (cheat)."},
+  {"cheat", &Input::cmdCheat, "<n> <n> <...>|force next dice rolls to give these results (cheat)."},
   {"wait", &Input::cmdWait, "do not process input util it's your turn."},
   {NULL, NULL, NULL}
 };
@@ -106,19 +106,8 @@ Input::InputSubCommand Input::move_cmd_[] = {
 // Main commands
 //
 
-void Input::cmdQuit(const std::string& cmd, const std::string&)
+void Input::cmdQuit(const std::string&, const std::string&)
 {
-  // Kludge zone ==>
-  istringstream is(cmd);
-  int delay = -1;
-  is >> delay;
-  if (delay > 0)
-    {
-      cout << "Exiting in " << delay << " second(s)." << endl;
-      sleep(delay);
-    }
-  // <==
-
   want_exit_ = true;
 }
 
@@ -198,19 +187,19 @@ void Input::cmdKickOff(const string& cmd, const string& args)
   is >> pb.row;
   is >> pb.col;
   if (api_->doPlaceBall(pb))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdReroll(const string&, const string&)
 {
   if (api_->doReroll())
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdAccept(const string&, const string&)
 {
   if (api_->doAccept())
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdMove(const string& cmd, const string& args)
@@ -230,7 +219,7 @@ void Input::cmdMoveBz(const string& cmd, const string& args)
   is >> pos.row;
   is >> pos.col;
   if (api_->doBlitzMovePlayer(p_id, pos))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdMoveP(const string& cmd, const string& args)
@@ -242,7 +231,7 @@ void Input::cmdMoveP(const string& cmd, const string& args)
   is >> pos.row;
   is >> pos.col;
   if (api_->doPassMovePlayer(p_id, pos))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdStandUpM(const string& cmd, const string& args)
@@ -251,7 +240,7 @@ void Input::cmdStandUpM(const string& cmd, const string& args)
   int p = -1;
   is >> p;
   if (api_->doMoveStandUpPlayer(p))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdStandUpBk(const string& cmd, const string& args)
@@ -260,7 +249,7 @@ void Input::cmdStandUpBk(const string& cmd, const string& args)
   int p = -1;
   is >> p;
   if (api_->doBlockStandUpPlayer(p))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdStandUpBz(const string& cmd, const string& args)
@@ -269,7 +258,7 @@ void Input::cmdStandUpBz(const string& cmd, const string& args)
   int p = -1;
   is >> p;
   if (api_->doBlitzStandUpPlayer(p))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdStandUpP(const string& cmd, const string& args)
@@ -278,7 +267,7 @@ void Input::cmdStandUpP(const string& cmd, const string& args)
   int p = -1;
   is >> p;
   if (api_->doPassStandUpPlayer(p))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdBlock(const string& cmd, const string& args)
@@ -289,7 +278,7 @@ void Input::cmdBlock(const string& cmd, const string& args)
   is >> p_id;
   is >> p_did;
   if (api_->doBlockPlayer(p_id, p_did))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdBlockBz(const string& cmd, const string& args)
@@ -300,7 +289,7 @@ void Input::cmdBlockBz(const string& cmd, const string& args)
   is >> p_id;
   is >> p_did;
   if (api_->doBlitzBlockPlayer(p_id, p_did))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdPass(const string& cmd, const string& args)
@@ -312,19 +301,19 @@ void Input::cmdPass(const string& cmd, const string& args)
   is >> pos.row;
   is >> pos.col;
   if (api_->doPassPlayer(p_id, pos))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdIllegal(const string&, const string&)
 {
   api_->doAskIllegalProcedure();
-  sync_ = true;
+  sync_++;
 }
 
 void Input::cmdEnd(const string&, const string&)
 {
   api_->doEndTurn();
-  sync_ = true;
+  sync_++;
 }
 
 void Input::cmdDice(const string& cmd, const string& args)
@@ -333,19 +322,19 @@ void Input::cmdDice(const string& cmd, const string& args)
   int n = -1;
   is >> n;
   if (api_->doChooseBlockDice(n))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdFollow(const string&, const string&)
 {
   if (api_->doFollow(true))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdStay(const string&, const string&)
 {
   if (api_->doFollow(false))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdPush(const string& cmd, const string& args)
@@ -354,7 +343,7 @@ void Input::cmdPush(const string& cmd, const string& args)
   int n = -1;
   is >> n;
   if (api_->doBlockPush(n))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdGiveBall(const string& cmd, const string& args)
@@ -363,7 +352,7 @@ void Input::cmdGiveBall(const string& cmd, const string& args)
   int p = -1;
   is >> p;
   if (api_->doGiveBall(p))
-    sync_ = true;
+    sync_++;
 }
 
 void Input::cmdCheat(const string& cmd, const string& args)
@@ -371,16 +360,18 @@ void Input::cmdCheat(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int roll = -1;
   is >> roll;
-  if (roll != -1)
+  while (roll != -1)
     {
       api_->doCheatDice(roll);
-      sync_ = true;
+      sync_++;
+      roll = -1;
+      is >> roll;
     }
 }
 
 void Input::cmdWait(const string&, const string&)
 {
-  wait_ = true;
+  wait_++;
 }
 
 
@@ -431,7 +422,7 @@ void Input::cmdPrintString(const std::string& args)
 void Input::cmdMoveTurnMarker(const std::string&)
 {
   api_->doMoveTurnMarker();
-  sync_ = true;
+  sync_++;
 }
 
 void Input::cmdMovePlayer(const std::string& args)
@@ -443,7 +434,7 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> pos.row;
   is >> pos.col;
   if (api_->doMovePlayer(p, pos))
-    sync_ = true;
+    sync_++;
 }
 
 
@@ -455,8 +446,8 @@ Input::Input(CmdLineInterface* i, Api* gc, bool use_readline)
   : api_(gc),
     i_(i),
     want_exit_(false),
-    wait_(false),
-    sync_(false),
+    wait_(0),
+    sync_(0),
     use_readline_(use_readline),
     read_size_(0)
 {
@@ -494,12 +485,14 @@ void Input::wantExit()
 
 void Input::stopWaiting()
 {
-  wait_ = false;
+  wait_--;
 }
 
 void Input::syncDone()
 {
-  sync_ = false;
+  // FIXME: in fact, counting it doesn't work.
+  if (--sync_ < 0)
+    sync_ = 0;
 }
 
 
@@ -512,7 +505,7 @@ bool Input::process()
   tval.tv_usec = 50 * 1000;
   fd_set fds;
   FD_ZERO(&fds);
-  if (!wait_ && !sync_)
+  if (wait_ <= 0 && sync_ == 0)
     FD_SET(STDIN_FILENO, &fds);
 
   int ret = 42;

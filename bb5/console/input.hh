@@ -115,8 +115,8 @@ private:
   CmdLineInterface*     i_;
   bool                  want_exit_;
   bool			cmd_processed_;   ///< Stop processing input if a command was executed.
-  bool			wait_;            ///< Don't process input util it is our turn.
-  bool			sync_;		  ///< true if server is processing our input.
+  int			wait_;            ///< Don't process input util it is our turn.
+  int			sync_;		  ///< Number of 'sync' from server to receive before proceding input.
   bool			use_readline_;    ///< Use readline, if it was compiled (default).
 
   // for read().
