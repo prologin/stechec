@@ -435,6 +435,11 @@ Input::~Input()
 #endif // !NO_READLINE
 }
 
+void Input::wantExit()
+{
+  want_exit_ = true;
+}
+
 bool Input::process()
 {
   // #$^#$%^#$^ poll() on MacOsX (at least 10.4) doesn't accept STDIN_FILENO
@@ -447,10 +452,12 @@ bool Input::process()
   FD_SET(STDIN_FILENO, &fds);
 
   int ret = 42;
+  cmd_processed_ = false;
 
   // Poll stdin, fill readline with characters if any.
   // Block around 50ms.
-  while (ret > 0)
+  // Stop if one command is executed (avoid reading "< file.cmd" at once).
+  while (ret > 0 && !cmd_processed_ && !want_exit_)
     {
       ret = select(STDIN_FILENO + 1, &fds, NULL, NULL, &tval);
       if (ret < 0 && errno != EINTR)
@@ -513,6 +520,8 @@ void Input::processCommand(const std::string& s)
       }
   if (main_cmd_[i].name == NULL)
     cout << "Unknown command: `" << cmd << "', try again, or type 'help'." << endl;
+
+  cmd_processed_ = true;
 }
 
 
@@ -525,7 +534,14 @@ void Input::processCommand(const std::string& s)
 // Callback. Called by readline when a line is completed.
 void get_line(char* line)
 {
-  if (line && *line != 0)
+  // EOF
+  if (line == NULL)
+    {
+      input_inst->wantExit();
+      return;
+    }
+
+  if (*line != 0)
     add_history(line);
   std::string cmd(line);
   free(line);

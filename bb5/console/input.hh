@@ -31,7 +31,8 @@ public:
 
   bool process();
   void processCommand(const std::string& s);
-
+  void wantExit();
+  
 public:
 
   struct InputCommand
@@ -99,6 +100,7 @@ private:
   CmdLineInterface*     i_;
   bool                  want_exit_;
   std::string		cmd_;   ///< What we read from stdin, when no using libreadline.
+  bool			cmd_processed_;
 };
 
 #endif /* !INPUT_HH_ */
