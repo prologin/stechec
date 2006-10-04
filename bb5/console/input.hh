@@ -20,18 +20,32 @@
 class Api;
 class CmdLineInterface;
 
-/*
-** Quick and light command line processer.
+/*!
+** @brief Quick and light command line processer.
 */
 class Input
 {
 public:
-  Input(CmdLineInterface* i, Api* gc);
+  Input(CmdLineInterface* i, Api* gc, bool use_readline);
   ~Input();
 
+  ///! @brief Main loop, check input, process commands... call it frequently.
+  ///! @note Block at most 50ms.
+  ///! @return true if user wants to exit from app (EOF, quit, etc...).
   bool process();
+
+  ///! @brief Process a command.
+  ///! @param s The command line, without trailing '\n'.
   void processCommand(const std::string& s);
+
+  ///! @brief Wants exit, next call to process() will return true.
   void wantExit();
+
+  ///! @brief Tell to process input again.
+  void stopWaiting();
+
+  ///! @brief Server has finished to process our input.
+  void syncDone();
   
 public:
 
@@ -71,6 +85,7 @@ private:
   void cmdFollow(const std::string& cmd, const std::string& args);
   void cmdPush(const std::string& cmd, const std::string& args);
   void cmdCheat(const std::string& cmd, const std::string& args);
+  void cmdWait(const std::string& cmd, const std::string& args);
 
   // Action command
   void cmdMove(const std::string& cmd, const std::string& args);
@@ -99,8 +114,16 @@ private:
   Api*                  api_;
   CmdLineInterface*     i_;
   bool                  want_exit_;
-  std::string		cmd_;   ///< What we read from stdin, when no using libreadline.
-  bool			cmd_processed_;
+  bool			cmd_processed_;   ///< Stop processing input if a command was executed.
+  bool			wait_;            ///< Don't process input util it is our turn.
+  bool			sync_;		  ///< true if server is processing our input.
+  bool			use_readline_;    ///< Use readline, if it was compiled (default).
+
+  // for read().
+  std::string		cmd_;             ///< What we read from stdin, when no using libreadline.
+  int			read_size_;
+  int			read_index_;
+  char			buf_[1024];
 };
 
 #endif /* !INPUT_HH_ */

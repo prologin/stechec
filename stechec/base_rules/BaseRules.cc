@@ -19,6 +19,7 @@
 BaseRules::BaseRules()
   : state_(GS_WAIT),
     team_number_(0),
+    sync_(false),
     packet_sender_(NULL)
 {
 }
@@ -69,12 +70,17 @@ void    BaseRules::handlePacket(const Packet* p)
       for (it = pkt_hdl_[p->token].begin(); it != pkt_hdl_[p->token].end(); ++it)
         if (it->first & state_)
           {
-            it->second->handle(p);
+            if (it->second->handle(p) && sync_)
+	      sendPacket(MsgSync());
             handled = true;
           }
       if (!handled)
-        WARN("handlePacket: msg '" << pkt_hdl_[p->token].begin()->second->getCstStr()
-             << "' doesn't have handler for state " << state_);
+	{
+	  WARN("handlePacket: msg '" << pkt_hdl_[p->token].begin()->second->getCstStr()
+	       << "' doesn't have handler for state " << state_);
+	  if (sync_)
+	    sendPacket(MsgSync());
+	}
     }
 }
 
@@ -114,3 +120,7 @@ void        BaseRules::setSendPacketObject(PacketSender* ps)
   packet_sender_ = ps;
 }
 
+void	    BaseRules::setSync(bool enable)
+{
+  sync_ = enable;
+}

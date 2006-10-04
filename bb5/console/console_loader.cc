@@ -24,7 +24,15 @@
 //
 extern "C" int run(xml::XMLConfig* cfg, Api* api, ClientCx* client_cx)
 {
-  CmdLineInterface i(cfg, api, client_cx);
+  bool use_readline = true;
+  try {
+    cfg->switchClientSection();
+    cfg->getData<int>("stdin");
+    use_readline = false;
+  } catch (...) {
+  }
+
+  CmdLineInterface i(cfg, api, client_cx, use_readline);
 
   i.hello();
   i.init();

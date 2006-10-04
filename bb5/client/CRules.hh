@@ -59,6 +59,7 @@ public:
 private:
 
   // Methods to catch server response.
+  void msgSync(const MsgSync* m);
   void msgIllegal(const MsgIllegal* m);
   void msgInitGame(const MsgInitGame* m);
   void msgInitHalf(const MsgInitHalf* m);

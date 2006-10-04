@@ -31,7 +31,7 @@ class BasePacketHandler
 {
 public:
   virtual ~BasePacketHandler() {}
-  virtual void handle(const Packet* p) = 0;
+  virtual bool handle(const Packet* p) = 0;
   virtual int getCstValue() const = 0;
   virtual const char* getCstStr() const = 0;
   virtual void dispatchUIEvent(const EventProcess* evp,
@@ -74,14 +74,15 @@ public:                                                         \
   typedef bool (T::*filter_fct_t)(const PClass*);               \
   PacketHandler<Cst, T>(T* obj, fct_t f, filter_fct_t ff)       \
     : obj_(obj), f_(f), filt_f_(ff) {}                          \
-  virtual void handle(const Packet* p)                          \
+  virtual bool handle(const Packet* p)                          \
   {                                                             \
     if (filt_f_ &&						\
 	!(obj_->*filt_f_)(reinterpret_cast<const PClass*>(p)))	\
-      return;							\
+      return false;						\
     LOG5("PacketHandler gets message '"                         \
          #Cst "' (client_id: " << p->client_id << ")");         \
     (obj_->*f_)(reinterpret_cast<const PClass*>(p));            \
+    return true;                                                \
   }                                                             \
   virtual int getCstValue() const { return Cst; }               \
   virtual const char* getCstStr() const { return #Cst; }        \

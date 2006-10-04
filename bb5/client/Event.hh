@@ -38,6 +38,7 @@ public:
   Event() {}
   virtual ~Event() {}
 
+  virtual void evSync() {}
   virtual void evIllegal(int was_token);
   virtual void evNewTurn(bool our_turn);
   virtual void evEndGame() {}

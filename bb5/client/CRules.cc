@@ -25,6 +25,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
     cur_half_(0)
 {
   // Register tokens that we must handle ourself.
+  HANDLE_WITH(MSG_SYNC, CRules, this, msgSync, GS_ALL);
   HANDLE_WITH(MSG_INITGAME, CRules, this, msgInitGame, GS_WAIT);
   HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, GS_ALL);
   HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, GS_ALL);
@@ -70,6 +71,11 @@ Api*        CRules::getApi()
 /*
 ** Message management.
 */
+
+void	    CRules::msgSync(const MsgSync* m)
+{
+  onEvent(m);
+}
 
 void        CRules::msgIllegal(const MsgIllegal* m)
 {

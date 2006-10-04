@@ -24,12 +24,13 @@ using namespace std;
 
 CmdLineInterface::CmdLineInterface(xml::XMLConfig* cfg,
                                    Api* api,
-                                   ClientCx* client_cx)
+                                   ClientCx* client_cx,
+				   bool use_readline)
   : cfg_(cfg),
     api_(api),
     ccx_(client_cx),
     standalone_(false),
-    input_(this, api_),
+    input_(this, api_, use_readline),
     paused_(false)
 {
 }
@@ -214,6 +215,11 @@ void CmdLineInterface::printPlayer(int player_id, int team_id)
 // Events (virtual methods called from Event).
 //
 
+void CmdLineInterface::evSync()
+{
+  input_.syncDone();
+}
+
 void CmdLineInterface::evIllegal(int was_token)
 {
   cout << "An illegal action was tried (token: " << was_token << "). Bouh." << endl;
@@ -222,7 +228,10 @@ void CmdLineInterface::evIllegal(int was_token)
 void CmdLineInterface::evNewTurn(bool our_turn)
 {
   if (our_turn)
-    cout << "It's our turn..." << endl;
+    {
+      cout << "It's our turn..." << endl;
+      input_.stopWaiting();
+    }
   else
     cout << "It's their turn..." << endl;    
   our_turn_ = our_turn;
@@ -231,6 +240,7 @@ void CmdLineInterface::evNewTurn(bool our_turn)
 void CmdLineInterface::evKickOff()
 {
   cout << "Arbiter is asking us to place the ball. (use 'kickoff')" << endl;
+  input_.stopWaiting();
 }
 
 void CmdLineInterface::evMoveTurnMarker()

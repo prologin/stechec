@@ -37,6 +37,12 @@ void EventProcess::dispatch(const CustomEvent& ie) const
 }
 
 template <>
+void EventProcess::dispatch(const MsgSync&) const
+{
+  ev_->evSync();
+}
+
+template <>
 void EventProcess::dispatch(const MsgIllegal& m) const
 {
   ev_->evIllegal(m.was_token);
@@ -138,7 +144,7 @@ void EventProcess::dispatch(const MsgBlockResult& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgFollow& pkt) const
+void EventProcess::dispatch(const MsgFollow&) const
 {
   ev_->evFollow();
 }

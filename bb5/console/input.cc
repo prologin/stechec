@@ -23,11 +23,11 @@
 #ifdef HAVE_READLINE_H
 # include <readline.h>
 # include <history.h>
+# define USE_READLINE 1
 #elif HAVE_READLINE_READLINE_H
 # include <readline/readline.h>
 # include <readline/history.h>
-#else
-# define NO_READLINE 1
+# define USE_READLINE 1
 #endif
 
 #include "interface.hh"
@@ -39,14 +39,14 @@ using namespace std;
 // Realine forward declaration.
 //
 
-#ifndef NO_READLINE
+#ifdef USE_READLINE
 // Yes, easier.
 static Input* input_inst = NULL;
 
 void get_line(char* line);
 char** cmd_completion(const char* text, int start, int end);
 char* cmd_completion_foo(const char*, int);
-#endif // !NO_READLINE
+#endif // !USE_READLINE
 
 //
 // List of commands.
@@ -79,6 +79,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"stay", &Input::cmdStay, "stay after a block."},
   {"push", &Input::cmdPush, "<n>|choose the square to push the player in."},
   {"cheat", &Input::cmdCheat, "<n>|next dice roll will give this result (cheat)."},
+  {"wait", &Input::cmdWait, "do not process input util it's your turn."},
   {NULL, NULL, NULL}
 };
 
@@ -185,17 +186,20 @@ void Input::cmdKickOff(const string& cmd, const string& args)
   Position pb;
   is >> pb.row;
   is >> pb.col;
-  api_->doPlaceBall(pb);
+  if (api_->doPlaceBall(pb))
+    sync_ = true;
 }
 
 void Input::cmdReroll(const string&, const string&)
 {
-  api_->doReroll();
+  if (api_->doReroll())
+    sync_ = true;
 }
 
 void Input::cmdAccept(const string&, const string&)
 {
-  api_->doAccept();
+  if (api_->doAccept())
+    sync_ = true;
 }
 
 void Input::cmdMove(const string& cmd, const string& args)
@@ -214,7 +218,8 @@ void Input::cmdMoveBz(const string& cmd, const string& args)
   is >> p_id;
   is >> pos.row;
   is >> pos.col;
-  api_->doBlitzMovePlayer(p_id, pos);
+  if (api_->doBlitzMovePlayer(p_id, pos))
+    sync_ = true;
 }
 
 void Input::cmdMoveP(const string& cmd, const string& args)
@@ -225,7 +230,8 @@ void Input::cmdMoveP(const string& cmd, const string& args)
   is >> p_id;
   is >> pos.row;
   is >> pos.col;
-  api_->doPassMovePlayer(p_id, pos);
+  if (api_->doPassMovePlayer(p_id, pos))
+    sync_ = true;
 }
 
 void Input::cmdStandUpM(const string& cmd, const string& args)
@@ -233,7 +239,8 @@ void Input::cmdStandUpM(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  api_->doMoveStandUpPlayer(p);
+  if (api_->doMoveStandUpPlayer(p))
+    sync_ = true;
 }
 
 void Input::cmdStandUpBk(const string& cmd, const string& args)
@@ -241,7 +248,8 @@ void Input::cmdStandUpBk(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  api_->doBlockStandUpPlayer(p);
+  if (api_->doBlockStandUpPlayer(p))
+    sync_ = true;
 }
 
 void Input::cmdStandUpBz(const string& cmd, const string& args)
@@ -249,7 +257,8 @@ void Input::cmdStandUpBz(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  api_->doBlitzStandUpPlayer(p);
+  if (api_->doBlitzStandUpPlayer(p))
+    sync_ = true;
 }
 
 void Input::cmdStandUpP(const string& cmd, const string& args)
@@ -257,7 +266,8 @@ void Input::cmdStandUpP(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  api_->doPassStandUpPlayer(p);
+  if (api_->doPassStandUpPlayer(p))
+    sync_ = true;
 }
 
 void Input::cmdBlock(const string& cmd, const string& args)
@@ -267,7 +277,8 @@ void Input::cmdBlock(const string& cmd, const string& args)
   int p_did = -1;
   is >> p_id;
   is >> p_did;
-  api_->doBlockPlayer(p_id, p_did);
+  if (api_->doBlockPlayer(p_id, p_did))
+    sync_ = true;
 }
 
 void Input::cmdBlockBz(const string& cmd, const string& args)
@@ -277,7 +288,8 @@ void Input::cmdBlockBz(const string& cmd, const string& args)
   int p_did = -1;
   is >> p_id;
   is >> p_did;
-  api_->doBlitzBlockPlayer(p_id, p_did);
+  if (api_->doBlitzBlockPlayer(p_id, p_did))
+    sync_ = true;
 }
 
 void Input::cmdPass(const string& cmd, const string& args)
@@ -288,17 +300,20 @@ void Input::cmdPass(const string& cmd, const string& args)
   is >> p_id;
   is >> pos.row;
   is >> pos.col;
-  api_->doPassPlayer(p_id, pos);
+  if (api_->doPassPlayer(p_id, pos))
+    sync_ = true;
 }
 
 void Input::cmdIllegal(const string&, const string&)
 {
   api_->doAskIllegalProcedure();
+  sync_ = true;
 }
 
 void Input::cmdEnd(const string&, const string&)
 {
   api_->doEndTurn();
+  sync_ = true;
 }
 
 void Input::cmdDice(const string& cmd, const string& args)
@@ -306,17 +321,20 @@ void Input::cmdDice(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int n = -1;
   is >> n;
-  api_->doChooseBlockDice(n);
+  if (api_->doChooseBlockDice(n))
+    sync_ = true;
 }
 
 void Input::cmdFollow(const string&, const string&)
 {
-  api_->doFollow(true);
+  if (api_->doFollow(true))
+    sync_ = true;
 }
 
 void Input::cmdStay(const string&, const string&)
 {
-  api_->doFollow(false);
+  if (api_->doFollow(false))
+    sync_ = true;
 }
 
 void Input::cmdPush(const string& cmd, const string& args)
@@ -324,7 +342,8 @@ void Input::cmdPush(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int n = -1;
   is >> n;
-  api_->doBlockPush(n);
+  if (api_->doBlockPush(n))
+    sync_ = true;
 }
 
 void Input::cmdGiveBall(const string& cmd, const string& args)
@@ -332,7 +351,8 @@ void Input::cmdGiveBall(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  api_->doGiveBall(p);
+  if (api_->doGiveBall(p))
+    sync_ = true;
 }
 
 void Input::cmdCheat(const string& cmd, const string& args)
@@ -341,8 +361,17 @@ void Input::cmdCheat(const string& cmd, const string& args)
   int roll = -1;
   is >> roll;
   if (roll != -1)
-    api_->doCheatDice(roll);
+    {
+      api_->doCheatDice(roll);
+      sync_ = true;
+    }
 }
+
+void Input::cmdWait(const string&, const string&)
+{
+  wait_ = true;
+}
+
 
 //
 // Print commands
@@ -391,6 +420,7 @@ void Input::cmdPrintString(const std::string& args)
 void Input::cmdMoveTurnMarker(const std::string&)
 {
   api_->doMoveTurnMarker();
+  sync_ = true;
 }
 
 void Input::cmdMovePlayer(const std::string& args)
@@ -401,7 +431,8 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> p;
   is >> pos.row;
   is >> pos.col;
-  api_->doMovePlayer(p, pos);
+  if (api_->doMovePlayer(p, pos))
+    sync_ = true;
 }
 
 
@@ -409,36 +440,57 @@ void Input::cmdMovePlayer(const std::string& args)
 // Input main functions.
 //
 
-Input::Input(CmdLineInterface* i, Api* gc)
+Input::Input(CmdLineInterface* i, Api* gc, bool use_readline)
   : api_(gc),
     i_(i),
-    want_exit_(false)
+    want_exit_(false),
+    wait_(false),
+    sync_(false),
+    use_readline_(use_readline),
+    read_size_(0)
 {
   ios_base::sync_with_stdio(true);
 
-#ifndef NO_READLINE
-  // Initialize readline
-  rl_callback_handler_install(NULL, &get_line);
-  rl_attempted_completion_function = cmd_completion;
-  rl_completion_entry_function = cmd_completion_foo;
+#ifdef USE_READLINE
+  if (use_readline_)
+    {
+      // Initialize readline
+      rl_callback_handler_install(NULL, &get_line);
+      rl_attempted_completion_function = cmd_completion;
+      rl_completion_entry_function = cmd_completion_foo;
 
-  assert(input_inst == NULL);
-  input_inst = this;
+      assert(input_inst == NULL);
+      input_inst = this;
+    }
 #endif // !NO_READLINE
 }
 
 Input::~Input()
 {
-#ifndef NO_READLINE
-  input_inst = NULL;
-  rl_callback_handler_remove();
-#endif // !NO_READLINE
+#ifdef USE_READLINE
+  if (use_readline_)
+    {
+      input_inst = NULL;
+      rl_callback_handler_remove();
+    }
+#endif // !USE_READLINE
 }
 
 void Input::wantExit()
 {
   want_exit_ = true;
 }
+
+void Input::stopWaiting()
+{
+  wait_ = false;
+}
+
+void Input::syncDone()
+{
+  sync_ = false;
+}
+
 
 bool Input::process()
 {
@@ -449,7 +501,8 @@ bool Input::process()
   tval.tv_usec = 50 * 1000;
   fd_set fds;
   FD_ZERO(&fds);
-  FD_SET(STDIN_FILENO, &fds);
+  if (!wait_ && !sync_)
+    FD_SET(STDIN_FILENO, &fds);
 
   int ret = 42;
   cmd_processed_ = false;
@@ -462,32 +515,38 @@ bool Input::process()
       ret = select(STDIN_FILENO + 1, &fds, NULL, NULL, &tval);
       if (ret < 0 && errno != EINTR)
         PRINT_AND_THROW(Exception, "stdin select");
-      if (ret > 0)
+      if (ret > 0
+#ifdef USE_READLINE
+	  && use_readline_)
 	{
-#ifdef NO_READLINE
-	  int read_size;
-	  char buf[1024];
-
-	  read_size = read(STDIN_FILENO, buf, 1024);
-	  if (read_size < 0)
+	  rl_callback_read_char();
+	}
+      else if (ret > 0
+#endif // !USE_READLINE
+	       )
+	{
+	  if (read_size_ == 0)
+	    {
+	      read_size_ = read(STDIN_FILENO, buf_, 1024);
+	      read_index_ = 0;
+	    }
+	  if (read_size_ < 0)
 	    PRINT_AND_THROW(Exception, "stdin read");
-	  if (read_size == 0)
+	  if (read_size_ == 0)
 	    return true;
 
-	  for (int i = 0; i < read_size; i++)
+	  for (; read_index_ < read_size_; read_index_++)
 	    {
-	      if (buf[i] == '\n')
+	      if (buf_[read_index_] == '\n')
 		{
 		  if (cmd_ != "")
 		    processCommand(cmd_);
 		  cmd_ = "";
 		}
 	      else
-		cmd_ += buf[i];
+		cmd_ += buf_[read_index_];
 	    }
-#else
-	  rl_callback_read_char();
-#endif // !NO_READLINE
+
 	}
     }
   return want_exit_;
@@ -529,7 +588,7 @@ void Input::processCommand(const std::string& s)
 // Realine related functions.
 //
 
-#ifndef NO_READLINE
+#ifdef USE_READLINE
 
 // Callback. Called by readline when a line is completed.
 void get_line(char* line)
@@ -650,4 +709,4 @@ char* cmd_completion_foo(const char*, int)
 }
 
 
-#endif // !NO_READLINE
+#endif // !USE_READLINE

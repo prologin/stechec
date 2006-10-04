@@ -39,6 +39,11 @@ const int GS_ALL        = 0x3FFF; ///< All events, except GS_WAIT and GS_END.
 const int VS_HAVEVIEWER = 0x0800; ///< If there is at least one viewer.
 const int VS_READY      = 0x2000; ///< All viewers are ready.
 
+// Synchronization packet. Sent (if rules wish) when an incoming packet
+// is done (processing finished).
+const int MSG_SYNC      = 252;
+DECLARE_EMPTY_PACKET(MSG_SYNC, MsgSync);
+
 // Custom events.
 const int CUSTOM_EVENT  = 253;
 
@@ -92,7 +97,7 @@ public:
   int           getState() const;
   //! @brief Set the current game state.
   void          setState(int new_state);
-  
+
   //! @brief Debug function. Return a stringified packet token.
   std::string   getPacketStr(int token) const;
 
@@ -128,8 +133,13 @@ private:
 
   int           state_;
   int           team_number_;
+  bool		sync_;
 
 protected:
+
+  //! @brief Activate/Disactivate synchronization packet.
+  void		setSync(bool enable);
+  
   PacketSender* packet_sender_;
   typedef std::vector<std::pair<int, BasePacketHandler*> > PktHList;
   PktHList      pkt_hdl_[MAX_TOKEN];
