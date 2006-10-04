@@ -75,7 +75,7 @@ echo <<<END
 <tr>
 <td class="bg1 center">$num</td>
 <td><input name="NAME[]" onchange="checkName($i)" type="text" maxlength="25" value="{$loaded_team['player'][$i]['name']}" /></td>
-<td><select name="POSITION[]" onchange="fillPlayerStats($i)">
+<td><select name="POSITION[]" onchange="fillPlayerStats($i);countHealthyPlayers()">
 $dropdown
 </select></td>
 <td>
@@ -132,7 +132,7 @@ echo <<<END
 <tr>
 <td class="bg1 center">$num</td>
 <td><input name="NAME[]" onchange="checkName($i)" type="text" maxlength="25" value="" /></td>
-<td><select name="POSITION[]" onchange="fillPlayerStats($i)">
+<td><select name="POSITION[]" onchange="fillPlayerStats($i);countHealthyPlayers()">
 $dropdown
 </select></td>
 <td>
