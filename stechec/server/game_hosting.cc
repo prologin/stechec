@@ -40,7 +40,7 @@ GameHosting::GameHosting(int game_uid,
   LOG1("Creating a new game, uid '" << game_uid << "'. Wait for `"
        << nb_waited_coach_ << "' teams and `" << nb_waited_viewer_
        << "' spectators.");
-  
+
   if (cfg.getAttr<bool>("log", "enabled"))
     {
       std::string filename = cfg.getAttr<std::string>("log", "file");
@@ -216,36 +216,39 @@ bool GameHosting::process()
 	{
 	  if (cl->discardInput())
 	    {
-	      if (!cl->isCoach())
-		delete cl;
+	      if (cl->isCoach())
+		{
+		  nb_coach_--;
+		  rules_->coachKilled(cl->getId(), cl->getClientStatistic().custom_);
+		  // 'cl' is still in coach_list_.
+		}
+	      else if (!cl->isCoach())
+		{
+		  if (!--nb_viewer_)
+		    rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
+		  delete cl;
+		}
+
 	      const int cl_size = client_list_.size();
 	      client_list_[i] = client_list_[cl_size - 1];
 	      client_list_.erase(client_list_.end() - 1);
 	      if (nb_ready >= cl_size)
 		nb_ready--;
+	      LOG6("Remove one client: cl_size: " << cl_size - 1 << " nb coach: " << nb_coach_);
 	    }
-	  continue;
+	  assert(nb_viewer_ >= 0 && nb_coach_ >= 0);
 	}
-
-      try {
-        if (processOne(cl, remove_reason))
-	  cl->setDead(remove_reason);
-      } catch (const NetError& e) {
-        LOG2("Network error: " << e);
-        remove_reason = std::string("Network error: ") + e.what();
-	cl->setDead(remove_reason, true);
-      }
-
-      if (cl->isDead() && cl->isCoach())
+      else
 	{
-	  nb_coach_--;
-	  rules_->coachKilled(cl->getId(), cl->getClientStatistic().custom_);
+	  try {
+	    if (processOne(cl, remove_reason))
+	      cl->setDead(remove_reason);
+	  } catch (const NetError& e) {
+	    LOG2("Network error: " << e);
+	    remove_reason = std::string("Network error: ") + e.what();
+	    cl->setDead(remove_reason, true);
+	  }
 	}
-      if (cl->isDead() && !cl->isCoach() && !--nb_viewer_)
-	{
-	  rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
-	}
-      assert(nb_viewer_ >= 0 && nb_coach_ >= 0);
     }
 
   return true;
@@ -273,6 +276,7 @@ void GameHosting::run()
   if (start_timeout.isTimeElapsed())
     LOG3("Allowed time for starting game elapsed. Canceling game.");
 
+  LOG3("Start the game.");
   // Really play the game.
   if (started_)
     try {
@@ -296,10 +300,12 @@ void GameHosting::run()
     } catch (const NetError& e) {
       LOG2("Network error: " << e << ". Aborting game.");
     }
-  
-  sendPacket(GameFinished());
+
+  if (started_)
+    sendPacket(GameFinished());
   game_finished_ = true;
 
+  // Wait that client quit by themself, to not forcelly close their sockets
   LOG4("Wait that `" << client_list_.size() << "' remaining clients quit.");
   while (!client_list_.empty())
     process();

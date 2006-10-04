@@ -58,12 +58,10 @@ int NetPoll<T>::poll()
   int nb_ready = ::poll(pifi_, elt_size, timeout_);
   if (nb_ready < 0 && errno != EINTR)
     throw NetError("Poll");
-  if (nb_ready <= 0)
-    return 0;
   
   // Look for fd that are ready, put them on the beginning of the list.
   int nb_seen;
-  for (i = 0, nb_seen = 0; i < elt_size && nb_seen < nb_ready; ++i)
+  for (i = 0, nb_seen = 0; i < elt_size; ++i)
     {
       // XXX: kludge, also signal erroneous fd, so they can be handled.
       if (pifi_[i].revents & POLLIN || pifi_[i].fd < 0)
@@ -74,6 +72,5 @@ int NetPoll<T>::poll()
           nb_seen++;
         }
     }
-  assert(nb_seen == nb_ready);
   return nb_seen;
 }

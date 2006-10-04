@@ -94,7 +94,7 @@ public:
   //!  we had a connection error with it.
   //! @param fail_msg A reason of why it dead. For statistics.
   //! @param kill_now true if we can close its socket now. false if we wait
-  //!   that it'll do that cleany.
+  //!   that it'll do that cleany later.
   void          setDead(std::string fail_msg, bool kill_now = false);
 
     //! @brief Discard input. Only works on dead client
