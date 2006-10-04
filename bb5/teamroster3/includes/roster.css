@@ -86,6 +86,25 @@ input,select {
      padding: 5px;
 }
 
+#jm_box {
+     position: absolute;
+     top: 50px;
+     left: 400px;
+     z-index: 2;
+     width: auto;
+     height: auto;
+     background-color: #D3D3D3;
+     border: 3px solid black;
+     padding: 5px;
+}
+
+.jm {
+	width: 40px;
+	text-align: center;
+	vertical-align: middle;	
+}
+	
+
 .healthy { }
 .injured { text-decoration: line-through; }
 

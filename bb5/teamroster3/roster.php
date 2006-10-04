@@ -131,7 +131,7 @@ else {
       </td>
 </tr>
 <tr>
-	  <td colspan="3">healthy players</td>
+	  <td colspan="3">players (<a class="small blue" href="javascript:showJmBox()">manage</a>)</td>
 	  <td colspan="1"><input name="HEALTHY" type="text" size="2" readonly="readonly" /></td>
       <td colspan="3" class="bg1">ASSISTANTS</td>
       <td colspan="1">
@@ -214,6 +214,33 @@ else {
 	<p><a href="javascript:hideLayer('pic_box')">Close</a></p>
 </div>
 
+<div id="jm_box" class="element_hidden">
+<p>You may hire one or more of the journeymen you used after a match. <br />
+Simply click on the corresponding number (non-journeymen are not shown).</p>
+<table>
+<tr>
+<td class="jm"><a id="jm0" class="green" href="javascript:legalize(0)">1</a></td>
+<td class="jm"><a id="jm1" class="green" href="javascript:legalize(1)">2</a></td>
+<td class="jm"><a id="jm2" class="green" href="javascript:legalize(2)">3</a></td>
+<td class="jm"><a id="jm3" class="green" href="javascript:legalize(3)">4</a></td>
+<td class="jm"><a id="jm4" class="green" href="javascript:legalize(4)">5</a></td>
+<td class="jm"><a id="jm5" class="green" href="javascript:legalize(5)">6</a></td>
+<td class="jm"><a id="jm6" class="green" href="javascript:legalize(6)">7</a></td>
+<td class="jm"><a id="jm7" class="green" href="javascript:legalize(7)">8</a></td>
+</tr>
+<tr>
+<td class="jm"><a id="jm8" class="green" href="javascript:legalize(8)">9</a></td>
+<td class="jm"><a id="jm9" class="green" href="javascript:legalize(9)">10</a></td>
+<td class="jm"><a id="jm10" class="green" href="javascript:legalize(10)">11</a></td>
+<td class="jm"><a id="jm11" class="green" href="javascript:legalize(11)">12</a></td>
+<td class="jm"><a id="jm12" class="green" href="javascript:legalize(12)">13</a></td>
+<td class="jm"><a id="jm13" class="green"  href="javascript:legalize(13)">14</a></td>
+<td class="jm"><a id="jm14" class="green" href="javascript:legalize(14)">15</a></td>
+<td class="jm"><a id="jm15" class="green" href="javascript:legalize(15)">16</a></td>
+</tr>
+</table>
+<p><a href="javascript:hideLayer('jm_box')">Close</a></p>
+</div>
 
 <div id="skill_box" class="element_hidden">
 	<p><a href="javascript:hideLayer('skill_box')">Close</a></p>
