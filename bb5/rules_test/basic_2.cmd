@@ -1,0 +1,2 @@
+print LALALALALAL
+quit

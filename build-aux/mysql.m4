@@ -20,6 +20,7 @@ AC_ARG_WITH([mysql],
     [stechec_cv_mysql=${withval}],
     [stechec_cv_mysql=no])
 
+HAVE_MYSQL=no
 if test "$stechec_cv_mysql" != "no"; then
   [na_parentprefix=`echo "$prefix"|sed -e 's%\(.\)/[^/]*/*$%\1%'`]
 

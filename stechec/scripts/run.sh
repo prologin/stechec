@@ -56,7 +56,7 @@ output=`awk -f "${xml_parser_path}xmlparser.awk" "$1"`
 [ $? -ne 0 ] && abort "Cannot parse $1."
 # then go back to ugly sed scripts
 clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT_([0-9]+):.*!\1!p' | uniq`
-USE_VALGRIND=`echo "$output" | sed -nr '/CONFIG\/CLIENT_[0-9]+\/DEBUG\/valgrind=true$/ { s/.*([0-9]+).*/\1/p; q }'`
+USE_VALGRIND=`echo "$output" | sed -nr '/CONFIG\/CLIENT_[0-9]+\/DEBUG\/valgrind=true$/ { s/.*([0-9]+).*/x\1x/p }'`
 USE_GDB=`echo "$output" | sed -nr '/CONFIG\/CLIENT_[0-9]+\/DEBUG\/gdb=true$/ { s/.*([0-9]+).*/\1/p; q }'`
 
 if [ ! `which tbt` ]; then
@@ -89,17 +89,22 @@ pid_server=$!
 #
 for id in $clients; do
     echo "======== launch client id $id"
-    if [ "x$USE_VALGRIND" = "x$id" ]; then
-	VALGRIND=valgrind
-    fi
+    case $USE_VALGRIND in
+	*x${id}x*) VALGRIND=valgrind ;;
+    esac
+    STDIN_REDIR=`echo "$output" | sed -nr "/CONFIG\/CLIENT_${id}\/STDIN:/ { s/.*: (.*)$/\1/p; q }"`
     if [ "x$USE_GDB" = "x$id" ]; then
 	gdb -q --args tbt $id "$1"
     else
-	$VALGRIND tbt $id "$1" &
+	if [ "x$STDIN_REDIR" != "x" ]; then
+	    $VALGRIND tbt $id "$1" < $STDIN_REDIR &
+	else
+	    $VALGRIND tbt $id "$1" &
+	fi
 	pid_client="$pid_client $!"
     fi
 
-    unset VALGRIND
+    unset VALGRIND STDIN_REDIR
 done
 
 # if the user wants to abort on 'wait', try to kill the server

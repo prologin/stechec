@@ -1,0 +1,11 @@
+--- %YAML:1.0
+
+basic:
+  client_1:
+    team: team.xml
+    input: basic_1.cmd
+    diff: basic_1.diff
+  client_2:
+    team: team.xml
+    input: basic_2.cmd
+    diff: basic_2.diff

@@ -206,6 +206,7 @@ AC_CONFIG_FILES([
   bb5/data/Makefile
   bb5/teamroster2/Makefile
   bb5/visu2d/Makefile
+  bb5/rules_test/Makefile
 ])
 fi
 
@@ -267,15 +268,14 @@ AC_OUTPUT
 echo "
  ---{ $PACKAGE_NAME $VERSION }---
 
-   prefix:		${prefix}
-   compiler:		${CXX}
-   cxxflags:		${CXXFLAGS}
+   prefix:                  ${prefix}
+   compiler:                ${CXX}
+   cxxflags:                ${CXXFLAGS}
 
-   Building modules:	${used_modules}
-   Building extensions
-     readline:		${HAVE_READLINE}
-     sdl:		${HAVE_SDL}
-     paragui:		${HAVE_PARAGUI}
-     qt:		${HAVE_QT}
-     mysql:		${HAVE_MYSQL}
+   Building modules:        `echo ${used_modules} | sed -r 's/^,+//;s/,+$//'`
+   Building with readline:  ${HAVE_READLINE}
+   Building with sdl:	    ${HAVE_SDL}
+   Building with paragui:   ${HAVE_PARAGUI}
+   Building with qt:	    ${HAVE_QT}
+   Building with mysql:	    ${HAVE_MYSQL}
 "

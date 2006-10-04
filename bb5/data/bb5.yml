@@ -1,0 +1,6 @@
+conf:
+  package_name: bb5
+  client_rule_lib: bb5_client_rules
+  server_rule_lib: bb5_arbiter
+  player_lib: bb5_client_console
+  player_filename: bb5_ai

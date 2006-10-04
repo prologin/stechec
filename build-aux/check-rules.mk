@@ -13,12 +13,12 @@
 #  along with the Stechec project; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-#  Copyright (C) 2005 Prologin
+#  Copyright (C) 2005, 2006 Prologin
 #
 
 CLEANFILES = log
 
-# do not to erase it
+# do not try to erase this variable
 EXTRA_DIST = test_pool.yml
 
 clean-local::
