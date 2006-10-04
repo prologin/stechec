@@ -56,7 +56,7 @@
 
 define("MINIXML_CASESENSITIVE", 0); /* Set to 1 to use case sensitive element name comparisons */
 
-define("MINIXML_AUTOESCAPE_ENTITIES", 1); /* Set to 1 to autoescape stuff like > and < and & in text, 0 to turn it off */
+define("MINIXML_AUTOESCAPE_ENTITIES", 0); /* Set to 1 to autoescape stuff like > and < and & in text, 0 to turn it off */
 
 
 

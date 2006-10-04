@@ -1,6 +1,4 @@
-<?php
-header("Content-type: text/html; charset=UTF-8");
-?>
+<?php header('Content-type: text/html; charset="UTF-8"'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -22,8 +20,35 @@ header("Content-type: text/html; charset=UTF-8");
 
 <body>
 
+<?php
+
+	require_once('includes/minixml.php');
+	require_once('includes/parse_xml.php');
+
+	$lang = htmlentities($_GET['lang']);
+	$lang_valid = true;
+	
+	if ( $lang != 'en' && $lang != 'fr' && $lang != 'de' ) {
+		$lang = 'en';
+		$lang_valid = false;
+	}
+	
+	$interface = parseInterface('interface_'.$lang.'.xml');
+
+	function sprint($string) {	// sprint like in "Special characters PRINT"
+		echo htmlentities($string, ENT_QUOTES, 'UTF-8');
+	}
+
+?>
+
 <div id="title">
 
+	<div id="flags" style="float: right;">
+		<a class="imagelink" href="index.php?lang=en"><img src="english_flag.jpg" /></a>
+		<a class="imagelink" href="index.php?lang=fr"><img src="french_flag.jpg" /></a>
+		<a class="imagelink" href="index.php?lang=de"><img src="german_flag.jpg" /></a>
+	</div>
+	
 	<h1>TBT - SNORE</h1>
 	<p class="subtitle">the &quot;Super New Online Roster Editor&quot;</p>
 
@@ -31,78 +56,40 @@ header("Content-type: text/html; charset=UTF-8");
 
 <div id="content">
 
-<p>This site will help you to manage your Tow Bowl Tactics Teamroster. 
-You can either start with a new team, choosing one of the following races, 
-or load a previously saved teamsheet in the xml format.</p>
+	<?php 
+	if ( $lang_valid == false ) { 
+		echo "<p><i>Language not supported. Falling back to english.</i></p> \n"; } 
+	?>
 
-<h2>Start a fresh team.</h2>
+<p><?php sprint($interface['index']['intro']) ?></p>
 
-<table class="list">
-<tr>
-	<td><a class="block" href="roster.php?race=Amazon">Amazon</a></td>
-	<td><a class="block" href="roster.php?race=Halfling">Halfling</a></td>
-	<td><a class="block" href="roster.php?race=Nurgle">Nurgle</a></td>
-</tr>
-<tr>
-	<td><a class="block" href="roster.php?race=Chaos">Chaos</a></td>
-	<td><a class="block" href="roster.php?race=High Elf">High Elf</a></td>
-	<td><a class="block" href="roster.php?race=Ogre">Ogre</a></td>
-</tr>
-<tr>
-	<td><a class="block" href="roster.php?race=Chaos Dwarf">Chaos Dwarf</a></td>
-	<td><a class="block" href="roster.php?race=Human">Human</a></td>
-	<td><a class="block" href="roster.php?race=Orc">Orc</a></td>
-</tr>
-<tr>
-	<td><a class="block" href="roster.php?race=Dark Elf">Dark Elf</a></td>
-	<td><a class="block" href="roster.php?race=Khemri">Khemri</a></td>
-	<td><a class="block" href="roster.php?race=Skaven">Skaven</a></td>
-</tr>
-<tr>
-	<td><a class="block" href="roster.php?race=Dwarf">Dwarf</a></td>
-	<td><a class="block" href="roster.php?race=Lizardman">Lizardman</a></td>
-	<td><a class="block" href="roster.php?race=Undead">Undead</a></td>
-</tr>
-<tr>
-	<td><a class="block" href="roster.php?race=Elf">Elf</a></td>
-	<td><a class="block" href="roster.php?race=Necromantic">Necromantic</a></td>
-	<td><a class="block" href="roster.php?race=Vampire">Vampire</a></td>
-</tr>
-<tr>
-	<td><a class="block" href="roster.php?race=Goblin">Goblin</a></td>
-	<td><a class="block" href="roster.php?race=Norse">Norse</a></td>
-	<td><a class="block" href="roster.php?race=Wood Elf">Wood Elf</a></td>
-</tr>
-</table>
+<h2><?php sprint($interface['index']['heading'][0]) ?></h2>
 
-<?php
+	<div id="list">
 
-//	You can use this code if you want to recreate the list above
+		<?php
+		
+			$xmlDoc = new MiniXMLDoc();
+			$xmlDoc->fromFile('races.xml'); // to be changed wenn new races.xml arrive
+			$races = $xmlDoc->toArray();
+			
+			for ( $i = 0; $i < $races['races']['race']['_num']; $i++) {
+				$name =  $races['races']['race'][$i]['_attributes']['name'];
+				echo "<a class=\"block\" href=\"roster.php?race=$name\">$name</a> \n";
+			}
+			
+		 
+		?>
 
-/*
+	</div>
 
-	require_once('minixml.inc.php'); // XML Framework
-	
-	$xmlDoc = new MiniXMLDoc();
-	$xmlDoc->fromFile('races.xml');
-	$races = $xmlDoc->toArray();
-	
-	for ( $i = 0; $i < $races['races']['race']['_num']; $i++) {
-		$name =  $races['races']['race'][$i]['_attributes']['name'];
-		echo "<a class="block"=\"roster.php?race=$name\">$name</a> \n";
-	}
-	
-*/
- 
-?>
-
-<h2>Load a saved team.</h2>
+<h2><?php sprint($interface['index']['heading'][1]) ?></h2>
 
 <form action="roster.php" method="post" enctype="multipart/form-data">
     <p><input type="hidden" name="MAX_FILE_SIZE" value="30000" />
     <input type="hidden" name="upload" value="true" /></p>
-    <p>Send this file: <input name="userfile" type="file" />
-    <input type="submit" value="Send File" /></p>
+    <p><?php sprint($interface['index']['upload']['label']) ?> <input name="userfile" type="file" />
+    <input type="submit" value="<?php echo $interface['index']['upload']['submit'] ?>" /></p>
 </form>
 
 </div>
