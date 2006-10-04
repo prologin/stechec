@@ -64,14 +64,6 @@ void VirtualSurface::updateChildZOrder()
   std::sort(child_list_.begin(), child_list_.end(), Surface::ZSort());
 }
 
-Point VirtualSurface::getAbsolutePos() const
-{
-  if (parent_ != NULL)
-    return parent_->getAbsolutePos() + getPos();
-  else
-    return getPos();
-}
-
 void VirtualSurface::setZoom(double zoom)
 {
   // Propagate setZoom on all children.
@@ -128,7 +120,7 @@ void VirtualSurface::render()
       for (it = child_list_.begin(); it != child_list_.end(); ++it)
         if ((*it)->isShown())
           {
-            Rect child_surf((*it)->getRealRect());
+            Rect child_surf((*it)->getRenderRect());
             LOG6("  To child: " << **it);
             child_surf &= *rit;
             if (child_surf.w > 0 && child_surf.h > 0)

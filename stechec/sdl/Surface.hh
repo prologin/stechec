@@ -58,21 +58,15 @@ public:
   //! @note This is equivalent to: Rect(getPos(), getSize());
   const Rect&   getRect() const;
 
-  //! @brief Get the absolute surface position, (0,0) is the top-left
-  //! corner of the screen.
-  Rect          getAbsoluteRect() const;
+  //! @brief Get the absolute surface from the point (0, 0)
+  //!   on the screen.
+  //! This is where the surface is render and visible by the user on the screen.
+  //! This should only be used for events, ie. to compare mouse position
+  //! (which has absolute position) with this surface position.
+  //! @return Absolute surface Rect.
+  virtual Rect  getScreenRect() const;
 
-  //! @brief Get the relative real zone to show on the screen.
-  //!
-  //! getRect() can be larger than we really want to show, or off-screen.
-  //! Used for VirtualScrollableSurface rendering, and input events.
-  //! By default, return getRect(), but can be overriden.
-  virtual Rect  getRealRect() const;
-
-  //! @brief Get the absolute real zone to show on the screen.
-  Rect          getRealAbsoluteRect() const;
-
-
+  
   double        getZoom() const;
   double        getAngle() const;
   int           getZ() const;
@@ -126,6 +120,13 @@ public:
   friend std::ostream& operator<< (std::ostream& os, const Surface& s);
   
 protected:
+  //! @brief Get the relative zone to render on the screen.
+  //!   getRect() can be larger than we really want to show, or off-screen.
+  //!   By default, return getRect(), but can be overriden.
+  //! @note Only used for rendering.
+  //! @return Relative Rect to render.
+  virtual Rect  getRenderRect() const;
+
   SDL_Surface*  surf_;
 
 private:

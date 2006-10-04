@@ -60,18 +60,22 @@ void VirtualScrollableSurface::setAutomaticAdjust(bool enable)
   adjust_to_center_ = enable;
 }
 
-
-Rect VirtualScrollableSurface::getRealRect() const
-{
-  return Rect(getPos(), real_size_);
-}
-
-Point VirtualScrollableSurface::getAbsolutePos() const
+Rect VirtualScrollableSurface::getScreenRect() const
 {
   if (parent_ != NULL)
-    return parent_->getAbsolutePos() + getPos() - vpos_;
-  else
-    return getPos() - vpos_;
+    {
+      Rect parent_dec(parent_->getScreenRect());
+      return Rect(parent_dec.x + getPos().x - vpos_.x,
+		  parent_dec.y + getPos().y - vpos_.y,
+		  real_size_.x,
+		  real_size_.y);
+    }
+  return Rect(getPos() - vpos_, real_size_);
+}
+
+Rect VirtualScrollableSurface::getRenderRect() const
+{
+  return Rect(getPos(), real_size_);
 }
 
 void VirtualScrollableSurface::setPos(const Point& to)

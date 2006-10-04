@@ -43,8 +43,7 @@ public:
   //! @note Default disabled.
   void setAutomaticAdjust(bool enable);
   
-  virtual Rect getRealRect() const;
-  virtual Point getAbsolutePos() const;
+  virtual Rect getScreenRect() const;
 
   virtual void setPos(const Point& to);
   
@@ -54,6 +53,7 @@ public:
   virtual void blit(Surface& to, const Rect& to_rect, const Rect& from_rect);
 
 private:
+  virtual Rect getRenderRect() const;
   void adjustSize(const Rect& rect);
 
   Input&        inp_;

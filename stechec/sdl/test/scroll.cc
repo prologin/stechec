@@ -34,8 +34,8 @@ int main()
   ResourceCenter::getInst()->setResourcePrefix("./");
 
   // create our VSSurface.
-  VirtualScrollableSurface vs("VStest", win.getInput(), Point(800, 600), Point(600, 400));
-  //vs.setPos(Point(100, 100));
+  VirtualScrollableSurface vs("VStest", win.getInput(), Point(400, 300), Point(1200, 800));
+  vs.setPos(Point(100, 100));
   vs.setAutomaticAdjust(true);
   win.getScreen().addChild(&vs);
   LOG1(vs.getRect());
@@ -61,15 +61,15 @@ int main()
 	vs.setZoom(vs.getZoom() * 0.8);
       if (i.key_pressed_['q'])
 	break;
-      
+
+      if (i.button_pressed_[1])
+	{
+	  if (s.getScreenRect().inside(i.mouse_))
+	    s.anim(50, false);
+	}
+
       if (win.processOneFrame())
 	break;
-//       win.processOneFrame();
-//       win.processOneFrame();
-//       win.processOneFrame();
-//       win.processOneFrame();
-//       win.processOneFrame();
-//       break;
     }
   return 0;
 }

@@ -134,26 +134,20 @@ const Rect& Surface::getRect() const
   return rect_;
 }
 
-Rect Surface::getRealRect() const
+Rect Surface::getScreenRect() const
 {
+  if (parent_ != NULL)
+    {
+      Rect parent_dec(parent_->getScreenRect());
+      return Rect(parent_dec.x + rect_.x, parent_dec.y + rect_.y, rect_.w, rect_.h);
+    }
   return rect_;
 }
 
-// Not really sure of this one... but should be rarely used...
-Rect Surface::getRealAbsoluteRect() const
+Rect Surface::getRenderRect() const
 {
-  if (parent_)
-    return getRealRect() + parent_->getAbsolutePos();
-  return getRealRect();
-}
-
-Rect Surface::getAbsoluteRect() const
-{
-  if (parent_)
-    return rect_ + parent_->getAbsolutePos();
   return rect_;
 }
-
 
 double Surface::getZoom() const
 {
