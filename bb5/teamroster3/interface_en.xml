@@ -11,4 +11,65 @@
 			<submit>Send File</submit>
 		</upload>
 	</index>
+	
+	<roster>
+	
+		<teampics>
+			<label>Customize Teampics</label>
+			<text>Why don't you just enter the filenames of the pictures you want to use.
+			Player without custom pics will use the default pictures.</text>
+		</teampics>
+		
+		<background>
+			<label>Write Background</label>
+			<text>Write a background for your team!</text>
+		</background>
+		
+		<journeymen>
+			<label>players</label>
+			<button>manage</button>
+			<text>You may hire one or more of the journeymen you used after a match.
+			Simply click on the corresponding number (non-journeymen are not shown).</text>
+		</journeymen>
+		
+		<statchanges>Write statchanges to Roster</statchanges>
+		<save>Save Roster</save>
+		<return>Return to Start</return>	
+
+	
+		<team>TEAM</team>
+		<race>RACE</race>		
+		<treasury>TREASURY</treasury>
+		<headcoach>HEADCOACH</headcoach>
+		
+		<rerolls>RE-ROLLS</rerolls>
+		<fanfactor>FAN FACTOR</fanfactor>
+		<assistants>ASSISTANTS</assistants>
+		<cheerleaders>CHEERLEADER</cheerleaders>
+		<apothecary>APOTHECARY</apothecary>
+		<teamvalue>TOTAL VALUE OF TEAM</teamvalue>
+				
+		
+		<name>PLAYER'S NAME</name>
+		<position>POSITION</position>
+
+		<MA>MA</MA>
+		<ST>ST</ST>
+		<AG>AG</AG>
+		<AV>AV</AV>
+
+		<skills>SKILLS</skills>
+		<inj>INJ</inj>
+		
+		<comp>COM</comp>	
+		<td>TD</td>
+		<int>INT</int>
+		<cas>CAS</cas>			
+		<mvp>MVP</mvp>
+		<spp>SPP</spp>
+		
+		<value>VALUE</value>	
+
+	</roster>
+
 </interface>

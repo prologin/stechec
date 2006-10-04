@@ -1,5 +1,14 @@
 <?php
 
+function writeLegalize() {
+
+	for ( $i=0; $i < 16; $i++ ) {
+		$j = $i + 1;
+		echo "<td class= \"jm\"><a id=\"jm$i\" class=\"green\" href=\"javascript:legalize($i)\">$j</a></td>\n";
+	}
+
+}
+
 function ifLoadedEcho($var,$team) {
 	
 	// used for conditional writing of values if a teamroster was loaded and the value is set
