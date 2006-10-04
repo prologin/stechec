@@ -28,15 +28,15 @@ Entry::Entry(const uint x, const uint y, const uint w, const uint h, string* ptx
   }
   else
   {
-    size_t last = txt->length() - 1;
-    if((*txt).at(last) != ' ')
-    {
+  	size_t last = txt->length() - 1;
+	if((*txt).at(last) != ' ')
+  	{
       (*txt) += " ";
     }
   }
-      // Warning length() = last elt + 1 !
+  // Warning length() = last elt + 1 !
   index = txt->length() - 1;
-  
+
   fgColor = black_color;
   bgColor = lightgray_color;
   bgColorFocus = white_color;
