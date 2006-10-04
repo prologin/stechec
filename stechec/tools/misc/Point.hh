@@ -19,6 +19,7 @@
 
 class Position;
 template <typename T> class TPoint;
+class Rect;
 
 template <typename T> bool operator== (const TPoint<T>&, const TPoint<T>&);
 template <typename T> bool operator!= (const TPoint<T>&, const TPoint<T>&);
@@ -44,6 +45,7 @@ public:
   template <typename U>
   TPoint(const TPoint<U>& pos);
   TPoint(const Position& pos);
+  TPoint(const Rect& pos);
 
   T     getRow() const;
   T     getCol() const;
@@ -74,6 +76,7 @@ typedef TPoint<int>     Point;
 typedef TPoint<double>  DPoint;
 
 # include "misc/Position.hh"
+# include "misc/Rect.hh"
 
 template <typename T>
 inline TPoint<T>::TPoint()
@@ -101,6 +104,13 @@ template <typename T>
 inline TPoint<T>::TPoint(const Position& pos)
   : x(pos.col),
     y(pos.row)
+{
+}
+
+template <typename T>
+inline TPoint<T>::TPoint(const Rect& r)
+  : x(r.x),
+    y(r.y)
 {
 }
 

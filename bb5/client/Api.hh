@@ -124,11 +124,14 @@ public:
   int			playerStatus() const;
 
   //! @brief Get the number of possible action for the selected player.
+  //! @param player_id Player identifiant.
   //! @return The number of possible action
   int			actionPossibleNumber() const;
 
   //! @brief Get a possible action for the selected player.
-  //! @param index Action index, in the range [0 - actionPossibleNumber() - 1]
+  //! @param player_id Player identifiant.
+  //! @param index Action index, in the range [0 - actionPossibleNumber() - 1].
+  //! @return Action that this player may perform.
   int			actionPossible(int index) const;
 
   //! @brief Length that a move will take to the specified destination

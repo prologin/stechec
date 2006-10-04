@@ -37,7 +37,8 @@ VisuField::~VisuField()
 void VisuField::playerDoingKickoff()
 {
   doing_kickoff_ = true;
-  ball_.setPos(g_.getInput().mouse_ - getAbsolutePos() - Point(30, 30));
+
+  ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
   ball_.show();
 }
 
@@ -57,11 +58,11 @@ void VisuField::update()
   Input& inp = g_.getInput();
 
   if (doing_kickoff_)
-    ball_.setPos(g_.getInput().mouse_ - getAbsolutePos() - Point(30, 30));
+    ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
   
   if (doing_kickoff_ && inp.button_pressed_[1])
     {
-      Point to((inp.mouse_ - getAbsolutePos()) / 40);
+      Point to((inp.mouse_ - Point(getScreenRect())) / 40);
       ball_.setPos(to * 40);
       g_.getApi()->doPlaceBall(to);
       doing_kickoff_ = false;

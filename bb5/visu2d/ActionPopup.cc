@@ -95,7 +95,7 @@ bool ActionPopup::isVisible() const
 void ActionPopup::update()
 {
   Input& input(g_.getInput());
-  bool have_focus = getAbsoluteRect().inside(input.mouse_);
+  bool have_focus = getScreenRect().inside(input.mouse_);
 
   // A player
   if (have_focus && show_ && vp_ != NULL)
@@ -103,7 +103,8 @@ void ActionPopup::update()
       if (input.button_pressed_[1])
         {
           int item = (input.mouse_.y - getRect().y) / 40;
-          g_.addAction(eActMove);
+	  if (item == 0)
+	    g_.addAction(eActMove);
         }
     }
 

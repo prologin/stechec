@@ -61,7 +61,7 @@ void VisuPlayer::unselect()
 
 void VisuPlayer::action(eVisuAction item)
 {
-  Point to((game_.getInput().mouse_ + game_.getField().getRealAbsoluteRect().getPos()) / 40);
+  Point to((game_.getInput().mouse_ + Point(game_.getField().getScreenRect())) / 40);
   int player_id = p_->getId();
   
   switch (item)
@@ -99,7 +99,7 @@ void VisuPlayer::update()
   Input& inp = game_.getInput();
 
   // Update focus.
-  bool now_focus = getAbsoluteRect().inside(inp.mouse_);
+  bool now_focus = getScreenRect().inside(inp.mouse_);
 
   // Mouse moves on player.
   if (!has_focus_ && now_focus)
