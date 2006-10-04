@@ -189,6 +189,7 @@ AC_CONFIG_FILES([
   stechec/tools/Makefile
   stechec/tools/xml_test/Makefile
   stechec/sdl/Makefile
+  stechec/sdl/test/Makefile
 ])  
 
 #

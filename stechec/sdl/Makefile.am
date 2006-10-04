@@ -1,5 +1,7 @@
 # -*- Makefile -*-
 
+SUBDIRS = . test
+
 noinst_LTLIBRARIES = libstechec_sdl.la
 
 libstechec_sdl_la_SOURCES =			\
