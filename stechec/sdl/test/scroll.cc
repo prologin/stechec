@@ -17,6 +17,7 @@
 #include "tools.hh"
 #include "SDLWindow.hh"
 #include "VirtualScrollableSurface.hh"
+#include "Sprite.hh"
 
 /*!
 ** This file demonstrates an example of VirtualScrollableSurface,
@@ -33,19 +34,42 @@ int main()
   ResourceCenter::getInst()->setResourcePrefix("./");
 
   // create our VSSurface.
-  VirtualScrollableSurface vs("VStest", win.getInput(), Point(400, 300), Point(1200, 800));
-  vs.setPos(100, 100);
+  VirtualScrollableSurface vs("VStest", win.getInput(), Point(800, 600), Point(600, 400));
+  //vs.setPos(Point(100, 100));
+  vs.setAutomaticAdjust(true);
   win.getScreen().addChild(&vs);
+  LOG1(vs.getRect());
 
   // add a ground
   Surface ground("ground_1200_800.png");
   vs.addChild(&ground);
+
+  // add a sprite
+  Sprite s("ovni.png");
+  s.setZ(1);
+  s.splitNbFrame(4, 3);
+  s.setPos(150, 50);
+  vs.addChild(&s);
   
   while (true)
     {
+      Input& i = win.getInput();
+
+      if (i.key_pressed_['p'])
+	vs.setZoom(vs.getZoom() * 1.2);
+      if (i.key_pressed_['o'])
+	vs.setZoom(vs.getZoom() * 0.8);
+      if (i.key_pressed_['q'])
+	break;
       
       if (win.processOneFrame())
 	break;
+//       win.processOneFrame();
+//       win.processOneFrame();
+//       win.processOneFrame();
+//       win.processOneFrame();
+//       win.processOneFrame();
+//       break;
     }
   return 0;
 }

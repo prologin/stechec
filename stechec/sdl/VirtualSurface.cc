@@ -155,6 +155,7 @@ void VirtualSurface::render()
 
 void VirtualSurface::invalidate(const Rect& zone)
 {
+  LOG6("Add invalidated rect: " << zone << " for parent `" << name_ << "'");
   // FIXME: merge invalidated_surf_'s.
   invalidated_surf_.push_back(zone);
 }

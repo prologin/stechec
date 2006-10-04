@@ -24,7 +24,11 @@ VirtualScrollableSurface::VirtualScrollableSurface(const std::string& name,
     inp_(input),
     real_size_(real_size),
     vpos_(0, 0),
-    dec_(0, 0)
+    dec_(0, 0),
+    adjust_to_center_(false),
+    adjust_x_(false),
+    adjust_y_(false),
+    adjust_orig_pos_(0, 0)
 {
   last_updated_ = SDL_GetTicks();
 }
@@ -36,7 +40,11 @@ VirtualScrollableSurface::VirtualScrollableSurface(const std::string& name,
   : VirtualSurface(name, surf),
     inp_(input),
     vpos_(0, 0),
-    dec_(0, 0)
+    dec_(0, 0),
+    adjust_to_center_(false),
+    adjust_x_(false),
+    adjust_y_(false),
+    adjust_orig_pos_(0, 0)
 {
   real_size_ = getSize();
   setSize(virtual_size);
@@ -45,6 +53,11 @@ VirtualScrollableSurface::VirtualScrollableSurface(const std::string& name,
 
 VirtualScrollableSurface::~VirtualScrollableSurface()
 {
+}
+
+void VirtualScrollableSurface::setAutomaticAdjust(bool enable)
+{
+  adjust_to_center_ = enable;
 }
 
 
@@ -60,6 +73,44 @@ Point VirtualScrollableSurface::getAbsolutePos() const
   else
     return getPos() - vpos_;
 }
+
+void VirtualScrollableSurface::setPos(const Point& to)
+{
+  adjust_orig_pos_ = to;
+  VirtualSurface::setPos(to);
+}
+
+void VirtualScrollableSurface::adjustSize(const Rect& rect)
+{
+  if (rect.w < real_size_.x)
+    {
+      adjust_x_ = true;
+      int to_adj = (real_size_.x - rect.w) / 2 + adjust_orig_pos_.x;
+      if (rect.x != to_adj)
+	VirtualSurface::setPos(Point(to_adj, rect.y));
+    }
+  if (rect.h < real_size_.y)
+    {
+      adjust_y_ = true;
+      int to_adj = (real_size_.y - rect.h) / 2 + adjust_orig_pos_.y;
+      if (rect.y != to_adj)
+	VirtualSurface::setPos(Point(getPos().x, to_adj));
+    }
+
+  // Readjust vscreen to fit the screen
+  if (rect.w >= real_size_.x && adjust_x_)
+    {
+      adjust_x_ = false;
+      VirtualSurface::setPos(Point(adjust_orig_pos_.x, getPos().y));
+    }
+  if (rect.h >= real_size_.y && adjust_y_)
+    {
+      adjust_y_ = false;
+      VirtualSurface::setPos(Point(getPos().x, adjust_orig_pos_.y));
+    }
+}
+
+
 
 void VirtualScrollableSurface::update()
 {
@@ -105,17 +156,8 @@ void VirtualScrollableSurface::update()
     vpos_.y = 0;
 
   // Adjust vscreen on the center if vsize < realsize.
-  if (rect.w < real_size_.x && rect.x != (real_size_.x - rect.w) / 2)
-    setPos(Point((real_size_.x - rect.w) / 2, rect.y));
-  if (rect.h < real_size_.y && rect.y != (real_size_.y - rect.h) / 2)
-    setPos(Point(getPos().x, (real_size_.y - rect.h) / 2));
-  // Readjust vscreen to fit the screen
-  // FIXME: of course all wrong ! with this, object must be at (0,0)
-  if (rect.w >= real_size_.x && rect.x != 0)
-    setPos(Point(0, getPos().y));
-  if (rect.h >= real_size_.y && rect.y != 0)
-    setPos(Point(getPos().x, 0));
-
+  if (adjust_to_center_)
+    adjustSize(rect);
   
   // Ask redraw on all visible surface if the screen moved.
   if (vpos_ != last_pos)
