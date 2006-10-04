@@ -155,6 +155,58 @@ void MainLoop(void)
           {
             SDL_WM_ToggleFullScreen(screen);
           }
+          else
+          {
+            switch(keysym->sym)
+            {
+              case SDLK_DELETE:
+              {
+                focus->delete_char();
+                focus->refresh();
+                break;
+              }
+              case SDLK_BACKSPACE:
+              {
+                ushort index = focus->get_index();
+                if(index > 0)
+                {
+                  focus->set_index(--index);
+                  focus->delete_char();
+                  focus->refresh();
+                }
+                break;
+              }
+              case SDLK_LEFT:
+              {
+                ushort index=focus->get_index();
+                if(index > 0)
+                {
+                  focus->set_index(--index);
+                  focus->refresh();
+                }
+                break;
+              }
+              case SDLK_RIGHT:
+              {
+                ushort index=focus->get_index();
+                focus->set_index(++index);
+                focus->refresh(); 
+                break;
+              }
+              default:
+                break;
+            }
+            if(keysym->sym == SDLK_RETURN)
+            {
+                  // hmm seems KMOD_MODE is Alt Gr key !
+                  // we need to ignore 0x1000 (KMOD_NUM) and 0x2000 (KMOD_CAPS)
+              ushort ModState = (SDL_GetModState() & 0x4FFF);
+              if (ModState == KMOD_LALT || ModState == KMOD_MODE)
+              {
+                SDL_WM_ToggleFullScreen(screen);
+              }
+            }
+          }
         }
         break;
       }
