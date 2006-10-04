@@ -9,3 +9,13 @@ basic:
     team: team.xml
     input: basic_2.cmd
     diff: basic_2.diff
+
+move:
+  client_1:
+    team: team.xml
+    input: move_1.cmd
+    diff: move_1.diff
+  client_2:
+    team: team.xml
+    input: move_2.cmd
+    diff: move_2.diff

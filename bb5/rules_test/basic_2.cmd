@@ -1,5 +1,7 @@
+wait
 print BEGIN DIFF
 print hello world from 2
 print END DIFF
-kickoff 2 3
-quit 1
+cheat 1 1 1
+kickoff 4 4
+wait
