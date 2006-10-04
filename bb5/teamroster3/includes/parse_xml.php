@@ -79,15 +79,6 @@ function parseSkills($xmlSkillFile) {
 
 }
 
-function parseInterface($xmlSkillFile) {
-
-	$xmlDoc = new MiniXMLDoc();
-	$xmlDoc->fromFile($xmlSkillFile);
-	$xmlDocArray= $xmlDoc->toArray();
-
-	return $xmlDocArray['interface'];
-}
-
 function parseTeamRoster($xmlTeamRoster) {
 
 	$xmlDoc = new MiniXMLDoc();

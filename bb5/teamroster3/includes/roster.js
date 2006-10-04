@@ -2,56 +2,11 @@ function setSelects() {
 		for ( i=0; i < 16; i++) {
 			document.getElementsByName("POSITION[]")[i].selectedIndex = arrpositions[i]
 		}
-}
-
-function countHealthyPlayers() {
-
-	// first it counts how many healthy players the roster has
-	
-	healthy_players = 0
-	for ( i=0; i<16; i++ ) {
-		if ( isPlayerAssigned(i) != false && isPlayerInjured(i) == false ) {
-			healthy_players++
-		}
-	}
-	document.getElementsByName("HEALTHY")[0].value = healthy_players
-	
-	// then it will return a boolean to say if journeymen are allowed
-	
-	return healthy_players
-}
-
-function legalize(player) {
-	setRoster(player,"POSITION[]",0)
-	legalize_skills = getFromRoster(player,"SKILLS[]")
-	legalize_skills = legalize_skills.replace(/,Loner,/,",")
-	legalize_skills = legalize_skills.replace(/,Loner/,"")
-	legalize_skills = legalize_skills.replace(/Loner,/,"")
-	legalize_skills = legalize_skills.replace(/Loner/,"")
-	setRoster(player,"SKILLS[]",legalize_skills)
-}
-
-function isJourneymanAllowed() {
-	if ( countHealthyPlayers() < 12 ) {
-		return true
-	}
-	else {
-		return false
-	}
-}
-
-function isPlayerInjured(row) {
-	if ( document.getElementsByName("INJ[]")[row].value.charAt(0) == "M" ) {
-		return true
-	}
-	else {
-		return false
-	}
-}			
+}		
 
 function findInjuredPlayers() {
 	for ( i=0; i<16; i++) {
-		if ( isPlayerInjured(i) == true ) {
+		if ( document.getElementsByName("INJ[]")[i].value.charAt(0) == "M" ) {
 			document.getElementsByName("VALUE[]")[i].className = 'injured'
 		}
 		else {
@@ -65,7 +20,7 @@ function setlogo() {
 }
 
 function checkName(row) {
-	if(!(isPlayerAssigned(row) != false)) {
+	if(isPlayerAssigned(row) == false) {
 		alert("Please select a position before setting a name.")
 		setRoster(row,"NAME[]","")
 	}
@@ -73,14 +28,7 @@ function checkName(row) {
 
 function fillPlayerStats(row) {
 	position = getFromRoster(row,"POSITION[]")
-	
-	if ( isQtyProblem() ) {
-		position = positions
-	}
-	
-	if ( position == (positions - 1) && !(isJourneymanAllowed()) ) {
-		healthy_players = document.getElementsByName("HEALTHY")[0].value
-		alert("With " + healthy_players +" players fielded, you are not elligible for journeymen.")
+	if (isQtyProblem() == true) {
 		position = positions
 	}
 	setRoster(row,"NAME[]","")
@@ -125,7 +73,6 @@ function setInjury() {
 		concatRoster(row,"INJ[]","-AG")
 	}
 	calcTeamValue()
-	countHealthyPlayers()
 	hideLayer('inj_box')
 }
 
@@ -238,12 +185,12 @@ function changeStat(stat,operator,row) {
 					alert("No valid stat parameter given.")
 			}
 		}
-	} else { alert("You may not alter stats of journeymen or non-existant players.") }
+	} else { alert("Please choose a position for this player before you modify any stats.") }
 	calcTeamValue()
 }
 
 function calcPlayerSPP(row) {
-	if(isPlayerAssigned(row) != false) {
+	if(isPlayerAssigned(row) == true) {
 		COMP = getFromRoster(row,"COMP[]")
 		if (isNaN(COMP) || COMP<0) { 
 			COMP = prompt("Value must be an integer. Please correct the data or the value will be set to 0.")
@@ -339,7 +286,7 @@ function hideLayer(nr) {
 }
 
 function showInjBox(row) {
-	if(isPlayerAssigned(row) != false) {
+	if(isPlayerAssigned(row) == true) {
 		if(document.getElementById('inj_box').className == 'element_visible') {
 			alert("Please close other box of the same type.")
 		} else {
@@ -377,19 +324,7 @@ function showInjBox(row) {
 			document.getElementById('inj_box').className = 'element_visible';
 		}	
 	} else {
-		alert("Please choose a position for this player before adding any injuries.") 
-	}
-}
-
-function showJmBox() {
-	document.getElementById('jm_box').className = 'element_visible'
-	for ( i = 0; i < 16; i++ ) {
-		if ( isPlayerAssigned(i) != 2 ) {
-			document.getElementById('jm'+i).style.display = "none";
-		}
-		else {
-			document.getElementById('jm'+i).style.display = "block";
-		}
+		alert("Please choose a position for this player before you modify any stats.") 
 	}
 }
 
@@ -470,7 +405,7 @@ function showSkillBox(row) {
 		}
 	}
 	else { 
-		alert("You may not modify skills of empty players or journeymen.") 
+		alert("Please choose a position for this player before you modify any stats.") 
 	}
 }
 

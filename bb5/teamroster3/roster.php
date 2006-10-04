@@ -18,26 +18,6 @@ require_once('includes/parse_xml.php');
 require_once('includes/echo_html.php');
 require_once('includes/echo_js.php');
 
-if ( isset($_COOKIE['lang']) ) {
-	
-	$lang = $_COOKIE['lang'];
-		
-	if ( !($lang == 'en' || $lang == 'fr' || $lang == 'de') ) {
-		$lang = 'en';
-	}
-	
-}
-else {
-	$lang = 'en';
-}
-
-$interface = parseInterface('interface_'.$lang.'.xml');
-
-function sprint($string) {	// sprint like in "Special characters PRINT"
-	echo htmlentities($string, ENT_QUOTES, 'UTF-8');
-}
-
-
 if (isset($_POST['upload']) && $_POST['upload'] == true) {
 	$team = parseTeamRoster($_FILES['userfile']['tmp_name']);
 	$chosen_race = $team['race'];
@@ -82,21 +62,11 @@ else {
 <table>
 
 	<tr class="bg1 center thicker-bottom">
-		<td>#</td><td><?php sprint($interface['roster']['name']) ?></td>
-		<td><?php sprint($interface['roster']['position']) ?></td>
-		<td><?php sprint($interface['roster']['MA']) ?></td>
-		<td><?php sprint($interface['roster']['ST']) ?></td>
-		<td><?php sprint($interface['roster']['AG']) ?></td>
-		<td><?php sprint($interface['roster']['AV']) ?></td>
-		<td><?php sprint($interface['roster']['skills']) ?></td>
-		<td><?php sprint($interface['roster']['inj']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['comp']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['td']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['int']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['cas']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['mvp']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['spp']) ?></td>
-		<td><?php sprint($interface['roster']['value']) ?></td>
+		<td>#</td><td>PLAYER'S NAME</td><td>POSITION</td>
+		<td>MA</td><td>ST</td><td>AG</td><td>AV</td>
+		<td>SKILLS</td><td>INJ</td>
+		<td class="bg3">COM</td><td class="bg3">TD</td><td class="bg3">INT</td>
+		<td class="bg3">CAS</td><td class="bg3">MVP</td><td class="bg3">SPP</td><td>VALUE</td>
 	</tr>
 		
 <?php
@@ -118,40 +88,30 @@ else {
 ?>
 
 <tr class="thicker-top">
-      <td rowspan="6" colspan="2" style="width: 200px">
-      	<p><a href="javascript:show('pic_box')"><?php sprint($interface['roster']['teampics']['label']) ?></a><br />
-      	<a href="javascript:show('background_box')"><?php sprint($interface['roster']['background']['label']) ?></a><br /><br />
-      	<input name="VERBOSE" type="checkbox" checked="checked" /><?php sprint($interface['roster']['statchanges']) ?><br />
-      	<a href="javascript:save()"><?php sprint($interface['roster']['save']) ?></a><br />
-      	<a href="index.php"><?php sprint($interface['roster']['return']) ?></a>
+      <td rowspan="6" colspan="2"><p><a href="javascript:show('pic_box')">Customize Teampics</a><br />
+      <a href="javascript:show('background_box')">Write Background</a><br /><br />
+      <input name="VERBOSE" type="checkbox" checked="checked" />Write statchanges to roster<br />
+      <a href="javascript:save()">Save Roster</a><br />
+      <a href="index.php">Return to Start.</a>
       </td>
-      
       <td rowspan="6" colspan="2" style="text-align: center">
       	<p><img alt="a colorful picture" id="BADGE" style="width:104px;height:140px;" src="" /></p>
       </td>
-      
-      <td colspan="3" rowspan="2"><?php sprint($interface['roster']['team']) ?></td>
-      
+      <td colspan="3" rowspan="2">TEAM</td>
       <td rowspan="2">
       	<input name="TEAM" type="text" size="20" value="<?php ifLoadedEcho('name',$team); ?>" />
       </td>
-      
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['rerolls']) ?></td>
-      
+      <td colspan="3" class="bg1">RE-ROLLS</td>
       <td colspan="1">
       	<input class="center" name="REROLLS" onchange="calcExtraValue(16)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('reroll',$team); ?>" />
       </td>
-
       <td colspan="3" class="bg1">x 
       	<input class="bg1" name="REROLLCOST" type="text" size="5" value="<?php echo number_format($race['reroll_cost'], 0, ",", "."); ?>" readonly="readonly" /> gp
       </td>
-
-      <td>
-      	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
-      </td>
-</tr>
-<tr>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['fanfactor']) ?></td>
+      <td><input name="VALUE[]" type="text" size="6" readonly="readonly" value="" /></td>
+    </tr>
+    <tr>
+      <td colspan="3" class="bg1">FAN FACTOR</td>
       <td colspan="1">
       	<input class="center" name="FANFACTOR" onchange="calcExtraValue(17)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('fanfactor',$team); ?>" />
       </td>
@@ -159,11 +119,13 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-</tr>
-<tr>
-	  <td colspan="3"><?php sprint($interface['roster']['journeymen']['label']) ?> (<a class="small blue" href="javascript:showJmBox()"><?php sprint($interface['roster']['journeymen']['button']) ?></a>)</td>
-	  <td colspan="1"><input name="HEALTHY" type="text" size="2" readonly="readonly" /></td>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['assistants']) ?></td>
+    </tr>
+    <tr>
+      <td colspan="3" rowspan="2">RACE</td>
+      <td rowspan="2">
+      	<input name="RACE" type="text" size="8" value="<?php echo $chosen_race ?>" readonly="readonly" />
+      </td>
+      <td colspan="3" class="bg1">ASSISTANTS</td>
       <td colspan="1">
       	<input class="center" name="COACHES" onchange="calcExtraValue(18)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('assistant',$team); ?>" />
       </td>
@@ -171,15 +133,9 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-</tr>
-<tr>
-
-
-      <td colspan="3"><?php sprint($interface['roster']['race']) ?></td>
-      <td>
-      	<input name="RACE" type="text" size="8" value="<?php echo $chosen_race ?>" readonly="readonly" />
-      </td>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['cheerleaders']) ?></td>
+    </tr>
+    <tr>
+      <td colspan="3" class="bg1">CHEERLEADERS</td>
       <td colspan="1">
       	<input class="center" name="CHEERLEADERS" onchange="calcExtraValue(19)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('cheerleader',$team); ?>" />
       </td>
@@ -187,13 +143,11 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-</tr>
-<tr>
-
-
- <td colspan="3"><?php sprint($interface['roster']['treasury']) ?></td>
+    </tr>
+    <tr>
+      <td colspan="3">TREASURY</td>
       <td><input name="TREASURY" type="text" size="6" value="" /></td>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['apothecary']) ?></td>
+      <td colspan="3" class="bg1">APOTHECARY</td>
       <td colspan="1">
       	<input class="center" name="APOTHECARY" onchange="calcExtraValue(20)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('apothecary',$team); ?>" />
       </td>
@@ -201,24 +155,23 @@ else {
       <td>
       	<input name="VALUE[]" type="text" size="6" readonly="readonly" value="" />
       </td>
-</tr>
-<tr>
-
-
-      <td colspan="3"><?php sprint($interface['roster']['headcoach']) ?></td>
+    </tr>
+    <tr>
+      <td colspan="3">HEADCOACH</td>
       <td>
       	<input name="HEADCOACH" type="text" size="8" value="" />
       </td>
-      <td colspan="7" class="bg1"><?php sprint($interface['roster']['teamvalue']) ?></td>
+      <td colspan="7" class="bg1">TOTAL VALUE OF TEAM</td>
       <td>
       	<input name="TEAMVALUE" type="text" size="6" readonly="readonly" value="" />
       </td>
-</tr>
+    </tr>
 </table>
 
 
 <div id="pic_box" class="element_hidden">
-	<p><?php sprint($interface['roster']['teampics']['text']) ?></p>
+	<p>Why don't you just enter the filenames of the pictures you want to use.<br />
+	Player without custom pics will use the default pictures.</p>
 	<table>
 	<?php
 		echo "<tr><td>Team</td>";
@@ -243,15 +196,6 @@ else {
 	<p><a href="javascript:hideLayer('pic_box')">Close</a></p>
 </div>
 
-<div id="jm_box" class="element_hidden">
-<p><?php sprint($interface['roster']['journeymen']['text']) ?></p>
-<table>
-<tr>
-<?php writeLegalize(); ?>
-</tr>
-</table>
-<p><a href="javascript:hideLayer('jm_box')">Close</a></p>
-</div>
 
 <div id="skill_box" class="element_hidden">
 	<p><a href="javascript:hideLayer('skill_box')">Close</a></p>

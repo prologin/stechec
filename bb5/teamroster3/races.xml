@@ -4,7 +4,7 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Linewoman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
+			<position qty="16" title="Linewomam" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
 				<skills>
 					<skill name="Dodge"/>
 				</skills>
@@ -27,7 +27,7 @@
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeywoman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
+			<position qty="11" title="Journeywoman" cost="0" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Loner"/>
@@ -58,7 +58,7 @@
 					<skill name="Wild Animal"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
 				<skills>
 					<skill name="Horns"/>
 					<skill name="Loner"/>
@@ -98,7 +98,7 @@
 					<skill name="Wild Animal"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -136,7 +136,7 @@
 					<skill name="Jump Up"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -186,7 +186,7 @@
 					<skill name="Stand Firm"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
+			<position qty="11" title="Journeyman" cost="0" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -218,7 +218,7 @@
 					<skill name="Side Step"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -246,7 +246,7 @@
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp" display="pogoer.png">
+			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp"  display="pogoer.png">
 				<skills>
 					<skill name="Dirty Player"/>
 					<skill name="Dodge"/>
@@ -256,7 +256,7 @@
 					<skill name="Very Long Legs"/>
 				</skills>
 			</position>
-			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="looney.png">
+			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp"  display="looney.png">
 				<skills>
 					<skill name="Chainsaw"/>
 					<skill name="No Hands"/>
@@ -264,7 +264,7 @@
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap" display="fanatic.png">
+			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap"  display="fanatic.png">
 				<skills>
 					<skill name="Ball and Chain"/>
 					<skill name="No Hands"/>
@@ -272,7 +272,7 @@
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap" display="troll.png">
+			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap"  display="troll.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Always Hungry"/>
@@ -282,7 +282,7 @@
 					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Right Stuff"/>
@@ -297,14 +297,14 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
+			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp"  display="halfling_h.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Right Stuff"/>
 					<skill name="Stunty"/>
 				</skills>
 			</position>
-			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
+			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap"  display="treeman.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Mighty Blow"/>
@@ -315,7 +315,7 @@
 					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
+			<position qty="11" title="Journeyman" cost="0" ma="5" st="2" ag="3" av="6" normal="a" double="gsp"  display="halfling_h.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Right Stuff"/>
@@ -330,26 +330,26 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
+			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp"  display="highelf_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s" display="highelf_t.png">
+			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s"  display="highelf_t.png">
 				<skills>
 					<skill name="Pass"/>
 					<skill name="Safe Throw"/>
 				</skills>
 			</position>
-			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="highelf_c.png">
+			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp"  display="highelf_c.png">
 				<skills>
 					<skill name="Catch"/>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_b.png">
+			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp"  display="highelf_b.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="4" av="8" normal="ga" double="sp"  display="highelf_l.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -361,27 +361,27 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
+			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp"  display="human_l.png">
 				<skills/>
 			</position>
-			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp" display="human_c.png">
+			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp"  display="human_c.png">
 				<skills>
 					<skill name="Catch"/>
 					<skill name="Dodge"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="human_t.png">
+			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as"  display="human_t.png">
 				<skills>
 					<skill name="Sure Hands"/>
 					<skill name="Pass"/>
 				</skills>
 			</position>
-			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap" display="human_b.png">
+			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap"  display="human_b.png">
 				<skills>
 					<skill name="Block"/>
 				</skills>
 			</position>
-			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap" display="ogre.png">
+			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap"  display="ogre.png">
 				<skills>
 					<skill name="Loner"/>
 					<skill name="Bone-Head"/>
@@ -390,7 +390,7 @@
 					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="3" av="8" normal="g" double="asp"  display="human_l.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -426,7 +426,7 @@
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
+			<position qty="11" title="Journeyman" cost="0" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
 				<skills>
 					<skill name="Regeneration"/>
 					<skill name="Loner"/>
@@ -457,7 +457,7 @@
 					<skill name="Thick Skull"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
+			<position qty="11" title="Journeyman" cost="0" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Stunty"/>
@@ -501,7 +501,7 @@
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="necromantic_z.png">
+			<position qty="11" title="Journeyman" cost="0" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="necromantic_z.png">
 				<skills>
 					<skill name="Regeneration"/>
 					<skill name="Loner"/>
@@ -552,7 +552,7 @@
 					<skill name="Wild Animal"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
 				<skills>
 					<skill name="Block"/>
 					<skill name="Loner"/>
@@ -598,7 +598,7 @@
 					<skill name="Tentacles"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
+			<position qty="11" title="Journeyman" cost="0" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
 				<skills>
 					<skill name="Decay"/>
 					<skill name="Nurgle's Rot"/>
@@ -629,7 +629,7 @@
 					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
+			<position qty="11" title="Journeyman" cost="0" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
 				<skills>
 					<skill name="Dodge"/>
 					<skill name="Right Stuff"/>
@@ -680,7 +680,7 @@
 					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -720,7 +720,7 @@
 					<skill name="Wild Animal"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -759,7 +759,7 @@
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
+			<position qty="11" title="Journeyman" cost="0" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
 				<skills>
 					<skill name="Regeneration"/>
 					<skill name="Loner"/>
@@ -782,7 +782,7 @@
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
+			<position qty="11" title="Journeyman" cost="0" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>
@@ -826,7 +826,7 @@
 					<skill name="Throw Team-Mate"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
+			<position qty="11" title="Journeyman" cost="0" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
 				<skills>
 					<skill name="Loner"/>
 				</skills>

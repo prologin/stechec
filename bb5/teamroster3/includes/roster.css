@@ -86,25 +86,6 @@ input,select {
      padding: 5px;
 }
 
-#jm_box {
-     position: absolute;
-     top: 50px;
-     left: 400px;
-     z-index: 2;
-     width: 350px;
-     height: auto;
-     background-color: #D3D3D3;
-     border: 3px solid black;
-     padding: 5px;
-}
-
-.jm {
-	width: 40px;
-	text-align: center;
-	vertical-align: middle;	
-}
-	
-
 .healthy { }
 .injured { text-decoration: line-through; }
 
@@ -125,7 +106,7 @@ input,select {
 	top: 50px;
 	left: 50px;
 	z-index: 2;
-	width: 450px;
+	width: auto;
 	height: auto;
 	background-color: #D3D3D3;
 	border: 3px solid black;
@@ -137,7 +118,7 @@ input,select {
 	top: 100px;
 	left: 150px;
 	z-index: 2;
-	width: 400px;
+	width: auto;
 	height: auto;
 	background-color: #D3D3D3;
 	border: 3px solid black;

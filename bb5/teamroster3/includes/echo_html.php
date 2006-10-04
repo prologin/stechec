@@ -1,14 +1,5 @@
 <?php
 
-function writeLegalize() {
-
-	for ( $i=0; $i < 16; $i++ ) {
-		$j = $i + 1;
-		echo "<td class= \"jm\"><a id=\"jm$i\" class=\"green\" href=\"javascript:legalize($i)\">$j</a></td>\n";
-	}
-
-}
-
 function ifLoadedEcho($var,$team) {
 	
 	// used for conditional writing of values if a teamroster was loaded and the value is set
@@ -84,7 +75,7 @@ echo <<<END
 <tr>
 <td class="bg1 center">$num</td>
 <td><input name="NAME[]" onchange="checkName($i)" type="text" maxlength="25" value="{$loaded_team['player'][$i]['name']}" /></td>
-<td><select name="POSITION[]" onchange="fillPlayerStats($i);countHealthyPlayers()">
+<td><select name="POSITION[]" onchange="fillPlayerStats($i)">
 $dropdown
 </select></td>
 <td>
@@ -141,7 +132,7 @@ echo <<<END
 <tr>
 <td class="bg1 center">$num</td>
 <td><input name="NAME[]" onchange="checkName($i)" type="text" maxlength="25" value="" /></td>
-<td><select name="POSITION[]" onchange="fillPlayerStats($i);countHealthyPlayers()">
+<td><select name="POSITION[]" onchange="fillPlayerStats($i)">
 $dropdown
 </select></td>
 <td>
