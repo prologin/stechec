@@ -16,13 +16,12 @@
 #  Copyright (C) 2005, 2006 Prologin
 #
 
-CLEANFILES = log
-
 # do not try to erase this variable
 EXTRA_DIST = test_pool.yml
 
 clean-local::
 	-rm -rf *-rules-test
+	-rm -f *.log
 
 installcheck-local::
 	-@rm -rf log
@@ -36,7 +35,7 @@ installcheck-local::
 	  xml_parser_path="$(pkglibdir)/bash/"		\
 	  $(RUBY) $(pkglibdir)/ruby/rules_test.rb	\
 	    $(YAML_TEST_POOL) $(YAML_FILE) $$t		\
-	     >> log 2>&1; res=$$?; to=$$((to + res));	\
+	     > $$t.log 2>&1; res=$$?; to=$$((to + res));	\
 	  test $$res -eq 0 && echo "PASS: $$t" || echo "FAIL: $$t"; \
 	done; 						\
 	test $$to -eq 0

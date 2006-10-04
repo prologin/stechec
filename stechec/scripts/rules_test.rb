@@ -20,12 +20,38 @@ class RuleTest
   private
 
   #
+  # print a log banner.
+  #
+  def print_banner(text = nil)
+    puts "===================================================================="
+    puts "== " + text if text
+    puts "===================================================================="
+    puts
+    STDOUT.flush
+  end
+
+  #
+  # print a log result.
+  #
+  def cmd_result(is_ok, text = nil)
+    if text then
+      puts "*** Result: " + text
+    else
+      puts "*** Result: OK." if is_ok
+      puts "*** Result: FAILED." if not is_ok
+    end
+    puts
+    @error_seen = true if not is_ok
+  end
+
+  #
   # check if 'prg' is in the path
   #
   def check_prog_path(prg)
     `which #{prg} > /dev/null 2>&1`
     if $?.exitstatus != 0
       puts prg + " no found in PATH. Aborting."
+      cmd_result false
       abort
     end
   end
@@ -38,6 +64,7 @@ class RuleTest
     if $?.exitstatus != 0
       puts prg + " " + args.join(' ') + " failed with exit status " \
         + $?.exitstatus.to_s + ". Aborting."
+      cmd_result false
       abort
     end
   end
@@ -47,8 +74,10 @@ class RuleTest
   # return the path to the champion_n.so
   #
   def compile(lang, src_file, index)
+    print_banner 'Compile ' + src_file + ' in ' + lang
     if not @file_lang[lang]
       puts "don't know anything about language '" + lang + "'"
+      cmd_result false
       abort
     end
 
@@ -58,6 +87,7 @@ class RuleTest
     check_prog_exec("make", "-C", @tmpdir + lang, "clean all")
     check_prog_exec('mv', @tmpdir + lang + (@player_lib + ".so"),
                     @tmpdir + (@player_lib + "_#{index}.so"))
+    cmd_result true
     File.expand_path(@tmpdir + (@player_lib + "_#{index}"))
   end
 
@@ -77,10 +107,23 @@ class RuleTest
         c['champion'] = @player_lib
       end
       if c['input'] then
-        c['output'] = @tmpdir + (c['input'] + ".out")
+        check_prog_exec('cp', c['input'], @tmpdir.to_s)
+        c['output'] = File.basename(c['input'], ".*") + ".out"
+        c['input'] = File.basename(c['input'])
+      end
+      if c['team'] then
+        check_prog_exec('cp', c['team'], @tmpdir.to_s)
+        c['team'] = File.basename(c['team'])
+      end
+      if c['diff'] then
+        check_prog_exec('cp', c['diff'], @tmpdir.to_s)
+        c['diff'] = File.basename(c['diff'])
       end
     end
-    abort if @nb_client == 0
+    if @nb_client == 0
+      cmd_result false, "Can't test anything, no client!" 
+      abort
+    end
   end
 
   #
@@ -144,14 +187,38 @@ class RuleTest
     f.close
   end
   
+  #
+  # Do a diff
+  #
+  def do_diff(c)
+    print_banner "Doing diff between '#{c['diff']}' and '#{c['output']}'"
+    tmp_file = c['output'].to_s + '.tmp'
+
+    `sed -n '/^BEGIN DIFF/ { :n; n; /^END DIFF/d; p; b n } ' < #{c['output']} > #{tmp_file}`
+    `diff -u #{c['diff']} #{tmp_file} > #{c['input'] + '.diff'}`
+    res = $?.exitstatus
+
+    if res != 0 then
+      File.open(c['input'] + '.diff') do |f|
+        while s = f.gets do
+          print s
+        end
+      end
+      puts
+    end
+    cmd_result(res == 0)
+    res
+  end
+
+  #
+  # Do some post-processing stuff
+  #
   def post_run(conf)
     res = 0
     (1..@nb_client).each do |n|
        c = conf['client_' + n.to_s]
       if c['output'] and c['diff'] then
-        `sed -n '/^BEGIN DIFF/ { :n; n; /^END DIFF/d; p; b n } ' < #{c['output']} > #{c['output'].to_s + ".tmp"}`
-        `diff -u #{c['diff']} #{c['output'].to_s + ".tmp"} > #{@tmpdir + (c['input'] + '.diff')}`
-        res = res + $?.exitstatus
+        res += do_diff c
       end
     end
     return res
@@ -162,7 +229,7 @@ class RuleTest
   def clean
       if ENV['DEBUG']
         puts @test_name + ": temporary directory left at " + @tmpdir
-        File.open(@tmpdir + "debug_me.sh", "w") do |f|
+        File.open("debug_me.sh", "w") do |f|
           f.puts "#!/bin/sh"
           f.puts "export PATH=#{ENV['PATH']}"
           f.puts "export RUBYLIB=#{ENV['RUBYLIB']}"          
@@ -170,7 +237,7 @@ class RuleTest
           f.puts "export xml_parser_path=#{ENV['BASHLIB']}/"
           f.puts "bash #{ENV['BASHLIB']}/run.sh conf.xml"
         end
-        `chmod +x #{@tmpdir + "debug_me.sh"}`
+        `chmod +x #{"debug_me.sh"}`
       else
         @tmpdir.rmtree if @tmpdir.directory?
       end
@@ -187,10 +254,13 @@ class RuleTest
     # generate xml
     generate_xml conf
 
-    # eventually run the test.
+    # run the test.
+    print_banner 'Run the test'
+    Dir.chdir(@tmpdir.to_s)
     ENV['LD_LIBRARY_PATH'] = ENV['LD_LIBRARY_PATH'] + ":" + File.expand_path(@tmpdir)
-    `bash #{ENV['BASHLIB']}/run.sh #{@tmpdir}/conf.xml`
-    res=$?.exitstatus
+    `bash #{ENV['BASHLIB']}/run.sh conf.xml`
+    res = $?.exitstatus
+    cmd_result(res == 0)
 
     # run things after run
     if res == 0 then
@@ -206,6 +276,7 @@ class RuleTest
   public
 
   def initialize
+    @error_seen = false
     # open contest yaml file
     case ARGV[1]
     when /\//
@@ -239,7 +310,7 @@ class RuleTest
     pool = YAML::load(File.open(ARGV[0]))
     @test_name = File.basename(ARGV[2])
 
-    # temporary directory
+    # create temporary directory
     @tmpdir = Pathname.new(@test_name + "-rules-test")
     @tmpdir.rmtree if @tmpdir.directory?
     @tmpdir.mkdir
