@@ -45,9 +45,37 @@ inline Cx::~Cx()
     closesocket(fd);
 }
 
-inline int   Cx::getFd() const
+inline int Cx::getFd() const
 {
   return fd;
+}
+
+inline void Cx::shutdown()
+{
+  if (fd < 0)
+    return;
+  if (::shutdown(fd, SHUT_WR))
+    {
+      closesocket(fd);
+      fd = -1;
+    }
+}
+
+inline bool Cx::waitClose()
+{
+  if (fd < 0)
+    return true;
+
+  // Trash any incoming traffic, until closed.
+  // Don't care about errors, just close.
+  int ret = read(fd, buff_send_, PACKET_MAX_SIZE);
+  if (ret <= 0 && errno != EINTR)
+    {
+      closesocket(fd);
+      fd = -1;
+      return true;
+    }
+  return false;
 }
 
 inline void  Cx::print(std::ostream&) const

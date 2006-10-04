@@ -67,7 +67,7 @@ public:
 
 private:
   void outputStatistics();
-  bool processOne(Client* cl);
+  bool processOne(Client* cl, std::string& remove_reason);
   bool process();
   void run();
 
@@ -79,16 +79,17 @@ private:
 
   int                   game_uid_;        ///< Game uid.
   BaseSRules*           rules_;           ///< Server rules.
-  ClientList            clients_;         ///< List of active clients.
-  ClientList            dead_clients_;    ///< List of dead coachs. For end-game statistics.
-  NetPoll<Client*>      clients_poll_;    ///< Facility to poll all clients at once.
+  ClientList            client_list_;     ///< List of active/dead clients.
+  ClientList            coach_list_;      ///< List of coachs. To output statistics.
+  NetPoll<Client*>      client_poll_;     ///< Facility to poll all clients/dead clients at once.
   int                   nb_coach_;        ///< Number of coach connected.
   int                   nb_waited_coach_; ///< Number of waited coach, before starting game.
   int                   viewer_base_uid_; ///< Current uid to assign to new viewers.
   int                   nb_viewer_;       ///< Number of viewers currently connected.
   int                   nb_waited_viewer_;///< Number of waited viewer, before starting game.
   bool                  started_;         ///< Is the game started ?
-  bool                  finished_;        ///< Is the game finished ?
+  bool                  game_finished_;   ///< Is the game finished ?
+  bool			thread_finished_; ///< Can the thread be cleaned ?
   pthread_t             self_;
 };
 

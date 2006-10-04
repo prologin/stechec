@@ -65,7 +65,8 @@ int NetPoll<T>::poll()
   int nb_seen;
   for (i = 0, nb_seen = 0; i < elt_size && nb_seen < nb_ready; ++i)
     {
-      if (pifi_[i].revents & POLLIN)
+      // XXX: kludge, also signal erroneous fd, so they can be handled.
+      if (pifi_[i].revents & POLLIN || pifi_[i].fd < 0)
         {
           T tmp = elt_list_[i];
           elt_list_[i] = elt_list_[nb_seen];

@@ -72,11 +72,11 @@ public:
   
   //! @brief Fetch a packet from the network for this client.
   //! @note This function may block, so be sure to poll before.
-  //! @return A valid packet. Can't be NULL.
+  //! @return A packet, or NULL if this client is dead.
   //! @throw NetError Thrown on any kind of network error.
   Packet*       getPacket();
 
-  //! @brief Check is this connection is associated with a real coach
+    //! @brief Check is this connection is associated with a real coach
   //!   or a viewer.
   bool          isCoach() const;
 
@@ -86,8 +86,20 @@ public:
   //! @brief Set client readyness.
   void          setReady(bool value);
 
-  //! @brief Close socket. To call after a network error from the client.
-  void          killConnection(std::string fail_msg);
+    //! @brief Check whether this client is dead, wait that it closes its
+  //!  connection. Do not process any message from it, do not send it anything.
+  bool		isDead() const;
+
+  //! @brief Set client state to dead, either we don't want it anymore, or
+  //!  we had a connection error with it.
+  //! @param fail_msg A reason of why it dead. For statistics.
+  //! @param kill_now true if we can close its socket now. false if we wait
+  //!   that it'll do that cleany.
+  void          setDead(std::string fail_msg, bool kill_now = false);
+
+    //! @brief Discard input. Only works on dead client
+  //! @return true if it can be deleted.
+  bool		discardInput();
 
   //! @brief Get the coach statistics.
   ClientStatistic& getClientStatistic();
@@ -97,7 +109,7 @@ public:
   {
   public:
     Send(const Packet& p);
-    void operator() (const Client* cl);
+    void operator() (Client* cl);
   private:
     const Packet& p_;
   };
@@ -109,6 +121,8 @@ private:
   //! True if this client is ready (mostly for the next turn)
   //! (sync visio with game).
   bool               is_ready_;
+
+  bool		     is_dead_;
 
   ClientStatistic    client_stat_; ///< Clients statistics.
 };

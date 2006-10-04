@@ -23,12 +23,13 @@ GameHosting::GameHosting(int game_uid,
   : cfg_(cfg),
     game_uid_(game_uid),
     rules_(rules),
-    clients_poll_(clients_, 500),
+    client_poll_(client_list_, 500),
     nb_coach_(0),
     viewer_base_uid_(0),
     nb_viewer_(0),
     started_(false),
-    finished_(false)
+    game_finished_(false),
+    thread_finished_(false)
 {
   cfg.switchSection("game");
   nb_waited_coach_ = cfg.getData<int>("nb_team");
@@ -59,12 +60,12 @@ GameHosting::~GameHosting()
   delete rules_;
 
   // All clients _should_ have been disconnected.
-  assert(clients_.empty());
+  assert(client_list_.empty());
 }
 
 bool GameHosting::isFinished() const
 {
-  return finished_;
+  return thread_finished_;
 }
 
 pthread_t GameHosting::getThreadId() const
@@ -76,17 +77,14 @@ void    GameHosting::sendPacket(const Packet& p)
 {
   LOG5("Send packet `" << rules_->getPacketStr(p.token)
        << "' to client_id `" << p.client_id << "'");
-  std::for_each(clients_.begin(), clients_.end(), Client::Send(p));
   log_.send(&p);
+  for_all(client_list_, Client::Send(p));
 }
 
 void    GameHosting::outputStatistics()
 {
   ClientIter it;
-  for (it = clients_.begin(); it != clients_.end(); ++it)
-    if ((*it)->isCoach())
-      rules_->outputStat((*it)->getId(), (*it)->getClientStatistic());
-  for (it = dead_clients_.begin(); it != dead_clients_.end(); ++it)
+  for (it = coach_list_.begin(); it != coach_list_.end(); ++it)
     rules_->outputStat((*it)->getId(), (*it)->getClientStatistic());
 }
 
@@ -95,7 +93,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
 {
   int        uid = -1;
 
-  if (finished_)
+  if (game_finished_)
     {
       LOG3("Deny access for game '" << game_uid_ << "': it is already finished !");
       Packet pkt_game_finished(CX_DENY);
@@ -136,12 +134,14 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
     }
 
   // Accepted.
-  clients_.push_back(new Client(cx, uid, client_extid, nb_waited_coach_));
+  client_list_.push_back(new Client(cx, uid, client_extid, nb_waited_coach_));
+  if (wanna_be_coach)
+    coach_list_.push_back(client_list_.back());
 }
 
 // Process one packet for one client.
 // Return true if the client should be killed.
-bool GameHosting::processOne(Client* cl)
+bool GameHosting::processOne(Client* cl, std::string& remove_reason)
 {
   Packet* pkt;
 
@@ -153,13 +153,13 @@ bool GameHosting::processOne(Client* cl)
     {
       cl->setReady(true);
       ClientIter it;
-      for (it = clients_.begin(); it != clients_.end(); ++it)
+      for (it = client_list_.begin(); it != client_list_.end(); ++it)
         if (!(*it)->isCoach() && !(*it)->isReady())
           break;
-      if (it == clients_.end())
+      if (it == client_list_.end())
         {
           LOG3("All viewers are ready.");
-          for (it = clients_.begin(); it != clients_.end(); ++it)
+          for (it = client_list_.begin(); it != client_list_.end(); ++it)
             (*it)->setReady(false);
           rules_->setViewerState(rules_->getViewerState() | VS_READY);
         }
@@ -168,7 +168,10 @@ bool GameHosting::processOne(Client* cl)
 
   // Client wants to quit. Let him go.
   if (pkt->token == CX_ABORT)
-    return true;
+    {
+      remove_reason = "You aborted the connection.";
+      return true;
+    }
 
   if (cl->isCoach())
     {
@@ -177,12 +180,14 @@ bool GameHosting::processOne(Client* cl)
       else
         {
           LOG2("A coach is trying to send a packet before game start, kill it.");
+	  remove_reason = "Tried to send packet before game start.";
           return true;
         }
     }
   else
     {
       LOG2("A viewer is trying to send illegal message, kill it.");
+      remove_reason = "Viewers are not allowed to send messages";
       return true;
     }
 
@@ -194,7 +199,7 @@ bool GameHosting::process()
   // Receive and manage incoming packets.
   int nb_ready;
   try {
-    nb_ready = clients_poll_.poll();
+    nb_ready = client_poll_.poll();
   } catch (const NetError& e) {
     LOG2("Fatal network error: " << e);
     return false;
@@ -202,40 +207,45 @@ bool GameHosting::process()
 
   for (int i = 0; i < nb_ready; i++)
     {
-      bool remove_from_cl = false;
       std::string remove_reason = "A mysterious reason.";
-      Client* cl = clients_[i];
-      
-      try {
-        remove_from_cl = processOne(cl);
-      } catch (const NetError& e) {
-        remove_reason = std::string("Network error: ") + e.what();
-        LOG2("Network error: " << e);
-        remove_from_cl = true;
-      }
-      if (remove_from_cl)
-        {
-          if (cl->isCoach())
-            {
-              nb_coach_--;
-              cl->killConnection(remove_reason);
-              rules_->coachKilled(cl->getId(), cl->getClientStatistic().custom_);
-              dead_clients_.push_back(cl);
-            }
-          else if (!--nb_viewer_)
-            {
-              rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
-              delete cl;
-            }
-          assert(nb_viewer_ >= 0);
+      Client* cl = client_list_[i];
 
-          // Remove it from list as well.
-          const int cl_size = clients_.size();
-          clients_[i] = clients_[cl_size - 1];
-          clients_.erase(clients_.end() - 1);
-          if (nb_ready >= cl_size)
-            nb_ready--;
-        }
+      // Dead client, or game finished. Do nothing with them except
+      // waiting to trash them.
+      if (cl->isDead() || game_finished_)
+	{
+	  if (cl->discardInput())
+	    {
+	      if (!cl->isCoach())
+		delete cl;
+	      const int cl_size = client_list_.size();
+	      client_list_[i] = client_list_[cl_size - 1];
+	      client_list_.erase(client_list_.end() - 1);
+	      if (nb_ready >= cl_size)
+		nb_ready--;
+	    }
+	  continue;
+	}
+
+      try {
+        if (processOne(cl, remove_reason))
+	  cl->setDead(remove_reason);
+      } catch (const NetError& e) {
+        LOG2("Network error: " << e);
+        remove_reason = std::string("Network error: ") + e.what();
+	cl->setDead(remove_reason, true);
+      }
+
+      if (cl->isDead() && cl->isCoach())
+	{
+	  nb_coach_--;
+	  rules_->coachKilled(cl->getId(), cl->getClientStatistic().custom_);
+	}
+      if (cl->isDead() && !cl->isCoach() && !--nb_viewer_)
+	{
+	  rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
+	}
+      assert(nb_viewer_ >= 0 && nb_coach_ >= 0);
     }
 
   return true;
@@ -282,19 +292,21 @@ void GameHosting::run()
               break;
             }
         }
-      sendPacket(GameFinished());
       outputStatistics();
     } catch (const NetError& e) {
       LOG2("Network error: " << e << ". Aborting game.");
     }
   
-  // Force all remaining clients to disconnect, to ease thread cleaning.
-  std::for_each(clients_.begin(), clients_.end(), Deleter());
-  std::for_each(dead_clients_.begin(), dead_clients_.end(), Deleter());
-  clients_.clear();
-  dead_clients_.clear();
+  sendPacket(GameFinished());
+  game_finished_ = true;
 
-  finished_ = true;
+  LOG4("Wait that `" << client_list_.size() << "' remaining clients quit.");
+  while (!client_list_.empty())
+    process();
+  for_all(coach_list_, Deleter());
+  LOG5("Ok, all remaining clients have left.");
+
+  thread_finished_ = true;
 }
 
 void*        GameHosting::startThread(void* gh_inst)

@@ -59,5 +59,5 @@ void    BaseCRules::msgCatchUid(const ClientUid* m)
 void    BaseCRules::msgCatchGameFinished(const GameFinished*)
 {
   setState(GS_END);
-  packet_sender_->gameFinished();
+  //packet_sender_->gameFinished();
 }

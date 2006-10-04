@@ -18,7 +18,8 @@
 inline Client::Client(Cx* cx, int id, int ext_id, int nb_team)
   : cx_(cx),
     id_(id),
-    is_ready_(false)
+    is_ready_(false),
+    is_dead_(false)
 {
   client_stat_.ext_id_ = ext_id;
   client_stat_.custom_ = NULL;
@@ -34,12 +35,12 @@ inline Client::Client(Cx* cx, int id, int ext_id, int nb_team)
 
 inline Client::~Client()
 {
-  delete cx_;
+  assert(cx_ == NULL);
 }
 
 inline int Client::getFd() const
 {
-  return cx_->getFd();
+  return cx_ != NULL ? cx_->getFd() : -1;
 }
 
 inline int Client::getId() const
@@ -49,7 +50,9 @@ inline int Client::getId() const
 
 inline Packet* Client::getPacket()
 {
-  return cx_->receive();
+  if (!is_dead_)
+    return cx_->receive();
+  return NULL;
 }
 
 inline bool Client::isCoach() const
@@ -67,11 +70,41 @@ inline void Client::setReady(bool value)
   is_ready_ = value;
 }
 
-inline void Client::killConnection(std::string fail_msg)
+inline bool Client::isDead() const
+{
+  return is_dead_;
+}
+
+inline void Client::setDead(std::string fail_msg, bool kill_now)
 {
   client_stat_.fail_reason_ = fail_msg;
-  delete cx_;
-  cx_ = NULL;
+  is_dead_ = true;
+  if (kill_now)
+    {
+      delete cx_;
+      cx_ = NULL;
+    }
+  else
+    cx_->shutdown();
+}
+
+inline bool Client::discardInput()
+{
+  if (cx_ == NULL)
+    return true;
+  if (!is_dead_)
+    {
+      cx_->shutdown();
+      is_dead_ = true;
+      return false;
+    }
+  if (cx_->waitClose())
+    {
+      delete cx_;
+      cx_ = NULL;
+      return true;
+    }
+  return false;
 }
 
 inline ClientStatistic& Client::getClientStatistic()
@@ -79,14 +112,18 @@ inline ClientStatistic& Client::getClientStatistic()
   return client_stat_;
 }
 
-
-
 inline Client::Send::Send(const Packet& p)
   : p_(p)
 {
 }
 
-inline void Client::Send::operator() (const Client* cl)
+inline void Client::Send::operator() (Client* cl)
 {
-  cl->cx_->send(&p_);
+  if (cl->isDead() || cl->cx_ == NULL)
+    return;
+  try {
+    cl->cx_->send(&p_);
+  } catch (const NetError& e) {
+    cl->setDead(e.what(), true);
+  }
 }
