@@ -76,7 +76,9 @@ void Sprite::splitSizeFrame(int size_frame_width, int size_frame_height)
 
 void Sprite::move(const Point& to, double velocity)
 {
-  if (getPos() == to)
+  // Already at dest, or this exact move was already ordered.
+  if (getPos() == to ||
+      (is_moving_ && getPos() == move_from_ && move_to_ == to))
     return;
 
   // Teleport to destination, if we were moving.

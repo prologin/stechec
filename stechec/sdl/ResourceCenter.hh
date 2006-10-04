@@ -66,7 +66,7 @@ public:
   
   //! @brief Change the ressource prefix path
   //! @param Prefix path to set.
-  void setResourcePrefix(const std::string& prefix);
+  void setResourcePrefix(const std::string& prefix = "");
   
   //! @brief Load an image, with cache enabled.
   //!

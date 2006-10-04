@@ -55,7 +55,10 @@ const std::string& ResourceCenter::getResourcePrefix() const
   
 void ResourceCenter::setResourcePrefix(const std::string& prefix)
 {
-  prefix_ = prefix;
+  if (prefix == "")
+    prefix_ = PKGDATADIR;
+  else
+    prefix_ = prefix;
 }
 
 
