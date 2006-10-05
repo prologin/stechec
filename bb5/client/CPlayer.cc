@@ -21,6 +21,9 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   : Player(m),
     r_(r)
 {
+  player_position_ = m->player_position;
+  player_picture_ = packetToString(m->player_img);
+
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_ALL | GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
@@ -38,8 +41,8 @@ void CPlayer::setPosition(const Position& pos)
   if (f->intoField(pos_))
     f->setPlayer(pos_, NULL);
   pos_ = pos;
-	if (f->intoField(pos_))
-	  f->setPlayer(pos_, this);
+  if (f->intoField(pos_))
+    f->setPlayer(pos_, this);
 }
 
 void CPlayer::subMa(int dep)
@@ -151,6 +154,7 @@ void CPlayer::msgPlayerPos(const MsgPlayerPos* m)
   Position pos(m->row, m->col);
   setPosition(pos);
   r_->onEvent(m);
+  LOG2("set pos for " << team_id_ << " id " << id_);
 }
 
 void CPlayer::msgPlayerMove(const ActMove* m)

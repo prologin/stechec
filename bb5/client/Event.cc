@@ -82,6 +82,12 @@ void EventProcess::dispatch(const MsgBallPos& pkt) const
 }
 
 template <>
+void EventProcess::dispatch(const MsgPlayerCreate& pkt) const
+{
+  ev_->evPlayerCreate(pkt.client_id, pkt.player_id);
+}
+
+template <>
 void EventProcess::dispatch(const MsgPlayerPos& pkt) const
 {
   ev_->evPlayerPos(pkt.client_id, pkt.player_id, Point(pkt.col, pkt.row));

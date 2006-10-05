@@ -39,11 +39,19 @@ VisuPlayer::VisuPlayer(Api* api, Game& game, const CPlayer* p)
   circle_selected_.setZ(6);
   circle_selected_.hide();
   game_.getField().addChild(&circle_selected_);
-  
+
   player_num_.setZ(4);
   player_num_.splitNbFrame(16, 1);
-  player_num_.setFrame(p->getId());
+  player_num_.setFrame(p->getId() + 1);
   game_.getField().addChild(&player_num_);
+
+  // Set its property
+  load("image/figs/amazon.png"); // FIXME: team picture.
+  splitSizeFrame(40, 40);
+  setZ(3);
+  setFrame(p->getPlayerPosition() * 2 + p->getTeamId() + 1);
+  LOG2("create teamid: "<< p->getTeamId() <<" player id: "<< p->getId()
+       << " pos: " << p->getPlayerPosition());
 }
 
 VisuPlayer::~VisuPlayer()
@@ -126,7 +134,7 @@ void VisuPlayer::update()
   // Debug
   if (now_focus && inp.key_pressed_[(unsigned char)'d'])
     LOG3(*p_);
-  
+
   has_focus_ = now_focus;
   Sprite::update();
 }

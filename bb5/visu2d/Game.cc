@@ -109,34 +109,39 @@ void Game::evChat(const std::string& msg)
   txt_status_.addText(std::string("<chat> ") + msg);
 }
 
+void Game::evPlayerCreate(int team_id, int player_id)
+{
+  if (player_[team_id][player_id] != NULL)
+    {
+      WARN("Player was already created! (team_id: " << team_id << ", id:" << player_id << ")");
+      return;
+    }
+      
+  // Get added player api info.
+  api_->selectTeam(team_id);  
+  const CPlayer* ap = api_->getPlayer(player_id);
+  if (ap == NULL)
+    {
+      ERR("Can't get player api info!");
+      return;
+    }
+
+  // Create it, and add it to the field.
+  VisuPlayer* p = new VisuPlayer(api_, *this, ap);
+  player_[team_id][player_id] = p;
+  field_->addChild(p);
+}
+
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
-  VisuPlayer* p = player_[team_id][player_id - 1];
+  VisuPlayer* p = player_[team_id][player_id];
 
-  // First msg means player creation
-  if (player_[team_id][player_id - 1] == NULL)
-    {
-      // Get added player infos.
-      api_->selectTeam(team_id);  
-      const CPlayer* ap = api_->getPlayer(player_id);
-
-      // Create it.
-      p = new VisuPlayer(api_, *this, ap);
-      player_[team_id][player_id - 1] = p;
-
-      // Set its property
-      p->load("image/figs/amazon.png");
-      p->splitSizeFrame(40, 40);
-      p->setZ(3);
-      p->setFrame(ap->getPlayerPosition() * 2 + team_id + 1);
-      field_->addChild(p);
-    }
   p->setPos(pos * 40);
 }
 
 void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
 {
-  VisuPlayer* p = player_[team_id][player_id - 1];
+  VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
   p->move(pos, 20.);

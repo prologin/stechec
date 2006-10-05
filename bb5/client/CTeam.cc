@@ -140,7 +140,7 @@ bool CTeam::passPlayer(int player_id, const Position& to)
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
     return false;
-	return p->pass(to);
+  return p->pass(to);
 }
 
 void CTeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -160,6 +160,7 @@ bool CTeam::filterTeamInfo(const MsgTeamInfo* m)
 void CTeam::msgPlayerCreate(const MsgPlayerCreate* m)
 {
   player_[m->player_id] = new CPlayer(r_, m);
+  r_->onEvent(m);
 }
 
 bool CTeam::filterPlayerCreate(const MsgPlayerCreate* m)
