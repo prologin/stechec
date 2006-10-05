@@ -17,12 +17,17 @@
 #ifndef VIRTUALSCROLLABLESURFACE_HH_
 # define VIRTUALSCROLLABLESURFACE_HH_
 
+/*!
+** @file VirtualScrollableSurface.hh
+** @ingroup sdl_base
+*/
+
 # include "Input.hh"
 # include "VirtualSurface.hh"
 
 /*!
-** @brief Scrollable kind of VirtualSurface.
 ** @ingroup sdl_base
+** @brief Scrollable kind of VirtualSurface.
 */
 class VirtualScrollableSurface : public VirtualSurface
 {

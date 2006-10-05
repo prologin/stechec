@@ -17,6 +17,11 @@
 #ifndef TEAM_HH_
 # define TEAM_HH_
 
+/*!
+** @file bb5/common/Team.hh
+** @ingroup rules
+*/
+
 # include "PacketHandler.hh"
 
 DECLARE_PACKET(MSG_TEAMINFO, MsgTeamInfo)
@@ -27,6 +32,7 @@ END_PACKET
 
 
 /*!
+** @ingroup rules
 ** @brief Base class describing a BB team.
 */
 template <typename T>

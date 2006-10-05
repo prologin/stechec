@@ -17,11 +17,16 @@
 #ifndef INPUTTEXTSURFACE_HH_
 # define INPUTTEXTSURFACE_HH_
 
+/*!
+** @file sdl/InputTextSurface.hh
+** @ingroup sdl_base
+*/
+
 # include "TextSurface.hh"
 
-/*
-** @brief Implements a TextBox, to let user type text.
+/*!
 ** @ingroup sdl_base
+** @brief Implements a TextBox, to let user type text.
 **
 ** This is implemented on top of TextSurface, and isn't really nice
 ** to render custom text, ie a cursor.

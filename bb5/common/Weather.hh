@@ -17,6 +17,11 @@
 #ifndef WEATHER_HH_
 # define WEATHER_HH_
 
+/*!
+** @file common/Weather.hh
+** @ingroup rules
+*/
+
 # include "Constants.hh"
 # include "PacketHandler.hh"
 
@@ -26,6 +31,7 @@ DECLARE_PACKET(MSG_WEATHER, MsgWeather)
 END_PACKET
 
 /*!
+** @ingroup rules
 ** @brief Base class for storing current match weather.
 */
 class Weather

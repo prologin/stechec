@@ -18,9 +18,13 @@
 # define CONSTANTS_HH_
 
 /*!
-** @file Constants.hh
+** @ingroup rules
+** @file common/Constants.hh
 **
 ** Put here some meaningful constants here.
+*/
+
+/*!
 ** @defgroup rules Blood Bowl rules manager (according to LRB5).
 */
 //@{
@@ -152,7 +156,9 @@ enum eSkill {
   SK_SUREHANDS
 };
 
-/*!
+//@}
+
+/*
 ** Messages (Packet) used to control game status.
 */
 DECLARE_EMPTY_PACKET(MSG_INITGAME, MsgInitGame);
@@ -181,7 +187,5 @@ END_PACKET
 DECLARE_PACKET(MSG_ILLEGAL, MsgIllegal)
   int was_token;
 END_PACKET
-
-//@}
 
 #endif /* !CONSTANTS_HH_ */

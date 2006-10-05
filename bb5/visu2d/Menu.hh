@@ -54,7 +54,7 @@ class Menu: public Widget
   //! @param y is the y coordiante of the menu in the window
   //! @param screen is the container father of the menu
   //! @param width is the width of the menu box
-  //! @param title, string if menu has title
+  //! @param title string if menu has title
   Menu(const uint x, const uint y, SDL_Surface * screen,
    const ushort width = MENU_WIDTH, const string title = "");
 
@@ -65,7 +65,7 @@ class Menu: public Widget
   //! @param screen is the container father of the menu
   //! @param width is the width of the menu box
   //! @param height is the height of the menu box
-  //! @param title, string if menu has title
+  //! @param title string if menu has title
   Menu(const uint x, const uint y, SDL_Surface * screen,
    const ushort width, const ushort height, const string title = "");
 
@@ -86,7 +86,7 @@ class Menu: public Widget
   // events
   //! @brief Method to do an action when mouse button is down
   //!
-  //! @param mouusex is the coordinate x of the mouse pointer
+  //! @param mousex is the coordinate x of the mouse pointer
   //! @param mousey is the coordinate y of the mouse pointer
   //! @return the action associated with the button used
   ushort mousebuttondown(const uint mousex=0, const uint mousey=0);
@@ -95,7 +95,7 @@ class Menu: public Widget
   //!
   //! This method do mousemotion for each button of the menu
   //!
-  //! @param mouusex is the coordinate x of the mouse pointer
+  //! @param mousex is the coordinate x of the mouse pointer
   //! @param mousey is the coordinate y of the mouse pointer
   void mousemotion(const uint mousex, const uint mousey);
 

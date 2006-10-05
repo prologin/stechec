@@ -18,8 +18,8 @@
 # define INPUT_HH_
 
 /*!
+** @file sdl/Input.hh
 ** @ingroup sdl_base
-** @{
 */
 
 # include <SDL.h>
@@ -27,6 +27,7 @@
 
 /*!
 ** Hold keyboard and mouse state.
+** @ingroup sdl_base
 **
 ** * For mouse absolute position and delta motion, this should be
 **   obvious.
@@ -91,9 +92,5 @@ private:
 
   static Input* inst_;
 };
-
-/*!
-** @}
-*/
 
 #endif /* !INPUT_HH_ */

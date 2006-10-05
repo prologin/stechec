@@ -53,7 +53,8 @@ public:
 
   //! @brief Do a block.
   //! @param player_id Player doing the block.
-  //! @param to Block will be made to this position.
+  //! @param opponent Player to block.
+  //! @param action Action to do.
   bool blockPlayer(int player_id, CPlayer* opponent, enum eAction action);
   
   //! @brief Do a pass.

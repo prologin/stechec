@@ -24,6 +24,8 @@
 ** @file dice.hh
 ** @ingroup rules
 */
+
+//! @ingroup rules
 //@{
 
 //! @brief Some Dice number of face.
@@ -77,7 +79,9 @@ class Dice
   //! @note Predefined results are used, if any.
   int roll(const std::string& msg, enum eDiceFaceNumber type = D6, int nb_dice = 1);
 
+  //! @brief Get a stringified version of enum eBlockDiceFace.
   static const char* stringify(enum eBlockDiceFace face);
+  //! @brief Get a stringified version of enum eRoll.
   static const char* stringify(enum eRoll roll);
   
 private:

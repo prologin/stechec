@@ -17,30 +17,83 @@
 #ifndef SPRITE_HH_
 # define SPRITE_HH_
 
+/*!
+** @file sdl/Sprite.hh
+** @ingroup sdl_base
+*/
+
 # include "Surface.hh"
 
 /*!
-** @brief Enhancement of Surface, give life to object.
 ** @ingroup sdl_base
+** @brief Enhancement of Surface, give life to object.
 **
-** Have the same behavior of Surface, but can be animated, move, ...
+** Have the same behavior of Surface, but have some more features:
+**   * can be animated
+**   * can be moved from one position to another
+**   * can show a part of a larger picture (useful when a picture consists of
+**      several 'state')
+**
+** Here a simple example:
+** @code
+** Sprite s("general/foo.png");
+** s.setPos(50, 100);      // same thing as Surface.
+** s.setZ(3);              // idem.
+** s.splitNbFrame(4, 1);   // 4 'frames' in the row.
+** s.anim(250);            // show one of these frames every 250ms.
+** s.move(800, 100, 30.);  // move the sprite
+** win.getScreen().addChild(&s); // don't forget that!
+** @endcode
 */
 class Sprite : public Surface
 {
 public:
+  //! @brief Constructor for a empty sprite.
   Sprite();
+  //! @brief Construct a Sprite from an existing SDL surface.
+  //! @param surf The surface to 'swallow'.
+  //! @param zoom Zoom value to apply.
+  //! @param angle Rotate picture, range: [0 - 360].
   Sprite(SDL_Surface* surf, double zoom = 1., double angle = 0.);
+  //! @brief Construct a Sprite from a picture file.
+  //! @param filename The filename to take the picture from.
+  //! @param zoom Zoom value to apply.
+  //! @param angle Rotate picture, range: [0 - 360].
   Sprite(const std::string filename, double zoom = 1., double angle = 0.);
   virtual ~Sprite();
 
   void splitNbFrame(int nb_frame_width, int nb_frame_height);
   void splitSizeFrame(int size_frame_width, int size_frame_height);
 
+  //! @brief Move the sprite from the current position to the specified position,
+  //!   at a specified speed. Create an animation.
+  //! @param to Position to move to.
+  //! @param velocity Speed at which this sprite will move (try value between 10. and 100.).
   void move(const Point& to, double velocity);
+  //! @brief Move the sprite from the current position to the specified position,
+  //!   at a specified speed. Create an animation.
+  //! @param to_x X coordinate to move to.
+  //! @param to_y T coordinate to move to.
+  //! @param velocity Speed at which this sprite will move (try value between 10. and 100.).
   void move(int to_x, int to_y, double velocity);
+
+  //! @brief Show all the frames successivelly, from the first to the last.
+  //! @param delay Wait this time before going to next frame (in ms).
+  //! @param loop_forever When arrived at the last frame, go to the first and continue.
+  //! @note Before using it, you have to split the Sprite into frames, with splitNbFrame
+  //!   or splitSizeFrame.
   void anim(int delay, bool loop_forever = true);
+  //! @brief Stop animation, created previously by anim.
   void stopAnim();
+
+  //! @brief Show the specified frame.
+  //! @param frame The frame to show.
+  //! @note Before using it, you have to split the Sprite into frames, with splitNbFrame
+  //!   or splitSizeFrame.
+  //! @note Not compatible with anim.
   void setFrame(int frame);
+  //! @brief Set transparency.
+  //! @note beta-test.
   void setTransparency(int level);
 
   virtual void setZoom(double zoom);

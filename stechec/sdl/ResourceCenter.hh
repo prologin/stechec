@@ -22,6 +22,11 @@
 # include "Surface.hh"
 
 /*!
+** @file sdl/ResourceCenter.hh
+** @ingroup sdl_base
+*/
+
+/*!
 ** @brief Exception thrown by SDL functions.
 ** @ingroup sdl_base
 */
@@ -41,12 +46,13 @@ public:
   TTFError(const std::string& msg);
 };
 
+// Forward decl for TTF_Font.
 struct _TTF_Font;
 typedef struct _TTF_Font TTF_Font;
 
 /*!
-** @brief Provide loader (with cache) for SDL resources.
 ** @ingroup sdl_base
+** @brief Provide loader (with cache) for SDL resources.
 **
 ** This class is a singleton. You can access it from anywhere.
 ** It provides image and font loader, with a transparent caching system.
@@ -60,12 +66,12 @@ public:
   //! @brief Get the instance of this class.
   static ResourceCenter* getInst();
 
-  //! @brief Get the ressource prefix path
+  //! @brief Get the ressource prefix path.
   //! @return Prefix path.
   const std::string& getResourcePrefix() const;
   
-  //! @brief Change the ressource prefix path
-  //! @param Prefix path to set.
+  //! @brief Change the ressource prefix path.
+  //! @param prefix Path to set.
   void setResourcePrefix(const std::string& prefix = "");
   
   //! @brief Load an image, with cache enabled.
@@ -81,10 +87,16 @@ public:
   Surface getImage(const std::string& filename, double zoom = 1., double angle = 0.);
 
   //! @brief Load a font file.
+  //! @param font_name Font filename to load, relative to current prefix +
+  //!   "font/" directory.
+  //! @param font_size The size of the font (typically between 10-20).
+  //! @return A valid font. Can't be NULL.
+  //! @throw TTFError Thrown if font couldn't be opened.
   //! @note Caller is reponsible of calling releaseFont when it has finished.
   TTF_Font* getFont(const std::string font_name, int font_size);
 
   //! @brief Release a font.
+  //! @param font The font to release.
   void releaseFont(TTF_Font* font);
 
   //! @brief Print cache info.

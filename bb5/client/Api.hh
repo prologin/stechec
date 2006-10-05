@@ -21,8 +21,8 @@
 # include "BaseApi.hh"
 
 /*!
-** @brief User interface for graphical interface, AI, etc.
 ** @ingroup rules
+** @brief User interface for graphical interface, AI, etc.
 **
 ** This class is really the "bridge" between the "coach" (whether it
 ** would be a human or a computer) and the rules engine.
@@ -124,12 +124,10 @@ public:
   int			playerStatus() const;
 
   //! @brief Get the number of possible action for the selected player.
-  //! @param player_id Player identifiant.
   //! @return The number of possible action
   int			actionPossibleNumber() const;
 
   //! @brief Get a possible action for the selected player.
-  //! @param player_id Player identifiant.
   //! @param index Action index, in the range [0 - actionPossibleNumber() - 1].
   //! @return Action that this player may perform.
   int			actionPossible(int index) const;

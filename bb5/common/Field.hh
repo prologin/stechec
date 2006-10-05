@@ -17,10 +17,16 @@
 #ifndef FIELD_HH_
 # define FIELD_HH_
 
+/*!
+** @file common/Field.hh
+** @ingroup rules
+*/
+
 # include "Constants.hh"
 
 /*!
-** Game playing ground.
+** @ingroup rules
+** @brief Game playing ground.
 **
 ** Parameter T: Player type (CPlayer or SPlayer)
 */

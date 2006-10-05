@@ -17,12 +17,17 @@
 #ifndef TEXTSURFACE_HH_
 # define TEXTSURFACE_HH_
 
+/*!
+** @file sdl/TextSurface.hh
+** @ingroup sdl_base
+*/
+
 # include "ResourceCenter.hh"
 # include "Surface.hh"
 
 /*
-** @brief Class that can draw text, similiar to a TextLabel.
 ** @ingroup sdl_base
+** @brief Class that can draw text, similiar to a TextLabel.
 **
 ** Support multi-line and autowrap.
 */

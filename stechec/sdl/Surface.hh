@@ -17,14 +17,19 @@
 #ifndef SURFACE_HH_
 # define SURFACE_HH_
 
+/*!
+** @file sdl/Surface.hh
+** @ingroup sdl_base
+*/
+
 # include <SDL.h>
 # include "tools.hh"
 
 class VirtualSurface;
 
 /*!
-** @brief Basic encapsulation of SDL_Surface structure.
 ** @ingroup sdl_base
+** @brief Basic encapsulation of SDL_Surface structure.
 **
 ** This is the base class to display something (in rectangular shape) on the screen.
 **

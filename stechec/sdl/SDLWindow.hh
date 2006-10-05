@@ -18,8 +18,20 @@
 # define SDLWINDOW_HH_
 
 /*!
-** @defgroup sdl_base C++ wrapper for SDL, but does much than that.
-** @{
+** @defgroup sdl_base C++ wrapper for SDL.
+**
+** All these files are located in @c stechec/sdl
+**
+** There are some example of how to use it in @c stechec/sdl/test
+**
+** The reader is also invited to read documention about this SDL Engine
+** in propal.pdf.
+**
+*/
+
+/*!
+** @file SDLWindow.hh
+** @ingroup sdl_base
 */
 
 # include "tools.hh"
@@ -29,6 +41,7 @@
 # include "VirtualSurface.hh"
 
 /*!
+** @ingroup sdl_base
 ** @brief Manage SDL Window.
 **
 ** Manage creation of a SDL Window and collect its events into Input class.
@@ -60,14 +73,21 @@ public:
   ~SDLWindow();
 
   //! @brief Get mouse and keyboard current state.
+  //! @return Input instance.
   Input&                getInput();
   //! @brief Get the root surface, having the height and width of the window.
   VirtualSurface&       getScreen();
 
+  //! @brief Check if the window is in fullscreen mode.
+  //! @return true if the window is in fullscreen mode.
   bool isFullScreen() const;
+
+  //! @brief Set the fullscreen mode.
+  //! @param enable Enable/disable fullscreen mode.
   void setFullScreen(bool enable);
 
   //! @brief Get the number of frame per second (typically between 5 and 100 fps).
+  //! @return The current number of frame per second.
   int getFps() const;
   
   //! @brief Initialize all the SDL stuff.
@@ -94,9 +114,5 @@ private:
   unsigned              frame_previous_tick_;
   int                   fps_;
 };
-
-/*!
-** @}
-*/
 
 #endif /* !SDLWINDOW_HH_ */

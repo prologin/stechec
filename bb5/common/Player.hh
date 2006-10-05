@@ -17,6 +17,11 @@
 #ifndef PLAYER_HH_
 # define PLAYER_HH_
 
+/*!
+** @file bb5/common/Player.hh
+** @ingroup rules
+*/
+
 # include "PacketHandler.hh"
 # include "Constants.hh"
 
@@ -131,7 +136,8 @@ END_PACKET
 
 
 /*!
-** Base class describing a player.
+** @ingroup rules
+** @brief Base class describing a player.
 **
 */
 class Player

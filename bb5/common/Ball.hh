@@ -17,6 +17,11 @@
 #ifndef _BALL_HH_
 # define _BALL_HH_
 
+/*!
+** @file common/Ball.hh
+** @ingroup rules
+*/
+
 # include "PacketHandler.hh"
 
 # define N 2
@@ -42,6 +47,7 @@ END_PACKET
 
 /*!
 ** @brief Represents the Blood Bowl Ball.
+** @ingroup rules
 */
 class Ball
 {
@@ -76,6 +82,5 @@ inline const Position& Ball::getPosition() const
 {
   return pos_;
 }
-
 
 #endif // !_BALL_HH_

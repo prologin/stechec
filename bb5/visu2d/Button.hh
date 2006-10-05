@@ -46,9 +46,6 @@ class ImageButton: public Widget
   //! @brief Method to draw the button
   //!
   //! @note in this method coordinates are in the window and not in the father element
-  //!
-  //! @param posx coordinate x of the top-left corner of the button (in the window)
-  //! @param posy coordinate y of the top-left corner of the button (in the window)
   void draw();
 
   void refresh(){};
@@ -102,9 +99,6 @@ class TextButton : public Widget
   //! @brief Method to draw the button
   //!
   //! @note in this method coordinates are in the window and not in the father element
-  //!
-  //! @param posx coordinate x of the top-left corner of the button (in the window)
-  //! @param posy coordinate y of the top-left corner of the button (in the window)
   void draw();
 
   void refresh(){};
@@ -117,8 +111,6 @@ class TextButton : public Widget
   //!
   //! @param mousex is the coordinate x of the mouse pointer
   //! @param mousey is the coordinate y of the mouse pointer
-  //! @param fatherx is the coordinate x of the father element of the button
-  //! @param fathery is the coordinate x of the father element of the button
   void mousemotion(const uint mousex, const uint mousey);
 
   //! @brief Public method to get the action
