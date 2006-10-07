@@ -39,7 +39,7 @@ ResourceCenter::ResourceCenter()
   assert(inst_ == NULL);
   inst_ = this;
   prefix_ = PKGDATADIR;
-  LOG4("Prefix for resources: `" << prefix_ << "'");
+  LOG4("Prefix for resources: `%1`", prefix_);
 }
 
 ResourceCenter::~ResourceCenter()
@@ -67,16 +67,15 @@ void ResourceCenter::printStatistics()
   ImageList::iterator it;
   FontList::iterator fit;
   
-  LOG3("*** ResourceCenter: " << image_list_.size() << " images in list.");
+  LOG3("*** ResourceCenter: %1 images in list.", image_list_.size());
   for (it = image_list_.begin(); it != image_list_.end(); ++it)
-    LOG4(" - " << it->filename_ << " (" << it->zoom_ << ", " << it->angle_
-         << ") refcount: " << it->surf_->refcount << " ptr: " << (void*)it->surf_);
+    LOG4(" - %1 (%2,%3) refcount: %4 ptr: %5", it->filename_, it->zoom_,
+    		it->angle_, it->surf_->refcount, (void*)it->surf_);
   if (!font_list_.empty())
     {
-      LOG3("*** There is also " << font_list_.size() << " font(s) not released.");
+      LOG3("*** There is also %1 font(s) not released.", font_list_.size());
       for (fit = font_list_.begin(); fit != font_list_.end(); ++fit)
-        LOG4(" - " << fit->name_ << " (size " << fit->size_
-             << ") refcount: " << fit->ref_count_);
+        LOG4(" - %1 (size %2) refcount: %3", fit->name_, fit->size_, fit->ref_count_);
     }
 }
 
@@ -131,7 +130,7 @@ SDL_Surface* ResourceCenter::loadImage(const std::string& filename)
   SDL_Surface* surf = NULL;
   std::string fn_loaded = prefix_ + "/" + filename;
 
-  LOG3("Load `" << filename << "'");
+  LOG3("Load `%1`", filename);
   loaded_image = IMG_Load(fn_loaded.c_str());
   if (loaded_image == NULL)
     PRINT_AND_THROW(SDLError, "Can't load image `" << filename << "'");
@@ -164,7 +163,7 @@ TTF_Font* ResourceCenter::getFont(const std::string font_name, int font_size)
     }
 
   // Load this font, and add it to the cache.
-  LOG3("Load font `font/" << font_name << "' (size: " << font_size << ")");
+  LOG3("Load font `font/%1` (size: %2)", font_name, font_size);
   lf.ref_count_ = 1;
   lf.font_ = TTF_OpenFont((prefix_ + "/font/" + font_name).c_str(),
                           font_size);
@@ -188,5 +187,5 @@ void ResourceCenter::releaseFont(TTF_Font* font)
           }
         return;
       }
-  WARN("Trying to release font " << (void*)font << ", but wasn't loaded here !");
+  WARN("Trying to release font %1, but wasn't loaded here !", (void*)font);
 }

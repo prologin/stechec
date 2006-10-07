@@ -76,12 +76,12 @@ bool CPlayer::move(const Position& to, enum eAction action)
     }
   if (to == pos_)
     {
-      LOG2("You are already on " << pos_);
+      LOG2("You are already on %1", pos_);
       return false;
     }
   if (!r_->getField()->intoField(to))
     {
-      LOG2("Trying to move player outside of field: " << to);
+      LOG2("Trying to move player outside of field: %1", to);
       return false;
     }
 
@@ -89,7 +89,7 @@ bool CPlayer::move(const Position& to, enum eAction action)
   const PosList& p = f->getPath(pos_, to, this);
   if (p.empty())
     {
-      LOG2("Can not go from " << pos_ << " to " << to << ". Sorry.");
+      LOG2("Can not go from %1 to %2. Sorry.", pos_, to);
       return false;
     }
   pkt.player_id = id_;
@@ -98,7 +98,7 @@ bool CPlayer::move(const Position& to, enum eAction action)
   PosIter it;
   for (it = p.begin(); it != p.end(); ++it)
     {
-      LOG3("Moving: add point " << *it);
+      LOG3("Moving: add point %1", *it);
       pkt.moves[pkt.nb_move].row = it->row;
       pkt.moves[pkt.nb_move].col = it->col;
       pkt.nb_move++;
@@ -154,7 +154,7 @@ void CPlayer::msgPlayerPos(const MsgPlayerPos* m)
   Position pos(m->row, m->col);
   setPosition(pos);
   r_->onEvent(m);
-  LOG2("set pos for " << team_id_ << " id " << id_);
+  LOG2("set pos for %1 id %2", team_id_, id_);
 }
 
 void CPlayer::msgPlayerMove(const ActMove* m)

@@ -52,7 +52,7 @@ void SDLWindow::setFullScreen(bool enable)
 {
   if (is_fullscreen_ != enable)
     {
-      LOG3("Switch to fullscreen mode: " << enable);
+      LOG3("Switch to fullscreen mode: %1", enable);
       is_fullscreen_ = enable;
       SDL_WM_ToggleFullScreen(screen_.getSDLSurface());
     }
@@ -78,7 +78,7 @@ void SDLWindow::init()
       SDL_FreeSurface(icon);
     }
   else
-    WARN("Can't set window's icon: " << SDL_GetError());
+    WARN("Can't set window's icon: %1", SDL_GetError());
   
   SDL_Surface* screen;
   screen = SDL_SetVideoMode(800, 600, 0, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
@@ -130,7 +130,7 @@ bool SDLWindow::processOneFrame()
     {
       frame_tick_fps_ = now;
       fps_ = frame_drawed_;
-      LOG5("FPS: " << frame_drawed_);
+      LOG5("FPS: %1", frame_drawed_);
       frame_drawed_ = 0;
     }
 

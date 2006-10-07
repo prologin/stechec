@@ -62,7 +62,7 @@ void SignalHandler::catchSignal(int signal)
       exit(1);
     }
   else
-    WARN("??? unknown catched signal: " << signal);
+    WARN("??? unknown catched signal: %1", signal);
 }
 
 /*
@@ -111,14 +111,14 @@ void    NutsBarrier::setMemoryLimitValue(int mem)
   rl.rlim_cur = (mem * 1024) + (15 * 1024 * 1024); // FIXME: currently 15 mo.
   setrlimit(RLIMIT_AS,&rl);
   getrlimit(RLIMIT_AS,&rl);
-  LOG3("Set memory restriction to " << rl.rlim_cur / 1024 << " kb.");
+  LOG3("Set memory restriction to %1 kb.", rl.rlim_cur / 1024);
 #else
   // The maximum size of the process's data segment.
   getrlimit(RLIMIT_DATA, &rl);
   rl.rlim_cur = mem * 1024 + (15 * 1024 * 1024);
   setrlimit(RLIMIT_DATA, &rl);
   getrlimit(RLIMIT_DATA,&rl);
-  LOG3("Set memory restriction to " << rl.rlim_cur / 1024 << " kb.");
+  LOG3("Set memory restriction to %1 kb.", rl.rlim_cur / 1024);
 #endif
 
   // The maximum size of the process stack, in bytes.
@@ -163,8 +163,7 @@ void        NutsBarrier::setTimeLimitValue(int time, int reserve)
 {
   time_limit_ = (time * autoTimeSelect()) / 1000;
   time_reserve_ = (reserve * autoTimeSelect()) / 1000;
-  LOG2("Set time limit to " << time << " ms (real: " << time_limit_
-       << " ms), extra time to " << reserve <<" ms (real: " << time_reserve_ << " ms).");
+  LOG2("Set time limit to %1 ms (real: %2 ms), extra time to %3 ms (real: %4 ms).", time, time_limit_, reserve, time_reserve_);
 }
 
 
@@ -220,8 +219,7 @@ void        NutsBarrier::unsetTimeLimit()
       if (real_ms_delta > time_limit_)
         {
           time_reserve_ -= real_ms_delta - time_limit_;
-          LOG1("Used " << real_ms_delta - time_limit_ << " ms of extra time ("
-               << time_reserve_ << " ms remain)");
+          LOG1("Used %1 ms of extra time (%2 ms remain).", real_ms_delta - time_limit_, time_reserve_);
           if (time_reserve_ < 0)
             hdl_->sigAlrm(); // Should never happen now.
         }
@@ -285,7 +283,7 @@ int                NutsBarrier::autoTimeSelect() const
       setitimer(ITIMER_VIRTUAL, &zero_timer, &itdone);
       ref_speed_ = (timerSub(&itstart, &itdone) * LOOP_TO_TURN_RATIO);
       signal(SIGVTALRM, SIG_DFL);
-      LOG3("Time adjustment: " << ref_speed_ << " / 1000");
+      LOG3("Time adjustment: %1 / 1000", ref_speed_);
     }
   return ref_speed_;
 }

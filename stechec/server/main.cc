@@ -67,14 +67,14 @@ int     main(int argc, char** argv)
     Server s(cfg);
     s.run();
   } catch (const NetError& e) {
-    ERR("Uncatched network error: " << e);
+    ERR("Uncatched network error: %1", e);
     return 51;
   } catch (const xml::XMLError&) {
     return 52;
   } catch (const LibraryError&) {
     return 53;
   } catch (const FileIOError& e) {
-    ERR("IOError: " << e);
+    ERR("IOError: %1", e);
     return 54;
   }
 

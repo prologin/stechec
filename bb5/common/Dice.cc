@@ -77,13 +77,13 @@ int Dice::roll(const std::string& msg, enum eDiceFaceNumber type, int nb_dice)
   if (cheat_dice_.empty())
     {
       res = roll(type, nb_dice);
-      LOG3("+ Roll " << nb_dice << " D" << type << ": `" << res << "' (" << msg << ")");
+      LOG3("+ Roll %1 D%2: `%3' (%4)", nb_dice, type, res, msg);
     }
   else
     {
       res = cheat_dice_.front();
       cheat_dice_.pop_front();
-      LOG3("+ Cheat " << nb_dice << " D" << type << ": `" << res << "' (" << msg << ")");
+      LOG3("+ Cheat %1 D%2: `%3' (%4)", nb_dice, type, res, msg);
     }
   return res;
 }

@@ -37,7 +37,7 @@ void    BaseCRules::onEvent(const Packet* pkt)
 {
   if (pkt_hdl_[pkt->token].empty())
     {
-      WARN("Paquet `" << pkt->token << "' is not registered.");
+      WARN("Paquet `%1` is not registered.", pkt->token);
       return;
     }
 
@@ -49,7 +49,7 @@ void    BaseCRules::onEvent(const Packet* pkt)
 
 void    BaseCRules::msgCatchUid(const ClientUid* m)
 {
-  LOG3("[" << m->client_id << "] <= Look! This is my new shining uid!");
+  LOG3("[ %1 ] <= Look! This is my new shining uid!", m->client_id);
   team_id_ = m->client_id;
   setTeamNumber(m->nb_team);
   assert(packet_sender_ != NULL);

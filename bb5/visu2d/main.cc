@@ -64,13 +64,13 @@ static void parse_option(int argc, char** argv, CmdLineOption& opt)
 {
   if (argc >= 2 && (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h")))
     {
-      std::cout << "usage: " << argv[0] << " [client_id] [config-file]\n";
+      cout << "usage: " << argv[0] << " [client_id] [config-file]\n";
       exit(0);
     }
   if (argc >= 2 && (!strcmp(argv[1], "--version") || !strcmp(argv[1], "-v")))
     {
-      std::cout << "TowBowlTactics visu2D v" PACKAGE_VERSION << "\n";
-      std::cout << "Copyright (C) 2006 TBT Team.\n";
+      cout << "TowBowlTactics visu2D v" PACKAGE_VERSION << "\n";
+      cout << "Copyright (C) 2006 TBT Team.\n";
       exit(0);
     }
 
@@ -199,7 +199,7 @@ void MainLoop(void)
                 }
                 catch(GUIError & error)
                 {
-                  ERR ("Error in creation of Menu : " << error.getMessage ());
+                  ERR ("Error in creation of Menu : %1", error.getMessage());
                   quit = true;
                   break;
                 }
@@ -222,7 +222,7 @@ void MainLoop(void)
                 }
                 catch (GUIError & error)
                 {
-                  ERR ("Error in creation of Menu : " << error.getMessage ());
+                  ERR ("Error in creation of Menu : %1", error.getMessage());
                   quit = true;
                   break;
                 }
@@ -246,7 +246,7 @@ void MainLoop(void)
                 }
                 catch(GUIError & error)
                 {
-                  ERR("Error in creation of the menu : " << error.getMessage ());
+                  ERR("Error in creation of the menu : %1", error.getMessage());
                   quit = true;
                   break;
                 }
@@ -321,7 +321,7 @@ bool initBackground(void)
       //Blit the surface
   if (SDL_BlitSurface (background, NULL, screen, srect) != 0)
   {
-    ERR("Error in initialisation of the background : " << SDL_GetError());
+    ERR("Error in initialisation of the background : %1", SDL_GetError());
     return false;
   }
   SDL_Flip (screen);
@@ -333,7 +333,7 @@ bool initTTF (void)
 {
   if (TTF_Init () < 0)
   {
-    ERR("Error in intialisation of the SDL_TTF : " << SDL_GetError());
+    ERR("Error in intialisation of the SDL_TTF : %1", SDL_GetError());
     return false;
   }
   return true;
@@ -368,7 +368,7 @@ int main (int argc, char *argv[])
   }
   catch (GUIError & error)
   {
-    ERR ("Error in creation of Menu : " << error.getMessage ());
+    ERR ("Error in creation of Menu : %1", error.getMessage());
     return -1;
   }
   menu->draw ();
@@ -384,11 +384,11 @@ int main (int argc, char *argv[])
   try
   {
     infobox = new DInfo(screen,
-                        "Bienvenue dans TBT\n\nAttention !!\nce programe est\nen dï¿½veloppement\n");
+                        "Bienvenue dans TBT\n\nAttention !!\nce programe est\nen développement\n");
   }
   catch(GUIError & error)
   {
-    ERR("Error in creation of a DialogBox : " << error.getMessage());
+    ERR("Error in creation of a DialogBox : %1", error.getMessage());
     return -1;
   }
   

@@ -192,6 +192,6 @@ void VirtualScrollableSurface::blit(Surface& to,
                                     const Rect& to_rect,
                                     const Rect& from_rect)
 {
-  LOG6("VSS: blit from: " << from_rect + vpos_);
+  LOG6("VSS: blit from: %1", from_rect + vpos_);
   Surface::blit(to, to_rect, from_rect + vpos_);
 }

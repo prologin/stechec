@@ -80,7 +80,7 @@ public:                                                         \
 	!(obj_->*filt_f_)(reinterpret_cast<const PClass*>(p)))	\
       return false;						\
     LOG5("PacketHandler gets message '"                         \
-         #Cst "' (client_id: " << p->client_id << ")");         \
+         #Cst "' (client_id: %1 )", p->client_id);         \
     (obj_->*f_)(reinterpret_cast<const PClass*>(p));            \
     return true;                                                \
   }                                                             \

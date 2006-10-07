@@ -110,15 +110,18 @@ void Entry::refresh()
     SDL_Rect rc = {5, height / 2, width, height};
     SDL_BlitSurface(temp, NULL, widget, &rc);
     rc.x += width;
+
     string st2((*txt), index, 1);
     TTF_SizeText(font, st2.c_str(), &width, &height);
     temp = TTF_RenderText_Shaded(font, st2.c_str(), bgColor, fgColor);
-    rc.w=width; rc.h=height;
+    rc.w = width; rc.h = height;
     SDL_BlitSurface(temp, NULL, widget, &rc);
     rc.x += width;
+    
     string st3((*txt), index + 1, txt->size() - index);
+    TTF_SizeText(font, st3.c_str(), &width, &height);
     temp = TTF_RenderText_Solid(font, st3.c_str(), fgColor);
-    rc.w=width; rc.h=height;
+    rc.w = width; rc.h = height;
     SDL_BlitSurface(temp, NULL, widget, &rc);
     SDL_FreeSurface(temp);
   }

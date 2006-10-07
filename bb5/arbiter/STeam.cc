@@ -230,7 +230,7 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eAction action)
   if (r_->getCurrentTeamId() != pkt->client_id)
     {
       LOG4("Cannot do action: not team turn");
-      LOG4(r_->getCurrentTeamId() << ", " << r_->getState());
+      LOG4("%1, %2",r_->getCurrentTeamId(), r_->getState());
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }

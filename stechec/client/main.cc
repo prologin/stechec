@@ -160,11 +160,11 @@ int main(int argc, char** argv)
     ret_value = cl.run(cfg, r, &ccx);
 
   } catch (const NetError& e) {
-    ERR("Network: " << e);
+    ERR("Network: %1", e);
     ret_value = 51;
     goto end;
   } catch (const FileIOError& e) {
-    ERR("File IO: " << e);
+    ERR("File IO: %1", e);
     ret_value = 51;
     goto end;
   } catch (const LibraryError&) {

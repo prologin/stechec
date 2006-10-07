@@ -148,13 +148,13 @@ inline bool Api::doPlaceBall(const Point& pos)
   Position bpos(pos);
   if (!rules_->field_->intoField(bpos))
     {
-      LOG2("Kickoff rejected. Ball not on the field: " << pos);
+      LOG2("Kickoff rejected. Ball not on the field: %1", pos);
       return false;
     }
   if ((selected_team_->getTeamId() == 0 && bpos.row < 13)
       ||(selected_team_->getTeamId() == 1 && bpos.row > 12))
     {
-      LOG2("Kickoff rejected. Ball in your part of the field: " << pos);
+      LOG2("Kickoff rejected. Ball in your part of the field: %1", pos);
       return false;
     }
   MsgBallPos pkt;
@@ -177,13 +177,13 @@ inline bool Api::doGiveBall(int p)
 	
   if (getPlayer(p) == NULL) 
     {
-      LOG2("Player `" << p << "' does not exist.");
+      LOG2("Player `%1' does not exist.", p);
       return false;
     }
 	
   if (getPlayer(p)->getStatus() != STA_STANDING) 
     {
-      LOG2("Player `" << p << "' can't carry the ball.");
+      LOG2("Player `%1' can't carry the ball.", p);
       return false;
     }
   MsgGiveBall pkt;

@@ -62,7 +62,7 @@ namespace xml
 
   void XML::parse(const std::string& filename)
   {
-    LOG2("Parsing xml file '" << filename << "'");
+    LOG2("Parsing xml file '%1`", filename);
     filename_ = filename;
 
     // Check if the file exists before doing anything. Otherwise, the SAX
@@ -88,7 +88,7 @@ namespace xml
 
   void XML::save()
   {
-    LOG2("Saving xml to file '" << filename_ << "'");
+    LOG2("Saving xml to file '%1`", filename_);
 
     xml_writer_->save(filename_);
   }
@@ -305,7 +305,7 @@ namespace xml
     // First see if the user supplied file exists.
     if (filename != "")
       {
-        LOG4("Looking for " << filename << "...");
+        LOG4("Looking for %1 ...", filename);
         if (stat(filename.c_str(), &st) >= 0)
           {
             realpath(filename.c_str(), resolved_path);
@@ -316,7 +316,7 @@ namespace xml
 
     // Search for "tbtrc" in the current directory
     fn = "tbtrc";
-    LOG4("Looking for " << fn << "...");
+    LOG4("Looking for %1 ...", fn);
     if (fn != filename && stat(fn.c_str(), &st) >= 0)
       {
         realpath(fn.c_str(), resolved_path);
@@ -326,7 +326,7 @@ namespace xml
 
     // Search in the user home directory for ~/.tbtrc
     fn = std::string(getenv("HOME")) + "/.tbtrc";
-    LOG4("Looking for " << fn << "...");
+    LOG4("Looking for %1 ...", fn );
     if (stat(fn.c_str(), &st) >= 0)
       {
         realpath(fn.c_str(), resolved_path);

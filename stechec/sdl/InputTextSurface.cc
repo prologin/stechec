@@ -77,7 +77,7 @@ void InputTextSurface::update()
       if (inp.key_pressed_[SDLK_BACKSPACE] && index_ > 0)
         {
           std::string s(text_);
-          LOG1("index: " << index_ << " text: " << text_ );
+          LOG1("index: %1 text: %2", index_, text_ );
           setText(s.erase(index_ - 1, 1));
           index_--;
         }

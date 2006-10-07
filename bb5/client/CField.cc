@@ -46,7 +46,7 @@ ScorePoint* CField::extractMin()
 {
   ScorePoint*        min = cur_pt_list_.begin()->second;
   cur_pt_list_.erase(cur_pt_list_.begin());
-  LOG6("--- extract min: " << *min);
+  LOG6("--- extract min: %1", *min);
   return min;
 }
 
@@ -91,13 +91,13 @@ bool CField::getMinPath(int team_id)
         {
           ScorePoint* cur = &path_tab_[i * COLS + j];
           int new_score = m->score + 1 + getScoreModifier(*cur, *m, team_id);
-          LOG6("new score: " << new_score << " prev: " << m->score);
+          LOG6("new score: %1 prev: %2", new_score, m->score);
           if (new_score < cur->score)
             {
               cur->from = m;
               cur->score = new_score;
               cur->ma = m->ma - 1;
-              LOG6("+ push " << *cur << " ma " << cur->ma);
+              LOG6("+ push %1 ma %2", *cur, cur->ma);
               cur_pt_list_.insert(std::make_pair(new_score, cur));
             }
         }

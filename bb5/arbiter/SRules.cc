@@ -97,8 +97,7 @@ void SRules::initHalf()
   // If there is a winner after 2 or 3 halfs
   if (cur_half_ > 2 && team_[0]->getScore() != team_[1]->getScore())
     {
-      LOG4("Team " << (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1)
-	   << " win the game.");
+      LOG4("Team %1 win the game.", (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1));
       LOG4("End of game.");
       setState(GS_END);
       MsgEndGame pkt;
@@ -124,8 +123,7 @@ void SRules::initHalf()
 	  coach0 = dice_->roll("3th half coach0") + team_[0]->getRerollsRemain();
 	  coach1 = dice_->roll("3th half coach1") + team_[1]->getRerollsRemain();
 	}
-      LOG4("Team " << (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1)
-	   << " win the game.");
+      LOG4("Team %1 win the game.", (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1));
  
       LOG4("End of game.");
       setState(GS_END);
@@ -146,7 +144,7 @@ void SRules::initHalf()
   pkt.cur_half = cur_half_;
   sendPacket(pkt);
 	
-  LOG3("Initialize half " << cur_half_ << ".");
+  LOG3("Initialize half %1.", cur_half_);
 
   coach_receiver_ = coach_begin_;
   initKickoff();
@@ -168,7 +166,7 @@ void SRules::initKickoff()
   team_[1]->prepareKickoff();
 
 
-  LOG3("Kicking team: " << (getCurrentTeamId() + 1) % 2);
+  LOG3("Kicking team: %1", (getCurrentTeamId() + 1) % 2);
 
   // Say that we are about to initialize the kickoff.
   MsgInitKickoff pkt((getCurrentTeamId() + 1) % 2);
@@ -217,7 +215,7 @@ void SRules::msgInitGame(const MsgInitGame* m)
     {
       // Decide who is the kicking team
       coach_begin_ = dice_->roll("kicking team", D2) - 1; // team_id: base 0.
-      LOG3("Coach " << coach_begin_ << " plays first (receiving team).");
+      LOG3("Coach %1 plays first (receiving team).", coach_begin_);
 
   // Send some objects to clients -> weather wil be introduce with advanced Rules
   /*  MsgWeather pkt;
@@ -284,10 +282,10 @@ void SRules::msgPlayTurn(const MsgEndTurn* m)
       || getState() == GS_COACH2 && coach_begin_ == 0)
     {
       cur_turn_++;
-      LOG2("=== Go on turn `" << cur_turn_ << "'");
+      LOG2("=== Go on turn `%1`", cur_turn_);
     }
   else
-    LOG2("=== Next team play turn `" << cur_turn_ << "'");
+    LOG2("=== Next team play turn `%1`", cur_turn_);
 
   // Finished ? Go on the next half ? 
   // FIXME: 3 is for tests. must be 8.

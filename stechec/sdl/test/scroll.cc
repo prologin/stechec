@@ -38,7 +38,7 @@ int main()
   vs.setPos(Point(100, 100));
   vs.setAutomaticAdjust(true);
   win.getScreen().addChild(&vs);
-  LOG1(vs.getRect());
+  LOG1("%1",vs.getRect());
 
   // add a ground
   Surface ground("ground_1200_800.png");

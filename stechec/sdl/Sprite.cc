@@ -149,7 +149,7 @@ void Sprite::setTransparency(int level)
   Uint32 temp;
   unsigned surf_size = surf_->w * surf_->h;
 
-  LOG2("Set transparency to " << level << " surf: " << surf_size);
+  LOG2("Set transparency to %1 surf: %2", level, surf_size);
 
   SDL_LockSurface(surf_);
   pixels = (Uint32*)surf_->pixels;
@@ -176,9 +176,9 @@ void Sprite::update()
       DPoint tmp_pos(DPoint(move_to_ - move_from_) * (diff * velocity_) + current_pos_);
       current_pos_ = tmp_pos;
 
-      LOG6("MOVING: from " << move_from_ << " to " << move_to_ << "  tmp " << tmp_pos);
-      LOG6("diff " << diff << " diff * velo: " << diff * velocity_
-           << "   res: " << DPoint(move_to_ - move_from_) * (diff * velocity_));
+      LOG6("MOVING: from %1 to %2  tmp %3", move_from_, move_to_, tmp_pos);
+      LOG6("diff %1 diff * velo: %2diff * velo: %3", diff, diff * velocity_,
+           DPoint(move_to_ - move_from_) * (diff * velocity_));
 
       if (move_from_.distance(move_to_) < move_from_.distance(current_pos_))
         {

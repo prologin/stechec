@@ -50,8 +50,8 @@ VisuPlayer::VisuPlayer(Api* api, Game& game, const CPlayer* p)
   splitSizeFrame(40, 40);
   setZ(3);
   setFrame(p->getPlayerPosition() * 2 + p->getTeamId() + 1);
-  LOG2("create teamid: "<< p->getTeamId() <<" player id: "<< p->getId()
-       << " pos: " << p->getPlayerPosition());
+  LOG2("create teamid: %1 player id: %2 pos: %3", p->getTeamId(), p->getId(),
+       p->getPlayerPosition());
 }
 
 VisuPlayer::~VisuPlayer()
@@ -75,17 +75,17 @@ void VisuPlayer::action(eVisuAction item)
   switch (item)
     {
     case eActMove:
-      LOG2("MOVE to " << to << " - send to api.");
+      LOG2("MOVE to %1 - send to api.", to);
       api_->doMovePlayer(player_id, to);
       break;
     case eActBlock:
-      LOG2("BLOCK to " << to << " - not implemented yet");
+      LOG2("BLOCK to %1 - not implemented yet", to);
       break;
     case eActThrow:
-      LOG2("THROW to " << to << " - not implemented yet");
+      LOG2("THROW to %1 - not implemented yet", to);
       break;
     case eActAggress:
-      LOG2("AGGRESS to " << to << " - not implemented yet");
+      LOG2("AGGRESS to %1 - not implemented yet", to);
       break;
     default:
       LOG2("not implemented yet...");
@@ -133,7 +133,7 @@ void VisuPlayer::update()
 
   // Debug
   if (now_focus && inp.key_pressed_[(unsigned char)'d'])
-    LOG3(*p_);
+    LOG3("%1",*p_);
 
   has_focus_ = now_focus;
   Sprite::update();

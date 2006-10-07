@@ -26,8 +26,6 @@ Server::Server(const xml::XMLConfig& cfg)
     wcl_poll_(waiting_clients_, 500),
     server_shutdown_(false)
 {
-  LOG1(PACKAGE_NAME << " server v" PACKAGE_VERSION << " initializing...");
-
   // Singleton.
   assert(inst == NULL);
   inst = this;
@@ -69,7 +67,7 @@ bool    Server::checkServerState(Cx* cx)
 {
   if (server_shutdown_)
     {
-      LOG2("Connection from " << *cx << " has been rejected. Server is shutdowning.");
+      LOG2("Connection from %1 has been rejected. Server is shutdowning.", *cx);
       Packet denial(CX_DENY);
       cx->send(&denial);
       delete cx;
@@ -85,8 +83,8 @@ bool    Server::checkRemoteVersion(Cx* cx, const CxInit& pkt)
       std::ostringstream os;
       os << "Binary version mismatch: server is `" << SERVER_BINARY_VERSION;
       os << "', client is `" << pkt.binary_version << "'";
-      LOG3("Connection from " << *cx << " has been rejected, reason:");
-      LOG3(" - " << os.str());
+      LOG3("Connection from %1 has been rejected, reason:", *cx);
+      LOG3(" - %1", os.str());
       CxDeny pkt_deny;
       stringToPacket(pkt_deny.reason, os.str(), 64);
       cx->send(&pkt_deny);
@@ -100,8 +98,8 @@ bool    Server::checkRemoteVersion(Cx* cx, const CxInit& pkt)
       std::ostringstream os;
       os << "Rules mismatch: server's is `" << rules_name_ << "'";
       os << ", client is `" << client_rules_name << "'";
-      LOG3("Connection from " << *cx << " has been rejected, reason:");
-      LOG3(" - " << os.str());
+      LOG3("Connection from %1 has been rejected, reason:", *cx);
+      LOG3(" - %1", os.str());
       CxDeny pkt_deny;
       stringToPacket(pkt_deny.reason, os.str(), 64);
       cx->send(&pkt_deny);
@@ -121,7 +119,7 @@ bool    Server::checkRemoteTCP(TcpCx* cx, const Packet&)
 
   if (bad)
     {
-      LOG3("Connection from " << *cx << " has been rejected.");
+      LOG3("Connection from %1 has been rejected.", *cx);
       CxDeny denial;
       stringToPacket(denial.reason, "I don't like you.", 64);
       cx->send(&denial);
@@ -129,7 +127,7 @@ bool    Server::checkRemoteTCP(TcpCx* cx, const Packet&)
       return false;
     }
 
-  LOG4("Connection from '" << *cx << "' has been accepted.");
+  LOG4("Connection from '%1` has been accepted.", *cx);
   Packet acpt(CX_ACCEPT);
   cx->send(&acpt);
   return true;
@@ -179,13 +177,12 @@ bool    Server::serveClient(Cx* cx)
     }
   else if (pkt->token == CX_ABORT)
     {
-      LOG4("Client " << *cx << " sent CX_ABORT. Close its connection.");
+      LOG4("Client %1 sent CX_ABORT. Close its connection.", *cx);
       delete cx;
     }
   else
     {
-      LOG2("Unknown message (" << pkt->token << ") from waiting client '"
-           << *cx << "'. Kill it.");
+      LOG2("Unknown message (%1) from waiting client '%2'. Kill it.", pkt->token, *cx);
       delete cx; // "/me takes aim: HEADSHOT !"
     }
   return true;
@@ -202,7 +199,7 @@ bool    Server::cleanFinishedGame()
     {
       if (it->second->isFinished())
         {
-          LOG5("Clean a thread, used to belong to game uid " << it->first << ".");
+          LOG5("Clean a thread, used to belong to game uid %1.", it->first);
           pthread_join(it->second->getThreadId(), NULL);
           delete it->second;
           games_.erase(it++);
@@ -223,7 +220,7 @@ void        Server::run()
 
   is_persistent_ = cfg_.getAttr<bool>("options", "persistent");
   
-  LOG2("Listening on port " << cfg_.getAttr<int>("listen", "port"));
+  LOG2("Listening on port %1", cfg_.getAttr<int>("listen", "port"));
   listen_socket.listenAt(cfg_.getAttr<int>("listen", "port"));
   waiting_clients_.reserve(1024); // should be max cx;
   waiting_clients_.push_back(&listen_socket);
@@ -245,8 +242,7 @@ void        Server::run()
                   && checkRemoteTCP(client_cx, init_pkt))
                 waiting_clients_.push_back(client_cx);
             } catch (const NetError& e) {
-              LOG2("Network error on connection (from " << *client_cx
-                   << "): " << e);
+              LOG2("Network error on connection (from %1): ", *client_cx, e);
               delete client_cx; // should not be pushed on waiting_clients_.
             }
           }
@@ -257,8 +253,7 @@ void        Server::run()
             try {
               remove_from_wc = serveClient(client_cx);
             } catch (const NetError& e) {
-              LOG2("Network error on waiting client (from " << *client_cx
-                   << "): " << e);
+              LOG2("Network error on waiting client (from %1): ", *client_cx, e);
               delete client_cx;
             }
             if (remove_from_wc)

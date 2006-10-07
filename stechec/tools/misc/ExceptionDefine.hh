@@ -35,7 +35,7 @@
   std::ostringstream os;                        \
   os << Msg;                                    \
   Excpt e(os.rdbuf()->str());                   \
-  ERR("Throwing " #Excpt ": " << e);            \
+  ERR("Throwing " #Excpt ": %1",e);             \
   throw e;                                      \
 }
 

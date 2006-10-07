@@ -18,8 +18,7 @@
 
 Focus::Focus(Widget* widget)
   : focus(widget)
-{
-}
+{}
 
 Widget* Focus::get_focus()
 {

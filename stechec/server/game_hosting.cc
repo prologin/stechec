@@ -37,9 +37,8 @@ GameHosting::GameHosting(int game_uid,
   cfg.switchSection("server");
   nb_waited_viewer_ = cfg.getData<int>("nb_spectator");
 
-  LOG1("Creating a new game, uid '" << game_uid << "'. Wait for `"
-       << nb_waited_coach_ << "' teams and `" << nb_waited_viewer_
-       << "' spectators.");
+  LOG1("Creating a new game, uid '%1`. Wait for `%2' teams and `%3' spectators.", game_uid,
+       nb_waited_coach_, nb_waited_viewer_);
 
   if (cfg.getAttr<bool>("log", "enabled"))
     {
@@ -50,7 +49,7 @@ GameHosting::GameHosting(int game_uid,
       pkt_id.client_id = UID_COACH_BASE;
       pkt_id.nb_team = nb_waited_coach_;
       log_.send(&pkt_id);
-      LOG4("Log game into file `" << filename << "'");
+      LOG4("Log game into file `%1`", filename);
     }
   
 }
@@ -75,8 +74,8 @@ pthread_t GameHosting::getThreadId() const
 
 void    GameHosting::sendPacket(const Packet& p)
 {
-  LOG5("Send packet `" << rules_->getPacketStr(p.token)
-       << "' to client_id `" << p.client_id << "'");
+  LOG5("Send packet `%1' to client_id `%2`", rules_->getPacketStr(p.token),
+       p.client_id);
   log_.send(&p);
   for_all(client_list_, Client::Send(p));
 }
@@ -95,7 +94,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
 
   if (game_finished_)
     {
-      LOG3("Deny access for game '" << game_uid_ << "': it is already finished !");
+      LOG3("Deny access for game '%1': it is already finished !", game_uid_);
       Packet pkt_game_finished(CX_DENY);
       cx->send(&pkt_game_finished);
       delete cx;
@@ -106,8 +105,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
   //   for now, it doesn't work.
   if (started_)
     {
-      LOG3("Deny coach access for game '" << game_uid_
-           << "': it is already started !");
+      LOG3("Deny coach access for game '%1': it is already started !", game_uid_);
       Packet pkt_full(CX_DENY);
       cx->send(&pkt_full);
       delete cx;
@@ -117,8 +115,8 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
   if (wanna_be_coach)
     {
       uid = nb_coach_++ + UID_COACH_BASE;
-      LOG4("Grant access for coach `" << uid << "' (league id: "
-           << client_extid << "), game '" << game_uid_ << "'.");
+      LOG4("Grant access for coach `%1' (league id: %2), game '%3'.", uid, 
+      		client_extid, game_uid_);
       if (nb_coach_ == nb_waited_coach_ && nb_viewer_ >= nb_waited_viewer_)
         started_ = true;
     }
@@ -127,8 +125,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
       uid = viewer_base_uid_++ + UID_VIEWER_BASE;
       nb_viewer_++;
       rules_->setViewerState(rules_->getViewerState() | VS_HAVEVIEWER);
-      LOG4("Grant access for spectator uid '" << uid << "', game '"
-           << game_uid_ << "'.");
+      LOG4("Grant access for spectator uid '%1', game '%2'.", uid, game_uid_);
       if (nb_coach_ == nb_waited_coach_ && nb_viewer_ >= nb_waited_viewer_)
         started_ = true;
     }
@@ -201,7 +198,7 @@ bool GameHosting::process()
   try {
     nb_ready = client_poll_.poll();
   } catch (const NetError& e) {
-    LOG2("Fatal network error: " << e);
+    LOG2("Fatal network error: %1", e);
     return false;
   }
 
@@ -234,7 +231,7 @@ bool GameHosting::process()
 	      client_list_.erase(client_list_.end() - 1);
 	      if (nb_ready >= cl_size)
 		nb_ready--;
-	      LOG6("Remove one client: cl_size: " << cl_size - 1 << " nb coach: " << nb_coach_);
+	      LOG6("Remove one client: cl_size: %1 nb coach: %2", cl_size - 1, nb_coach_);
 	    }
 	  assert(nb_viewer_ >= 0 && nb_coach_ >= 0);
 	}
@@ -244,7 +241,7 @@ bool GameHosting::process()
 	    if (processOne(cl, remove_reason))
 	      cl->setDead(remove_reason);
 	  } catch (const NetError& e) {
-	    LOG2("Network error: " << e);
+	    LOG2("Network error: %1", e);
 	    remove_reason = std::string("Network error: ") + e.what();
 	    cl->setDead(remove_reason, true);
 	  }
@@ -298,7 +295,7 @@ void GameHosting::run()
         }
       outputStatistics();
     } catch (const NetError& e) {
-      LOG2("Network error: " << e << ". Aborting game.");
+      LOG2("Network error: %1. Aborting game.", e);
     }
 
   if (started_)
@@ -306,7 +303,7 @@ void GameHosting::run()
   game_finished_ = true;
 
   // Wait that client quit by themself, to not forcelly close their sockets
-  LOG4("Wait that `" << client_list_.size() << "' remaining clients quit.");
+  LOG4("Wait that `%1` remaining clients quit.", client_list_.size());
   while (!client_list_.empty())
     process();
   for_all(coach_list_, Deleter());

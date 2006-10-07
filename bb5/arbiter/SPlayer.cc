@@ -84,15 +84,13 @@ bool SPlayer::tryAction(int modifier)
   int required = 7 - std::min(ag_, 6);
   if (dice_res != 6 && (dice_modif < required || dice_res == 1))
     {
-      LOG6("[" << id_ << "] Action _failed_, dice: " << dice_res
-           << ", w/modifiers: " << dice_modif << ", required: " << required
-           << ", ag: " << ag_ << ".");
+      LOG6("[%1] Action _failed_, dice: %2, w/modifiers: %3, required: %4, ag: %5.", id_, dice_res, dice_modif,
+					required, ag_ );
       sendRoll(dice_res, modifier, required);
       return false;
     }
-  LOG6("[" << id_ << "] Action succeed, dice: " << dice_res
-       << ", w/modifiers: " << dice_modif << ", required: " << required
-       << ", ag: " << ag_ << ".");
+  LOG6("[%1] Action succeed, dice: %2, w/modifiers: %3, required: %4, ag: %5.", id_, dice_res,
+       dice_modif, required, ag_);
   sendRoll(dice_res, modifier, required);
   return true;
 }
@@ -142,11 +140,11 @@ int SPlayer::doMove(const ActMove* m)
 	  reroll_enabled_ = t_->canUseReroll();
           if (tryAction(1 - nb_tackles_aim))
             {
-              LOG5("Player has successfully dodged out from " << pos_ << ".");
+              LOG5("Player has successfully dodged out from %1.", pos_);
             }
           else
             {
-              LOG5("Player fails to dodge out from " << pos_ << ".");
+              LOG5("Player fails to dodge out from %1.", pos_);
 	      aim_ = aim;
 	      if (reroll_enabled_) {
 		if (res_move.nb_move > 0)
@@ -263,8 +261,8 @@ int SPlayer::doBlock(const ActBlock* m)
       || target_->status_ != STA_STANDING
       || !pos_.isNear(target_->getPosition()))
     {
-      LOG3("Cannot block player '" << other_team_id << "' at "
-	   << target_->getPosition() << " (status: " << target_->status_ << ").");
+      LOG3("Cannot block player '%1` at %2 (status: %3).", other_team_id,
+	   		target_->getPosition(), target_->status_);
       return 0;
     }
 
@@ -297,7 +295,7 @@ int SPlayer::doBlock(const ActBlock* m)
   for (int i = 0; i < nb_dice_; ++i)
     {
       result_[i] = (enum eBlockDiceFace)d_->roll("block", DBLOCK);
-      LOG5("Rolled block dice: " << Dice::stringify(result_[i]));
+      LOG5("Rolled block dice: %1", Dice::stringify(result_[i]));
       msg.results[i] = result_[i];
     }
 
@@ -417,8 +415,8 @@ void SPlayer::blockPushChoice(SPlayer* target)
       choice[2] = dt + d + Position(0, -d.col);
     }
 
-  LOG3("attacker: " << pos_ << "  defender: " << target->pos_);
-  LOG3("c1: " << choice[0] << " c2: " << choice[1] << " c3: " << choice[2]);
+  LOG3("attacker: %1  defender: ", pos_, target->pos_);
+  LOG3("c1: %1 c2: %2 c3: %3", choice[0], choice[1], choice[2]);
 
   ActBlockPush pkt(r_->getCurrentTeamId());
   pkt.target_row = dt.row;
@@ -474,7 +472,7 @@ void SPlayer::blockPush(int chosen_square)
   Position to(choices_[chosen_square].row, choices_[chosen_square].col);
   SPlayer* other_target = f_->getPlayer(to);
 
-  LOG2("blockpush 2nd phase: " << to);
+  LOG2("blockpush 2nd phase: %1", to);
   
 
   if (other_target == NULL)
@@ -671,11 +669,11 @@ int SPlayer::finishMove(bool reroll)
   int nb_tackles_aim = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim_);
   if (reroll&&tryAction(1 - nb_tackles_aim))
     {
-      LOG5("Player has successfully dodged out from " << pos_ << ".");
+      LOG5("Player has successfully dodged out from %1.", pos_);
     }
   else
     {
-      LOG5("Player has been knocked out from " << pos_ << ".");
+      LOG5("Player has been knocked out from %1.", pos_);
       knocked = true;
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
@@ -834,7 +832,7 @@ void SPlayer::finishBlock(bool reroll)
       for (int i = 0; i < nb_dice_; ++i)
 	{
 	  result_[i] = (enum eBlockDiceFace)d_->roll("finishblock", DBLOCK);
-	  LOG5("Rolled block dice: " << Dice::stringify(result_[i]));
+	  LOG5("Rolled block dice: %1", Dice::stringify(result_[i]));
 	  msg.results[i] = result_[i];
 	}
     }
@@ -942,7 +940,7 @@ void SPlayer::prepareKickoff()
       break;
 
     default:
-      WARN("case `" << stringify(status_) << "' not handled...");
+      WARN("case `%1` not handled...", stringify(status_));
       break;
     }
 }
@@ -969,7 +967,7 @@ void SPlayer::rollInjury(int inj_mod)
       setStatus(rollCasualty());
       f_->setPlayer(pos_, NULL);
     }
-  LOG6("[" << id_ << "] Amor Passed, Injury : " << injury << ".");
+  LOG6("[%1] Amor Passed, Injury : %2.", id_, injury);
 }
 
 enum eStatus SPlayer::rollCasualty()

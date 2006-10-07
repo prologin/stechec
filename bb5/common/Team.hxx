@@ -66,7 +66,7 @@ inline T* Team<T>::getPlayer(int id)
   if (id >= 0 && id < MAX_PLAYER)
     return player_[id];
 
-  LOG2("Wrong player_id: " << id << " (team: " << team_id_ << ")");
+  LOG2("Wrong player_id: %1 (team: %2)", id, team_id_);
   return NULL;
 }
 

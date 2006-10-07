@@ -61,7 +61,7 @@ void    BaseRules::handlePacket(const Packet* p)
   if (pkt_hdl_[p->token].empty())
     {
       // This token has no associated object. This is an error.
-      WARN("handlePacket: unknown packet token = " << p->token);
+      WARN("handlePacket: unknown packet token = %1", p->token);
     }
   else
     {
@@ -76,8 +76,7 @@ void    BaseRules::handlePacket(const Packet* p)
           }
       if (!handled)
 	{
-	  WARN("handlePacket: msg '" << pkt_hdl_[p->token].begin()->second->getCstStr()
-	       << "' doesn't have handler for state " << state_);
+	  WARN("handlePacket: msg '%1` doesn't have handler for state %2", pkt_hdl_[p->token].begin()->second->getCstStr(), state_);
 	  if (sync_)
 	    sendPacket(MsgSync());
 	}

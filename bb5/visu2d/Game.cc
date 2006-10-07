@@ -113,7 +113,7 @@ void Game::evPlayerCreate(int team_id, int player_id)
 {
   if (player_[team_id][player_id] != NULL)
     {
-      WARN("Player was already created! (team_id: " << team_id << ", id:" << player_id << ")");
+      WARN("Player was already created! (team_id: %1, id:%2)", team_id, player_id);
       return;
     }
       

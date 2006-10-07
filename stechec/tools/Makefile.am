@@ -19,7 +19,8 @@ libtools_la_SOURCES +=				\
 	misc/Exception.hh			\
 	misc/ExceptionDefine.hh			\
 	misc/os_wrapper.hh			\
-	misc/os_wrapper.cc
+	misc/os_wrapper.cc	\
+	misc/compose.hpp
 
 libtools_la_SOURCES +=				\
 	logger/log.cc				\

@@ -117,7 +117,7 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
 {
   cur_turn_ = 0;
   cur_half_ = m->cur_half;
-  LOG2("-- CRules: Initialize the half " << cur_half_);
+  LOG2("-- CRules: Initialize the half %1", cur_half_);
 
   our_team_->initRerolls();
   other_team_->initRerolls();

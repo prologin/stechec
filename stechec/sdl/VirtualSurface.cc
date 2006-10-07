@@ -56,7 +56,7 @@ void VirtualSurface::removeChild(Surface* child)
       child_list_.erase(it);
     }
   else
-    WARN("Removing child: not found: " << *child);
+    WARN("Removing child: not found: %1", *child);
 }
 
 void VirtualSurface::updateChildZOrder()
@@ -103,30 +103,30 @@ void VirtualSurface::render()
 
   if (!isShown())
     {
-      LOG5("+ Not rendering `" << name_ << "', is hidden.");
+      LOG5("+ Not rendering `%1`, is hidden.", name_);
       invalidated_surf_.clear();
       return;
     }
 
-  LOG5("+++ Rendering `" << name_ << "'");
+  LOG5("+++ Rendering `%1`", name_);
 
   std::for_each(child_list_.begin(), child_list_.end(),
                 std::mem_fun(&Surface::render));
-  LOG5("End rendering childs of `" << name_ << "'");
+  LOG5("End rendering childs of `%1`", name_);
 
   for (rit = invalidated_surf_.begin(); rit != invalidated_surf_.end(); rit++)
     {
-      LOG6("+ Managing invalidated surface: " << *rit);
+      LOG6("+ Managing invalidated surface: %1", *rit);
       for (it = child_list_.begin(); it != child_list_.end(); ++it)
         if ((*it)->isShown())
           {
             Rect child_surf((*it)->getRenderRect());
-            LOG6("  To child: " << **it);
+            LOG6("  To child: %1", **it);
             child_surf &= *rit;
             if (child_surf.w > 0 && child_surf.h > 0)
               {
-                LOG6("* Render merged, blit to: " << child_surf);
-                LOG6("* child blit from: " << child_surf - (*it)->getPos());
+                LOG6("* Render merged, blit to: %1", child_surf);
+                LOG6("* child blit from: %1", child_surf - (*it)->getPos());
                 (*it)->blit(*this, child_surf, child_surf - (*it)->getPos());
               }
           }
@@ -142,12 +142,12 @@ void VirtualSurface::render()
     }
 
   invalidated_surf_.clear();
-  LOG5("+++ End rendering `" << name_ << "'");
+  LOG5("+++ End rendering `%1`", name_);
 }
 
 void VirtualSurface::invalidate(const Rect& zone)
 {
-  LOG6("Add invalidated rect: " << zone << " for parent `" << name_ << "'");
+  LOG6("Add invalidated rect: %1 for parent `%2`", zone, name_);
   // FIXME: merge invalidated_surf_'s.
   invalidated_surf_.push_back(zone);
 }

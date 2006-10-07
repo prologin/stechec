@@ -41,7 +41,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
   // place the ball.
   if (r_->getCurrentOpponentTeamId() != m->client_id)
     {
-      LOG4("Ball: unallowed kick-off from " << m->client_id << ".");
+      LOG4("Ball: unallowed kick-off from %1.", m->client_id);
       r_->sendIllegal(MSG_BALLPOS, m->client_id);
       return;
     }
@@ -53,16 +53,14 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
   pos_.col = m->col;
   if (invalidBallPlacement())
     {
-      LOG4("Ball: wrong kick-off from " << m->client_id
-	   << ". Not in receiver's field: " << pos_);
+      LOG4("Ball: wrong kick-off from %1. Not in receiver's field: %2", m->client_id, pos_);
       return;
     }
 
   scatter(r_->getDice()->roll("scatter len"));
   if (invalidBallPlacement())
     {
-      LOG4("Ball: kick-off from " << m->client_id
-	   << ". Scattered out of receiver's field: " << pos_);
+      LOG4("Ball: kick-off from %1. Scattered out of receiver's field: %2", m->client_id, pos_);
       return;
     }
 
@@ -85,7 +83,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
 	  int nb_tackles = r_->getField()->getNbTackleZone(1 - p->getTeamId(), pos_);
 	  if (!p->tryAction(0 - nb_tackles))
 	    {
-	      LOG5("Ball: player has failed to catch it at " << pos_);
+	      LOG5("Ball: player has failed to catch it at %1", pos_);
 	      scatter(1);
 	      if (invalidBallPlacement())
 		return;
@@ -94,7 +92,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
 	    }
 	  else
 	    {
-	      LOG5("Ball: player successfully catch it at " << pos_);
+	      LOG5("Ball: player successfully catch it at %1", pos_);
 	      owner_ = p;
 	      p = NULL;
 	      has_scattered = true;
@@ -116,7 +114,7 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
   // Called on half init, when the ball goes out of the pitch
   if (r_->getCurrentTeamId() != m->client_id)
     {
-      LOG4("Ball: coach " << m->client_id << " unallowed to give the ball.");
+      LOG4("Ball: coach %1 unallowed to give the ball.", m->client_id);
       r_->sendIllegal(MSG_GIVEBALL, m->client_id);
       return;
     }
@@ -125,7 +123,7 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
 
   if (p->getStatus() != STA_STANDING)
     {
-      LOG4("Ball: player `" << p->getId() << "' can't carry the ball.");
+      LOG4("Ball: player `%1' can't carry the ball.", p->getId());
       r_->sendIllegal(MSG_GIVEBALL, m->client_id);
       return;
     }
@@ -162,7 +160,7 @@ void SBall::afterBounce(const Position& delta, int amplitude)
   SField* f = r_->getField();
   Position to(pos_ + (amplitude * delta));
 
-  LOG5("Ball: bounce from " << pos_ << " to " << to);
+  LOG5("Ball: bounce from %1 to %2", pos_, to);
   assert(f->intoField(pos_)); // Ball must be in-field before.
   
   if (f->intoField(to))
@@ -260,13 +258,13 @@ bool SBall::catchBall(SPlayer *p, int modifier)
   int nb_tackles = f->getNbTackleZone(opponent_team_id, pos_);
   if (!p->tryAction(modifier - nb_tackles))
     {
-      LOG5("Ball: player has failed to pick it at " << pos_);
+      LOG5("Ball: player has failed to pick it at %1", pos_);
       if (p->reroll_enabled_)	
 	return false;
       bounce();
       return false;
     }
-  LOG5("Ball: player successfully took it at " << pos_);
+  LOG5("Ball: player successfully took it at %1", pos_);
   owner_ = p;
   return true;
 }
@@ -276,7 +274,7 @@ void SBall::throwin()
 {
   Position d(0, 0); // Direction of the throw.
   int reach = r_->getDice()->roll("ball throwin");
-  LOG5("Ball: gets throwed by spectators at " << pos_);
+  LOG5("Ball: gets throwed by spectators at %1", pos_);
 
   // Get the border we just crossed:
   if (pos_.col == 0)

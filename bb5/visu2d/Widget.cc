@@ -125,7 +125,7 @@ ushort Widget::inside(const uint mousex, const uint mousey)
 
 ushort Widget::mousebuttondown(const uint mousex, const uint mousey)
 {
-  if(inside(mousex, mousey))
+	if(inside(mousex, mousey))
   {
     globfocus.set_focus(this);
     return 1;
@@ -135,12 +135,12 @@ ushort Widget::mousebuttondown(const uint mousex, const uint mousey)
 
 void Widget::gainfocus()
 {
-  focus=true;
+  focus = true;
 }
 
 void Widget::losefocus()
 {
-  focus=false;
+  focus = false;
 }
 
 bool Widget::hasfocus()

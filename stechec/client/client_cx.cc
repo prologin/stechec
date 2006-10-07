@@ -67,7 +67,7 @@ bool    ClientCx::openLog(const std::string& filename)
   try {
     cx->open(filename, CX_RO);
   } catch (const FileIOError& e) {
-    ERR(e);
+    ERR("%1",e);
     return false;
   }
   cx_ = cx;
@@ -111,7 +111,7 @@ void    ClientCx::setReady()
       WARN("You are not connected ! connect first.");
       return;
     }
-  LOG5("Send `CX_READY' (from client_id: " << team_id_ << ")");
+  LOG5("Send `CX_READY' (from client_id: %1)", team_id_);
   Packet pkt_ready(CX_READY, team_id_);
   cx_->send(&pkt_ready);
 }
@@ -128,8 +128,7 @@ void ClientCx::sendPacket(const Packet& p)
   if (p.client_id >= UID_VIEWER_BASE)
     return;
 
-  LOG5("Send packet `" << rules_->getPacketStr(p.token) << "' (client_id "
-       << p.client_id << ")");
+  LOG5("Send packet `%1` (client_id %2)", rules_->getPacketStr(p.token), p.client_id);
   assert(p.client_id >= UID_COACH_BASE);
   cx_->send(&p);
 }
@@ -152,12 +151,12 @@ bool ClientCx::connect(const std::string& host, int port, const std::string& rul
       return false;
     }
   
-  LOG3("Connecting to " << host << ":" << port);
+  LOG3("Connecting to %1 : %2", host, port);
   TcpCx* cx = new TcpCx;
   while (nb_retry--)
     try {
       cx->connect(host.c_str(), port);
-      LOG2("Connected to " << *cx);
+      LOG2("Connected to %1", *cx);
       break;
     } catch (const NetError&) {
       LOG2("Error - Retrying in 3 seconds.");
@@ -183,7 +182,7 @@ bool ClientCx::connect(const std::string& host, int port, const std::string& rul
     {
       const CxDeny& pkt_deny = static_cast<CxDeny&>(*p);
       ERR("Server denied the connection. Reason below:");
-      ERR(" - " << packetToString(pkt_deny.reason));
+      ERR(" - %1", packetToString(pkt_deny.reason));
       delete cx;
       return false;
     }
@@ -199,8 +198,7 @@ bool ClientCx::connect(const std::string& host, int port, const std::string& rul
 
 bool ClientCx::join(int game_uid, bool wanna_be_viewer)
 {
-  LOG4("Join game `" << game_uid << "' as `"
-       << (wanna_be_viewer ? "viewer" : "coach") << "'.");
+  LOG4("Join game `%1` as `%2`.", game_uid, (wanna_be_viewer ? "viewer" : "coach"));
   CxJoin pkt_join(CX_JOIN);
   pkt_join.is_coach = wanna_be_viewer ? 0 : 1;
   pkt_join.game_uid = game_uid;
@@ -215,7 +213,7 @@ bool ClientCx::join(int game_uid, bool wanna_be_viewer)
 // Connect to the arbiter, in standalone mode
 void ClientCx::createDirectCx(int uid)
 {
-  LOG4("[" << uid << "] Create DirectCx");
+  LOG4("[%1] Create DirectCx", uid);
   cx_ = new DirectCx(uid == 1 ? CXD_IS_COACH1 : CXD_IS_COACH2);
 }
 

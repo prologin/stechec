@@ -44,24 +44,24 @@ void Library::open(const std::string& library_file)
 {
   if (hndl_ != NULL)
     {
-      LOG5("Unload dynamic library `" << library_file_ << "'");
+			LOG5("Unload dynamic library `%1`", library_file);
       dlclose(hndl_);
     }
 
   // FIXME: add .dll or other on windows.
   library_file_ = library_file + ".so";
-  LOG5("Opening dynamic library `" << library_file_ << "'");
+  LOG5("Opening dynamic library `%1`", library_file_);
   hndl_ = dlopen(library_file_.c_str(), RTLD_LAZY | RTLD_GLOBAL);
   if (hndl_ == NULL)
     PRINT_AND_THROW(LibraryError, "");
-  LOG3("Library `" << library_file_ << "' opened.");
+  LOG3("Library `%1` opened.", library_file_ );
 }
 
 Library::~Library()
 {
   if (hndl_ != NULL)
     {
-      LOG5("Unload dynamic library `" << library_file_ << "'");
+      LOG5("Unload dynamic library `%1`", library_file_);
       dlclose(hndl_);
     }
 }
@@ -74,6 +74,6 @@ void*  Library::getSymbol(const char* sym, bool required)
   if (mkr == NULL && required)
     PRINT_AND_THROW(LibraryError, "dlsym");
   if (mkr != NULL)
-    LOG6("Symbol `" << sym << "' loaded from `" << library_file_ << "'");
+    LOG6("Symbol `%1` loaded from `%2`",sym, library_file_);
   return mkr;
 }
