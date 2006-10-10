@@ -201,19 +201,19 @@ void OutAGui::refreshInfoBox()
   std::ostringstream os;
 
   int date = api_->current_date();
-  os << "Date:_" << date;
+  os << "Date: " << date;
   txt_date_.setText(os.str());
   os.rdbuf()->str("");
 
   int delorean_power = api_->autonomie_delorean();
-  os << "Autonomie_delorean:_" << delorean_power;
+  os << "Autonomie delorean: " << delorean_power;
   txt_fuel_.setText(os.str());
   os.rdbuf()->str("");
 
   for (int i = 0; i < api_->equipes(); i++)
     {
       int score = api_->score(i);
-      os << "Score_team_" << i + 1 << ":_" << score;
+      os << "Score team " << i + 1 << ": " << score;
       txt_score_[i].setText(os.str());
       os.rdbuf()->str("");
     }
@@ -221,46 +221,46 @@ void OutAGui::refreshInfoBox()
 
 void OutAGui::goodmanMove(int player_id, int unit_id, const Position& pos)
 {
-  LOG3("+++ goodmanMove: team " << player_id << " uid "
-       << unit_id << " to " << pos);
+  LOG3("+++ goodmanMove: team %1 uid %2 to %3",
+       player_id, unit_id, pos);
   unit_[player_id][unit_id].move(Point(pos) * case_size_, 20.);
 }
 
 void OutAGui::goodmanChangeState(int team_id, int unit_id, int new_state)
 {
-  LOG3("+++ goodmanChangeState: team " << team_id << " uid "
-       << unit_id << " to state " << new_state);
+  LOG3("+++ goodmanChangeState: team %1 uid %2 to state %3",
+       team_id, unit_id, new_state);
 }
 
 void OutAGui::goodmanLostDelorean(int team_id, int unit_id)
 {
-  LOG3("+++ goodmanLostDelorean: team " << team_id << " uid " << unit_id);
+  LOG3("+++ goodmanLostDelorean: team %1 uid %2", team_id, unit_id);
 }
 
 void OutAGui::goodmanGetDelorean(int team_id, int unit_id)
 {
-  LOG3("+++ goodmanGetDelorean: team " << team_id << " uid " << unit_id);
+  LOG3("+++ goodmanGetDelorean: team %1 uid %2", team_id, unit_id);
 }
 
 void OutAGui::goodmanLostAlmanach(int team_id, int unit_id)
 {
-  LOG3("+++ goodmanLostAlmanach: team " << team_id << " uid " << unit_id);
+  LOG3("+++ goodmanLostAlmanach: team %1 uid %2", team_id, unit_id);
 }
 
 void OutAGui::goodmanGetAlmanach(int team_id, int unit_id)
 {
-  LOG3("+++ goodmanGetAlmanach: team " << team_id << " uid " << unit_id);
+  LOG3("+++ goodmanGetAlmanach: team %1 uid %2", team_id, unit_id);
 }
 
 void OutAGui::deloreanMove(const Position& pos)
 {
-  LOG3("+++ deloreanMove: to " << pos);
+  LOG3("+++ deloreanMove: to %1", pos);
   delorean_.move(Point(pos) * case_size_, 20.);
 }
 
 void OutAGui::almanachMove(const Position& pos)
 {
-  LOG3("+++ almanachMove: to " << pos);
+  LOG3("+++ almanachMove: to %1", pos);
   almanach_.move(Point(pos) * case_size_, 20.);
 }
 
@@ -297,7 +297,7 @@ int OutAGui::run()
       for (int i = 1; i < 10; i++)
         if (input.key_pressed_['0' + i])
           {
-            LOG2("Switch to team id `" << i - 1 << "' view.");
+            LOG2("Switch to team id `%1' view.", i -1);
             if (!api_->switchTeam(i - 1))
               LOG2("Failed. No such team ?");
           }

@@ -49,7 +49,7 @@ int        ServerEntry::LoadMap(const std::string& map_file)
       // FIXME: fucking strerror_r
       //char err[256];
       //int res = strerror_r(errno, err, 256);
-      ERR("Can't open map " << map_file); //<< ": " << err);
+      ERR("Can't open map %1", map_file); //<< ": " << err);
       return 1;
     }
 
@@ -59,15 +59,15 @@ int        ServerEntry::LoadMap(const std::string& map_file)
   if (fscanf(f, "%d %d %d", &max_map_player, &g_->map_size_x, &g_->map_size_y) != 3)
     {
       fclose(f);
-      ERR(map_file << ": general information: parse error.");
+      ERR("%1: general information: parse error.", map_file);
       return 1;
     }
 
   if (max_map_player < g_->getNbPlayer())
     {
       fclose(f);
-      ERR(map_file << ": has only `" << max_map_player
-          << "' start position... and there are `" << g_->getNbPlayer() << "' players.");
+      ERR("%1: has only `%2' start position... and there are `%3' players.",
+	  map_file, max_map_player, g_->getNbPlayer());
       return 1;
     }
 
@@ -77,7 +77,7 @@ int        ServerEntry::LoadMap(const std::string& map_file)
       if (fscanf(f, "%d %d", &g_->players[i].start_x, &g_->players[i].start_y) != 2)
         {
           fclose(f);
-          ERR(map_file << ": start position: parse error.");
+          ERR("%1: start position: parse error.", map_file);
           return 1;
         }
       g_->players[i].start_x--;
@@ -98,7 +98,7 @@ int        ServerEntry::LoadMap(const std::string& map_file)
             if (fscanf(f, "%c", &c) != 1)
               {
                 fclose(f);
-                ERR(map_file << ": unexpected eof while reading map.");
+                ERR("%1: unexpected eof while reading map.", map_file);
                 return 1;
               }
           while (c <= 13);
@@ -119,15 +119,14 @@ int        ServerEntry::LoadMap(const std::string& map_file)
               break;
             default:
               fclose(f);
-              ERR(map_file << ": unknown char in map ("
-                  << line << ", " << col << "): " << c);
+              ERR("%1: unknown char in map (%2, %3): %4",
+                  map_file, line, col, c);
               return 1;
             }
         }
     }
 
-  LOG2("Map " << map_file <<" loaded (" << comment
-       << "), for `" << max_map_player << "' players.");
+  LOG2("Map %1 loaded (%2), for `%3' players.", map_file, comment, max_map_player);
 
   fclose(f);
   return 0;
@@ -195,8 +194,7 @@ int        ServerEntry::beforeGame()
                 g_->players[i].coleopteres[k].set_x(a);
                 g_->players[i].coleopteres[k].set_y(b);
                 g_->terrain_coleoptere[a][b] = &g_->players[i].coleopteres[k];
-                LOG2("Positioning player `" << i << "' id `" << k
-                     << "': " << a << ", " << b);
+                LOG2("Positioning player `%1' id `%2': %3, %4", i, k, a, b);
                 if (++k >= 5)
                   goto next2;
               }
@@ -216,8 +214,7 @@ int        ServerEntry::beforeGame()
                     g_->players[i].coleopteres[k].set_x(a);
                     g_->players[i].coleopteres[k].set_y(b);
                     g_->terrain_coleoptere[a][b] = &g_->players[i].coleopteres[k];
-                    LOG2("Positioning player `" << i << "' id `" << k
-                         << "': " << a << ", " << b);
+		    LOG2("Positioning player `%1' id `%2': %3, %4", i, k, a, b);
                     if (++k >= 5)
                       goto next2;
                   }
@@ -227,9 +224,8 @@ int        ServerEntry::beforeGame()
 
       if (k != 5)
         {
-          ERR("Error: can't place all units (" << k
-              << " / 5) for player " << i << " position x: "
-              << x << ", y " << y << ".");
+          ERR("Error: can't place all units (%1 / 5) for player `%2' position x: %3, y: %4",
+              k, i, x, y);
           return 1;
         }
           
@@ -274,7 +270,7 @@ void        ServerEntry::coleoptere_end_turn(Coleoptere* col)
 
   if (col->state == STATE_DOCKING && col->dock_build != 0 && col->dock_build->type == CENTRAL)
     {
-      LOG3("Receiving plasma from central\n");
+      LOG3("Receiving plasma from central");
       int stock = col->stock_plasma + TRANSFERT_PLASMA_SPEED;
       if (stock >= MAX_STOCK_COL_PLASMA)
         {
@@ -286,7 +282,7 @@ void        ServerEntry::coleoptere_end_turn(Coleoptere* col)
 
   if (col->state == STATE_DOCKING && col->dock_build != 0 && col->dock_build->type == MINE)
     {
-      LOG3("Receiving ore from a mine\n");
+      LOG3("Receiving ore from a mine");
       int stock = col->stock_ore + TRANSFERT_ORE_SPEED;
       if (stock >= MAX_STOCK_COL_ORE)
         {
@@ -401,7 +397,7 @@ void        ServerEntry::factory_end_turn(Factory* f)
     return;
 
   f->buildlist--;
-  LOG3("Buidling coleoptera. (" << f->buildlist << " turn left).");
+  LOG3("Buidling coleoptera. (%1 turn left).", f->buildlist);
   if (f->buildlist % MAKE_COLEOPTERA_TIME == 0)
     {
       // add at end.
@@ -419,7 +415,7 @@ void        ServerEntry::factory_end_turn(Factory* f)
 
       if (p->coleopteres[i].state == STATE_DEAD)
         {
-          LOG3("Use id " << i << " for new coleoptere.");
+          LOG3("Use id %1 for new coleoptere.", i);
           p->coleopteres[i].state = STATE_NORMAL;
           p->coleopteres[i].set_player(f->get_player());
           p->coleopteres[i].set_id(i);
@@ -510,12 +506,12 @@ int        ServerEntry::getScore(int uid)
   for (unsigned i = 0; i < p.hotel_count; i++)
     {
       Hotel& h = p.hotels[i];
-      LOG2("Score: hotel " << i);
+      LOG2("Score: hotel %1", i);
       if (h.state == b_normal)
         {
           int s = (int)(g_->terrain_value[h.get_x()][h.get_y()] *
                         ((double)g_->terrain_value_mod[h.get_x()][h.get_y()] / 100));
-          LOG3("Score: add " << s << " points");
+          LOG3("Score: add %1 points", s);
           score += s;
         }
     }

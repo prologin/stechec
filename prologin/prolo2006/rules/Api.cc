@@ -509,7 +509,7 @@ int Api::convecteur_temporel(int id, int date)
 
 int		Api::deplace_joueur(int id, int x, int y)
 {
-  LOG3(" Asking for moving goodman " << id);
+  LOG3(" Asking for moving goodman %1", id);
   if (!ID_EXISTS(id))
     return BAD_ARGUMENT;
   TEST_POS(x, y);
@@ -528,8 +528,8 @@ int		Api::deplace_joueur(int id, int x, int y)
   TEST_POS(x, y);
   if (gdm.getState() != STATE_NORMAL)
     return INVALID_COMMAND;
-  LOG3("try to move GoodMan row: " << y << ", column: " << x
-       << " from row: " << y2 << ", col: " << x2);
+  LOG3("try to move GoodMan row: %1 column: %2, from row: %3 col: %4",
+       y, x, y2, x2);
 //   if ((x == x2 && abs(y - y2) > 1) || (y == y2 && abs(x - x2) > 1)
 //       || (x != x2 && y != y2))
 //     return BAD_ARGUMENT;
@@ -541,7 +541,7 @@ int		Api::deplace_joueur(int id, int x, int y)
     return INVALID_COMMAND;
   xr = x2 + (dir == INC_X ? 1 : (dir == DEC_X ? -1 : 0));
   yr = y2 + (dir == INC_Y ? 1 : (dir == DEC_Y ? -1 : 0));
-  LOG3("Dir found : " << (int)dir << " gives x : " << xr << " ,y : " << yr);
+  LOG3("Dir found : %1 gives x : %2, y : %3", (int)dir, xr, yr);
   assert(g_->terrain_type[yr][xr] != WALL);
 
   for (i = 0; i < g_->casinos.size (); ++i)
@@ -555,7 +555,7 @@ int		Api::deplace_joueur(int id, int x, int y)
 	break;
       }
 
-  LOG3("Api: move GoodMan row: " << yr << ", column: " << xr);
+  LOG3("Api: move GoodMan row: %1, column: %2", yr, xr);
   StechecPkt com(MOVE_GOODMAN, -1);
   com.Push(3, GET_GOOD(id), yr, xr);
   SendToServer(com);
@@ -579,7 +579,6 @@ std::pair<char, short>	Api::astar(Position *start, Position *end)
 {
   std::list<Astar>	open;
   std::list<Astar>	closed;
-  // Astar			tab[g_->map_size.row][g_->map_size.col];
   Astar			shortest;
   Astar*		tmp;
   Astar			*suc;
@@ -594,11 +593,9 @@ std::pair<char, short>	Api::astar(Position *start, Position *end)
 	return std::pair<char, short>(-1, 0);
       ++it;
 
-      //      LOG3("Taille open : " << open.size());
       end_n.findShort(open, shortest);
       if (shortest.cur.row == end->row && shortest.cur.col == end->col)
 	{
-	  //LOG3("Arrivee trouvee");
 	  tmp = &shortest;
 	  return tmp->astar_res();
 	}
@@ -616,7 +613,6 @@ std::pair<char, short>	Api::astar(Position *start, Position *end)
 	      ((row == end->row && col == end->col) ||
 	       g_->terrain_type[row][col] != BET_PLACE))
 	    {
-	      // LOG3("Successeur r: " << row << " , c: " << col);
 	      if ((suc = isInList(open, row, col)) != 0)
 		{
 		  if (suc->g < tmp->g + 1)
@@ -630,7 +626,6 @@ std::pair<char, short>	Api::astar(Position *start, Position *end)
 	    }
 	}
     }
-  //  LOG3("Taille list open " << open.size() );
   if (open.empty())
     return std::pair<char, short>(-1, 0);
   return tmp->astar_res();

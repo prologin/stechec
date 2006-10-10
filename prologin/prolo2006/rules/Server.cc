@@ -41,8 +41,8 @@ void	Server::updateAlmanach(GoodMan& gdm, bool state)
 
 void	Server::updateGdmPosition(GoodMan& gdm, int row, int col)
 {
-  LOG3("Moving goodman from " << gdm.row << " - " << gdm.col
-       << " to " << row << " - " << col);
+  LOG3("Moving goodman from %1 - %2 to %3 - %4",
+       gdm.row, gdm.col, row, col);
    gdm.row = row;
    gdm.col = col;
    SendToAll(MOVE_GOODMAN, gdm.get_player(), 3, gdm.get_id(), row, col);
@@ -50,7 +50,7 @@ void	Server::updateGdmPosition(GoodMan& gdm, int row, int col)
 
 void	Server::updateMoney(GoodMan& gdm, unsigned money)
 {
-  LOG3("Goodman " << gdm.get_id() << " won " << money);
+  LOG3("Goodman %1 won %2", gdm.get_id(), money);
   gdm.setMoney(money);
   SendToAll(GOODMAN_MONEY_CHANGE, gdm.get_player(), 2, gdm.get_id(), money);
 }
@@ -85,10 +85,7 @@ void	Server::updateAlmanachPosition(Almanach& almanach, int row, int col)
 void	Server::updateBetTimeLeft(Bet* bet, unsigned time)
 {
   bet->setTimeLeft(time);
-  std::cout << "Bet time left for bet : " << bet->getId()
-	    << " is now " << time << std::endl;
-  LOG3("Bet time left for bet : " << bet->getId()
-       << " is now " << time);
+  LOG3("Bet time left for bet: %1 is now %2", bet->getId(), time);
   //  SendToAll(BET_TIME, -1, 2, bet->getId(), time);
 }
 

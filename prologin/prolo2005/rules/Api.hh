@@ -159,7 +159,7 @@ public:
     IF_FOG_OR_KNOW(x, y);
     if (g_->terrain_building[x][y] != NULL && g_->terrain_building[x][y]->type == HOTEL)
       {
-        LOG3("hotel id: " << g_->terrain_building[x][y]->get_id());
+        LOG3("hotel id: %1", g_->terrain_building[x][y]->get_id());
         return g_->terrain_building[x][y]->get_id();
       }
     return NO_UNIT;
@@ -355,7 +355,7 @@ public:
       case INC_Y: y++; break;
       case DEC_X: x--; break;
       case INC_X: x++; break;
-      default: LOG2("Bad direction (" << direction << ")");
+      default: LOG2("Bad direction (%1)", direction);
       }
     TEST_POS(x, y);
 

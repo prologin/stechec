@@ -166,11 +166,10 @@ int        ClientEntry::afterNewTurn()
 	   bet->setTimeLeft(BET_LENGTH + (bet->getDate() - g_->player_turn));
 	   if (g_->player_turn == bet->getDate())
 	     {
-	       LOG3("Opening bet :" << bet->getId()
-		    << " from casino : " << bet->getCasinoId());
+	       LOG3("Opening bet: %1 from casino: %2", bet->getId(), bet->getCasinoId());
 	     }
-	   LOG3("Bet time left for bet : " << bet->getId()
-		<< " is now " << BET_LENGTH + (bet->getDate() - g_->player_turn))
+	   LOG3("Bet time left for bet: %1 is now %2",
+		bet->getId(), BET_LENGTH + (bet->getDate() - g_->player_turn))
 	 }
      }
   return 0;

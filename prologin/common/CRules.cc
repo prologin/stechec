@@ -81,7 +81,7 @@ void CRules::msgStechecPkt(const StechecPkt* m)
   StechecPkt pkt(*m);
   if (getState() == GS_AFTERTURN)
     {
-      LOG3("Client apply diff: " << pkt);
+      LOG3("Client apply diff: %1", pkt);
       differ_->ApplyDiff(&pkt);
       onEvent(m);
     }
@@ -91,10 +91,10 @@ void CRules::msgStechecPkt(const StechecPkt* m)
 
 bool CRules::afterHook(int res, const char* hook_name)
 {
-  LOG5("Client hook `" << hook_name << "' has been called.");
+  LOG5("Client hook `%1' has been called.", hook_name);
   if (res)
     {
-      LOG1("Client hook `" << hook_name << "' failed.");
+      LOG1("Client hook `%1' failed.", hook_name);
       MsgChampionError pkt_err;
       stringToPacket(pkt_err.reason, "Client hook error.", 64);
       sendPacket(pkt_err);
@@ -146,8 +146,8 @@ void CRules::msgInitGame(const MsgInitGame*)
 void CRules::msgBeforeTurn(const MsgBeforeTurn*)
 {
   data_->current_turn_++;
-  LOG2("================== Turn " << data_->getCurrentTurn()
-       << " ==================");
+  LOG2("================== Turn %1 ==================",
+       data_->getCurrentTurn());
 
   int r = client_entry_->beforeNewTurn();
   if (!afterHook(r, "beforeNewTurn"))
@@ -195,7 +195,7 @@ void CRules::msgAfterGame(const MsgAfterGame*)
 }
 
 
-void CRules::msgFoo(const InternalEventPkt* m)
+void CRules::msgFoo(const InternalEventPkt*)
 {
   assert(false);
 }

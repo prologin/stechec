@@ -125,7 +125,7 @@ void                ServerResolver::Dock_to_building(const StechecPkt* elt)
 
   col->state = STATE_DOCKING;
   col->dock_build = &(*g_->terrain_building[col->get_x()][col->get_y()]);
-  LOG2("Docked to building " << col->dock_build->type);
+  LOG2("Docked to building %1", col->dock_build->type);
   SendToAll(*elt);
 }
 
@@ -188,7 +188,7 @@ void                ServerResolver::Explosion(int x, int y)
           if (col->state == STATE_DEAD)
             {
               s_->ChangeState(col, STATE_DEAD);
-              LOG2("coleo explosed: id " <<  col->get_id() << ", player " << col->get_player());
+              LOG2("coleo explosed: id %1, player %2", col->get_id(), col->get_player());
               Explosion(i, j);
             }
         }

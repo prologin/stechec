@@ -16,18 +16,6 @@
 # include "Contest.hh"
 # include "Server.hh"
 
-/**
- ** MAP_ERROR
- ** This macro just closes a file given and returns 1
- ** see ServerEntry-LoadMap the view its use way
- */
-# define MAP_ERROR(F,S) \
-{ \
-  fclose (F); \
-  ERR(map_file << S); \
-  return 1; \
-}
-
 class ServerEntry : public StechecServerEntry
 {
 public:

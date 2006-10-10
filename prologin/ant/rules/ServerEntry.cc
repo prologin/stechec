@@ -63,22 +63,22 @@ int        ServerEntry::LoadMap(const char *map_file)
     {
       char err[256];
       strerror_r(errno, err, 256);
-      ERR("Can't open map " << map_file << ": " << err);
+      ERR("Can't open map `%1': %2", map_file, err);
       return 1;
     }
   
   if (fscanf(f, "%d %d %d", &max_map_player, &g_->map_size_y, &g_->map_size_x) != 3)
     {
       fclose(f);
-      ERR(map_file << ": general information: parse error.");
+      ERR("%1: general information: parse error.", map_file);
       return 1;
     }
 
   if (max_map_player < g_->getNbPlayer())
     {
       fclose(f);
-      ERR("this map has only `" << max_map_player << "' anthill... and there are `"
-          << g_->getNbPlayer() << "' players.");
+      ERR("this map has only `%1' anthill... and there are `%2' players.",
+	  max_map_player, g_->getNbPlayer());
       return 1;
     }
 
@@ -88,7 +88,7 @@ int        ServerEntry::LoadMap(const char *map_file)
     if (fscanf(f, "%d %d", &g_->player[i].anthill_y, &g_->player[i].anthill_x) != 2)
       {
         fclose(f);
-        ERR(map_file << ": anthill position: parse error.");
+        ERR("%1: anthill position: parse error.", map_file);
         return 1;
       }
 
@@ -107,7 +107,7 @@ int        ServerEntry::LoadMap(const char *map_file)
             if (fscanf(f, "%c", &c) != 1)
               {
                 fclose(f);
-                ERR(map_file << ": unexpected eof while reading map.");
+                ERR("%1: unexpected eof while reading map.", map_file);
                 return 1;
               }
           while (c <= 13);
@@ -125,8 +125,8 @@ int        ServerEntry::LoadMap(const char *map_file)
               break;
             default:
               fclose(f);
-              ERR(map_file << ": unknown char in map ("
-                  << line << ", " << col << "): " << c);
+              ERR("%1: unknown char in map (%2, %3): %4",
+		  map_file, line, col, c);
               return 1;
             }
         }

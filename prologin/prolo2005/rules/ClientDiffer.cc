@@ -48,7 +48,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *com)
         int x = com->arg[1];
         int y = com->arg[2];
 
-        LOG3("New unit, update fog " << x << ":" << y);
+        LOG3("New unit, update fog %1:%2", x, y);
         g_->terrain_coleoptere[x][y] = &p->coleopteres[id];
 
         p->coleopteres[id].set_x(x);
@@ -70,7 +70,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *com)
         int y = com->arg[2];
         Coleoptere* col = &p->coleopteres[id];
 
-        LOG3("Differ: move coleoptere x: " << x << ", y: " << y);
+        LOG3("Differ: move coleoptere x: %1, y: %2", x, y);
         c_->UpdateFogOfWar(com->client_id, col->get_x(), col->get_y(), x, y);
         g_->terrain_coleoptere[col->get_x()][col->get_y()] = 0;
         g_->terrain_coleoptere[x][y] = col;
@@ -101,7 +101,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *com)
         int        x = com->arg[0];
         int        y = com->arg[1];
 
-        LOG3("** BUILDING FINISHED ** client_id " << com->client_id << ", on " << x << ":" << y);
+        LOG3("** BUILDING FINISHED ** client_id %1, on %2:%3", com->client_id, x, y);
         assert(g_->terrain_coleoptere[x][y] != 0);
         g_->terrain_building[x][y] = g_->terrain_coleoptere[x][y]->dock_build;
         g_->terrain_building[x][y]->state = b_normal;

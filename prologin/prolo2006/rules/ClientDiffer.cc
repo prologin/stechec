@@ -46,7 +46,7 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	Position	dep = Position(gdm.row, gdm.col);
 	Position	arr = Position(row, col);
 
-	LOG3("Differ: move GoodMan from: " << dep << " to : " << arr);
+	LOG3("Differ: move GoodMan from: %1 to : %2", dep, arr);
         c_->UpdateFogOfWar(com->client_id, dep, arr, true);
 	gdm.setRow(row);
 	gdm.setCol(col);
@@ -60,8 +60,8 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 
 	GoodMan& gdm = g_->players[id_player].team[id];
 	gdm.setState(state);
-	LOG3("Differ : GoodMan " << com->arg[0] << " of player " << com->arg[2]
-	     << " new state is " << state);
+	LOG3("Differ : GoodMan %1 of player %2, new state is %3",
+	     com->arg[0], com->arg[2], state);
 	break;
       }
     case GOODMAN_DELOREAN:
@@ -69,14 +69,14 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	if (com->arg[1] == 0)
 	  {
 	    g_->players[com->arg[2]].team[com->arg[0]].lostDelorean();
-	    LOG3("Differ : GoodMan " << com->arg[0] << " of player " << com->arg[2]
-		 << " lost delorean");
+	    LOG3("Differ : GoodMan %1 of player %2, lost delorean",
+		 com->arg[0], com->arg[2]);
 	  }
 	else
 	  {
 	    g_->players[com->arg[2]].team[com->arg[0]].getDelorean();
-	    LOG3("Differ : GoodMan " << com->arg[0] << " of player " << com->arg[2]
-		 << " get delorean");
+	    LOG3("Differ : GoodMan %1 of player %2 get delorean",
+		 com->arg[0], com->arg[2]);
 	  }
 	break;
       }
@@ -85,22 +85,22 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	if (com->arg[1] == 0)
 	  {
 	    g_->players[com->arg[2]].team[com->arg[0]].lostAlmanach();
-	    LOG3("Differ : GoodMan " << com->arg[0] << " of player " << com->arg[2]
-		 << " lost almanach");
+	    LOG3("Differ : GoodMan %1 of player %2 lost almanach",
+		 com->arg[0], com->arg[2]);
 	  }
 	else
 	  {
 	    g_->players[com->arg[2]].team[com->arg[0]].getAlmanach();
-	    LOG3("Differ : GoodMan " << com->arg[0] << " of player " << com->arg[2]
-		 << " get almanach");
+	    LOG3("Differ : GoodMan %1 of player %2 get almanach",
+		 com->arg[0], com->arg[2]);
 	  }
 	break;
       }
     case GOODMAN_MONEY_CHANGE:
       {
 	g_->players[com->client_id].team[com->arg[0]].setMoney(com->arg[1]);
-	LOG3("Differ : GoodMan " << com->arg[0] << " of player " << com->client_id
-	     << " money is now " << com->arg[1]);
+	LOG3("Differ : GoodMan %1 of player %2, money is now %3",
+	     com->arg[0], com->client_id, com->arg[1]);
 	break;
       }
     case MEMORIZE:
@@ -109,33 +109,33 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	int	id = com->arg[0];
 
 	p->memorize(id);
-	LOG3("Differ : Memorizing game " << id);
+	LOG3("Differ : Memorizing game %1", id);
 	break;
       }
     case DELOREAN_MOVE:
       {
 	g_->delorean.row = com->arg[0];
 	g_->delorean.col = com->arg[1];
-	LOG3("Differ : Delorean Moving to : " << com->arg[0] << " - " << com->arg[1]);
+	LOG3("Differ : Delorean Moving to : %1 - %2", com->arg[0], com->arg[1]);
 	break;
       }
     case DELOREAN_RELOADING:
       {
 	g_->delorean.setReloading(com->arg[0]);
-	LOG3("Differ : Delorean Reloading time : " << com->arg[0]);
+	LOG3("Differ : Delorean Reloading time : %1", com->arg[0]);
 	break;
       }
     case DELOREAN_AUTO:
       {
 	g_->delorean.setAutonomie(com->arg[0]);
-	LOG3("Differ : Delorean Autonomie : " << com->arg[0]);
+	LOG3("Differ : Delorean Autonomie : %1", com->arg[0]);
 	break;
       }
     case ALMANACH_MOVE:
       {
 	g_->almanach.row = com->arg[0];
 	g_->almanach.col = com->arg[1];
-	LOG3("Differ: move almanach row: " << com->arg[0] << ", column: " << com->arg[1]);
+	LOG3("Differ: move almanach row: %1, column: %2", com->arg[0], com->arg[1]);
 	break;
       }
     case NEW_GOODMAN:
@@ -151,7 +151,7 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
     case CHANGE_DATE:
       {
 	g_->player_turn = com->arg[0];
-	LOG3("Differ: date is now : " << com->arg[0]);
+	LOG3("Differ: date is now : %1", com->arg[0]);
 	break;
       }
     case BET_TIME:
@@ -169,16 +169,15 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
     case NEW_CASINO:
       {
 	g_->addCasino(com->arg[0], com->arg[1]);
-	LOG3("Differ: new casino : row " << com->arg[0] << ", column: " << com->arg[1]);
+	LOG3("Differ: new casino : row %1, column: %2", com->arg[0], com->arg[1]);
 	break;
       }
     case NEW_BET:
       {
 	g_->almanach.addBet(com->arg[0], com->arg[1], com->arg[2], com->arg[3]);
-	LOG6("Differ: new bet (" << g_->almanach.getAlmanach().size() - 1 << ") in casino : " << com->arg[3]
-	     << " kitty : " << com->arg[1]
-	     << " result : " << com->arg[2]
-	     << " begin : " << com->arg[0]);
+	LOG6("Differ: new bet (%1) in casino: %2, kitty: %3, result: %4, begin: %5",
+	     g_->almanach.getAlmanach().size() - 1, com->arg[3], com->arg[1],
+	     com->arg[2], com->arg[0]);
 	break;
       }
     case INIT_DATA:

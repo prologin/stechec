@@ -81,11 +81,11 @@ public:
     socklen_t fromlen;
     char miou[69];
 
-    LOG4("arg: " << fd2_);
+    LOG4("arg: %1", fd2_);
     ret = recvfrom(fd2_, miou, 69, 0, &from, &fromlen);
     checkError(ret, "recvfrom");
 
-    LOG4("Receive something ! : size " << ret << " msg: " << miou);
+    LOG4("Receive something ! : size %1 msg: %2", ret, miou);
     return true;
   }
 

@@ -99,7 +99,7 @@ inline void StechecApi::SendToServer(const StechecPkt& com)
         return;
     }
 
-  LOG3("Api::SendToServer: " << com);
+  LOG3("Api::SendToServer: %1", com);
   commit_.push_back(com);
 }
 

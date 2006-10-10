@@ -31,7 +31,7 @@ void StechecServerResolver::ApplyResolverPriv(CommandList& cmdList)
     {
       assert(it->type >= 0 && it->type < MAX_STECHEC_PKT_TYPE);
       filteredList[it->type].push_back(&*it);
-      LOG2("Resolver::Apply " << *it);
+      LOG2("Resolver::Apply %1", *it);
     }
 
   ApplyResolver(filteredList);

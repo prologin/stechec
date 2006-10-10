@@ -176,7 +176,7 @@ void	ServerResolver::moveGoodMen(CommandListRef& cmdList)
  	}
       gdm.row = y;
       gdm.col = x;
-      LOG3("Resolver: move GoodMan row: " << y << ", column: " << x);
+      LOG3("Resolver: move GoodMan row: %1, column: %2", y, x);
       SendToAll(*elt);
     }
   //les persos se battent
@@ -230,7 +230,7 @@ void		ServerResolver::Memorize(const StechecPkt* elt)
   int		id = elt->arg[0];
 
   p->memorize(id);
-  LOG2("Memorized bet number " << id);
+  LOG2("Memorized bet number %1", id);
   SendToAll(*elt);
 }
 
@@ -250,7 +250,7 @@ void		ServerResolver::Delorean(const StechecPkt* elt)
       + (g_->delorean.getAutonomie() *
 	 (date > g_->player_turn ? 1 : -1));
   g_->delorean.setWarpTime(date);
-  LOG3("Preparing to warp to " << date);
+  LOG3("Preparing to warp to %1", date);
   s_->updateDeloreanAuto(g_->delorean,
 			 g_->delorean.getAutonomie()
 			 - abs(date - g_->player_turn));

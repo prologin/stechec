@@ -78,7 +78,7 @@ inline FILE*  StechecServerEntry::OpenMap(const char* filename)
 
   // search on current directory
   f = fopen(filename, "r");
-  LOG5("Check if mapfile `" << filename << "' exists.");
+  LOG5("Check if mapfile `%1' exists.", filename);
   if (f != NULL)
     return f;
 
@@ -89,14 +89,14 @@ inline FILE*  StechecServerEntry::OpenMap(const char* filename)
   if (envDir != NULL)
     {
       snprintf(file, 255, "%s/%s", envDir, filename);
-      LOG5("Check if mapfile `" << file << "' exists.");
+      LOG5("Check if mapfile `%1' exists.", file);
       if ((f = fopen(file, "r")) != NULL)
         return f;
     }
 
   // search on package installation shared directory
   snprintf(file, 255, "%s/%s", PKG_DATA_DIR, filename);
-  LOG5("Check if mapfile `" << file << "' exists.");
+  LOG5("Check if mapfile `%1' exists.", file);
   if ((f = fopen(file, "r")) != NULL)
     return f;
 

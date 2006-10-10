@@ -74,7 +74,6 @@ std::pair<char, short>	Astar::astar_res()
   res.second = 0;
   if (tmp->parent == 0)
     {
-      //      LOG3("Arrivee == depart");
       res.first = 4;
     }
   while (tmp->parent != 0)
@@ -85,12 +84,8 @@ std::pair<char, short>	Astar::astar_res()
 	  res.first = (tmp->cur.row == tmp->parent->cur.row ?
 			(tmp->cur.col > tmp->parent->cur.col ? INC_X : DEC_X) :
 			(tmp->cur.row > tmp->parent->cur.row ? INC_Y : DEC_Y));
-	  //	  LOG3("rowp : " << tmp->parent->cur.row << " colp : " << tmp->parent->cur.col
-	  //<< " row : " << tmp->cur.row << " col : " << tmp->cur.col << " --> dir :"
-	  //   << res->first << "||");
 	}
       tmp = tmp->parent;
     }
-  //  LOG3("Resultat : dist: " << res.second << " and dir: " << res.first);
   return res;
 }

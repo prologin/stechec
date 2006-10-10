@@ -37,8 +37,8 @@ int        ServerEntry::ParseOptions()
   // Check for crasy people.
   if (g_->max_date > MAX_DATE)
     {
-      ERR("Bad parameter max_turn (" << g_->max_date << "). Should be less than "
-          << MAX_DATE);
+      ERR("Bad parameter max_turn (%1). Should be less than %2.",
+          g_->max_date, MAX_DATE);
       return 1;
     }
   return 0;
@@ -55,25 +55,40 @@ int        ServerEntry::LoadMap(const std::string& map_file)
 
    if ((f = OpenMap(map_file.c_str())) == NULL)
    {
-      ERR("Can't open map " << map_file);
+      ERR("Can't open map %1", map_file);
       return 1;
    }
    fgets(comment, 127, f);
    comment[strlen(comment) - 1] = 0;
 
    /* Reading map nb_players and size*/
-  if (fscanf(f, "%d %d %d", &max_map_player, &g_->map_size.row, &g_->map_size.col) != 3)
-    MAP_ERROR(f, ": general information: parse error.");
-  if (g_->map_size.row > MAX_MAP_SIZE || g_->map_size.col > MAX_MAP_SIZE)
-    MAP_ERROR(f, ": maximum map size is " << MAX_MAP_SIZE << ".");
-  if (max_map_player < g_->getNbPlayer())
-     MAP_ERROR(f,  ": has only `" << max_map_player
-	       << "' start position... and there are `"
-	       << g_->getNbPlayer() << "' players.");
+   if (fscanf(f, "%d %d %d", &max_map_player, &g_->map_size.row, &g_->map_size.col) != 3)
+     {
+       fclose(f);
+       ERR("%1: general information: parse error.", map_file);
+       return 1;
+     }
+   if (g_->map_size.row > MAX_MAP_SIZE || g_->map_size.col > MAX_MAP_SIZE)
+     {
+       fclose(f);
+       ERR("%1: maximum map size is %2.", map_file, MAX_MAP_SIZE);
+       return 1;
+     }
+   if (max_map_player < g_->getNbPlayer())
+     {
+       fclose(f);
+       ERR("%1: has only `%2' start position... and there are `%3' players.",
+	   map_file, max_map_player, g_->getNbPlayer());
+       return 1;
+     }
 
   /* Reading delorean's start positions */
-  if (fscanf(f, "%d %d", &g_->delorean.row, &g_->delorean.col) != 2)
-     MAP_ERROR(f,": start position: parse error.");
+   if (fscanf(f, "%d %d", &g_->delorean.row, &g_->delorean.col) != 2)
+     {
+       fclose(f);
+       ERR("%1: start position: parse error.", map_file);
+       return 1;
+     }
 
   g_->delorean.row--;
   g_->delorean.col--;
@@ -83,7 +98,11 @@ int        ServerEntry::LoadMap(const std::string& map_file)
 
   /* Reading almanach's start positions */
   if (fscanf(f, "%d %d", &g_->almanach.row, &g_->almanach.col) != 2)
-     MAP_ERROR(f,": start position: parse error.");
+    {
+      fclose(f);
+      ERR("%1: start position: parse error.", map_file);
+      return 1;
+    }
   g_->almanach.row--;
   g_->almanach.col--;
   s_->updateAlmanachPosition(g_->almanach,
@@ -93,8 +112,12 @@ int        ServerEntry::LoadMap(const std::string& map_file)
   /* Reading player's start positions */
   for (int i = 0; i < max_map_player; i++)
   {
-     if (fscanf(f, "%d %d", &g_->players[i].start.row, &g_->players[i].start.col) != 2)
-	MAP_ERROR(f,": start position: parse error.");
+    if (fscanf(f, "%d %d", &g_->players[i].start.row, &g_->players[i].start.col) != 2)
+      {
+	fclose(f);
+	ERR("%1: start position: parse error.", map_file);
+	return 1;
+      }
      g_->players[i].start.row--;
      g_->players[i].start.col--;
   }
@@ -109,7 +132,11 @@ int        ServerEntry::LoadMap(const std::string& map_file)
        do
 	 {
 	   if (fscanf(f, "%c", &c) != 1)
-	     MAP_ERROR(f,  ": unexpected eof while reading map.");
+	     {
+	       fclose(f);
+	       ERR("%1: unexpected eof while reading map.", map_file);
+	       return 1;
+	     }
 	 }
        while (c <= 13);
        if (c == '.' )
@@ -135,15 +162,17 @@ int        ServerEntry::LoadMap(const std::string& map_file)
 	   LOG3("Adding a casino");
 	 }
        else
-	 MAP_ERROR(f, ": unknown char in map ("
-		   << row << ", " << col << "): " << c);
+	 {
+	   fclose(f);
+	   ERR("%1: unknown char in map (%2, %3): %4",
+	       map_file, row, col, c);
+	   return 1;
+	 }
      }
   return 0;
 }
 
-// This function is just for debug mode
-// It should be deleted later
-
+// This function is just for debugging map loader
 void	ServerEntry::displayMap()
 {
    int		i;
@@ -177,35 +206,11 @@ void	ServerEntry::displayMap()
      }
 }
 
-
-// void		ServerEntry::pathCalculation()
-// {
-//   Position	*tmp_start;
-//   Position	*tmp_end;
-
-//   for (int i_start = 0; i_start < g_->map_size.row; ++i_start)
-//     for (int j_start = 0; j_start < g_->map_size.col; ++j_start)
-//       if (g_->terrain_type[i_start][j_start] != WALL)
-// 	{
-// 	  tmp_start = new Position(i_start, j_start);
-// 	  for (int i_end = 0; i_end < g_->map_size.row; ++i_end)
-// 	    for (int j_end = 0; j_end < g_->map_size.col; ++j_end)
-// 	      {
-// 		tmp_end = new Position(i_end, j_end);
-// 		g_->paths[std::pair(*tmp_start, *tmp_end)] =
-// 		  astar(tmp_start, tmp_end);
-// 	      }
-// 	}
-//}
-
 int		ServerEntry::beforeGame()
 {
   unsigned	iter;
   unsigned	bet_iter;
 
-  //  srand(time((time_t*)&iter));
-  srand(42);
-  LOG3("Random seed is " << time((time_t*)&iter));
   //  g_->players = new Player[MAX_TEAM];
   if (ParseOptions())
     return 1;
@@ -329,7 +334,7 @@ void		ServerEntry::deloreanEndTurn()
    else if (g_->delorean.warpTimeLeft() != 0)
      {
        g_->delorean.setWarpTimeLeft(g_->delorean.warpTimeLeft() - 1);
-       LOG3("Still " << g_->delorean.warpTimeLeft() << " turns to wait....." )
+       LOG3("Still %1 turns to wait.....", g_->delorean.warpTimeLeft());
      }
    else if (g_->delorean.warpTimeLeft() == 0 && g_->delorean.hasWarped())
    {
@@ -361,20 +366,19 @@ void		ServerEntry::betEndTurn(Bet* bet)
      {
        bet->setOpen(true);
        bet->setTimeLeft(BET_LENGTH + (bet->getDate() - g_->player_turn));
-       LOG3("Bet time left for bet : " << bet->getId()
-	    << " is now " << BET_LENGTH + (bet->getDate() - g_->player_turn));
-       //       s_->updateBetTimeLeft(bet, );
+       LOG3("Bet time left for bet : %1 is now %2", bet->getId(),
+	    BET_LENGTH + (bet->getDate() - g_->player_turn));
        if (g_->player_turn == bet->getDate())
 	 {
-	   LOG3("Opening bet :" << bet->getId()
-		<< " from casino : " << bet->getCasinoId());
+	   LOG3("Opening bet: %1 from casino : %2",
+		bet->getId(), bet->getCasinoId());
 	 }
        if (bet->getTimeLeft() != 0)
 	 {
 	   for (i = 0; i < bet->getNbPlayer(); ++i)
 	     {
-	       LOG3("Man " << bet->getPlayers(i) << " i've the number : " << (int)bet->getPlayers(i)->played_nb);
-	       LOG3("Man " << bet->getPlayers(i) << " my action is : " << (int)bet->getPlayers(i)->action);
+	       LOG3("Man %1: i've the number : %2", bet->getPlayers(i), (int)bet->getPlayers(i)->played_nb);
+	       LOG3("Man %1: my action is : %2", bet->getPlayers(i), (int)bet->getPlayers(i)->action);
 	     }
 	   //Adding good men to bets (must be here because of time trip)
 	   for (i = 0; i < g_->getNbPlayer(); ++i)
@@ -384,14 +388,16 @@ void		ServerEntry::betEndTurn(Bet* bet)
 		 {
 		   if (bet->addToBet(&g_->players[i].team[j]))
 		     {
-		       LOG3("Adding goodman " << &g_->players[i].team[j] << " of player " << i << " to bet");
+		       LOG3("Adding goodman %1 of player %2 to bet",
+			    &g_->players[i].team[j], i);
 		       s_->changeState(g_->players[i].team[j], STATE_BETTING);
 		       //setting goodmen's played_nb
 		       if (g_->players[i].hasAlmanach() || g_->players[i].hasWon(bet->getId()))
 			 {
 			   g_->players[i].team[j].played_nb = bet->getGoodNb();
-			   LOG3("Man" << j << " I know the game, i've the good number : " << (int)g_->players[i].team[j].played_nb);
-			   LOG3("The REAL GOOD NB IS " << (int)bet->getGoodNb());
+			   LOG3("Man %1: I know the game, i've the good number: %2",
+				j, (int)g_->players[i].team[j].played_nb);
+			   LOG3("The REAL GOOD NB IS %1", (int)bet->getGoodNb());
 			 }
 		       else
 			 {
@@ -403,7 +409,7 @@ void		ServerEntry::betEndTurn(Bet* bet)
 			 }
 		     }
 		   else
-		     LOG3("Already have goodman " << j << " of player " << i << " in bet");
+		     LOG3("Already have goodman %1 of player %2 in bet", j, i);
 		 }
 	 }
        //bet resolving
@@ -412,15 +418,14 @@ void		ServerEntry::betEndTurn(Bet* bet)
 	   bet->setOpen(false);
 	   for (i = 0; i < bet->getNbPlayer(); ++i)
 	     {
-	       LOG3(" Good nb : " << bet->getGoodNb() <<
-		    " played Nb : " << (int)bet->getPlayers(i)->played_nb);
+	       LOG3("Good nb: %1 played Nb: %2", bet->getGoodNb(), (int)bet->getPlayers(i)->played_nb);
 	       if (bet->win(bet->getPlayers(i)->played_nb))
 		 {
-		   LOG3(bet->getPlayers(i)->get_id() << " won !!");
+		   LOG3("%1 won !!", bet->getPlayers(i)->get_id());
 		   winners[nb_winners++] = bet->getPlayers(i);
 		 }
 	       else
-		 LOG3(bet->getPlayers(i)->get_id() << " loose !!");
+		 LOG3("%1 loose !!", bet->getPlayers(i)->get_id());
 	       s_->updateRom(g_->players[bet->getPlayers(i)->get_player()],
 			 bet->getPlayers(i)->get_player(),
 			 bet->getId(),
@@ -437,8 +442,7 @@ void		ServerEntry::betEndTurn(Bet* bet)
 		   && c < g_->map_size.col &&
 		   g_->terrain_type[r][c] == STANDARD)
 		 {
-		   LOG3("Bet ends, goodmen placed on " <<
-			r << " - " << c);
+		   LOG3("Bet ends, goodmen placed on %1 - %2", r, c);
 		   for (i = 0; i < bet->getNbPlayer(); ++i)
 		     {
 		       s_->updateGdmPosition(*bet->getPlayers(i),

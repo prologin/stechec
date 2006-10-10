@@ -54,7 +54,7 @@ bool SRules::afterHook(int res, const char* hook_name)
 {
   if (res)
     {
-      LOG1("Server hook `" << hook_name << "' failed.");
+      LOG1("Server hook `%1' failed.", hook_name);
       if (getState() != GS_BEFOREGAME && getState() != GS_AFTERGAME)
         {
           LOG4("Prematurly call afterGame()");
@@ -103,8 +103,8 @@ void SRules::serverProcess()
 
       // Go to the next turn.
       data_->current_turn_++;
-      LOG2("================== Turn " << data_->getCurrentTurn()
-           << " ==================");
+      LOG2("================== Turn %1 ==================",
+	   data_->getCurrentTurn());
       
       int r = server_entry_->beforeNewTurn();
       if (!afterHook(r, "beforeNewTurn"))
@@ -137,7 +137,7 @@ void  SRules::outputStat(int coach_id, ClientStatistic& coach_stat)
   std::string fail_msg = "Success";
   int fail_turn = -1;
 
-  LOG5("Output statistics for coach id " << coach_id);
+  LOG5("Output statistics for coach id `%1'", coach_id);
   if (coach_stat.custom_ != NULL && coach_stat.custom_->fail_reason_ != "")
     fail_msg = coach_stat.custom_->fail_reason_;
   else if (coach_stat.fail_reason_ != "")
@@ -159,8 +159,7 @@ bool SRules::waitAllClient(int client_id)
   for (int i = 0; i < wait_nb_; i++)
     if (wait_tab_[i] == client_id)
       {
-        WARN("Client `" << client_id << "' has signaled twice, state: "
-             << getState());
+        WARN("Client `%1' has signaled twice, state: %2", client_id, getState());
         return false;
       }
 
@@ -237,7 +236,7 @@ void SRules::msgChampionError(const MsgChampionError* m)
       cec->fail_reason_ = packetToString(m->reason);
       cec->fail_turn_ = data_->getCurrentTurn();
       coach_error_[m->client_id] = cec;
-      LOG4("Champion `" << m->client_id << "' has fatal error: "
-           << cec->fail_reason_);
+      LOG4("Champion `%1' has fatal error: %2",
+           m->client_id, cec->fail_reason_);
     }
 }

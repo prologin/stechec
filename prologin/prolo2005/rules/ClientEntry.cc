@@ -37,9 +37,8 @@ int        ClientEntry::beforeGame()
   g_->maxTurn = com.arg[0];
   g_->map_size_x = com.arg[1];
   g_->map_size_y = com.arg[2];
-  LOG3("ClientEntry::beforeGame: maxTurn = " << g_->maxTurn
-       << ", map_x " << g_->map_size_x
-       << ", map_y " << g_->map_size_y);
+  LOG3("ClientEntry::beforeGame: maxTurn = %1, map_x %2, map_y %3",
+       g_->maxTurn, g_->map_size_x, g_->map_size_y);
 
   // alloue la map
   c_->InitData();

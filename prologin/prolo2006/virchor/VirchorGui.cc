@@ -174,7 +174,7 @@ void VirchorGui::endOfTurn()
     delorean_.newTurn();
     almanach_.newTurn();
   */
-  LOG4("date " << date_);
+  LOG4("date %1", date_);
   LOG4("endOfTurn finished...");
 }
 
@@ -209,7 +209,7 @@ extern "C" int run(xml::XMLConfig*, Api* api, ClientCx* ccx)
   try {
     return visu.run();
   } catch (const NetUDPError& e) {
-    ERR("UDP: " << e);
+    ERR("UDP: %1", e.what());
     return 1;
   }
 }
