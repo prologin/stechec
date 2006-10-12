@@ -41,7 +41,8 @@ const int GS_TOUCHBACK     = 0x0020;
 const int GS_REROLL        = 0x0040; ///< wait for coach to use or not a reroll
 const int GS_BLOCK         = 0x0080; ///< wait for coach to choose a block dice
 const int GS_PUSH          = 0x0100; ///< wait for coach to choose a square
-const int GS_FOLLOW        = 0x0200; ///< wait for coach to decide
+const int GS_FOLLOW        = 0x0200; ///< wait for coach to follow or not
+const int GS_SKILL         = 0x0400; ///< wait for coach to use or not a skill
 
 const int GS_COACHBOTH     = 0x000C; ///< Any coach turn.
 
@@ -87,11 +88,13 @@ enum {
   MSG_PLAYERKNOCKED,
   MSG_PLAYERSTATUS,
   MSG_PLAYERKO,
-  MSG_ROLLINFO,		// FIXME: complete usage
-  ACT_MOVETURNMARKER,	// 35
+  MSG_SKILL,
+  MSG_ROLLINFO,     // 35   -FIXME: complete usage
+  ACT_MOVETURNMARKER,
   ACT_ILLEGALPROC,
+  ACT_DECLARE,
   ACT_MOVE,
-  ACT_STANDUP,
+  ACT_STANDUP,      // 40
   ACT_BLOCK,
   ACT_BLOCKPUSH,
   ACT_MULTIBLOCK,
@@ -111,7 +114,7 @@ enum eStatus {
   STA_STUNNED,
   STA_KO,
   STA_INJURED,
-  STA_SENTOFF,
+  STA_SENTOFF
 
   // skill/trait related... for futur usage
   //STA_ROOTED,

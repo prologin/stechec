@@ -24,6 +24,7 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   player_position_ = m->player_position;
   player_picture_ = packetToString(m->player_img);
 
+  r_->HANDLE_F_WITH(ACT_DECLARE, CPlayer, this, msgDeclareAction, filterDeclareAction, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_ALL | GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
@@ -50,22 +51,28 @@ void CPlayer::subMa(int dep)
   ma_remain_ -= dep;
 }
 
-bool CPlayer::standUp(enum eAction action)
+bool CPlayer::declareAction(enum eAction action)
 {
-  if (status_ != STA_PRONE)
+  if (has_played_)
     {
-      LOG2("You are not prone.");
+      LOG2("This player has already played.");
       return false;
     }
-		
-  ActStandUp pkt;
+    
+  if (action_ != NONE)
+    {
+      LOG2("This player is performing an action.");
+      return false;
+    }
+  
+  ActDeclare pkt;
   pkt.player_id = id_;
   pkt.action = action;
   r_->sendPacket(pkt);
   return true;
 }
 
-bool CPlayer::move(const Position& to, enum eAction action)
+bool CPlayer::move(const Position& to)
 {
   CField* f = r_->getField();
 
@@ -84,6 +91,21 @@ bool CPlayer::move(const Position& to, enum eAction action)
       LOG2("Trying to move player outside of field: %1", to);
       return false;
     }
+  if (has_played_)
+    {
+      LOG2("Player has already played this turn");
+      return false;
+    }
+  if (action_ == NONE)
+    {
+      LOG2("Player must declare an action before moving");
+      return false;
+    }
+  if (action_ == BLOCK)
+    {
+      LOG2("Player can't move in a block action");
+      return false;
+    }
 
   ActMove pkt;
   const PosList& p = f->getPath(pos_, to, this);
@@ -93,7 +115,6 @@ bool CPlayer::move(const Position& to, enum eAction action)
       return false;
     }
   pkt.player_id = id_;
-  pkt.action = action;
   pkt.nb_move = 0;
   PosIter it;
   for (it = p.begin(); it != p.end(); ++it)
@@ -107,16 +128,66 @@ bool CPlayer::move(const Position& to, enum eAction action)
   return true;
 }
 
-bool CPlayer::block(CPlayer* opponent, enum eAction action)
+bool CPlayer::standUp()
+{
+  if (status_ != STA_PRONE)
+    {
+      LOG2("You are not prone.");
+      return false;
+    }
+  if (has_played_)
+    {
+      LOG2("Player has already played this turn");
+      return false;
+    }
+  if (action_ == NONE)
+    {
+      LOG2("Player must declare an action before standing up");
+      return false;
+    }
+  if (action_ == BLOCK)
+    {
+      LOG2("Player can't stand up in a block action");
+      return false;
+    }
+		
+  ActStandUp pkt;
+  pkt.player_id = id_;
+  r_->sendPacket(pkt);
+  return true;
+}
+
+bool CPlayer::block(CPlayer* opponent)
 {
   if (opponent == NULL
       || opponent->getTeamId() == getTeamId()
       || !getPosition().isNear(opponent->getPosition())
       || opponent->getStatus() != STA_STANDING)
     return false;
+  
+  if (has_played_)
+    {
+      LOG2("Player has already played this turn");
+      return false;
+    }
+  if (action_ == NONE)
+    {
+      LOG2("Player must declare an action before blocking");
+      return false;
+    }
+  if (action_ == MOVE)
+    {
+      LOG2("Player can't block in a move action");
+      return false;
+    }
+  if (action_ == PASS)
+    {
+      LOG2("Player can't block in a pass action");
+      return false;
+    }
+      
   ActBlock pkt;
   pkt.player_id = id_;
-  pkt.action = action;
   pkt.opponent_id = opponent->getId();
   r_->sendPacket(pkt);
   return true;
@@ -124,9 +195,24 @@ bool CPlayer::block(CPlayer* opponent, enum eAction action)
 
 bool CPlayer::pass(const Position& to)
 {
+  if (has_played_)
+    {
+      LOG2("Player has already played this turn");
+      return false;
+    }
+  if (action_ == NONE)
+    {
+      LOG2("Player must declare an action before throwing");
+      return false;
+    }
+  if (action_ != PASS)
+    {
+      LOG2("Player must declare a pass action to throw");
+      return false;
+    }
+	
   ActPass pkt;
   pkt.player_id = id_;
-  pkt.action = PASS;
   pkt.dest_row = to.row;
   pkt.dest_col = to.col;
   r_->sendPacket(pkt);
@@ -148,6 +234,23 @@ const std::string& CPlayer::getPlayerPicture() const
 /*
 ** Messages.
 */
+
+void CPlayer::msgDeclareAction(const ActDeclare* m)
+{
+  // End of action
+  if (m->action == NONE)
+    {
+      has_played_ = true;
+      r_->onEvent(m);
+      LOG2("player %1 ends a %2 action", id_, stringify(action_));
+      return;
+    }
+  
+  // Beginning of the action
+  action_ = (enum eAction)m->action;
+  r_->onEvent(m);
+  LOG2("player %1 begins a %2 action", id_, stringify(action_));
+}
 
 void CPlayer::msgPlayerPos(const MsgPlayerPos* m)
 {
@@ -212,6 +315,13 @@ void CPlayer::msgPlayerKO(const MsgPlayerKO* m)
 /*
 ** Message filters.
 */
+
+bool CPlayer::filterDeclareAction(const ActDeclare* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
 
 bool CPlayer::filterPlayerPos(const MsgPlayerPos* m)
 {

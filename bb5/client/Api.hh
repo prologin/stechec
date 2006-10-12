@@ -57,19 +57,15 @@ public:
   bool          doBlockPush(int n);
   bool          doFollow(bool follow);
   void          sendChatMessage(const std::string& msg);
+
+  bool		doDeclareMove(int p);
+  bool		doDeclareBlock(int p);
+  bool		doDeclareBlitz(int p);
+  bool		doDeclarePass(int p);
   
   bool		doMovePlayer(int p, const Point& to);
-  bool		doBlitzMovePlayer(int p, const Point& to);
-  bool		doPassMovePlayer(int p, const Point& to);
-  
-  bool		doMoveStandUpPlayer(int p);
-  bool		doBlockStandUpPlayer(int p);
-  bool		doBlitzStandUpPlayer(int p);
-  bool		doPassStandUpPlayer(int p);
-  
+  bool		doStandUpPlayer(int p);
   bool		doBlockPlayer(int p, int def_p);
-  bool		doBlitzBlockPlayer(int p, int def_p);
-  
   bool		doPassPlayer(int p, const Point& to);
 
   void		doCheatDice(int roll);

@@ -37,8 +37,10 @@ public:
 
   int state_;	///< Team state on client side.
 
+  bool canDeclareAction(const ActDeclare* pkt);
+
   //! @brief Check if this player can do this action
-  bool canDoAction(const Packet* pkt, SPlayer* p, enum eAction action);
+  bool canDoAction(const Packet* pkt, SPlayer* p);
 
   void resetTurn();
   void setProneStunned();

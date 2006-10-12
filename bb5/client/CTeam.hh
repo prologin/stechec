@@ -43,19 +43,23 @@ public:
   //!   can't be found in the xml file.
   void placeTeam(int formation_id);
 
+  //! @brief Declare an action for the player
+  //!  Called from the UI.
+  bool declareAction(int player_id, enum eAction action);
+
   //! @brief Move a player to a position (as far as player can go)
   //!  Called from the UI.
-  bool movePlayer(int player_id, const Position& to, enum eAction action);
+  bool movePlayer(int player_id, const Position& to);
 
   //! @brief Stand up a player
   //!  Called from the UI.
-  bool standUpPlayer(int player_id, enum eAction action);
+  bool standUpPlayer(int player_id);
 
   //! @brief Do a block.
   //! @param player_id Player doing the block.
   //! @param opponent Player to block.
   //! @param action Action to do.
-  bool blockPlayer(int player_id, CPlayer* opponent, enum eAction action);
+  bool blockPlayer(int player_id, CPlayer* opponent);
   
   //! @brief Do a pass.
   //! @param player_id Player doing the pass.

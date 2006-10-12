@@ -169,3 +169,9 @@ void EventProcess::dispatch(const ActBlockPush& pkt) const
     }
   ev_->evBlockPush(pos, pkt.nb_choice, choices);
 }
+
+template <>
+void EventProcess::dispatch(const ActDeclare& pkt) const
+{
+  ev_->evDeclare(pkt.client_id, pkt.player_id, (enum eAction) pkt.action);
+}

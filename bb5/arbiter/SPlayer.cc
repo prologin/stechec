@@ -26,6 +26,7 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t)
     d_(r->getDice()),
     target_(NULL)
 {
+  r_->HANDLE_F_WITH(ACT_DECLARE, SPlayer, this, msgDeclare, filterDeclare, GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_MOVE, SPlayer, this, msgMove, filterMove, GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_STANDUP, SPlayer, this, msgStandUp, filterStandUp, GS_COACHBOTH);
   r_->HANDLE_F_WITH(ACT_BLOCK, SPlayer, this, msgBlock, filterBlock, GS_COACHBOTH);
@@ -239,7 +240,7 @@ void SPlayer::doStandUp(const ActStandUp*)
       reroll_enabled_ = t_->canUseReroll();
       sendRoll(result, 0, 4);
       if (result >= 4)
-	setStatus(STA_STANDING);
+	    setStatus(STA_STANDING);
     }
   else
     {
@@ -990,9 +991,17 @@ enum eStatus SPlayer::rollCasualty()
 ** Messages, filters
 */
 
+void SPlayer::msgDeclare(const ActDeclare* m)
+{
+  if (!t_->canDeclareAction(m))
+    return;
+  action_ = (enum eAction )m->action;
+  r_->sendPacket(*m);
+}
+
 void SPlayer::msgMove(const ActMove* m)
 {
-  if (!t_->canDoAction(m, this, (enum eAction)m->action))
+  if (!t_->canDoAction(m, this))
     return;
   if (doMove(m))
     r_->turnOver();
@@ -1000,14 +1009,14 @@ void SPlayer::msgMove(const ActMove* m)
 
 void SPlayer::msgStandUp(const ActStandUp* m)
 {
-  if (!t_->canDoAction(m, this, (enum eAction)m->action))
+  if (!t_->canDoAction(m, this))
     return;
   doStandUp(m);
 }
 
 void SPlayer::msgBlock(const ActBlock* m)
 {
-  if (!t_->canDoAction(m, this, (enum eAction)m->action))
+  if (!t_->canDoAction(m, this))
     return;
   if (doBlock(m))
     r_->turnOver();
@@ -1015,13 +1024,19 @@ void SPlayer::msgBlock(const ActBlock* m)
 
 void SPlayer::msgPass(const ActPass* m)
 {
-  if (!t_->canDoAction(m, this, PASS))
+  if (!t_->canDoAction(m, this))
     return;
   if (doPass(m))
     r_->turnOver();
 }
 
 
+bool SPlayer::filterDeclare(const ActDeclare* m)
+{
+  if (m->client_id != team_id_ || m->player_id != id_)
+    return false;
+  return true;
+}
 
 bool SPlayer::filterMove(const ActMove* m)
 {

@@ -30,14 +30,17 @@ public:
   CPlayer(CRules* r, const MsgPlayerCreate* m);
   virtual ~CPlayer();
 
+  //! @brief Declare an action for the player.
+  bool declareAction(enum eAction action);
+
   //! @brief Move the player on the field.
-  bool move(const Position& to, enum eAction action);
+  bool move(const Position& to);
 	
   //! @brief Stand up the player.
-  bool standUp(enum eAction action);
+  bool standUp();
 
   //! @brief Block the player at the specified position.
-  bool block(CPlayer* opponent, enum eAction action);
+  bool block(CPlayer* opponent);
 	
   //! @brief Block the player at the specified position.
   bool pass(const Position& to);
@@ -59,6 +62,7 @@ private:
   CRules* r_;
 
   // Message from server.
+  void msgDeclareAction(const ActDeclare* m);
   void msgPlayerPos(const MsgPlayerPos* m);
   void msgPlayerMove(const ActMove* m);
   void msgPlayerKnocked(const MsgPlayerKnocked* m);
@@ -66,6 +70,7 @@ private:
   void msgPlayerKO(const MsgPlayerKO* m);
 
   // Filter messages. Say yes if this message is for this player.
+  bool filterDeclareAction(const ActDeclare* m);
   bool filterPlayerPos(const MsgPlayerPos* m);
   bool filterPlayerMove(const ActMove* m);
   bool filterPlayerKnocked(const MsgPlayerKnocked* m);

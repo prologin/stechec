@@ -224,7 +224,86 @@ void STeam::setConcernedPlayer(SPlayer* p)
   concerned_player_ = p;
 }
 
-bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eAction action)
+bool STeam::canDeclareAction(const ActDeclare* pkt)
+{
+  SPlayer* p = player_[pkt->player_id];
+	
+  // Check the action exists.
+  if (pkt->action != MOVE && pkt->action != BLOCK 
+       && pkt->action != BLITZ && pkt->action != PASS)
+    {
+      LOG4("Must declare an existing action");
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
+
+  // Check if it's the team turn.
+  if (r_->getCurrentTeamId() != pkt->client_id)
+    {
+      LOG4("Cannot declare action: not team turn");
+      LOG4("%1, %2",r_->getCurrentTeamId(), r_->getState());
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
+
+  // The previous one finishes this turn.
+  if (curr_acting_player_ != -1)
+    {
+      player_[curr_acting_player_]->setHasPlayed();
+      ActDeclare m(pkt->client_id);
+      m.player_id = curr_acting_player_;
+      m.action = NONE;
+      r_->sendPacket(m);
+      curr_acting_player_ = -1;
+    }
+
+  // Check if the player has allready played this turn.
+  if (p->hasPlayed())
+    {
+      LOG4("Cannot declare action: this player already does something this turn");
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
+
+  // Check if the player is not performing an other action.
+  if (p->getAction() != NONE)
+    {
+      LOG4("Cannot declare action: this player is performing an action");
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
+
+  // If he is stunned or out of the field, he can't do it
+  if (p->getStatus() != STA_STANDING &&p->getStatus() != STA_PRONE)
+    return false;
+
+  // Check if he can declare this action
+  if (pkt->action == BLITZ)
+	{ 
+	  if (blitz_done_)
+	    {
+	      LOG4("Cannot do more than one blitz in a single turn.");
+	      r_->sendIllegal(pkt->token, p->getId());
+	      return false;
+	    }
+	  blitz_done_ = true;
+	}
+  if (pkt->action == PASS)
+	{ 
+	  if (pass_done_)
+	    {
+	      LOG4("Cannot do more than one pass in a single turn.");
+              r_->sendIllegal(pkt->token, p->getId());
+	      return false;
+	    }
+	  pass_done_ = true;
+	}
+
+  curr_acting_player_ = p->getId();
+  return true;
+}
+
+bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
 {
   // Check if it's the team turn.
   if (r_->getCurrentTeamId() != pkt->client_id)
@@ -235,78 +314,51 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p, enum eAction action)
       return false;
     }
 
-  // Check if the player has allready played this turn.
-  if (p->hasPlayed())
+  // Check if it is the current player
+  if (p->getId() != curr_acting_player_)
     {
-      LOG4("Cannot do action: this player already does something this turn");
+      LOG4("Cannot do action: an other player is performing an action");
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }
 
-  // If it is not the current player, the previous one finishes this turn.
-  if (curr_acting_player_ != -1 && curr_acting_player_ != p->getId())
-    {
-      player_[curr_acting_player_]->setHasPlayed();
-    }
-
   // If he is stunned or out of the field, he can't do it
-  if ((p->getStatus() != STA_STANDING	||pkt->token == ACT_STANDUP)
-      &&(p->getStatus() != STA_PRONE	||pkt->token != ACT_STANDUP))
-    return false;
+  if (pkt->token == ACT_STANDUP && p->getStatus() != STA_PRONE)
+    {
+      LOG4("Cannot do action: player must be prone to stand up");
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
+  if (pkt->token != ACT_STANDUP && p->getStatus() != STA_STANDING)
+    {
+      LOG4("Cannot do action: player must stand up");
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
 
   // Check the action declared is fit to the action
-  if (  (action == MOVE 	&&(	pkt->token == ACT_PASS	||pkt->token == ACT_BLOCK))
-	||(action == BLOCK 	&&(	pkt->token == ACT_PASS	||pkt->token == ACT_MOVE))
-	||(action == BLITZ 	&&	pkt->token == ACT_PASS)
-	||(action == PASS 	&&	pkt->token == ACT_BLOCK))
-    return false;
-
-  // If he has not played before
-  if (p->getAction() == NONE)
+  if ((p->getAction() == MOVE && 
+        (pkt->token == ACT_PASS ||pkt->token == ACT_BLOCK))
+	||(p->getAction() == BLOCK &&
+	    (pkt->token == ACT_PASS ||pkt->token == ACT_MOVE))
+	||(p->getAction() == BLITZ &&  pkt->token == ACT_PASS)
+	||(p->getAction() == PASS  &&  pkt->token == ACT_BLOCK))
     {
-      if (action == BLITZ)
-	{ 
-	  if (blitz_done_)
-	    {
-	      LOG4("Cannot do more than one blitz in a single turn.");
-		r_->sendIllegal(pkt->token, p->getId());
-	      return false;
-	    }
-	  blitz_done_ = true;
-	}
-				
-      if (action == PASS)
-	{ 
-	  if (pass_done_)
-	    {
-	      LOG4("Cannot do more than one pass in a single turn.");
-		r_->sendIllegal(pkt->token, p->getId());
-	      return false;
-	    }
-	  pass_done_ = true;
-	}
-				
-      p->setAction(action);
+      LOG4("Cannot do action: declare action does not fit");
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
     }
-  // If he has played before
-  else
-    {
-      // He must play the action he declared
-      if (action != p->getAction())
-	return false;
-				
-      // Cannot try to stand up more than once
-      if (pkt->token == ACT_STANDUP)
+    
+  // Cannot try to stand up more than once
+  if (pkt->token == ACT_STANDUP)
 	{
-	  if (curr_acting_player_ == p->getId()) 
+	  if (p->getMaRemain() != p->getMa())
 	    {
-	      LOG4("Cannot try to stand up more than once.");
-		r_->sendIllegal(pkt->token, p->getId());
+          LOG4("Cannot try to stand up more than once.");
+	      r_->sendIllegal(pkt->token, p->getId());
 	      return false;
 	    }
 	}
-    }
-
-  curr_acting_player_ = p->getId();
+	
   return true;
 }

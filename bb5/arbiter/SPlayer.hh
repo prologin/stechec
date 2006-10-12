@@ -67,10 +67,12 @@ public:
 
 private:
 
+  void msgDeclare(const ActDeclare* m);
   void msgMove(const ActMove* m);
   void msgStandUp(const ActStandUp* m);
   void msgBlock(const ActBlock* m);
   void msgPass(const ActPass* m);
+  bool filterDeclare(const ActDeclare* m);
   bool filterMove(const ActMove* m);
   bool filterStandUp(const ActStandUp* m);
   bool filterBlock(const ActBlock* m);

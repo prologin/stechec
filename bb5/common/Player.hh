@@ -29,9 +29,13 @@
 const int MAX_MOVE = 16;
 const int MAX_SKILL = 16;
 
-DECLARE_PACKET(ACT_MOVE, ActMove)
+DECLARE_PACKET(ACT_DECLARE, ActDeclare)
   int player_id;
   int action;
+END_PACKET
+
+DECLARE_PACKET(ACT_MOVE, ActMove)
+  int player_id;
   int nb_move;
   struct {
     int row;
@@ -41,12 +45,10 @@ END_PACKET
 
 DECLARE_PACKET(ACT_STANDUP, ActStandUp)
   int player_id;
-  int action;
 END_PACKET
 
 DECLARE_PACKET(ACT_BLOCK, ActBlock)
   int player_id;
-  int action;
   int opponent_id;
 END_PACKET
 
@@ -69,7 +71,6 @@ END_PACKET
 
 DECLARE_PACKET(ACT_PASS, ActPass)
   int player_id;
-  int action;
   int dest_row;
   int dest_col;
 END_PACKET

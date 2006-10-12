@@ -64,15 +64,10 @@ Input::InputCommand Input::main_cmd_[] = {
   {"reroll", &Input::cmdReroll, "reroll the dice(s)"},
   {"accept", &Input::cmdAccept, "accept result of the dice(s)"},
   {"end", &Input::cmdEnd, "end turn"},
+  {"declare", &Input::cmdDeclare, "<subcmd>|print some informations ('help declare')"},
   {"move", &Input::cmdMove, "<subcmd>|move something ('help move')"},
-  {"moveBz", &Input::cmdMoveBz, "<p> <r> <c>|move player for a blitz <p> to <r,c>"},
-  {"moveP", &Input::cmdMoveP, "<p> <r> <c>|move player for a pass <p> to <r,c>"},
-  {"standupM", &Input::cmdStandUpM, "<id>|stand up the player'id' for a move action"},
-  {"standupBk", &Input::cmdStandUpBk, "<id>|stand up the player'id' for a block"},
-  {"standupBz", &Input::cmdStandUpBz, "<id>|stand up the player'id' for a blitz"},
-  {"standupP", &Input::cmdStandUpP, "<id>|stand up the player'id' for a pass"},
+  {"standup", &Input::cmdStandUp, "<id>|stand up the player'id'"},
   {"block", &Input::cmdBlock, "<id> <d_id>|block with player 'id' player 'd_id'"},
-  {"blockBz", &Input::cmdBlockBz, "<id> <d_id>|block with player 'id' player 'd_id' in a blitz action"},
   {"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
   {"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
   {"follow", &Input::cmdFollow, "follow after a block."},
@@ -99,6 +94,13 @@ Input::InputSubCommand Input::move_cmd_[] = {
   {NULL, NULL, NULL}
 };
 
+Input::InputSubCommand Input::declare_cmd_[] = {
+  {"move", &Input::cmdDeclareMove, "<p>|declare a move action for player <p>"},
+  {"block", &Input::cmdDeclareBlock, "<p>|declare a block action for player <p>"},
+  {"blitz", &Input::cmdDeclareBlitz, "<p>|declare a blitz action for player <p>"},
+  {"pass", &Input::cmdDeclarePass, "<p>|declare a pass action for player <p>"},
+  {NULL, NULL, NULL}
+};
 
 
 
@@ -210,63 +212,24 @@ void Input::cmdMove(const string& cmd, const string& args)
     cmdMovePlayer(cmd + " " + args);
 }
 
-void Input::cmdMoveBz(const string& cmd, const string& args)
+void Input::cmdDeclare(const string& cmd, const string& args)
 {
-  istringstream is(cmd + " " + args);
-  int p_id = -1;
-  Position pos;
-  is >> p_id;
-  is >> pos.row;
-  is >> pos.col;
-  if (api_->doBlitzMovePlayer(p_id, pos))
-    sync_++;
+  if (cmd == "move")
+    cmdDeclareMove(args);
+  else if (cmd == "block")
+    cmdDeclareBlock(args);
+  else if (cmd == "blitz")
+    cmdDeclareBlitz(args);
+  else if (cmd == "pass")
+    cmdDeclarePass(args);
 }
 
-void Input::cmdMoveP(const string& cmd, const string& args)
-{
-  istringstream is(cmd + " " + args);
-  int p_id = -1;
-  Position pos;
-  is >> p_id;
-  is >> pos.row;
-  is >> pos.col;
-  if (api_->doPassMovePlayer(p_id, pos))
-    sync_++;
-}
-
-void Input::cmdStandUpM(const string& cmd, const string& args)
+void Input::cmdStandUp(const string& cmd, const string& args)
 {
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  if (api_->doMoveStandUpPlayer(p))
-    sync_++;
-}
-
-void Input::cmdStandUpBk(const string& cmd, const string& args)
-{
-  istringstream is(cmd + " " + args);
-  int p = -1;
-  is >> p;
-  if (api_->doBlockStandUpPlayer(p))
-    sync_++;
-}
-
-void Input::cmdStandUpBz(const string& cmd, const string& args)
-{
-  istringstream is(cmd + " " + args);
-  int p = -1;
-  is >> p;
-  if (api_->doBlitzStandUpPlayer(p))
-    sync_++;
-}
-
-void Input::cmdStandUpP(const string& cmd, const string& args)
-{
-  istringstream is(cmd + " " + args);
-  int p = -1;
-  is >> p;
-  if (api_->doPassStandUpPlayer(p))
+  if (api_->doStandUpPlayer(p))
     sync_++;
 }
 
@@ -278,17 +241,6 @@ void Input::cmdBlock(const string& cmd, const string& args)
   is >> p_id;
   is >> p_did;
   if (api_->doBlockPlayer(p_id, p_did))
-    sync_++;
-}
-
-void Input::cmdBlockBz(const string& cmd, const string& args)
-{
-  istringstream is(cmd + " " + args);
-  int p_id = -1;
-  int p_did = -1;
-  is >> p_id;
-  is >> p_did;
-  if (api_->doBlitzBlockPlayer(p_id, p_did))
     sync_++;
 }
 
@@ -434,6 +386,46 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> pos.row;
   is >> pos.col;
   if (api_->doMovePlayer(p, pos))
+    sync_++;
+}
+
+//
+// Declare commands
+//
+
+void Input::cmdDeclareMove(const std::string& args)
+{
+  istringstream is(args);
+  int p = -1;
+  is >> p;
+  if (api_->doDeclareMove(p))
+    sync_++;
+}
+
+void Input::cmdDeclareBlock(const std::string& args)
+{
+  istringstream is(args);
+  int p = -1;
+  is >> p;
+  if (api_->doDeclareBlock(p))
+    sync_++;
+}
+
+void Input::cmdDeclareBlitz(const std::string& args)
+{
+  istringstream is(args);
+  int p = -1;
+  is >> p;
+  if (api_->doDeclareBlitz(p))
+    sync_++;
+}
+
+void Input::cmdDeclarePass(const std::string& args)
+{
+  istringstream is(args);
+  int p = -1;
+  is >> p;
+  if (api_->doDeclarePass(p))
     sync_++;
 }
 

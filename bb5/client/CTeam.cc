@@ -111,28 +111,46 @@ void CTeam::placeTeam(int formation_id)
       }
 }
 
-bool CTeam::movePlayer(int player_id, const Position& to, enum eAction action)
+bool CTeam::declareAction(int player_id, enum eAction action)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
     return false;
-  return p->move(to, action);
+  if (blitz_done_ && action == BLITZ)
+    {
+      LOG2("You have halready done a blitz action this turn.");
+      return false;
+    }
+  if (pass_done_ && action == PASS)
+    {
+      LOG2("You have halready done a pass action this turn.");
+      return false;
+    }
+  return p->declareAction(action);
 }
 
-bool CTeam::standUpPlayer(int player_id, enum eAction action)
+bool CTeam::movePlayer(int player_id, const Position& to)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL)
     return false;
-  return p->standUp(action);
+  return p->move(to);
 }
 
-bool CTeam::blockPlayer(int player_id, CPlayer* opponent, enum eAction action)
+bool CTeam::standUpPlayer(int player_id)
+{
+  CPlayer* p = getPlayer(player_id);
+  if (p == NULL)
+    return false;
+  return p->standUp();
+}
+
+bool CTeam::blockPlayer(int player_id, CPlayer* opponent)
 {
   CPlayer* p = getPlayer(player_id);
   if (p == NULL || opponent == NULL)
     return false;
-  return p->block(opponent, action);
+  return p->block(opponent);
 }
 
 bool CTeam::passPlayer(int player_id, const Position& to)

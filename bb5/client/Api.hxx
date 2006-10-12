@@ -66,6 +66,30 @@ inline void Api::doAskIllegalProcedure()
   rules_->sendPacket(ActIllegalProc());
 }
 
+inline bool Api::doDeclareMove(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->declareAction(p, MOVE);
+}
+
+inline bool Api::doDeclareBlock(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->declareAction(p, BLOCK);
+}
+
+inline bool Api::doDeclareBlitz(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->declareAction(p, BLITZ);
+}
+
+inline bool Api::doDeclarePass(int p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->our_team_->declareAction(p, PASS);
+}
+
 inline bool Api::doReroll()
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
@@ -82,7 +106,8 @@ inline bool Api::doReroll()
 		
   MsgReroll msg(rules_->our_team_->getTeamId());
   msg.reroll = true;
-  rules_->sendPacket(msg);	return true;
+  rules_->sendPacket(msg);
+  return true;
 }
 
 inline bool Api::doAccept()
@@ -195,58 +220,20 @@ inline bool Api::doGiveBall(int p)
 inline bool Api::doMovePlayer(int p, const Point& to)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->movePlayer(p, to, MOVE);
+  return rules_->our_team_->movePlayer(p, to);
 }
 
-inline bool Api::doBlitzMovePlayer(int p, const Point& to)
+inline bool Api::doStandUpPlayer(int p)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->movePlayer(p, to, BLITZ);
-}
-
-inline bool Api::doPassMovePlayer(int p, const Point& to)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->movePlayer(p, to, PASS);
-}
-
-inline bool Api::doMoveStandUpPlayer(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->standUpPlayer(p, MOVE);
-}
-
-inline bool Api::doBlockStandUpPlayer(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->standUpPlayer(p, BLOCK);
-}
-
-inline bool Api::doBlitzStandUpPlayer(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->standUpPlayer(p, BLITZ);
-}
-
-inline bool Api::doPassStandUpPlayer(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->standUpPlayer(p, PASS);
+  return rules_->our_team_->standUpPlayer(p);
 }
 
 inline bool Api::doBlockPlayer(int p, int def_p)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   CPlayer* opponent = rules_->other_team_->getPlayer(def_p);
-  return rules_->our_team_->blockPlayer(p, opponent, BLOCK);
-}
-
-
-inline bool Api::doBlitzBlockPlayer(int p, int def_p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  CPlayer* opponent = rules_->other_team_->getPlayer(def_p);
-  return rules_->our_team_->blockPlayer(p, opponent, BLITZ);
+  return rules_->our_team_->blockPlayer(p, opponent);
 }
 
 inline bool Api::doPassPlayer(int p, const Point& to)

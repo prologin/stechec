@@ -118,7 +118,7 @@ inline bool Player::hasSkill(enum eSkill skill) const
 inline void Player::resetTurn()
 {
   action_ = NONE;
-	has_played_ = false;
+  has_played_ = false;
   ma_remain_ = ma_;
   will_prone_ = (status_ == STA_STUNNED);
 }

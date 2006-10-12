@@ -66,6 +66,7 @@ public:
   static InputCommand main_cmd_[];
   static InputSubCommand print_cmd_[];
   static InputSubCommand move_cmd_[];
+  static InputSubCommand declare_cmd_[];
 
 private:
 
@@ -88,15 +89,10 @@ private:
   void cmdWait(const std::string& cmd, const std::string& args);
 
   // Action command
+  void cmdDeclare(const std::string& cmd, const std::string& args);
   void cmdMove(const std::string& cmd, const std::string& args);
-  void cmdMoveBz(const std::string& cmd, const std::string& args);
-  void cmdMoveP(const std::string& cmd, const std::string& args);
-  void cmdStandUpM(const std::string& cmd, const std::string& args);
-  void cmdStandUpBk(const std::string& cmd, const std::string& args);
-  void cmdStandUpBz(const std::string& cmd, const std::string& args);
-  void cmdStandUpP(const std::string& cmd, const std::string& args);
+  void cmdStandUp(const std::string& cmd, const std::string& args);
   void cmdBlock(const std::string& cmd, const std::string& args);
-  void cmdBlockBz(const std::string& cmd, const std::string& args);
   void cmdPass(const std::string& cmd, const std::string& args);
 
   // Print commands
@@ -110,6 +106,12 @@ private:
   // Move commands
   void cmdMoveTurnMarker(const std::string& args);
   void cmdMovePlayer(const std::string& args);
+
+  // Declare commands
+  void cmdDeclareMove(const std::string& args);
+  void cmdDeclareBlock(const std::string& args);
+  void cmdDeclareBlitz(const std::string& args);
+  void cmdDeclarePass(const std::string& args);
 
   Api*                  api_;
   CmdLineInterface*     i_;
