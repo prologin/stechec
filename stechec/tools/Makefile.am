@@ -2,7 +2,7 @@
 
 SUBDIRS = . xml_test
 
-noinst_LTLIBRARIES = libtools.la
+pkglib_LTLIBRARIES = libtools.la
 
 libtools_la_SOURCES =				\
 	tools.hh

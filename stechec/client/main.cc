@@ -102,14 +102,15 @@ int main(int argc, char** argv)
   fprintf(stdout, "%s", "");
   srand(time(NULL)); // Asked by some candidats.
 
-  // Optionally start a thread for the arbiter, if needed.
-  start_arbiter(cfg);
 
   // FIXME: doesn't work right now, let it false.
 //   bool replay_log = cfg.getAttr<bool>("client", "mode", "replay");
   bool replay_log = false;
 
   try {
+    // Optionally start a thread for the arbiter, if needed.
+    start_arbiter(cfg);
+
     BaseCRules* r;
     RulesLoader rl;
 
@@ -163,7 +164,8 @@ int main(int argc, char** argv)
   } catch (const LibraryError&) {
     ret_value = 52;
     goto end;
-  } catch (const xml::XMLError&) {
+  } catch (const xml::XMLError& e) {
+    ERR("%1", e.what());
     ret_value = 53;
     goto end;
   } catch (...) {

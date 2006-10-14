@@ -47,7 +47,7 @@ void* run_arbiter(void* data)
 bool start_arbiter(xml::XMLConfig& cfg)
 {
   assert(thread_started == false);
-  if (cfg.getAttr<std::string>("server", "connect", "val") == "standalone")
+  if (cfg.getAttr<std::string>("client", "connect", "val") == "standalone")
     {
       LOG2("Creating server thread");
       pthread_create(&th_server, NULL, run_arbiter, static_cast<void*>(&cfg));
