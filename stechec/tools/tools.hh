@@ -17,6 +17,15 @@
 #ifndef TOOLS_HH_
 # define TOOLS_HH_
 
+/*!
+** @defgroup tools Stechec tools library.
+**
+** Provide some useful tools.
+**
+** All these files are located in @c stechec/tools
+**
+*/
+
 # include <sstream>
 # include <iostream>
 # include <string>
@@ -35,6 +44,9 @@
 # include <ctime>
 # include <cmath>
 
+# define BEGIN_NS(Ns) namespace Ns {
+# define END_NS(Ns) }
+
 # include "misc/Exception.hh"
 # include "misc/os_wrapper.hh"
 # include "misc/Stl.hh"
@@ -44,7 +56,6 @@
 
 # include "logger/log.hh"
 # include "misc/ExceptionDefine.hh"
-# include "xml/xml.hh"
 # include "datatfs/Packet.hh"
 # include "misc/Timer.hh"
 # include "misc/Library.hh"

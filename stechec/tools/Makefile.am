@@ -45,10 +45,14 @@ libtools_la_SOURCES +=				\
 libtools_la_SOURCES +=				\
 	xml/xml.cc				\
 	xml/xml.hh				\
-	xml/xml_parser.cc			\
-	xml/xml_parser.hh			\
-	xml/xml_writer.cc			\
-	xml/xml_writer.hh			\
+	xml/xml_config.cc			\
+	xml/xml_config.hh			\
+	xml/xml_team.cc				\
+	xml/xml_team.hh				\
+	xml/xml_formation.cc			\
+	xml/xml_formation.hh			\
+	xml/xml_internal.cc			\
+	xml/xml_internal.hh			\
 	xml/strings.hh
 
 libtools_la_CPPFLAGS	=			\

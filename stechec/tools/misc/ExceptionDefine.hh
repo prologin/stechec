@@ -24,19 +24,19 @@
 */
 
 # define THROW(Excpt, Msg)                      \
-{                                               \
+do {                                            \
   std::ostringstream os;                        \
   os << Msg;                                    \
   throw Excpt(os.rdbuf()->str());               \
-}
+} while (0)
 
 # define PRINT_AND_THROW(Excpt, Msg)            \
-{                                               \
+do {                                            \
   std::ostringstream os;                        \
   os << Msg;                                    \
   Excpt e(os.rdbuf()->str());                   \
-  ERR("Throwing " #Excpt ": %1",e);             \
+  ERR("Throwing " #Excpt ": %1", e.what());     \
   throw e;                                      \
-}
+} while (0)
 
 #endif /* !EXCEPTIONDEFINE_HH_ */
