@@ -40,12 +40,9 @@ Server::Server(const xml::XMLConfig& cfg)
   
   // Load shared library to get the rules.
   try {
-    rules_name_ = cfg.getData<std::string>("rules");
+    rules_name_ = cfg.getData<std::string>("server", "rules");
   } catch (xml::XMLError) {
-    LOG1("Note: previous error is harmless.");
-    cfg.switchSection("game");
-    rules_name_ = cfg.getData<std::string>("rules");
-    cfg.switchSection("server");
+    rules_name_ = cfg.getData<std::string>("game", "rules");
   }
   rules_.open(rules_name_);
   create_rules_fun_ = (create_rules_t)(rules_.getSymbol("load_server_rules"));
@@ -218,10 +215,10 @@ void        Server::run()
 {
   TcpCx          listen_socket;
 
-  is_persistent_ = cfg_.getAttr<bool>("options", "persistent");
+  is_persistent_ = cfg_.getAttr<bool>("server", "options", "persistent");
   
-  LOG2("Listening on port %1", cfg_.getAttr<int>("listen", "port"));
-  listen_socket.listenAt(cfg_.getAttr<int>("listen", "port"));
+  LOG2("Listening on port %1", cfg_.getAttr<int>("server", "listen", "port"));
+  listen_socket.listenAt(cfg_.getAttr<int>("server", "listen", "port"));
   waiting_clients_.reserve(1024); // should be max cx;
   waiting_clients_.push_back(&listen_socket);
 

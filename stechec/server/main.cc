@@ -49,9 +49,8 @@ static void parse_config(const char* opt_file, xml::XMLConfig& cfg)
 // Set some basic settings based on XML config file.
 static void set_opt(xml::XMLConfig& cfg, Log& log)
 {
-  cfg.switchSection("server");
-  log.setVerboseLevel(cfg.getAttr<int>("server_debug", "verbose"));
-  log.setPrintLoc(cfg.getAttr<bool>("server_debug", "printloc"));
+  log.setVerboseLevel(cfg.getAttr<int>("server", "server_debug", "verbose"));
+  log.setPrintLoc(cfg.getAttr<bool>("server", "server_debug", "printloc"));
 }
 
 int     main(int argc, char** argv)

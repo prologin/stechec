@@ -81,9 +81,8 @@ static void parse_config(const CmdLineOption& opt, xml::XMLConfig& cfg)
 static void set_opt(const CmdLineOption& opt, xml::XMLConfig& cfg, Log& log)
 {
   cfg.switchClientSection(opt.client_gid);
-  log.setVerboseLevel(cfg.getAttr<int>("debug", "verbose"));
-  log.setPrintLoc(cfg.getAttr<bool>("debug", "printloc"));
-  cfg.switchSection("client");
+  log.setVerboseLevel(cfg.getAttr<int>("client", "debug", "verbose"));
+  log.setPrintLoc(cfg.getAttr<bool>("client", "debug", "printloc"));
 }
 
 int main(int argc, char** argv)
@@ -107,9 +106,7 @@ int main(int argc, char** argv)
   start_arbiter(cfg);
 
   // FIXME: doesn't work right now, let it false.
-//   cfg.switchClientSection();
-//   bool replay_log = cfg.getAttr<bool>("mode", "replay");
-//   cfg.switchSection("client");
+//   bool replay_log = cfg.getAttr<bool>("client", "mode", "replay");
   bool replay_log = false;
 
   try {
@@ -122,8 +119,7 @@ int main(int argc, char** argv)
     // Connect to the arbiter now, if it was asked. Thus, errors while
     // loading champion could be reported to the server.
     ClientCx ccx(r, opt.client_gid);
-    cfg.switchSection("client");
-    if (cfg.getAttr<bool>("connect", "connect_on_startup") && !replay_log)
+    if (cfg.getAttr<bool>("client", "connect", "connect_on_startup") && !replay_log)
       {
         if (!ccx.connect(cfg))
           goto end;
@@ -139,9 +135,7 @@ int main(int argc, char** argv)
     // Log replay. Open the file. Other things should remain the same.
     if (replay_log)
       {
-        cfg.switchClientSection();
-        ccx.openLog(cfg.getAttr<std::string>("mode", "file"));
-        cfg.switchSection("client");
+        ccx.openLog(cfg.getAttr<std::string>("client", "mode", "file"));
 
         // Call a hook in rules, before UI is loaded.
         if (!rl.initRules(&ccx))
@@ -153,7 +147,6 @@ int main(int argc, char** argv)
 
     // Load the UI/Champion.
     ChampionLoader cl;
-    cfg.switchClientSection(opt.client_gid);
     cl.loadLibrary(argc, argv, cfg);
 
     // Give the hand to the UI/Champion.

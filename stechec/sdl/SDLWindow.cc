@@ -18,6 +18,7 @@
 #include <SDL_image.h>
 
 #include "SDLWindow.hh"
+#include "xml/xml_config.hh"
 
 SDLWindow::SDLWindow(xml::XMLConfig* xml)
   : xml_(xml),

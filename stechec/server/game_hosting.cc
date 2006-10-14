@@ -31,18 +31,16 @@ GameHosting::GameHosting(int game_uid,
     game_finished_(false),
     thread_finished_(false)
 {
-  cfg.switchSection("game");
-  nb_waited_coach_ = cfg.getData<int>("nb_team");
+  nb_waited_coach_ = cfg.getData<int>("game", "nb_team");
   rules->setTeamNumber(nb_waited_coach_);
-  cfg.switchSection("server");
-  nb_waited_viewer_ = cfg.getData<int>("nb_spectator");
+  nb_waited_viewer_ = cfg.getData<int>("server", "nb_spectator");
 
   LOG1("Creating a new game, uid '%1`. Wait for `%2' teams and `%3' spectators.", game_uid,
        nb_waited_coach_, nb_waited_viewer_);
 
-  if (cfg.getAttr<bool>("log", "enabled"))
+  if (cfg.getAttr<bool>("server", "log", "enabled"))
     {
-      std::string filename = cfg.getAttr<std::string>("log", "file");
+      std::string filename = cfg.getAttr<std::string>("server", "log", "file");
       log_.open(filename, CX_WO);
 
       ClientUid pkt_id(CLIENT_UID);
@@ -257,12 +255,12 @@ void GameHosting::run()
 
   // Set logger options.
   Log log(4);
-  log.setVerboseLevel(cfg_.getAttr<int>("debug", "verbose"));
-  log.setPrintLoc(cfg_.getAttr<bool>("debug", "printloc"));
+  log.setVerboseLevel(cfg_.getAttr<int>("server", "debug", "verbose"));
+  log.setPrintLoc(cfg_.getAttr<bool>("server", "debug", "printloc"));
   std::ostringstream is;
   is << " " << game_uid_;
   log.setModuleSuffix(is.str().c_str());
-  int game_start_timeout = cfg_.getAttr<int>("options", "start_game_timeout");
+  int game_start_timeout = cfg_.getAttr<int>("server", "options", "start_game_timeout");
   Timer start_timeout(game_start_timeout);
   start_timeout.start();
 

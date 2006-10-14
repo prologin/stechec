@@ -21,6 +21,7 @@
 #include <signal.h>
 
 #include "tools.hh"
+#include "xml/xml_config.hh"
 #include "NutsBarrier.hh"
 
 /*
@@ -83,19 +84,18 @@ NutsBarrier::~NutsBarrier()
 
 void    NutsBarrier::setConfigLimits(const xml::XMLConfig& cfg)
 {
-  cfg.switchClientSection();
-  if (cfg.getAttr<bool>("debug", "valgrind")
-      || cfg.getAttr<bool>("mode", "spectator"))
+  if (cfg.getAttr<bool>("client", "debug", "valgrind")
+      || cfg.getAttr<bool>("client", "mode", "spectator"))
     return;
 
-  int time = cfg.getAttr<int>("limit", "time");
-  int reserve = cfg.getAttr<int>("limit", "time_reserve");
+  int time = cfg.getAttr<int>("client", "limit", "time");
+  int reserve = cfg.getAttr<int>("client", "limit", "time_reserve");
   if (reserve < 0)
     reserve = 0;
   if (time > 10)
     setTimeLimitValue(time, reserve);
 
-  int mem = cfg.getAttr<int>("limit", "memory");
+  int mem = cfg.getAttr<int>("client", "limit", "memory");
   if (mem > 100)
     setMemoryLimitValue(mem);
 }
@@ -207,7 +207,6 @@ void        NutsBarrier::unsetTimeLimit()
 {
   struct itimerval        alr;
   struct sigaction        act;
-  struct tms                buf;
 
   if (time_limit_ > 0)
     {

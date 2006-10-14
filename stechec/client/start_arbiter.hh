@@ -17,6 +17,8 @@
 #ifndef START_ARBITER_HH_
 # define START_ARBITER_HH_
 
+# include "xml/xml_config.hh"
+
 //! @addtogroup client
 //! @{
 

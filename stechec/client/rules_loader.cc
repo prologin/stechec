@@ -33,11 +33,9 @@ BaseCRules* RulesLoader::loadRules(xml::XMLConfig& cfg)
   load_func_t load_fun;
 
   try {
-    lib_rules_.open(cfg.getData<std::string>("rules"));
-  } catch (xml::XMLError) {
-    LOG1("Note: previous error is harmless.");
-    cfg.switchSection("game");
-    lib_rules_.open(cfg.getData<std::string>("rules"));
+    lib_rules_.open(cfg.getData<std::string>("client", "rules"));
+  } catch (const xml::XMLError&) {
+    lib_rules_.open(cfg.getData<std::string>("game", "rules"));
   }
   load_fun = (load_func_t)(lib_rules_.getSymbol("load_client_rules"));
   return base_rules_ = load_fun(&cfg);

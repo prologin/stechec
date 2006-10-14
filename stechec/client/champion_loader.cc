@@ -24,7 +24,7 @@ void ChampionLoader::loadLibrary(int argc,
                                  char** argv,
                                  xml::XMLConfig& cfg)
 {
-  champion_.open(cfg.getData<std::string>("champion"));
+  champion_.open(cfg.getData<std::string>("client", "champion"));
 
   // Special Ocaml
   typedef void (*caml_init)(char**);

@@ -18,6 +18,7 @@
 # define CLIENTCX_HH_
 
 # include "datatfs/cx.hh"
+# include "xml/xml_config.hh"
 # include "PacketSender.hh"
 # include "BaseCRules.hh"
 

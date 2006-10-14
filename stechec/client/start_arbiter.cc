@@ -23,9 +23,8 @@ static bool thread_started = false;
 // Set some basic settings based on XML config file.
 static void set_opt(xml::XMLConfig& cfg, Log& log)
 {
-  cfg.switchSection("server");
-  log.setVerboseLevel(cfg.getAttr<int>("debug", "verbose"));
-  log.setPrintLoc(cfg.getAttr<bool>("debug", "printloc"));
+  log.setVerboseLevel(cfg.getAttr<int>("server", "debug", "verbose"));
+  log.setPrintLoc(cfg.getAttr<bool>("server", "debug", "printloc"));
 }
 
 void* run_arbiter(void* data)
@@ -48,7 +47,7 @@ void* run_arbiter(void* data)
 bool start_arbiter(xml::XMLConfig& cfg)
 {
   assert(thread_started == false);
-  if (cfg.getAttr<std::string>("connect", "val") == "standalone")
+  if (cfg.getAttr<std::string>("server", "connect", "val") == "standalone")
     {
       LOG2("Creating server thread");
       pthread_create(&th_server, NULL, run_arbiter, static_cast<void*>(&cfg));

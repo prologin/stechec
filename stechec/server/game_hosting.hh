@@ -20,6 +20,7 @@
 # include "tools.hh"
 # include "datatfs/netpoll.hh"
 # include "datatfs/file.hh"
+# include "xml/xml_config.hh"
 # include "client.hh"
 # include "BaseSRules.hh"
 # include "PacketSender.hh"

@@ -40,6 +40,8 @@
 # include "Input.hh"
 # include "VirtualSurface.hh"
 
+namespace xml { class XMLConfig; }
+
 /*!
 ** @ingroup sdl_base
 ** @brief Manage SDL Window.

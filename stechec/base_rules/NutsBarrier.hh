@@ -6,6 +6,8 @@
 # include <cassert>
 # include "tools.hh"
 
+namespace xml { class XMLConfig; }
+
 /*!
 ** @file
 ** @author victor

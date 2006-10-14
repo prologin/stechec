@@ -40,23 +40,19 @@ bool    ClientCx::connect(xml::XMLConfig& cfg)
   // Get rules name, for server check.
   std::string rules;
   try {
-    rules = cfg.getData<std::string>("rules");
+    rules = cfg.getData<std::string>("client", "rules");
   } catch (xml::XMLError) {
-    cfg.switchSection("game");
-    rules = cfg.getData<std::string>("rules");
-    cfg.switchSection("client");
+    rules = cfg.getData<std::string>("game", "rules");
   }
   
   // FIXME: connect, list games, _then_ join.
-  if (!connect(cfg.getAttr<std::string>("connect", "host"),
-               cfg.getAttr<int>("connect", "port"),
+  if (!connect(cfg.getAttr<std::string>("client", "connect", "host"),
+               cfg.getAttr<int>("client", "connect", "port"),
                rules))
     return false;
 
-  cfg.switchClientSection(client_gid_);
-  bool mode = cfg.getAttr<bool>("mode", "spectator");
-  cfg.switchSection("client");
-  if (!join(cfg.getAttr<int>("connect", "game_uid"), mode))
+  bool mode = cfg.getAttr<bool>("client", "mode", "spectator");
+  if (!join(cfg.getAttr<int>("client", "connect", "game_uid"), mode))
     return false;
   return true;
 }
