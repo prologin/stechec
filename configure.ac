@@ -179,6 +179,10 @@ AC_CONFIG_FILES([
   doc/Makefile
   doc/doc.doxy
   conf/Makefile
+  conf/config_tbt.xml
+  conf/config_prolo.xml
+  conf/team.xml
+  conf/formation.xml
   stechec/Makefile
   stechec/base_rules/Makefile
   stechec/client/Makefile

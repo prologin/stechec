@@ -1,4 +1,6 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1" ?> <!-- -*-SGML-*- -->
+<!DOCTYPE config SYSTEM "file://@prefix@/share/@PACKAGE@/config.dtd">
+
 <config>
 
   <game>
@@ -9,23 +11,20 @@
     <rules>bb5_client_rules</rules>
     <connect val="network" host="localhost" port="25151"
              game_uid="41" connect_on_startup="true" />
+    <team>team.xml</team>
   </client>
 
-  <client_1>
+  <client id="1">
     <champion>bb5_visu</champion>
-    <team>team.xml</team>
-    <mode replay="false" spectator="false" />
-    <limit memory="10000" time="500" time_reserve="2500" />
-    <debug valgrind="false" gdb="false" verbose="4" printloc="true" />
-  </client_1>
+    <mode spectator="false" />
+    <debug verbose="3" printloc="false" />
+  </client>
 
-  <client_2>
+  <client id="2">
     <champion>bb5_client_console</champion>
-    <team>team.xml</team>
-    <mode replay="false" file="match.log" spectator="false" />
-    <limit memory="0" time="500" time_reserve="2500" />
-    <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
-  </client_2>
+    <mode spectator="false" />
+    <debug verbose="3" printloc="false" />
+  </client>
 
   <server>
     <rules>bb5_arbiter</rules>

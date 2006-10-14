@@ -1,6 +1,14 @@
 # -*-Makefile-*-
 
-dist_pkgdata_DATA = default_conf.xml config_tbt.xml formation.xml team.xml
+dist_pkgdata_DATA =				\
+	config_prolo.xml			\
+	config_tbt.xml 				\
+	formation.xml				\
+	team.xml				\
+	config.dtd				\
+	team.dtd				\
+	formation.dtd
+
 dist_sysconf_DATA = stechec.yml
 
 install-data-local:

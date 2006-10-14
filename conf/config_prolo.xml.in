@@ -1,39 +1,42 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE config SYSTEM "file://@prefix@/share/@PACKAGE@/config.dtd">
+
 <config>
 
   <game>
-    <rules>ant</rules>
+    <nb_team>2</nb_team>
     <nb_team>1</nb_team>
     <max_turn>30</max_turn>
-    <map>basic.map</map>
   </game>
 
   <client>
-    <connect val="network" host="localhost" port="25151"
-             game_uid="41" connect_on_startup="true" />
+    <rules>ant</rules>
+    <connect val="network" host="localhost" port="25150"
+             game_uid="40" connect_on_startup="true" />
   </client>
 
-  <client_1>
+  <client id="1">
     <champion>/home/victor/tbt/local/ant/c/champion</champion>
     <mode replay="false" spectator="false" />
     <limit memory="10000" time="500" time_reserve="2500" />
     <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
-  </client_1>
+  </client>
 
-  <client_2>
+  <client id="2">
     <champion>ant_sdlvisu</champion>
     <mode replay="false" file="match.log" spectator="true" />
     <limit memory="0" time="500" time_reserve="2500" />
     <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
-  </client_2>
+  </client>
 
   <server>
-    <options persistent="false" start_game_timeout="30" />
-    <listen port="25151" />
+    <rules>ant</rules>
+    <options persistent="true" start_game_timeout="30" />
+    <listen port="25150" />
     <log enabled="false" file="match.log" />
     <nb_spectator>1</nb_spectator>
     <debug verbose="8" printloc="true" />
-    <server_debug verbose="8" printloc="false" />
+    <server_debug verbose="3" printloc="false" />
   </server>
 
 </config>

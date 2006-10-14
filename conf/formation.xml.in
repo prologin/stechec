@@ -1,4 +1,6 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1" ?> <!-- -*-SGML-*- -->
+<!DOCTYPE formations SYSTEM "file://@prefix@/share/@PACKAGE@/formation.dtd">
+
 <formations>
 <formation id="1" n="1" x="1" y="12" />
 <formation id="1" n="2" x="2" y="12" />
