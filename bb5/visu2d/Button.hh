@@ -161,7 +161,7 @@ class BYes:public ImageButton
 class BNo:public ImageButton
 {
 public:
-  BNo(SDL_Surface* screen, Widget* fathe)
+  BNo(SDL_Surface* screen, Widget* father)
     : ImageButton(130,135,50,31,screen,father, "image/dialog/no.jpg")
   {};
 };

@@ -17,6 +17,7 @@
 #include "Constants.hh"
 #include "Dice.hh"
 #include "SRules.hh"
+#include "xml/xml_config.hh"
 
 SRules::SRules()
   : cur_turn_(0),

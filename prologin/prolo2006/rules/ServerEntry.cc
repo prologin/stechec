@@ -12,7 +12,7 @@
 
 #include "GameData.hh"
 #include "ServerEntry.hh"
-
+#include "xml/xml_config.hh"
 
 ServerEntry::ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg) :
    StechecServerEntry(game, server, cfg)
@@ -29,10 +29,8 @@ ServerEntry::~ServerEntry()
 // don't know what to do with this method for now.. let met think of this
 int        ServerEntry::ParseOptions()
 {
-  cfg_.switchSection("game");
-  g_->max_date = cfg_.getData<int>("max_turn");
-  mapFile = cfg_.getData<std::string>("map");
-  cfg_.switchSection("server");
+  g_->max_date = cfg_.getData<int>("game", "max_turn");
+  mapFile = cfg_.getData<std::string>("game", "map");
 
   // Check for crasy people.
   if (g_->max_date > MAX_DATE)

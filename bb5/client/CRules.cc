@@ -18,6 +18,7 @@
 #include "Event.hh"
 #include "Api.hh"
 #include "CRules.hh"
+#include "xml/xml_config.hh"
 
 CRules::CRules(const xml::XMLConfig& cfg)
   : cfg_(cfg),
@@ -100,7 +101,7 @@ void        CRules::msgInitGame(const MsgInitGame* m)
 
   // Create, populate our team from the xml file, and send it.
   our_team_ = new CTeam(getTeamId(), this);
-  our_team_->loadConfig(cfg_.getData<std::string>("team"));
+  our_team_->loadConfig(cfg_.getData<std::string>("client", "team"));
 
   // Other team.
   other_team_ = new CTeam(getTeamId() == 0 ? 1 : 0, this);

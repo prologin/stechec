@@ -51,8 +51,8 @@ public:
   ushort inside(const uint mousex, const uint mousey);
   virtual ushort mousebuttondown(const uint mousex, const uint mousey);
 
-	//keyboard
-	virtual void keydown(const SDL_keysym* keysym){};
+  //keyboard
+  virtual void keydown(const SDL_keysym* keysym){};
 
   // Focus
   virtual void gainfocus();

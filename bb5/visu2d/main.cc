@@ -15,6 +15,7 @@
 */
 
 #include "tools.hh"
+#include "xml/xml_config.hh"
 #include "SDLWindow.hh"
 #include "ResourceCenter.hh"
 
@@ -104,9 +105,8 @@ static void parse_config(const CmdLineOption& opt, xml::XMLConfig& cfg)
 static void set_opt(const CmdLineOption& opt, xml::XMLConfig& cfg, Log& log)
 {
   cfg.switchClientSection(opt.client_gid);
-  log.setVerboseLevel(cfg.getAttr<int>("debug", "verbose"));
-  log.setPrintLoc(cfg.getAttr<bool>("debug", "printloc"));
-  cfg.switchSection("client");
+  log.setVerboseLevel(cfg.getAttr<int>("client", "debug", "verbose"));
+  log.setPrintLoc(cfg.getAttr<bool>("client", "debug", "printloc"));
 }
 
 

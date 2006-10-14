@@ -19,6 +19,8 @@
 
 # include "CPlayer.hh"
 # include "Team.hh"
+# include "xml/xml_team.hh"
+# include "xml/xml_formation.hh"
 
 class CRules;
 

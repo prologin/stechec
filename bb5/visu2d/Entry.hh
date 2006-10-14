@@ -55,8 +55,8 @@ class Entry: public Widget
   //! Nothing to do with en entry
   void mousemotion(const uint mousex, const uint mousey){};
 
-	//keyboard
-	void keydown(const SDL_keysym* keysym);
+  //keyboard
+  void keydown(const SDL_keysym* keysym);
 
   // Txt
   void add_char(const char c);

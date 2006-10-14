@@ -34,6 +34,7 @@ enum eSelTeam {
 // Mostly a big hack, to have BaseCRules::onEvent(int) working.
 DECLARE_EMPTY_PACKET(CUSTOM_EVENT, CustomEvent);
 
+namespace xml { class XMLConfig; }
 class Api;
 
 /*!
