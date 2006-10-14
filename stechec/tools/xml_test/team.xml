@@ -1,75 +1,142 @@
-<?xml version="1.0" ?>
-<team name="foo figther's" race="woodelf" coach="moa" BBversion="4" emblem="woodelves.jpg">
+<?xml version="1.0"  encoding="iso-8859-1" ?>
+<!DOCTYPE team SYSTEM "team.dtd">
+
+<team name="Amazon" race="amazon" coach="coach" BBversion="4" emblem="amazon.png">
+  <formation>default.xml</formation>
   <rating>25</rating>
   <treasury>0</treasury>
   <reroll>-4</reroll>
-  <rerollcost>50000</rerollcost>
-  <fanfactor>6</fanfactor>
+  <rerollcost>40000</rerollcost>
+  <fanfactor>7</fanfactor>
   <assistant>0</assistant>
-  <cheerleader>35537</cheerleader>
+  <cheerleader>0</cheerleader>
   <apothecary>0</apothecary>
-  <formation>default.xml</formation>
+  <wizard>0</wizard>
+  
   <players>
-    <player name="edrh" number="1" position="Lanceur" race="woodelf" display="woodelf_p.png">
-      <ma>7</ma>
-      <st>3</st>
-      <ag>4</ag>
-      <av>7</av>
-      <positionid>2</positionid>
-      <cost>90000</cost>
-      <skill>pass</skill>
-      <bl>0</bl>
-      <reu>0</reu>
-      <td>0</td>
-      <int>0</int>
-      <sor>0</sor>
-      <jpv>0</jpv>
-      <xp>0</xp>
-    </player>
-    <player name="erh" number="2" position="Receveur" race="woodelf" display="woodelf_c.png">
-      <ma>9</ma>
-      <st>2</st>
-      <ag>4</ag>
-      <av>7</av>
-      <positionid>1</positionid>
-      <cost>90000</cost>
-      <skill>catch</skill>
-      <skill>dodge</skill>
-      <bl>0</bl>
-      <reu>0</reu>
-      <td>0</td>
-      <int>0</int>
-      <sor>0</sor>
-      <jpv>0</jpv>
-      <xp>0</xp>
-    </player>
-    <player name="eerth" number="3" position="Trois Quart" race="woodelf" display="woodelf_l.png">
-      <ma>7</ma>
-      <st>3</st>
-      <ag>4</ag>
-      <av>7</av>
-      <positionid>3</positionid>
-      <cost>70000</cost>
-      <bl>0</bl>
-      <reu>0</reu>
-      <td>0</td>
-      <int>0</int>
-      <sor>0</sor>
-      <jpv>0</jpv>
-      <xp>0</xp>
-    </player>
-    <!-- Ligne 4 incomplete -->
-    <!-- Ligne 5 incomplete -->
-    <!-- Ligne 6 incomplete -->
-    <!-- Ligne 7 incomplete -->
-    <!-- Ligne 8 incomplete -->
-    <!-- Ligne 9 incomplete -->
-    <!-- Ligne 10 incomplete -->
-    <!-- Ligne 11 incomplete -->
-    <!-- Ligne 12 incomplete -->
-    <!-- Ligne 13 incomplete -->
-    <!-- Ligne 14 incomplete -->
-    <!-- Ligne 15 incomplete -->
-    <!-- Ligne 16 incomplete -->
+
+<!-- Blitzer 3*90 = 270 -->
+<player name="Mary-Ann" number="1" position="Blitzer" race="amazons" display="amazon_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>90000</cost>
+<skill>block</skill>
+<skill>dodge</skill>
+</player>
+<player name="Mary-Jean" number="2" position="Blitzer" race="amazons" display="amazon_b.png">
+<ma>9</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>90000</cost>
+<skill>block</skill>
+<skill>dodge</skill>
+</player>
+<player name="Mary-Carol" number="3" position="Blitzer" race="amazons" display="amazon_b.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>0</positionid>
+<cost>90000</cost>
+<skill>block</skill>
+<skill>dodge</skill>
+</player>
+
+<!-- Thrower 2*70 = 140 -->
+<player name="Jacinthe" number="4" position="Thrower" race="amazons" display="amazon_t.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>1</positionid>
+<cost>70000</cost>
+<skill>dodge</skill>
+<skill>pass</skill>
+</player>
+<player name="Tulip" number="5" position="Thrower" race="amazons" display="amazon_t.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>1</positionid>
+<cost>70000</cost>
+<skill>dodge</skill>
+<skill>pass</skill>
+</player>
+
+<!-- Catcher 2*70 = 140 -->
+<player name="Purple" number="6" position="Catcher" race="amazons" display="amazon_c.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>70000</cost>
+<skill>dodge</skill>
+<skill>catch</skill>
+</player>
+<player name="Magenta" number="7" position="Catcher" race="amazons" display="amazon_c.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>2</positionid>
+<cost>70000</cost>
+<skill>dodge</skill>
+<skill>catch</skill>
+</player>
+
+<!-- Linewomen 5*50 = 250 -->
+<player name="Anna" number="7" position="Linewoman" race="amazons" display="amazon_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>50000</cost>
+<skill>dodge</skill>
+</player>
+<player name="Martina" number="8" position="Linewoman" race="amazons" display="amazon_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>50000</cost>
+<skill>dodge</skill>
+</player>
+<player name="Serena" number="9" position="Linewoman" race="amazons" display="amazon_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>50000</cost>
+<skill>dodge</skill>
+</player>
+<player name="Jelena" number="10" position="Linewoman" race="amazons" display="amazon_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>50000</cost>
+<skill>dodge</skill>
+</player>
+<player name="Iva" number="11" position="Linewoman" race="amazons" display="amazon_l.png">
+<ma>6</ma>
+<st>3</st>
+<ag>3</ag>
+<av>7</av>
+<positionid>3</positionid>
+<cost>50000</cost>
+<skill>dodge</skill>
+</player>
+
   </players>
 </team>

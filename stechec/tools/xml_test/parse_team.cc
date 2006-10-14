@@ -15,11 +15,12 @@
 */
 
 #include "tools.hh"
+#include "xml/xml_team.hh"
 using namespace xml;
 
 int main()
 {
-  Log l(1);
+  Log l(-1);
 
   XMLTeam t;
   t.parse(std::string(getenv("srcdir")) + "/team.xml");
@@ -32,7 +33,15 @@ int main()
 
   t.switchToPlayer(2);
   assert(t.getData<int>("ma") == 9);
-  assert(t.getAttr<std::string>("player", "name") == "erh");
+  assert(t.getAttr<std::string>("player", "name") == "Mary-Jean");
 
+  assert(t.getData<std::string>("skill", 0) == "block");
+  assert(t.getData<std::string>("skill", 1) == "dodge");
+
+  try {
+    t.getData<std::string>("skill", 2);
+    return 1;
+  } catch (...) {}
+    
   return 0;
 }

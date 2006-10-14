@@ -16,6 +16,7 @@
 
 
 #include "tools.hh"
+#include "xml/xml_config.hh"
 using namespace xml;
 
 int main()
@@ -23,19 +24,27 @@ int main()
   Log l(1);
 
   XMLConfig cfg;
-  cfg.parse(std::string(getenv("srcdir")) + "/tbtrc.xml");
+  cfg.parse(std::string(getenv("srcdir")) + "/config.xml");
 
-  cfg.switchSection("server");
-  assert(cfg.getAttr<int>("debug", "verbose") == 2);
-  assert(cfg.getAttr<bool>("debug", "printloc") == false);
+  assert(cfg.getAttr<int>("server", "debug", "verbose") == 2);
+  assert(cfg.getAttr<bool>("server", "debug", "printloc") == false);
 
-  cfg.setAttr("debug", "verbose", 6);
-  assert(cfg.getAttr<int>("debug", "verbose") == 6);
-  cfg.setData("lalal", std::string("lili"));
-  
-  cfg.switchSection("client");
-  assert(cfg.getAttr<int>("debug", "verbose") == 3);
-  assert(cfg.getAttr<bool>("debug", "printloc") == true);
+  cfg.setAttr("server", "debug", "verbose", 6);
+  assert(cfg.getAttr<int>("server", "debug", "verbose") == 6);
+  cfg.setData("server", "lalal", std::string("lili"));
+
+  // default attr
+  assert(cfg.getAttr<std::string>("client", "connect", "val") == std::string("network"));
+
+  // non-existing section
+  cfg.switchClientSection(3);
+  assert(cfg.getAttr<int>("client", "connect", "port") == 25151);
+
+  // existing section
+  cfg.switchClientSection(1);
+  assert(cfg.getAttr<int>("client", "debug", "verbose") == 4);
+  assert(cfg.getAttr<bool>("client", "debug", "printloc") == true);
+  assert(cfg.getAttr<std::string>("client", "connect", "host") == std::string("localhost"));
 
   return 0;
 }

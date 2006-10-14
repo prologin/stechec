@@ -6,6 +6,7 @@ TESTS 		= 				\
 	parse_config				\
 	parse_bad
 
+
 check_PROGRAMS	= $(TESTS)
 
 parse_formation_SOURCES = parse_formation.cc

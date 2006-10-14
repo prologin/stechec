@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!ELEMENT formations (formation+)>
+
+  <!ELEMENT formation (#PCDATA)>
+  <!ATTLIST formation
+    id CDATA #REQUIRED
+    n CDATA #REQUIRED
+    col CDATA #IMPLIED
+    row CDATA #IMPLIED
+    x CDATA #IMPLIED
+    y CDATA #IMPLIED
+  >

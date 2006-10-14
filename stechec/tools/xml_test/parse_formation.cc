@@ -16,6 +16,7 @@
 
 
 #include "tools.hh"
+#include "xml/xml_formation.hh"
 using namespace xml;
 
 struct pt {

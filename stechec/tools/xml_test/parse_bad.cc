@@ -16,6 +16,8 @@
 
 
 #include "tools.hh"
+#include "xml/xml_formation.hh"
+#include "xml/xml_team.hh"
 using namespace xml;
 
 int main()
