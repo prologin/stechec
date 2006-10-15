@@ -56,8 +56,8 @@ GameHosting::~GameHosting()
 {
   delete rules_;
 
-  // All clients _should_ have been disconnected.
-  assert(client_list_.empty());
+  // All clients _should_ have been disconnected (fails on exception).
+  //assert(client_list_.empty());
 }
 
 bool GameHosting::isFinished() const
@@ -249,12 +249,11 @@ bool GameHosting::process()
   return true;
 }
 
-void GameHosting::run()
+void GameHosting::run(Log& log)
 {
   self_ = pthread_self();
 
   // Set logger options.
-  Log log(4);
   log.setVerboseLevel(cfg_.getAttr<int>("server", "debug", "verbose"));
   log.setPrintLoc(cfg_.getAttr<bool>("server", "debug", "printloc"));
   std::ostringstream is;
@@ -312,7 +311,15 @@ void GameHosting::run()
 
 void*        GameHosting::startThread(void* gh_inst)
 {
+  Log log(4);
   GameHosting* inst = static_cast<GameHosting*>(gh_inst);
-  inst->run();
+  try {
+    inst->run(log);
+  } catch (const xml::XMLError& e) {
+    ERR("%1", e);
+  } catch (const Exception& e) {
+    ERR("Unhandled error: %1", e);
+  }
+  inst->thread_finished_ = true;
   return NULL;
 }

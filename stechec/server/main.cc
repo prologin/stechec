@@ -68,7 +68,8 @@ int     main(int argc, char** argv)
   } catch (const NetError& e) {
     ERR("Uncatched network error: %1", e);
     return 51;
-  } catch (const xml::XMLError&) {
+  } catch (const xml::XMLError& e) {
+    ERR("%1", e);
     return 52;
   } catch (const LibraryError&) {
     return 53;

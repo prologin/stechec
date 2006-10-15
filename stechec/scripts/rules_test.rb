@@ -41,7 +41,7 @@ class RuleTest
       puts "*** Result: FAILED." if not is_ok
     end
     puts
-    @error_seen = true if not is_ok
+    abort if not is_ok
   end
 
   #
@@ -52,7 +52,6 @@ class RuleTest
     if $?.exitstatus != 0
       puts prg + " no found in PATH. Aborting."
       cmd_result false
-      abort
     end
   end
 
@@ -65,7 +64,6 @@ class RuleTest
       puts prg + " " + args.join(' ') + " failed with exit status " \
         + $?.exitstatus.to_s + ". Aborting."
       cmd_result false
-      abort
     end
   end
 
@@ -78,7 +76,6 @@ class RuleTest
     if not @file_lang[lang]
       puts "don't know anything about language '" + lang + "'"
       cmd_result false
-      abort
     end
 
     check_prog_exec('ruby',  ENV['RUBYLIB'] + '/generator.rb', 'player', ARGV[1], @tmpdir)
@@ -115,6 +112,10 @@ class RuleTest
         check_prog_exec('cp', c['team'], @tmpdir.to_s)
         c['team'] = File.basename(c['team'])
       end
+      if c['formation'] then
+        check_prog_exec('cp', c['formation'], @tmpdir.to_s)
+        c['formation'] = File.basename(c['formation'])
+      end
       if c['diff'] then
         check_prog_exec('cp', c['diff'], @tmpdir.to_s)
         c['diff'] = File.basename(c['diff'])
@@ -122,7 +123,6 @@ class RuleTest
     end
     if @nb_client == 0
       cmd_result false, "Can't test anything, no client!" 
-      abort
     end
   end
 
@@ -137,7 +137,9 @@ class RuleTest
     conf['max_turn'] = 10 if conf['max_turn'].nil?
 
     f.puts <<-EOF
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE config SYSTEM "file://#{PKGDATADIR}/config.dtd">
+
 <config>
 
   <game>
@@ -145,16 +147,6 @@ class RuleTest
     <max_turn>#{conf['max_turn']}</max_turn>
     <map>#{conf['map']}</map>
   </game>
-
-  <server>
-    <rules>#{@server_rule_lib}</rules>
-    <options persistent="false" start_game_timeout="30" />
-    <listen port="25169" />
-    <log enabled="false" file="match.log" />
-    <nb_spectator>0</nb_spectator>
-    <debug verbose="4" printloc="false" />
-    <server_debug verbose="1" printloc="false" />
-  </server>
 
   <client>
     <rules>#{@client_rule_lib}</rules>
@@ -171,19 +163,31 @@ class RuleTest
          redir = "<redirection stdin=\"#{c['input']}\" stdout=\"#{c['output']}\" />"
        end
        f.puts <<-EOF
-  <client_#{n}>
-    <champion>#{c['champion']}</champion>
+  <client id="#{n}">
+    <champion>#{c['champion']}</champion> 
     <team>#{c['team']}</team>
     <mode replay="false" spectator="false" />
     <limit memory="10000" time="500" time_reserve="2500" />
     <debug valgrind="false" verbose="3" printloc="false" />
     #{redir}
-  </client_#{n}>
+  </client>
 
       EOF
     end
+ 
+    f.puts <<-EOF
+  <server>
+    <rules>#{@server_rule_lib}</rules>
+    <options persistent="false" start_game_timeout="30" />
+    <listen port="25169" />
+    <log enabled="false" file="match.log" />
+    <nb_spectator>0</nb_spectator>
+    <debug verbose="4" printloc="false" />
+    <server_debug verbose="1" printloc="false" />
+  </server>
+</config>
+    EOF
 
-    f.puts "</config>"
     f.close
   end
   
@@ -224,21 +228,41 @@ class RuleTest
     return res
   end
 
+  #
+  # Do some pre-processing stuff, inside temporary directory
+  #
+  def pre_run(conf)
+    
+    (1..@nb_client).each do |n|
+      c = conf['client_' + n.to_s]
+      if c['team']
+        check_prog_exec('sed', '-i', '-e', "s,@pkgdatadir@,#{PKGDATADIR},", c['team'])
+      end
+      if c['formation']
+        check_prog_exec('sed', '-i', '-e', "s,@pkgdatadir@,#{PKGDATADIR},", c['formation'])
+      end
+    end
+  end
+
   # clean our temporary directory at exit
   # (or keep it if DEBUG is defined in environnment)
   def clean
       if ENV['DEBUG']
         puts @test_name + ": temporary directory left at " + @tmpdir
-        File.open("debug_me.sh", "w") do |f|
-          f.puts "#!/bin/sh"
-          f.puts "export PATH=#{ENV['PATH']}"
-          f.puts "export RUBYLIB=#{ENV['RUBYLIB']}"          
-          f.puts "export LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}"
-          f.puts "export xml_parser_path=#{ENV['BASHLIB']}/"
-          f.puts "bash #{ENV['BASHLIB']}/run.sh conf.xml"
-        end
+        if @oldpwd
+          File.open("debug_me.sh", "w") do |f|
+            f.puts "#!/bin/sh"
+            f.puts "export PATH=#{ENV['PATH']}"
+            f.puts "export RUBYLIB=#{ENV['RUBYLIB']}"          
+            f.puts "export LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}"
+            f.puts "export xml_parser_path=#{ENV['BASHLIB']}/"
+            f.puts "bash #{ENV['BASHLIB']}/run.sh conf.xml"
+          end
         `chmod +x #{"debug_me.sh"}`
+        end
       else
+        Dir.chdir @oldpwd if @oldpwd
+        puts "cleaning ..." + @tmpdir.to_s
         @tmpdir.rmtree if @tmpdir.directory?
       end
   end
@@ -254,29 +278,27 @@ class RuleTest
     # generate xml
     generate_xml conf
 
+    # go in the temporary directory
+    @oldpwd = Dir.pwd
+    Dir.chdir(@tmpdir.to_s)
+    pre_run conf
+
     # run the test.
     print_banner 'Run the test'
-    Dir.chdir(@tmpdir.to_s)
     ENV['LD_LIBRARY_PATH'] = ENV['LD_LIBRARY_PATH'] + ":" + File.expand_path(@tmpdir)
     `bash #{ENV['BASHLIB']}/run.sh conf.xml`
     res = $?.exitstatus
     cmd_result(res == 0)
 
     # run things after run
-    if res == 0 then
-      res = post_run conf
-    end
+    res = post_run conf
 
-    # some cleaning
-    clean
-
-    return res
+    exit(res)
   end
 
   public
 
   def initialize
-    @error_seen = false
     # open contest yaml file
     case ARGV[1]
     when /\//
@@ -315,8 +337,8 @@ class RuleTest
     @tmpdir.rmtree if @tmpdir.directory?
     @tmpdir.mkdir
 
-    res = test_stub pool[@test_name]
-    exit(res)
+    at_exit { clean }
+    test_stub pool[@test_name]
   end
 end
 

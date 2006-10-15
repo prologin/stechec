@@ -70,7 +70,7 @@ private:
   void outputStatistics();
   bool processOne(Client* cl, std::string& remove_reason);
   bool process();
-  void run();
+  void run(Log& log);
 
   typedef std::vector<Client*>                ClientList;
   typedef ClientList::iterator                ClientIter;

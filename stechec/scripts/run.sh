@@ -45,7 +45,7 @@ fi
 
 abort()
 {
-    echo $1
+    echo $1 1>&2
     exit 1
 }
 
@@ -53,11 +53,12 @@ abort()
 # parse xml file, with our shiny awk parser
 #
 output=`awk -f "${xml_parser_path}xmlparser.awk" "$1"`
+awk -f "${xml_parser_path}xmlparser.awk" "$1" > awk
 [ $? -ne 0 ] && abort "Cannot parse $1."
 # then go back to ugly sed scripts
-clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT_([0-9]+):.*!\1!p' | uniq`
-USE_VALGRIND=`echo "$output" | sed -nr '/CONFIG\/CLIENT_[0-9]+\/DEBUG\/valgrind=true$/ { s/.*([0-9]+).*/x\1x/p }'`
-USE_GDB=`echo "$output" | sed -nr '/CONFIG\/CLIENT_[0-9]+\/DEBUG\/gdb=true$/ { s/.*([0-9]+).*/\1/p; q }'`
+clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT/id=([0-9]+).*$!\1!p' | grep -v 0 | uniq`
+USE_VALGRIND=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/valgrind=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
+USE_GDB=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/gdb=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
 
 if [ ! `which tbt` ]; then
     abort "tbt: command not found. Check your \$PATH."
@@ -88,12 +89,12 @@ pid_server=$!
 # spawn clients
 #
 for id in $clients; do
-    echo "======== launch client id $id"
+    echo "======== launch client id $id"  1>&2
     case $USE_VALGRIND in
 	*x${id}x*) VALGRIND=valgrind ;;
     esac
-    STDIN_REDIR=`echo "$output" | sed -nr "s!^CONFIG/CLIENT_${id}/REDIRECTION/stdin=(.*)!\1!p"`
-    STDOUT_REDIR=`echo "$output" | sed -nr "s!^CONFIG/CLIENT_${id}/REDIRECTION/stdout=(.*)!\1!p"`
+    STDIN_REDIR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdin=(.*)$,\1,p; t q; b n; :q q }"`
+    STDOUT_REDIR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdout=(.*)$,\1,p; t q; b n; :q q }"`
     if [ "x$USE_GDB" = "x$id" ]; then
 	gdb -q --args tbt $id "$1"
     else
@@ -129,7 +130,7 @@ done
 wait $pid_server
 
 echo
-echo "[0m*** run: end ***"
+echo "[0m*** run: end ***" 1>&2
 #sleep 1
 
 exit $failure

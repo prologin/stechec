@@ -201,13 +201,19 @@ std::string XMLInternal::getText(const std::string& node_name, int index)
   if (n == NULL)
     {
       if (index == 0)
-	THROW(XMLError, "Node '" << node_name << "' must exists.");
+	THROW(XMLError, "Node `" << node_name << "' must exists.");
       else
-	THROW(XMLError, "Node '" << node_name
+	THROW(XMLError, "Node `" << node_name
 	      << "' (number " << index << ") must exists.");
     }
   DOMNode* tn = n->getFirstChild();
-  assert(tn != NULL && tn->getNodeType() == DOMNode::TEXT_NODE);
+  if (tn == NULL)
+    THROW(XMLError, "Node `" << node_name << "' is not a text node. "
+	  << "Seems like it is empty.");
+  if (tn->getNodeType() != DOMNode::TEXT_NODE)
+    THROW(XMLError, "Node `" << node_name << "' is not text. "
+	  << "Seems it contains something else.");
+
   return xml2str(tn->getNodeValue());
 }
 
