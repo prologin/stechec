@@ -144,6 +144,13 @@ void Input::cmdHelp(const string& cmd, const string&)
           cmd_name = move_cmd_[i].name;
           cmd_doc = move_cmd_[i].doc;
         }
+      else if (cmd == "declare")
+        {
+          if (declare_cmd_[i].name == NULL)
+            return;
+          cmd_name = declare_cmd_[i].name;
+          cmd_doc = declare_cmd_[i].doc;
+        }
       else
         {
           if (main_cmd_[i].name == NULL)
@@ -385,6 +392,7 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> p;
   is >> pos.row;
   is >> pos.col;
+  LOG1("do move: %1 -> %2", p, pos);
   if (api_->doMovePlayer(p, pos))
     sync_++;
 }
@@ -661,6 +669,24 @@ char* cmd_generator_move(const char* text, int state)
   return NULL;
 }
 
+// Get next matching word in 'declare' command
+char* cmd_generator_declare(const char* text, int state)
+{
+  static int list_index;
+  static int len;
+  const char* name;
+
+  if (state == 0)
+    {
+      list_index = 0;
+      len = strlen(text);
+    }
+  while ((name = input_inst->declare_cmd_[list_index++].name) != NULL)
+    if (strncmp(name, text, len) == 0)
+      return strdup(name);
+  return NULL;
+}
+
 // Get next matching word in 'help' command
 char* cmd_generator_help(const char* text, int state)
 {
@@ -670,6 +696,7 @@ char* cmd_generator_help(const char* text, int state)
   const char* help_list[] = {
     "move",
     "print",
+    "declare",
     NULL
   };
 
@@ -696,6 +723,8 @@ char** cmd_completion(const char* text, int start, int)
     matches = rl_completion_matches(text, cmd_generator_print);
   else if (strncmp(rl_line_buffer, "move", 4) == 0)
     matches = rl_completion_matches(text, cmd_generator_move);
+  else if (strncmp(rl_line_buffer, "declare", 4) == 0)
+    matches = rl_completion_matches(text, cmd_generator_declare);
   else if (strncmp(rl_line_buffer, "help", 4) == 0)
     matches = rl_completion_matches(text, cmd_generator_help);
 
