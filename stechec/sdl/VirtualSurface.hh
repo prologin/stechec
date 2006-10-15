@@ -43,10 +43,12 @@ public:
 
   void addChild(Surface* child);
   void removeChild(Surface* child);
-
+  int getNbChild() const;
+  
   void updateChildZOrder();
 
-
+  virtual void show();
+  
   virtual void setZoom(double zoom);
 
   virtual void update();

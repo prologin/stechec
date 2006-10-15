@@ -26,6 +26,7 @@ Surface::Surface()
     zoom_(1.),
     angle_(0.),
     z_(0),
+    inherit_alpha_(false),
     show_(true),
     redraw_all_(false),
     parent_(NULL)
@@ -40,6 +41,7 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
     zoom_(zoom),
     angle_(angle),
     z_(0),
+    inherit_alpha_(false),
     show_(true),
     redraw_all_(true),
     parent_(NULL)
@@ -58,6 +60,7 @@ Surface::Surface(const std::string filename, double zoom, double angle)
     rect_(0, 0, -1, -1),
     orig_rect_(0, 0, -1, -1),
     z_(0),
+    inherit_alpha_(false),
     show_(true),
     redraw_all_(true),
     parent_(NULL)
@@ -72,6 +75,7 @@ Surface::Surface(int width, int height)
     zoom_(1.),
     angle_(0.),
     z_(0),
+    inherit_alpha_(false),
     show_(true),
     redraw_all_(true),
     parent_(NULL)
@@ -88,6 +92,7 @@ Surface::Surface(const Surface& s)
   zoom_ = s.zoom_;
   angle_ = s.angle_;
   z_ = s.z_;
+  inherit_alpha_ = s.inherit_alpha_;
   show_ = s.show_;
   redraw_all_ = s.redraw_all_;
   parent_ = s.parent_;
@@ -105,6 +110,7 @@ Surface& Surface::operator=(const Surface& s)
   zoom_ = s.zoom_;
   angle_ = s.angle_;
   z_ = s.z_;
+  inherit_alpha_ = s.inherit_alpha_;
   show_ = s.show_;
   redraw_all_ = s.redraw_all_;
   parent_ = s.parent_;
@@ -223,6 +229,11 @@ void Surface::setZ(int z)
     parent_->updateChildZOrder();
 }
 
+void Surface::setInheritAlpha(bool enabled)
+{
+  inherit_alpha_ = enabled;
+}
+
 void Surface::show()
 {
   if (!show_)
@@ -242,12 +253,13 @@ bool Surface::isShown() const
   return show_;
 }
 
-void Surface::create(int width, int height)
+void Surface::create(int width, int height, SDL_Surface* ref_surface)
 {
   if (surf_ != NULL)
     SDL_FreeSurface(surf_);
 
-  SDL_Surface* ref_surface = SDL_GetVideoSurface();
+  if (ref_surface == NULL)
+    ref_surface = SDL_GetVideoSurface();
   // Happen if it is called before SDL_SetVideoMode().
   assert(ref_surface != NULL);
 
@@ -297,11 +309,61 @@ void Surface::update()
     }
 }
 
+void Surface::blitAlpha(SDL_Surface *src_surf, SDL_Surface *dst_surf,
+			SDL_Rect* src_rect, int dst_x, int dst_y)
+{
+  SDL_PixelFormat* src_fmt = src_surf->format;
+  SDL_PixelFormat* dst_fmt = dst_surf->format;
+
+  // Some check...
+  if (src_fmt->BitsPerPixel != 32)
+    {
+      WARN("Source surface (%1) is not 32 bpp", filename_);
+      return;
+    }
+  if (dst_fmt->BitsPerPixel != 32)
+    {
+      WARN("Destination surface (from: %1) is not 32 bpp", filename_);
+      return;
+    }
+  if (dst_fmt->Amask == 0)
+    {
+      WARN("No alpha mask on destination surface");
+      return;
+    }
+  
+  Uint32 src, dst;
+  unsigned surf_size = src_surf->w * src_surf->h;
+
+  LOG6("Set transparency surf name %1 size %1", filename_, surf_size);
+  LOG6("r:%1 g:%2 b:%3 a:%4", (int)src_fmt->Rshift, (int)src_fmt->Gshift, (int)src_fmt->Bshift, (int)src_fmt->Ashift);
+  LOG6("r:%1 g:%2 b:%3 a:%4", (int)dst_fmt->Rshift, (int)dst_fmt->Gshift, (int)dst_fmt->Bshift, (int)dst_fmt->Ashift);
+
+  SDL_LockSurface(surf_);
+  SDL_LockSurface(dst_surf);
+  Uint32* p_src = (Uint32*)surf_->pixels;
+  Uint32* p_dst = (Uint32*)dst_surf->pixels;
+  for (unsigned i = 0; i < surf_size; i++)
+    {
+      src = (*p_src & src_fmt->Amask) >> src_fmt->Ashift;
+      dst = (*p_dst & dst_fmt->Amask) >> dst_fmt->Ashift;
+      *p_dst = *p_dst | (src << dst_fmt->Ashift);
+      p_src++;
+      p_dst++;
+    }
+  SDL_UnlockSurface(dst_surf);
+  SDL_UnlockSurface(surf_);
+
+}
+
 void Surface::blit(Surface& to)
 {
   SDL_Rect tor = { rect_.x, rect_.y, 0, 0 };
   if (SDL_BlitSurface(surf_, NULL, to.getSDLSurface(), &tor) != 0)
     PRINT_AND_THROW(SDLError, "Blit failed");
+
+  if (inherit_alpha_)
+    blitAlpha(surf_, to.getSDLSurface(), NULL, tor.x, tor.y);
 }
 
 void Surface::blit(Surface& to, const Rect& to_rect, const Rect& from_rect)
@@ -310,6 +372,9 @@ void Surface::blit(Surface& to, const Rect& to_rect, const Rect& from_rect)
   SDL_Rect fromr = { from_rect.x, from_rect.y, from_rect.w, from_rect.h };
   if (SDL_BlitSurface(surf_, &fromr, to.getSDLSurface(), &tor) != 0)
     PRINT_AND_THROW(SDLError, "Blit failed");
+
+  if (inherit_alpha_)
+    blitAlpha(surf_, to.getSDLSurface(), &fromr, tor.x, tor.y);
 }
 
 bool Surface::ZSort::operator() (const Surface* lhs, const Surface* rhs)

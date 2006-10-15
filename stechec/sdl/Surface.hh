@@ -84,19 +84,21 @@ public:
   virtual void  setAngle(double angle);
   virtual void  setZ(int z);
 
+  void		setInheritAlpha(bool enabled);
+  
   //! @brief Show this surface on the screen.
   //! @note This is the default.
-  void          show();
+  virtual void  show();
   //! @brief Don't display this surface on the screen.
   //! @note Function @c update() is still called, but not @c render().
-  void          hide();
+  virtual void  hide();
   // !@brief Whether it is displayed or not.
   bool          isShown() const;
 
   //! @brief Create an empty SDL Surface of the given size.
   //! Used to do manual rendering with SDL functions and, at the same time,
   //! have it in the surface hierarchy.
-  void create(int width, int height);
+  void create(int width, int height, SDL_Surface* ref_surface = NULL);
 
   //! @brief Load a image into this surface (.png, .jpg, .bmp, ...).
   void load(const std::string filename, double zoom = 1., double angle = 0.);
@@ -132,6 +134,11 @@ protected:
   //! @return Relative Rect to render.
   virtual Rect  getRenderRect() const;
 
+  //! @brief Copy the alpha data to dst_surf.
+  //! @note Warning, this may slow down things ! work in progress...
+  void blitAlpha(SDL_Surface *src_surf, SDL_Surface *dst_surf,
+		 SDL_Rect* src_rect, int dst_x, int dst_y);
+
   SDL_Surface*  surf_;
 
 private:
@@ -142,6 +149,7 @@ private:
   double        zoom_;
   double        angle_;
   int           z_;
+  bool		inherit_alpha_;
   bool          show_;
 
 protected:

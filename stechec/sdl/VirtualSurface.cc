@@ -59,10 +59,24 @@ void VirtualSurface::removeChild(Surface* child)
     WARN("Removing child: not found: %1", *child);
 }
 
+int VirtualSurface::getNbChild() const
+{
+  return child_list_.size();
+}
+
+
 void VirtualSurface::updateChildZOrder()
 {
   std::sort(child_list_.begin(), child_list_.end(), Surface::ZSort());
 }
+
+void VirtualSurface::show()
+{
+  if (!isShown())
+    invalidate(Point(0, 0), getSize());
+  Surface::show();
+}
+
 
 void VirtualSurface::setZoom(double zoom)
 {

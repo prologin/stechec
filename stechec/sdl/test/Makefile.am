@@ -11,7 +11,7 @@ CXXFLAGS = 					\
 	$(SDL_CFLAGS)
 
 INCLUDES =					\
-	-I../					\
+	-I$(srcdir)/../				\
 	-I$(top_srcdir)/stechec/tools
 
 LDADD =							\
