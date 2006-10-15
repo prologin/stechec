@@ -7,7 +7,7 @@
   <!ELEMENT max_turn (#PCDATA)>
   <!ELEMENT map (#PCDATA)>
 
-<!ELEMENT client (rules?, champion?, connect?, team?, mode?, limit?, debug?)>
+<!ELEMENT client (rules?, champion?, connect?, team?, mode?, limit?, debug?, redirection?)>
   <!ATTLIST client id CDATA "0">
   <!ELEMENT rules (#PCDATA)>
   <!ELEMENT champion (#PCDATA)>
@@ -31,7 +31,10 @@
     <!ATTLIST debug gdb (true|false) "false">
     <!ATTLIST debug verbose CDATA "2">
     <!ATTLIST debug printloc (true|false) "false">
-
+  <!ELEMENT redirection EMPTY>
+    <!ATTLIST redirection stdin CDATA #IMPLIED>
+    <!ATTLIST redirection stdout CDATA #IMPLIED>
+ 
 
 <!ELEMENT server (rules?, options, listen, log, nb_spectator, debug, server_debug)>
   <!ELEMENT options EMPTY>

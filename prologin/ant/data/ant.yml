@@ -1,6 +1,7 @@
 conf:
   package_name: ant
-  rule_lib: ant
+  client_rule_lib: ant
+  server_rule_lib: ant
   player_lib: champion
   player_filename: prologin
 

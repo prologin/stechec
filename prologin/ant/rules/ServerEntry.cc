@@ -23,8 +23,6 @@ ServerEntry::ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg) :
 
 ServerEntry::~ServerEntry()
 {
-  delete[] g_->player;
-  g_->FreeData();
 }
 
 int        ServerEntry::ParseOptions()
@@ -219,6 +217,9 @@ int         ServerEntry::afterNewTurn()
 */
 int         ServerEntry::afterGame()
 {
+  delete[] g_->player;
+  g_->FreeData();
+
   return 0;
 }
 

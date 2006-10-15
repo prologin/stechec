@@ -1,6 +1,7 @@
 conf:
   package_name: prolo2006
-  rule_lib: outatime
+  client_rule_lib: outatime
+  server_rule_lib: outatime
   player_lib: champion
   player_filename: prologin
 

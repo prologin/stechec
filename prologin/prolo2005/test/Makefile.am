@@ -22,10 +22,7 @@ YAML_FILE = prolo2005
 YAML_TEST_POOL = $(srcdir)/test_pool.yml
 
 MY_TESTS =					\
-	basic					\
-	finaliste_1				\
-	finaliste_2				\
-	finaliste_3
+	basic
 
 EXTRA_DIST += 					\
 	c/basic.c
