@@ -85,6 +85,16 @@ public:
   virtual void  setZ(int z);
 
   void		setInheritAlpha(bool enabled);
+
+  //! @brief Enable this widget.
+  //! @note This is the default.
+  virtual void  enable();
+  //! @brief Disable this widget.
+  //! @note Function @c update() and @c render() will not be called
+  //!   for this widget.
+  virtual void  disable();
+  //! @brif Whether it is enabled or not.
+  bool		isEnabled() const;
   
   //! @brief Show this surface on the screen.
   //! @note This is the default.
@@ -150,6 +160,7 @@ private:
   double        angle_;
   int           z_;
   bool		inherit_alpha_;
+  bool		enabled_;
   bool          show_;
 
 protected:

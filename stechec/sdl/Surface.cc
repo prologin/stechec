@@ -27,6 +27,7 @@ Surface::Surface()
     angle_(0.),
     z_(0),
     inherit_alpha_(false),
+    enabled_(true),
     show_(true),
     redraw_all_(false),
     parent_(NULL)
@@ -42,6 +43,7 @@ Surface::Surface(SDL_Surface* surf, double zoom, double angle, const std::string
     angle_(angle),
     z_(0),
     inherit_alpha_(false),
+    enabled_(true),
     show_(true),
     redraw_all_(true),
     parent_(NULL)
@@ -61,6 +63,7 @@ Surface::Surface(const std::string filename, double zoom, double angle)
     orig_rect_(0, 0, -1, -1),
     z_(0),
     inherit_alpha_(false),
+    enabled_(true),
     show_(true),
     redraw_all_(true),
     parent_(NULL)
@@ -76,6 +79,7 @@ Surface::Surface(int width, int height)
     angle_(0.),
     z_(0),
     inherit_alpha_(false),
+    enabled_(true),
     show_(true),
     redraw_all_(true),
     parent_(NULL)
@@ -93,6 +97,7 @@ Surface::Surface(const Surface& s)
   angle_ = s.angle_;
   z_ = s.z_;
   inherit_alpha_ = s.inherit_alpha_;
+  enabled_ = s.enabled_;
   show_ = s.show_;
   redraw_all_ = s.redraw_all_;
   parent_ = s.parent_;
@@ -111,6 +116,7 @@ Surface& Surface::operator=(const Surface& s)
   angle_ = s.angle_;
   z_ = s.z_;
   inherit_alpha_ = s.inherit_alpha_;
+  enabled_ = s.enabled_;
   show_ = s.show_;
   redraw_all_ = s.redraw_all_;
   parent_ = s.parent_;
@@ -232,6 +238,25 @@ void Surface::setZ(int z)
 void Surface::setInheritAlpha(bool enabled)
 {
   inherit_alpha_ = enabled;
+}
+
+void Surface::enable()
+{
+  if (!enabled_)
+    redraw_all_ = true;
+  enabled_ = true;
+}
+
+void Surface::disable()
+{
+  if (enabled_ && parent_ != NULL)
+    parent_->invalidate(rect_);
+  enabled_ = false;
+}
+
+bool Surface::isEnabled() const
+{
+  return enabled_;
 }
 
 void Surface::show()

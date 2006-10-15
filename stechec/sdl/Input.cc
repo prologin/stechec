@@ -24,6 +24,9 @@ Input::Input()
   assert(inst_ == NULL);
   inst_ = this;
 
+  std::fill(button_, button_ + 10, false);
+  std::fill(key_, key_ + SDLK_LAST, false);
+  
   reset();
 }
 

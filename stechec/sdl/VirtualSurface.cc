@@ -70,9 +70,16 @@ void VirtualSurface::updateChildZOrder()
   std::sort(child_list_.begin(), child_list_.end(), Surface::ZSort());
 }
 
+void VirtualSurface::enable()
+{
+  if (!isEnabled())
+    invalidate(Point(0, 0), getSize());
+  Surface::enable();
+}
+
 void VirtualSurface::show()
 {
-  if (!isShown())
+  if (isEnabled())
     invalidate(Point(0, 0), getSize());
   Surface::show();
 }
@@ -97,7 +104,13 @@ void VirtualSurface::setZoom(double zoom)
 
 void VirtualSurface::update()
 {
-  for_all(child_list_, std::mem_fun(&Surface::update));
+  if (!isEnabled())
+    return;
+  
+  SurfaceList::iterator it;
+  for (it = child_list_.begin(); it != child_list_.end(); ++it)
+    if ((*it)->isEnabled())
+      (*it)->update();
   
   // Propagate invalidated surface to the parent.
   if (parent_ != NULL)
@@ -115,24 +128,22 @@ void VirtualSurface::render()
   SurfaceList::iterator it;
   RectList::iterator rit;
 
-  if (!isShown())
+  if (!isShown() || !isEnabled())
     {
-      LOG5("+ Not rendering `%1`, is hidden.", name_);
+      LOG5("+ Not rendering `%1`, is hidden or disabled.", name_);
       invalidated_surf_.clear();
       return;
     }
 
   LOG5("+++ Rendering `%1`", name_);
-
-  std::for_each(child_list_.begin(), child_list_.end(),
-                std::mem_fun(&Surface::render));
-  LOG5("End rendering childs of `%1`", name_);
+  for_all(child_list_, std::mem_fun(&Surface::render));
+  LOG5("End rendering childs of `%1` (were %2)", name_, child_list_.size());
 
   for (rit = invalidated_surf_.begin(); rit != invalidated_surf_.end(); rit++)
     {
       LOG6("+ Managing invalidated surface: %1", *rit);
       for (it = child_list_.begin(); it != child_list_.end(); ++it)
-        if ((*it)->isShown())
+        if ((*it)->isShown() && (*it)->isEnabled())
           {
             Rect child_surf((*it)->getRenderRect());
             LOG6("  To child: %1", **it);

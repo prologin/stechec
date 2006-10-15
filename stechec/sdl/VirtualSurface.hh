@@ -47,6 +47,7 @@ public:
   
   void updateChildZOrder();
 
+  virtual void enable();
   virtual void show();
   
   virtual void setZoom(double zoom);

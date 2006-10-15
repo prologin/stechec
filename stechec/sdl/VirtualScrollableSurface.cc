@@ -118,6 +118,9 @@ void VirtualScrollableSurface::adjustSize(const Rect& rect)
 
 void VirtualScrollableSurface::update()
 {
+  if (!isEnabled())
+    return;
+
   // FIXME: must be directly attached to screen to work.
   const Rect rect(getPos(), getSize());
 
@@ -171,7 +174,10 @@ void VirtualScrollableSurface::update()
     }
 
   // Render children
-  for_all(child_list_, std::mem_fun(&Surface::update));
+  SurfaceList::iterator it;
+  for (it = child_list_.begin(); it != child_list_.end(); ++it)
+    if ((*it)->isEnabled())
+      (*it)->update();
 
   // Propagate invalidated surface to the parent.
   if (parent_ != NULL)
