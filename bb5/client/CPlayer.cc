@@ -257,7 +257,6 @@ void CPlayer::msgPlayerPos(const MsgPlayerPos* m)
   Position pos(m->row, m->col);
   setPosition(pos);
   r_->onEvent(m);
-  LOG2("set pos for %1 id %2", team_id_, id_);
 }
 
 void CPlayer::msgPlayerMove(const ActMove* m)

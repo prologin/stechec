@@ -176,10 +176,11 @@ inline bool Api::doPlaceBall(const Point& pos)
       LOG2("Kickoff rejected. Ball not on the field: %1", pos);
       return false;
     }
-  if ((selected_team_->getTeamId() == 0 && bpos.row < 13)
-      ||(selected_team_->getTeamId() == 1 && bpos.row > 12))
+  if ((rules_->getTeamId() == 0 && bpos.row < 13)
+      || (rules_->getTeamId() == 1 && bpos.row > 12))
     {
-      LOG2("Kickoff rejected. Ball in your part of the field: %1", pos);
+      LOG2("Kickoff rejected. Ball in your part of the field (%1): %2",
+	   selected_team_->getTeamId(),  pos);
       return false;
     }
   MsgBallPos pkt;

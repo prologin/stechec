@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
+<!DOCTYPE team SYSTEM "file://@pkgdatadir@/team.dtd">
 <team name="Amazon" race="amazon" coach="coach" BBversion="4" emblem="amazon.png">
-  <formation>../formation.xml</formation>
+  <formation>formation.xml</formation>
 <rating>100</rating>
 <treasury>0</treasury>
 <reroll>2</reroll>
