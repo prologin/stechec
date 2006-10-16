@@ -27,7 +27,7 @@
 **  * some text.
 */
 
-int main()
+int main(int, char**)
 {
   // Choose verbosity. 0 is pretty quiet, 8 pretty chatty.
   Log log(3);

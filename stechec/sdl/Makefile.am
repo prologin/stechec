@@ -30,5 +30,8 @@ libstechec_sdl_la_CXXFLAGS =			\
 	-DPKGDATADIR=\"$(datadir)/$(PACKAGE)\"	\
 	$(SDL_CFLAGS)
 
+libstechec_sdl_la_LIBADD =			\
+	$(SDL_LIBS)
+
 INCLUDES        =				\
         -I$(top_srcdir)/stechec/tools

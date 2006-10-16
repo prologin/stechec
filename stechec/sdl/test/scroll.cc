@@ -24,7 +24,7 @@
 ** used in bb5 to display the field.
 */
 
-int main()
+int main(int, char**)
 {
   Log log(3);
   

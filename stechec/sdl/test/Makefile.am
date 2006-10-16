@@ -16,6 +16,5 @@ INCLUDES =					\
 
 LDADD =							\
 	$(top_builddir)/stechec/tools/libtools.la	\
-	$(top_builddir)/stechec/sdl/libstechec_sdl.la
-
-LDFLAGS = $(SDL_LIBS)
+	$(top_builddir)/stechec/sdl/libstechec_sdl.la	\
+	$(SDL_LIBS)
