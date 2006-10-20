@@ -104,20 +104,20 @@ class RuleTest
         c['champion'] = @player_lib
       end
       if c['input'] then
-        check_prog_exec('cp', c['input'], @tmpdir.to_s)
+        check_prog_exec('cp', ENV['srcdir'] + c['input'], @tmpdir.to_s)
         c['output'] = File.basename(c['input'], ".*") + ".out"
         c['input'] = File.basename(c['input'])
       end
       if c['team'] then
-        check_prog_exec('cp', c['team'], @tmpdir.to_s)
+        check_prog_exec('cp', ENV['srcdir'] + c['team'], @tmpdir.to_s)
         c['team'] = File.basename(c['team'])
       end
       if c['formation'] then
-        check_prog_exec('cp', c['formation'], @tmpdir.to_s)
+        check_prog_exec('cp', ENV['srcdir'] + c['formation'], @tmpdir.to_s)
         c['formation'] = File.basename(c['formation'])
       end
       if c['diff'] then
-        check_prog_exec('cp', c['diff'], @tmpdir.to_s)
+        check_prog_exec('cp', ENV['srcdir'] + c['diff'], @tmpdir.to_s)
         c['diff'] = File.basename(c['diff'])
       end
     end

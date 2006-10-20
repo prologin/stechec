@@ -31,7 +31,7 @@ installcheck-local::
 	  RUBYLIB="$(pkglibdir)/ruby"			\
 	  BASHLIB="$(pkglibdir)/bash"			\
 	  PATH="$(bindir):$$PATH"			\
-	  srcdir="$(srcdir)"				\
+	  srcdir="$(srcdir)/"				\
 	  xml_parser_path="$(pkglibdir)/bash/"		\
 	  $(RUBY) $(pkglibdir)/ruby/rules_test.rb	\
 	    $(YAML_TEST_POOL) $(YAML_FILE) $$t		\
