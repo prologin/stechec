@@ -24,7 +24,7 @@ InputTextSurface::InputTextSurface()
 }
 
 InputTextSurface::InputTextSurface(const std::string& font_name, int surf_width)
-  : TextSurface(font_name, surf_width, 25),
+  : TextSurface(font_name, 12, surf_width, 25),
     have_text_(false),
     index_(0)
 {

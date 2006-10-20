@@ -28,14 +28,15 @@ TextSurface::TextSurface()
 {
 }
 
-TextSurface::TextSurface(const std::string& font_name, int surf_width, int surf_height)
+TextSurface::TextSurface(const std::string& font_name, int font_size,
+			 int surf_width, int surf_height)
   : Surface(surf_width, surf_height),
     font_name_(font_name),
-    font_size_(12),
+    font_size_(font_size),
     auto_wrap_(true),
     content_changed_(true)
 {
-  font_ = ResourceCenter::getInst()->getFont(font_name, 12);
+  font_ = ResourceCenter::getInst()->getFont(font_name, font_size);
   line_skip_ = TTF_FontLineSkip(font_);
 }
 

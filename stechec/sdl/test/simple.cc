@@ -58,7 +58,7 @@ int main(int, char**)
   ResourceCenter::getInst()->setResourcePrefix();
 
   // Some text to draw
-  TextSurface text("Vera.ttf", 300, 30);
+  TextSurface text("Vera.ttf", 14, 300, 30);
   text.setText("'lala' production(tm)");
   text.setPos(75, 120);
   screen.addChild(&text);
