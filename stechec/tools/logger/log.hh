@@ -159,7 +159,7 @@ inline std::ostream& Log::getStream()
 
 // Do not use it. Prefer the ERR, WARN, and LOG? macros
 # define LOG(Level, Msg)                                                        \
-{                                                                               \
+do {                                                                            \
   Log* l__ = Log::getInst();                                                    \
   if (l__->verbose_mask_ & (1 << Level)) {                                      \
     pthread_mutex_lock(&Log::lock_);                                            \
@@ -193,7 +193,7 @@ inline std::ostream& Log::getStream()
                        << "] " << os__.str() << std::endl;                      \
     pthread_mutex_unlock(&Log::lock_);                                          \
   }                                                                             \
-}
+} while (0)
 
 # define ERR(Msg...) LOG(0, String::compose(Msg))
 # define WARN(Msg...) LOG(1, String::compose(Msg))
