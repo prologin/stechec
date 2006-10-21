@@ -25,7 +25,7 @@
 # include "ResourceCenter.hh"
 # include "Surface.hh"
 
-/*
+/*!
 ** @ingroup sdl_base
 ** @brief Class that can draw text, similiar to a TextLabel.
 **
@@ -44,12 +44,15 @@ public:
   void clearText();
   
   //! @brief Set text to be printed, clearing previous content.
+  //! @param text Text to set.
   void setText(const std::string& text);
 
-  //! @brief Add text to this object, on new line.
+  //! @brief Add text to this object, on new line. If the object is too little
+  //!  to show all text, the oldest added lines are removed.
+  //! @param text Text to add.
   void addText(const std::string& text);
 
-  //! @brief Return the text currently hold.
+  //! @brief Return the text (all lines) currently displayed.
   std::string getText() const;
 
   void setAutoWrap(bool enabled);

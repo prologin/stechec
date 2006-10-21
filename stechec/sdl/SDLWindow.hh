@@ -20,12 +20,28 @@
 /*!
 ** @defgroup sdl_base C++ wrapper for SDL.
 **
-** All these files are located in @c stechec/sdl
+** This module basicly defines a wrapper in C++, but it turns out that
+** this is an (almost) complete SDL engine.  It provides:
+** - resouces (picture, fonts) loading and caching
+** - encapsulation of all basic SDL functions in C++ classes
+** - creation of a SDL Window described by an xml file
+** - hierachical handling of surfaces
+** - handling IOLoop, updating and rendering surfaces are done automatically
+** - provides more high-level functions (like sprite animation)
 **
-** There are some example of how to use it in @c stechec/sdl/test
+** Thus, the module's user doesn't have to care with SDL low-level
+** details. The downside is that does things quite differently than
+** SDL (is does it the way this module writer wanted), and may
+** contains lots of bugs. It is mainly targeted to do what is needed,
+** but with little adaptation it can be used everywhere SDL drawing is
+** required.
+** 
+** A more complete documentation is available (in french) in in
+** propal.pdf. All sources and headers files are located in @c
+** stechec/sdl
 **
-** The reader is also invited to read documention about this SDL Engine
-** in propal.pdf.
+** Some examples are available through this documentation, and
+** there are some more working examples in @c stechec/sdl/test
 **
 */
 
@@ -47,6 +63,16 @@ namespace xml { class XMLConfig; }
 ** @brief Manage SDL Window.
 **
 ** Manage creation of a SDL Window and collect its events into Input class.
+**
+** There could only be one instance of this class at one time. It
+** contains (single across the program) instances of:
+** - @b resources: keep one instance of this class. This is a
+**   singleton, so it can be retrived using its own functions. see
+**   ResourceCenter.
+** - @b input: also keep one instance of this class, containing SDL
+**   key/mouse status. You can spread a reference to this class all
+**   around the program.
+** - @b screen: the surface representing the screen.
 **
 ** Here is a simple example of how to use it:
 ** @code

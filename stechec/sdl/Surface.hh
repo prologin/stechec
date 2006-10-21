@@ -113,14 +113,31 @@ public:
   //! @brief Load a image into this surface (.png, .jpg, .bmp, ...).
   void load(const std::string filename, double zoom = 1., double angle = 0.);
 
-  //! @brief In this method you can do all you want with your object.
+  //! @brief Method called each frame, to perfom user custom code. You
+  //! should override it.
+  //!
+  //! Since a parent is assigned to the surface (and this parent is
+  //! itself attached by other means to the root screen), this
+  //! method is called at each frame. It is not called if this surface or
+  //! one of its parent is disabled. In this method you can do what you want
+  //! with your object, like processing input, updating other programs
+  //! attributes, changing surface property, ...
+  //!
+  //! @note Don't forget to call @a update for the base class at the
+  //!  end of your function , otherwise strange things will happen.
   virtual void  update();
   
-  //! @brief Don't care of this. Should only be overriden by VirtualSurface.
-  virtual void  render() {}
-
   virtual void blit(Surface& to);
   virtual void blit(Surface& to, const Rect& to_rect, const Rect& from_rect);
+
+  friend std::ostream& operator<< (std::ostream& os, const Surface& s);
+  
+protected:
+
+  //! @brief Private method. Called after @a update round, to
+  //!  effectively render images. Don't override it, should only be
+  //!  used by VirtualSurface.
+  virtual void  render() {}
 
   // Sort by Z component. Used by VirtualSurface.
   struct ZSort : public std::binary_function<const Surface*, const Surface*, bool>
@@ -134,9 +151,6 @@ public:
     bool operator()(const Surface& lhs, const Surface& rhs);    
   };
 
-  friend std::ostream& operator<< (std::ostream& os, const Surface& s);
-  
-protected:
   //! @brief Get the relative zone to render on the screen.
   //!   getRect() can be larger than we really want to show, or off-screen.
   //!   By default, return getRect(), but can be overriden.

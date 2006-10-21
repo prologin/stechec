@@ -54,8 +54,10 @@ typedef struct _TTF_Font TTF_Font;
 ** @ingroup sdl_base
 ** @brief Provide loader (with cache) for SDL resources.
 **
-** This class is a singleton. You can access it from anywhere.
-** It provides image and font loader, with a transparent caching system.
+** This class is a singleton. You can access it from anywhere. It
+** provides image and font loader, with a transparent caching
+** system. It is usually loaded within the SDLWindow class.
+**
 */
 class ResourceCenter
 {
@@ -66,12 +68,14 @@ public:
   //! @brief Get the instance of this class.
   static ResourceCenter* getInst();
 
-  //! @brief Get the ressource prefix path.
+  //! @brief Get the ressource prefix path. By default, it points to the
+  //!  installed shared directory (@c pkgdatadir) of the program.
   //! @return Prefix path.
   const std::string& getResourcePrefix() const;
   
   //! @brief Change the ressource prefix path.
-  //! @param prefix Path to set.
+  //! @param prefix Path to set. If it is an empty string, the
+  //!  default location is set.
   void setResourcePrefix(const std::string& prefix = "");
   
   //! @brief Load an image, with cache enabled.
@@ -121,6 +125,9 @@ private:
   typedef std::set<Surface, Surface::ImgSort> ImageList;
   ImageList             image_list_;
 
+  /*!
+  ** @brief Storage for already loaded fonts, with their carateristics.
+  */
   struct LoadedFont {
     TTF_Font* font_;    ///< TTF_Font ptr.
     std::string name_;  ///< Font filename.

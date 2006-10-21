@@ -41,24 +41,42 @@ public:
   VirtualSurface(const std::string& name, int width, int height);
   virtual ~VirtualSurface();
 
+  //! @brief Add a child to this VirtualSurface.
+  //! @param child Child to add.
+  //! @note You can add the same child multiple time, so take care.
   void addChild(Surface* child);
+  //! @brief Remove a child to this VirtualSurface.
+  //! @param child Child to remove.
   void removeChild(Surface* child);
+  //! @brief Get the number of child currently contained by this VirtualSurface.
+  //! @return The current number of child this VS contains.
   int getNbChild() const;
-  
+
+  //! @brief Private method, you shouldn't need that.
+  //!  Update child Z-order in children vector, when a child change its Z
+  //!  attribute.
   void updateChildZOrder();
 
   virtual void enable();
   virtual void show();
-  
   virtual void setZoom(double zoom);
-
   virtual void update();
   virtual void render();
 
+  //! @brief Set a marker on a rectangle that must be redrawn next time. To
+  //!  call when a visual change has occured in this rectangle (like adding,
+  //!  moving or removing a sprite).
+  //! @param zone A rectangle relative to this VirtualSurface position.
   void invalidate(const Rect& zone);
+  //! @brief Set a marker on a rectangle that must be redrawn next time. To
+  //!  call when a visual change has occured in this rectangle (like adding,
+  //!  moving or removing a sprite).
+  //! @param pos A top-left point relative to this VirtualSurface position.
+  //! @param size The size of the invalidated rectangle.
   void invalidate(const Point& pos, const Point& size);
   
 protected:
+
   typedef std::vector<Surface*> SurfaceList;
   SurfaceList   child_list_;
 
