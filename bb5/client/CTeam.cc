@@ -66,25 +66,25 @@ void CTeam::loadPlayerConfig(xml::XMLTeam& xml_team, int player_id)
   pkt.ag = xml_team.getData<int>("ag");
   pkt.av = xml_team.getData<int>("av");
 
-  // FIXME: don't think my parser can handle lists.
+  pkt.skill_nb = 0;
   try {
-    std::string skill = xml_team.getData<std::string>("skill");
-    pkt.skill_nb = 1;
+    for (int i = 0; ; i++)
+      {
+	std::string skill = xml_team.getData<std::string>("skill", i);
+	if (skill == "block")
+	  pkt.skill[i] = SK_BLOCK;
+	if (skill == "catch")
+	  pkt.skill[i] = SK_CATCH;
+	if (skill == "dodge")
+	  pkt.skill[i] = SK_DODGE;
+	if (skill == "pass")
+	  pkt.skill[i] = SK_PASS;
+	if (skill == "surehand")
+	  pkt.skill[i] = SK_SUREHANDS;
+	pkt.skill_nb++;
+      }
+  }  catch (xml::XMLError&) {}
 
-    if (skill == "block")
-      pkt.skill[0] = SK_BLOCK;
-    if (skill == "catch")
-      pkt.skill[0] = SK_CATCH;
-    if (skill == "dodge")
-      pkt.skill[0] = SK_DODGE;
-    if (skill == "pass")
-      pkt.skill[0] = SK_PASS;
-    if (skill == "surehand")
-      pkt.skill[0] = SK_SUREHANDS;
-  }  catch (xml::XMLError&) {
-    pkt.skill_nb = 0;
-  }
-  
   pkt.player_position = xml_team.getData<int>("positionid");
   stringToPacket(pkt.player_img, xml_team.getAttr<std::string>("player", "display"), 32);
   
