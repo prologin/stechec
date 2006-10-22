@@ -96,9 +96,9 @@ cat > $config_file <<EOF
     <options persistent="false" start_game_timeout="50" />
     <listen port="$port" />
     <log enabled="true" file="$real_log_file" />
+    <nb_spectator>0</nb_spectator>
     <debug verbose="3" />
     <server_debug verbose="5" />
-    <nb_spectator>0</nb_spectator>
   </server>
 
 </config>

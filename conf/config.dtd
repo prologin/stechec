@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
 
-<!ELEMENT config (game, client+, server)>
+<!ELEMENT config (game?, client*, server?)>
 
 <!ELEMENT game (nb_team, max_turn?, map?)>
   <!ELEMENT nb_team (#PCDATA)>

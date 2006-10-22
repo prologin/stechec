@@ -90,8 +90,8 @@ cat > $config_file <<EOF
 
   <client id="${competiteur_id}">
     <rules>$contest_lib_name</rules>
-    <connect val="network" host="$ip_server" port="$port" game_uid="$game_id" />
     <champion>$champion_library</champion>
+    <connect val="network" host="$ip_server" port="$port" game_uid="$game_id" />
     <mode replay="false" spectator="false" />
     <limit memory="$memory_limit" time="$time_limit" time_reserve="$reserve_time" />
     <debug verbose="2" />
