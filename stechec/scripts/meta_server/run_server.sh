@@ -81,22 +81,23 @@ out_file=$contest_path/$contest_dir_name/matchs/match_$game_id/server.out
 #
 config_file=$tmp_dir/config.xml
 cat > $config_file <<EOF
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE config SYSTEM "file://${stechec_install_path}/share/stechec/config.dtd">
 <config>
 
   <game>
-    <rules>$contest_lib_name</rules>
     <nb_team>$nb_player</nb_team>
     <max_turn>$max_turn</max_turn>
     <map>$map</map>
   </game>
 
   <server>
+    <rules>$contest_lib_name</rules>
     <options persistent="false" start_game_timeout="50" />
     <listen port="$port" />
     <log enabled="true" file="$real_log_file" />
-    <debug verbose="3" printloc="false" />
-    <server_debug verbose="5" printloc="false" />
+    <debug verbose="3" />
+    <server_debug verbose="5" />
     <nb_spectator>0</nb_spectator>
   </server>
 
@@ -106,9 +107,6 @@ EOF
 #
 # Real code to run a server
 #
-
-# FIXME: hack.
-export OUTATIME_SHARED_MAP=/home/goinfre/map
 
 if [ $is_competition = "0" ]; then
     #

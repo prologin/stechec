@@ -84,24 +84,18 @@ nm $real_lib | grep -q "_Jv_AttachCurrentThread"
 #
 config_file="$tmp_dir/config.xml"
 cat > $config_file <<EOF
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE config SYSTEM "file://${stechec_install_path}/share/stechec/config.dtd">
 <config>
 
-  <game>
+  <client id="${competiteur_id}">
     <rules>$contest_lib_name</rules>
-  </game>
-
-  <client>
-    <connect val="network" host="$ip_server" port="$port"
-             game_uid="$game_id" connect_on_startup="true" />
-  </client>
-
-  <client_$competiteur_id>
+    <connect val="network" host="$ip_server" port="$port" game_uid="$game_id" />
     <champion>$champion_library</champion>
     <mode replay="false" spectator="false" />
     <limit memory="$memory_limit" time="$time_limit" time_reserve="$reserve_time" />
-    <debug valgrind="false" gdb="false" verbose="2" printloc="false" />
-  </client_$competiteur_id>
+    <debug verbose="2" />
+  </client>
 
 </config>
 EOF
