@@ -133,13 +133,13 @@ function:
   -
     fct_name: world_size_x
     fct_ret_type: int
-    fct_summary: Récupère la taille du monde en hauteur.
+    fct_summary: Recupere la taille du monde en hauteur.
     fct_ret_comment: Un entier contenant la taille du monde en hauteur
     fct_notice: Retourne toujours 50 lors des matchs officiels
   -
     fct_name: world_size_y
     fct_ret_type: int
-    fct_summary: Récupère la taille du monde en largeur.
+    fct_summary: Recupere la taille du monde en largeur.
     fct_ret_comment: Un entier contenant la taille du monde en largeur.
     fct_notice: Retourne toujours 50 lors des matchs officiels
   -
