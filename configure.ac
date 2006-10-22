@@ -269,6 +269,7 @@ AC_OUTPUT
 ## Print summary
 ##
 
+show_modules=`echo ${used_modules} | sed -r 's/prologin//g;s/^,+//;s/,+$//;s/,+/,/g'`
 echo "
  ---{ $PACKAGE_NAME $VERSION }---
 
@@ -276,7 +277,7 @@ echo "
    compiler:                ${CXX}
    cxxflags:                ${CXXFLAGS}
 
-   Building modules:        `echo ${used_modules} | sed -r 's/^,+//;s/,+$//'`
+   Building modules:        ${show_modules}
    Building with readline:  ${HAVE_READLINE}
    Building with sdl:	    ${HAVE_SDL}
    Building with paragui:   ${HAVE_PARAGUI}

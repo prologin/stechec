@@ -169,7 +169,7 @@ int        ClientEntry::afterNewTurn()
 	       LOG3("Opening bet: %1 from casino: %2", bet->getId(), bet->getCasinoId());
 	     }
 	   LOG3("Bet time left for bet: %1 is now %2",
-		bet->getId(), BET_LENGTH + (bet->getDate() - g_->player_turn))
+		bet->getId(), BET_LENGTH + (bet->getDate() - g_->player_turn));
 	 }
      }
   return 0;

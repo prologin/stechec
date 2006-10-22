@@ -86,19 +86,19 @@ OutAGui::OutAGui(Api* api, ClientCx* ccx)
   win_.getScreen().addChild(vscreen_);
 
   // Initialize labels on the right-top.
-  txt_date_ = TextSurface("Vera.ttf", 200, 22);
+  txt_date_ = TextSurface("Vera.ttf", 12, 200, 22);
   txt_date_.setPos(590, 10);
   txt_date_.setZ(8);
   win_.getScreen().addChild(&txt_date_);
 
-  txt_fuel_ = TextSurface("Vera.ttf", 200, 22);
+  txt_fuel_ = TextSurface("Vera.ttf", 12, 200, 22);
   txt_fuel_.setPos(590, 32);
   txt_fuel_.setZ(8);
   win_.getScreen().addChild(&txt_fuel_);
   
   for (int i = 0; i < api_->equipes(); i++)
     {
-      txt_score_[i] = TextSurface("Vera.ttf", 200, 22);
+      txt_score_[i] = TextSurface("Vera.ttf", 12, 200, 22);
       txt_score_[i].setPos(590, 54 + i * 22);
       txt_score_[i].setZ(8);
       win_.getScreen().addChild(&txt_score_[i]);
