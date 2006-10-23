@@ -23,3 +23,15 @@ move:
     formation: formation.xml
     input: move_2.cmd
     diff: move_2.diff
+
+kickoffbug:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: kickoffbug_1.cmd
+    diff: kickoffbug_1.diff
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: kickoffbug_2.cmd
+    diff: kickoffbug_2.diff
