@@ -75,8 +75,9 @@ void Entry::draw()
       // draw text
   int width = 0, height = 0;
   TTF_SizeText(font, txt->c_str(), &width, &height);
-  SDL_Surface *temp = TTF_RenderText_Shaded(font, txt->c_str(), bgColor, fgColor);
-  SDL_Rect rc = {5, height/ 2, width, height};
+  SDL_Surface *temp = TTF_RenderText_Solid(font, txt->c_str(), fgColor);
+  const int ascent = TTF_FontAscent(font);
+  SDL_Rect rc = {5, height - ascent, width, height};
   SDL_BlitSurface(temp, NULL, widget, &rc);
   SDL_FreeSurface(temp);
   
@@ -98,32 +99,36 @@ void Entry::refresh()
   }
   boxRGBA(widget, 0, 0, w, h, (*bg).r, (*bg).g, (*bg).b, ENTRY_ALPHA);
   rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, ENTRY_ALPHA);
-      // draw text
-	
+  
+  // draw text
   if(txt->size() > 0)
   {
-    SDL_Surface *temp = NULL;
-    int width = 0, height = 0;
-    string st1((*txt), 0, index);
-    TTF_SizeText(font, st1.c_str(), &width, &height);
-    temp = TTF_RenderText_Solid(font, st1.c_str(), fgColor);
-    SDL_Rect rc = {5, height / 2, width, height};
-    SDL_BlitSurface(temp, NULL, widget, &rc);
-    rc.x += width;
+		SDL_Surface *glyph_cache[txt->size()];
+    const int height = TTF_FontHeight(font);
+    const int ascent = TTF_FontAscent(font);
+    const int descent = TTF_FontDescent(font);
+    SDL_Rect rc; rc.x = 5;
 
-    string st2((*txt), index, 1);
-    TTF_SizeText(font, st2.c_str(), &width, &height);
-    temp = TTF_RenderText_Shaded(font, st2.c_str(), bgColor, fgColor);
-    rc.w = width; rc.h = height;
-    SDL_BlitSurface(temp, NULL, widget, &rc);
-    rc.x += width;
-    
-    string st3((*txt), index + 1, txt->size() - index);
-    TTF_SizeText(font, st3.c_str(), &width, &height);
-    temp = TTF_RenderText_Solid(font, st3.c_str(), fgColor);
-    rc.w = width; rc.h = height;
-    SDL_BlitSurface(temp, NULL, widget, &rc);
-    SDL_FreeSurface(temp);
+		for(int i = 0; i < txt->size(); i++)
+		{
+				const char c = (*txt)[i];
+				int width = 0, minx = 0, maxy = 0;
+				TTF_GlyphMetrics(font, c, &minx, NULL, NULL, &maxy, &width);
+				rc.x += minx;
+				rc.y = height - maxy;
+
+				if(i != index)
+				{
+					glyph_cache[i] = TTF_RenderGlyph_Solid(font, c, fgColor);
+				}
+				else
+				{
+					boxRGBA(widget, rc.x, -descent, rc.x + width - minx, height - descent, fgColor.r, fgColor.g, fgColor.b, ENTRY_ALPHA);
+					glyph_cache[i] = TTF_RenderGlyph_Shaded(font, c, bgColor, fgColor);
+				}
+				SDL_BlitSurface(glyph_cache[i], NULL, widget, &rc);
+				rc.x += width - minx;
+		}
   }
       // Then flip entry
   SDL_BlitSurface(widget, NULL, screen, &r);
