@@ -135,13 +135,6 @@ public:
   //! \exception FileIOError IO error, such as broken filesystem.
   void receiveFile(const char* filedest);
 
-  //! @brief Properly ask to close connection.
-  void shutdown();
-
-  //! @brief Wait that connection is closed on the other end.
-  //! @return true if the connection was cleanely closed.
-  bool waitClose();
-  
   //! @brief Get the file descriptor connected to the remote host.
   int getFd() const; 
 
