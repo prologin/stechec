@@ -44,6 +44,8 @@
 # include <ctime>
 # include <cmath>
 
+# define STECHEC_BINARY_VERSION 2
+
 # define BEGIN_NS(Ns) namespace Ns {
 # define END_NS(Ns) }
 

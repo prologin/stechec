@@ -56,7 +56,7 @@ public:
   void        pause();
 
 private:
-  bool        started_;        ///< True if the timer is active.
+  bool	     started_;       ///< True if the timer is active.
   int        begin_;         ///< Start time, since epoch.
   int        begin_pause_;   ///< Pause start time, since epoch.
   int        time_allowed_;  ///< Time allowed, in seconds.

@@ -14,8 +14,6 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#define CLIENT_BINARY_VERSION 1
-
 #include "datatfs/file.hh"
 #include "datatfs/direct.hh"
 #include "datatfs/tcp.hh"
@@ -169,7 +167,7 @@ bool ClientCx::connect(const std::string& host, int port, const std::string& rul
   // Send init packet. (the first one !)
   CxInit pkt_init;
   stringToPacket(pkt_init.rules_name, rules, 32);
-  pkt_init.binary_version = CLIENT_BINARY_VERSION;
+  pkt_init.binary_version = STECHEC_BINARY_VERSION;
   cx->send(&pkt_init);
 
   // Receive server answer.
