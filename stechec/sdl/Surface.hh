@@ -161,7 +161,7 @@ protected:
   //! @brief Copy the alpha data to dst_surf.
   //! @note Warning, this may slow down things ! work in progress...
   void blitAlpha(SDL_Surface *src_surf, SDL_Surface *dst_surf,
-		 SDL_Rect* src_rect, int dst_x, int dst_y);
+		 SDL_Rect* src_rect, unsigned dst_x, unsigned dst_y);
 
   SDL_Surface*  surf_;
 

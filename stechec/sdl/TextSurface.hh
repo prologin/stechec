@@ -26,6 +26,15 @@
 # include "Surface.hh"
 
 /*!
+** @brief Text render method.
+*/
+enum eTextRenderMethod {
+  eTextSolid,   ///< Normal, not Anti-Alisased.
+  eTextShaded,  ///< AA, with a defined background (don't keep transparency).
+  eTextBlended, ///< AA, keep transparency. Slower.
+};
+
+/*!
 ** @ingroup sdl_base
 ** @brief Class that can draw text, similiar to a TextLabel.
 **
@@ -53,18 +62,41 @@ public:
   void addText(const std::string& text);
 
   //! @brief Return the text (all lines) currently displayed.
+  //! @return Displayed text.
   std::string getText() const;
 
+  //! @brief Auto-wrap text, add new lines when text go beyond surface width.
+  //! @param enable Enable or disable it (default: enabled).
   void setAutoWrap(bool enabled);
+
+  //! @brief Get Auto-wrapping current setting.
+  //! @return Auto-wrap current setting.
   bool getAutoWrap() const;
+
+  //! @brief Set text color.
+  //! @param fg Color to set (default: black).
+  void setTextColor(SDL_Color& fg);
+
+  //! @brief Set baground color, only for method eTextShaded.
+  //! @param bg Color to set (default: white).
+  void setBgColor(SDL_Color& bg);
+
+  //! @brief Set rendering method.
+  //! @param m Render method to use.
+  void setRenderMethod(enum eTextRenderMethod m);
   
   virtual void update();
 
 private:
   TTF_Font*     font_;
+  Surface       surf_font_ref_;
+  SDL_Color	fg_;
+  SDL_Color	bg_;
+
   std::string   font_name_;
   int           font_size_;
   int           line_skip_;
+  enum eTextRenderMethod method_;
 
   bool          auto_wrap_;
   bool          content_changed_;

@@ -123,10 +123,14 @@ void Sprite::stopAnim()
 
 void Sprite::setFrame(int frame)
 {
-  if (frame < 1 || frame > nb_anim_width_ * nb_anim_height_ )
+  if (frame < 1 || frame > nb_anim_width_ * nb_anim_height_)
     PRINT_AND_THROW(Exception, "Frame out of bound: " << frame
                     << " ([1.." << nb_anim_width_ * nb_anim_height_ << "])");
-  current_anim_ = frame - 1;
+  if (current_anim_ != frame - 1)
+    {
+      current_anim_ = frame - 1;
+      redraw_all_ = true;
+    }
 }
 
 void Sprite::setZoom(double zoom)

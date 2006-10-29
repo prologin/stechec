@@ -1,9 +1,10 @@
 # -*- Makefile -*-
 
-noinst_PROGRAMS = simple scroll
+noinst_PROGRAMS = text
 
 simple_SOURCES = simple.cc
 scroll_SOURCES = scroll.cc
+text_SOURCES = text.cc
 
 CXXFLAGS = 					\
 	-DMODULE_NAME=\"sdltest\"		\

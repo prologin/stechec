@@ -127,8 +127,10 @@ Surface& Surface::operator=(const Surface& s)
 
 Surface::~Surface()
 {
-  if (surf_)
+  if (surf_ != NULL)
     SDL_FreeSurface(surf_);
+  if (parent_ != NULL)
+    parent_->removeChild(this);
 }
 
 Point Surface::getPos() const
@@ -335,46 +337,64 @@ void Surface::update()
 }
 
 void Surface::blitAlpha(SDL_Surface *src_surf, SDL_Surface *dst_surf,
-			SDL_Rect* src_rect, int dst_x, int dst_y)
+			SDL_Rect* src_rect, unsigned dst_x, unsigned dst_y)
 {
   SDL_PixelFormat* src_fmt = src_surf->format;
   SDL_PixelFormat* dst_fmt = dst_surf->format;
 
-  // Some check...
-  if (src_fmt->BitsPerPixel != 32)
+  unsigned src_x = 0;
+  unsigned src_y = 0;
+  unsigned width = 0;
+  unsigned height = 0;
+
+  if (src_rect)
     {
-      WARN("Source surface (%1) is not 32 bpp", filename_);
-      return;
+      src_x = src_rect->x;
+      src_y = src_rect->y;
+      width = src_rect->w;
+      height = src_rect->h;
     }
-  if (dst_fmt->BitsPerPixel != 32)
-    {
-      WARN("Destination surface (from: %1) is not 32 bpp", filename_);
-      return;
-    }
+  if (width == 0)
+    width = src_surf->w;
+  if (height == 0)
+    height = src_surf->h;
+  if (width > dst_surf->w - dst_x)
+    width = dst_surf->w - dst_x;
+  if (height > dst_surf->h - dst_y)
+    height = dst_surf->h - dst_y;
+
+  // Some checks...
+  if (src_fmt->BitsPerPixel != 32 || dst_fmt->BitsPerPixel != 32)
+    return;
   if (dst_fmt->Amask == 0)
     {
       WARN("No alpha mask on destination surface");
       return;
     }
   
-  Uint32 src, dst;
-  unsigned surf_size = src_surf->w * src_surf->h;
-
-  LOG6("Set transparency surf name %1 size %1", filename_, surf_size);
+  LOG3("Set transparency surf name %1 size x: %2 y: %3", filename_, width, height);
   LOG6("r:%1 g:%2 b:%3 a:%4", (int)src_fmt->Rshift, (int)src_fmt->Gshift, (int)src_fmt->Bshift, (int)src_fmt->Ashift);
   LOG6("r:%1 g:%2 b:%3 a:%4", (int)dst_fmt->Rshift, (int)dst_fmt->Gshift, (int)dst_fmt->Bshift, (int)dst_fmt->Ashift);
 
   SDL_LockSurface(surf_);
   SDL_LockSurface(dst_surf);
-  Uint32* p_src = (Uint32*)surf_->pixels;
-  Uint32* p_dst = (Uint32*)dst_surf->pixels;
-  for (unsigned i = 0; i < surf_size; i++)
+  Uint32* p_src = (Uint32*)surf_->pixels + surf_->w * src_y + src_x;
+  Uint32* p_dst = (Uint32*)dst_surf->pixels + dst_surf->w * dst_y + dst_x;
+  Uint32 src;
+  Uint32 dst;
+
+  for (unsigned y = 0; y < height; y++)
     {
-      src = (*p_src & src_fmt->Amask) >> src_fmt->Ashift;
-      dst = (*p_dst & dst_fmt->Amask) >> dst_fmt->Ashift;
-      *p_dst = *p_dst | (src << dst_fmt->Ashift);
-      p_src++;
-      p_dst++;
+      for (unsigned x = 0; x < width; x++)
+	{
+	  src = (*p_src & src_fmt->Amask) >> src_fmt->Ashift;
+	  dst = (*p_dst & dst_fmt->Amask) >> dst_fmt->Ashift;
+	  *p_dst = *p_dst | (src << dst_fmt->Ashift);
+	  p_src++;
+	  p_dst++;
+	}
+      p_src += surf_->w - width;
+      p_dst += dst_surf->w - width;
     }
   SDL_UnlockSurface(dst_surf);
   SDL_UnlockSurface(surf_);
@@ -426,6 +446,7 @@ std::ostream& operator<< (std::ostream& os, const Surface& s)
   os << "Dump surface `" << s.filename_ << "'\n";
   os << "  rect: " << s.rect_ << "\n";
   os << "  zoom: " << s.zoom_ << " angle: " << s.angle_ << " z: " << s.z_ << "\n";
-  os << "  ptr: " << s.surf_ << " redraw_all: " << s.redraw_all_;
+  os << "  ptr: " << s.surf_ << " redraw_all: " << s.redraw_all_
+     << " inherit_alpha: " << s.inherit_alpha_;
   return os;
 }

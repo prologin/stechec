@@ -19,10 +19,18 @@
 
 #include "TextSurface.hh"
 
+// FIXME: use Colors.hh
+static SDL_Color black_color = { 0, 0, 0, SDL_ALPHA_OPAQUE };
+static SDL_Color white_color = { 255, 255, 255, SDL_ALPHA_OPAQUE };
+
 TextSurface::TextSurface()
   : font_(NULL),
+    surf_font_ref_(NULL),
+    fg_(black_color),
+    bg_(white_color),
     font_size_(-1),
     line_skip_(-1),
+    method_(eTextBlended),
     auto_wrap_(true),
     content_changed_(true)
 {
@@ -30,14 +38,24 @@ TextSurface::TextSurface()
 
 TextSurface::TextSurface(const std::string& font_name, int font_size,
 			 int surf_width, int surf_height)
-  : Surface(surf_width, surf_height),
+  : fg_(black_color),
+    bg_(white_color),
     font_name_(font_name),
     font_size_(font_size),
+    method_(eTextBlended),
     auto_wrap_(true),
     content_changed_(true)
 {
   font_ = ResourceCenter::getInst()->getFont(font_name, font_size);
   line_skip_ = TTF_FontLineSkip(font_);
+  setSize(Point(surf_width, surf_height));
+
+  // Create a ref font surface, to create this Surface with the same attributes.
+  SDL_Color white_color = { 255, 255, 255, SDL_ALPHA_TRANSPARENT };
+  SDL_Surface* temp_surf = TTF_RenderText_Blended(font_, "a", white_color);
+  surf_font_ref_ = Surface(temp_surf);
+  create(surf_width, surf_height, surf_font_ref_.getSDLSurface());
+  SDL_FreeSurface(temp_surf);
 }
 
 TextSurface::~TextSurface()
@@ -52,7 +70,11 @@ TextSurface::TextSurface(const TextSurface& ts)
   font_size_ = ts.font_size_;
   font_ = ResourceCenter::getInst()->getFont(font_name_, font_size_);
   assert(font_ == ts.font_);
+  surf_font_ref_ = ts.surf_font_ref_;
+  fg_ = ts.fg_;
+  bg_ = ts.bg_;
   line_skip_ = ts.line_skip_;
+  method_ = ts.method_;
   auto_wrap_ = ts.auto_wrap_;
   content_changed_ = !ts.lines_.empty();
   lines_ = ts.lines_;
@@ -67,7 +89,11 @@ TextSurface& TextSurface::operator= (const TextSurface& rhs)
   font_size_ = rhs.font_size_;
   font_ = ResourceCenter::getInst()->getFont(font_name_, font_size_);
   assert(font_ == rhs.font_);
+  surf_font_ref_ = rhs.surf_font_ref_;
+  fg_ = rhs.fg_;
+  bg_ = rhs.bg_;
   line_skip_ = rhs.line_skip_;
+  method_ = rhs.method_;
   auto_wrap_ = rhs.auto_wrap_;
   content_changed_ = !rhs.lines_.empty();
   lines_ = rhs.lines_;
@@ -158,27 +184,49 @@ bool TextSurface::getAutoWrap() const
   return auto_wrap_;
 }
 
+void TextSurface::setTextColor(SDL_Color& fg)
+{
+  fg_ = fg;
+}
+
+void TextSurface::setBgColor(SDL_Color& bg)
+{
+  bg_ = bg;
+}
+
+void TextSurface::setRenderMethod(enum eTextRenderMethod m)
+{
+  method_ = m;
+}
+
 
 void TextSurface::update()
 {
-  SDL_Color darkmagenta_color = { 139, 0, 139, SDL_ALPHA_OPAQUE};
   SDL_Surface *temp_surf = NULL;
   
   // Print the text, if changed.
   if (content_changed_)
     {
-      SDL_SetAlpha(surf_, SDL_SRCALPHA, 150);
-      SDL_FillRect(surf_, NULL, SDL_MapRGB(surf_->format, 0, 0, 0));
-      boxRGBA(surf_, 0, 0, getSize().x, getSize().y, 127, 255, 212, 1);
-      rectangleRGBA(surf_, 1, 1, getSize().x - 2 , getSize().y - 2, 127, 255, 212, 1);
+      SDL_FillRect(surf_, NULL, 0);
 
       // Print each line in our Surface.
       int index = 0;
       LineList::const_iterator it;
       for (it = lines_.begin(); it != lines_.end(); ++it)
         {
-          temp_surf = TTF_RenderText_Solid(font_, it->c_str(), darkmagenta_color);
-          if (temp_surf == NULL)
+	  switch (method_)
+	    {
+	    case eTextSolid:
+	      temp_surf = TTF_RenderText_Solid(font_, it->c_str(), fg_);
+	      break;
+	    case eTextShaded:
+	      temp_surf = TTF_RenderText_Shaded(font_, it->c_str(), fg_, bg_);
+	      break;
+	    case eTextBlended:
+	      temp_surf = TTF_RenderText_Blended(font_, it->c_str(), fg_);
+	      break;
+	    }
+	  if (temp_surf == NULL)
 	    {
 	      // FIXME: why, oh WHY this $^*#$ system don't allow me to print spaces...
 	      char hackme[256] = {0};
@@ -186,15 +234,19 @@ void TextSurface::update()
 	      for (int i = 0; hackme[i] != 0; i++)
 		if (hackme[i] == ' ')
 		  hackme[i] = '_';
-	      temp_surf = TTF_RenderText_Solid(font_, hackme, darkmagenta_color);
+	      temp_surf = TTF_RenderText_Solid(font_, hackme, fg_);
 	    }
           if (temp_surf == NULL)
 	    PRINT_AND_THROW(TTFError, "RenderText '" << *it << "'");
 
-          SDL_Rect dst = { 4, 4 + (index++ * line_skip_), 0, 0};
-          SDL_BlitSurface(temp_surf, NULL, surf_, &dst);
-          SDL_FreeSurface(temp_surf);
-        }
+	  Surface temp(temp_surf);
+	  temp.setInheritAlpha(true);
+	  temp.setPos(4, 4 + (index++ * line_skip_));
+	  temp.blit(*this);
+
+	  SDL_FreeSurface(temp_surf);
+	  temp_surf = NULL;
+	}
 
       redraw_all_ = true;
       content_changed_ = false;
