@@ -44,7 +44,8 @@ class ClientEntry: public StechecClientEntry
 public: 
 
   ClientEntry(GameData* game, ClientDiffer* diff, Client* client);
-    
+  virtual ~ClientEntry();
+  
   virtual int beforeGame();
   virtual int initGame();
   virtual int beforeNewTurn();

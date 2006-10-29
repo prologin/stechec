@@ -14,7 +14,13 @@
 
 
 GameData::GameData() :
+  map(NULL),
   player(NULL),
+  map_size_x(-1),
+  map_size_y(-1),
+  player_fog(NULL),
+  map_ant(NULL),
+  player_know_map(NULL),
   p(0)
 {
 }

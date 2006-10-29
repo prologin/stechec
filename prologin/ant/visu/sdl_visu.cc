@@ -13,7 +13,7 @@ SDL_Surface *SDLVisu::load_image(const std::string& filename)
   SDL_Surface* loadedImage = NULL;
   SDL_Surface* optimizedImage = NULL;
 
-  LOG3("Load " << PKGDATADIR "texture_2D/" << filename);
+  LOG(3, "Load " << PKGDATADIR "texture_2D/" << filename);
   loadedImage = IMG_Load((std::string(PKGDATADIR "texture_2D/") + filename).c_str());
   if (loadedImage == NULL)
     throw filename;
@@ -30,14 +30,14 @@ bool SDLVisu::initSDL(void)
 {
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-      ERR("Error in initialisation of the SDL : " << SDL_GetError());
+      ERR("Error in initialisation of the SDL: %1", SDL_GetError());
       return false;
     }
 
   screen = SDL_SetVideoMode(800, 640, 0, SDL_SWSURFACE);
   if (screen == NULL)
     {
-      ERR("Unable to activate graphic mode : " << SDL_GetError());
+      ERR("Unable to activate graphic mode: ", SDL_GetError());
       return false;
     }
   LOG4("SDL initialization successful.");
@@ -91,7 +91,7 @@ bool SDLVisu::drawSquare(int x, int y)
 
   if (blit_res != 0)
     {
-      ERR("Error while blitting the surface : " << SDL_GetError());
+      ERR("Error while blitting the surface: %1", SDL_GetError());
       return false;
     }
   return true;
@@ -171,16 +171,16 @@ int SDLVisu::run()
               if (event.key.keysym.sym >= '1' && event.key.keysym.sym <= '9')
                 {
                   int team_id = event.key.keysym.sym - '1';
-                  LOG2("Switch to team id `" << team_id << "' view.");
+                  LOG(2, "Switch to team id `" << team_id << "' view.");
                   if (!api_->switchTeam(team_id))
-                    LOG2("Failed. No such team ?");
+                    LOG(2, "Failed. No such team ?");
                   drawAll();
                 }
 
               // See all the map
               if (event.key.keysym.sym == '0')
                 {
-                  LOG2("Switch to super-user view");
+                  LOG(2, "Switch to super-user view");
                   api_->switchTeam(-1);
                   drawAll();
                 }

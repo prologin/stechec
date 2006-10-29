@@ -21,6 +21,20 @@ ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client):
 {
 }
 
+ClientEntry::~ClientEntry()
+{
+  delete[] g_->player;
+  g_->FreeData();
+
+  for (int i = 0; i < g_->getNbPlayer(); i++)
+    {
+      for (int j = 0; j < g_->map_size_x; j++)
+        free(g_->player_know_map[i][j]);
+      free(g_->player_know_map[i]);
+    }
+  free(g_->player_know_map);
+} 
+
 /*!
 ** fonction qui permet de recevoir la map, ou/et de faire
 ** des initialiation sur les joueurs avant le debut de la partie
@@ -104,16 +118,5 @@ int        ClientEntry::afterNewTurn()
 */
 int        ClientEntry::afterGame()
 {
-  delete[] g_->player;
-  g_->FreeData();
-
-  for (int i = 0; i < g_->getNbPlayer(); i++)
-    {
-      for (int j = 0; j < g_->map_size_x; j++)
-        free(g_->player_know_map[i][j]);
-      free(g_->player_know_map[i]);
-    }
-  free(g_->player_know_map);
-  
   return 0;
 }

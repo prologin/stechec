@@ -10,9 +10,9 @@
 ** Copyright (C) 2005, 2006 Prologin
 */
 
-# include "client.hh"
-# include "Contest.hh"
-# include "SRules.hh"
+#include "Contest.hh"
+#include "SRules.hh"
+#include "GameClient.hh"
 
 SRules::SRules(StechecGameData* data, StechecServer* server,
                StechecServerResolver* resolver, StechecServerEntry* serverep)
@@ -117,6 +117,7 @@ void SRules::serverProcess()
 
 bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
 {
+  LOG2("coach killed: %1 %2", coach_id, coach_error_[coach_id]);
   if (coach_error_[coach_id] != NULL)
     {
       // We already have a failure reports from the client itself.

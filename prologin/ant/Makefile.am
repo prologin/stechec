@@ -6,6 +6,6 @@ SUBDIRS =					\
 	subject					\
 	test
 
-if HAVE_QT
+if HAVE_SDL
 SUBDIRS += visu
 endif
