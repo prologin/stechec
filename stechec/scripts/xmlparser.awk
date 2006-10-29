@@ -312,12 +312,14 @@ BEGIN {
 
 		if ( substr( $0, 1, 1 ) == "=" ) {
 			if ( substr( $0, 2, 1 ) == "\"" ) {
-				item[idx] = substr( $0, 3 );
+			        item[idx] = $0;
+			        sub( /^="/, "", item[idx] );
 				sub( /".*$/, "", item[idx] );
 				sub( /^="[^"]*"/, "", $0 );
 			}
 			else if ( substr( $0, 2, 1 ) == "'" ) {
-				item[idx] = substr( $0, 3 );
+			        item[idx] = $0;
+			        sub( /^='/, "", item[idx] );
 				sub( /'.*$/, "", item[idx] );
 				sub( /^='[^']*'/, "", $0 );
 			}

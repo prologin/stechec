@@ -77,9 +77,9 @@ renice 5 $$ > /dev/null
     makefile=Makefile-c
     [ "`echo *.cc`" != "*.cc" ] && makefile=Makefile-cxx
     [ "`echo *.cpp`" != "*.cpp" ] && makefile=Makefile-cxx
-    [ "`echo *.pas`" != "*.pas" ] && makefile=Makefile-pascal &&  cp $makefile_path/prolo_interface.pas .
+    [ "`echo *.pas`" != "*.pas" ] && makefile=Makefile-pascal &&  cp $contest_path/$contest_name/compil/prolo_interface.pas .
     [ "`echo *.java`" != "*.java" ] && makefile=Makefile-java
-    [ "`echo *.ml`" != "*.ml" ] && makefile=Makefile-caml  && cp $makefile_path/api.ml .
+    [ "`echo *.ml`" != "*.ml" ] && makefile=Makefile-caml  && cp $contest_path/$contest_name/compil/api.ml .
     [ "`echo *.lua`" != "*.lua" ] && makefile=Makefile-lua
 
     lang=`echo $makefile | sed 's/^Makefile-//'` 
