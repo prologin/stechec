@@ -21,14 +21,27 @@
 # include "datatfs/netpoll.hh"
 # include "datatfs/file.hh"
 # include "xml/xml_config.hh"
-# include "client.hh"
 # include "BaseSRules.hh"
 # include "PacketSender.hh"
+
+BEGIN_NS(server);
+
+class GameClient;
 
 /*!
 ** @addtogroup server
 ** @{
 */
+
+//! @brief Status of a single server game thread.
+enum eGameState {
+  eStarting = 0,    ///< Starting thread.
+  eWaiting,     ///< Wait for players.
+  ePlaying,     ///< Game playing.
+  eFinishing,   ///< Game finished. Wait for last clients to exit.
+  eFinished,    ///< Thread can be cleaned.
+  eCrashed,     ///< Thread can be cleaned, but it was termined anormally.
+};
 
 /*! @brief Represents a game, with up to two coachs and as many
 ** viewers as they could be.
@@ -51,8 +64,8 @@ public:
   //! @param wanna_be_coach True if the client wants to be a coach.
   void addClient(Cx* cx, int client_extid, bool wanna_be_coach);
 
-  //! @brief Check is the game is finished, so memory can be freed.
-  bool isFinished() const;
+  //! @brief Get client current status.
+  enum eGameState getState() const;
 
   //! @brief Get the thread_t structure of the thread running this game.
   //! Mostly useful for joining with the main thread.
@@ -66,34 +79,40 @@ public:
   //! @param gh_inst A GameHosting instance, corresponding to the game.
   static void* startThread(void* gh_inst);
 
+  void clientDied(GameClient* cl);
+
+  void spectatorReadiness(GameClient* cl);
+  void servePlaying(GameClient* cl, Packet* pkt);
+
 private:
   void outputStatistics();
-  bool processOne(Client* cl, std::string& remove_reason);
-  bool process();
   void run(Log& log);
 
-  typedef std::vector<Client*>                ClientList;
-  typedef ClientList::iterator                ClientIter;
+  typedef std::vector<GameClient*>      GameClientList;
+  typedef GameClientList::iterator      GameClientIter;
+  typedef std::vector<ClientStatistic*>	ClientStatisticList;
 
   const xml::XMLConfig& cfg_;             ///< Server configuration.
   FileCx                log_;             ///< File to log game to.
 
   int                   game_uid_;        ///< Game uid.
   BaseSRules*           rules_;           ///< Server rules.
-  ClientList            client_list_;     ///< List of active/dead clients.
-  ClientList            coach_list_;      ///< List of coachs. To output statistics.
-  NetPoll<Client*>      client_poll_;     ///< Facility to poll all clients/dead clients at once.
+  GameClientList        client_list_;     ///< List of active/dead clients.
+  NetPoll<GameClient*>  client_poll_;     ///< Facility to poll all clients/dead clients at once.
+  ClientStatisticList   stats_list_;      ///< Stats of coachs. To output statistics after they exited.
   int                   nb_coach_;        ///< Number of coach connected.
   int                   nb_waited_coach_; ///< Number of waited coach, before starting game.
   int                   viewer_base_uid_; ///< Current uid to assign to new viewers.
   int                   nb_viewer_;       ///< Number of viewers currently connected.
   int                   nb_waited_viewer_;///< Number of waited viewer, before starting game.
-  bool                  started_;         ///< Is the game started ?
-  bool                  game_finished_;   ///< Is the game finished ?
-  bool			thread_finished_; ///< Can the thread be cleaned ?
+  enum eGameState	state_;		  ///< Game status.
+
   pthread_t             self_;
+  pthread_mutex_t	lock_;
 };
 
 //! @}
+
+END_NS(server);
 
 #endif /* !GAME_HOSTING_HH_ */

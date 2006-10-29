@@ -63,7 +63,7 @@ int     main(int argc, char** argv)
   set_opt(cfg, main_log);
 
   try {
-    Server s(cfg);
+    server::Server s(cfg);
     s.run();
   } catch (const NetError& e) {
     ERR("Uncatched network error: %1", e);

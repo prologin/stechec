@@ -17,29 +17,16 @@
 #ifndef CLIENT_HH_
 # define CLIENT_HH_
 
-# include "BaseSRules.hh"
-# include "datatfs/cx.hh"
+# include "tools.hh"
+class Cx;
 
 /*!
 ** @addtogroup server
 ** @{
 */
 
-/*!
-** @brief Clients statistics that can be retrieved from Client.
-**
-** Originated from a kludge: Generic server and arbiter have several
-** different informations on each client. They are all grouped here (with
-** the CoachErrorCustom rules class), then resend to rules at the end so it can
-** write stats, calculate scores, ...
-*/
-class ClientStatistic
-{
-public:
-  int                   ext_id_;
-  std::string           fail_reason_;
-  CoachErrorCustom*     custom_;
-};
+BEGIN_NS(server);
+
 
 /*!
 ** @brief Represents an external connection on the server, coach or
@@ -51,84 +38,59 @@ public:
 class Client
 {
 public:
-  //! @brief Create a Client object.
-  //!
-  //! Constructing this object means that client has already chosen the
-  //! game, was accepted, and is ready to play. Tell him it's ok,
-  //! and send him its uid.
-  //!
-  //! @param cx The associated Cx object.
-  //! @param id The unique client connection id (See UID_VIEWER_BASE and UID_COACH_BASE).
-  //! @param client_gid The client external game identifier (eg: for league).
-  //! @param nb_team Number of coach for this game.
-  Client(Cx* cx, int id, int client_gid, int nb_team);
-  ~Client();
+  Client(Cx* cx);
+  virtual ~Client();
 
   //! @brief Get the file descriptor associated with the connection.
   int           getFd() const;
 
-  //! @brief Get the client id.
-  int           getId() const;
-  
   //! @brief Fetch a packet from the network for this client.
   //! @note This function may block, so be sure to poll before.
   //! @return A packet, or NULL if this client is dead.
   //! @throw NetError Thrown on any kind of network error.
   Packet*       getPacket();
 
-    //! @brief Check is this connection is associated with a real coach
-  //!   or a viewer.
-  bool          isCoach() const;
+  //! @brief Called by NetPool when fd received something.
+  virtual bool	recvReady() = 0;
 
-  //! @brief Return true if this client is ready.
-  bool          isReady() const;
-
-  //! @brief Set client readyness.
-  void          setReady(bool value);
-
-    //! @brief Check whether this client is dead, wait that it closes its
-  //!  connection. Do not process any message from it, do not send it anything.
-  bool		isDead() const;
-
-  //! @brief Set client state to dead, either we don't want it anymore, or
-  //!  we had a connection error with it.
-  //! @param fail_msg A reason of why it dead. For statistics.
-  //! @param kill_now true if we can close its socket now. false if we wait
-  //!   that it'll do that cleany later.
-  void          setDead(std::string fail_msg, bool kill_now = false);
-
-    //! @brief Discard input. Only works on dead client
-  //! @return true if it can be deleted.
-  bool		discardInput();
-
-  //! @brief Get the coach statistics.
-  ClientStatistic& getClientStatistic();
-  
-  // Used jointly with stl algorithm, for batch-sending packets.
-  class Send
-  {
-  public:
-    Send(const Packet& p);
-    void operator() (Client* cl);
-  private:
-    const Packet& p_;
-  };
-  
-private:
-  Cx*                cx_;         ///< Connection to the server.
-  int                id_;         ///< Player uid.
-
-  //! True if this client is ready (mostly for the next turn)
-  //! (sync visio with game).
-  bool               is_ready_;
-
-  bool		     is_dead_;
-
-  ClientStatistic    client_stat_; ///< Clients statistics.
+protected:
+  Cx*		cx_;            ///< Connection to the server.
+  bool		close_pending_;	///< We had errors on this socket, to be closed ASAP.
 };
 
-# include "Client.hxx"
+END_NS(server);
+
+/*
+** Implementation.
+*/
+
+# include "datatfs/cx.hh"
+
+BEGIN_NS(server);
+
+inline Client::Client(Cx* cx)
+  : cx_(cx),
+    close_pending_(false)
+{
+}
+
+inline Client::~Client()
+{
+}
+
+inline int Client::getFd() const
+{
+  return cx_ == NULL || close_pending_ ? -1 : cx_->getFd();
+}
+
+inline Packet* Client::getPacket()
+{
+  return cx_->receive();
+}
+
 
 //! @}
+
+END_NS(server);
 
 #endif /* !CLIENT_HH_ */

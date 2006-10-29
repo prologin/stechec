@@ -4,12 +4,15 @@ bin_PROGRAMS 	= tbt_server
 
 tbt_server_SOURCES	=			\
 	client.hh				\
-	Client.hxx				\
 	game_hosting.cc				\
 	game_hosting.hh				\
-	main.cc					\
 	server.hh				\
-	server.cc
+	server.cc				\
+	GameClient.cc				\
+	GameClient.hh				\
+	WaitingClient.cc			\
+	WaitingClient.hh			\
+	main.cc
 
 tbt_server_CXXFLAGS = 				\
 	-DMODULE_COLOR=C_BLUE			\

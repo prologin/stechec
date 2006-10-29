@@ -17,7 +17,7 @@
 #ifndef NETPOOL_HH_
 # define NETPOOL_HH_
 
-# include <vector>
+# include "datatfs/cx.hh"
 
 /*!
 ** @ingroup tools_net
@@ -30,8 +30,6 @@
 ** to NetPoll. This object \c must implement the method getFd(), that
 ** give a file descriptor.
 **
-** @author victor
-** @date 30/01/2006
 ** @see Cx
 */
 template <typename T>
@@ -43,12 +41,15 @@ public:
 
   //! @brief Construct a NetPoll object.
   //! @param elt_list A list of element to which this NetPoll is bound,
-  //!    whose lenght and content can vary on the time.
+  //!    but its length and contents can vary over the time.
   //! @param to Poll timeout, in milliseconds (-1 to wait indefinitely).
   NetPoll(ElementList& elt_list, int to = 0);
   //! @brief NetPoll destructor.
   ~NetPoll();
 
+  //! @brief If set, allow unlocking only during poll syscall.
+  void setLock(pthread_mutex_t* lock);
+  
   //! @brief Wait that one or more file descriptor given
   //! @return The number of file descriptors ready for reading, or 0 if
   //!       timeout elapsed before. elt_list_ is reordered, so that elements
@@ -56,13 +57,16 @@ public:
   //! @note This function is _not_ thread-safe ! Take care to not modify
   //!       elt_list_ while in this function.
   //! @throw NetError Thrown on any network error.
-  int poll();
+  void poll();
 
 private:
-  ElementList&                elt_list_;
-  int                        timeout_;
+  ElementList&	        elt_list_;
+  int                   timeout_;
   struct pollfd*        pifi_;
-  int                     pifi_size_;
+  int                   pifi_size_;
+
+  pthread_mutex_t*	lock_;
+  bool			lock_set_;
 };
 
 // !ingroup tools_net

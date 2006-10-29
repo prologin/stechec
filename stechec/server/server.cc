@@ -15,20 +15,24 @@
 */
 
 #include <signal.h>
+#include "WaitingClient.hh"
 #include "server.hh"
 
-#define SERVER_BINARY_VERSION 1
+BEGIN_NS(server);
+
 
 Server* Server::inst = NULL;
 
 Server::Server(const xml::XMLConfig& cfg)
   : cfg_(cfg),
     wcl_poll_(waiting_clients_, 500),
-    server_shutdown_(false)
+    server_shutdown_(0),
+    server_shutdown_reset_(2)
 {
   // Singleton.
   assert(inst == NULL);
   inst = this;
+  pthread_mutex_init(&lock_, NULL);
   
   // Catch ctl-c, to properly shutdown the server.
   struct sigaction act;
@@ -39,11 +43,7 @@ Server::Server(const xml::XMLConfig& cfg)
   sigaction(SIGINT, &act, NULL);
   
   // Load shared library to get the rules.
-  try {
-    rules_name_ = cfg.getData<std::string>("server", "rules");
-  } catch (xml::XMLError) {
-    rules_name_ = cfg.getData<std::string>("game", "rules");
-  }
+  rules_name_ = cfg.getData<std::string>("server", "rules");
   rules_.open(rules_name_);
   create_rules_fun_ = (create_rules_t)(rules_.getSymbol("load_server_rules"));
 }
@@ -51,13 +51,33 @@ Server::Server(const xml::XMLConfig& cfg)
 Server::~Server()
 {
   inst = NULL;
+  pthread_mutex_destroy(&lock_);
+}
+
+void Server::addClient(Cx* client_cx)
+{
+  waiting_clients_.push_back(new WaitingClient(client_cx, this));
 }
 
 // Ctl-C was pressed, shutdown it after all games were finished.
 void   Server::wantShutdown(int)
 {
-  LOG1("Shutdown requested. Will stop when everybody will be disconnected.");
-  inst->server_shutdown_ = true;
+  if (inst->server_shutdown_ == 0 || inst->server_shutdown_reset_.isTimeElapsed())
+    {
+      LOG1("Shutdown requested. Will stop when everybody will be disconnected.");
+      inst->server_shutdown_ = 1;
+      inst->server_shutdown_reset_.restart();
+    }
+  else if (inst->server_shutdown_ == 1)
+    {
+      LOG1("Ok, next press on Ctl-C will kill the server");
+      inst->server_shutdown_ = 2;
+    }
+  else
+    {
+      WARN("Seems you really want to exit... Killing everything.");
+      exit(1);
+    }
 }
 
 bool    Server::checkServerState(Cx* cx)
@@ -75,10 +95,10 @@ bool    Server::checkServerState(Cx* cx)
 
 bool    Server::checkRemoteVersion(Cx* cx, const CxInit& pkt)
 {
-  if (pkt.binary_version != SERVER_BINARY_VERSION)
+  if (pkt.binary_version != STECHEC_BINARY_VERSION)
     {
       std::ostringstream os;
-      os << "Binary version mismatch: server is `" << SERVER_BINARY_VERSION;
+      os << "Binary version mismatch: server is `" << STECHEC_BINARY_VERSION;
       os << "', client is `" << pkt.binary_version << "'";
       LOG3("Connection from %1 has been rejected, reason:", *cx);
       LOG3(" - %1", os.str());
@@ -130,60 +150,45 @@ bool    Server::checkRemoteTCP(TcpCx* cx, const Packet&)
   return true;
 }
 
-// Return true if it should be removed from waiting_clients_
-bool    Server::serveClient(Cx* cx)
+// Send to the client the list of active games.
+void	Server::serveGameList(Cx* cx)
 {
-  Packet* pkt;
-
-  pkt = cx->receive();
-  if (pkt->token == CX_QUERYLIST)
-    {
-      // FIXME: send him the list of games currently hosted
-      LOG5("A client is requesting the list of games.");
-      Packet pkt_list(CX_LIST);
-      cx->send(&pkt_list);
-      return false;
-    }
-  else if (pkt->token == CX_JOIN)
-    {
-      CxJoin* pkt_join = static_cast<CxJoin*>(pkt);
-      int game_uid = pkt_join->game_uid;
-      
-      GameIter it = games_.find(game_uid);
-      if (it == games_.end())
-        {
-          if (!is_persistent_ && !games_.empty())
-            {
-              LOG3("Cannot create a new game. Server is not persistent.");
-              delete cx;
-            }
-          else
-            {
-              // This is a new game. Create and start it.
-              GameHosting* gh = new GameHosting(game_uid, cfg_,
-                                            create_rules_fun_(&cfg_));
-              it = games_.insert(std::make_pair(game_uid, gh)).first;
-              pthread_t th;
-              pthread_create(&th, NULL, &GameHosting::startThread, it->second);
-              LOG5("Thread started.");
-            }
-        }
-      it->second->addClient(cx,
-                            pkt_join->client_extid,
-                            pkt_join->is_coach ? true : false);
-    }
-  else if (pkt->token == CX_ABORT)
-    {
-      LOG4("Client %1 sent CX_ABORT. Close its connection.", *cx);
-      delete cx;
-    }
-  else
-    {
-      LOG2("Unknown message (%1) from waiting client '%2'. Kill it.", pkt->token, *cx);
-      delete cx; // "/me takes aim: HEADSHOT !"
-    }
-  return true;
+  // FIXME: send him the list of games currently hosted
+  LOG5("A client is requesting the list of games.");
+  Packet pkt_list(CX_LIST);
+  cx->send(&pkt_list);
 }
+
+void	Server::serveJoinGame(Cx* cx, Packet* pkt)
+{
+  CxJoin* pkt_join = static_cast<CxJoin*>(pkt);
+  int game_uid = pkt_join->game_uid;
+      
+  GameIter it = games_.find(game_uid);
+  if (it == games_.end())
+    {
+      if (!is_persistent_ && !games_.empty())
+	{
+	  LOG3("Cannot create a new game. Server is not persistent.");
+	  delete cx;
+	  return;
+	}
+      else
+	{
+	  // This is a new game. Create and start it.
+	  GameHosting* gh = new GameHosting(game_uid, cfg_,
+                                            create_rules_fun_(&cfg_));
+	  it = games_.insert(std::make_pair(game_uid, gh)).first;
+	  pthread_t th;
+	  pthread_create(&th, NULL, &GameHosting::startThread, it->second);
+	  LOG5("Thread started.");
+	}
+    }
+  it->second->addClient(cx,
+			pkt_join->client_extid,
+			pkt_join->is_coach ? true : false);
+}
+
 
 // Check for games that are finished, to join thread and
 // free memory.
@@ -194,7 +199,8 @@ bool    Server::cleanFinishedGame()
 
   for (GameIter it = games_.begin(); it != games_.end(); )
     {
-      if (it->second->isFinished())
+      enum eGameState state = it->second->getState();
+      if (state == eFinished || state == eCrashed)
         {
           LOG5("Clean a thread, used to belong to game uid %1.", it->first);
           pthread_join(it->second->getThreadId(), NULL);
@@ -213,58 +219,23 @@ bool    Server::cleanFinishedGame()
 // game yet.
 void        Server::run()
 {
-  TcpCx          listen_socket;
+  TcpCx		listen_socket;
+  TcpCxListener listener(&listen_socket, this);
 
   is_persistent_ = cfg_.getAttr<bool>("server", "options", "persistent");
   
   LOG2("Listening on port %1", cfg_.getAttr<int>("server", "listen", "port"));
   listen_socket.listenAt(cfg_.getAttr<int>("server", "listen", "port"));
   waiting_clients_.reserve(1024); // should be max cx;
-  waiting_clients_.push_back(&listen_socket);
+  waiting_clients_.push_back(&listener);
 
   while (!server_shutdown_ || !games_.empty() || waiting_clients_.size() > 1)
     {
-      int nb_ready = wcl_poll_.poll();
-
-      for (int i = 0; i < nb_ready; i++)
-        if (waiting_clients_[i] == &listen_socket)
-          {
-            LOG4("New connection detected, handling it.");
-            TcpCx* client_cx = listen_socket.accept();
-            try {
-              Packet* pkt = client_cx->receive();
-              const CxInit& init_pkt = static_cast<CxInit&>(*pkt);
-              if (checkServerState(client_cx)
-                  && checkRemoteVersion(client_cx, init_pkt)
-                  && checkRemoteTCP(client_cx, init_pkt))
-                waiting_clients_.push_back(client_cx);
-            } catch (const NetError& e) {
-              LOG2("Network error on connection (from %1): ", *client_cx, e);
-              delete client_cx; // should not be pushed on waiting_clients_.
-            }
-          }
-        else
-          {
-            bool remove_from_wc = true;
-            Cx* client_cx = waiting_clients_[i];
-            try {
-              remove_from_wc = serveClient(client_cx);
-            } catch (const NetError& e) {
-              LOG2("Network error on waiting client (from %1): ", *client_cx, e);
-              delete client_cx;
-            }
-            if (remove_from_wc)
-              {
-                // be soft with our vector.
-                const int wc_size = waiting_clients_.size();
-                waiting_clients_[i] = waiting_clients_[wc_size - 1];
-                waiting_clients_.erase(waiting_clients_.end() - 1);
-                if (nb_ready >= wc_size)
-                  nb_ready--;
-              }
-          }
+      wcl_poll_.poll();
       if (cleanFinishedGame() && !is_persistent_)
         break;
     }
   LOG1("Server has finished its work. Exiting.");
 }
+
+END_NS(server);

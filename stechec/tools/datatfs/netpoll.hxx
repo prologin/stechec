@@ -15,15 +15,16 @@
 */
 
 #include <cerrno>
-#include "cx.hh"
+#include "netpoll.hh"
 
 template <typename T>
 NetPoll<T>::NetPoll(ElementList& elt_list, int to)
   : elt_list_(elt_list),
     timeout_(to),
-    pifi_(NULL),
-    pifi_size_(0)
+    pifi_size_(3),
+    lock_set_(false)
 {
+  pifi_ = new struct pollfd[3];
 }
 
 template <typename T>
@@ -33,9 +34,16 @@ NetPoll<T>::~NetPoll()
 }
 
 template <typename T>
-int NetPoll<T>::poll()
+void NetPoll<T>::setLock(pthread_mutex_t* lock)
 {
-  const int elt_size = elt_list_.size();
+  lock_ = lock;
+  lock_set_ = true;
+}
+
+template <typename T>
+void NetPoll<T>::poll()
+{
+  int elt_size = elt_list_.size();
   ElementIter it;
   int i;
 
@@ -53,24 +61,38 @@ int NetPoll<T>::poll()
       pifi_[i].fd = (*it)->getFd();
       pifi_[i].events = POLLIN;
       pifi_[i].revents = 0;
+
+      // Client may have been killed outside of this poll function.
+      if (pifi_[i].fd == -1)
+	{
+	  delete elt_list_[i];
+          elt_list_[i] = elt_list_[elt_size - 1];
+	  elt_list_.erase(elt_list_.end() - 1);
+	  return;
+	}
     }
 
+  if (lock_set_)
+    pthread_mutex_unlock(lock_);
   int nb_ready = ::poll(pifi_, elt_size, timeout_);
+  if (lock_set_)
+    pthread_mutex_lock(lock_);
+
   if (nb_ready < 0 && errno != EINTR)
     throw NetError("Poll");
-  
+  if (nb_ready == 0)
+    return;
+
   // Look for fd that are ready, put them on the beginning of the list.
-  int nb_seen;
-  for (i = 0, nb_seen = 0; i < elt_size; ++i)
-    {
-      // XXX: kludge, also signal erroneous fd, so they can be handled.
-      if (pifi_[i].revents & POLLIN || pifi_[i].fd < 0)
-        {
-          T tmp = elt_list_[i];
-          elt_list_[i] = elt_list_[nb_seen];
-          elt_list_[nb_seen] = tmp;
-          nb_seen++;
-        }
-    }
-  return nb_seen;
+  for (i = 0; i < elt_size; ++i)
+    if ((pifi_[i].revents & POLLIN) && elt_list_[i]->recvReady())
+      {
+	// This client is removed from the list.
+	delete elt_list_[i];
+	elt_list_[i] = elt_list_[elt_size - 1];
+	elt_list_.erase(elt_list_.end() - 1);
+	pifi_[i] = pifi_[elt_size - 1];
+	i--;
+	elt_size--;
+      }
 }

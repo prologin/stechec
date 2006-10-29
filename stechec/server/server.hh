@@ -21,7 +21,10 @@
 # include "datatfs/tcp.hh"
 # include "game_hosting.hh"
 
-/*! @file
+BEGIN_NS(server);
+
+/*!
+** @file
 **
 ** @defgroup server Generic server application.
 ** @{
@@ -29,6 +32,8 @@
 
 //! @brief Maximum number of coachs + spectators connected on server.
 # define MAX_CONNECTION        250
+
+class Client;
 
 /*!
 ** @brief Control multiple game, receive new clients, handle
@@ -43,12 +48,15 @@ public:
   //! @brief Run the server, never ending function...
   void          run();
 
-private:
+  void          addClient(Cx* client_cx);
   bool          checkServerState(Cx* cx);
   bool          checkRemoteVersion(Cx* cx, const CxInit& pkt);
   bool          checkRemoteTCP(TcpCx* cx, const Packet& pkt);
+  void	        serveGameList(Cx* cx);
+  void	        serveJoinGame(Cx* cx, Packet* pkt);
+
+private:
   bool          cleanFinishedGame();
-  bool          serveClient(Cx* cx);
   static void   wantShutdown(int signal);
 
   static Server                 *inst;
@@ -64,14 +72,19 @@ private:
   typedef GameList::iterator    GameIter;
   GameList                      games_;
 
-  typedef std::vector<Cx*>      CxList;
-  CxList                        waiting_clients_;
-  NetPoll<Cx*>                  wcl_poll_;
+  typedef std::vector<Client*>  WaitingList;
+  WaitingList                   waiting_clients_;
+  NetPoll<Client*>              wcl_poll_;
 
-  bool                          server_shutdown_;
+  int                           server_shutdown_;
+  Timer				server_shutdown_reset_;
   bool                          is_persistent_;
+
+  pthread_mutex_t		lock_;
 };
 
 //! @}
+
+END_NS(server);
 
 #endif /* !SERVER_HH_ */
