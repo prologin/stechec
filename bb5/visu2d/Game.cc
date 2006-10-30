@@ -35,7 +35,7 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   win_.getScreen().addChild(panel_);
   win_.getScreen().addChild(field_);
 
-  txt_status_ = TextSurface("Vera.ttf", 270, 65);
+  txt_status_ = TextSurface("Vera.ttf", 12, 270, 65);
   txt_status_.setZ(6);
   txt_status_.setPos(3, 532);
   win_.getScreen().addChild(&txt_status_);
@@ -198,7 +198,7 @@ int Game::run()
   textbox.hide();
   win_.getScreen().addChild(&textbox);
 
-  TextSurface fps("Vera.ttf", 70, 25);
+  TextSurface fps("Vera.ttf", 12, 70, 25);
   fps.setZ(4);
   fps.setPos(720, 570);
   win_.getScreen().addChild(&fps);
