@@ -20,7 +20,9 @@
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
 
-enum eVisuAction {
+BEGIN_NS(sdlvisu);
+
+enum eAction {
   eActNone,
   eActMove,
   eActBlock,
@@ -47,10 +49,9 @@ public:
   void setVisuPlayer(VisuPlayer* vp);
   VisuPlayer* getVisuPlayer() const;
 
-  void show(const Point& pos);
-  void hide();
-  bool isVisible() const;
-
+  virtual void  show();
+  virtual void  hide();
+  
   virtual void update();
 
 private:
@@ -58,7 +59,9 @@ private:
 
   VisuPlayer*           vp_;
   Sprite                sprite_[12];
-  bool                  show_;
+  Sprite                sprite_on_[12];
 };
+
+END_NS(sdlvisu);
 
 #endif /* !ACTIONPOPUP_HH_ */

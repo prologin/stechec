@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-noinst_PROGRAMS = text
+noinst_PROGRAMS = simple scroll text
 
 simple_SOURCES = simple.cc
 scroll_SOURCES = scroll.cc

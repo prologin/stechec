@@ -21,8 +21,11 @@
 # include "Sprite.hh"
 
 class Api;
-class Game;
 class CPlayer;
+
+BEGIN_NS(sdlvisu);
+
+class Game;
 
 /*
 ** Player class for visu.
@@ -38,24 +41,40 @@ public:
 
   void unselect();
 
-  //! @brief Do an action.
-  void action(eVisuAction item);
+  //! @brief Prepare an action.
+  void prepareAction(enum eAction item);
 
   virtual void setPos(const Point& pos);
   virtual void update();
 
 private:
 
+  //! @brief Really do an action.
+  void action(enum eAction item);
+
+  void drawPath();
+  
   Api*          api_;
   Game&         game_;
   const CPlayer* p_;
 
   bool          has_focus_;
   bool          is_selected_;
+  int		last_player_status_;
+  
   Sprite        circle_;
   Sprite        circle_selected_;
   Sprite        player_num_;
-  Sprite        action_popup_;
+  Sprite	status_;
+
+  eAction	next_action_;
+
+  // for pathway.
+  Sprite	move_sprite_;
+  std::vector<Sprite> path_;
+  Point		prev_dst_;
 };
+
+END_NS(sdlvisu);
 
 #endif /* !VISUPLAYER_HH_ */

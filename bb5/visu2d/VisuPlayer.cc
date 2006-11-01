@@ -20,6 +20,8 @@
 #include "Game.hh"
 #include "VisuPlayer.hh"
 
+BEGIN_NS(sdlvisu);
+
 VisuPlayer::VisuPlayer(Api* api, Game& game, const CPlayer* p)
   : api_(api),
     game_(game),
@@ -28,30 +30,43 @@ VisuPlayer::VisuPlayer(Api* api, Game& game, const CPlayer* p)
     is_selected_(false),
     circle_("image/general/circle.png"),
     circle_selected_("image/general/circle_select.png"),
-    player_num_("image/general/player_num.png")
+    player_num_("image/general/player_num.png"),
+    status_("image/general/status.png"),
+    next_action_(eActNone)
 {
+  VisuField& field = game_.getField();
+
   circle_.setZ(5);
   circle_.splitNbFrame(3, 1);
   circle_.anim(200);
   circle_.hide();
-  game_.getField().addChild(&circle_);
+  field.addChild(&circle_);
 
   circle_selected_.setZ(6);
   circle_selected_.hide();
-  game_.getField().addChild(&circle_selected_);
+  field.addChild(&circle_selected_);
 
   player_num_.setZ(4);
   player_num_.splitNbFrame(16, 1);
   player_num_.setFrame(p->getId() + 1);
-  game_.getField().addChild(&player_num_);
+  field.addChild(&player_num_);
+
+  status_.setZ(4);
+  status_.splitNbFrame(6, 1);
+  status_.hide();
+  field.addChild(&status_);
+
+  move_sprite_.load("image/general/map-move.png");
+  move_sprite_.splitNbFrame(3, 2);
+  move_sprite_.setFrame(3);
+  move_sprite_.setZ(3);
 
   // Set its property
   load("image/figs/amazon.png"); // FIXME: team picture.
   splitSizeFrame(40, 40);
   setZ(3);
   setFrame(p->getPlayerPosition() * 2 + p->getTeamId() + 1);
-  LOG2("create teamid: %1 player id: %2 pos: %3", p->getTeamId(), p->getId(),
-       p->getPlayerPosition());
+  last_player_status_ = api_->playerStatus();
 }
 
 VisuPlayer::~VisuPlayer()
@@ -67,9 +82,55 @@ void VisuPlayer::unselect()
     }
 }
 
-void VisuPlayer::action(eVisuAction item)
+void VisuPlayer::drawPath()
 {
-  Point to((game_.getInput().mouse_ + Point(game_.getField().getScreenRect())) / 40);
+  Point to((game_.getInput().mouse_ - Point(game_.getField().getScreenRect())) / 40);
+  if (prev_dst_ == to)
+    return;
+
+  path_.clear();
+  int len = api_->moveLength(to.x, to.y);
+  for (int i = 0; i < len; i++)
+    {
+      Point pt(api_->movePathX(i), api_->movePathY(i));
+      path_.push_back(move_sprite_);
+      Sprite& sp = path_.back();
+      sp.setPos(pt * 40);
+      game_.getField().addChild(&sp);
+    }
+  prev_dst_ = to;
+}
+
+void VisuPlayer::prepareAction(enum eAction item)
+{
+  int player_id = p_->getId();
+
+  game_.setState(stDoAction);
+  switch (item)
+    {
+    case eActMove:
+      api_->doDeclareMove(player_id);
+      next_action_ = item;
+      break;
+
+    case eActBlock:
+      api_->doDeclareBlock(player_id);
+      next_action_ = item;
+      break;
+
+    case eActThrow:
+    case eActAggress:
+
+    default:
+      LOG2("not implemented yet...");
+      game_.unsetState(stDoAction);
+      break;
+    }
+}
+
+void VisuPlayer::action(enum eAction item)
+{
+  Point to((game_.getInput().mouse_ - Point(game_.getField().getScreenRect())) / 40);
   int player_id = p_->getId();
   
   switch (item)
@@ -79,7 +140,8 @@ void VisuPlayer::action(eVisuAction item)
       api_->doMovePlayer(player_id, to);
       break;
     case eActBlock:
-      LOG2("BLOCK to %1 - not implemented yet", to);
+      LOG2("BLOCK to %1 - send to api", to);
+      api_->doBlockPlayer(player_id, api_->playerId(to.x, to.y));
       break;
     case eActThrow:
       LOG2("THROW to %1 - not implemented yet", to);
@@ -99,6 +161,7 @@ void VisuPlayer::setPos(const Point& pos)
   circle_.setPos(pos);
   circle_selected_.setPos(pos);
   player_num_.setPos(pos + Point(3, 18));
+  status_.setPos(pos + Point(20, 18));
 }
 
 
@@ -106,6 +169,47 @@ void VisuPlayer::update()
 {
   Input& inp = game_.getInput();
 
+  api_->selectTeam(p_->getTeamId());
+  api_->selectPlayer(p_->getId());
+
+  // Update player status sprite
+  if (api_->playerStatus() != last_player_status_)
+    {
+      last_player_status_ = api_->playerStatus();
+      LOG4("Switch status for player %1 to %2.", p_->getId(), last_player_status_);
+      switch (last_player_status_)
+	{
+	case 3:
+	case 4:
+	  status_.setFrame(1);
+	  status_.show();
+	  break;
+	case 5:
+	  status_.setFrame(2);
+	  status_.show();
+	  break;
+	case 6:
+	  status_.setFrame(3);
+	  status_.show();
+	  break;
+	case 7:
+	  status_.setFrame(5);
+	  status_.show();
+	  break;
+	default:
+	  status_.hide();
+	  break;
+	}
+    }
+  
+  // Some action to do ?
+  if (next_action_ != eActNone && game_.isStateSet(stDoAction) && inp.button_pressed_[1])
+    {
+      action(next_action_);
+      next_action_ = eActNone;
+      game_.unsetState(stDoAction);
+    }
+  
   // Update focus.
   bool now_focus = getScreenRect().inside(inp.mouse_);
 
@@ -122,8 +226,9 @@ void VisuPlayer::update()
       circle_.hide();
     }
 
-  // Click on player. Select him.
-  if (now_focus && !is_selected_ && inp.button_pressed_[1])
+  // Click on player (of _my_ team). Select him.
+  if (now_focus && !is_selected_ && inp.button_pressed_[1]
+      && api_->myTeamId() == p_->getTeamId())
     {
       game_.unselectAllPlayer();
       game_.selectPlayer(this);
@@ -131,10 +236,18 @@ void VisuPlayer::update()
       is_selected_ = true;
     }
 
+  // Draw path
+  if (game_.isStateSet(stDoAction) && next_action_ == eActMove)
+    drawPath();
+  else
+    path_.clear();
+  
   // Debug
   if (now_focus && inp.key_pressed_[(unsigned char)'d'])
-    LOG3("%1",*p_);
+    LOG3("%1", *p_);
 
   has_focus_ = now_focus;
   Sprite::update();
 }
+
+END_NS(sdlvisu);

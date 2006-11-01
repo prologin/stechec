@@ -7,6 +7,8 @@ lib_LTLIBRARIES	= bb5_visu.la
 noinst_LTLIBRARIES = libbb5_visu_common.la
 
 libbb5_visu_common_la_SOURCES =			\
+	DlgBox.hh				\
+	DlgBox.cc				\
 	ActionPopup.hh				\
 	ActionPopup.cc				\
 	Panel.hh				\

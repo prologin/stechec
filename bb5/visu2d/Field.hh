@@ -20,9 +20,11 @@
 # include "VirtualScrollableSurface.hh"
 # include "Sprite.hh"
 
+BEGIN_NS(sdlvisu);
+
 class Game;
 
-/*
+/*!
 ** Game field (on the left).
 */
 class VisuField : public VirtualScrollableSurface
@@ -34,15 +36,24 @@ public:
   void playerDoingKickoff();
   void setBallPos(const Point& pos);
 
+  bool getDrawTicks() const;
+  void setDrawTicks(bool enable);
+  
   virtual void update();
 
 private:
+
+  //! @brief Draw markers around squares.
+  void drawTicks();
+  
   Game&         g_;
   
   Surface       bg_;
   Sprite        ball_;
 
-  bool          doing_kickoff_;
+  bool	        draw_ticks_;
 };
+
+END_NS(sdlvisu);
 
 #endif /* !GAMEFIELD_HH_ */

@@ -14,6 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "SDLWindow.hh"
 #include "Game.hh"
 
 //
@@ -23,6 +24,8 @@
 
 extern "C" int run(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
 {
+  using namespace sdlvisu;
+  
   // First, create and open the SDL window.
   SDLWindow win(xml);
   try {

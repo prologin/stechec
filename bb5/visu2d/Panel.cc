@@ -14,8 +14,11 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "Api.hh"
 #include "Game.hh"
 #include "Panel.hh"
+
+BEGIN_NS(sdlvisu);
 
 Panel::Panel(Game& g)
   : VirtualSurface("VPanel", 300, 600),
@@ -64,3 +67,5 @@ void Panel::update()
 {
   VirtualSurface::update();
 }
+
+END_NS(sdlvisu);

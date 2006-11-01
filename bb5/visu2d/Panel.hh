@@ -20,6 +20,8 @@
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
 
+BEGIN_NS(sdlvisu);
+
 class Game;
 
 /*
@@ -49,5 +51,7 @@ private:
   bool          showing_player_info_;
   Surface       player_picture_;
 };
+
+END_NS(sdlvisu);
 
 #endif /* !PANEL_HH_ */
