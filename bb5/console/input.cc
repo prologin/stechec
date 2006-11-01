@@ -562,9 +562,14 @@ bool Input::process()
 
 void Input::processCommand(const std::string& s)
 {
-  // Lightly parser for our line into: <cmd> <subcmd> <args>
   string cmd, sub_cmd, args;
   cmd = trim(s);
+
+  // Skip comments.
+  if (!cmd.empty() && cmd[0] == '#')
+    return;
+  
+  // Lightly parser for our line into: <cmd> <subcmd> <args>
   string::size_type first_space = cmd.find(' ');
   if (first_space != string::npos)
     {
