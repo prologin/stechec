@@ -73,20 +73,30 @@ int Dice::roll(enum eDiceFaceNumber type, int nb_dice)
 int Dice::roll(const std::string& msg, enum eDiceFaceNumber type, int nb_dice)
 {
   int res = 0;
+  int nb_dice_start = nb_dice;
 
   if (cheat_dice_.empty())
     {
       res = roll(type, nb_dice);
-      LOG3("+ Roll %1 D%2: `%3' (%4)", nb_dice, type, res, msg);
+      LOG3("+ Roll %1D%2: `%3' (%4)", nb_dice, type, res, msg);
     }
   else
     {
-      while (nb_dice-- > 0)
+      // Cheat as many dices as we can.
+      while (nb_dice-- > 0 && !cheat_dice_.empty())
 	{
 	  res += cheat_dice_.front();
 	  cheat_dice_.pop_front();
 	}
-      LOG3("+ Cheat %1 D%2: `%3' (%4)", nb_dice, type, res, msg);
+      if (nb_dice > 0)
+	{
+	  LOG3("+ Cheat some dices: %1D%2: temporary result: `%3' (%4)",
+	       nb_dice_start - nb_dice, type, res, msg);
+	  res += roll(type, nb_dice);
+	  LOG3("  Roll remaining dices: %1D%2: `%3' (%4)", nb_dice, type, res, msg);
+	}
+      else
+	LOG3("+ Cheat %1D%2: `%3' (%4)", nb_dice, type, res, msg);
     }
   return res;
 }
