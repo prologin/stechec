@@ -35,3 +35,15 @@ kickoffbug:
     formation: formation.xml
     input: kickoffbug_2.cmd
     diff: kickoffbug_2.diff
+
+pass:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pass_1.cmd
+    diff: pass_1.diff
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pass_2.cmd
+    diff: pass_2.diff
