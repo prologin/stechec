@@ -38,4 +38,16 @@ installcheck-local::
 	     > $$t.log 2>&1; res=$$?; to=$$((to + res));	\
 	  test $$res -eq 0 && echo "PASS: $$t" || echo "FAIL: $$t"; \
 	done; 						\
+	for t in $(MY_XTESTS); do			\
+	  LD_LIBRARY_PATH="$(libdir)"			\
+	  RUBYLIB="$(pkglibdir)/ruby"			\
+	  BASHLIB="$(pkglibdir)/bash"			\
+	  PATH="$(bindir):$$PATH"			\
+	  srcdir="$(srcdir)/"				\
+	  xml_parser_path="$(pkglibdir)/bash/"		\
+	  $(RUBY) $(pkglibdir)/ruby/rules_test.rb	\
+	    $(YAML_TEST_POOL) $(YAML_FILE) $$t		\
+	     > $$t.log 2>&1; res=$$?;			\
+	  test $$res -eq 0 && echo "XPASS: $$t" || echo "XFAIL: $$t"; \
+	done;						\
 	test $$to -eq 0

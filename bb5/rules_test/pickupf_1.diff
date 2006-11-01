@@ -1,5 +1,7 @@
 Player '10' (team 0) - Iva
   position      : [row/y:8 col/x:6]
   carateristics :  ma: 6 | st: 3 | ag: 3 | av: 7
-  ma_remain     : 5
-  status : Standing
+  skills        : SK_DODGE
+  ma_remain     : 6
+  has_played    : no
+  status        : Standing
