@@ -59,3 +59,27 @@ pickup:
     formation: formation.xml
     input: pickup_2.cmd
     diff: pickup_2.diff
+
+pickupf:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pickupf_1.cmd
+    diff: pickupf_1.diff
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pickupf_2.cmd
+    diff: pickupf_2.diff
+
+block:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: block_1.cmd
+    diff: block_1.diff
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: block_2.cmd
+    diff: block_2.diff
