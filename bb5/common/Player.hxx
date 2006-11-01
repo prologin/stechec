@@ -207,10 +207,11 @@ inline std::ostream& operator<< (std::ostream& os, const Player& p)
       os << p.stringify(*it);
       for (++it; it != p.skill_list_.end(); ++it)
 	os << " | " << p.stringify(*it);
+      os << std::endl;
     }
 
   os << "  ma_remain     : " << p.ma_remain_ << "\n"
-     << "  has_played    : " << p.has_played_ << "\n"
+     << "  has_played    : " << (p.has_played_ ? "yes" : "no") << "\n"
      << "  status        : " << p.stringify(p.status_);
 
   os << std::endl;
