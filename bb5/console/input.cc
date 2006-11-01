@@ -565,8 +565,8 @@ void Input::processCommand(const std::string& s)
   string cmd, sub_cmd, args;
   cmd = trim(s);
 
-  // Skip comments.
-  if (!cmd.empty() && cmd[0] == '#')
+  // Skip comments and empty lines.
+  if (cmd.empty() || cmd[0] == '#')
     return;
   
   // Lightly parser for our line into: <cmd> <subcmd> <args>
