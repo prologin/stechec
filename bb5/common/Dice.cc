@@ -72,7 +72,7 @@ int Dice::roll(enum eDiceFaceNumber type, int nb_dice)
 
 int Dice::roll(const std::string& msg, enum eDiceFaceNumber type, int nb_dice)
 {
-  int res;
+  int res = 0;
 
   if (cheat_dice_.empty())
     {
@@ -81,8 +81,11 @@ int Dice::roll(const std::string& msg, enum eDiceFaceNumber type, int nb_dice)
     }
   else
     {
-      res = cheat_dice_.front();
-      cheat_dice_.pop_front();
+      while (nb_dice-- > 0)
+	{
+	  res += cheat_dice_.front();
+	  cheat_dice_.pop_front();
+	}
       LOG3("+ Cheat %1 D%2: `%3' (%4)", nb_dice, type, res, msg);
     }
   return res;

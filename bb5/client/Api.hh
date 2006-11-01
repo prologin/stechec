@@ -137,21 +137,21 @@ public:
   int                   moveLength(int dst_x, int dst_y);
 
   //! @brief Difficulty to get (FIXME) in/outside a square for a specified step.
-  //! @param step The current step (starting from 0 to move_lenght - 1) of the
+  //! @param step The current step (starting from 0 to move_length - 1) of the
   //!   current movement projection.
   //! @return The number of tackles zone for this step.
   //! @note You have to make a successful call to moveLength before.
   int                   moveDifficulty(int step);
 
   //! @brief Where the player will be on the field at this step.
-  //! @param step The current step (starting from 0 to move_lenght - 1) of the
+  //! @param step The current step (starting from 0 to move_length - 1) of the
   //!   current movement projection.
   //! @return X coordinate on the field.
   //! @note You have to make a successful call to moveLength before.
   int                   movePathX(int step);
 
   //! @brief Where the player will be on the field at this step.
-  //! @param step The current step (starting from 0 to move_lenght - 1) of the
+  //! @param step The current step (starting from 0 to move_length - 1) of the
   //!   current movement projection.
   //! @return Y coordinate on the field.
   //! @note You have to make a successful call to moveLength before.

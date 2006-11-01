@@ -229,7 +229,7 @@ void CRules::msgBlockResult(const MsgBlockResult* m)
     }
   else
     {
-      if (m->choose_team_id == getTeamId()&&!m->reroll)
+      if (m->choose_team_id == getTeamId() && !m->reroll)
 	setState(GS_BLOCK);
     }
   onEvent(m);
