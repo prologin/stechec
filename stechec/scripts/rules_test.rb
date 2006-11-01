@@ -199,7 +199,7 @@ class RuleTest
     tmp_file = c['output'].to_s + '.tmp'
 
     `sed -n '/^BEGIN DIFF/ { :n; n; /^END DIFF/d; p; b n } ' < #{c['output']} > #{tmp_file}`
-    `diff -u #{c['diff']} #{tmp_file} > #{c['input'] + '.diff'}`
+    `diff -wBu #{c['diff']} #{tmp_file} > #{c['input'] + '.diff'}`
     res = $?.exitstatus
 
     if res != 0 then
