@@ -21,4 +21,5 @@ MY_TESTS =					\
 	basic					\
 	move					\
 	kickoffbug				\
-	pass
+	pass					\
+	pickup

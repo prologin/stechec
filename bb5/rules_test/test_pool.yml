@@ -47,3 +47,15 @@ pass:
     formation: formation.xml
     input: pass_2.cmd
     diff: pass_2.diff
+
+pickup:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pickup_1.cmd
+    diff: pickup_1.diff
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pickup_2.cmd
+    diff: pickup_2.diff
