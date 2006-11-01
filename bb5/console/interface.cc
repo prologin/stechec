@@ -16,8 +16,8 @@
 
 #include <sys/types.h>
 #include <sys/poll.h>
-
 #include <iomanip>
+
 #include "interface.hh"
 
 using namespace std;
@@ -178,22 +178,31 @@ void CmdLineInterface::printField()
 
 void CmdLineInterface::printPlayerList()
 {
+  int justify_name;
   int team_size;
   const CPlayer* p;
 
-  team_size = api_->getTeam()->getNbPlayer();
   cout << setiosflags(ios::left);
-  for (int i = 0; i < team_size; i++)
+
+  for (int k = 0; k < 2; k++)
     {
-      p = api_->getPlayer(i);
-      cout << "* " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
-    }
-  api_->selectTeam(THEM);
-  team_size = api_->getTeam()->getNbPlayer();
-  for (int i = 0; i < team_size; i++)
-    {
-      p = api_->getPlayer(i);
-      cout << "+ " << i << ": " << setw(16) << p->getName() << " " << p->getPosition() << "\n";
+      api_->selectTeam(k == 0 ? US : THEM);
+      team_size = api_->getTeam()->getNbPlayer();
+      for (int i = 0; i < team_size; i++)
+	{
+	  p = api_->getPlayer(i);
+	  justify_name = i >= 10 ? 15 : 16;
+	  cout << (k == 0 ? "* " : "+ ") << i << ": " << setw(justify_name)
+	       << p->getName() << " ";
+	  if (p->getStatus() != STA_STANDING &&
+	      p->getStatus() != STA_PRONE &&
+	      p->getStatus() != STA_STUNNED)
+	    cout << "out of the field";
+	  else
+	    cout << p->getPosition();
+	  cout << "  " << p->stringify(p->getStatus())
+	       << endl;
+	}
     }
   api_->selectTeam(US);
 }

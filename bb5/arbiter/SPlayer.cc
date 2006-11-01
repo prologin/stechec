@@ -65,11 +65,11 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
     }
   
   if (!f_->intoField(pos))
-		{
-    	rollInjury(0);
-			if (status_ == STA_STUNNED)
-				setStatus(STA_RESERVE);
-		}
+    {
+      rollInjury(0);
+      if (status_ == STA_STUNNED)
+	setStatus(STA_RESERVE);
+    }
   else
     f_->setPlayer(pos, this);
 }

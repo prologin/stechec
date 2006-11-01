@@ -189,22 +189,29 @@ inline const char* Player::stringify(enum eSkill skill)
 inline std::ostream& operator<< (std::ostream& os, const Player& p)
 {
   os << "Player '" << p.id_ << "' (team " << p.team_id_ << ") - " << p.name_ << "\n";
-  if (p.status_ != STA_STANDING
-      &&p.status_ != STA_PRONE
-      &&p.status_ != STA_STUNNED)
-    {
-      os << "  position      : out of the field\n";
-    }
+
+  if (p.status_ != STA_STANDING && p.status_ != STA_PRONE && p.status_ != STA_STUNNED)
+    os << "  position      : out of the field\n";
   else
-    {
-      os << "  position      : " << p.pos_ << "\n";
-    }
-  os << "  carateristics :  ma: " << p.ma_ << " | "
+    os << "  position      : " << p.pos_ << "\n";
+
+  os << "  carateristics : ma: " << p.ma_ << " | "
      << "st: " << p.st_ << " | "
      << "ag: " << p.ag_ << " | "
-     << "av: " << p.av_ << "\n"
-     << "  ma_remain     : " << p.ma_remain_ << "\n"
-     << "  status : " << p.stringify(p.status_);
+     << "av: " << p.av_ << "\n";
+    
+  if (!p.skill_list_.empty())
+    {
+      os << "  skills        : ";
+      Player::SkillList::const_iterator it = p.skill_list_.begin();
+      os << p.stringify(*it);
+      for (++it; it != p.skill_list_.end(); ++it)
+	os << " | " << p.stringify(*it);
+    }
+
+  os << "  ma_remain     : " << p.ma_remain_ << "\n"
+     << "  has_played    : " << p.has_played_ << "\n"
+     << "  status        : " << p.stringify(p.status_);
 
   os << std::endl;
   return os;
