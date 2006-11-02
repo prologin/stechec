@@ -15,6 +15,8 @@
 */
 #include "BackgroundDialog.hh"
 
+#include <libintl.h>
+
 
 BackgroundDialog::BackgroundDialog(PG_Widget* parent, const PG_Rect& r, const char* windowtitle, const char* background, const char* style) : 
 PG_Window(parent, r, windowtitle, MODAL) 
@@ -28,7 +30,7 @@ PG_Window(parent, r, windowtitle, MODAL)
     btnOk_->SetID(1);
     btnOk_->sigClick.connect(slot(*this, &BackgroundDialog::handleButton));
     
-    btnCancel_ = new PG_Button(this, PG_Rect(170, 235, 60, 20), "CANCEL");
+    btnCancel_ = new PG_Button(this, PG_Rect(170, 235, 60, 20), gettext("CANCEL"));
     btnCancel_->SetID(2);
     btnCancel_->sigClick.connect(slot(*this, &BackgroundDialog::handleButton));
 

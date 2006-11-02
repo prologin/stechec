@@ -18,6 +18,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <libintl.h>
 
 
 #include "pgthemewidget.h"
@@ -68,10 +69,10 @@ BBowlWidget::BBowlWidget(TeamrosterApp *app, PG_Widget *parent,PG_Rect rect) : P
     
     raceImg_ = new PG_Image (this, PG_Point(180,452),"emblems/amazon.jpg");
 
-    backgroundBtn_ = new PG_Button(this, PG_Rect(70,485,80,20), "Background");
-    loadBtn_ = new PG_Button(this, PG_Rect(100,510,50,20), "Load");
-    saveBtn_ = new PG_Button(this, PG_Rect(100,535,50,20), "Save");
-    quitBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), "Quit");
+    backgroundBtn_ = new PG_Button(this, PG_Rect(70,485,80,20), gettext("Background"));
+    loadBtn_ = new PG_Button(this, PG_Rect(100,510,50,20), gettext("Load"));
+    saveBtn_ = new PG_Button(this, PG_Rect(100,535,50,20), gettext("Save"));
+    quitBtn_ = new PG_Button(this, PG_Rect(100,560,50,20), gettext("Quit"));
   
     PG_Color black(0,0,0);
 	
@@ -233,7 +234,7 @@ void BBowlWidget::displayMessage(const char* title, const char* msg)
 
 void BBowlWidget::displayError(const char* msg)
 {
-    displayMessage("Erreur",msg);
+    displayMessage(gettext("Error"),msg);
 }
 
 /*
@@ -345,7 +346,7 @@ bool BBowlWidget::handleEditReroll(PG_LineEdit* edit)
     const char* text = edit->GetText();
 	int val = (text != NULL) ? atoi(text) : 0;
 	if (val > 8) {
-        displayError("No more than 8 rerolls. That's enough ! And it's the rule. ;)");
+        displayError(gettext("No more than 8 rerolls. That's enough ! And it's the rule. ;)"));
     }
     else {    
         team_->setReroll(val);
@@ -389,9 +390,9 @@ bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
    button->SetInputFocus();
      
    InputDialog iDialog(NULL, 
-      PG_Rect(240,50,240,170), "Load", "Please enter the filename to load:", 
+      PG_Rect(240,50,240,170), gettext("Load"), gettext("Please enter the filename to load:"), 
       PG_Rect(70, 125, 30, 20), "OK",
-      PG_Rect(120, 125, 60, 20), "CANCEL",
+      PG_Rect(120, 125, 60, 20), gettext("CANCEL"),
       PG_Rect(20, 75, 200, 20), "");
       
    iDialog.Show();          
@@ -449,7 +450,7 @@ bool BBowlWidget::handleButtonLoadClick(PG_Button* button)
         }
         catch (const SAXException& toCatch)
         {
-             std::cout << " ... Failed \nSAXException : An error occurred\n  Error: "
+             std::cout << gettext(" ... Failed \nSAXException : An error occurred\n  Error: ")
                      << xercesc::XMLString::transcode(toCatch.getMessage())
                      << "\n" << std::endl;
         } 
@@ -465,7 +466,7 @@ bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
  
    if (strcmp(team_->getName(),"") == 0)
    {
-      displayError("Please fill the team name before saving. The file will be saved as teamName.xml");
+      displayError(gettext("Please fill the team name before saving. The file will be saved as teamName.xml"));
    }
    else 
    { 
@@ -473,8 +474,8 @@ bool BBowlWidget::handleButtonSaveClick(PG_Button* button)
        std::string fileName = team_->getName();
        fileName += ".xml";
        writer.writeTeam(fileName.c_str(), team_);
-       std::string msg = "Successfully saved as "+fileName;
-       displayMessage("Save",msg.c_str());
+       std::string msg = gettext("Successfully saved as ")+fileName;
+       displayMessage(gettext("Save"),msg.c_str());
    }
    return true; 
 }
@@ -490,7 +491,7 @@ bool BBowlWidget::handleButtonBackgroundClick(PG_Button* button)
 {
    button->SetInputFocus();
    
-   BackgroundDialog iDialog(NULL, PG_Rect(180,50,310,270), "Background", team_->getBackground());
+   BackgroundDialog iDialog(NULL, PG_Rect(180,50,310,270), gettext("Background"), team_->getBackground());
    iDialog.Show();          
    int btnClickedID = iDialog.WaitForClick();  
    iDialog.Hide();

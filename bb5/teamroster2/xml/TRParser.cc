@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <vector>
+#include <libintl.h>
 
 #include "common/Position.hh"
 #include "TRParser.hh"
@@ -44,7 +45,7 @@ void TRParser::parseTeamFile(const char* filename)
 
     catch (const XMLException& toCatch)
     {
-         std::cerr << "Error during initialization! :\n"
+         std::cerr << gettext("Error during initialization! :\n")
               << xercesc::XMLString::transcode(toCatch.getMessage()) << std::endl;
     }
 
@@ -78,12 +79,12 @@ void TRParser::parseTeamFile(const char* filename)
     } 
     catch (const XMLException& toCatch)
     {
-         std::cout << "\nXMLException : An error occurred\n  Error: "
+         std::cout << gettext("\nXMLException : An error occurred\n  Error: ")
              << xercesc::XMLString::transcode(toCatch.getMessage())
              << "\n" << std::endl;
     } 
     catch (...) {
-           std::cout << "Unexpected Exception \n" << std::endl; ;
+           std::cout << gettext("Unexpected Exception \n") << std::endl; ;
     }
     
     //
@@ -107,7 +108,7 @@ void TRParser::parseRaceFile()
 
     catch (const XMLException& toCatch)
     {
-         std::cerr << "Error during initialization! :\n"
+         std::cerr << gettext("Error during initialization! :\n")
               << xercesc::XMLString::transcode(toCatch.getMessage()) << std::endl;
     }
 
@@ -138,7 +139,7 @@ void TRParser::parseRaceFile()
    }
     catch (const XMLException& toCatch)
     {
-         std::cerr << "\nAn error occurred\n  Error: "
+         std::cerr << gettext("\nAn error occurred\n  Error: ")
              << xercesc::XMLString::transcode(toCatch.getMessage())
              << "\n" << std::endl;
     } 
@@ -163,7 +164,7 @@ void TRParser::parseParametersFile()
 
     catch (const XMLException& toCatch)
     {
-         std::cerr << "Error during initialization! :\n"
+         std::cerr << gettext("Error during initialization! :\n")
               << xercesc::XMLString::transcode(toCatch.getMessage()) << std::endl;
     }
 
@@ -192,7 +193,7 @@ void TRParser::parseParametersFile()
     }
     catch (const XMLException& toCatch)
     {
-         std::cerr << "\nAn error occurred\n  Error: "
+         std::cerr << gettext("\nAn error occurred\n  Error: ")
              << xercesc::XMLString::transcode(toCatch.getMessage())
              << "\n" << std::endl;
     } 

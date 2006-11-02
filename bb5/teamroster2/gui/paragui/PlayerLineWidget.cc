@@ -17,6 +17,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <libintl.h>
 
 #include "pgthemewidget.h"
 #include "pglabel.h"
@@ -213,7 +214,7 @@ void PlayerLineWidget::updateView()
 void PlayerLineWidget::displayError(const char* msg)
 {
       PG_MessageBox msgbox(parent_, 
-      PG_Rect(200,50,240,100), "Erreur", msg, 
+      PG_Rect(200,50,240,100), gettext("Error"), msg, 
       PG_Rect(100, 75, 20, 20), "OK");
       
       PG_Color white(255,255,255);
@@ -258,7 +259,7 @@ bool PlayerLineWidget::handleEditMa(PG_LineEdit* edit)
     }
     else if (strcmp(edit->GetText(), "0") != 0)
     {
-        displayError("Position must be chosen first.");        
+        displayError(gettext("Position must be chosen first."));        
     }
     updateView();
             
@@ -288,7 +289,7 @@ bool PlayerLineWidget::handleEditSt(PG_LineEdit* edit)
     }
     else if (strcmp(edit->GetText(), "0") != 0)
     {
-        displayError("Position must be chosen first.");        
+        displayError(gettext("Position must be chosen first."));        
     }
     updateView();
             
@@ -319,7 +320,7 @@ bool PlayerLineWidget::handleEditAg(PG_LineEdit* edit)
     }
     else if (strcmp(edit->GetText(), "0") != 0)
     {
-        displayError("Position must be chosen first.");        
+        displayError(gettext("Position must be chosen first."));        
     }
     updateView();
             
@@ -349,7 +350,7 @@ bool PlayerLineWidget::handleEditAv(PG_LineEdit* edit)
     }
     else if (strcmp(edit->GetText(), "0") != 0)
     {
-        displayError("Position must be chosen first.");        
+        displayError(gettext("Position must be chosen first."));        
     }
     updateView();
             
@@ -453,11 +454,11 @@ bool PlayerLineWidget::handleButtonSkillsClick(PG_Button* button)
    button->SetInputFocus();
    if (strcmp(player_->getPositionTitle(),"") == 0)
    {
-        displayError("Position must be fixed to add a new skill.");
+        displayError(gettext("Position must be fixed to add a new skill."));
    }
    else
    {
-        SkillsDialog iDialog(NULL, PG_Rect(180,50,400,270), "Skills", player_);
+        SkillsDialog iDialog(NULL, PG_Rect(180,50,400,270), gettext("Skills"), player_);
         iDialog.Show();          
         int btnClickedID = iDialog.WaitForClick();  
         iDialog.Hide();
@@ -495,11 +496,11 @@ bool PlayerLineWidget::handleButtonInjuriesClick(PG_Button* button)
    button->SetInputFocus();
    if (strcmp(player_->getPositionTitle(),"") == 0)
    {
-        displayError("Position must be fixed to set injuries.");
+        displayError(gettext("Position must be fixed to set injuries."));
    }
    else
    {
-        InjuriesDialog iDialog(NULL, PG_Rect(180,50,210,270), "Injuries", player_);
+        InjuriesDialog iDialog(NULL, PG_Rect(180,50,210,270), gettext("Injuries"), player_);
         iDialog.Show();          
         int btnClickedID = iDialog.WaitForClick();  
         iDialog.Hide();

@@ -24,6 +24,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <libintl.h>
 
 #define LINE_HEIGHT  10
 
@@ -38,8 +39,8 @@ PG_Window(parent, r, windowtitle, MODAL)
     PG_Color white(255,255,255);  
     PG_Color black(0,0,0);
 
-    l1_ = new PG_Label(this, PG_Rect(20,40,150,20), "Player's skills");
-    l2_ = new PG_Label(this, PG_Rect(230,40,150,20), "Available skills");
+    l1_ = new PG_Label(this, PG_Rect(20,40,150,20), gettext("Player's skills"));
+    l2_ = new PG_Label(this, PG_Rect(230,40,150,20), gettext("Available skills"));
     
     // Initialize skills owned by the player
     selectedSkills_ = new PG_ListBox(this, PG_Rect(20,60,150,70));
@@ -53,8 +54,8 @@ PG_Window(parent, r, windowtitle, MODAL)
     // Initialize available skills for that specific player
     availableSkills_ = new PG_ListBox(this, PG_Rect(230,60,150,70));
  
-    l3_ = new PG_Label(this, PG_Rect(20,130,150,20), "Player's skills Double");
-    l4_ = new PG_Label(this, PG_Rect(230,130,150,20), "Available skills Double");
+    l3_ = new PG_Label(this, PG_Rect(20,130,150,20), gettext("Player's skills Double"));
+    l4_ = new PG_Label(this, PG_Rect(230,130,150,20), gettext("Available skills Double"));
     
     // Initialize skills double owned by the player
     selectedSkillsDouble_ = new PG_ListBox(this, PG_Rect(20,150,150,70));

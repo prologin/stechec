@@ -15,6 +15,7 @@
 */
 #include <string>
 #include <sstream>
+#include <libintl.h>
 
 #include "InjuriesDialog.hh"
 #include "../../common/Player.hh"
@@ -38,41 +39,41 @@ PG_Window(parent, r, windowtitle, MODAL)
     btnOk_->SetID(1);
     btnOk_->sigClick.connect(slot(*this, &InjuriesDialog::handleButton));
     
-    btnCancel_ = new PG_Button(this, PG_Rect(130, 235, 60, 20), "CANCEL");
+    btnCancel_ = new PG_Button(this, PG_Rect(130, 235, 60, 20), gettext("CANCEL"));
     btnCancel_->SetID(2);
     btnCancel_->sigClick.connect(slot(*this, &InjuriesDialog::handleButton));
 
-    cbtnMissNextMatch_ = new PG_CheckButton(this, PG_Rect(20,40,200,20), " Miss next match");
+    cbtnMissNextMatch_ = new PG_CheckButton(this, PG_Rect(20,40,200,20), gettext(" Miss next match"));
     if (player_->getMissNextMatch())  {
         cbtnMissNextMatch_->SetPressed();
     } else {
         cbtnMissNextMatch_->SetUnpressed();
     }        
 
-    lblNigglingInjuries_ = new PG_Label(this, PG_Rect(20,70,150,20), "Number of Niggling injuries:");
+    lblNigglingInjuries_ = new PG_Label(this, PG_Rect(20,70,150,20), gettext("Number of Niggling injuries:"));
     leNigglingInjuries_ = new PG_LineEdit(this,PG_Rect(175,70,26,26),"LineEdit",2);
     leNigglingInjuries_->SetValidKeys("0123456789");
     leNigglingInjuries_->SetText(to_string(player_->getNigglingInjuries()).c_str());
 
-    lblMaReducted_ = new PG_Label(this, PG_Rect(20,100,150,20), "Number of -1 MA (Max 2):");
+    lblMaReducted_ = new PG_Label(this, PG_Rect(20,100,150,20), gettext("Number of -1 MA (Max 2):"));
     leMaReducted_ = new PG_LineEdit(this,PG_Rect(175,100,26,26),"LineEdit",2);
     leMaReducted_->SetValidKeys("0123456789");
     leMaReducted_->SetText(to_string(player_->getMaReducted()).c_str());
     leMaReducted_->sigEditEnd.connect(slot(*this, &InjuriesDialog::handleEditCharacteristicReducted));
    
-    lblAvReducted_ = new PG_Label(this, PG_Rect(20,130,150,20), "Number of -1 AV (Max 2):");
+    lblAvReducted_ = new PG_Label(this, PG_Rect(20,130,150,20), gettext("Number of -1 AV (Max 2):"));
     leAvReducted_ = new PG_LineEdit(this,PG_Rect(175,130,26,26),"LineEdit",2);
     leAvReducted_->SetValidKeys("0123456789");
     leAvReducted_->SetText(to_string(player_->getAvReducted()).c_str());
     leAvReducted_->sigEditEnd.connect(slot(*this, &InjuriesDialog::handleEditCharacteristicReducted));
 
-    lblAgReducted_ = new PG_Label(this, PG_Rect(20,160,150,20), "Number of -1 AG (Max 2):");
+    lblAgReducted_ = new PG_Label(this, PG_Rect(20,160,150,20), gettext("Number of -1 AG (Max 2):"));
     leAgReducted_ = new PG_LineEdit(this,PG_Rect(175,160,26,26),"LineEdit",2);
     leAgReducted_->SetValidKeys("0123456789");
     leAgReducted_->SetText(to_string(player_->getAgReducted()).c_str());
     leAgReducted_->sigEditEnd.connect(slot(*this, &InjuriesDialog::handleEditCharacteristicReducted));
 
-    lblStReducted_ = new PG_Label(this, PG_Rect(20,190,150,20), "Number of -1 ST (Max 2):");
+    lblStReducted_ = new PG_Label(this, PG_Rect(20,190,150,20), gettext("Number of -1 ST (Max 2):"));
     leStReducted_ = new PG_LineEdit(this,PG_Rect(175,190,26,26),"LineEdit",2);
     leStReducted_->SetValidKeys("0123456789");
     leStReducted_->SetText(to_string(player_->getStReducted()).c_str());
@@ -143,7 +144,7 @@ bool InjuriesDialog::handleEditCharacteristicReducted(PG_LineEdit* edit)
 {
     if (atoi(edit->GetText()) > 2)
     {
-       displayError("Maximum value is 2");
+       displayError(gettext("Maximum value is 2"));
        edit->SetText("0");
     }
     
@@ -161,7 +162,7 @@ int InjuriesDialog::getStReducted() { return atoi(leStReducted_->GetText()); }
 void InjuriesDialog::displayError(const char* msg)
 {
       PG_MessageBox msgbox(parent_, 
-      PG_Rect(200,50,240,100), "Erreur", msg, 
+      PG_Rect(200,50,240,100), gettext("Error"), msg, 
       PG_Rect(100, 75, 20, 20), "OK");
       
       PG_Color white(255,255,255);

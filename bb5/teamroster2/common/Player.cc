@@ -24,6 +24,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <libintl.h>
 
 using std::vector;
 using std::string;
@@ -474,18 +475,18 @@ bool Player::validateCharacteristicUpdate(int newVal, int positionVal)
 {
     if (positionTitle_.compare("") == 0)
     {
-        InvalidParameterException e("Position must be fixed to update a charcateristic.");
+        InvalidParameterException e(gettext("Position must be fixed to update a charcateristic."));
         throw (e);            
     }
     else if (newVal > 10)
     {
-        InvalidParameterException e("Characteristics can never be greater than 10.");
+        InvalidParameterException e(gettext("Characteristics can never be greater than 10."));
         throw (e);    
     } else if (newVal < positionVal) {
-        InvalidParameterException e("Characteristics can only be lower with injuries.");
+        InvalidParameterException e(gettext("Characteristics can only be lower with injuries."));
         throw (e);            
     }  else if ((newVal - positionVal) > 2) {
-        InvalidParameterException e("Characteristics can never be raised more than 2 points.");
+        InvalidParameterException e(gettext("Characteristics can never be raised more than 2 points."));
         throw (e);            
     } 
     

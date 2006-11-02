@@ -16,6 +16,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <libintl.h>
 #include "Race.hh"
 #include "Position.hh"
 #include "InvalidParameterException.hh"
@@ -105,7 +106,7 @@ Position* Race::getPosition(const char *title)
     }
     
     // selected position hasn't been found...
-    InvalidParameterException e("Position not found");
+    InvalidParameterException e(gettext("Position not found"));
     throw (e);    
 }
 

@@ -15,6 +15,7 @@
 */
 #include <stdio.h>
 #include <iostream>
+#include <libintl.h>
 
 #include "Race.hh"
 #include "Player.hh"
@@ -23,6 +24,7 @@
 
 Team::Team(Race* race)
 {
+
     teamName_ = "";
     bank_ = 0; 
     headCoach_ = "";
@@ -53,7 +55,7 @@ Player* Team::getPlayer(unsigned int number) {
    }
    else 
    {
-      InvalidParameterException e("Invalid player number.");
+      InvalidParameterException e(gettext("Invalid player number."));
       throw (e);            
    }
 }
@@ -65,7 +67,7 @@ void Team::setPlayer(unsigned int number, Player* player) {
    }
    else 
    {
-      InvalidParameterException e("Invalid player number.");
+      InvalidParameterException e(gettext("Invalid player number."));
       throw (e);            
    }
 }
@@ -108,11 +110,11 @@ void Team::setApothecary(int apothecary)
    if (race_->getApothecaryUse() == false)
    {
       apothecary_ = 0;
-      InvalidParameterException e("This race can't have an apothecary.");
+      InvalidParameterException e(gettext("This race can't have an apothecary."));
       throw (e);            
    }
    else if (apothecary > 1) {
-      InvalidParameterException e("No more than 1 apothecary allowded.");
+      InvalidParameterException e(gettext("No more than 1 apothecary allowded."));
       throw (e);            
    } 
    else
@@ -177,7 +179,7 @@ void Team::validateTeam()
         if (pos[j] > vPos[j].getQuantity())
         {
             char* msg = new char[80];
-            sprintf(msg,"There are too much %s : %d > %d",vPos[j].getTitle(), 
+            sprintf(msg,gettext("There are too much %s : %d > %d"),vPos[j].getTitle(), 
                                     pos[j],vPos[j].getQuantity());                
             InvalidParameterException e(msg);
             throw (e);            

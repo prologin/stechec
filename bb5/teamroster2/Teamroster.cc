@@ -33,6 +33,11 @@ int main(int argc,char *argv[])
 	app->DisableDirtyUpdates(true);
 	app->LoadTheme("bbowl");
 	app->InitScreen(RESX,RESY,0,SDL_SWSURFACE);
+
+	//Initialisation gettext
+	setlocale( LC_ALL, "" );
+	bindtextdomain( "teamroster", "language" );
+	textdomain( "teamroster" );
 	 
 	 
     BBowlWidget *mainPanel = new BBowlWidget(app, NULL, PG_Rect(0, 0, RESX, RESY));

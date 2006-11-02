@@ -141,7 +141,7 @@ char* StringManager::disown( char* str ) throw( std::logic_error ){
 	CStringList::iterator item = std::find( cStrings_.begin() , cStrings_.end() , str ) ;
 
 	if( cStrings_.end() == item ){
-		throw( std::logic_error( "Request to disown a string not owned by this container." ) ) ;
+		throw( std::logic_error("Request to disown a string not owned by this container.") ) ;
 	}
 
 	char* result = *item ;
