@@ -1,18 +1,20 @@
+# test a simple ball pickup and throw.
+# kickoff on 9,9, scatter on 7,7
+
 wait
-cheat 5 
-declare blitz 0
-block 0 0
-accept
-push 2
-follow
-cheat 6
-move 0 14 0
-move 0 17 0
-cheat 6 6
+# player 1, turn 1
+
+# move, and throw will a reroll.
+cheat 3
 declare pass 10
-move 10 9 1
-pass 10 17 0
+move 10 7 7
+cheat 1 5 4
+pass 10 4 4
+reroll
+# turnover here.
+
 print BEGIN DIFF
 print global
 print END DIFF
+
 quit

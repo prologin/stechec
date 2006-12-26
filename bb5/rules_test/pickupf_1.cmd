@@ -18,6 +18,7 @@ wait
 # on affiche les infos et on se casse.
 print BEGIN DIFF
 print us 10
+print global
 print END DIFF
 
 quit

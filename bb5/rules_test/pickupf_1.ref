@@ -5,3 +5,8 @@ Player '10' (team 0) - Iva
   ma_remain     : 6
   has_played    : no
   status        : Standing
+  - you are coach '0'
+  - current game state: Undefined
+  - ball position: [x:7 y:9]
+  - our team  : 'Amazon', coached by 'coach' (11 players)
+  - other team: 'Amazon', coached by 'coach' (11 players)
