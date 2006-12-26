@@ -1,65 +1,57 @@
-** php
-in /etc/php4/apache2/php.ini
-set register_globals = on
-
-------------------------
-
-** Change define value in trunk/prologin/www/includes/config.php
-	Here is a path, just change it to the directory you want 
-	to store tarballs
--------------------------
-
-** mysql
-localise stechec.sql and do : 
-stechec.sql | mysql -u root -p ******
-you just dumped the database
-
-** create user for mysql (user prologin, pass tty4ever)
+                                                   -*- Text -*-
 
 
-------------------------
 
-** configure with options : 
- --without-sdl --without-qt --with-mysql --with-modules="modules you want" --prefix="the path you want to install binaries"
 
-/!\ the binaries' install path will be called $prefix /!\
-------------------------
+* What is TowBowlTactics (tbt)?
 
-** Launching main_server
-	* in the prefix/etc : changes to make to stechec.yml : 
-		- database informations
-		(warning as it's a yml file, be careful	with the spaces)
-		- launching scripts : 
-			* compil : 
-		$prefix/lib/stechec/bash/compile_champion.sh
-			* triche : 
-		$prefix/lib/stechec/bash/check_cheating.sh
-			* client : 
-		$prefix/lib/stechec/bash/run_client.sh
-			* server : 
-		$prefix/lib/stechec/bash/run_server.sh
-			* contest_path : 
-		the path you decided to store your champions($contest_path)
-			* stechec_install_path : 
-		$prefix
+It's an adaptation of the tabletop game Blood Bowl (LRB5), to be
+played on a computer. Free software, of course. You can find more
+information about it at www.towbowltactics.com
 
---------------------------
+If you're most interested in tbt, see README.tbt
 
-** generate makefiles : 
-	$ cd $prefix/bin
-	$ ./generator server ../share/stechec/prolo200?/prolo200?.yml $prefix
 
---------------------------
+* What is Prologin?
 
-** Allow access to meta server and apache on $contest_path: 
-	$ chmod -R 777 $contest_path
+Prologin is a french association. It does a programing contest for all
+european student less that 21 years. You can find more information
+about it at www.prologin.org
 
----------------------------
+If you're most interested in prologin, see README.prologin
 
-** Launching games : 
- in a term launch : 
- 	$ $prefix/bin/main_server -c $prefix/etc/stechec.yml
- in another
- 	$ $prefix/bin/meta_server -c $prefix/etc/stechec.yml
 
----------------------------
+* What is Stechec?
+
+Stechec is the framework (code base) that serve these two
+projects. There is a basic client/server, a wrapper around SDL, a few
+handful scripts...
+
+Note that depending on how and where tarballs are generated, prologin
+or tbt can not be included (to save space). But they are always both
+available on the subversion server.
+
+
+* Finally, why are these two (independent) projects together?
+
+The only thing they have in common is that they are turn-based game,
+and they need at some time a graphical interface. Actually, the main
+developper worked on the two projects at the same time, and didn't
+wanted to maintain two separate base code. Really, lots of things are
+shared.
+
+
+* Why are some code/doc in english and other in french ?
+
+Well... It's always difficult to choose one, and be consistant. One
+one hand, most of developers/users are french, and it's more easier to
+read/write in french.
+
+One the other hand, as we can expect some non-french people to look
+into this software (when it will rule the world...), we are something
+tempted to write all of it in english. With a lot of basic grammar
+mistake, of course.
+
+The true answer is the motivation and goals of developers at the time
+things are written. Why this README is not in french in the first
+place? :)
