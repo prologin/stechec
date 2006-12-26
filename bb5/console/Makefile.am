@@ -19,9 +19,9 @@ tbt_console_LDFLAGS =				\
 	-export-dynamic
 
 tbt_console_LDADD =						\
-	$(top_builddir)/stechec/tools/libtools.la		\
-	$(top_builddir)/stechec/client/libgeneric_client.la	\
 	../client/libbb5_client_rules.la			\
+	$(top_builddir)/stechec/client/libgeneric_client.la	\
+	$(top_builddir)/stechec/tools/libtools.la		\
 	$(PTHREAD_LIBS)						\
 	$(READLINE_LIBS)
 

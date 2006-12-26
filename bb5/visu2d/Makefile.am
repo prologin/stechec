@@ -16,6 +16,7 @@ libbb5_visu_common_la_SOURCES =			\
 	Field.cc				\
 	VisuPlayer.hh				\
 	VisuPlayer.cc				\
+	Colors.hh				\
 	Game.hh					\
 	Game.cc
 

@@ -23,6 +23,7 @@ libgeneric_client_la_CXXFLAGS =			\
 	-DMODULE_COLOR=C_YELLOW
 
 stechec_SOURCES =				\
+	Stechec.hh				\
 	Stechec.cc
 
 stechec_LDFLAGS =				\
