@@ -95,8 +95,5 @@ int        ClientEntry::afterNewTurn()
 */
 int        ClientEntry::afterGame()
 {
-  c_->FreeData();
-  g_->FreeData();
-
   return 0;
 }

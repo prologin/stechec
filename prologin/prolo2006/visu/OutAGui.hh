@@ -30,7 +30,7 @@
 class OutAGui : public OutAnEvent
 {
 public:
-  OutAGui(Api* api, ClientCx* ccx);
+  OutAGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx);
   ~OutAGui();
   
   int run();

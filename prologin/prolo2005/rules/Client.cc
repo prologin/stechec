@@ -13,6 +13,32 @@
 #include "GameData.hh"
 #include "Client.hh"
 
+Client::Client(GameData *g)
+  : StechecClient(g),
+    player_fog(NULL),
+    player_know_map(NULL)
+{
+}
+
+Client::~Client()
+{
+  if (player_fog == NULL)
+    return;
+
+  for (int i = 0; i < g_->getNbPlayer(); i++ )
+    {
+      for (unsigned x = 0; x < g_->map_size_x; x++)
+        {
+          free(player_know_map[i][x]);
+          free(player_fog[i][x]);
+        }
+      free(player_fog[i]);
+      free(player_know_map[i]);
+    }
+  free(player_fog);
+  free(player_know_map);
+}
+
 void Client::InitData()
 {
   player_fog = (uint16_t***) malloc(sizeof (uint16_t**) * g_->getNbPlayer());
@@ -27,22 +53,6 @@ void Client::InitData()
           player_know_map[i][x] = (bool*) calloc(sizeof (bool), g_->map_size_y);
         }
     }
-}
-
-void Client::FreeData()
-{
-  for (int i = 0; i < g_->getNbPlayer(); i++ )
-    {
-      for (unsigned x = 0; x < g_->map_size_x; x++)
-        {
-          free(player_know_map[i][x]);
-          free(player_fog[i][x]);
-        }
-      free(player_fog[i]);
-      free(player_know_map[i]);
-    }
-  free(player_fog);
-  free(player_know_map);
 }
 
 // mettre from_x a INT_MAX quand nouvelle unite

@@ -18,16 +18,15 @@
 class Client: public StechecClient
 {
 public:
-  Client(GameData *g) : StechecClient(g) {}
-  virtual ~Client() {}
+  Client(GameData *g);
+  virtual ~Client();
 
-  uint16_t        ***player_fog;
-  bool                ***player_know_map;
+  uint16_t     ***player_fog;
+  bool         ***player_know_map;
 
-  void                InitData();
-  void                FreeData();
-  void                UpdateFogOfWar(unsigned player_id, unsigned from_x, unsigned from_y,
-                               unsigned to_x, unsigned to_y);
+  void         InitData();
+  void         UpdateFogOfWar(unsigned player_id, unsigned from_x, unsigned from_y,
+			      unsigned to_x, unsigned to_y);
 };
 
 #endif /* !CLIENT_HH_ */

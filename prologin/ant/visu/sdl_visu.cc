@@ -114,25 +114,21 @@ bool SDLVisu::drawAll()
   return true;
 }
 
-void SDLVisu::mapContent(int x, int y, int)
+void SDLVisu::mapContent(const Position& pos, int)
 {
   redraw_ = true;
 }
 
-void SDLVisu::newUnit()
-{
-}
-
-void SDLVisu::antMove(int id, int x, int y)
+void SDLVisu::antMove(int caoch_id, int id, const Position& pos)
 {
   redraw_ = true;
 }
 
-void SDLVisu::antGetFood(int id)
+void SDLVisu::antGetFood(int coach_id, int id)
 {
 }
 
-void SDLVisu::antLetFood(int id)
+void SDLVisu::antLetFood(int coach_id, int id)
 {
 }
 

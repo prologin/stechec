@@ -68,17 +68,16 @@ static const char* building_bet = "/prolo2006/texture_2D/building_bet.png";
 
 
 
-OutAGui::OutAGui(Api* api, ClientCx* ccx)
+OutAGui::OutAGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   : api_(api),
     ccx_(ccx),
-    win_(NULL),
     case_size_(128) // .png are 128x128
 {
   map_x_ = api_->taille_ville_x();
   map_y_ = api_->taille_ville_y();
 
   // Initialize SDL window and the main scrollable surface.
-  win_.init();
+  win_.init(xml);
   vscreen_ = new VirtualScrollableSurface("Screen",
                                           win_.getInput(),
                                           win_.getScreen().getSize(),
@@ -334,8 +333,8 @@ int OutAGui::run()
 
 
 // Library entry point.
-extern "C" int run(xml::XMLConfig*, Api* api, ClientCx* ccx)
+extern "C" int run(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
 {
-  OutAGui visu(api, ccx);
+  OutAGui visu(xml, api, ccx);
   return visu.run();
 }

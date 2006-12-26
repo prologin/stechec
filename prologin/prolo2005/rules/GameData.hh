@@ -165,22 +165,22 @@ class GameData: public StechecGameData
 {
 public:
   GameData();
+  ~GameData();
 
   unsigned        map_size_x;
   unsigned        map_size_y;
-  int                maxTurn;
+  int             maxTurn;
 
-  int**         terrain_value;      // valeur initiale
-  uint8_t**     terrain_value_mod;  // % modification
-  uint8_t**        terrain_type;
-  Coleoptere***        terrain_coleoptere;
-  Building***        terrain_building;
+  int**           terrain_value;      // valeur initiale
+  uint8_t**       terrain_value_mod;  // % modification
+  uint8_t**       terrain_type;
+  Coleoptere***   terrain_coleoptere;
+  Building***     terrain_building;
 
-  Player        *players;
-  Player*        p;
+  Player*         players;
+  Player*         p;
 
   void InitMap();
-  void FreeData();
 };
 
 #endif /* !GAMEDATA_HH_ */

@@ -25,10 +25,13 @@ GameData::GameData() :
 {
 }
 
-// we cant put this into the destructor, as we aren't sure
-// that data will be malloc'ed
-void GameData::FreeData()
+GameData::~GameData()
 {
+  // we aren't sure that game was initialized - maybe there was
+  // an error before.
+  if (map == NULL)
+    return;
+
   for (int x = 0; x < map_size_x; x++)
     {
       free(map[x]);
@@ -37,7 +40,7 @@ void GameData::FreeData()
   for (int i = 0; i < getNbPlayer(); i++)
     {
       for (int j = 0; j < map_size_x; j++)
-        free(player_fog[i][j]);
+	free(player_fog[i][j]);
       free(player_fog[i]);
     }
   free(map_ant);
@@ -120,3 +123,13 @@ const char* GameData::GetCommandString(int cst)
     };
   return names[cst];
 }
+
+/*!
+** @brief Module description
+*/
+extern "C" const struct RuleDescription rules_description = {
+  "ant",
+  "Prologin's world: ant",
+  1,
+  0,
+};

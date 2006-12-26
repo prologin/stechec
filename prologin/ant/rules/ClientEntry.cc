@@ -24,7 +24,6 @@ ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client):
 ClientEntry::~ClientEntry()
 {
   delete[] g_->player;
-  g_->FreeData();
 
   for (int i = 0; i < g_->getNbPlayer(); i++)
     {

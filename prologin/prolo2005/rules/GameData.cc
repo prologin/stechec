@@ -14,28 +14,29 @@
 
 
 GameData::GameData()
+  : terrain_value(NULL),
+    players(NULL)
 {
 }
 
-// we cant put this into the destructor, as we aren't sure
-// that data will be malloc'ed
-void GameData::FreeData()
+GameData::~GameData()
 {
-  //  fclose(log3D);
-  for (unsigned x = 0; x < map_size_x; x++)
+  if (terrain_value != NULL)
     {
-      free(terrain_value[x]);
-      free(terrain_value_mod[x]);
-      free(terrain_type[x]);
-      free(terrain_building[x]);
-      free(terrain_coleoptere[x]);
+      for (unsigned x = 0; x < map_size_x; x++)
+	{
+	  free(terrain_value[x]);
+	  free(terrain_value_mod[x]);
+	  free(terrain_type[x]);
+	  free(terrain_building[x]);
+	  free(terrain_coleoptere[x]);
+	}
+      free(terrain_value);
+      free(terrain_value_mod);
+      free(terrain_type);
+      free(terrain_building);
+      free(terrain_coleoptere);
     }
-  free(terrain_value);
-  free(terrain_value_mod);
-  free(terrain_type);
-  free(terrain_building);
-  free(terrain_coleoptere);
-
   delete[] players;
 }
 
@@ -93,3 +94,15 @@ Player::Player()
   mine_count = 0;
   hotel_count = 0; 
 }
+
+
+
+/*!
+** @brief Module description
+*/
+extern "C" const struct RuleDescription rules_description = {
+  "prolo2005",
+  "Prologin 2005 final contest rules",
+  1,
+  0,
+};

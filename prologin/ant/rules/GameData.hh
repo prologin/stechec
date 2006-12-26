@@ -98,6 +98,8 @@ class GameData: public StechecGameData
 {
 public:
   GameData();
+  virtual ~GameData();
+
   //! loaded from map, send to clients, then may vary
   char          **map;
   player_t      *player;        /**< les joueurs */
@@ -116,7 +118,6 @@ public:
 
   void InitMap();
   void InitMapMisc();
-  void FreeData();
   void MoveAnt(int player_id, int from_x, int from_y, int to_x, int to_y);
 
   // FIXME: currently not used.

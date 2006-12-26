@@ -24,7 +24,6 @@ ServerEntry::ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg) :
 ServerEntry::~ServerEntry()
 {
   delete[] g_->player;
-  g_->FreeData();
 }
 
 int        ServerEntry::ParseOptions()

@@ -20,11 +20,10 @@ public:
 private:
 
   // Callback events, from AntEvent
-  virtual void  mapContent(int x, int y, int map_content);
-  virtual void  newUnit();
-  virtual void  antMove(int id, int x, int y);
-  virtual void  antGetFood(int id);
-  virtual void  antLetFood(int id);
+  virtual void  mapContent(const Position& pos, int map_content);
+  virtual void  antMove(int coach_id, int id, const Position&);
+  virtual void  antGetFood(int coach_id, int id);
+  virtual void  antLetFood(int coach_id, int id);
 
   Api*          api_;
   ClientCx*     ccx_;

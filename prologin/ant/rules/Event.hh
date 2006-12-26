@@ -18,7 +18,7 @@
 class AntEvent : public Event
 {
 protected:
-  virtual void positionAnthill(int, int, int) {}
+  virtual void positionAnthill(int, const Position&) {}
   virtual void mapContent(const Position&, int) {}
   virtual void newUnit(int) {}
   virtual void antMove(int, int, const Position&) {}
@@ -36,7 +36,7 @@ inline void AntEvent::evStechecPkt(const StechecPkt& pkt)
   switch (pkt.type)
     {
     case POSITION_ANTHILL:
-      positionAnthill(pkt.arg[0], pkt.arg[1], pkt.arg[2]);
+      positionAnthill(pkt.arg[0], Position(pkt.arg[1], pkt.arg[2]));
       break;
 
     case MAP_CONTENT:

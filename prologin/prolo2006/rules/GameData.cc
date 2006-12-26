@@ -293,3 +293,16 @@ Delorean::Delorean()
 Casino::Casino()
 {
 }
+
+
+
+
+/*!
+** @brief Module description
+*/
+extern "C" const struct RuleDescription rules_description = {
+  "prolo2006",
+  "Prologin 2006 final contest rules",
+  1,
+  0,
+};
