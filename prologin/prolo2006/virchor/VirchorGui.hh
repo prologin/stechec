@@ -14,7 +14,7 @@
 # define VIRCHORGUI_HH_
 
 # include "tools.hh"
-# include "client_cx.hh"
+# include "ClientCx.hh"
 # include "Api.hh"
 # include "Event.hh"
 

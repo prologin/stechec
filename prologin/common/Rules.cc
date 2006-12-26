@@ -10,7 +10,7 @@
 ** Copyright (C) 2005, 2006 Prologin
 */
 
-# include "client_cx.hh"
+# include "ClientCx.hh"
 # include "Contest.hh"
 # include "CRules.hh"
 

@@ -17,7 +17,7 @@
 # include <SDL_image.h>
 
 # include "tools.hh"
-# include "client_cx.hh"
+# include "ClientCx.hh"
 # include "Api.hh"
 # include "Event.hh"
 
