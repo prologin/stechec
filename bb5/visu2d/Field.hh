@@ -33,7 +33,20 @@ public:
   VisuField(Game& g);
   virtual ~VisuField();
 
-  void playerDoingKickoff();
+  //! @brief Check if the mouse is inside the visible game field.
+  //! @return @c true if the mouse is inside one game square.
+  bool mouseInsideField() const;
+  //! @brief Convert mouse coordinate to square coordinate.
+  //! @return Square coordinate (between 0 and ROWS/COLS).
+  Point mouseToSquare() const;
+  //! @brief Convert a square position to a field position, where to place Surface.
+  //! @param pt A square coordinate (between 0 and ROWS/COLS).
+  //! @param adjust Field position adjustement, when you want to center object on a square.
+  Point squareToField(const Point& pt, const Point& adjust = Point(0, 0)) const;
+
+  void setMarker(const Point& square, int type);
+  void removeMarker();
+  
   void setBallPos(const Point& pos);
 
   bool getDrawTicks() const;
@@ -52,6 +65,9 @@ private:
   Sprite        ball_;
 
   bool	        draw_ticks_;
+
+  Surface	red_highlight_;
+  Surface	blue_highlight_;
 };
 
 END_NS(sdlvisu);

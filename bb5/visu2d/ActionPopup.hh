@@ -23,11 +23,12 @@
 BEGIN_NS(sdlvisu);
 
 enum eAction {
-  eActNone,
+  eActNone = -1,
   eActMove,
+  eActMovePlus,
   eActBlock,
   eActGather,
-  eActThrow,
+  eActPass,
   eActAggress,
   eActBlitz,
   eActRollOver,
@@ -46,11 +47,11 @@ public:
   ActionPopup(Game& g);
   virtual ~ActionPopup();
 
-  void setVisuPlayer(VisuPlayer* vp);
-  VisuPlayer* getVisuPlayer() const;
+  void prepareDeclareMenu(VisuPlayer* vp, enum eStatus player_status);
+  void prepareActionMenu(eAction decl_act);
 
-  virtual void  show();
-  virtual void  hide();
+  virtual void show();
+  virtual void hide();
   
   virtual void update();
 
@@ -60,6 +61,8 @@ private:
   VisuPlayer*           vp_;
   Sprite                sprite_[12];
   Sprite                sprite_on_[12];
+  enum eAction		display_act_[16];
+  int			display_act_nb_;
 };
 
 END_NS(sdlvisu);

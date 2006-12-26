@@ -24,7 +24,8 @@ BEGIN_NS(sdlvisu);
 ActionPopup::ActionPopup(Game& g)
   : VirtualSurface("ActionPopup", 120, 40 * 12),
     g_(g),
-    vp_(NULL)
+    vp_(NULL),
+    display_act_nb_(0)
 {
   for (int i = 0; i < 12; i++)
     {
@@ -61,29 +62,81 @@ void ActionPopup::hide()
   VirtualSurface::hide();
 }
 
-void ActionPopup::setVisuPlayer(VisuPlayer* vp)
+// Called when a player is selected, ready to choose its action declaration.
+void ActionPopup::prepareDeclareMenu(VisuPlayer* vp, enum eStatus player_status)
 {
+  static enum eAction std_act[] = {eActMove, eActBlock, eActPass, eActBlitz};
+  static enum eAction get_up_act[] = {eActGetUp};
+  static enum eAction roll_over_act[] = {eActRollOver};
+  int i;
+
+  for (i = 0; i < 12; i++)
+    sprite_[i].disable();
+
+  display_act_nb_ = 0;
+  if (player_status == STA_PRONE)
+    {
+      display_act_nb_ = sizeof (get_up_act) / sizeof (enum eAction);
+      for (int i = 0; i < display_act_nb_; i++)
+	display_act_[i] = get_up_act[i];
+    }
+  else if (player_status == STA_STUNNED)
+    {
+      display_act_nb_ = sizeof (roll_over_act) / sizeof (enum eAction);
+      for (int i = 0; i < display_act_nb_; i++)
+	display_act_[i] = roll_over_act[i];
+    }
+  else if (player_status == STA_STANDING)
+    {
+      display_act_nb_ = sizeof (std_act) / sizeof (enum eAction);
+      for (int i = 0; i < display_act_nb_; i++)
+	display_act_[i] = std_act[i];
+    }
+  else
+    return;
+
   vp_ = vp;
+  for (i = 0; i < display_act_nb_; i++)
+    {
+      LOG2("prepare decl menu: %1 - %2", display_act_[i], i);
+      sprite_[display_act_[i]].setPos(0, i * 40);
+      sprite_[display_act_[i]].enable();
+      sprite_on_[display_act_[i]].setPos(0, i * 40);
+    }
+  setSize(Point(120, 40 * display_act_nb_));
+}
 
-  // FIXME: get player capabilities, to display revelant menu
-  static int disp_act[] = {0, 2, 4, 6, -1};
-
+// Called after a declaration, show the revelant menu for all possible actions.
+// Can only be called after:
+//  - eActPass (move or pass)
+//  - eActBlitz (move or block)
+void ActionPopup::prepareActionMenu(enum eAction decl_act)
+{
   for (int i = 0; i < 12; i++)
     sprite_[i].disable();
 
-  for (int i = 0; disp_act[i] != -1; i++)
+  display_act_nb_ = 0;
+  if (decl_act == eActPass)
     {
-      sprite_[disp_act[i]].setPos(0, i * 40);
-      sprite_[disp_act[i]].enable();
-      sprite_on_[disp_act[i]].setPos(0, i * 40);
+      display_act_[0] = eActMove;
+      display_act_[1] = eActPass;
+      display_act_nb_ = 2;
     }
-  
-  setSize(Point(120, 40 * 4));
-}
+  else if (decl_act == eActBlitz)
+    {
+      display_act_[0] = eActMove;
+      display_act_[1] = eActBlock;
+      display_act_nb_ = 2;
+    }
 
-VisuPlayer* ActionPopup::getVisuPlayer() const
-{
-  return vp_;
+  for (int i = 0; i < display_act_nb_; i++)
+    {
+      LOG2("prepare action menu: %1 - %2", display_act_[i], i);
+      sprite_[display_act_[i]].setPos(0, i * 40);
+      sprite_[display_act_[i]].enable();
+      sprite_on_[display_act_[i]].setPos(0, i * 40);
+    }
+  setSize(Point(120, 40 * display_act_nb_));
 }
 
 void ActionPopup::update()
@@ -92,69 +145,57 @@ void ActionPopup::update()
   bool have_focus = getScreenRect().inside(input.mouse_);
   int item = (input.mouse_.y - getRect().y) / 40;
 
+  // Really, nothing to do.
   if (vp_ == NULL)
     {
       VirtualSurface::update();
       return;
     }
   
+  // Show popup menu.
   if ((g_.isStateSet(stWaitPlay) || g_.isStateSet(stPopupShow))
       && input.button_pressed_[3])
     {
-      // Show popup menu.
       setPos(input.mouse_);
       show();
     }
 
-  if (!have_focus && g_.isStateSet(stPopupShow)
-      && input.button_pressed_[1])
+  // Hide popup menu.
+  if (!have_focus && g_.isStateSet(stPopupShow) && input.button_pressed_[1])
     hide();
   
   if (have_focus && g_.isStateSet(stPopupShow) &&
 	   input.button_pressed_[1])
     {
-      // Click on popup menu.
-      LOG2("Do an action! -> %1", item);
-
-      // Send action order on VisuPlayer. It'll know what to do.
-      switch (item)
+      // Sanity check. Must not happen.
+      if (item < 0 || item >= display_act_nb_)
 	{
-	case 0:
-	  vp_->prepareAction(eActMove);
-	  break;
-
-	case 1:
-	  vp_->prepareAction(eActBlock);
-	  break;
-
-	case 2:
-	  vp_->prepareAction(eActThrow);
-	  break;
-
-	case 3:
-	  vp_->prepareAction(eActBlitz);
-	  break;
-
-	default:
-	  LOG2("action not handled.");
-	  break;
+	  WARN("Selected item out of range (%1 - %2)!", item, display_act_nb_);
+	  hide();
+	  VirtualSurface::update();
+	  return;
 	}
+
+      // Click on popup menu. VisuPlayer will declare the action.
+      LOG2("Do an action! -> %1", item);
+      enum eAction act = display_act_[item];
+      vp_->selectAction(act);
+       
       hide();
     }
 
   // Highligh of menu
-  static int disp_act[] = {0, 2, 4, 6, -1};
   if (have_focus)
     {
-      for (int i = 0; disp_act[i] != -1; i++)
+      for (int i = 0; i < display_act_nb_; i++)
 	if (i == item)
-	  sprite_on_[disp_act[i]].enable();
+	  sprite_on_[display_act_[i]].enable();
 	else
-	  sprite_on_[disp_act[i]].disable();
+	  sprite_on_[display_act_[i]].disable();
     }
   else
-    for (int i = 0; disp_act[i] != -1; i++)
-      sprite_on_[disp_act[i]].disable();
+    for (int i = 0; i < display_act_nb_; i++)
+      sprite_on_[display_act_[i]].disable();
 
   VirtualSurface::update();
 }

@@ -26,6 +26,7 @@ class CPlayer;
 BEGIN_NS(sdlvisu);
 
 class Game;
+class ActionPopup;
 
 /*
 ** Player class for visu.
@@ -36,38 +37,48 @@ class Game;
 class VisuPlayer : public Sprite
 {
 public:
-  VisuPlayer(Api* api, Game& game, const CPlayer* p);
+  VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p);
   virtual ~VisuPlayer();
 
   void unselect();
 
-  //! @brief Prepare an action.
-  void prepareAction(enum eAction item);
+  //! @brief Called at each new turn. Reset some variables.
+  void newTurn();
+  
+  //! @brief An action was selected by the popup menu or an other source.
+  //! @param item Action selected.
+  void selectAction(enum eAction item);
 
   virtual void setPos(const Point& pos);
   virtual void update();
 
 private:
 
-  //! @brief Really do an action.
-  void action(enum eAction item);
+  //! @brief Really do an action, after coach has chosen his target.
+  void targetAction(enum eAction item);
 
+  //! @brief To call when this player has finished its action.
+  void actionFinished();
+    
   void drawPath();
   
   Api*          api_;
   Game&         game_;
+  ActionPopup*  act_popup_;
   const CPlayer* p_;
 
   bool          has_focus_;
   bool          is_selected_;
-  int		last_player_status_;
+  bool		is_second_action_;
+  bool		has_played_;
+  enum eStatus	last_player_status_;
   
   Sprite        circle_;
   Sprite        circle_selected_;
   Sprite        player_num_;
   Sprite	status_;
 
-  eAction	next_action_;
+  eAction	target_action_;
 
   // for pathway.
   Sprite	move_sprite_;

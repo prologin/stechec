@@ -49,67 +49,6 @@ struct Player
 } player;
 
 
-struct CmdLineOption
-{
-  CmdLineOption()
-    : config_file(""),
-      client_gid(1)
-  {}
-
-  char* config_file;  ///< Optionnal configuration file to load.
-  int   client_gid;   ///< Client game id, as stored in meta-data.
-};
-
-// Very basic command line manager. We don't need anything more powerful.
-static void parse_option(int argc, char** argv, CmdLineOption& opt)
-{
-  if (argc >= 2 && (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h")))
-    {
-      cout << "usage: " << argv[0] << " [client_id] [config-file]\n";
-      exit(0);
-    }
-  if (argc >= 2 && (!strcmp(argv[1], "--version") || !strcmp(argv[1], "-v")))
-    {
-      cout << "TowBowlTactics visu2D v" PACKAGE_VERSION << "\n";
-      cout << "Copyright (C) 2006 TBT Team.\n";
-      exit(0);
-    }
-
-  if (argc >= 2)
-    {
-      char* endptr;
-      int client_gid = strtol(argv[1], &endptr, 10);
-      if (*endptr == 0)
-        {
-          opt.client_gid = client_gid;
-          if (argc >= 3)
-            opt.config_file = argv[2];
-        }
-      else
-        opt.config_file = argv[1];
-    }
-}
-
-// Parse xml configuration file.
-static void parse_config(const CmdLineOption& opt, xml::XMLConfig& cfg)
-{
-  try {
-    cfg.parse(opt.config_file);
-  } catch (const xml::XMLError& e) {
-    ERR("Sorry, I can't go further without a working configuration file...");
-    exit(3);
-  }
-}
-
-// Set some basic settings based on XML config file.
-static void set_opt(const CmdLineOption& opt, xml::XMLConfig& cfg, Log& log)
-{
-  cfg.switchClientSection(opt.client_gid);
-  log.setVerboseLevel(cfg.getAttr<int>("client", "debug", "verbose"));
-  log.setPrintLoc(cfg.getAttr<bool>("client", "debug", "printloc"));
-}
-
-
 
 // To clean and exit
 void Exit(void)
@@ -343,16 +282,9 @@ int main (int argc, char *argv[])
 {
   Log log_client(5);
   xml::XMLConfig cfg;
-  CmdLineOption opt;
-  int ret_value = 1;
  
-  // FIXME: for now, we don't need 'cfg'. But it will change.
-  //parse_option(argc, argv, opt);
-  //parse_config(opt, cfg);
-  //set_opt(opt, cfg, log_client);
-
-  SDLWindow win(&cfg);
-  win.init();
+  SDLWindow win;
+  win.init(&cfg);
 
   screen = win.getScreen().getSDLSurface();
   LOG1("Init SDL Window ok.");

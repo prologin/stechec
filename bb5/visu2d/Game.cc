@@ -18,7 +18,7 @@
 #include <SDL_ttf.h>
 
 #include "Api.hh"
-#include "client_cx.hh"
+#include "ClientCx.hh"
 
 #include "SDLWindow.hh"
 #include "Input.hh"
@@ -59,7 +59,7 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   txt_status_.setPos(3, 532);
   win_.getScreen().addChild(&txt_status_);
 
-  state_list_.insert(stNothing); // Prevent segv :p
+  state_list_.insert(stNothing); // Avoid useless segv...
   setState(stWait);    // Wait game begins.
 
   for (int i = 0; i < 16; i++)
@@ -190,17 +190,6 @@ void Game::unsetState(enum eState s)
   std::cout << std::endl;
 }
 
-VisuPlayer* Game::getSelectedPlayer()
-{
-  return action_popup_->getVisuPlayer();
-}
-
-void Game::selectPlayer(VisuPlayer* vp)
-{
-  action_popup_->hide();
-  action_popup_->setVisuPlayer(vp);
-}
-
 void Game::unselectAllPlayer()
 {
   for (int i = 0; i < 2; i++)
@@ -228,30 +217,41 @@ void Game::pushDialogBox(DialogBox *dlgbox)
 ** Events
 */
 
-void Game::evIllegal(int was_token)
+void Game::evIllegal(int)
 {
   LOG4("An illegal token was received.");
 }
 
-void Game::evNewTurn(bool our_turn)
+void Game::evNewTurn(int player_id, int cur_half, int cur_turn)
 {
+  std::ostringstream os;
+
+  os << "Turn " << cur_turn << " (half " << cur_half << ")" << std::endl;
   unsetState(stWait);
-  if (our_turn)
+  if (player_id == api_->myTeamId())
     {
       unsetState(stWaitOther);
       setState(stWaitPlay);
+      os << "It is your turn, Play !";
       txt_status_.addText("It is your turn... Play !");
-      dlg_play_->setText("It is your turn.");
+      dlg_play_->setText(os.str());
       pushDialogBox(dlg_play_);
+
+      int i = api_->myTeamId();
+      for (int j = 0; j < 16; j++)
+	if (player_[i][j] != NULL)
+	  player_[i][j]->newTurn();
     }
   else
     {
       unsetState(stWaitPlay);
       setState(stWaitOther);
-      txt_status_.addText("Waiting that the other finish its turn.");
-      dlg_play_->setText("Other turn. Please wait...");
+      os << "Other turn. Please wait...";
+      txt_status_.addText("Waiting that the other coach finish its turn.");
+      dlg_play_->setText(os.str());
       pushDialogBox(dlg_play_);
     }
+  panel_->setTurn(player_id, cur_turn);
 }
 
 void Game::evEndGame()
@@ -274,6 +274,7 @@ void Game::evTimeExceeded()
 void Game::evPlayerKnocked(int team_id, int player_id)
 {
   LOG4("A player was knocked down.");
+  team_id = player_id;
 }
 
 void Game::evKickOff()
@@ -308,7 +309,7 @@ void Game::evPlayerCreate(int team_id, int player_id)
     }
 
   // Create it, and add it to the field.
-  VisuPlayer* p = new VisuPlayer(api_, *this, ap);
+  VisuPlayer* p = new VisuPlayer(*this, action_popup_, ap);
   player_[team_id][player_id] = p;
   field_->addChild(p);
 }
@@ -317,7 +318,7 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
   VisuPlayer* p = player_[team_id][player_id];
 
-  p->setPos(pos * 40);
+  p->setPos(field_->squareToField(pos));
 }
 
 void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
@@ -325,7 +326,7 @@ void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
   VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
-  p->move(pos * 40, 35.);
+  p->move(field_->squareToField(pos), 35.);
 }
 
 void Game::evBallPos(const Point& pos)
@@ -344,7 +345,7 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
 		    int modifier, int required, bool reroll)
 {
   LOG4("Player `%1' tried an action : `%2' : roll [%3] + [%4], required : [%5].",
-       player_id, api_->getRollString(action_type), result, modifier, required);
+       player_id, Dice::stringify(action_type), result, modifier, required);
 	
   if (result + modifier < required && reroll && api_->getTeamId() == team_id)
     {
@@ -357,6 +358,10 @@ void Game::evBlockResult(int team_id, int player_id, int opponent_id,
 			 int nb_dice, enum eBlockDiceFace result[3],
 			 int choose, bool reroll)
 {
+  player_id = opponent_id;
+  nb_dice = nb_dice;
+  result = result;
+
   if (team_id != api_->getTeamId())
     {
       if (choose == api_->getTeamId())
@@ -481,15 +486,19 @@ int Game::run()
 	}
       
       // Test dlg
-      if (win_.getInput().key_pressed_[(unsigned)'t'])
+      if (win_.getInput().key_pressed_[SDLK_t])
         pushDialogBox(&test_dg);
-      if (win_.getInput().key_pressed_[(unsigned)'r'])
+      if (win_.getInput().key_pressed_[SDLK_r])
         pushDialogBox(&test_dg2);
 
       // Field border around squares.
       if (win_.getInput().key_pressed_[SDLK_s])
 	field_->setDrawTicks(!field_->getDrawTicks());
 
+      // End turn
+      if (win_.getInput().key_pressed_[SDLK_e])
+	api_->doEndTurn();
+      
       // Print some things
       std::ostringstream os;
       os << "FPS: " << win_.getFps();
@@ -510,12 +519,14 @@ int Game::run()
           game_state = api_->getState();
         }
     }
+  if (api_->getState() != GS_END)
+    ccx_->disconnect();
   return 0;
 }
 
 
 /*
-** Dialog boxe callback handlers.
+** Dialog boxes callback handlers.
 */
 
 void Game::DlgFollowAnser::clicked(int btn_index)
@@ -531,10 +542,7 @@ void Game::DlgRerollAnser::clicked(int btn_index)
   bool reroll = btn_index == 0;
   
   LOG1("reroll clicker: %1", btn_index);
-  if (reroll)
-    api_->doReroll();
-  else
-    api_->doAccept();
+  api_->doReroll(reroll);
 }
 
 END_NS(sdlvisu);

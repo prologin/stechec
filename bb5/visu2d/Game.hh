@@ -75,12 +75,6 @@ public:
   Panel&                getPanel();
   VisuField&            getField();
 
-  //! @brief Get the selected player.
-  VisuPlayer* getSelectedPlayer();
-
-  //! @brief To call when a player is selected.
-  void selectPlayer(VisuPlayer* vp);
- 
   //! @brief Unselect all selected players on the screen.  
   void unselectAllPlayer();
 
@@ -108,7 +102,7 @@ private:
   ** All Events.
   */
   virtual void evIllegal(int was_token);
-  virtual void evNewTurn(bool our_turn);
+  virtual void evNewTurn(int player_id, int cur_half, int cur_turn);
   virtual void evEndGame();
   virtual void evMoveTurnMarker();
   virtual void evTimeExceeded();

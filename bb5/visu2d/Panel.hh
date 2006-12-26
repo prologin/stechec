@@ -19,12 +19,14 @@
 
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
+# include "TextSurface.hh"
+
 
 BEGIN_NS(sdlvisu);
 
 class Game;
 
-/*
+/*!
 ** Game panel (on the right).
 */
 class Panel : public VirtualSurface
@@ -39,6 +41,8 @@ public:
   //! @brief Hide player information.
   void hidePlayerInfo();
   
+  void setTurn(int player_id, int cur_turn);
+    
   virtual void update();
 
 private:
@@ -50,6 +54,16 @@ private:
   // Player information
   bool          showing_player_info_;
   Surface       player_picture_;
+  TextSurface	name_;
+  TextSurface   position_;
+  TextSurface   ma_;
+  TextSurface   st_;
+  TextSurface   ag_;
+  TextSurface   av_;
+  TextSurface	misc_;
+  TextSurface   skills_;
+
+  Surface	turn_[2];
 };
 
 END_NS(sdlvisu);

@@ -16,6 +16,7 @@
 
 #include "Api.hh"
 #include "Game.hh"
+#include "Colors.hh"
 #include "Panel.hh"
 
 BEGIN_NS(sdlvisu);
@@ -25,16 +26,75 @@ Panel::Panel(Game& g)
     g_(g),
     bg_("image/panel/panel.jpg"),
     wheel_("image/panel/wheels.png"),
-    showing_player_info_(false)
+    name_("Bobtag.ttf", 24, 200, 40),
+    position_("Bobtag.ttf", 16, 150, 40),
+    ma_("Bobtag.ttf", 32, 50, 45),
+    st_("Bobtag.ttf", 32, 60, 45),
+    ag_("Bobtag.ttf", 32, 80, 45),
+    av_("Bobtag.ttf", 32, 80, 50),
+    misc_("Bobtag.ttf", 32, 80, 50),
+    skills_("Bobtag.ttf", 16, 100, 80)
 {
+  setZ(-1);
+  
   setPos(Point(500, 0));
   addChild(&bg_);
 
-  wheel_.setZ(1);
   wheel_.setPos(113, 506);
   wheel_.splitNbFrame(13, 1);
   wheel_.anim(100);
   addChild(&wheel_);
+
+  player_picture_.setPos(45, 150);
+  player_picture_.hide();
+  addChild(&player_picture_);
+
+  name_.setPos(50, 95);
+  name_.setTextColor(whitesmoke_color);
+  name_.hide();
+  addChild(&name_);
+
+  position_.setPos(50, 120);
+  position_.setTextColor(whitesmoke_color);
+  position_.hide();
+  addChild(&position_);
+
+  ma_.setPos(215, 145);
+  ma_.setTextColor(whitesmoke_color);
+  ma_.hide();
+  addChild(&ma_);
+
+  st_.setPos(215, 180);
+  st_.setTextColor(whitesmoke_color);
+  st_.hide();
+  addChild(&st_);
+
+  ag_.setPos(215, 220);
+  ag_.setTextColor(whitesmoke_color);
+  ag_.hide();
+  addChild(&ag_);
+
+  av_.setPos(215, 260);
+  av_.setTextColor(whitesmoke_color);
+  av_.hide();
+  addChild(&av_);
+
+  misc_.setPos(210, 310);
+  misc_.setTextColor(whitesmoke_color);
+  misc_.hide();
+  addChild(&misc_);
+
+  skills_.setPos(50, 310);
+  skills_.setTextColor(whitesmoke_color);
+  skills_.hide();
+  addChild(&skills_);
+
+  for (int i = 0; i < 2; i++)
+    {
+      turn_[i].load("image/panel/turn.png");
+      turn_[i].hide();
+      addChild(&turn_[i]);
+    }
 }
 
 Panel::~Panel()
@@ -43,23 +103,76 @@ Panel::~Panel()
 
 void Panel::displayPlayerInfo(int team_id, int player_id)
 {
-  if (showing_player_info_)
-    hidePlayerInfo();
+  std::ostringstream os;
+  const CPlayer* p;
 
   g_.getApi()->selectTeam(team_id);
-  const CPlayer* p = g_.getApi()->getPlayer(player_id);
-  player_picture_ = Surface(std::string("image/figs/") + p->getPlayerPicture());
-  player_picture_.setPos(45, 150);
-  addChild(&player_picture_);
-  showing_player_info_ = true;
+  g_.getApi()->selectPlayer(player_id);
+  p = g_.getApi()->getPlayer();
+  assert(p != NULL);
+
+  player_picture_.load(std::string("image/figs/") + p->getPlayerPicture());
+  player_picture_.show();
+
+  name_.setText(p->getName());
+  name_.show();
+
+  position_.setText(p->getPositionName());
+  position_.show();
+  
+  os << p->getMa();
+  ma_.setText(os.str());
+  ma_.show();
+  os.str("");
+
+  os << p->getSt();
+  st_.setText(os.str());
+  st_.show();
+  os.str("");
+
+  os << p->getAg();
+  ag_.setText(os.str());
+  ag_.show();
+  os.str("");
+
+  os << p->getAv();
+  av_.setText(os.str());
+  av_.show();
+  os.str("");
+
+  os << "#" << (p->getId() + 1);
+  misc_.setText(os.str());
+  misc_.show();
+  os.str("");
+
+  skills_.clearText();
+  Player::SkillList l = p->getSkillList();
+  Player::SkillList::const_iterator it;
+  for (it = l.begin(); it != l.end(); ++it)
+    skills_.addText(Player::stringify(*it));
+  skills_.show();
 }
 
 void Panel::hidePlayerInfo()
 {
-  if (showing_player_info_)
+  player_picture_.hide();
+  name_.hide();
+  position_.hide();
+  ma_.hide();
+  st_.hide();
+  ag_.hide();
+  av_.hide();
+  skills_.hide();
+}
+
+void Panel::setTurn(int player_id, int cur_turn)
+{
+  if (cur_turn == 0)
+    turn_[player_id].hide();
+  else
     {
-      removeChild(&player_picture_);
-      showing_player_info_ = false;
+      turn_[player_id].show();
+      turn_[player_id].setPos(4 + (cur_turn * 33), 428 + player_id * 36);
     }
 }
 

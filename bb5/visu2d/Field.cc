@@ -14,6 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include <SDL_gfxPrimitives.h>
 #include "Api.hh"
 #include "Game.hh"
 #include "Field.hh"
@@ -27,31 +28,80 @@ VisuField::VisuField(Game& g)
     ball_("image/general/ball.png"),
     draw_ticks_(true)
 {
-  bg_.setZ(1);
+  bg_.setZ(-1);
   addChild(&bg_);
   addChild(&ball_);
   ball_.setZ(5);
   ball_.hide();
   drawTicks();
+
+  red_highlight_.create(40, 40);
+  blue_highlight_.create(40, 40);
+  boxRGBA(red_highlight_.getSDLSurface(), 0, 0, 40, 40, 255, 0, 0, 200); 
+  boxRGBA(blue_highlight_.getSDLSurface(), 0, 0, 40, 40, 0, 0, 255, 200);
+  SDL_SetAlpha(red_highlight_.getSDLSurface(), SDL_SRCALPHA, 120);
+  SDL_SetAlpha(blue_highlight_.getSDLSurface(), SDL_SRCALPHA, 120);
+  red_highlight_.hide();
+  blue_highlight_.hide();
+  addChild(&red_highlight_);
+  addChild(&blue_highlight_);
 }
 
 VisuField::~VisuField()
 {
 }
 
-void VisuField::playerDoingKickoff()
+bool VisuField::mouseInsideField() const
 {
-  ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
-  ball_.show();
+  Point sq(mouseToSquare());
+  return sq.x >= 0 && sq.x < COLS && sq.y >= 0 && sq.y < ROWS;
+}
+
+Point VisuField::mouseToSquare() const
+{
+  return (g_.getInput().mouse_ - Point(getScreenRect()) - Point(7, 7)) / 40;
+}
+
+Point VisuField::squareToField(const Point& pt, const Point& adjust) const
+{
+  return pt * 40 + Point(7, 7) + adjust;
+}
+
+void VisuField::setMarker(const Point& square, int type)
+{
+  switch (type)
+    {
+    case 0:
+      red_highlight_.hide();
+      blue_highlight_.setPos(squareToField(square));
+      blue_highlight_.show();
+      break;
+
+    case 1:
+      blue_highlight_.hide();
+      red_highlight_.setPos(squareToField(square));
+      red_highlight_.show();
+      break;
+      
+    default:
+      LOG2("Marker type '%d' unknown.", type);
+      break;
+    }
+}
+
+void VisuField::removeMarker()
+{
+  red_highlight_.hide();
+  blue_highlight_.hide();
 }
 
 void VisuField::setBallPos(const Point& pos)
 {
   if (ball_.isShown())
-    ball_.move(pos * 40, 25.);
+    ball_.move(squareToField(pos, Point(3, 3)), 35.);
   else
     {
-      ball_.setPos(pos * 40);
+      ball_.setPos(squareToField(pos, Point(3, 3)));
       ball_.show();
     }
 }
@@ -80,7 +130,7 @@ void VisuField::setDrawTicks(bool enable)
 
 /*
 ** Draw square borders. Modify directly bg_ by 'erasing' with black
-** color little arrows.
+** little arrows.
 */
 void VisuField::drawTicks()
 {
@@ -137,18 +187,33 @@ void VisuField::update()
   // Handle kickoff.
   if (g_.isStateSet(stDoKickoff))
     {
+      Point square(mouseToSquare());
       ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
-  
-      if (inp.button_pressed_[1])
-	{
-	  Point to((inp.mouse_ - Point(getScreenRect())) / 40);
-	  ball_.setPos(to * 40);
-	  LOG(4, "Place the ball at " << to);
-	  if (g_.getApi()->doPlaceBall(to))
-	    g_.unsetState(stDoKickoff);
-	}
-    }
+      ball_.show();
 
+      if (mouseInsideField())
+	{
+	  if (square.y < ROWS / 2 && g_.getApi()->myTeamId() == 0
+	      || square.y >= ROWS / 2 && g_.getApi()->myTeamId() == 1)
+	    setMarker(square, 1);
+	  else
+	    setMarker(square, 0);
+	    
+	  if (inp.button_pressed_[1])
+	    {
+	      LOG(4, "Try to place the ball at " << square);
+	      if (!g_.getApi()->doPlaceBall(square))
+		{
+		  ball_.setPos(squareToField(square, Point(10, 10)));
+		  g_.unsetState(stDoKickoff);
+		  removeMarker();
+		}
+	    }
+	}
+      else
+	removeMarker();
+    }
+  
   VirtualScrollableSurface::update();
 }
 
