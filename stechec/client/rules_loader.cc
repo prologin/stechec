@@ -1,17 +1,13 @@
 /*
-** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
-** 
-** Copyright (C) 2006 The TBT Team.
-** 
-** This program is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License
-** as published by the Free Software Foundation; either version 2
-** of the License, or (at your option) any later version.
-** 
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
-** 
-** The TBT Team consists of people listed in the `AUTHORS' file.
+**
+** Copyright (C) 2006 Prologin
 */
 
 #include "rules_loader.hh"
@@ -41,6 +37,12 @@ BaseCRules* RulesLoader::loadRules(xml::XMLConfig& cfg)
   return base_rules_ = load_fun(&cfg);
 }
 
+const struct RuleDescription& RulesLoader::getModuleDesc()
+{
+  return *(const struct RuleDescription*)(lib_rules_.getSymbol("rules_description"));
+}
+
+
 // Return true if init successful.
 bool RulesLoader::initRules(ClientCx* ccx)
 {
@@ -51,6 +53,5 @@ bool RulesLoader::initRules(ClientCx* ccx)
   init_fun = (init_func_t)(lib_rules_.getSymbol("hook_before_ui_load", false));
   if (init_fun != NULL)
     return init_fun(ccx, base_rules_);
-  else
-    return true;
+  return true;
 }

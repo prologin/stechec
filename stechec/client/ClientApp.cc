@@ -10,25 +10,23 @@
 ** Copyright (C) 2006 Prologin
 */
 
-#include "tools.hh"
-
+// Required to trick main() function if a dynamic library will use SDL.
 #ifdef HAVE_SDL
 # include <SDL.h>
 #endif // !HAVE_SDL
 
+#include "tools.hh"
 #include "start_arbiter.hh"
-#include "client_cx.hh"
-#include "rules_loader.hh"
 #include "champion_loader.hh"
+#include "ClientApp.hh"
 
 ClientApp::ClientApp(int argc, char** argv)
-  : argc_(argc),
+  : log_client_(5),
+    argc_(argc),
     argv_(argv),
-    log_client_(5),
-    config_file_(NULL),
+    config_file_(""),
     client_gid_(1)
 {
-
 }
 
 ClientApp::~ClientApp()
@@ -91,8 +89,8 @@ void ClientApp::parseConfig()
 void ClientApp::setOpt()
 {
   cfg_.switchClientSection(client_gid_);
-  log_.setVerboseLevel(cfg_.getAttr<int>("client", "debug", "verbose"));
-  log_.setPrintLoc(cfg_.getAttr<bool>("client", "debug", "printloc"));
+  log_client_.setVerboseLevel(cfg_.getAttr<int>("client", "debug", "verbose"));
+  log_client_.setPrintLoc(cfg_.getAttr<bool>("client", "debug", "printloc"));
 }
 
 
@@ -100,12 +98,16 @@ int ClientApp::runChampion()
 {
   // Load the UI/Champion.
   ChampionLoader cl;
-  cl.loadLibrary(argc, argv, cfg);
+  cl.loadLibrary(argc_, argv_, cfg_);
 
   // Give the hand to the UI/Champion.
-  return cl.run(cfg, r, &ccx);
+  return cl.run(cfg_, rules_, &ccx_);
 }
 
+int ClientApp::showMenu()
+{
+  return 0;
+}
 
 // Main entry
 int ClientApp::runApp()
@@ -133,26 +135,32 @@ int ClientApp::runApp()
 	bool replay_log = false;
 
 	// Optionally start a thread for the arbiter, if needed.
-	start_arbiter(cfg);
+	start_arbiter(cfg_);
 
 	// Load rules.
-	BaseCRules* r;
-	RulesLoader rl;
-	r = rl.loadRules(cfg);
+	rules_ = rules_loader_.loadRules(cfg_);
+	ccx_.setRules(rules_);
+	ccx_.setClientGameId(client_gid_);
 
-	// Connect to the arbiter now, if it was asked. Thus, errors while
-	// loading champion could be reported to the server.
-	ClientCx ccx(r, opt.client_gid);
-	if (cfg.getAttr<bool>("client", "connect", "connect_on_startup") && !replay_log)
+	// Try connecting, if not done yet.
+	if (!ccx_.isConnected())
+	  if (!ccx_.connect(cfg_))
+	    {
+	      ret_value = 21;
+	      break;
+	    }
+
+	// Join the game.
+	if (!ccx_.join(cfg_, rules_loader_.getModuleDesc()))
 	  {
-	    if (!ccx.connect(cfg))
-	      return 1;
+	    ret_value = 22;
+	    break;
 	  }
 
 	if (replay_log)
 	  {
 	    // Log replay. Open the file, and play.
-	    ccx.openLog(cfg.getAttr<std::string>("client", "mode", "file"));
+	    ccx_.openLog(cfg_.getAttr<std::string>("client", "mode", "file"));
 	    ret_value = onPlay(true);
 	  }
 	else
@@ -160,6 +168,7 @@ int ClientApp::runApp()
 	    // Normal game.
 	    ret_value = onPlay(false);
 	  }
+	ccx_.disconnect(false);
 	clean_arbiter();
       }
   } catch (const NetError& e) {
@@ -183,13 +192,3 @@ int ClientApp::runApp()
   LOG1("Have a nice day !");
   return ret_value;
 }
-
-
-#if 0
-        // Call a hook in rules, before UI is loaded.
-        if (!rl.initRules(&ccx))
-          {
-            LOG3("Sorry, rules initialization failed, cannot go further.");
-            goto end;
-          }
-#endif

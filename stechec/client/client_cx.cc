@@ -1,17 +1,13 @@
 /*
-** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
-** 
-** Copyright (C) 2006 The TBT Team.
-** 
-** This program is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License
-** as published by the Free Software Foundation; either version 2
-** of the License, or (at your option) any later version.
-** 
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
-** 
-** The TBT Team consists of people listed in the `AUTHORS' file.
+**
+** Copyright (C) 2006 Prologin
 */
 
 #include "datatfs/file.hh"
@@ -19,13 +15,11 @@
 #include "datatfs/tcp.hh"
 #include "client_cx.hh"
 
-ClientCx::ClientCx(BaseCRules* rules, int client_gid)
+ClientCx::ClientCx()
   : cx_(NULL),
-    rules_(rules),
-    client_gid_(client_gid)
+    rules_(NULL),
+    client_gid_(-1)
 {
-  // Rules will go through us to send packets.
-  rules->setSendPacketObject(this);
 }
 
 ClientCx::~ClientCx()
@@ -35,24 +29,15 @@ ClientCx::~ClientCx()
 
 bool    ClientCx::connect(xml::XMLConfig& cfg)
 {
-  // Get rules name, for server check.
-  std::string rules;
-  try {
-    rules = cfg.getData<std::string>("client", "rules");
-  } catch (xml::XMLError) {
-    rules = cfg.getData<std::string>("game", "rules");
-  }
-  
-  // FIXME: connect, list games, _then_ join.
-  if (!connect(cfg.getAttr<std::string>("client", "connect", "host"),
-               cfg.getAttr<int>("client", "connect", "port"),
-               rules))
-    return false;
+  return connect(cfg.getAttr<std::string>("client", "connect", "host"),
+		 cfg.getAttr<int>("client", "connect", "port"));
+}
 
+bool	ClientCx::join(xml::XMLConfig& cfg, const struct RuleDescription& desc)
+{
   bool mode = cfg.getAttr<bool>("client", "mode", "spectator");
-  if (!join(cfg.getAttr<int>("client", "connect", "game_uid"), mode))
-    return false;
-  return true;
+  int game_uid = cfg.getAttr<int>("client", "connect", "game_uid");
+  return join(game_uid, mode, desc);
 }
 
 bool    ClientCx::openLog(const std::string& filename)
@@ -69,13 +54,16 @@ bool    ClientCx::openLog(const std::string& filename)
 }
 
 
-void    ClientCx::disconnect()
+void    ClientCx::disconnect(bool send_abort)
 {
   if (cx_ != NULL)
     {
-      LOG5("Send CX_ABORT to the server.");
-      Packet pkt(CX_ABORT, team_id_);
-      cx_->send(&pkt);
+      if (send_abort)
+	{
+	  LOG5("Send CX_ABORT to the server.");
+	  Packet pkt(CX_ABORT, team_id_);
+	  cx_->send(&pkt);
+	}
 
       delete cx_;
       cx_ = NULL;
@@ -96,6 +84,18 @@ bool    ClientCx::process(bool block)
       return true;
     }
   return false;
+}
+
+void	ClientCx::setRules(BaseCRules* rules)
+{
+  // Rules will go through us to send packets.
+  rules_ = rules;
+  rules_->setSendPacketObject(this);
+}
+
+void	ClientCx::setClientGameId(int client_gid)
+{
+  client_gid_ = client_gid;
 }
 
 void    ClientCx::setReady()
@@ -135,17 +135,17 @@ void ClientCx::gameFinished()
 }
 
 // Connect to the server, in network mode.
-bool ClientCx::connect(const std::string& host, int port, const std::string& rules)
+bool ClientCx::connect(const std::string& host, int port)
 {
   int nb_retry = 6;
 
   if (cx_ != NULL)
     {
-      WARN("You are already connected ! Disconnect first.");
+      WARN("You are already connected! Disconnect first.");
       return false;
     }
-  
-  LOG3("Connecting to %1 : %2", host, port);
+
+  LOG3("Connecting to %1:%2", host, port);
   TcpCx* cx = new TcpCx;
   while (nb_retry--)
     try {
@@ -166,7 +166,6 @@ bool ClientCx::connect(const std::string& host, int port, const std::string& rul
 
   // Send init packet. (the first one !)
   CxInit pkt_init;
-  stringToPacket(pkt_init.rules_name, rules, 32);
   pkt_init.binary_version = STECHEC_BINARY_VERSION;
   cx->send(&pkt_init);
 
@@ -190,17 +189,28 @@ bool ClientCx::connect(const std::string& host, int port, const std::string& rul
   return true;
 }
 
-bool ClientCx::join(int game_uid, bool wanna_be_viewer)
+bool ClientCx::join(int game_uid, bool wanna_be_viewer, const struct RuleDescription& desc)
 {
   LOG4("Join game `%1` as `%2`.", game_uid, (wanna_be_viewer ? "viewer" : "coach"));
   CxJoin pkt_join(CX_JOIN);
+  stringToPacket(pkt_join.rules_name, desc.name, 32);
+  pkt_join.rules_major = desc.major;
+  pkt_join.rules_minor = desc.minor;
   pkt_join.is_coach = wanna_be_viewer ? 0 : 1;
   pkt_join.game_uid = game_uid;
   pkt_join.client_extid = client_gid_;
   cx_->send(&pkt_join);
   Packet* p = cx_->receive();
+  if (p->token == CX_DENY)
+    {
+      const CxDeny& pkt_deny = static_cast<CxDeny&>(*p);
+      ERR("Server denied the join. Reason below:");
+      ERR(" - %1", packetToString(pkt_deny.reason));
+      return false;
+    }
+  
+  
   LOG3("Connection sequence completed.");
-
   return p->token == CX_ACCEPT;
 }
 

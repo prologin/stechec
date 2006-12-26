@@ -1,8 +1,10 @@
 # -*- Makefile -*-
 
-bin_PROGRAMS 	= tbt
+bin_PROGRAMS = stechec
 
-tbt_SOURCES =					\
+noinst_LTLIBRARIES = libgeneric_client.la
+
+libgeneric_client_la_SOURCES =			\
 	client_cx.cc				\
 	client_cx.hh				\
 	start_arbiter.cc			\
@@ -11,23 +13,28 @@ tbt_SOURCES =					\
 	rules_loader.hh				\
 	champion_loader.cc			\
 	champion_loader.hh			\
-	main.cc
+	ClientApp.cc				\
+	ClientApp.hh
 
-tbt_CXXFLAGS =					\
+libgeneric_client_la_CXXFLAGS =			\
 	$(PTHREAD_CFLAGS)			\
 	$(SDL_CFLAGS)				\
 	-DMODULE_NAME=\"main\"			\
 	-DMODULE_COLOR=C_YELLOW
 
-tbt_LDFLAGS =					\
+stechec_SOURCES =				\
+	Stechec.cc
+
+stechec_LDFLAGS =				\
 	-export-dynamic				\
 	$(PTHREAD_CFLAGS)
 
 if USE_RPATH
-tbt_LDFLAGS += -R $(libdir)
+stechec_LDFLAGS += -R $(libdir)
 endif
 
-tbt_LDADD =							\
+stechec_LDADD =							\
+	libgeneric_client.la					\
 	$(top_builddir)/stechec/base_rules/libbase_rules.la	\
 	$(top_builddir)/stechec/tools/libtools.la		\
 	$(PTHREAD_LIBS)						\
