@@ -47,15 +47,16 @@ effectué, comme avec RudeBowl \cite{rudebowl.www}, 3dBowl
 \cite{3dbowl.www} ou pyBloodBowl \cite{pybloodbowl.www}, mais ces
 projets ont soit avorté, soit ne sont plus activement maintenu. La
 référence actuelle est JavaBB \cite{javabb.www}, utilisé par tous les
-joueurs en , mais souffre de quelques défauts. Le graphisme est assez
-austère, et les versions actuelles ne sont pas \emph{open source}, ce
-qui rend plus difficile l'ajout d'extensions\footnote{Un problème
-majeur: le développeur, SkyJunkie, ne semble pas souhaiter pas
-intégrer les règles du LRB5, ce qui va surement fruster beaucoup de
-joueurs.}. L'objectif\footnote{Ce que l'on espère, il n'est pas dit que
-ca marchera :)} à long terme de \ac{tbt} est de combler ce trou, en
-proposant une adaptation de Blood Bowl libre, jolie, extensible, en
-essayant le plus possible de respecter le jeu plateau.
+joueurs invertébrés de Blood Blowl, mais souffre de quelques
+défauts. Le graphisme est assez austère, et les versions actuelles ne
+sont pas \emph{open source}, ce qui rend plus difficile l'ajout
+d'extensions\footnote{Un problème majeur: le développeur, SkyJunkie,
+ne semble pas souhaiter pas intégrer les règles du LRB5, ce qui va
+surement fruster beaucoup de joueurs.}. L'objectif\footnote{Ce que
+l'on espère, il n'est pas dit que ca marchera :)} à long terme de
+\ac{tbt} est de combler ce trou, en proposant une adaptation de Blood
+Bowl libre, jolie, extensible, en essayant le plus possible de
+respecter le jeu plateau.
 
 Ce document établit une nouvelle architecture pour \ac{tbt} en
 repartant de zéro. Il contient la ligne directrice qu'il a été décidé
@@ -67,18 +68,19 @@ Ce document peut être considéré comme le document de référence du
 projet. Néanmoins, il peut contenir des erreurs, et son contenu peut
 encore être remis en question si quelqu'un arrive, propose une idée
 géniale et est prêt à la mettre en oeuvre\footnote{Entendez par là,
-  inutile de débarquer, de proposer: ¨Et si on faisait un truc super
-  générique qui gère toutes les jeux de \ac{gw}¨, et de partir en
-  courant.}. Par contre, ce document n'aborde le problème que sous
-l'angle \emph{technique}. Il n'a pas pour vocation d'être un manuel
-utilisateur, et fournit très peu de détails; les graphismes, les effets
-sonores, l'ambiance de jeu, la réponse à la vie, l'univers et le reste
-\cite{forty-two}\ldots
+inutile de débarquer, de proposer: ¨Et si on faisait un truc super
+générique qui gère toutes les jeux de \ac{gw}¨, et de partir en
+courant.}. Ce document aborde principalement le problème sous l'angle
+\emph{technique}, celui du développeur. Il n'a pas pour vocation
+d'être un manuel utilisateur, et fournit très peu de détails sur les
+graphismes, les effets sonores, l'ambiance de jeu, la réponse à la
+vie, l'univers et le reste \cite{forty-two}\ldots Tous les
+commentaires à propos de ce document sont les bienvenus.
 
-Les auteurs tiennent à remercier tuxrouge, jibone, jgi, poituiu,
-Elpopotam, Cedric, krys, Vanhu, Tupad, trem, darkside, et tous les
-oubliés, pour toutes les remarques pertinentes et diverses
-contributions.
+Les auteurs tiennent à remercier tuxrouge, jibone, jgi, poltuiu,
+Elpopotam, Cedric, krys, Vanhu, Tupad, trem, darkside, xilandre, mab,
+deaf, et tous les oubliés, pour toutes les remarques pertinentes et
+diverses contributions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GLOBALITUDES
@@ -87,16 +89,19 @@ contributions.
 
 \section{Direction du projet}
 
-L'ancienne version de \ac{tbt} (la 0.5) est vraiment bien coté
-utilisateur, un peu moins niveau développement. La structure, beaucoup
-trop monolithique, liée à un manque de documentation chronique, a
-pas mal freiné le dev. L'objectif, dans un premier temps, est de
-d'obtenir la même chose que la 0.5, au niveau du jeu et de l'interface
-graphique, mais en le faisant un peu mieux\footnote{Et avec de la
-  documentation\ldots} pour pouvoir aller plus loin ensuite.
+L'ancienne version de \ac{tbt}, la version 0.5\footnote{Toujours
+disponible en téléchargement sur le site de \ac{tbt} \cite{tbt.www}.},
+est vraiment bien coté utilisateur, un peu moins niveau code. La
+structure, beaucoup trop monolithique, ajouté à un manque de
+documentation chronique, a pas mal freiné le développement, de sorte
+qu'il était quasi-impossible d'ajouter un support réseau. L'objectif,
+dans un premier temps, est d'obtenir quelque chose de similaire à la
+0.5 au niveau du jeu et de l'interface graphique, mais en préparant le
+code un peu mieux\footnote{Et avec de la documentation\ldots} pour
+pouvoir aller plus loin ensuite.
 
 Voici un résumé des fonctionnalités et grandes lignes que nous nous
-sommes efforcé de garder en tête tout en rédigeant ce papier:
+sommes efforcé de garder en tête tout en préparant le projet:
 
 \begin{itemize}
 \item \textbf{Réalisme}. Il faut que quelque chose puisse fonctionner
@@ -109,48 +114,52 @@ sommes efforcé de garder en tête tout en rédigeant ce papier:
 \item \textbf{Structuration par modules}. Il devrait être ainsi
   possible, sans duplication de code, d'avoir une version solo
   tout-en-un, une architecture client/serveur, la possibilité de
-  remplacer un coach humain par un coach IA.
+  remplacer un coach humain par un coach IA. De plus, plus tard, des
+  parties pourront être recodées sans tout refaire, et des modules
+  annexes funky pourront être ajoutés.
 
-\item \textbf{Réseau}. Gros manque de la 0.5, pourtant c'est un
-  élément essentiel. Il est ici prévu dès le départ.
+\item \textbf{Réseau}. Gros manque de la 0.5, c'est pourtant un
+  élément essentiel selon nos objectifs. Il est ici prévu dès le
+  départ.
 
 \item \textbf{Portabilité} Unix/Windows. Les choix initiaux (C++/SDL)
-  nous permettent d'assurer une sortie sur ces deux OS, la suite se
-  verra dans les outils et bibliothèques utilisés.
+  nous permettent d'assurer une sortie sur ces deux OS, et nous
+  continuerons à nous efforcer à utiliser des bibliothèques qui
+  soient portable sur le maximum de système d'exploitation.
 
 \item \textbf{Sécurité}. Un problème des jeux libres est que chacun
   peut modifier le code pour s'octroyer quelques pouvoirs
-  supplémentaire. On va s'efforcer de minimiser cet effet, notamment
-  lors de matchs joué en ligue (plus de détails dans la partie
-  \ref{sec:securite}).
-
-\item \textbf{Bonne lisibilité} de cette proposition
-  d'architecture. Heu non, ça c'est rapé :)
+  supplémentaire. On va s'efforcer de minimiser cet effet en déplaçant
+  toute la logique coté serveur, notamment lors de matchs joué en
+  ligue (plus de détails dans la partie \ref{sec:securite}).
 \end{itemize}
 
-Le jeu de règle retenu est le LRB 4.0 (Living RuleBook), disponible en
-français et en anglais sur le site. Dans le futur, il n'est pas exclu
-que plusieurs jeux de règles soient supportés, même si aucune
-méthode pour cela n'a encore été retenue de manière définitive (voir
-la partie \ref{chap:further_idea}).
+Le jeu de règle retenu est le LRB 5.0 (Living RuleBook), disponible en
+français (attention, la traduction peut ne pas être totalement fidèle)
+et en anglais sur le site. Dans le futur, il n'est pas exclu que
+plusieurs jeux de règles soient supportés, même si aucune méthode pour
+cela n'a encore été retenue de manière définitive (voir la partie
+\ref{chap:further_idea}).
 
 \section{Licence}
 
-Le code est source libre, ca c'est un point acquis. Le svn est
-librement accessible en
-lecture\footnote{\url{https://projects.nekeme.net/projects/tbt/wiki/CompilationDeveloppeur}}. Tout
-le monde peut soumettre des modifications soit en nous les envoyant,
-soit en demandant à TuxRouge un accès en écriture sur le svn.  Au
-niveau de la licence la difficulté vient du fait qu'il s'agit de
-l'adaptation d'un jeu qui n'est pas libre de droits. \ac{GW},
-contactés à l'époque du premier tbt avait authorisé la poursuite du
-projet à la condition qu'on arrête tout développement s'ils nous le
-demandent. Pour jouer à \ac{tbt} "légalement", il faut posséder le jeu
-de plateau.  Nous essayons de reprendre le moins possibles d'éléments
+Le code est et restera en source libre, c'est un point non
+négociable. Un serveur subversion est accessible en lecture pour tous
+sur le site de \ac{tbt}. La licence choisie est la GNU GPL v2. Il est
+possible qu'elle puisse être changée par une de ses consoeurs, si il y
+en a vraiment besoin. Mais les choses ne sont pas si simples~: peut on
+vraiment faire l'adaptation en \emph{open source} d'un jeu qui n'est
+pas libre de droits ?
+
+\ac{gw}, contactés à l'époque des premières version de \ac{tbt} avait
+autorisé la poursuite du projet à la condition qu'on arrête tout
+développement s'ils nous le demandent. Pour jouer à \ac{tbt}
+"légalement", il faudrait que chaque joueur posséde le jeu de
+plateau.  Nous essayons de reprendre le moins possibles d'éléments
 propres à \ac{gw}. C'est pourquoi nous allons refaire les graphismes
-des figurines et de l'interface. Une race est la propriété de \ac{GW},
+des figurines et de l'interface. Une race est la propriété de \ac{gw},
 il s'agits des skavens. Pour les règles, c'est plus compliqué et je ne
-voudrais pas écrire trop de bêtises, donc, à voir ...
+voudrais pas écrire trop de bêtises, donc, à voir\ldots
 
 \section{Cas d'utilisation}
 
@@ -188,14 +197,14 @@ différentes:
 
 Dans (presque) tous les cas de figure, ce fonctionnement sera appelé
 \emph{mode réseau}, \emph{mode client/serveur}, ou encore
-\emph{network mode} (voir la figure \ref{fig:global_srv}). Il y aura
-toujours trois processus (programmes) lancés: un serveur, et deux
-clients. Même si le joueur a décidé d'héberger une partie, un serveur
-sera lancé sur sa machine et recevra les connexions. Même si il a
-décidé de jouer seul sur sa machine contre une AI, un serveur et
-un autre client seront lancés dans son dos depuis l'interface
-graphique. Aussi bizarre que cela puisse paraître, ce cas d'utilisation
-\emph{solo} rentre dans la catégorie \emph{mode réseau}.
+\emph{network mode}. Il y aura toujours trois processus (programmes)
+lancés: un serveur, et deux clients. Même si le joueur a décidé
+d'héberger une partie, un serveur sera lancé sur sa machine et recevra
+les connexions. Même si il a décidé de jouer seul sur sa machine
+contre une AI, un serveur et un autre client seront lancés dans son
+dos depuis l'interface graphique. Aussi bizarre que cela puisse
+paraître, ce cas d'utilisation \emph{solo} rentre dans la catégorie
+\emph{mode réseau}.
 
 Le lecteur attentif n'aura pas raté la faille de ce système. Il y a un
 cas où ça ne fonctionne pas, quand deux joueurs humain décident de
@@ -204,8 +213,10 @@ graphique sur la même machine. Il faut n'en lancer qu'une seule, et
 s'arranger pour que cette interface graphique puisse passer d'un
 joueur à l'autre en fonction du jeu (puisque c'est un jeu tour à tour,
 on peut se le permettre). Ce mode de fonctionnement spécial est appelé
-\emph{mode standalone} (voir la figure \ref{fig:global_standalone}),
-et ce cas sera son unique cas d'utilisation.
+\emph{mode standalone}, et ce cas sera son unique cas
+d'utilisation. Ce cas nécessite pas mal de travail supplémentaire sur
+l'interface graphique, et ne devrait pas être immédiatement
+disponible.
 
 \section{Les outils/bibliothèques utilisés}
 
@@ -249,9 +260,11 @@ et qui seront utilisés. Ces choix sont définitifs. En vrac:
 
 La version proposée est beaucoup plus modulaire que la précédente. Au
 lieu d'un seul répertoire source produisant un seul binaire, on a ici
-un ensemble de composants. Ceux-ci vivent dans des répertoires source
-différents, sont compilés en bibliothèque statique et assemblés selon
-les besoins. Nous aurons besoin de:
+un ensemble de composants (ou modules, ou paquets, dans ce contexte,
+ces trois terminologies sont identiques). Ceux-ci vivent dans des
+répertoires source différents, sont compilés en bibliothèque statique
+ou dynamique et assemblés selon les besoins. Principalement, il
+existe:
 
 \begin{itemize}
 \item \textbf{Outils}: Parser xml, Logger, \ldots
@@ -330,7 +343,7 @@ indique que le code source se trouve dans le répertoire
 trouvent dans le répertoire \texttt{bb5}. Pour le module client, c'est
 un peu plus compliqué car il peut prendre plusieurs formes, le code
 est réparti un peu partout. Cette partie est décrite plus en détail
-dans la partie \ref{chap-client}.
+dans la partie \ref{chap:client}.
 
 A l'exécution, la disposition des modules est montré dans la figure
 \ref{fig:dynamic-view}. Même remarque qu'avant, le client, qui peut
@@ -338,7 +351,7 @@ revêtir plusieurs formes, sera vu plus en détails. Les communications
 entre les modules à l'intérieur se font avec de bêtes appels de
 fonctions (pas d'IPC ou autre bizarrerie du genre), suivant une
 interface bien définie. Mais actuellement, les interfaces ne sont pas
-vraiment bien définies, ce qui rend la chose plus compliquée (mais ne
+vraiment bien définies, ce qui rend la chose plus compliquée (ça ne
 demande qu'à être corrigé).
 
 \begin{figure}[ht!]
@@ -414,19 +427,21 @@ partie. Ensuite, on verra.
 En réalité, il y a très peu de chose à dire sur ce module. Il doit
 fournir une interface permettant d'envoyer et de recevoir des
 paquets. Dans cette partie, on se permettra une petite entorse au plan
-en prenant de l'avance et en décrivant l'utilisation des paquets ainsi
-que le protocole de communication, bien que ces deux éléments ne
-fassent pas à proprement parler partie du module transfert de données.
+(description des parties serveur et client) en prenant de l'avance et
+en décrivant l'utilisation des paquets ainsi que le protocole de
+communication, bien que ces deux éléments ne fassent pas à proprement
+parler partie du module transfert de données.
 
 Ce module est codé en C++ et utilise TCP/IP (d'autres extensions,
-comme le support http/https sont envisageable), et possède aussi une
-implémentation \emph{kludge} permettant la transmission de paquets
-dans la configuration \emph{standalone}.
+comme le support http/https, proxy sont envisageable), et possède
+aussi une implémentation bien \emph{kludgy} permettant la transmission
+de paquets dans la configuration \emph{standalone} (on pourrait aussi
+ouvrir des sockets sur localhost, ca reviendrait au même).
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=8cm]{uml-reseau}
-  \caption{Hiérarchie du réseau.}
+  \caption{Hiérarchie du réseau. (note: LocalCx == DirectCx)}
   \label{fig:uml-reseau}
 \end{figure}
 
@@ -470,8 +485,8 @@ accès concurrents de processus léger.
 Les transferts de données se font à l'aide de la classe \texttt{Cx},
 qui possède les méthodes nécessaires pour envoyer ou recevoir des
 données. L'objet transféré, à travers la classe \texttt{Cx}, est
-l'objet \texttt{Packet}. Il sera transféré tel quel, en mode
-binaire.
+l'objet \texttt{Packet}. Il sera transféré tel quel, en mode binaire,
+en prenant bien garde à l'\emph{endianess} de la machine.
 
 \begin{lstlisting}[
     language=C++,
@@ -479,6 +494,7 @@ binaire.
     label=lst:packet]
 struct Packet {
   int token;
+  int flags; // TODO
   int client_id;
   int data_size;
 };
@@ -486,6 +502,7 @@ struct Packet {
 
 \begin{itemize}
 \item \texttt{token}: Signification du message. Plusieurs tokens possibles sont décrits à la table \ref{tab:tokens}.
+\item \texttt{flags}: Signale des différences de traitement pour le paquet en cours. A implémenter.
 \item \texttt{client\_id}: L'uid du client duquel le message provient
   / auquel le message est destiné.
 \item \texttt{data\_size}: Taille totale du paquet.
@@ -497,12 +514,14 @@ propres attributs. A noter: pour effectuer une conversion simple
 (passer outre les incompatibilités little/big endian), tous les
 attributs doivent être des entiers, codés sur 4 octets. Pour faire
 passer des chaînes de caractères, il faut déclarer un tableau
-d'entier, et utiliser des méthodes pour faire la conversion.
+d'entier, et utiliser des méthodes pour faire la conversion. C'est pas
+très beau, mais ça n'a pas été prévu pour ça, et en pratique il y a
+peu de chaînes de caractères à faire transiter.
 
 Pour déclarer un nouveau paquet, il faut utiliser les macros définies
 dans \texttt{common/PacketHandler.hh}. Celle ci permet une gestion
 plus facile des paquets arrivant dans le moteur, comme décrit dans la
-section \ref{sec:classe}.
+section \ref{sec:class}.
 
 \section{Protocole}
 
@@ -511,21 +530,7 @@ Cette partie décrit le fonctionnement en mode \emph{réseau}, le mode
 sur un port défini à l'avance, et attend 2 connexions de la part de
 coach actifs (humain ou IA), avant de lancer la partie. Les
 spectateurs peuvent aussi se connecter durant cette phase, ou à
-n'importe quel moment de la partie. Exemple de communication lors de
-la connexion d'un client:
-
-\begin{verbatim}
-Serveur                      Client
-                    <-       CX_INIT
-CX_ACCEPT           ->
-CX_SENDUID          ->
-\end{verbatim}
-
-CX\_INIT est envoyé par le client pour initier une connexion, et
-contient entre autre le motif de cette demande (spectateur ou acteur),
-le nom du coach, \ldots. Le serveur pourra alors lui renvoyer
-CX\_ACCEPT, suivit d'un CX\_SENDUID contenant l'identifiant unique que
-le coach s'est vu attribué, ou bien CX\_DENY.
+n'importe quel moment de la partie. 
 
 \begin{figure}[th]
   \centering
@@ -536,84 +541,124 @@ le coach s'est vu attribué, ou bien CX\_DENY.
     \textsc{CX\_INIT} & X & & Demande de connexion \\ \hline
     \textsc{CX\_ACCEPT} & & X & Ouverture de connexion acceptée \\ \hline
     \textsc{CX\_DENY} & & X & Ouverture de connexion refusée \\ \hline
-    \textsc{MSG\_CREATEOBJECT} & X & X & 
-       Création un objet (cf sec. \ref{sec:class}) \\ \hline
-    \textsc{MSG\_UPDATEOBJECT} & X & X & 
-       MAJ d'un objet (cf sec. \ref{sec:class})\\ \hline
-    \textsc{MSG\_DELETEOBJECT} & X & X & 
-       Destruction d'un object (cf \ref{sec:class})\\ \hline
-    \textsc{MSG\_NEWTURN} & & X & Début d'un nouveau tour\\ \hline
-    \textsc{MSG\_TURNOVER} & & X & Fin du tour en cours\\ \hline
-    \textsc{MSG\_ILLEGALPROC} & X & & 
-       Demande d'interruption provenant de l'adversaire \\ \hline
-    \textsc{MSG\_TIMEOUT} & & X &
-       Dépassement du temps lors d'une interruption \\ \hline
-    \textsc{MSG\_CHAT} & X & X & Bavardage en ligne \\ \hline
-    \textsc{ACT\_MOVE} & X & & Un joueur bouge \\ \hline
-    \textsc{ACT\_BLITZ} & X & & Un joueur blitz \\ \hline
-    \textsc{ACT\_PICKBALL} & X & & Un joueur récupère une balle \\ \hline
+    \textsc{CX\_QUERYLIST} & X & & Le client demande la liste des parties \\ \hline
+    \textsc{CX\_LIST} & & X & Le serveur envoie la liste des parties disponibles \\ \hline
+    \textsc{CX\_JOIN} & X & & Le client veut rejoindre une partie \\ \hline
+    \textsc{CX\_READY} & X & & Le spectateur est prêt à passer au tour suivant \\ \hline
+    \textsc{CX\_ABORT} & X & & Le client veut quitter la partie \\ \hline
+    \textsc{MSG\_SYNC} & & X & Un traitement est terminé (a supprimer) \\ \hline
+    \textsc{GAME\_FINISHED} & & X & La partie est terminée \\ \hline
+    \textsc{CLIENT\_UID} & & X & Un identifiant unique est envoyé au client \\ \hline
   \end{tabular}
-  \caption{Liste (non exhaustive) des tokens. Les colonnes
+  \caption{Liste des tokens de synchronisation de partie. Les colonnes
     \texttt{Cl.} et \texttt{Srv.} indiquent respectivement que le
     token peut être envoyé d'un client ou du serveur.}
-  \label{tab:tokens}
+  \label{tab:sys-tokens}
 \end{figure}
 
-Provenant d'un monde où les gens se voient en vrai, et bien que ce
-soit un jeu tour à tour, les concepteurs ont introduit la faculté au
-coach qui glande la possibilité d'interrompre le tour de l'autre, ou
-de devoir lancer des dés, histoire de ne pas s'endormir. Par exemple,
-lors de l'oubli du marqueur de tour, quand le second coach essaie de
+Le tableau \ref{tab:sys-tokens} référence la liste des messages dit
+\emph{système}, pour contrôler la connection entre les clients et le
+serveur. Ces messages font partie intégrante de \texttt{stechec},
+également utilisés pour d'autres programmes que \ac{tbt}. Voici un
+exemple typique de communication lors d'une nouvelle connection au
+serveur, et du choix d'une partie~:
+
+\begin{lstlisting}
+Serveur                      Client
+                    <-       CX_INIT
+CX_ACCEPT           ->
+                    <-       CX_QUERYLIST
+CX_LIST             ->
+                    <-       CX_JOIN (avec uid de partie)
+CX_ACCEPT           ->
+CLIENT_UID          ->
+\end{lstlisting}
+
+\texttt{CX\_INIT} est envoyé par le client pour initier une connexion,
+et contient quelques informations pour l'intégrité (numéro de version,
+règles utilisés). Le serveur peut soit accepter cette connection avec
+\texttt{CX\_ACCEPT}, ou la refuser avec \texttt{CX\_DENY}. Une fois
+ainsi connecté, le client peut lister les parties en cours sur le
+serveur (enfin, c'est pas encore codé), puis envoyer un message
+\texttt{CX\_JOIN} avec l'identifiant de la partie que le client
+souhaite créer ou rejoindre, ainsi que d'autres informations
+(spectateur ou acteur, le nom du coach, \ldots). Le serveur pourra
+alors lui renvoyer \texttt{CX\_ACCEPT}, suivi d'un
+\texttt{CLIENT\_UID} contenant l'identifiant unique que le coach s'est
+vu attribué, ou bien \texttt{CX\_DENY} si la demande est refusée.
+
+\begin{figure}[th]
+  \centering
+  \begin{tabular}{|l|c|c|l|}
+    \hline
+    Token & Cl. & Srv. & Description \\ \hline
+    \hline
+    \textsc{MSG\_INITGAME} & X & X & Passe en phase d'initialisation de partie \\ \hline
+    \textsc{MSG\_INITHALF} & X & X & Passe en phase d'initialisation de mi-temps \\ \hline
+    \textsc{MSG\_INITKICKOFF} & X & X & Phase de placement de la balle sur le terrain\\ \hline
+    \textsc{MSG\_BALLPOS} & & X & Donne la position de la balle \\ \hline
+    \textsc{ACT\_ILLEGALPROC} & X & & 
+       Demande d'interruption provenant de l'adversaire \\ \hline
+    \textsc{MSG\_TIMEEXCEEDED} & & X &
+       Dépassement du temps d'un tour de jeu \\ \hline
+    \textsc{ACT\_DECLARE} & X & & Déclaration d'une action \\ \hline
+    \textsc{ACT\_MOVE} & X & & Un joueur bouge \\ \hline
+    \textsc{ACT\_STANDUP} & X & & Un joueur se relève \\ \hline
+    \textsc{MSG\_CHAT} & X & X & Bavardage en ligne \\ \hline
+  \end{tabular}
+  \caption{Liste (non exhaustive) des tokens en cours de jeu. Les colonnes
+    \texttt{Cl.} et \texttt{Srv.} indiquent respectivement que le
+    token peut être envoyé d'un client ou du serveur.}
+  \label{tab:game-tokens}
+\end{figure}
+
+Le tableau \ref{tab:game-tokens} référence quelque un des types de
+messages spécifiques à \ac{tbt}, et qui peuvent être envoyés de part
+et d'autre au cours de la partie. Pour voir la liste complète, ainsi
+que les informations additionnelles contenues dans ces messages, il
+faut se reporter au code source. Une petite aide~: les types de
+messages se trouvent dans le fichier
+\texttt{tbt/bb5/common/Constants.hh}, et le contenu de ses messages se
+trouvent dans les fichiers du même répertoire.
+
+
+Maintenant, passons à quelques considérations technico-philosophique
+sur le réseau et sont influence dans le jeu. Provenant d'un monde où
+les gens se voient en vrai (référence au jeu de plateau), et bien que
+ce soit un jeu tour à tour, les concepteurs de Blood Bowl ont
+introduit la faculté au coach qui glande la possibilité d'interrompre
+le tour de l'autre ou de devoir lancer des dés, histoire de ne pas
+l'endormir. Par exemple, ca peut se produire lors de l'oubli du
+déplacement du marqueur de tour, quand le second coach essaie de
 bloquer un joueur plus fort que lui, lors de certaines cartes
 spéciales, les sorciers, \ldots Ces possibilités devront être
 reproduites.
 
-Le protocole est ainsi complètement orienté traitement par
+Cela nous a obligé à orienter le protocole en traitement par
 \emph{flot}, où chaque message provenant d'un client est traité en
 temps réel puis une réponse apportée, soit positive, soit négative. Il
 doit \emph{toujours} y avoir une réponse, pour ne pas laisser le
-client dans l'expectative. On suppose le protocole comme sûr (pas de
-paquet perdu), ce qui est heureusement le cas avec TCP, ou avec nos
-\emph{fake methods}.
+client dans l'expectative. 
+\begin{itemize}
+\item On suppose le protocole comme sûr (pas de
+paquet perdu), ce qui est heureusement le cas avec TCP. 
+\item On suppose également que les paquets arrivent dans l'ordre. Si
+le serveur envoie 2 messages, A et B, le client recevra A puis B et
+jamais l'inverse (ce qui est toujours le cas avec TCP).
+\end{itemize}
+La manière que nous avons d'écrire les règles de jeu repose sur ces
+deux règles, si il vient a quelqu'un l'idée d'utiliser un autre
+protocole de transport, il devra s'assurer qu'elles seront toujours
+respectées.
 
 Un tour est limité à 4 minutes. Le serveur devra s'assurer que cette
 limite n'est pas franchi, en déclenchant un compte à rebours au début
 du tour d'un coach. Les seules pauses permise seront pendant
-l'interruption d'un autre coach. Les temps de calcul du serveur et
-les temps de transfert réseau ne seront pas pris en compte, parce
-qu'ils devraient toujours être inférieur à 0.2 secondes pour une
-action, temps pendant lequel le coach peut réfléchir.
-
-Un exemple de tour du coach 1 pourrait se faire de la manière
-suivante (attention, ce n'est vraiment qu'indicatif) :
-
-\begin{verbatim}
-Serveur                  Client 1               Client 2
-MSG_NEWTURN       ->
-                  <-     ACT_MOVE
-ACT_MOVE          ->
-MSG_UPDATEOBJECT  ->
-                  <-     ACT_BLITZ
-ACT_BLITZ         ->
-                                          <-    MSG_ILLEGALPROC
-MSG_ILLEGALPROC   ->
-MSG_TIMEOUT       ->
-                  <-     MSG_TURNOVER
-MSG_TURNOVER      ->
-\end{verbatim}
-
-Pour commencer, le serveur indique dans un paquet
-\texttt{MSG\_NEWTURN} que c'est au coach 1 de jouer. Le coach
-\emph{souhaite} déplacer un joueur, en fait la demande au serveur, qui
-accepte en renvoyant le message \texttt{ACT\_MOVE} suivit d'une mise à
-jour de l'objet joueur en question. Ensuite, le coach 1 veut effectuer
-un blitz. Le serveur refuse, et renvoie un message \texttt{ACT\_BLITZ}
-indiquant que l'action a été refusée. Ensuite, vu que le marqueur de
-tour n'a pas été bougé, le coach 2 se lance dans une procédure
-illégale. Là, comme je ne savais pas quoi mettre, disons que cette
-procédure timeout. Ensuite, le coach 1, ayant fini de jouer, demande
-la fin de son tour avec \texttt{MSG\_TURNOVER}, répété par le serveur.
-
+l'interruption d'un autre coach. Les temps de calcul du serveur et les
+temps de transfert réseau ne seront pas pris en compte (cad pas
+décompté des 4 minutes), parce qu'ils devraient toujours être
+inférieur à 0.2 secondes pour une action, temps pendant lequel le
+coach peut réfléchir.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -649,10 +694,11 @@ disponibles dans la documentation doxygen.
 
 Ce module est déjà quasiment complètement codé. Il reste néanmoins
 quelques améliorations, comme une vérification complète de
-l'utilisation mémoire, ainsi que de l'ajout d'une TDT pour permettre
-la vérification des documents ainsi que de fournir des valeurs par
-défaut dans le cas où tout l'utilisateur aurait omis quelques
-champs. Et, bien entendu, le débugger\footnote{Non... vraiment ? :)}.
+l'utilisation mémoire, ainsi que de l'ajout d'un schéma de validation
+pour permettre la vérification des documents ainsi que de fournir des
+valeurs par défaut dans le cas où tout l'utilisateur aurait omis
+quelques champs. Et, bien entendu, le
+débugger\footnote{Non... vraiment ? :)}.
 
 
 
@@ -901,7 +947,7 @@ spectateurs). Elle contient plusieurs instances de \texttt{Client},
 une pour chaque client connecté. Elle contient également une instance
 de \texttt{GameServer}, qu'elle appelle à l'occasion.
 
-\section{Las écurité, où ¨t'es gentil, H4k3rZ, va jouer ailleurs¨}
+\section{La sécurité, où ¨t'es gentil, H4k3rZ, va jouer ailleurs¨}
 \label{sec:securite}
 
 Le code source étant disponible, n'importe qui peut s'amuser à
@@ -1368,6 +1414,10 @@ se concentrer sur l'affichage.
 D'autres clients pourraient être possible, comme un client permettant
 de jouer des parties par mail.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DIVERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Divers}
 
 \section{Son/Musique}
@@ -1396,16 +1446,13 @@ cela. L'avoir en français et en anglais serait un plus.
 Pour sélectionner une équipe et la placer sur le terrain une fois pour
 toute, et ne plus à avoir à le faire à chaque début de partie. La
 composition de l'équipe est ensuite enregistrée dans un fichier, dont
-le format exact est encore à définir. Il sera en XML, et devrait se
-rapprocher le plus possible de ce qu'utilise actuellement javaBB.
+le format exact est quasiment fixé (voir les DTD dans le dépôt). Il
+sera en XML, et devrait se rapprocher le plus possible de ce
+qu'utilise actuellement javaBB.
 
-Cette partie est optionnelle, et peut être réalisé en parallèle avec
-le reste. Ça serait une autre application complètement à part, faite
-en GTK, QT, Ruby/TK, \ldots le premier qui s'y colle choisit !
-
-Il en existe déjà une, en php/html, accessible et fonctionnelle sur le
-site. Rien n'empêche d'en avoir une deuxième livrée avec les autres
-binaires de TBT et fonctionnant sans serveur web.
+Il existe maintenant pas loin de trois éditeur d'équipe, 2 en
+php/html, accessible et fonctionnelle sur le site, et une codé en C++
+utilisant SDL et la bibliothèque Paragui.
 
 \section{Documentation et internationalisation}
 
@@ -1459,6 +1506,10 @@ tarball distribuable. Ainsi, il pourra être porté facilement sur tout
 système unix (Linux, BSD, Darwin, \ldots) sans trop de problème, et la
 création de rpms et de paquets debian en sera grandement facilité.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FUTUR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Ideas for the (maybe far) futur}
 \label{chap:further_idea}
 
@@ -1543,31 +1594,19 @@ d'une partie.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion \& Future work}
 
-Vu qu'on repart de zéro, il reste pas mal de boulot à faire. Pour
-l'instant, l'objectif est une version 0.7 qui ne doit pas être trop
-inférieur à l'actuelle 0.5. On devrait retrouver un moteur de règles
-quasi complet, au moins jouable, une interface graphique similaire, et
-le mode réseau fonctionnel. Le gestionnaire de ligue, l'intelligence
+On est reparti de zéro, mais depuis le début de l'année 2006 (date de
+reprise du code), pas mal de boulot a déjà été abattu. L'objectif, je
+le rappelle, est une version 0.7 qui ne doit pas être trop inférieure
+à l'actuelle 0.5. On devrait retrouver un moteur de règles quasi
+complet, au moins jouable, une interface graphique similaire, et le
+mode réseau fonctionnel. Le gestionnaire de ligue, l'intelligence
 artificielle et l'éditeur d'équipe restent optionels pour la 0.7, mais
-si ils sont terminés d'ici là, tant mieux.
+si ils sont terminés d'ici là, tant mieux. Tout cela est décrit de
+manière plus précise sur le trac, en particulier dans la section
+\emph{roadmap}. Les différents modules ainsi que leur état
+d'avancement sont également précisé plus en détail sur le wiki.
 
-Au vu de tout ce qui a été dit, le travail peut être découpé en
-plusieurs bout, sans trop d'interaction (uniquement des interaction au
-niveau des formats de fichier ou protocole réseau) entre chaque. Voici
-un exemple de découpage, qui ne parait pas totalement aberrant:
-
-\begin{itemize}
-\item Module réseau,
-\item Moteur de règle,
-\item Interface graphique 2D,
-\item Client IA,
-\item Gestionnaire de ligue,
-\item Editeur d'équipe,
-\item Packaging (autotools, binaire windows, paquets debian, rpms, \ldots),
-\item Documentation générale (manuel de jeu, traduction, \ldots).
-\end{itemize}
-
-A partir de maintenant, si vous êtes interessé par une partie, vous
+Si vous êtes interessé pour commencer ou continuer une partie, vous
 pouvez soit compléter les spécifications sur ce présent document, soit
 directement commencer à coder. Faites vous connaître de notre
 GO\footnote{Pas Trop Méchant Organisateur}, TuxRouge, qui se fera
@@ -1597,9 +1636,9 @@ réfère aux modules règles client et arbitrage.
     une meilleure idée...},
 \item Pour décrire les règles coté serveur, on utilise le mot
   \emph{arbitrage}.
+\item Paquet, composant, module: ces termes sont un peu utilisés en
+vrac, mais veulent souvent dire la même chose.
 \end{itemize}
-
-FIXME: a completer ?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% BIBLIO & SITES WEB
