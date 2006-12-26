@@ -67,12 +67,9 @@ Input::InputCommand Input::main_cmd_[] = {
   {"declare", &Input::cmdDeclare, "<subcmd>|print some informations ('help declare')"},
   {"move", &Input::cmdMove, "<subcmd>|move something ('help move')"},
   {"standup", &Input::cmdStandUp, "<id>|stand up the player'id'"},
-  {"block", &Input::cmdBlock, "<id> <d_id>|block with player 'id' player 'd_id'"},
+  {"block", &Input::cmdBlock, "<subcmd>|block action ('help block')"},
   {"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
   {"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
-  {"follow", &Input::cmdFollow, "follow after a block."},
-  {"stay", &Input::cmdStay, "stay after a block."},
-  {"push", &Input::cmdPush, "<n>|choose the square to push the player in."},
   {"cheat", &Input::cmdCheat, "<n> <n> <...>|force next dice rolls to give these results (cheat)."},
   {"wait", &Input::cmdWait, "do not process input util it's your turn."},
   {NULL, NULL, NULL}
@@ -91,6 +88,14 @@ Input::InputSubCommand Input::print_cmd_[] = {
 Input::InputSubCommand Input::move_cmd_[] = {
   {"turnmarker", &Input::cmdMoveTurnMarker, "move the turn marker"},
   {"", &Input::cmdMovePlayer, "<p> <r> <c>|move player <p> to <r,c>"},
+  {NULL, NULL, NULL}
+};
+
+Input::InputSubCommand Input::block_cmd_[] = {
+  {"follow", &Input::cmdBlockFollow, "follow after a block."},
+  {"stay", &Input::cmdBlockStay, "stay after a block."},
+  {"push", &Input::cmdBlockPush, "<n>|choose the square to push the player in."},
+  {"", &Input::cmdBlockBlock, "<id> <d_id>|block with player 'id' player 'd_id'"},
   {NULL, NULL, NULL}
 };
 
@@ -144,6 +149,13 @@ void Input::cmdHelp(const string& cmd, const string&)
           cmd_name = move_cmd_[i].name;
           cmd_doc = move_cmd_[i].doc;
         }
+      else if (cmd == "block")
+        {
+          if (block_cmd_[i].name == NULL)
+            return;
+          cmd_name = block_cmd_[i].name;
+          cmd_doc = block_cmd_[i].doc;
+        }
       else if (cmd == "declare")
         {
           if (declare_cmd_[i].name == NULL)
@@ -195,19 +207,19 @@ void Input::cmdKickOff(const string& cmd, const string& args)
   Position pb;
   is >> pb.row;
   is >> pb.col;
-  if (api_->doPlaceBall(pb))
+  if (!api_->doPlaceBall(pb))
     sync_++;
 }
 
 void Input::cmdReroll(const string&, const string&)
 {
-  if (api_->doReroll())
+  if (!api_->doReroll(true))
     sync_++;
 }
 
 void Input::cmdAccept(const string&, const string&)
 {
-  if (api_->doAccept())
+  if (!api_->doReroll(false))
     sync_++;
 }
 
@@ -236,19 +248,20 @@ void Input::cmdStandUp(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  if (api_->doStandUpPlayer(p))
+  api_->selectPlayer(p);
+  if (!api_->doStandUpPlayer())
     sync_++;
 }
 
 void Input::cmdBlock(const string& cmd, const string& args)
 {
-  istringstream is(cmd + " " + args);
-  int p_id = -1;
-  int p_did = -1;
-  is >> p_id;
-  is >> p_did;
-  if (api_->doBlockPlayer(p_id, p_did))
-    sync_++;
+  int i = 0;
+  while (block_cmd_[i].name != NULL && cmd != block_cmd_[i].name)
+    i++;
+  if (block_cmd_[i].name != NULL)
+    (this->*block_cmd_[i].fun)(args);
+  else
+    cmdBlockBlock(cmd + " " + args);
 }
 
 void Input::cmdPass(const string& cmd, const string& args)
@@ -259,7 +272,8 @@ void Input::cmdPass(const string& cmd, const string& args)
   is >> p_id;
   is >> pos.row;
   is >> pos.col;
-  if (api_->doPassPlayer(p_id, pos))
+  api_->selectPlayer(p_id);
+  if (!api_->doPassPlayer(pos))
     sync_++;
 }
 
@@ -280,28 +294,7 @@ void Input::cmdDice(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int n = -1;
   is >> n;
-  if (api_->doChooseBlockDice(n))
-    sync_++;
-}
-
-void Input::cmdFollow(const string&, const string&)
-{
-  if (api_->doFollow(true))
-    sync_++;
-}
-
-void Input::cmdStay(const string&, const string&)
-{
-  if (api_->doFollow(false))
-    sync_++;
-}
-
-void Input::cmdPush(const string& cmd, const string& args)
-{
-  istringstream is(cmd + " " + args);
-  int n = -1;
-  is >> n;
-  if (api_->doBlockPush(n))
+  if (!api_->doChooseBlockDice(n))
     sync_++;
 }
 
@@ -310,7 +303,7 @@ void Input::cmdGiveBall(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  if (api_->doGiveBall(p))
+  if (!api_->doGiveBall(p))
     sync_++;
 }
 
@@ -392,10 +385,48 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> p;
   is >> pos.row;
   is >> pos.col;
-  LOG1("do move: %1 -> %2", p, pos);
-  if (api_->doMovePlayer(p, pos))
+  api_->selectPlayer(p);
+  if (!api_->doMovePlayer(pos))
     sync_++;
 }
+
+//
+// Block commands
+//
+
+void Input::cmdBlockBlock(const string& args)
+{
+  istringstream is(args);
+  int p_id = -1;
+  int p_did = -1;
+  is >> p_id;
+  is >> p_did;
+  api_->selectPlayer(p_id);
+  if (!api_->doBlockPlayer(p_did))
+    sync_++;
+}
+
+void Input::cmdBlockFollow(const std::string&)
+{
+  if (!api_->doFollow(true))
+    sync_++;
+}
+
+void Input::cmdBlockStay(const std::string&)
+{
+  if (!api_->doFollow(false))
+    sync_++;
+}
+
+void Input::cmdBlockPush(const string& args)
+{
+  istringstream is(args);
+  int n = -1;
+  is >> n;
+  if (!api_->doBlockPush(n))
+    sync_++;
+}
+
 
 //
 // Declare commands
@@ -406,7 +437,8 @@ void Input::cmdDeclareMove(const std::string& args)
   istringstream is(args);
   int p = -1;
   is >> p;
-  if (api_->doDeclareMove(p))
+  api_->selectPlayer(p);
+  if (!api_->doDeclare(MOVE))
     sync_++;
 }
 
@@ -415,7 +447,8 @@ void Input::cmdDeclareBlock(const std::string& args)
   istringstream is(args);
   int p = -1;
   is >> p;
-  if (api_->doDeclareBlock(p))
+  api_->selectPlayer(p);
+  if (!api_->doDeclare(BLOCK))
     sync_++;
 }
 
@@ -424,7 +457,8 @@ void Input::cmdDeclareBlitz(const std::string& args)
   istringstream is(args);
   int p = -1;
   is >> p;
-  if (api_->doDeclareBlitz(p))
+  api_->selectPlayer(p);
+  if (!api_->doDeclare(BLITZ))
     sync_++;
 }
 
@@ -433,7 +467,8 @@ void Input::cmdDeclarePass(const std::string& args)
   istringstream is(args);
   int p = -1;
   is >> p;
-  if (api_->doDeclarePass(p))
+  api_->selectPlayer(p);
+  if (!api_->doDeclare(PASS))
     sync_++;
 }
 
@@ -674,6 +709,24 @@ char* cmd_generator_move(const char* text, int state)
   return NULL;
 }
 
+// Get next matching word in 'block' command
+char* cmd_generator_block(const char* text, int state)
+{
+  static int list_index;
+  static int len;
+  const char* name;
+
+  if (state == 0)
+    {
+      list_index = 0;
+      len = strlen(text);
+    }
+  while ((name = input_inst->block_cmd_[list_index++].name) != NULL)
+    if (strncmp(name, text, len) == 0)
+      return strdup(name);
+  return NULL;
+}
+
 // Get next matching word in 'declare' command
 char* cmd_generator_declare(const char* text, int state)
 {
@@ -701,6 +754,7 @@ char* cmd_generator_help(const char* text, int state)
   const char* help_list[] = {
     "move",
     "print",
+    "block",
     "declare",
     NULL
   };
@@ -728,6 +782,8 @@ char** cmd_completion(const char* text, int start, int)
     matches = rl_completion_matches(text, cmd_generator_print);
   else if (strncmp(rl_line_buffer, "move", 4) == 0)
     matches = rl_completion_matches(text, cmd_generator_move);
+  else if (strncmp(rl_line_buffer, "block", 5) == 0)
+    matches = rl_completion_matches(text, cmd_generator_block);
   else if (strncmp(rl_line_buffer, "declare", 4) == 0)
     matches = rl_completion_matches(text, cmd_generator_declare);
   else if (strncmp(rl_line_buffer, "help", 4) == 0)

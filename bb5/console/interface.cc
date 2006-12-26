@@ -86,21 +86,23 @@ void CmdLineInterface::run()
 
 void CmdLineInterface::printGlobal()
 {
-
+  const CTeam *t;
+  api_->selectTeam(US);
+  t = api_->getTeam();
   cout << "  - you are coach '" << api_->getTeamId() << "'\n" 
        << "  - current game state: " << api_->getStateString() << "\n"
     //       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
     //       << "' (" << api_->getWeather()->getWeather() << ")\n"
-       << "  - ball position: " << Point(api_->ballX(), api_->ballY()) << "\n"
-       << "  - our team  : '" << api_->getTeamName() << "', coached by '"
-       << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
+       << "  - ball position: " << api_->ball() << "\n"
+       << "  - our team  : '" << t->getTeamName() << "', coached by '"
+       << t->getCoachName() << "' (" << t->getNbPlayer()
        << " players)\n";
-  api_->selectTeam(THEM);
-  cout << "  - other team: '" << api_->getTeamName() << "', coached by '"
-       << api_->getCoachName() << "' (" << api_->getTeam()->getNbPlayer()
-       << " players)" << endl;
-  api_->selectTeam(US);
 
+  api_->selectTeam(THEM);
+  t = api_->getTeam();
+  cout << "  - other team: '" << t->getTeamName() << "', coached by '"
+       << t->getCoachName() << "' (" << t->getNbPlayer()
+       << " players)" << endl;
 }
 
 // Print the field, in ascii art.
@@ -138,24 +140,25 @@ void CmdLineInterface::printField()
             cout << " ";
 
           // print square content.
-	  int team_id = api_->teamId(col, row);
-	  int player_id = api_->playerId(col, row);
+	  Point pos(col, row);
+	  int team_id = api_->teamId(pos);
+	  int player_id = api_->playerId(pos);
 	  api_->selectTeam(team_id);
 	  api_->selectPlayer(player_id);
           if (player_id > -1)
             {
               char pdb, pde;
-	      if (api_->playerStatus() != STA_STANDING)
+	      if (api_->getPlayer()->getStatus() != STA_STANDING)
 		pdb = '[';
 	      else
 		pdb = team_id == api_->myTeamId() ? '<' : '{';
 	      pde = team_id == api_->myTeamId() ? '>' : '}';
-              if (api_->ballX() == col && api_->ballY() == row)
+              if (api_->ball() == pos)
                 pde = '@';
               cout << pdb << player_id << pde;
             }
           else
-            if (api_->ballX() == col && api_->ballY() == row)
+            if (api_->ball() == pos)
               cout << " @ ";
             else
               cout << "   ";
@@ -241,16 +244,17 @@ void CmdLineInterface::evInitGame()
     api_->doCheatDice(1);
 }
 
-void CmdLineInterface::evNewTurn(bool our_turn)
+void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
 {
-  if (our_turn)
+  if (player_id == api_->myTeamId())
     {
-      cout << "It's our turn..." << endl;
+      cout << "It's our turn (turn " << cur_turn << ", half "
+	   << cur_half << ")..." << endl;
       input_.stopWaiting();
     }
   else
-    cout << "It's their turn..." << endl;    
-  our_turn_ = our_turn;
+    cout << "It's their turn (turn " << cur_turn << ")..." << endl;    
+  our_turn_ = player_id == api_->myTeamId();
 }
 
 void CmdLineInterface::evKickOff()
@@ -311,7 +315,7 @@ void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_ty
 				int result, int modifier, int required, bool reroll)
 {
   cout << "Player `" << player_id << "' tried an action : `"
-       << api_->getRollString(action_type)
+       << Dice::stringify(action_type)
        << "' : roll [" << result << "] + ["<< modifier << "], required : ["
        << required << "]." << endl;
 	

@@ -15,26 +15,57 @@
 */
 
 #include "tools.hh"
-#include "client_cx.hh"
+#include "ClientApp.hh"
 #include "Api.hh"
 #include "interface.hh"
 
-//
-// Console client main() function.
-//
-extern "C" int run(xml::XMLConfig* cfg, Api* api, ClientCx* client_cx)
+class ConsoleApp : public ClientApp
+{
+public:
+  ConsoleApp(int argc, char** argv);
+  virtual ~ConsoleApp();
+
+private:
+  virtual void showVersion();
+  virtual int onPlay(bool replay);
+};
+
+
+ConsoleApp::ConsoleApp(int argc, char** argv)
+  : ClientApp(argc, argv)
+{
+}
+
+ConsoleApp::~ConsoleApp()
+{
+}
+
+void ConsoleApp::showVersion()
+{
+  std::cout << "TowBowlTactics console client v" PACKAGE_VERSION << "\n"
+	    << "Copyright (C) 2006 TBT Team.\n";
+}
+
+int ConsoleApp::onPlay(bool)
 {
   bool use_readline = true;
   try {
-    cfg->getAttr<int>("client", "redirection", "stdin");
+    cfg_.getAttr<int>("client", "redirection", "stdin");
     use_readline = false;
   } catch (...) {}
 
-  CmdLineInterface i(cfg, api, client_cx, use_readline);
+  CmdLineInterface i(&cfg_, rules_->getApi(), &ccx_, use_readline);
 
   i.hello();
   i.init();
   i.run();
 
-  return 0;
+  return -1; // Don't want to play a second time.
+}
+
+int main(int argc, char** argv)
+{
+  ConsoleApp app(argc, argv);
+
+  return app.runApp();
 }

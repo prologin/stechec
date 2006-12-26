@@ -1,23 +1,33 @@
 # -*- Makefile -*-
 
-lib_LTLIBRARIES 	= bb5_client_console.la
+bin_PROGRAMS 	= tbt_console
 
-bb5_client_console_la_SOURCES =			\
+tbt_console_SOURCES =				\
 	input.cc				\
 	input.hh				\
 	interface.cc				\
 	interface.hh				\
 	console_loader.cc
 
-bb5_client_console_la_CXXFLAGS =		\
+tbt_console_CXXFLAGS =				\
 	-DMODULE_NAME=\"console\"		\
 	-DMODULE_COLOR=C_YELLOW			\
 	-DMSG_COLOR				\
 	$(READLINE_CFLAGS)
 
-bb5_client_console_la_LDFLAGS =			\
-	-module					\
+tbt_console_LDFLAGS =				\
+	-export-dynamic
+
+tbt_console_LDADD =						\
+	$(top_builddir)/stechec/tools/libtools.la		\
+	$(top_builddir)/stechec/client/libgeneric_client.la	\
+	../client/libbb5_client_rules.la			\
+	$(PTHREAD_LIBS)						\
 	$(READLINE_LIBS)
+
+if USE_RPATH
+tbt_console_LDFLAGS += -R $(libdir)
+endif
 
 INCLUDES 	=				\
 	-I$(top_srcdir)/stechec/tools		\

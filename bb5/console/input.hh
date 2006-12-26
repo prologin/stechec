@@ -66,6 +66,7 @@ public:
   static InputCommand main_cmd_[];
   static InputSubCommand print_cmd_[];
   static InputSubCommand move_cmd_[];
+  static InputSubCommand block_cmd_[];
   static InputSubCommand declare_cmd_[];
 
 private:
@@ -82,9 +83,6 @@ private:
   void cmdAccept(const std::string& cmd, const std::string& args);
   void cmdGiveBall(const std::string& cmd, const std::string& args);
   void cmdDice(const std::string& cmd, const std::string& args);
-  void cmdStay(const std::string& cmd, const std::string& args);
-  void cmdFollow(const std::string& cmd, const std::string& args);
-  void cmdPush(const std::string& cmd, const std::string& args);
   void cmdCheat(const std::string& cmd, const std::string& args);
   void cmdWait(const std::string& cmd, const std::string& args);
 
@@ -106,6 +104,12 @@ private:
   // Move commands
   void cmdMoveTurnMarker(const std::string& args);
   void cmdMovePlayer(const std::string& args);
+
+  // Block commands
+  void cmdBlockBlock(const std::string& args);
+  void cmdBlockStay(const std::string& args);
+  void cmdBlockFollow(const std::string& args);
+  void cmdBlockPush(const std::string& args);
 
   // Declare commands
   void cmdDeclareMove(const std::string& args);

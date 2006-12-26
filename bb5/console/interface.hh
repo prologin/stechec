@@ -17,7 +17,7 @@
 #ifndef INTERFACE_HH_
 # define INTERFACE_HH_
 
-# include "client_cx.hh"
+# include "ClientCx.hh"
 # include "Api.hh"
 # include "Event.hh"
 # include "input.hh"
@@ -46,7 +46,7 @@ private:
   virtual void		evSync();
   virtual void          evIllegal(int was_token);
   virtual void          evInitGame();
-  virtual void          evNewTurn(bool our_turn);
+  virtual void          evNewTurn(int player_id, int cur_half, int cur_turn);
   virtual void          evKickOff();
   virtual void          evGiveBall();
   virtual void          evMoveTurnMarker();
