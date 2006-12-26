@@ -2,7 +2,7 @@
 
 bb5datadir = $(pkgdatadir)/bb5
 
-DIRS	 	= formation font i18n image sound team video
+DIRS	 	= formation font i18n image sound video
 EXTRA_DIST	= $(DIRS)
 
 dist_bb5data_DATA =				\

@@ -4,3 +4,348 @@ conf:
   server_rule_lib: bb5_arbiter
   player_lib: bb5_client_console
   player_filename: bb5_ai
+
+constant:
+
+  - doc_extra: \subsection{Constants}
+  - doc_extra: \subsubsection{Error code}
+  -
+    cst_name: BAD_TEAM
+    cst_val: -3
+    cst_comment: There is an error with the selected team.
+  -
+    cst_name: BAD_PLAYER
+    cst_val: -2
+    cst_comment: There is an error with the selected player.
+  -
+    cst_name: BAD_ARGUMENT
+    cst_val: -1
+    cst_comment: One of the call function argument is incorrect.
+  -
+    cst_name: SUCCESS
+    cst_val: 0
+    cst_comment: Everything run smoothly.
+
+
+  - doc_extra: \subsubsection{Player status}
+  -
+    cst_name: STA_UNASSIGNED
+    cst_val: 0
+    cst_comment: 
+  -
+    cst_name: STA_RESERVE
+    cst_val: 1
+    cst_comment: 
+  -
+    cst_name: STA_STANDING
+    cst_val: 2
+    cst_comment: 
+  -
+    cst_name: STA_PRONE
+    cst_val: 3
+    cst_comment: 
+  -
+    cst_name: STA_STUNNED
+    cst_val: 4
+    cst_comment: 
+  -
+    cst_name: STA_KO
+    cst_val: 5
+    cst_comment: 
+  -
+    cst_name: STA_INJURED
+    cst_val: 6
+    cst_comment: 
+  -
+    cst_name: STA_SENTOFF
+    cst_val: 7
+    cst_comment: 
+
+
+  - doc_extra: \subsubsection{Player action}
+  -
+    cst_name: MOVE
+    cst_val: 1
+    cst_comment: 
+  -
+    cst_name: BLOCK
+    cst_val: 2
+    cst_comment: 
+  -
+    cst_name: BLITZ
+    cst_val: 3
+    cst_comment: 
+  -
+    cst_name: PASS
+    cst_val: 4
+    cst_comment: 
+  
+
+  - doc_extra: \subsubsection{Player skills}
+  -
+    cst_name: SK_BLOCK
+    cst_val: 0
+    cst_comment: 
+  -
+    cst_name: SK_CATCH
+    cst_val: 1
+    cst_comment: 
+  -
+    cst_name: SK_DODGE
+    cst_val: 2
+    cst_comment: 
+  -
+    cst_name: SK_PASS
+    cst_val: 3
+    cst_comment: 
+  -
+    cst_name: SK_SUREHANDS
+    cst_val: 4
+    cst_comment: 
+
+
+  - doc_extra: \subsubsection{Misc.}
+  -
+    cst_name: COLS
+    cst_val: 15
+    cst_comment: Field number of columns ([0,14]).
+  -
+    cst_name: ROWS
+    cst_val: 26
+    cst_comment: Field number of rows ([0,25]).
+  -
+    cst_name: MAX_PLAYER
+    cst_val: 16
+    cst_comment: Maximum number of players for a team in a game.
+
+
+function:
+  - doc_extra: |
+     \subsection{Informational functions}
+     \subsubsection{General informations}
+  -
+    fct_name: my_team_id
+    fct_summary: Get your team id.
+    fct_ret_type: int
+
+  - doc_extra: |
+     \subsubsection{Field informations}
+  -
+    fct_name: ball_x
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: ball_y
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: team_id
+    fct_summary: Get the player team id at the specified position
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, x coordinate on the field]
+      - [y, int, y coordinate on the field]
+  -
+    fct_name: player_id
+    fct_summary: Get the player id at the specified position
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, x coordinate on the field]
+      - [y, int, y coordinate on the field]
+  -
+    fct_name: tackle_zone_number
+    fct_summary:
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, x coordinate on the field]
+      - [y, int, y coordinate on the field]
+
+
+  - doc_extra: |
+     \subsubsection{Team informations}
+     Information will be given for the team selected by \texttt{select_team}.
+     If a team has not been chosen, \texttt{BAD_TEAM} will be returned.
+  -
+    fct_name: select_team
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [team_id, int, team identifiant (0, 1, US or THEM)]
+  -
+    fct_name: team_reroll_number
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: reroll_used
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: player_number
+    fct_summary: 
+    fct_ret_type: int
+
+
+  - doc_extra: |
+     \subsubsection{Player informations}
+     Information will be given for the team selected by \texttt{select_player}.
+     If a team has not been chosen, \texttt{BAD_PLAYER} will be returned.
+  -
+    fct_name: select_player
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [team_id, int, player identifiant of the selected team]
+  -
+    fct_name: player_status
+    fct_summary: Get the player current status.
+    fct_ret_type: int
+  -
+    fct_name: player_played
+    fct_summary: Check if this player has played this turn.
+    fct_ret_type: int
+  -
+    fct_name: player_x
+    fct_summary: Get the player x coordinate.
+    fct_ret_type: int
+  -
+    fct_name: player_y
+    fct_summary: Get the player y coordinate.
+    fct_ret_type: int
+  -
+    fct_name: player_ma
+    fct_summary: Get the player ma.
+    fct_ret_type: int
+  -
+    fct_name: player_ma_remain
+    fct_summary: Get the player remaining ma.
+    fct_ret_type: int
+  -
+    fct_name: player_st
+    fct_summary: Get the player st.
+    fct_ret_type: int
+  -
+    fct_name: player_ag
+    fct_summary: Get the player ag.
+    fct_ret_type: int
+  -
+    fct_name: player_av
+    fct_summary: Get the player av.
+    fct_ret_type: int
+  -
+    fct_name: player_skill_number
+    fct_summary: Get the number of player's skills.
+    fct_ret_type: int
+  -
+    fct_name: player_skill
+    fct_summary: Get the number of player's skills.
+    fct_ret_type: int
+    fct_arg:
+      - [index, int, skill index. from 0 to num_skill - 1]
+  -
+    fct_name: move_possible
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, x coordinate on the field]
+      - [y, int, y coordinate on the field]
+  -
+    fct_name: move_length
+    fct_summary: |
+      Get length that a move will take to the specified destination
+      for the for selected player.
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, x coordinate on the field]
+      - [y, int, y coordinate on the field]
+  -
+    fct_name: move_difficulty
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [step, int, step of the current movement projection]
+  -
+    fct_name: move_path_x
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [step, int, step of the current movement projection]
+  -
+    fct_name: move_path_y
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [step, int, step of the current movement projection]
+
+
+  - doc_extra: |
+     \subsection{Command function}
+  -
+    fct_name: end_turn
+    fct_summary: 
+    fct_ret_type: void
+  -
+    fct_name: move_turn_marker
+    fct_summary: 
+    fct_ret_type: void
+  -
+    fct_name: ask_illegal_procedure
+    fct_summary: 
+    fct_ret_type: void
+  -
+    fct_name: reroll
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [value, int, whether accept (0) or reroll (1)]
+  -
+    fct_name: place_ball
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: give_ball
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: choose_block_dice
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: block_push
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: follow
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [value, int, whether stay here (0) or follow (1)]
+  -
+    fct_name: declare
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [action, int, action to declare]
+  -
+    fct_name: move_player
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, x coordinate on the field]
+      - [y, int, y coordinate on the field]
+  -
+    fct_name: stand_up_player
+    fct_summary: 
+    fct_ret_type: int
+  -
+    fct_name: block_player
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, opponent player id to block]
+  -
+    fct_name: pass_ball
+    fct_summary: 
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, x coordinate on the field]
+      - [y, int, y coordinate on the field]
