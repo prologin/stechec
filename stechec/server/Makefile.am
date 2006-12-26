@@ -1,8 +1,8 @@
 # -*- Makefile -*-
 
-bin_PROGRAMS 	= tbt_server
+bin_PROGRAMS 	= stechec_server
 
-tbt_server_SOURCES	=			\
+stechec_server_SOURCES	=			\
 	Client.hh				\
 	GameHosting.cc				\
 	GameHosting.hh				\
@@ -14,18 +14,18 @@ tbt_server_SOURCES	=			\
 	WaitingClient.hh			\
 	Main.cc
 
-tbt_server_CXXFLAGS = 				\
+stechec_server_CXXFLAGS =			\
 	-DMODULE_COLOR=C_BLUE			\
 	-DMODULE_NAME=\"server\"
 
-tbt_server_LDFLAGS = 				\
+stechec_server_LDFLAGS =			\
 	-export-dynamic
 
 if USE_RPATH
-tbt_server_LDFLAGS += -R $(libdir)
+stechec_server_LDFLAGS += -R $(libdir)
 endif
 
-tbt_server_LDADD =						\
+stechec_server_LDADD =						\
 	$(top_builddir)/stechec/base_rules/libbase_rules.la	\
 	$(top_builddir)/stechec/tools/libtools.la
 

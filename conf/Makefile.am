@@ -6,7 +6,7 @@ dist_pkgdata_DATA =				\
 	formation.xml				\
 	team.xml				\
 	config.dtd				\
-	team.dtd				\
+	team.xsd				\
 	formation.dtd
 
 dist_sysconf_DATA = stechec.yml

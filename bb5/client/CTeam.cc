@@ -39,8 +39,8 @@ void CTeam::loadConfig(const std::string& team_file)
 
   MsgTeamInfo pkt;
   pkt.reroll = xml_team_.getData<int>("reroll");
-  stringToPacket(pkt.team_name, xml_team_.getAttr<std::string>("team", "name"), 32);
-  stringToPacket(pkt.coach_name, xml_team_.getAttr<std::string>("team", "coach"), 32);
+  stringToPacket(pkt.team_name, xml_team_.getData<std::string>("name"), 32);
+  stringToPacket(pkt.coach_name, xml_team_.getData<std::string>("coach"), 32);
   r_->sendPacket(pkt);
 
   xml_formation_.parse(xml_team_.getData<std::string>("formation"));
