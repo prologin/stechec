@@ -5,14 +5,14 @@ bin_PROGRAMS = stechec
 noinst_LTLIBRARIES = libgeneric_client.la
 
 libgeneric_client_la_SOURCES =			\
-	client_cx.cc				\
-	client_cx.hh				\
+	ClientCx.cc				\
+	ClientCx.hh				\
 	start_arbiter.cc			\
 	start_arbiter.hh			\
-	rules_loader.cc				\
-	rules_loader.hh				\
-	champion_loader.cc			\
-	champion_loader.hh			\
+	RulesLoader.cc				\
+	RulesLoader.hh				\
+	ChampionLoader.cc			\
+	ChampionLoader.hh			\
 	ClientApp.cc				\
 	ClientApp.hh
 

@@ -11,17 +11,7 @@
 */
 
 #include "tools.hh"
-#include "ClientApp.hh"
-
-class Stechec : public ClientApp
-{
-public:
-  Stechec(int argc, char** argv);
-  virtual ~Stechec();
-
-private:
-  virtual int onPlay(bool is_replay);
-};
+#include "Stechec.hh"
 
 Stechec::Stechec(int argc, char** argv)
   : ClientApp(argc, argv)

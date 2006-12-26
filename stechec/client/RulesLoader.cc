@@ -10,7 +10,7 @@
 ** Copyright (C) 2006 Prologin
 */
 
-#include "rules_loader.hh"
+#include "RulesLoader.hh"
 
 RulesLoader::RulesLoader()
   : base_rules_(NULL)

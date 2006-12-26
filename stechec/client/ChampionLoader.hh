@@ -14,7 +14,7 @@
 # define CHAMPION_LOADER_HH_
 
 # include "BaseCRules.hh"
-# include "client_cx.hh"
+# include "ClientCx.hh"
 
 /*!
 ** @addtogroup client

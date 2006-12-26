@@ -14,7 +14,7 @@
 # define RULES_LOADER_HH_
 
 # include "BaseRules.hh"
-# include "client_cx.hh"
+# include "ClientCx.hh"
 
 /*!
 ** @addtogroup client

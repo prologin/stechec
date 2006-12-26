@@ -14,8 +14,8 @@
 # define CLIENTAPP_H_
 
 # include "xml/xml_config.hh"
-# include "client_cx.hh"
-# include "rules_loader.hh"
+# include "ClientCx.hh"
+# include "RulesLoader.hh"
 
 class BaseCRules;
 

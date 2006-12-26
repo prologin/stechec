@@ -17,7 +17,7 @@
 
 #include "tools.hh"
 #include "start_arbiter.hh"
-#include "champion_loader.hh"
+#include "ChampionLoader.hh"
 #include "ClientApp.hh"
 
 ClientApp::ClientApp(int argc, char** argv)

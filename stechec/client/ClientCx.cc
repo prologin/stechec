@@ -13,7 +13,7 @@
 #include "datatfs/file.hh"
 #include "datatfs/direct.hh"
 #include "datatfs/tcp.hh"
-#include "client_cx.hh"
+#include "ClientCx.hh"
 
 ClientCx::ClientCx()
   : cx_(NULL),

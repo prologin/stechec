@@ -10,7 +10,7 @@
 ** Copyright (C) 2006 Prologin
 */
 
-#include "champion_loader.hh"
+#include "ChampionLoader.hh"
 
 ChampionLoader::ChampionLoader()
 {
