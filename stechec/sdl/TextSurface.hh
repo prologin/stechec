@@ -75,11 +75,11 @@ public:
 
   //! @brief Set text color.
   //! @param fg Color to set (default: black).
-  void setTextColor(SDL_Color& fg);
+  void setTextColor(const SDL_Color& fg);
 
   //! @brief Set baground color, only for method eTextShaded.
   //! @param bg Color to set (default: white).
-  void setBgColor(SDL_Color& bg);
+  void setBgColor(const SDL_Color& bg);
 
   //! @brief Set rendering method.
   //! @param m Render method to use.

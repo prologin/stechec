@@ -72,7 +72,7 @@ void InputTextSurface::update()
         if (--index_ < 0)
           index_ = 0;
       if (inp.key_pressed_[SDLK_RIGHT])
-        if (++index_ >= (int)text_.size())
+        if (++index_ > (int)text_.size())
           index_--;
       if (inp.key_pressed_[SDLK_BACKSPACE] && index_ > 0)
         {

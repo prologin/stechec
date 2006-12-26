@@ -20,6 +20,7 @@
 #include "TextSurface.hh"
 
 /*!
+** @file text.cc
 ** This file demonstrates some usages of TextSurface.
 */
 
@@ -27,8 +28,8 @@ int main(int, char**)
 {
   Log log(5);
 
-  SDLWindow win(NULL);
-  win.init();
+  SDLWindow win;
+  win.init(NULL);
 
   // To get images from the current directory.
   ResourceCenter::getInst()->setResourcePrefix("./");

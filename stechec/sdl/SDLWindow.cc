@@ -20,12 +20,21 @@
 #include "SDLWindow.hh"
 #include "xml/xml_config.hh"
 
-SDLWindow::SDLWindow(xml::XMLConfig* xml)
-  : xml_(xml),
+SDLWindow::SDLWindow()
+  : xml_(NULL),
     is_fullscreen_(false),
     frame_drawed_(0),
     fps_(0)
 {
+}
+
+SDLWindow::~SDLWindow()
+{
+  if (isInitialized())
+    {
+      TTF_Quit();
+      SDL_Quit();
+    }
 }
 
 Input& SDLWindow::getInput()
@@ -38,12 +47,6 @@ VirtualSurface& SDLWindow::getScreen()
   return screen_;
 }
 
-SDLWindow::~SDLWindow()
-{
-  TTF_Quit();
-  SDL_Quit();
-}
-
 bool SDLWindow::isFullScreen() const
 {
   return is_fullscreen_;
@@ -51,6 +54,9 @@ bool SDLWindow::isFullScreen() const
 
 void SDLWindow::setFullScreen(bool enable)
 {
+  if (!isInitialized())
+    return;
+
   if (is_fullscreen_ != enable)
     {
       LOG3("Switch to fullscreen mode: %1", enable);
@@ -64,22 +70,30 @@ int SDLWindow::getFps() const
   return fps_;
 }
 
-
-void SDLWindow::init()
+bool SDLWindow::isInitialized()
 {
+  return screen_.getSDLSurface() != NULL;
+}
+
+void SDLWindow::init(xml::XMLConfig* xml)
+{
+  xml_ = xml;
   // FIXME: get window size, fullscreen mode, ... from xml.
 
-  if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    PRINT_AND_THROW(SDLError, "Error initializing SDL");
-
-  SDL_Surface* icon = IMG_Load(PKGDATADIR "/image/general/tbt.ico");
-  if (icon != NULL)
+  if (!isInitialized())
     {
-      SDL_WM_SetIcon(icon, NULL);
-      SDL_FreeSurface(icon);
+      if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	PRINT_AND_THROW(SDLError, "Error initializing SDL");
+
+      SDL_Surface* icon = IMG_Load(PKGDATADIR "/image/general/tbt.ico");
+      if (icon != NULL)
+	{
+	  SDL_WM_SetIcon(icon, NULL);
+	  SDL_FreeSurface(icon);
+	}
+      else
+	WARN("Can't set window's icon: %1", SDL_GetError());
     }
-  else
-    WARN("Can't set window's icon: %1", SDL_GetError());
   
   SDL_Surface* screen;
   screen = SDL_SetVideoMode(800, 600, 0, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
@@ -101,12 +115,21 @@ void SDLWindow::init()
 
 void SDLWindow::clearScreen()
 {
+  if (!isInitialized())
+    return;
+
   SDL_FillRect(screen_.getSDLSurface(), NULL, 0);
   screen_.invalidate(screen_.getRect());
 }
 
 bool SDLWindow::processOneFrame()
 {
+  if (!isInitialized())
+    {
+      WARN("SDLWindow was not initialized!");
+      return true;
+    }
+
   // Process SDL events
   input_.reset();
   SDL_Event event;

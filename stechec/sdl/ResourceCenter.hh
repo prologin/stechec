@@ -137,6 +137,8 @@ private:
     {
       if (lhs.name_ < rhs.name_)
         return true;
+      if (lhs.name_ > rhs.name_)
+	return false;
       return lhs.size_ < rhs.size_;
     }
   };

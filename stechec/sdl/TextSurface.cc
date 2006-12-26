@@ -184,12 +184,12 @@ bool TextSurface::getAutoWrap() const
   return auto_wrap_;
 }
 
-void TextSurface::setTextColor(SDL_Color& fg)
+void TextSurface::setTextColor(const SDL_Color& fg)
 {
   fg_ = fg;
 }
 
-void TextSurface::setBgColor(SDL_Color& bg)
+void TextSurface::setBgColor(const SDL_Color& bg)
 {
   bg_ = bg;
 }

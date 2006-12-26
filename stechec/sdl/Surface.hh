@@ -113,6 +113,9 @@ public:
   //! @brief Load a image into this surface (.png, .jpg, .bmp, ...).
   void load(const std::string filename, double zoom = 1., double angle = 0.);
 
+  //! @brief Release associated resources, and detach from parent.
+  void free();
+
   //! @brief Method called each frame, to perfom user custom code. You
   //! should override it.
   //!

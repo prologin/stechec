@@ -163,7 +163,7 @@ TTF_Font* ResourceCenter::getFont(const std::string font_name, int font_size)
     }
 
   // Load this font, and add it to the cache.
-  LOG3("Load font `font/%1` (size: %2)", font_name, font_size);
+  LOG3("Load font `font/%1' (size: %2)", font_name, font_size);
   lf.ref_count_ = 1;
   lf.font_ = TTF_OpenFont((prefix_ + "/font/" + font_name).c_str(),
                           font_size);

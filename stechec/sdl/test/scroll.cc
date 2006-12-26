@@ -20,6 +20,7 @@
 #include "Sprite.hh"
 
 /*!
+** @file scroll.cc
 ** This file demonstrates an example of VirtualScrollableSurface,
 ** used in bb5 to display the field.
 */
@@ -28,8 +29,8 @@ int main(int, char**)
 {
   Log log(3);
   
-  SDLWindow win(NULL);
-  win.init();
+  SDLWindow win;
+  win.init(NULL);
 
   ResourceCenter::getInst()->setResourcePrefix("./");
 

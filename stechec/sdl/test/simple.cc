@@ -33,15 +33,15 @@ int main(int, char**)
   Log log(3);
 
   // Initialize window.
-  SDLWindow win(NULL);
-  win.init();
+  SDLWindow win;
+  win.init(NULL);
 
   // To get images from the current directory.
   ResourceCenter::getInst()->setResourcePrefix("./");
-  
+
   // Get the main VirtualSurface.
   VirtualSurface& screen = win.getScreen();
-  
+
   // Create a static sprite, add it to the screen.
   Surface s1("push.png");
   s1.setPos(250, 100);

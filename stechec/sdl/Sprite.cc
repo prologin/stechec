@@ -110,7 +110,6 @@ void Sprite::anim(int delay, bool loop_forever)
       return;
     }
   anim_delay_ = delay;
-  current_anim_ = 0;
   last_anim_updated_ = SDL_GetTicks();
   anim_loop_ = loop_forever;
   is_animing_ = true;

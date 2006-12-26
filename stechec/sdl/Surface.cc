@@ -185,6 +185,9 @@ SDL_Surface* Surface::getSDLSurface()
 
 void Surface::setPos(const Point& pos)
 {
+  if (pos.x == rect_.x && pos.y == rect_.y)
+    return;
+
   if (parent_ != NULL)
     parent_->invalidate(rect_);
   rect_.x = pos.x;
@@ -326,6 +329,17 @@ void Surface::load(const std::string filename, double zoom, double angle)
   redraw_all_ = true;
 }
 
+void Surface::free()
+{
+  if (surf_ != NULL)
+    SDL_FreeSurface(surf_);
+  if (parent_ != NULL)
+    parent_->removeChild(this);
+  surf_ = NULL;
+  parent_ = NULL;
+}
+
+
 void Surface::update()
 {
   if (redraw_all_)
@@ -372,7 +386,7 @@ void Surface::blitAlpha(SDL_Surface *src_surf, SDL_Surface *dst_surf,
       return;
     }
   
-  LOG3("Set transparency surf name %1 size x: %2 y: %3", filename_, width, height);
+  LOG6("Set transparency surf name %1 size x: %2 y: %3", filename_, width, height);
   LOG6("r:%1 g:%2 b:%3 a:%4", (int)src_fmt->Rshift, (int)src_fmt->Gshift, (int)src_fmt->Bshift, (int)src_fmt->Ashift);
   LOG6("r:%1 g:%2 b:%3 a:%4", (int)dst_fmt->Rshift, (int)dst_fmt->Gshift, (int)dst_fmt->Bshift, (int)dst_fmt->Ashift);
 

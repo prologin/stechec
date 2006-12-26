@@ -2,7 +2,7 @@
 
 SUBDIRS = . test
 
-noinst_LTLIBRARIES = libstechec_sdl.la
+lib_LTLIBRARIES = libstechec_sdl.la
 
 libstechec_sdl_la_SOURCES =			\
 	ResourceCenter.hh			\
@@ -29,9 +29,6 @@ libstechec_sdl_la_CXXFLAGS =			\
 	-DMODULE_COLOR=C_YELLOW			\
 	-DPKGDATADIR=\"$(datadir)/$(PACKAGE)\"	\
 	$(SDL_CFLAGS)
-
-libstechec_sdl_la_LIBADD =			\
-	$(SDL_LIBS)
 
 INCLUDES        =				\
         -I$(top_srcdir)/stechec/tools

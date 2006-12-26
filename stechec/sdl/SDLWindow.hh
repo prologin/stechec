@@ -95,9 +95,7 @@ namespace xml { class XMLConfig; }
 class SDLWindow
 {
 public:
-  //! @brief Contructor.
-  //! @param xml Window configuration (size, fullscreen, ...).
-  SDLWindow(xml::XMLConfig* xml);
+  SDLWindow();
   ~SDLWindow();
 
   //! @brief Get mouse and keyboard current state.
@@ -117,9 +115,14 @@ public:
   //! @brief Get the number of frame per second (typically between 5 and 100 fps).
   //! @return The current number of frame per second.
   int getFps() const;
-  
-  //! @brief Initialize all the SDL stuff.
-  void init();
+
+  //! @brief Check if the window was already initialized.
+  bool isInitialized();
+
+  //! @brief Initialize all the SDL stuff, or reintialize windows with a
+  //!    new set of values.
+  //! @param xml Window configuration (size, fullscreen, ...).
+  void init(xml::XMLConfig* xml);
 
   //! @brief Fill the screen with black.
   void clearScreen();
