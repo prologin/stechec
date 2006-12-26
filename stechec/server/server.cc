@@ -43,9 +43,9 @@ Server::Server(const xml::XMLConfig& cfg)
   sigaction(SIGINT, &act, NULL);
   
   // Load shared library to get the rules.
-  rules_name_ = cfg.getData<std::string>("server", "rules");
-  rules_.open(rules_name_);
+  rules_.open(cfg.getData<std::string>("server", "rules"));
   create_rules_fun_ = (create_rules_t)(rules_.getSymbol("load_server_rules"));
+  desc_ = (const struct RuleDescription*)(rules_.getSymbol("rules_description"));
 }
 
 Server::~Server()
@@ -108,14 +108,32 @@ bool    Server::checkRemoteVersion(Cx* cx, const CxInit& pkt)
       delete cx;
       return false;
     }
+  return true;
+}
 
+bool Server::checkRemoteModuleDesc(Cx* cx, const CxJoin& pkt, int game_uid)
+{
   std::string client_rules_name = packetToString(pkt.rules_name);
-  if (client_rules_name.substr(0, 4) != rules_name_.substr(0, 4))
+  if (client_rules_name != desc_->name)
     {
       std::ostringstream os;
-      os << "Rules mismatch: server's is `" << rules_name_ << "'";
+      os << "Rules mismatch: server's is `" << desc_->name << "'";
       os << ", client is `" << client_rules_name << "'";
-      LOG3("Connection from %1 has been rejected, reason:", *cx);
+      LOG3("Joining game %1 from %2 has been rejected, reason:", *cx);
+      LOG3(" - %1", os.str());
+      CxDeny pkt_deny;
+      stringToPacket(pkt_deny.reason, os.str(), 64);
+      cx->send(&pkt_deny);
+      delete cx;
+      return false;
+    }
+  if (pkt.rules_major != desc_->major || pkt.rules_minor != desc_->minor)
+    {
+      std::ostringstream os;
+      os << "Version mismatch: server's is `" << desc_->major << "."
+	 << desc_->minor << "'"
+	 << ", client is `" << pkt.rules_major << "." << pkt.rules_minor << "'";
+      LOG3("Joining game %1 from %2 has been rejected, reason:", *cx);
       LOG3(" - %1", os.str());
       CxDeny pkt_deny;
       stringToPacket(pkt_deny.reason, os.str(), 64);
@@ -163,7 +181,10 @@ void	Server::serveJoinGame(Cx* cx, Packet* pkt)
 {
   CxJoin* pkt_join = static_cast<CxJoin*>(pkt);
   int game_uid = pkt_join->game_uid;
-      
+
+  if (!checkRemoteModuleDesc(cx, *pkt_join, game_uid))
+    return;
+  
   GameIter it = games_.find(game_uid);
   if (it == games_.end())
     {
@@ -173,16 +194,13 @@ void	Server::serveJoinGame(Cx* cx, Packet* pkt)
 	  delete cx;
 	  return;
 	}
-      else
-	{
-	  // This is a new game. Create and start it.
-	  GameHosting* gh = new GameHosting(game_uid, cfg_,
-                                            create_rules_fun_(&cfg_));
-	  it = games_.insert(std::make_pair(game_uid, gh)).first;
-	  pthread_t th;
-	  pthread_create(&th, NULL, &GameHosting::startThread, it->second);
-	  LOG5("Thread started.");
-	}
+      // This is a new game. Create and start it.
+      GameHosting* gh = new GameHosting(game_uid, cfg_,
+					create_rules_fun_(&cfg_));
+      it = games_.insert(std::make_pair(game_uid, gh)).first;
+      pthread_t th;
+      pthread_create(&th, NULL, &GameHosting::startThread, it->second);
+      LOG5("Thread started.");
     }
   it->second->addClient(cx,
 			pkt_join->client_extid,

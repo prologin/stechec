@@ -50,6 +50,7 @@ public:
 
   void          addClient(Cx* client_cx);
   bool          checkServerState(Cx* cx);
+  bool		checkRemoteModuleDesc(Cx* cx, const CxJoin& pkt, int game_uid);
   bool          checkRemoteVersion(Cx* cx, const CxInit& pkt);
   bool          checkRemoteTCP(TcpCx* cx, const Packet& pkt);
   void	        serveGameList(Cx* cx);
@@ -63,7 +64,7 @@ private:
   
   const xml::XMLConfig&         cfg_;
 
-  std::string                   rules_name_;
+  const struct RuleDescription* desc_;
   Library                       rules_;
   typedef BaseSRules*           (*create_rules_t)(const xml::XMLConfig*);
   create_rules_t                create_rules_fun_;

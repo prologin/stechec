@@ -99,7 +99,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
   if (state_ == eFinishing || state_ == eFinished || state_ == eCrashed)
     {
       pthread_mutex_unlock(&lock_);
-      LOG3("Deny access for game '%1': it is already finished !", game_uid_);
+      LOG3("Deny access for game '%1': it is already finished!", game_uid_);
       Packet pkt_game_finished(CX_DENY);
       cx->send(&pkt_game_finished);
       delete cx;
@@ -111,7 +111,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
   if (state_ == ePlaying)
     {
       pthread_mutex_unlock(&lock_);
-      LOG3("Deny coach access for game '%1': it is already started !", game_uid_);
+      LOG3("Deny coach access for game '%1': it is already started!", game_uid_);
       Packet pkt_full(CX_DENY);
       cx->send(&pkt_full);
       delete cx;
@@ -120,6 +120,14 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
 
   if (wanna_be_coach)
     {
+      if (nb_coach_ >= nb_waited_coach_)
+	{
+	  LOG3("Deny access for game '%1': too many coaches!", game_uid_);
+	  Packet pkt_too_many(CX_DENY);
+	  cx->send(&pkt_too_many);
+	  delete cx;
+	  return;
+	}
       uid = nb_coach_++ + UID_COACH_BASE;
       LOG4("Grant access for coach `%1' (league id: %2), game '%3'.", uid, 
       		client_extid, game_uid_);
@@ -159,6 +167,11 @@ void GameHosting::clientDied(GameClient* cl)
     {
       if (!--nb_viewer_)
 	rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
+    }
+  if (nb_coach_ == 0 && nb_viewer_ == 0)
+    {
+      LOG4("Cancel game `%1', all clients has left!", game_uid_);
+      state_ = eFinishing;
     }
 }
 
@@ -221,10 +234,13 @@ void GameHosting::run(Log& log)
     client_poll_.poll();
 
   // Fill stats_list.
-  GameClientIter it;
-  for (it = client_list_.begin(); it != client_list_.end(); ++it)
-    if ((*it)->isCoach())
-      stats_list_.push_back(&(*it)->getClientStatistic());
+  if (state_ == ePlaying)
+    {
+      GameClientIter it;
+      for (it = client_list_.begin(); it != client_list_.end(); ++it)
+	if ((*it)->isCoach())
+	  stats_list_.push_back(&(*it)->getClientStatistic());
+    }     
 
   if (start_timeout.isTimeElapsed())
     {
@@ -239,21 +255,24 @@ void GameHosting::run(Log& log)
       LOG5("Game starting... %1 connected", nb_coach_);
       rules_->setSendPacketObject(this);
       rules_->serverStartup();
-      while (rules_->getState() != GS_END)
-        {
-          // Maybe the server has something to do
-          // (called at least every 500ms).
-          rules_->serverProcess();
+      if (rules_->getState() != GS_END)
+	{
+	  while (rules_->getState() != GS_END)
+	    {
+	      // Maybe the server has something to do
+	      // (called at least every 500ms).
+	      rules_->serverProcess();
 	  
-          client_poll_.poll();
-          if (nb_coach_ != nb_waited_coach_)
-            {
-              // FIXME: it should be optional.
-              LOG3("A coach has disconnected. Canceling game.");
-              break;
-            }
-        }
-      outputStatistics();
+	      client_poll_.poll();
+	      if (nb_coach_ != nb_waited_coach_)
+		{
+		  // FIXME: it should be optional.
+		  LOG3("A coach has disconnected. Canceling game.");
+		  break;
+		}
+	    }
+	  outputStatistics();
+	}
     }
 
   if (state_ == ePlaying)
