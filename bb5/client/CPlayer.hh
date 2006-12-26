@@ -31,19 +31,19 @@ public:
   virtual ~CPlayer();
 
   //! @brief Declare an action for the player.
-  bool declareAction(enum eAction action);
+  int declareAction(enum eAction action);
 
   //! @brief Move the player on the field.
-  bool move(const Position& to);
+  int move(const Position& to);
 	
   //! @brief Stand up the player.
-  bool standUp();
+  int standUp();
 
   //! @brief Block the player at the specified position.
-  bool block(CPlayer* opponent);
+  int block(CPlayer* opponent);
 	
   //! @brief Block the player at the specified position.
-  bool pass(const Position& to);
+  int pass(const Position& to);
   
   //! @brief Set the player position.
   void setPosition(const Position& pos);

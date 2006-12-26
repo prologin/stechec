@@ -20,14 +20,13 @@
 #ifndef CFIELD_HH_
 # define CFIELD_HH_
 
-
 struct ScorePoint;
 
 class CField : public Field<CPlayer>
 {
 public:
   CField();
-  ~CField();
+  virtual ~CField();
 
   //! @brief Get path from one point to another.
   //! @return A list of point, describing the path. This list will be
@@ -38,10 +37,6 @@ public:
                          const Position& dest,
                          CPlayer* p);
 
-  //! @brief Get Player at specified position.
-  //! @note Temporary, to be deleted when API will be ok.
-  const CPlayer* getPlayerConst(const Position& pos) const;
-  
 private:
   bool          getMinPath(int team_id);
   ScorePoint*   extractMin();
@@ -55,11 +50,5 @@ private:
   std::multimap<int, ScorePoint*> cur_pt_list_;
   ScorePoint*   goal_;
 };
-
-inline const CPlayer* CField::getPlayerConst(const Position& pos) const
-{
-  return tab_[pos.row * COLS + pos.col];
-}
-
 
 #endif /* !CFIELD_HH_ */

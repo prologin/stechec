@@ -37,68 +37,38 @@ public:
   Api(CRules* rules);
   ~Api();
  
-  /**
-  ** @name Actions
-  ** Following methods are all possible actions.
-  ** Remember that even if they return success, an action
-  ** may or may not be accepted later by the server.
-  **
-  */
-  //@{
-
-  void          doEndTurn();
-  void          doMoveTurnMarker();
-  void          doAskIllegalProcedure();
-  bool 		doReroll();
-  bool 		doAccept();
-  bool          doPlaceBall(const Point& pos);
-  bool          doGiveBall(int p);
-  bool		doChooseBlockDice(int n);
-  bool          doBlockPush(int n);
-  bool          doFollow(bool follow);
-  void          sendChatMessage(const std::string& msg);
-
-  bool		doDeclareMove(int p);
-  bool		doDeclareBlock(int p);
-  bool		doDeclareBlitz(int p);
-  bool		doDeclarePass(int p);
-  
-  bool		doMovePlayer(int p, const Point& to);
-  bool		doStandUpPlayer(int p);
-  bool		doBlockPlayer(int p, int def_p);
-  bool		doPassPlayer(int p, const Point& to);
-
-  void		doCheatDice(int roll);
-  
-  //@}
-
-  /**
+  /*!
   ** @name Game informations
   ** Following methods are all accessors... Feel free to call
   ** them whenever you want. It's cheap !
   */
   //@{
 
+  //! @brief Get the current turn.
+  //! @return The current turn in the range of [1, 8], or 0
+  //!   if in other state (kickoff, ...)
+  int			turn() const;
+
+  //! @brief Get the current half.
+  //! @return The current half.
+  int			half() const;
+ 
   //! @brief Grab your team id.
   //! @return A team identifiant, in the range [0, 1].
   int                   myTeamId() const;
-  //! @brief Get ball X position.
-  //! @return Return the ball X position, -1 if outside.
-  int                   ballX() const;
-  //! @brief Get ball Y position.
-  //! @return Return the ball Y position, -1 if outside.
-  int			ballY() const;
+  //! @brief Get ball position.
+  //! @return Return the ball position, (-1, -1) if outside.
+  Point                 ball() const;
+
+  //! @brief Get the stringified version of game status.
+  //!  Mainly useful for debugging.
+  //! @return The current game status.
+  const char*		gameStateString() const;
 
   //! @brief Get the player team id at the specified position.
-  //! @param x A x coordinate.
-  //! @param y A y coordinate.
+  //! @param pos A position on the field.
   //! @return A team id, or -1 if there is nobody at this position.
-  int			teamId(int x, int y);
-  //! @brief Get the player id at the specified position.
-  //! @param x A x coordinate.
-  //! @param y A y coordinate.
-  //! @return A player id, or -1 if there is nobody at this position.
-  int			playerId(int x, int y);
+  int			teamId(const Point& pos);
   
   //! @brief Select team to fetch information from.
   //!   Further call to all other API function will return
@@ -107,6 +77,9 @@ public:
   //!   @c US to select your team and @c THEM to select the other team.
   //! @see eSelTeam
   void                  selectTeam(int team_id);
+  //! @brief Get the selected team.
+  //! @return The selected team, or NULL if none was chosen.
+  const CTeam*          getTeam() const;
 
   //! @brief Select player to fetch information from.
   //!   Further call to all other API function will return
@@ -114,30 +87,45 @@ public:
   //! @param player_id Player identifier, in the range [0, MAX_PLAYER - 1].
   //! @attention It is reset when selectTeam is called.
   int                   selectPlayer(int player_id);
+  
+  //! @brief Get the player id at the specified position.
+  //! @param pos A position on the field.
+  //! @return A player id, or -1 if there is nobody at this position.
+  int			playerId(const Point& pos);
 
-  //! @brief Get the player status
-  //! @return Player status.
-  int			playerStatus() const;
-
+  //! @brief Get the selected player.
+  //! @return The selected player.
+  const CPlayer*        getPlayer() const;
+  //! @brief Get a player, of the selected team.
+  //! @param player_id The identifiant of this player.
+  //! @return The chosen player, or NULL if it doesn't exists.
+  const CPlayer*        getPlayer(int player_id);
+  //! @brief Get a player on the field.
+  //! @param pos A position on the field
+  //! @return The player standing in this field position, or NULL if there
+  //!  is nobody.
+  const CPlayer*        getPlayer(const Point& pos);
+  
   //! @brief Get the number of possible action for the selected player.
+  //! @fixme NOT IMPLEMENTED
   //! @return The number of possible action
   int			actionPossibleNumber() const;
 
   //! @brief Get a possible action for the selected player.
   //! @param index Action index, in the range [0 - actionPossibleNumber() - 1].
+  //! @fixme NOT IMPLEMENTED
   //! @return Action that this player may perform.
   int			actionPossible(int index) const;
 
   //! @brief Length that a move will take to the specified destination
   //!   for the for selected player.
-  //! @param dst_x X coordinate of destination.
-  //! @param dst_y Y coordinate of destination.
+  //! @param to Coordinate of destination.
   //! @return The number of case the selected player will have to do,
   //!   or 0 if that move can't be made.
-  int                   moveLength(int dst_x, int dst_y);
+  int                   moveLength(const Point& to);
 
   //! @brief Difficulty to get (FIXME) in/outside a square for a specified step.
-  //! @param step The current step (starting from 0 to move_length - 1) of the
+  //! @param step The step (starting from 0 to move_length - 1) of the
   //!   current movement projection.
   //! @return The number of tackles zone for this step.
   //! @note You have to make a successful call to moveLength before.
@@ -146,56 +134,107 @@ public:
   //! @brief Where the player will be on the field at this step.
   //! @param step The current step (starting from 0 to move_length - 1) of the
   //!   current movement projection.
-  //! @return X coordinate on the field.
+  //! @return Position on the field.
   //! @note You have to make a successful call to moveLength before.
-  int                   movePathX(int step);
-
-  //! @brief Where the player will be on the field at this step.
-  //! @param step The current step (starting from 0 to move_length - 1) of the
-  //!   current movement projection.
-  //! @return Y coordinate on the field.
-  //! @note You have to make a successful call to moveLength before.
-  int                   movePathY(int step);
+  Point                 movePath(int step);
 
   //! @brief Determine if a move is possible for the selected player to
   //!   the specified destination.
-  //! @param dst_x X coordinate of destination.
-  //! @param dst_y Y coordinate of destination.
+  //! @param to Coordinate of destination.
   //! @return 1 if this move is possible, 0 else.
-  int                   movePossible(int dst_x, int dst_y);
+  int                   movePossible(const Point& to);
 
+  //! @brief Get the current weather.
+  //! @note FIXME: currently disabled.
+  const Weather*        getWeather() const;
+  
   //@}
 
 
-  /**
-  ** @name Debug information
-  ** Accessors that are not scrictly needed for the game, but
-  ** may be useful for debugging or getting string about particular
-  ** states.
+  /*!
+  ** @name Actions
+  ** Following methods are all possible actions.
   **
-  ** There is mainly a rest of methods that expose the entire C* object
-  ** for the UI. It was not that I wanted first, but saved me a lot of
-  ** typing :)
+  ** Functions can return SUCCESS, or any error code defined in
+  ** common/Constants.hh
   **
-  ** These function may or may not be accessible through C interface.
+  ** Remember that even if they return success, an action
+  ** may or may not be accepted later by the server.
   */
   //@{
-  
-  const char*		getGameStateString() const;
-  const char*		getActionString(int action) const;
-  const char*		getRollString(int roll) const;
 
-  const std::string&    getCoachName() const;
-  const std::string&    getTeamName() const;
+  //! @brief End the current turn.
+  void          doEndTurn();
 
-  const CTeam*          getTeam() const;
-  const CPlayer*        getPlayer(int player_id) const;
-  const CPlayer*        getPlayer(const Point& pos) const;
-  const Weather*        getWeather() const;
-  const CField*         getField() const;
+  //! @brief Move the turn marker.
+  void          doMoveTurnMarker();
+
+  //! @brief Ask for an illegal procedure.
+  void          doAskIllegalProcedure();
+
+  //! @brief Place the ball, on the kick off.
+  //! @param pos Position to place the ball.
+  int           doPlaceBall(const Point& pos);
+
+  //! @brief Give the ball to one of your player, if the ball goes out of field
+  //!   on kick off.
+  //! @param p Player id to give the ball.
+  int           doGiveBall(int p);
+
+  //! @brief Reroll or accept the last dice roll.
+  //! @param reroll @c true if coach want to reroll,
+  //!   @c false to accept the result.
+  int 		doReroll(bool reroll);
+
+  //! @brief Declare an action for the selected player.
+  //! @param action Action to declare.
+  int		doDeclare(enum eAction action);
+
+  //! @brief After a block action, choose which block dice to use.
+  //! @note Wait for the right server reponse before calling it.
+  //! @param n A number between 1 and 3, depending on the previous
+  //!  returned server message.
+  int		doChooseBlockDice(int n);
+
+  //! @brief After a block action, push the defender to the selected square.
+  //! @note Wait for the right server reponse before calling it.
+  //! @param n A number between 1 and 3, depending on the previous
+  //!  returned server message.
+  int           doBlockPush(int n);
+
+  //! @brief After a block action, choose to follow the defender.
+  //! @note Wait for the right server reponse before calling it.
+  //! @param follow @c true if following is wanted, else @c false.
+  int           doFollow(bool follow);
+
+  //! @brief Stand up the selected player.
+  int		doStandUpPlayer();
+
+  //! @brief Move the selected player.
+  //! @note Declare a MOVE or BLITZ action before.
+  int		doMovePlayer(const Point& to);
+
+  //! @brief Block with the selected player.
+  //! @note Declare a BLOCK or BLITZ action before.
+  //! @param def_p The defender id, on the other team.
+  int		doBlockPlayer(int def_p);
+
+  //! @brief Move the selected player.
+  //! @note Declare a PASS action before.
+  //! @param to Where to throw the ball.
+  int		doPassPlayer(const Point& to);
+
+  //! @brief Choose the next dice result.
+  //! @param roll Next result to obtain, between 1 and number of dice faces.
+  void		doCheatDice(int roll);
+
+  //! @brief Send a chat message. Can be called every time.
+  //! @param msg Message to send.
+  void          sendChatMessage(const std::string& msg);
 
   //@}
-  
+
+
 private:
   CTeam*                selected_team_;
   CPlayer*              selected_player_;

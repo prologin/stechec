@@ -18,10 +18,17 @@
 # define CRULES_HH_
 
 # include "BaseCRules.hh"
+# include "BaseApi.hh"
 # include "Weather.hh"
 # include "CField.hh"
 # include "CBall.hh"
 # include "CTeam.hh"
+
+// Mostly a big hack, to have BaseCRules::onEvent(int) working.
+DECLARE_EMPTY_PACKET(CUSTOM_EVENT, CustomEvent);
+
+namespace xml { class XMLConfig; }
+class Api;
 
 //! @brief Constants for switchTeam().
 enum eSelTeam {
@@ -30,12 +37,6 @@ enum eSelTeam {
   US,           ///< Get information on our team.
   THEM          ///< Get information on the other them.
 };
-
-// Mostly a big hack, to have BaseCRules::onEvent(int) working.
-DECLARE_EMPTY_PACKET(CUSTOM_EVENT, CustomEvent);
-
-namespace xml { class XMLConfig; }
-class Api;
 
 /*!
 ** @brief Rules implementation for the client.
@@ -55,7 +56,7 @@ public:
   virtual void unserialize(std::istream& is);
 
   //! @brief Get the api.
-  virtual Api*  getApi();
+  virtual Api* getApi();
 
 private:
 

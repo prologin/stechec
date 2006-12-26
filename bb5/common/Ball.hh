@@ -24,15 +24,6 @@
 
 # include "PacketHandler.hh"
 
-# define N 2
-# define S 6
-# define E 4
-# define W 8
-# define NE 3
-# define NW 1
-# define SE 5
-# define SW 7
-
 //! @brief Server -> Client. Send the position of the ball.
 DECLARE_PACKET(MSG_BALLPOS, MsgBallPos)
   int row;
@@ -43,6 +34,18 @@ END_PACKET
 DECLARE_PACKET(MSG_GIVEBALL, MsgGiveBall)
   int player_id;
 END_PACKET
+
+
+enum eScatterDirection {
+  N = 2,
+  S = 6,
+  E = 4,
+  W = 8,
+  NE = 3,
+  NW = 1,
+  SE = 5,
+  SW = 7,
+};
 
 
 /*!

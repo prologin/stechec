@@ -35,14 +35,14 @@ class Field
 {
 public:
   Field();
-  ~Field();
+  virtual ~Field();
 
   //! @brief Check if the specified coordinate are in the field zone
   //!   (ie: not outside the border).
   bool          intoField(const Position& pos) const;
 
   //! @brief Check if the placement of the team is valid
-  int          isPlacementValid(int team_id);
+  int           isPlacementValid(int team_id);
 
   //! @brief Get the number of tackle zones for the square made by
   //!    a team.
@@ -86,7 +86,7 @@ inline void Field<T>::setPlayer(const Position& pos, T* p)
   // Desynchronization between field and players for position can be
   // _very_ critical.
   if (p != NULL && tab_[pos.row * COLS + pos.col] != NULL)
-    WARN("Dessynchronization bewteen field and players!");
+    WARN("Desynchronization bewteen field and players!");
       
   tab_[pos.row * COLS + pos.col] = p;
 }

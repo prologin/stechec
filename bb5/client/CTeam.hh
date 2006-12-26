@@ -47,31 +47,9 @@ public:
 
   //! @brief Declare an action for the player
   //!  Called from the UI.
-  bool declareAction(int player_id, enum eAction action);
+  int declareAction(CPlayer* p, enum eAction action);
 
-  //! @brief Move a player to a position (as far as player can go)
-  //!  Called from the UI.
-  bool movePlayer(int player_id, const Position& to);
 
-  //! @brief Stand up a player
-  //!  Called from the UI.
-  bool standUpPlayer(int player_id);
-
-  //! @brief Do a block.
-  //! @param player_id Player doing the block.
-  //! @param opponent Player to block.
-  //! @param action Action to do.
-  bool blockPlayer(int player_id, CPlayer* opponent);
-  
-  //! @brief Do a pass.
-  //! @param player_id Player doing the pass.
-  //! @param to The pass destination.
-  bool passPlayer(int player_id, const Position& to);
-	
-  //! @brief Get player
-  //! @note Temporary, wait for API cleaning.
-  const CPlayer* getPlayerConst(int id) const;
-  
 private:
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
@@ -85,15 +63,6 @@ private:
   xml::XMLTeam xml_team_;
   xml::XMLFormation xml_formation_;
 };
-
-inline const CPlayer* CTeam::getPlayerConst(int id) const
-{
-  if (id >= 0 && id < MAX_PLAYER)
-    return player_[id];
-
-  LOG2("Wrong player_id: %1 (team: %2)", id, team_id_);
-  return NULL;
-}
 
 
 #endif /* !CTEAM_HH_ */

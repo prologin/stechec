@@ -3,6 +3,7 @@
 noinst_LTLIBRARIES = libbb5_common.la
 
 libbb5_common_la_SOURCES =			\
+	Module.cc				\
 	Constants.hh				\
 	Ball.hh					\
 	Dice.cc					\
@@ -18,6 +19,9 @@ libbb5_common_la_SOURCES =			\
 libbb5_common_la_CXXFLAGS =			\
 	-DMODULE_NAME=\"common\"		\
 	-DMODULE_COLOR=C_BLUE
+
+libbb5_common_la_LIBADD =					\
+	$(top_builddir)/stechec/base_rules/libbase_rules.la
 
 INCLUDES	=				\
 	-I$(top_srcdir)/stechec/base_rules	\

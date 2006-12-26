@@ -96,7 +96,7 @@ int Dice::roll(const std::string& msg, enum eDiceFaceNumber type, int nb_dice)
 	  LOG3("  Roll remaining dices: %1D%2: `%3' (%4)", nb_dice, type, res, msg);
 	}
       else
-	LOG3("+ Cheat %1D%2: `%3' (%4)", nb_dice, type, res, msg);
+	LOG3("+ Cheat %1D%2: `%3' (%4)", nb_dice_start, type, res, msg);
     }
   return res;
 }

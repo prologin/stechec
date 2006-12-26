@@ -87,6 +87,7 @@ void CTeam::loadPlayerConfig(xml::XMLTeam& xml_team, int player_id)
 
   pkt.player_position = xml_team.getData<int>("positionid");
   stringToPacket(pkt.player_img, xml_team.getAttr<std::string>("player", "display"), 32);
+  stringToPacket(pkt.position_name, xml_team.getAttr<std::string>("player", "position"), 32);
   
   r_->sendPacket(pkt);
 }
@@ -111,55 +112,21 @@ void CTeam::placeTeam(int formation_id)
       }
 }
 
-bool CTeam::declareAction(int player_id, enum eAction action)
+int CTeam::declareAction(CPlayer* p, enum eAction action)
 {
-  CPlayer* p = getPlayer(player_id);
-  if (p == NULL)
-    return false;
   if (blitz_done_ && action == BLITZ)
     {
       LOG2("You have halready done a blitz action this turn.");
-      return false;
+      return INVALID_ACTION;
     }
   if (pass_done_ && action == PASS)
     {
       LOG2("You have halready done a pass action this turn.");
-      return false;
+      return INVALID_ACTION;
     }
   return p->declareAction(action);
 }
 
-bool CTeam::movePlayer(int player_id, const Position& to)
-{
-  CPlayer* p = getPlayer(player_id);
-  if (p == NULL)
-    return false;
-  return p->move(to);
-}
-
-bool CTeam::standUpPlayer(int player_id)
-{
-  CPlayer* p = getPlayer(player_id);
-  if (p == NULL)
-    return false;
-  return p->standUp();
-}
-
-bool CTeam::blockPlayer(int player_id, CPlayer* opponent)
-{
-  CPlayer* p = getPlayer(player_id);
-  if (p == NULL || opponent == NULL)
-    return false;
-  return p->block(opponent);
-}
-
-bool CTeam::passPlayer(int player_id, const Position& to)
-{
-  CPlayer* p = getPlayer(player_id);
-  if (p == NULL)
-    return false;
-  return p->pass(to);
-}
 
 void CTeam::msgTeamInfo(const MsgTeamInfo* m)
 {

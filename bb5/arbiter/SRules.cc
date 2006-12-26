@@ -312,6 +312,7 @@ void SRules::msgPlayTurn(const MsgEndTurn* m)
   // Send the playing team_id to clients.
   MsgNewTurn pkt;
   pkt.client_id = getState() == GS_COACH1 ? 0 : 1;
+  pkt.cur_half = cur_half_;
   pkt.cur_turn = cur_turn_;
   sendPacket(pkt);
   timer_.restart();

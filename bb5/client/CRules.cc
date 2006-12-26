@@ -20,6 +20,7 @@
 #include "CRules.hh"
 #include "xml/xml_config.hh"
 
+
 CRules::CRules(const xml::XMLConfig& cfg)
   : cfg_(cfg),
     cur_turn_(0),
@@ -63,7 +64,7 @@ void        CRules::unserialize(std::istream& is)
   weather_->unserialize(is);
 }
 
-Api*        CRules::getApi()
+Api*    CRules::getApi()
 {
   return api_;
 }
@@ -160,20 +161,23 @@ void        CRules::msgGiveBall(const MsgGiveBall* m)
 
 void        CRules::msgPlayTurn(const MsgNewTurn* m)
 {
+  cur_turn_ = m->cur_turn;
+
   // Who will play.
   setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
   if (m->client_id == getTeamId())
     {
-      LOG2("-- CRules: change state: GS_COACH (Our turn)");
+      LOG2("-- CRules: change state: GS_COACH (Our turn, turn %1, half %2)",
+	   m->cur_turn, m->cur_half);
       our_team_->resetTurn();
-      onEvent(eOurTurn);
     }
   else
     {
-      LOG2("-- CRules: change state: GS_COACH (Their turn)");
+      LOG2("-- CRules: change state: GS_COACH (Their turn, turn %1, half %2)",
+	   m->cur_turn, m->cur_half);
       other_team_->resetTurn();
-      onEvent(eTheirTurn);
     }
+  onEvent(m);
 }
 
 void        CRules::msgEndGame(const MsgEndGame* m)

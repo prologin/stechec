@@ -63,7 +63,8 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
     {
       r_->getBall()->setPosition(pos_);
     }
-  
+
+  // Pushed off-field. Go into reserve if stunned.
   if (!f_->intoField(pos))
     {
       rollInjury(0);

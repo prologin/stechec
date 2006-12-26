@@ -30,6 +30,7 @@ DECLARE_PACKET(MSG_WEATHER, MsgWeather)
   int weather;
 END_PACKET
 
+
 /*!
 ** @ingroup rules
 ** @brief Base class for storing current match weather.

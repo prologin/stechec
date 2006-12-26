@@ -50,11 +50,12 @@ const int GS_COACHBOTH     = 0x000C; ///< Any coach turn.
 const int COLS             = 15; ///< [| 0, 14 |]
 const int ROWS             = 26; ///< [| 0, 25 |]
 
-//! @brief Maximum number of players
+//! @brief Maximum number of players on a team.
 const int MAX_PLAYER	   = 16;
 
 
 //! @brief Constants that can be returned by the API.
+const int INVALID_ACTION   = -4;
 const int BAD_TEAM         = -3;
 const int BAD_PLAYER       = -2;
 const int BAD_ARGUMENT     = -1;
@@ -89,7 +90,7 @@ enum {
   MSG_PLAYERSTATUS,
   MSG_PLAYERKO,
   MSG_SKILL,
-  MSG_ROLLINFO,     // 35   -FIXME: complete usage
+  MSG_ROLLINFO,     // 35 FIXME: complete usage
   ACT_MOVETURNMARKER,
   ACT_ILLEGALPROC,
   ACT_DECLARE,
@@ -173,6 +174,7 @@ DECLARE_PACKET(MSG_REROLL, MsgReroll)
   bool reroll;
 END_PACKET
 DECLARE_PACKET(MSG_NEWTURN, MsgNewTurn)
+  int cur_half;
   int cur_turn;
 END_PACKET
 DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn);

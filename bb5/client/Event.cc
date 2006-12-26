@@ -30,12 +30,6 @@ void EventProcess::dispatch(const CustomEvent& ie) const
     case eKickOff:
       ev_->evKickOff();
       break;
-    case eOurTurn:
-      ev_->evNewTurn(true);
-      break;
-    case eTheirTurn:
-      ev_->evNewTurn(false);
-      break;
     }
 }
 
@@ -49,6 +43,12 @@ template <>
 void EventProcess::dispatch(const MsgIllegal& m) const
 {
   ev_->evIllegal(m.was_token);
+}
+
+template <>
+void EventProcess::dispatch(const MsgNewTurn& m) const
+{
+  ev_->evNewTurn(m.client_id, m.cur_half, m.cur_turn);
 }
 
 template <>
@@ -174,4 +174,50 @@ template <>
 void EventProcess::dispatch(const ActDeclare& pkt) const
 {
   ev_->evDeclare(pkt.client_id, pkt.player_id, (enum eAction) pkt.action);
+}
+
+
+
+
+// We must declare them, even if they aren't used, to make the linker happy.
+template <>
+void EventProcess::dispatch<MsgInitGame>(MsgInitGame const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgInitKickoff>(MsgInitKickoff const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgBlockDice>(MsgBlockDice const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgReroll>(MsgReroll const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgTeamInfo>(MsgTeamInfo const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgCheatDice>(MsgCheatDice const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgWeather>(MsgWeather const&) const
+{
+  assert(false);
 }

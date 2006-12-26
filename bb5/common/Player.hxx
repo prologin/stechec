@@ -14,8 +14,6 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-# include "Field.hh"
-
 inline Player::Player(const MsgPlayerCreate* m)
   : id_(m->player_id),
     team_id_(m->client_id),
@@ -58,6 +56,11 @@ inline const Position& Player::getPosition() const
 inline const std::string& Player::getName() const
 {
   return name_;
+}
+
+inline const std::string& Player::getPositionName() const
+{
+  return position_name_;
 }
 
 inline int Player::getMa() const
@@ -113,6 +116,11 @@ inline void Player::setAction(enum eAction action)
 inline bool Player::hasSkill(enum eSkill skill) const
 {
   return std::find(skill_list_.begin(), skill_list_.end(), skill) != skill_list_.end();
+}
+
+inline const Player::SkillList& Player::getSkillList() const
+{
+  return skill_list_;
 }
 
 inline void Player::resetTurn()

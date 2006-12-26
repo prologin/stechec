@@ -23,8 +23,6 @@
 enum {
   eInitGame,
   eKickOff,
-  eOurTurn,
-  eTheirTurn
 };
 
 /*!
@@ -42,7 +40,7 @@ public:
   virtual void evSync() {}
   virtual void evIllegal(int was_token);
   virtual void evInitGame() {}
-  virtual void evNewTurn(bool our_turn);
+  virtual void evNewTurn(int team_id, int cur_half, int cur_turn);
   virtual void evEndGame() {}
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, 
 			int result, int modifier, int required, bool reroll);
@@ -68,7 +66,7 @@ public:
 };
 
 inline void Event::evIllegal(int) {}
-inline void Event::evNewTurn(bool) {}
+inline void Event::evNewTurn(int, int, int) {}
 inline void Event::evResult(int, int, enum eRoll, int, int, int, bool) {}
 inline void Event::evBlockResult(int, int, int,	int, enum eBlockDiceFace[], int, bool) {}
 inline void Event::evHalf(int) {}
@@ -84,4 +82,5 @@ inline void Event::evPlayerKO(int, int, int) {}
 inline void Event::evFollow() {}
 inline void Event::evDeclare(int, int, enum eAction) {}
 inline void Event::evBlockPush(Position, int, Position[]) {}
+
 #endif /* !EVENT_HH_ */

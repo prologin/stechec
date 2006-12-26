@@ -66,107 +66,7 @@ inline void Api::doAskIllegalProcedure()
   rules_->sendPacket(ActIllegalProc());
 }
 
-inline bool Api::doDeclareMove(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->declareAction(p, MOVE);
-}
-
-inline bool Api::doDeclareBlock(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->declareAction(p, BLOCK);
-}
-
-inline bool Api::doDeclareBlitz(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->declareAction(p, BLITZ);
-}
-
-inline bool Api::doDeclarePass(int p)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->declareAction(p, PASS);
-}
-
-inline bool Api::doReroll()
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  if (!selected_team_->canUseReroll())
-    {
-      LOG2("Can't use reroll (no one left or allready use one this turn).");
-      return false;
-    }
-  if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
-    {
-      LOG2("Can't use reroll (no dice to reroll).");
-      return false;
-    }
-		
-  MsgReroll msg(rules_->our_team_->getTeamId());
-  msg.reroll = true;
-  rules_->sendPacket(msg);
-  return true;
-}
-
-inline bool Api::doAccept()
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  if (rules_->getState() != GS_REROLL&&rules_->getState() != GS_BLOCK)
-    {
-      LOG2("You do not have the choice...");
-      return false;
-    }
-  MsgReroll msg(rules_->our_team_->getTeamId());
-  msg.reroll = false;
-  rules_->sendPacket(msg);
-  return true;
-}
-
-inline bool Api::doChooseBlockDice(int n)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  if (rules_->getState() != GS_BLOCK)
-    {
-      LOG2("You do not have the choice...");
-      return false;
-    }
-  MsgBlockDice msg(rules_->our_team_->getTeamId());
-  msg.dice = n;
-  rules_->sendPacket(msg);
-  return true;
-}
-
-inline bool Api::doFollow(bool follow)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  if (rules_->getState() != GS_FOLLOW)
-    {
-      LOG2("You do not have the choice...");
-      return false;
-    }
-  MsgFollow msg(rules_->our_team_->getTeamId());
-  msg.follow = follow;
-  rules_->sendPacket(msg);
-  return true;
-}
-
-inline bool Api::doBlockPush(int n)
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  if (rules_->getState() != GS_PUSH)
-    {
-      LOG2("You do not have the choice...");
-      return false;
-    }
-  ActBlockPush msg(rules_->our_team_->getTeamId());
-  msg.square_chosen = n;
-  rules_->sendPacket(msg);
-  return true;
-}
-
-inline bool Api::doPlaceBall(const Point& pos)
+inline int Api::doPlaceBall(const Point& pos)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
 
@@ -174,79 +74,166 @@ inline bool Api::doPlaceBall(const Point& pos)
   if (!rules_->field_->intoField(bpos))
     {
       LOG2("Kickoff rejected. Ball not on the field: %1", pos);
-      return false;
+      return INVALID_ACTION;
     }
   if ((rules_->getTeamId() == 0 && bpos.row < 13)
       || (rules_->getTeamId() == 1 && bpos.row > 12))
     {
       LOG2("Kickoff rejected. Ball in your part of the field (%1): %2",
 	   selected_team_->getTeamId(),  pos);
-      return false;
+      return INVALID_ACTION;
     }
   MsgBallPos pkt;
   pkt.row = bpos.row;
   pkt.col = bpos.col;
   rules_->sendPacket(pkt);
 	
-  return true;
+  return SUCCESS;
 }
 
-inline bool Api::doGiveBall(int p)
+inline int Api::doGiveBall(int p)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
 	
   if (rules_->getState() != GS_TOUCHBACK)
     {
       LOG2("There is no touchback.");
-      return false;
+      return INVALID_ACTION;
     }
 	
   if (getPlayer(p) == NULL) 
     {
       LOG2("Player `%1' does not exist.", p);
-      return false;
+      return BAD_PLAYER;
     }
 	
   if (getPlayer(p)->getStatus() != STA_STANDING) 
     {
       LOG2("Player `%1' can't carry the ball.", p);
-      return false;
+      return INVALID_ACTION;
     }
   MsgGiveBall pkt;
   pkt.player_id = p;
   rules_->sendPacket(pkt);
-  return true;
+  return SUCCESS;
 }
 
-inline bool Api::doMovePlayer(int p, const Point& to)
+
+inline int Api::doReroll(bool reroll)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->movePlayer(p, to);
+  if (reroll && !selected_team_->canUseReroll())
+    {
+      LOG2("Cannot use reroll (no one left or already use one this turn).");
+      return INVALID_ACTION;
+    }
+  if (rules_->getState() != GS_REROLL && rules_->getState() != GS_BLOCK)
+    {
+      LOG2("Cannot do reroll nor accept (no dice to reroll).");
+      return INVALID_ACTION;
+    }
+		
+  MsgReroll msg(rules_->our_team_->getTeamId());
+  msg.reroll = reroll;
+  rules_->sendPacket(msg);
+  return SUCCESS;
 }
 
-inline bool Api::doStandUpPlayer(int p)
+inline int Api::doDeclare(enum eAction action)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->standUpPlayer(p);
+  CHECK_TEAM;
+  CHECK_PLAYER;
+
+  if (action == NONE)
+    return INVALID_ACTION;
+  return rules_->our_team_->declareAction(selected_player_, action);
 }
 
-inline bool Api::doBlockPlayer(int p, int def_p)
+inline int Api::doChooseBlockDice(int n)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_BLOCK)
+    {
+      LOG2("You do not have the choice...");
+      return INVALID_ACTION;
+    }
+  MsgBlockDice msg(rules_->our_team_->getTeamId());
+  msg.dice = n;
+  rules_->sendPacket(msg);
+  return SUCCESS;
+}
+
+inline int Api::doBlockPush(int n)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_PUSH)
+    {
+      LOG2("You do not have the choice...");
+      return INVALID_ACTION;
+    }
+  ActBlockPush msg(rules_->our_team_->getTeamId());
+  msg.square_chosen = n;
+  rules_->sendPacket(msg);
+  return SUCCESS;
+}
+
+inline int Api::doFollow(bool follow)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_FOLLOW)
+    {
+      LOG2("You do not have the choice...");
+      return INVALID_ACTION;
+    }
+  MsgFollow msg(rules_->our_team_->getTeamId());
+  msg.follow = follow;
+  rules_->sendPacket(msg);
+  return SUCCESS;
+}
+
+inline int Api::doStandUpPlayer()
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  CHECK_TEAM;
+  CHECK_PLAYER;
+
+  return selected_player_->standUp();
+}
+
+inline int Api::doMovePlayer(const Point& to)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  CHECK_TEAM;
+  CHECK_PLAYER;
+
+  return selected_player_->move(to);
+}
+
+inline int Api::doBlockPlayer(int def_p)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  CHECK_TEAM;
+  CHECK_PLAYER;
+
   CPlayer* opponent = rules_->other_team_->getPlayer(def_p);
-  return rules_->our_team_->blockPlayer(p, opponent);
+  return selected_player_->block(opponent);
 }
 
-inline bool Api::doPassPlayer(int p, const Point& to)
+inline int Api::doPassPlayer(const Point& to)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->our_team_->passPlayer(p, to);
+  CHECK_TEAM;
+  CHECK_PLAYER;
+
+  return selected_player_->pass(to);
 }
 
 inline void Api::sendChatMessage(const std::string& msg)
 {
   if (rules_->getState() == GS_WAIT)
     return;
+
   MsgChat pkt;
   stringToPacket(pkt.msg, msg, sizeof(pkt.msg));
   rules_->sendPacket(pkt);
@@ -259,9 +246,49 @@ inline void Api::doCheatDice(int roll)
   rules_->sendPacket(pkt);
 }
 
+
 /*
 ** Accessors, for the game
 */
+
+inline int Api::turn() const
+{
+  return rules_->cur_turn_;
+}
+
+inline int Api::half() const
+{
+  return rules_->cur_half_;
+}
+
+inline int Api::myTeamId() const
+{
+  return rules_->getTeamId();
+}
+
+inline Point Api::ball() const
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->ball_->getPosition();
+}
+
+inline int Api::teamId(const Point& pos)
+{
+  CHECK_POS(pos.x, pos.y);
+  CPlayer* p = rules_->field_->getPlayer(pos);
+  if (p != NULL)
+    return p->getTeamId();
+  return -1;
+}
+
+inline int Api::playerId(const Point& pos)
+{
+  CHECK_POS(pos.x, pos.y);
+  CPlayer* p = rules_->field_->getPlayer(pos);
+  if (p != NULL)
+    return p->getId();
+  return -1;
+}
 
 inline void Api::selectTeam(int team_id)
 {
@@ -275,43 +302,6 @@ inline void Api::selectTeam(int team_id)
     selected_team_ = rules_->other_team_;
 }
 
-
-inline int Api::myTeamId() const
-{
-  return rules_->getTeamId();
-}
-
-inline int Api::ballX() const
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->ball_->getPosition().getX();
-}
-
-inline int Api::ballY() const
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->ball_->getPosition().getY();
-}
-
-inline int Api::teamId(int x, int y)
-{
-  CHECK_POS(x, y);
-  CPlayer* p = rules_->field_->getPlayer(Position(y, x));
-  if (p != NULL)
-    return p->getTeamId();
-  return -1;
-}
-
-inline int Api::playerId(int x, int y)
-{
-  CHECK_POS(x, y);
-  CPlayer* p = rules_->field_->getPlayer(Position(y, x));
-  if (p != NULL)
-    return p->getId();
-  return -1;
-}
-
-
 inline int Api::selectPlayer(int player_id)
 {
   CHECK_TEAM;
@@ -319,15 +309,9 @@ inline int Api::selectPlayer(int player_id)
   return selected_player_ == NULL ? BAD_PLAYER : SUCCESS;
 }
 
-inline int Api::playerStatus() const
-{
-  CHECK_PLAYER;
-  return (int)selected_player_->getStatus();
-}
-
-
 inline int Api::actionPossibleNumber() const
 {
+  CHECK_TEAM;
   CHECK_PLAYER;
   // FIXME: todo
   return 0;
@@ -335,25 +319,26 @@ inline int Api::actionPossibleNumber() const
 
 inline int Api::actionPossible(int index) const
 {
+  CHECK_TEAM;
   CHECK_PLAYER;
   // FIXME: todo
   return index = 0;
 }
 
-inline int Api::moveLength(int dst_x, int dst_y)
+inline int Api::moveLength(const Point& to)
 {
+  CHECK_TEAM;
   CHECK_PLAYER;
-  CHECK_POS(dst_x, dst_y);
+  CHECK_POS(to.x, to.y);
 
   player_path_ = &rules_->field_->getPath(selected_player_->getPosition(),
-                                          Position(dst_y, dst_x),
+                                          to,
                                           selected_player_);
   return player_path_->size();
 }
 
 inline int Api::moveDifficulty(int step)
 {
-  CHECK_PLAYER;
   if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
     return BAD_ARGUMENT;
 
@@ -364,91 +349,28 @@ inline int Api::moveDifficulty(int step)
   return (7 - std::min(selected_player_->getAg(), 6)) + nbt - 1;
 }
 
-inline int Api::movePathX(int step)
+inline Point Api::movePath(int step)
 {
-  CHECK_PLAYER;
   if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
-    return BAD_ARGUMENT;
+    return Point(-1, -1);
 
-  return (*player_path_)[step].getX();
+  return (*player_path_)[step];
 }
 
-inline int Api::movePathY(int step)
+inline int Api::movePossible(const Point& to)
 {
+  CHECK_TEAM;
   CHECK_PLAYER;
-  if (player_path_ == NULL || step < 0 || step >= (int)player_path_->size())
-    return BAD_ARGUMENT;
+  CHECK_POS(to.x, to.y);
 
-  return (*player_path_)[step].getY();
-}
-
-inline int Api::movePossible(int dst_x, int dst_y)
-{
-  CHECK_PLAYER;
-  CHECK_POS(dst_x, dst_y);
-
-  // FIXME: better implementation.
+  // FIXME: do a better implementation.
   return rules_->field_->getPath(selected_player_->getPosition(),
-                                 Position(dst_y, dst_x),
+                                 to,
                                  selected_player_).empty() ? 0 : 1;
 }
 
 
-/*
-** Accessors, for debug
-*/
-
-inline const std::string& Api::getCoachName() const
-{
-  return selected_team_->getCoachName();
-}
-
-inline const char* Api::getActionString(int action) const
-{
-  return Player::stringify(static_cast<enum eAction>(action)); 
-}
-
-inline const char* Api::getRollString(int roll) const
-{
-  return Dice::stringify(static_cast<enum eRoll>(roll));
-}
-
-inline const std::string& Api::getTeamName() const
-{
-  return selected_team_->getTeamName();
-}
-
-inline const CTeam* Api::getTeam() const
-{
-  return selected_team_;
-}
-
-inline const CPlayer* Api::getPlayer(int player_id) const
-{
-  return selected_team_->getPlayerConst(player_id);
-}
-
-inline const CPlayer* Api::getPlayer(const Point& pos) const
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  if (!rules_->field_->intoField(Position(pos)))
-    return NULL;
-  return rules_->field_->getPlayerConst(Position(pos));
-}
-
-inline const Weather* Api::getWeather() const
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->weather_;
-}
-
-inline const CField* Api::getField() const
-{
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  return rules_->field_;
-}
-
-inline const char* Api::getGameStateString() const
+inline const char* Api::gameStateString() const
 {
   switch (rules_->getState())
     {
@@ -474,4 +396,32 @@ inline const char* Api::getGameStateString() const
       return "GS_FOLLOW";
     }
   return BaseApi<CRules>::getStateString();
+}
+
+inline const CTeam* Api::getTeam() const
+{
+  return selected_team_;
+}
+
+inline const CPlayer* Api::getPlayer() const
+{
+  return selected_player_;
+}
+
+inline const CPlayer* Api::getPlayer(int player_id)
+{
+  if (selected_team_ == NULL)
+    return NULL;
+  return selected_team_->getPlayer(player_id);
+}
+
+inline const CPlayer* Api::getPlayer(const Point& pos)
+{
+  return rules_->field_->getPlayer(pos);
+}
+
+inline const Weather* Api::getWeather() const
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->weather_;
 }

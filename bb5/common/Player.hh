@@ -24,6 +24,7 @@
 
 # include "PacketHandler.hh"
 # include "Constants.hh"
+# include "Field.hh"
 
 // Hard limit of move/skill number, for a single packet.
 const int MAX_MOVE = 16;
@@ -85,6 +86,7 @@ DECLARE_PACKET(MSG_PLAYERCREATE, MsgPlayerCreate)
   int skill[MAX_SKILL];
   int skill_nb;
   int name[8];
+  int position_name[8]; ///< Player position name (lineman, ...).
   int player_position;	///< Graphic info.
   int player_img[8];	///< Graphic info.
 END_PACKET
@@ -115,7 +117,7 @@ DECLARE_PACKET(MSG_RESULT, MsgResult)
   int result;
   int modifier;
   int required;
-  bool reroll;
+  int reroll;
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
@@ -124,7 +126,7 @@ DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
   int opponent_id;
   int nb_dice;
   int results[3];
-  bool reroll;
+  int reroll;
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)
@@ -132,8 +134,9 @@ DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)
 END_PACKET
 
 DECLARE_PACKET(MSG_FOLLOW, MsgFollow)
-  bool follow;
+  int follow;
 END_PACKET
+
 
 
 /*!
@@ -144,6 +147,8 @@ END_PACKET
 class Player
 {
 public:
+  typedef std::vector<enum eSkill> SkillList;
+
   Player(const MsgPlayerCreate* m);
   virtual ~Player();
 
@@ -151,6 +156,7 @@ public:
   int getTeamId() const;
   const Position& getPosition() const;
   const std::string& getName() const;
+  const std::string& getPositionName() const;
 
   //! @brief Get Movement Allowance.
   int getMa() const;
@@ -169,7 +175,7 @@ public:
 
   //! @brief Check if the player has performed an action this turn.
   bool hasPlayed() const;
-	
+
   //! @brief Set the 'has played this turn' marker.
   void setHasPlayed();
 
@@ -180,15 +186,20 @@ public:
   void setAction(enum eAction action);
 
   //! @brief Check if this player has this skill.
+  //! @param skill Skill to check for.
   bool hasSkill(enum eSkill skill) const;
-  
+
+  //! @brief Get the list of skills.
+  //! @note Don't use this method in rules, you should better use @c hasSkill.
+  const SkillList& getSkillList() const;
+
   //! @brief Called on new turn.
   void resetTurn();
 
   static const char* stringify(enum eStatus status);
   static const char* stringify(enum eAction action);
   static const char* stringify(enum eSkill skill);
-  
+
   friend std::ostream& operator<< (std::ostream& os, const Player& p);
 
 protected:
@@ -196,6 +207,7 @@ protected:
   int		team_id_; ///< Team that this player belongs to (0 or 1).
   Position	pos_;     ///< Position on the field. Read-only, please.
   std::string	name_;    ///< Player name.
+  std::string	position_name_; ///< Player position name (lineman, ...).
   enum eStatus	status_;  ///< Current player status (standing/prone/Stunned/KO...).
 
   int ma_;
@@ -209,7 +221,6 @@ protected:
   bool will_prone_;
 
 private:
-  typedef std::vector<enum eSkill> SkillList;
   SkillList	skill_list_; ///< List of skills that this player have.
 };
 

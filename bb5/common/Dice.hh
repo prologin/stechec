@@ -25,6 +25,13 @@
 ** @ingroup rules
 */
 
+DECLARE_PACKET(MSG_CHEATDICE, MsgCheatDice)
+  int next_result;
+END_PACKET
+
+class BaseRules;
+
+
 //! @ingroup rules
 //@{
 
@@ -51,11 +58,6 @@ enum eBlockDiceFace {
   BDEFENDER_DOWN
 };
 
-DECLARE_PACKET(MSG_CHEATDICE, MsgCheatDice)
-  int next_result;
-END_PACKET
-
-class BaseRules;
 
 /*!
 ** @brief Classe représentant un dé à X faces.

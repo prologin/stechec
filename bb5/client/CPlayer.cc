@@ -21,6 +21,7 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   : Player(m),
     r_(r)
 {
+  position_name_ = packetToString(m->position_name);
   player_position_ = m->player_position;
   player_picture_ = packetToString(m->player_img);
 
@@ -51,60 +52,60 @@ void CPlayer::subMa(int dep)
   ma_remain_ -= dep;
 }
 
-bool CPlayer::declareAction(enum eAction action)
+int CPlayer::declareAction(enum eAction action)
 {
   if (has_played_)
     {
       LOG2("This player has already played.");
-      return false;
+      return INVALID_ACTION;
     }
     
   if (action_ != NONE)
     {
       LOG2("This player is performing an action.");
-      return false;
+      return INVALID_ACTION;
     }
   
   ActDeclare pkt;
   pkt.player_id = id_;
   pkt.action = action;
   r_->sendPacket(pkt);
-  return true;
+  return SUCCESS;
 }
 
-bool CPlayer::move(const Position& to)
+int CPlayer::move(const Position& to)
 {
   CField* f = r_->getField();
 
   if (status_ != STA_STANDING)
     {
       LOG2("You are not in a standing position.");
-      return false;
+      return INVALID_ACTION;
     }
   if (to == pos_)
     {
       LOG2("You are already on %1", pos_);
-      return false;
+      return INVALID_ACTION;
     }
   if (!r_->getField()->intoField(to))
     {
       LOG2("Trying to move player outside of field: %1", to);
-      return false;
+      return INVALID_ACTION;
     }
   if (has_played_)
     {
       LOG2("Player has already played this turn");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == NONE)
     {
       LOG2("Player must declare an action before moving");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == BLOCK)
     {
       LOG2("Player can't move in a block action");
-      return false;
+      return INVALID_ACTION;
     }
 
   ActMove pkt;
@@ -112,7 +113,7 @@ bool CPlayer::move(const Position& to)
   if (p.empty())
     {
       LOG2("Can not go from %1 to %2. Sorry.", pos_, to);
-      return false;
+      return INVALID_ACTION;
     }
   pkt.player_id = id_;
   pkt.nb_move = 0;
@@ -125,90 +126,87 @@ bool CPlayer::move(const Position& to)
       pkt.nb_move++;
     }
   r_->sendPacket(pkt);
-  return true;
+  return SUCCESS;
 }
 
-bool CPlayer::standUp()
+int CPlayer::standUp()
 {
   if (status_ != STA_PRONE)
-    {
-      LOG2("You are not prone.");
-      return false;
-    }
+    return INVALID_ACTION;
   if (has_played_)
     {
       LOG2("Player has already played this turn");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == NONE)
     {
       LOG2("Player must declare an action before standing up");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == BLOCK)
     {
       LOG2("Player can't stand up in a block action");
-      return false;
+      return INVALID_ACTION;
     }
 		
   ActStandUp pkt;
   pkt.player_id = id_;
   r_->sendPacket(pkt);
-  return true;
+  return SUCCESS;
 }
 
-bool CPlayer::block(CPlayer* opponent)
+int CPlayer::block(CPlayer* opponent)
 {
   if (opponent == NULL
       || opponent->getTeamId() == getTeamId()
       || !getPosition().isNear(opponent->getPosition())
       || opponent->getStatus() != STA_STANDING)
-    return false;
+    return INVALID_ACTION;
   
   if (has_played_)
     {
       LOG2("Player has already played this turn");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == NONE)
     {
       LOG2("Player must declare an action before blocking");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == MOVE)
     {
       LOG2("Player can't block in a move action");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == PASS)
     {
       LOG2("Player can't block in a pass action");
-      return false;
+      return INVALID_ACTION;
     }
       
   ActBlock pkt;
   pkt.player_id = id_;
   pkt.opponent_id = opponent->getId();
   r_->sendPacket(pkt);
-  return true;
+  return SUCCESS;
 }
 
-bool CPlayer::pass(const Position& to)
+int CPlayer::pass(const Position& to)
 {
   if (has_played_)
     {
       LOG2("Player has already played this turn");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ == NONE)
     {
       LOG2("Player must declare an action before throwing");
-      return false;
+      return INVALID_ACTION;
     }
   if (action_ != PASS)
     {
       LOG2("Player must declare a pass action to throw");
-      return false;
+      return INVALID_ACTION;
     }
 	
   ActPass pkt;
@@ -216,7 +214,7 @@ bool CPlayer::pass(const Position& to)
   pkt.dest_row = to.row;
   pkt.dest_col = to.col;
   r_->sendPacket(pkt);
-  return true;
+  return SUCCESS;
 }
 
 
