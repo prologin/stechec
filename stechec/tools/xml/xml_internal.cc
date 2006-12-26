@@ -56,9 +56,9 @@ XMLInternal::XMLInternal()
   parser_ = new XercesDOMParser();
 
   parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Auto);
-  parser_->setDoNamespaces(false);
-  parser_->setDoSchema(false);
-  parser_->setValidationConstraintFatal(true);
+  parser_->setDoNamespaces(true);
+  parser_->setDoSchema(true);
+  parser_->setValidationConstraintFatal(false);
   parser_->setExitOnFirstFatalError(true);
   parser_->setLoadExternalDTD(true);
   parser_->setDoValidation(true); // set this to false to skip dtd validation.

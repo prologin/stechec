@@ -170,7 +170,6 @@ struct CxInit : public Packet
 {
   CxInit()
    : Packet(CX_INIT, -1) { data_size = sizeof(*this); }
-  int rules_name[8];
   int binary_version;
 };
 
@@ -195,6 +194,9 @@ struct CxJoin : public Packet
 {
   CxJoin(int player_id = -1)
     : Packet(CX_JOIN, player_id) { data_size = sizeof(*this); }
+  int rules_name[8];
+  int rules_major;
+  int rules_minor;
   int game_uid;
   int is_coach;
   int client_extid;

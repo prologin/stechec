@@ -57,6 +57,19 @@ END_PACKET
 const int GAME_FINISHED = 255;
 DECLARE_EMPTY_PACKET(GAME_FINISHED, GameFinished);
 
+/*!
+** @brief Rule module description.
+**
+** Should be present in each rules module, to provide information
+** and checking between client and server.
+*/
+struct RuleDescription
+{
+  const char* name;
+  const char* description;
+  int major;
+  int minor;
+};
 
 
 /*! @brief Base rules class for all kind of game.
