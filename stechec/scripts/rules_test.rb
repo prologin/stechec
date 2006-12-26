@@ -116,9 +116,9 @@ class RuleTest
         check_prog_exec('cp', ENV['srcdir'] + c['formation'], @tmpdir.to_s)
         c['formation'] = File.basename(c['formation'])
       end
-      if c['diff'] then
-        check_prog_exec('cp', ENV['srcdir'] + c['diff'], @tmpdir.to_s)
-        c['diff'] = File.basename(c['diff'])
+      if c['ref'] then
+        check_prog_exec('cp', ENV['srcdir'] + c['ref'], @tmpdir.to_s)
+        c['ref'] = File.basename(c['ref'])
       end
     end
     if @nb_client == 0
@@ -174,7 +174,7 @@ class RuleTest
 
       EOF
     end
- 
+
     f.puts <<-EOF
   <server>
     <rules>#{@server_rule_lib}</rules>
@@ -190,20 +190,21 @@ class RuleTest
 
     f.close
   end
-  
+
   #
   # Do a diff
   #
   def do_diff(c)
-    print_banner "Doing diff between '#{c['diff']}' and '#{c['output']}'"
-    tmp_file = c['output'].to_s + '.tmp'
+    print_banner "Doing diff between '#{c['ref']}' and '#{c['output']}'"
+    diff_file = File.basename(c['output'], ".*").to_s + '.diff'
+    tmp_file = diff_file + '.tmp'
 
     `sed -n '/^BEGIN DIFF/ { :n; n; /^END DIFF/d; p; b n } ' < #{c['output']} > #{tmp_file}`
-    `diff -wBu #{c['diff']} #{tmp_file} > #{c['input'] + '.diff'}`
+    `diff -wBu #{c['ref']} #{tmp_file} > #{diff_file}`
     res = $?.exitstatus
 
     if res != 0 then
-      File.open(c['input'] + '.diff') do |f|
+      File.open(diff_file) do |f|
         while s = f.gets do
           print s
         end
@@ -221,7 +222,7 @@ class RuleTest
     res = 0
     (1..@nb_client).each do |n|
        c = conf['client_' + n.to_s]
-      if c['output'] and c['diff'] then
+      if c['output'] and c['ref'] then
         res += do_diff c
       end
     end
@@ -232,7 +233,7 @@ class RuleTest
   # Do some pre-processing stuff, inside temporary directory
   #
   def pre_run(conf)
-    
+
     (1..@nb_client).each do |n|
       c = conf['client_' + n.to_s]
       if c['team']
