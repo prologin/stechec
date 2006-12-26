@@ -14,6 +14,9 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+CLIENT_BIN=stechec
+SERVER_BIN=stechec_server
+
 #
 # Usage, version, ...
 #
@@ -60,10 +63,10 @@ clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT/id=([0-9]+).*$!\1!p' | grep 
 USE_VALGRIND=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/valgrind=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
 USE_GDB=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/gdb=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
 
-if [ ! `which tbt` ]; then
-    abort "tbt: command not found. Check your \$PATH."
-elif [ ! `which tbt_server` ]; then
-    abort "tbt_server: command not found. Check your \$PATH."
+if [ ! `which $CLIENT_BIN` ]; then
+    abort "$CLIENT_BIN: command not found. Check your \$PATH."
+elif [ ! `which $SERVER_BIN` ]; then
+    abort "$SERVER_BIN: command not found. Check your \$PATH."
 fi
 
 if [ "x$clients" = x ]; then
@@ -82,7 +85,7 @@ done
 #
 # Launch server
 #
-tbt_server "$1" &
+$SERVER_BIN "$1" &
 pid_server=$!
 
 #
@@ -96,13 +99,13 @@ for id in $clients; do
     STDIN_REDIR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdin=(.*)$,\1,p; t q; b n; :q q }"`
     STDOUT_REDIR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdout=(.*)$,\1,p; t q; b n; :q q }"`
     if [ "x$USE_GDB" = "x$id" ]; then
-	gdb -q --args tbt $id "$1"
+	gdb -q --args $CLIENT_BIN $id "$1"
     else
 	if [[ "x$STDIN_REDIR" != "x" &&"x$STDOUT_REDIR" != "x"  ]]; then
-	    $VALGRIND tbt $id "$1" < $STDIN_REDIR > $STDOUT_REDIR &
+	    $VALGRIND $CLIENT_BIN $id "$1" < $STDIN_REDIR > $STDOUT_REDIR &
 	    sleep 1 # BB5 Kludge. Be sure that clients have their uid.
 	else
-	    $VALGRIND tbt $id "$1" &
+	    $VALGRIND $CLIENT_BIN $id "$1" &
 	fi
 	pid_client="$pid_client $!"
     fi

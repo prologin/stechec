@@ -39,6 +39,7 @@
 <!ELEMENT server (rules?, options, listen, log, nb_spectator, debug, server_debug)>
   <!ELEMENT options EMPTY>
     <!ATTLIST options persistent (true|false) "true">
+    <!ATTLIST options wait_timeout CDATA "30">
     <!ATTLIST options start_game_timeout CDATA "30">
   <!ELEMENT listen EMPTY>
     <!ATTLIST listen port CDATA "25151">

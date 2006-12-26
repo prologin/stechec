@@ -43,6 +43,11 @@ void Timer::setAllowedTime(int time)
   time_allowed_ = time;
 }
 
+int Timer::getAllowedTime() const
+{
+  return time_allowed_;
+}
+
 int  Timer::getTimeRemaining() const
 {
   time_t tv;

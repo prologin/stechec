@@ -235,10 +235,19 @@ void        Server::run()
 {
   TcpCx		listen_socket;
   TcpCxListener listener(&listen_socket, this);
-
+  Timer		wait_timeout(0);
+  
   is_persistent_ = cfg_.getAttr<bool>("server", "options", "persistent");
+  if (!is_persistent_)
+    wait_timeout.setAllowedTime(cfg_.getAttr<int>("server", "options", "wait_timeout"));
   
   LOG2("Listening on port %1", cfg_.getAttr<int>("server", "listen", "port"));
+  if (wait_timeout.getAllowedTime() > 0)
+    {
+      LOG2("Will wait for `%1' second that a game begin before exiting",
+	   wait_timeout.getAllowedTime());
+      wait_timeout.start();
+    }
   listen_socket.listenAt(cfg_.getAttr<int>("server", "listen", "port"));
   waiting_clients_.reserve(1024); // should be max cx;
   waiting_clients_.push_back(&listener);
@@ -248,6 +257,8 @@ void        Server::run()
       wcl_poll_.poll();
       if (cleanFinishedGame() && !is_persistent_)
         break;
+      if (wait_timeout.isTimeElapsed() && games_.empty())
+	break;
     }
   LOG1("Server has finished its work. Exiting.");
 }

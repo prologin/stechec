@@ -38,9 +38,11 @@ public:
   //! @brief Set the maximum allowed time, in second.
   //! @note This function does nothing if the timer is started.
   void        setAllowedTime(int allowed_time);
+  //! @brief Get the allowed time.
+  int         getAllowedTime() const;
   //! @brief Get the remaining time, in seconds.
   //! @note If called when the timer is stopped, it will return a high value (> 0).
-  int        getTimeRemaining() const;
+  int         getTimeRemaining() const;
   //! @brief Check is the time is elapsed.
   //! @note If called when the timer is stopped, it will return false.
   bool        isTimeElapsed() const;

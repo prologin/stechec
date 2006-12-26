@@ -45,17 +45,6 @@ class RuleTest
   end
 
   #
-  # check if 'prg' is in the path
-  #
-  def check_prog_path(prg)
-    `which #{prg} > /dev/null 2>&1`
-    if $?.exitstatus != 0
-      puts prg + " no found in PATH. Aborting."
-      cmd_result false
-    end
-  end
-
-  #
   # check if 'prg' exit successfully, otherwise abort.
   #
   def check_prog_exec(prg, *args)
@@ -178,7 +167,7 @@ class RuleTest
     f.puts <<-EOF
   <server>
     <rules>#{@server_rule_lib}</rules>
-    <options persistent="false" start_game_timeout="30" />
+    <options persistent="false" wait_timeout="10" start_game_timeout="30" />
     <listen port="25169" />
     <log enabled="false" file="match.log" />
     <nb_spectator>0</nb_spectator>
@@ -321,10 +310,6 @@ class RuleTest
       'pascal' => @player_filename + '.pas',
       'haskell' => @player_filename + '.hs'
     }
-
-    # do some sanity check
-    check_prog_path('tbt')
-    check_prog_path('tbt_server')
 
   end
 
