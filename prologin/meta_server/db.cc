@@ -244,9 +244,12 @@ int		db_update_competiteur_data(MYSQL *mysql, int id_competiteur, int level, int
 */
 int		init_sql(MYSQL *mysql, const t_conf *conf)
 {
+  my_bool val = 1;
+
   print_verbose(3, 0, "[Meta] Init SQL.\n");
   if (!(mysql_init(mysql)))
     return print_verbose(1, -1, "[Meta] Init SQL Error: %s.\n", mysql_error(mysql));
+  mysql_options(mysql, MYSQL_OPT_RECONNECT, &val);
   if (!mysql_real_connect(mysql, conf->db_ip, conf->db_login,
 			  conf->db_pass, conf->db_database, 0, NULL, 0))
     return print_verbose(1, -1, "[Meta] Real connect SQL Error: %s.\n", mysql_error(mysql));
