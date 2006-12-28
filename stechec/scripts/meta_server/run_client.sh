@@ -109,14 +109,14 @@ if [ $is_competition = "0" ]; then
     echo " * Time limit: $time_limit (reserve $reserve_time)" >> $real_out_file
     echo >> $real_out_file
 
-    $stechec_install_path/bin/tbt $competiteur_id $config_file                     \
+    $stechec_install_path/bin/stechec $competiteur_id $config_file                     \
        2>&1 | sed -e 's/\[[01];3[0-9]m//g;s/\[0m//g' >> $real_out_file
     res=$?
 
     # eventually upload log file.
     upload_file $real_out_file $out_file
 else
-    $stechec_install_path/bin/tbt $competiteur_id $config_file                     \
+    $stechec_install_path/bin/stechec $competiteur_id $config_file                     \
        > /dev/null 2> /dev/null 
     res=$?
 fi

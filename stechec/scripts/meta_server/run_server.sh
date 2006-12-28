@@ -113,7 +113,7 @@ if [ $is_competition = "0" ]; then
     # Run a game, format output
     #
     tmp_out=$tmp_dir/stdout
-    $stechec_install_path/bin/tbt_server $config_file > $tmp_out 2> $real_out_file
+    $stechec_install_path/bin/stechec_server $config_file > $tmp_out 2> $real_out_file
     res=$?
     sed -i -e 's/\[[01];3[0-9]m//g;s/\[0m//g' $real_out_file
     echo "Serveur exited with return code: $res" >> $real_out_file
@@ -135,7 +135,7 @@ else
     #
     # Run a game, trash all debug output and game log.
     #
-    $stechec_install_path/bin/tbt_server $config_file 2> /dev/null
+    $stechec_install_path/bin/stechec_server $config_file 2> /dev/null
     res=$?
 fi
 
