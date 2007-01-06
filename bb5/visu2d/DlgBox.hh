@@ -69,10 +69,16 @@ public:
   void setText(const std::string& msg);
   void setActionHandler(DialogBoxCb* handler);
 
+  DialogBoxCb* getActionHandler();
+
   //! @brief Add a block button on the dialog box.
   //! @param dice_face The face of the dice to display in the range [1-6].
   //! @note Only work with eDlgBoxBlock.
   void addBlockButton(int dice_face);
+
+  //! @brief Add a reroll label. Only for eDlgBoxBlock.
+  //! @return Index of reroll boutton.
+  int addRerollLabel();
   
   virtual void enable();
   virtual void disable();
@@ -85,8 +91,11 @@ private:
   Surface bg_;
   TextSurface text_;
   Sprite icon_;
+
+  // Only for eDlgBoxBlock. -->
   typedef std::vector<Surface*> ButtonList;
   ButtonList button_;
+  // <--
 
   bool dragging_;
   Point drag_delta_;

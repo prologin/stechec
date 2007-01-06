@@ -98,7 +98,7 @@ void ActionPopup::prepareDeclareMenu(VisuPlayer* vp, enum eStatus player_status)
   vp_ = vp;
   for (i = 0; i < display_act_nb_; i++)
     {
-      LOG2("prepare decl menu: %1 - %2", display_act_[i], i);
+      LOG6("prepare decl menu: %1 - %2", display_act_[i], i);
       sprite_[display_act_[i]].setPos(0, i * 40);
       sprite_[display_act_[i]].enable();
       sprite_on_[display_act_[i]].setPos(0, i * 40);
@@ -131,7 +131,7 @@ void ActionPopup::prepareActionMenu(enum eAction decl_act)
 
   for (int i = 0; i < display_act_nb_; i++)
     {
-      LOG2("prepare action menu: %1 - %2", display_act_[i], i);
+      LOG6("prepare action menu: %1 - %2", display_act_[i], i);
       sprite_[display_act_[i]].setPos(0, i * 40);
       sprite_[display_act_[i]].enable();
       sprite_on_[display_act_[i]].setPos(0, i * 40);

@@ -281,11 +281,10 @@ bool initTTF (void)
 int main (int argc, char *argv[])
 {
   Log log_client(5);
-  xml::XMLConfig cfg;
- 
+  xml::XMLConfig cfg(".tbt/tbtrc", PKGDATADIR);
   SDLWindow win;
-  win.init(&cfg);
 
+  win.init(&cfg);
   screen = win.getScreen().getSDLSurface();
   LOG1("Init SDL Window ok.");
   

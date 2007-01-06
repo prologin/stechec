@@ -44,6 +44,9 @@ public:
 
   //! @brief Called at each new turn. Reset some variables.
   void newTurn();
+
+  //! @brief Called at each end turn. Reset some variables.
+  void finishedTurn();
   
   //! @brief An action was selected by the popup menu or an other source.
   //! @param item Action selected.

@@ -26,6 +26,8 @@ VisuField::VisuField(Game& g)
     g_(g),
     bg_("image/general/playground_0.jpg"),
     ball_("image/general/ball.png"),
+    cross_black_("image/general/crosses_rgbbw.png"),
+    cross_red_("image/general/crosses_rgbbw.png"),
     draw_ticks_(true)
 {
   bg_.setZ(-1);
@@ -45,6 +47,14 @@ VisuField::VisuField(Game& g)
   blue_highlight_.hide();
   addChild(&red_highlight_);
   addChild(&blue_highlight_);
+  cross_black_.splitNbFrame(5, 1);
+  cross_black_.setFrame(4);
+  cross_black_.hide();
+  cross_red_.splitNbFrame(5, 1);
+  cross_red_.setFrame(1);
+  cross_red_.hide();
+  addChild(&cross_black_);
+  addChild(&cross_red_);
 }
 
 VisuField::~VisuField()
@@ -97,12 +107,29 @@ void VisuField::removeMarker()
 
 void VisuField::setBallPos(const Point& pos)
 {
-  if (ball_.isShown())
-    ball_.move(squareToField(pos, Point(3, 3)), 35.);
-  else
+  if (pos == Point(-1, -1))
     {
+      ball_.hide();
+      return;
+    }
+
+  if (!ball_.isShown())
+    {
+      // This case happen when other team does the kickoff, on reception
+      // of the first MSG_BALLPOS
+      cross_black_.setPos(squareToField(pos, Point(4, 4)));
+      cross_black_.show();
       ball_.setPos(squareToField(pos, Point(3, 3)));
       ball_.show();
+    }
+  else
+    {
+      if (g_.isStateSet(stWaitKoffBall))
+	{
+	  cross_red_.setPos(squareToField(pos, Point(4, 4)));
+	  cross_red_.show();
+	}
+      ball_.move(squareToField(pos, Point(3, 3)), 35.);
     }
 }
 
@@ -184,8 +211,8 @@ void VisuField::update()
 {
   Input& inp = g_.getInput();
 
-  // Handle kickoff.
-  if (g_.isStateSet(stDoKickoff))
+  // Handle kickoff of ball - we place the ball on receiver's field side.
+  if (g_.isStateSet(stDoKoffBall))
     {
       Point square(mouseToSquare());
       ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
@@ -205,11 +232,45 @@ void VisuField::update()
 	      if (!g_.getApi()->doPlaceBall(square))
 		{
 		  ball_.setPos(squareToField(square, Point(10, 10)));
-		  g_.unsetState(stDoKickoff);
+		  g_.unsetState(stDoKoffBall);
+		  g_.setState(stWaitKoffBall);
+		  cross_black_.setPos(squareToField(square, Point(4, 4)));
+		  cross_black_.show();
 		  removeMarker();
 		}
 	    }
 	}
+      else
+	removeMarker();
+    }
+
+  // Handle kickoff of ball - give the ball to one of our player.
+  if (g_.isStateSet(stDoKoffGiveBall))
+    {
+      Point square(mouseToSquare());
+      ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
+      ball_.show();
+
+      const CPlayer* p = g_.getApi()->getPlayer(square);
+      if (p != NULL)
+	{
+	  setMarker(square, 0);
+	  if (inp.button_pressed_[1])
+	    {
+	      LOG4("Try to give the ball to %1 at %2", p->getId(), square);
+	      if (!g_.getApi()->doGiveBall(p->getId()))
+		{
+		  ball_.setPos(squareToField(square, Point(10, 10)));
+		  g_.unsetState(stDoKoffGiveBall);
+		  g_.setState(stWaitKoffBall);
+		  removeMarker();
+		}
+	    }
+	}
+      else if (mouseInsideField() &&
+	       (square.y < ROWS / 2 && g_.getApi()->myTeamId() == 0
+		|| square.y >= ROWS / 2 && g_.getApi()->myTeamId() == 1))
+	setMarker(square, 1);
       else
 	removeMarker();
     }

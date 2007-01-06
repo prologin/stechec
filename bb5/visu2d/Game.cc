@@ -32,6 +32,7 @@
 #include "Field.hh"
 #include "VisuPlayer.hh"
 #include "ActionPopup.hh"
+#include "ActionDlg.hh"
 #include "Game.hh"
 
 BEGIN_NS(sdlvisu);
@@ -40,25 +41,18 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   : win_(win),
     xml_(xml),
     api_(api),
-    ccx_(ccx),
-    dlg_follow_answer_(api),
-    dlg_reroll_answer_(api)
+    ccx_(ccx)
 {
   panel_ = new Panel(*this);
   field_ = new VisuField(*this);
   action_popup_ = new ActionPopup(*this);
+  game_dlg_ = new ActionDlg(*this);
 
   api_->setEventHandler(this);
   win_.getScreen().addChild(panel_);
   win_.getScreen().addChild(field_);
   win_.getScreen().addChild(action_popup_);
     
-  txt_status_ = TextSurface("Vera.ttf", 12, 270, 65);
-  txt_status_.setZ(6);
-  txt_status_.setRenderMethod(eTextShaded);
-  txt_status_.setPos(3, 532);
-  win_.getScreen().addChild(&txt_status_);
-
   state_list_.insert(stNothing); // Avoid useless segv...
   setState(stWait);    // Wait game begins.
 
@@ -76,15 +70,12 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
       block_push_[i].hide();
       field_->addChild(&block_push_[i]);
     }
-  
-  initDialogBoxes();
 }
 
 Game::~Game()
 {
   win_.getScreen().removeChild(panel_);
   win_.getScreen().removeChild(field_);
-  win_.getScreen().removeChild(&txt_status_);
 
   for (int i = 0; i < 16; i++)
     {
@@ -95,30 +86,7 @@ Game::~Game()
   delete panel_;
   delete field_;
   delete action_popup_;
-
-  delete dlg_play_;
-  delete dlg_touchback_;
-  delete dlg_follow_;
-}
-
-void Game::initDialogBoxes()
-{
-  // Dialog box for kickoff/play turn.
-  dlg_play_ = new DialogBox(*this, eDlgBoxOk, eDlgInfo);
-  dlg_play_->setPos(150, 150);
-
-  dlg_touchback_ = new DialogBox(*this, eDlgBoxOk, eDlgInfo);
-  dlg_touchback_->setPos(150, 200);
-
-  dlg_reroll_ = new DialogBox(*this, eDlgBoxYesNo, eDlgInfo);
-  dlg_reroll_->setPos(150, 200);
-  dlg_reroll_->setText("Do you want to reroll ?");
-  dlg_reroll_->setActionHandler(&dlg_reroll_answer_);
-
-  dlg_follow_ = new DialogBox(*this, eDlgBoxYesNo, eDlgInfo);
-  dlg_follow_->setPos(150, 200);
-  dlg_follow_->setText("Do you want to follow your opponent ?");
-  dlg_follow_->setActionHandler(&dlg_follow_answer_);
+  delete game_dlg_;
 }
 
 Api* Game::getApi()
@@ -150,7 +118,7 @@ bool Game::isStateSet(enum eState s) const
 {
   enum eState first = *state_list_.begin();
   if (first == stNothing)
-    WARN("getStatus returns stNothing... must be a bug.");
+    LOG5("getStatus returns stNothing... must be a bug.");
 
   // Not in the current chunk.
   if (s / 10 > first / 10)
@@ -165,6 +133,7 @@ void Game::setState(enum eState s)
     WARN("state %1 already set!", s);
   state_list_.insert(s);
 
+  return;
   // debug
   LOG4("Insert %1", s);
   std::copy(state_list_.begin(), state_list_.end(), std::ostream_iterator<int>(std::cout, " "));
@@ -175,15 +144,10 @@ void Game::unsetState(enum eState s)
 {
   state_list_.erase(s);
 
-  if (s == stShowDlgBox && !dlg_box_list_.empty())
-    {
-      LOG2("a dlgbox has been closed, display the next one.");
-      dlg_box_list_.front()->enable();
-      dlg_box_list_.pop_front();
-    }
-  else if (s == stShowDlgBox)
-    LOG2("unset dlgbox, but none in the list");
-    
+  if (s == stShowDlgBox)
+    game_dlg_->pop();
+
+  return;
   // debug
   LOG4("Remove %1", s);
   std::copy(state_list_.begin(), state_list_.end(), std::ostream_iterator<int>(std::cout, " "));
@@ -198,97 +162,98 @@ void Game::unselectAllPlayer()
         player_[i][j]->unselect();
 }
 
-void Game::pushDialogBox(DialogBox *dlgbox)
-{
-  if (isStateSet(stShowDlgBox))
-    {
-      LOG2("push one dlgbox in the list");
-      dlg_box_list_.push_back(dlgbox);
-    }
-  else
-    {
-      LOG2("display dlgbox immediately.");
-      dlgbox->enable();
-    }
-}
-
 
 /*
 ** Events
 */
 
-void Game::evIllegal(int)
+void Game::evIllegal(int token)
 {
-  LOG4("An illegal token was received.");
+  LOG4("An illegal token was received (%1)", token);
 }
 
-void Game::evNewTurn(int player_id, int cur_half, int cur_turn)
+void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
 {
   std::ostringstream os;
 
   os << "Turn " << cur_turn << " (half " << cur_half << ")" << std::endl;
-  unsetState(stWait);
-  if (player_id == api_->myTeamId())
+
+  int other_team_id = (team_id + 1) % 2;
+  for (int j = 0; j < 16; j++)
+    {
+      if (player_[team_id][j] != NULL)
+	player_[team_id][j]->newTurn();
+      if (player_[other_team_id][j] != NULL)
+	player_[other_team_id][j]->finishedTurn();
+    }
+  
+  unsetState(stWaitKoffBall);
+  if (team_id == api_->myTeamId())
     {
       unsetState(stWaitOther);
       setState(stWaitPlay);
       os << "It is your turn, Play !";
-      txt_status_.addText("It is your turn... Play !");
-      dlg_play_->setText(os.str());
-      pushDialogBox(dlg_play_);
-
-      int i = api_->myTeamId();
-      for (int j = 0; j < 16; j++)
-	if (player_[i][j] != NULL)
-	  player_[i][j]->newTurn();
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText(os.str());
     }
   else
     {
       unsetState(stWaitPlay);
       setState(stWaitOther);
       os << "Other turn. Please wait...";
-      txt_status_.addText("Waiting that the other coach finish its turn.");
-      dlg_play_->setText(os.str());
-      pushDialogBox(dlg_play_);
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText(os.str());
     }
-  panel_->setTurn(player_id, cur_turn);
+  panel_->setTurn(team_id, cur_turn);
 }
 
 void Game::evEndGame()
 {
-  txt_status_.addText("Game is finished.");
-  dlg_play_->setText("Game is finished.");
-  pushDialogBox(dlg_play_);
+  game_dlg_->push(eDlgActInfo);
 }
 
 void Game::evMoveTurnMarker()
 {
-  txt_status_.addText("Move turn marker ? Ahah, not implemented yet.");
+  LOG2("Move turn marker ? Ahah, not implemented yet.");
 }
 
 void Game::evTimeExceeded()
 {
-  txt_status_.addText("Time exceeded. You were too slow.");
+  LOG2("Time exceeded. You were too slow.");
+  game_dlg_->push(eDlgActInfo);
+  game_dlg_->setText("Time exceeded, you were too slow");
 }
 
-void Game::evPlayerKnocked(int team_id, int player_id)
+void Game::evPlayerKnocked(int, int player_id)
 {
   LOG4("A player was knocked down.");
-  team_id = player_id;
+
+  std::ostringstream os;
+  os << "Player " << player_id << " has knocked down";
+  game_dlg_->push(eDlgActInfo);
+  game_dlg_->setText(os.str());
 }
 
-void Game::evKickOff()
+void Game::evKickOff(int team_id, bool place_team)
 {
   unsetState(stWait);
-  setState(stDoKickoff);
-  txt_status_.addText("Kickoff. Please place the ball.");
-  dlg_play_->setText("Kickoff. Place the ball.");
-  pushDialogBox(dlg_play_);
+  if (team_id == api_->myTeamId() && !place_team)
+    {
+      setState(stDoKoffBall);
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Kickoff. Place the ball.");
+    }
+  else if (team_id != api_->myTeamId() && !place_team)
+    {
+      setState(stWaitKoffBall);
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Waiting that the other place the ball.");
+    }
 }
 
 void Game::evChat(const std::string& msg)
 {
-  txt_status_.addText(std::string("<chat> ") + msg);
+  LOG1(std::string("<chat> ") + msg);
 }
 
 void Game::evPlayerCreate(int team_id, int player_id)
@@ -334,11 +299,17 @@ void Game::evBallPos(const Point& pos)
   field_->setBallPos(pos);
 }
 
-void Game::evGiveBall()
+void Game::evGiveBall(int team_id)
 {
-  LOG4("Touchback! receiving team can give the ball to any player on the field.");
-  dlg_touchback_->setText("Touchback! receiving team can give the ball to any player on the field.");
-  pushDialogBox(dlg_touchback_);
+  LOG4("Touchback! receiving team (team id %1) can give the ball to any player on the field.",
+       team_id);
+  if (team_id == api_->getTeamId())
+    game_dlg_->push(eDlgActTouchback);
+  else
+    {
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Touchback! Wait that other team choose to which to give ball");
+    }
 }
 
 void Game::evResult(int team_id, int player_id, enum eRoll action_type, int result, 
@@ -347,54 +318,55 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
   LOG4("Player `%1' tried an action : `%2' : roll [%3] + [%4], required : [%5].",
        player_id, Dice::stringify(action_type), result, modifier, required);
 	
-  if (result + modifier < required && reroll && api_->getTeamId() == team_id)
+  if (api_->getTeamId() == team_id && reroll)
     {
       LOG4(" -> You can use a 'reroll' or 'accept' this result.");
-      pushDialogBox(dlg_reroll_);
+      game_dlg_->push(eDlgActReroll);
     }
 }
 
-void Game::evBlockResult(int team_id, int player_id, int opponent_id, 
+void Game::evBlockResult(int team_id, int player_id, int opponent_player_id,
 			 int nb_dice, enum eBlockDiceFace result[3],
-			 int choose, bool reroll)
+			 int strongest_team_id, bool can_reroll)
 {
-  player_id = opponent_id;
-  nb_dice = nb_dice;
-  result = result;
+  player_id = opponent_player_id;
 
-  if (team_id != api_->getTeamId())
+  LOG2("Game::evBlockResult: team_id: %1, opponent_id: %2 strongest: %3 can_reoll %4 nb_dice %5",
+       team_id, opponent_player_id, strongest_team_id, can_reroll, nb_dice);
+
+  // show the dices.
+  game_dlg_->push(eDlgActBlockDice);
+  for (int i = 0; i < nb_dice; i++)
+    game_dlg_->front()->addBlockButton(result[i]);
+
+  if (strongest_team_id == api_->getTeamId())
     {
-      if (choose == api_->getTeamId())
-	{
-	  if (reroll)
-	    txt_status_.addText(" Wait for opponent reroll decision");
-	  else
-	    LOG4(" You must choose a 'dice <n>'");
-	}
+      assert(nb_dice > 1);
+      LOG2("I have the strongest player, I can choose dice");
+      game_dlg_->setBlockChoice();
     }
-  else
+  
+  if (api_->getTeamId() == team_id &&
+      !(strongest_team_id != -1 && api_->getTeamId() == strongest_team_id)
+      && can_reroll)
     {
-      if (choose == api_->getTeamId())
-	{
-	  if (reroll)
-	    LOG4("You can use a 'reroll' or choose a 'dice <n>'");
-	  else
-	    LOG4(" You must choose a 'dice <n>'");
-	}
-      else if (reroll)
-	{
-	  txt_status_.addText("You can use a reroll or accept this result.");
-	  pushDialogBox(dlg_reroll_);
-	}
+      LOG2("I have the strongest player or I did the block, I can choose to reroll");
+      game_dlg_->addRerollLabel();
+    }
+
+  if (api_->getTeamId() != team_id && api_->getTeamId() != strongest_team_id)
+    {
+      // Wait other decision, but show results.
+      game_dlg_->setText("Wait for opponent to choose dice");
     }
 }
 
-void Game::evBlockPush(Position pos, int nb_choice, Position choices[])
+void Game::evBlockPush(const Position& pos, int nb_choice, const Position choices[])
 {
   LOG4( "You can push the player from the square %1 to : ", pos);
   for (int i = 0; i < nb_choice; i++)
     {
-      LOG4("  'push %1: %2", i, choices[i]);
+      LOG4(" - push %1: %2", i, choices[i]);
       block_push_[i].setPos(Point(choices[i]) * 40);
       block_push_[i].show();
     }
@@ -404,8 +376,8 @@ void Game::evBlockPush(Position pos, int nb_choice, Position choices[])
 
 void Game::evFollow()
 {
-  txt_status_.addText("Follow after block choice.");
-  pushDialogBox(dlg_follow_);
+  LOG2("Follow after block choice.");
+  game_dlg_->push(eDlgActFollow);
 }
 
 
@@ -438,6 +410,8 @@ int Game::run()
   DialogBox test_dg2(*this, eDlgBoxBlock, eDlgError);
   test_dg2.setText("Mais non, il n'y a pas (encore) d'erreur.");
   test_dg2.setPos(150, 50);
+  test_dg2.addBlockButton(2);
+  test_dg2.addBlockButton(6);
 
   
   // Sit back and see what's happening...
@@ -485,12 +459,6 @@ int Game::run()
 	      block_push_[i].setFrame(1);
 	}
       
-      // Test dlg
-      if (win_.getInput().key_pressed_[SDLK_t])
-        pushDialogBox(&test_dg);
-      if (win_.getInput().key_pressed_[SDLK_r])
-        pushDialogBox(&test_dg2);
-
       // Field border around squares.
       if (win_.getInput().key_pressed_[SDLK_s])
 	field_->setDrawTicks(!field_->getDrawTicks());
@@ -499,50 +467,15 @@ int Game::run()
       if (win_.getInput().key_pressed_[SDLK_e])
 	api_->doEndTurn();
       
-      // Print some things
+      // Print FPS
       std::ostringstream os;
       os << "FPS: " << win_.getFps();
       fps.setText(os.rdbuf()->str());
-
-      if (game_state != api_->getState())
-        {
-          std::string status;
-          switch (api_->getState())
-            {
-            case GS_WAIT: status = "GS_WAIT"; break;
-            case GS_INITGAME: status = "GS_INITGAME"; break;
-            case GS_INITKICKOFF: status = "GS_INITKICKOFF"; break;
-            case GS_PAUSE: status = "Pause."; break;
-            }
-	  if (status != "")
-	    txt_status_.addText("New game status: " + status);
-          game_state = api_->getState();
-        }
     }
   if (api_->getState() != GS_END)
     ccx_->disconnect();
   return 0;
 }
 
-
-/*
-** Dialog boxes callback handlers.
-*/
-
-void Game::DlgFollowAnser::clicked(int btn_index)
-{
-  bool follow = btn_index == 0;
-  
-  LOG1("follow clicker: %1", btn_index);
-  api_->doFollow(follow);
-}
-
-void Game::DlgRerollAnser::clicked(int btn_index)
-{
-  bool reroll = btn_index == 0;
-  
-  LOG1("reroll clicker: %1", btn_index);
-  api_->doReroll(reroll);
-}
 
 END_NS(sdlvisu);

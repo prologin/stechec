@@ -136,8 +136,8 @@ void DialogBox::setStyle(enum eDlgBoxButton style, enum eDlgBoxIcon icon)
 	// We don't show icon here, and move text on the bottom.
 	always_display_button_ = true;
 	icon_.disable();
-	text_.setPos(20, 100);
-	text_.setSize(Point(260, 40));
+	text_.setPos(20, 113);
+	text_.setSize(Point(350, 50));
       }
       break;
     }
@@ -164,9 +164,25 @@ void DialogBox::addBlockButton(int picture_index)
   btn_block->splitNbFrame(6, 1);
   btn_block->setFrame(picture_index);
   btn_block->setZ(6);
-  btn_block->setPos(35 + 60 * button_.size(), 38);
+  btn_block->setPos(37 + 60 * button_.size(), 40);
   addChild(btn_block);
   button_.push_back(btn_block);
+}
+
+int DialogBox::addRerollLabel()
+{
+  Sprite* reroll_lbl_ = new Sprite("image/dialog/reroll.jpg");
+  reroll_lbl_->setZ(3);
+  reroll_lbl_->splitNbFrame(2, 1);
+  reroll_lbl_->setPos(75, 130);
+  addChild(reroll_lbl_);
+  button_.push_back(reroll_lbl_);
+  return button_.size() - 1;
+}
+
+DialogBoxCb* DialogBox::getActionHandler()
+{
+  return handler_;
 }
 
 void DialogBox::enable()

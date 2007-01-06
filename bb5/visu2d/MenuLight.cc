@@ -50,6 +50,7 @@ private:
   SDLWindow win_;
   VirtualSurface* screen_;
   Surface bg_;
+  Sprite bg_hi_;
   TextSurface create_;
   TextSurface join_;
   TextSurface join_host_;
@@ -64,7 +65,7 @@ private:
 
 /* Constructor. Only pass argc and argv to ClientApp, it need them to locate xml file. */
 MenuLight::MenuLight(int argc, char** argv)
-  : ClientApp(argc, argv)
+  : ClientApp(argc, argv, ".tbt/tbtrc", PKGDATADIR)
 {
 }
 
@@ -94,8 +95,15 @@ void MenuLight::loadResources()
 {
   // Initialize resources.
   screen_ = &win_.getScreen();
-  bg_.load("image/screens/credits_bg.jpg");
+  bg_.load("image/screens/lightmenu.jpg");
   screen_->addChild(&bg_);
+
+  bg_hi_.load("image/screens/end_btn.jpg");
+  bg_hi_.splitNbFrame(2, 1);
+  bg_hi_.setFrame(2);
+  bg_hi_.hide();
+  bg_hi_.setPos(666, 509);
+  screen_->addChild(&bg_hi_);
 
   create_ = TextSurface("Vera.ttf", 20, 155, 35);
   create_.setBgColor(aquamarine_color);
@@ -147,6 +155,7 @@ void MenuLight::loadResources()
 void MenuLight::unloadResources()
 {
   bg_.free();
+  bg_hi_.free();
   create_.free();
   join_.free();
   join_host_.free();
@@ -168,10 +177,15 @@ void MenuLight::unloadResources()
 */
 int MenuLight::showMenu()
 {
+  static bool first = true;
+  if (!first)
+    return -1;
+  first = false;
+  
   // As a special case, if the option 'connect_on_startup' is on in the configuration
   // file, don't even jump in menu loop, 
-  //if (cfg_.getAttr<bool>("client", "connect", "connect_on_startup"))
-  //  return 0;
+  if (cfg_.getAttr<bool>("client", "connect", "connect_on_startup"))
+   return 0;
 
   loadResources();
   
@@ -184,10 +198,24 @@ int MenuLight::showMenu()
 	return 1;
 
       // Quit. Return negative value.
+      if (bg_hi_.getRect().inside(inp.mouse_))
+	bg_hi_.show();
+      else
+	bg_hi_.hide();
       if (win_.getInput().key_pressed_[SDLK_q] ||
-	  Rect(675, 520, 120, 75).inside(inp.mouse_) && inp.button_pressed_[1])
+	  bg_hi_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
 	return -1;
 
+      // Highlights
+      if (join_.getRect().inside(inp.mouse_))
+	join_.setBgColor(darkcyan_color);
+      else
+	join_.setBgColor(aquamarine_color);
+      if (create_.getRect().inside(inp.mouse_))
+	create_.setBgColor(darkcyan_color);
+      else
+	create_.setBgColor(aquamarine_color);
+      
       // Create game
       if (create_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
 	{

@@ -30,6 +30,7 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
     p_(p),
     has_focus_(false),
     is_selected_(false),
+    has_played_(true),
     last_player_status_(STA_UNASSIGNED),
     circle_("image/general/circle.png"),
     circle_selected_("image/general/circle_select.png"),
@@ -97,6 +98,12 @@ void VisuPlayer::newTurn()
     circle_.hide();
 }
 
+void VisuPlayer::finishedTurn()
+{
+  has_played_ = true;
+  circle_.hide();
+}
+
 void VisuPlayer::actionFinished()
 {
   circle_.hide();
@@ -157,12 +164,19 @@ void VisuPlayer::selectAction(enum eAction item)
       break;
 
     case eActPass:
-      api_->doDeclare(PASS);
-      api_->doStandUpPlayer();
-      act_popup_->prepareActionMenu(eActPass);
-      circle_selected_.setFrame(2);
-      game_.unsetState(stDoAction);
-      is_second_action_ = true;
+      if (!is_second_action_)
+	{
+	  api_->doDeclare(PASS);
+	  api_->doStandUpPlayer();
+	  act_popup_->prepareActionMenu(eActPass);
+	  circle_selected_.setFrame(2);
+	  game_.unsetState(stDoAction);
+	  is_second_action_ = true;
+	}
+      else
+	{
+	  target_action_ = eActPass;
+	}
       break;
 
     case eActMove:
@@ -310,7 +324,7 @@ void VisuPlayer::update()
 	circle_.stopAnim();
     }
 
-  // Click on player (of _my_ team). Select him.
+  // Click on player (of _my_ team, on my turn). Select him.
   if (now_focus && !is_selected_ && !has_played_
       && !game_.isStateSet(stPopupShow) && !game_.isStateSet(stDoAction)
       && api_->myTeamId() == p_->getTeamId()
@@ -328,6 +342,10 @@ void VisuPlayer::update()
 	}
     }
 
+  // Player has finished its action
+  if (circle_.isShown() && p_->hasPlayed())
+    actionFinished();
+  
   // Draw path
   if (game_.isStateSet(stDoAction) && target_action_ == eActMove)
     drawPath();

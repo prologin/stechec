@@ -21,7 +21,7 @@
 
 # include "tools.hh"
 # include "Event.hh"
-# include "DlgBox.hh"
+# include "Sprite.hh"
 
 // All forward decl. Avoid recompilation of all sdlvisu when a header
 // is modified.
@@ -30,7 +30,6 @@ class Api;
 class ClientCx;
 class SDLWindow;
 class Input;
-class Sprite;
 class TextSurface;
 class VirtualSurface;
 
@@ -40,6 +39,7 @@ class Panel;
 class VisuField;
 class VisuPlayer;
 class ActionPopup;
+class ActionDlg;
 
 /*!
 ** @brief Visu global status.
@@ -50,7 +50,11 @@ enum eState {
   stShowDlgBox = 10,
   stWaitInput,
   stWait = 20,
-  stDoKickoff = 30,
+  stDoKoffBall = 30,
+  stDoKoffGiveBall,
+  stDoKoffTeam,
+  stWaitKoffBall,
+  stWaitKoffTeam,
   stBlockPushChoice,
   stPopupShow = 40,
   stDoAction = 50,
@@ -88,16 +92,10 @@ public:
   //! @brief Remove a status from the list of currently set status.
   void unsetState(enum eState s);
 
-  //! @brief Show dialog box one at a time. If a box is already displayed,
-  //!  delay drawing of it.
-  void pushDialogBox(DialogBox* dlgbox);
-  
   int run();
 
 private:
 
-  void initDialogBoxes();
-  
   /*
   ** All Events.
   */
@@ -107,20 +105,20 @@ private:
   virtual void evMoveTurnMarker();
   virtual void evTimeExceeded();
   virtual void evPlayerKnocked(int team_id, int player_id);
-  virtual void evKickOff();
+  virtual void evKickOff(int team_id, bool place_team);
   virtual void evChat(const std::string& msg);
   virtual void evPlayerCreate(int team_id, int player_id);
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evBallPos(const Point& pos);
-  virtual void evGiveBall();
+  virtual void evGiveBall(int team_id);
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, int result, 
 			int modifier, int required, bool reroll);
-  virtual void evBlockResult(int team_id, int player_id, int opponent_id, 
+  virtual void evBlockResult(int team_id, int player_id, int opponent_player_id, 
 			     int nb_dice, enum eBlockDiceFace result[3],
-			     int choose, bool reroll);
+			     int strongest_team_id, bool reroll);
   virtual void evFollow();
-  virtual void evBlockPush(Position pos, int nb_choice, Position choices[]);
+  virtual void evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
 
   SDLWindow&            win_;    ///< The SDL window.
   xml::XMLConfig*       xml_;    ///< Configuration file.
@@ -133,35 +131,10 @@ private:
 
   VisuPlayer*           player_[2][16]; ///< Players...
 
-  TextSurface           txt_status_;
   std::set<enum eState> state_list_;
-
-  std::deque<DialogBox*> dlg_box_list_;
-  DialogBox*		dlg_play_;
-  DialogBox*		dlg_touchback_;
-  DialogBox*		dlg_follow_;
-  DialogBox*		dlg_reroll_;
+  ActionDlg*            game_dlg_; ///< List of all displayed action.
 
   Sprite                block_push_[3];
-  
-  class DlgFollowAnser : public DialogBoxCb
-  {
-  public:
-    DlgFollowAnser(Api* api) : api_(api) {}
-  private:
-    virtual void clicked(int btn_index);
-    Api* api_;
-  } dlg_follow_answer_;
-
-  class DlgRerollAnser : public DialogBoxCb
-  {
-  public:
-    DlgRerollAnser(Api* api) : api_(api) {}
-  private:
-    virtual void clicked(int btn_index);
-    Api* api_;
-  } dlg_reroll_answer_;
-
 };
 
 END_NS(sdlvisu);

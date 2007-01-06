@@ -62,6 +62,9 @@ private:
   TextSurface   av_;
   TextSurface	misc_;
   TextSurface   skills_;
+  Sprite	digit_score_[2];
+  Sprite	digit_reroll_[2];
+  Sprite	digit_time_[3];
 
   Surface	turn_[2];
 };

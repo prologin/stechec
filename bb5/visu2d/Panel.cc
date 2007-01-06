@@ -94,7 +94,31 @@ Panel::Panel(Game& g)
       turn_[i].load("image/panel/turn.png");
       turn_[i].hide();
       addChild(&turn_[i]);
+
+      digit_score_[i].load("image/panel/digits_score.png");
+      digit_score_[i].splitNbFrame(10, 1);
+      addChild(&digit_score_[i]);
+      digit_reroll_[i].load("image/panel/digits_reroll.png");
+      digit_reroll_[i].splitNbFrame(10, 1);
+      addChild(&digit_reroll_[i]);
     }
+  digit_score_[0].setPos(157, 510);
+  digit_score_[1].setPos(197, 510);
+  digit_reroll_[0].setPos(68, 505);
+  digit_reroll_[1].setPos(68, 541);
+
+  for (int i = 0; i < 3; i++)
+    {
+      digit_time_[i].load("image/panel/digits_time.png");
+      digit_time_[i].splitNbFrame(10, 1);
+      addChild(&digit_time_[i]);
+      LOG2("add digit %1", i);
+    }
+  digit_time_[0].setPos(160, 546);
+  digit_time_[0].setFrame(2);
+  digit_time_[1].setPos(185, 546);
+  digit_time_[1].setFrame(4);
+  digit_time_[2].setPos(205, 546);
 }
 
 Panel::~Panel()
@@ -178,6 +202,20 @@ void Panel::setTurn(int player_id, int cur_turn)
 
 void Panel::update()
 {
+  Api* api = g_.getApi();
+
+  for (int i = 0; i < 2; i++)
+    {
+      api->selectTeam(i);
+      const CTeam* t = api->getTeam();
+      int r = 1;
+      if (t != NULL)
+	r = api->getTeam()->getRemainingReroll() + 1;
+      if (r < 1 || r >= 10)
+	r = 1;
+      digit_reroll_[i].setFrame(r);
+    }
+  
   VirtualSurface::update();
 }
 

@@ -63,6 +63,8 @@ private:
   
   Surface       bg_;
   Sprite        ball_;
+  Sprite	cross_black_;
+  Sprite	cross_red_;
 
   bool	        draw_ticks_;
 
