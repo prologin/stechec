@@ -179,7 +179,6 @@ AC_CONFIG_FILES([
   doc/Makefile
   doc/doc.doxy
   conf/Makefile
-  conf/config_tbt.xml
   conf/config_prolo.xml
   conf/team.xml
   conf/formation.xml
@@ -208,6 +207,8 @@ AC_CONFIG_FILES([
   bb5/common/Makefile
   bb5/console/Makefile
   bb5/data/Makefile
+  bb5/data/default_config.xml
+  bb5/data/team/amazon.xml
   bb5/teamroster2/Makefile
   bb5/visu2d/Makefile
   bb5/rules_test/Makefile
@@ -281,6 +282,5 @@ echo "
    Building with readline:  ${HAVE_READLINE}
    Building with sdl:	    ${HAVE_SDL}
    Building with paragui:   ${HAVE_PARAGUI}
-   Building with qt:	    ${HAVE_QT}
    Building with mysql:	    ${HAVE_MYSQL}
 "

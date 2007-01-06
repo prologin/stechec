@@ -1364,20 +1364,87 @@ contruire un truc par dessus ca. \texttt{Game} est la classe
 principale, qui contient le \texttt{SDLWindows} et toutes les autres
 instances de classe. Les autres classes devraient être assez explicite.
 
+De manière générale, on va essayer de stocker le moins d'informations
+d'états possible, en se basant sur les différents autres modules. Un
+code sans état est toujours moins buggé qu'un qui essaie d'en avoir
+trop. L'interface graphique se trouve entre deux fronts:
+
+\begin{itemize}
+\item \texttt{Les règles du jeu (API)}: On essaie d'être le plus
+\emph{stateless} possible. C'est à dire qu'on va piocher tout le temps
+les informations dans l'API règle. Cela évite d'avoir des informations
+redondantes, d'éviter de se retrouver dans un état bancal, et de
+débugger plus facilement l'API règle en évitant de contourner les
+comportements bizarre dans le code de l'interface graphique. Il y a
+certains moments où l'API nous oblige à stocker quelques informations
+d'états, comme entre la déclaration et la réalisation d'actions pour
+les joueurs. Dans ce cas, petite entorse à la règle, mais croyez le,
+c'est en général une belle source de bugs.
+
+\item \texttt{Les entrées utilisateurs et l'affchage}: Pour les
+entrées, pas le choix, il faut stocker les différents états, affichage
+ou non du menu contextuel, \ldots. En ce qui concerne l'affichage, vu
+qu'on se base sur le moteur décrit précédement, il suffit de créer des
+objets graphiques, de leur assigner une position, et c'est tout.
+
+\end{itemize}
+
+
+L'interface graphique est principalement constitué par ces classes:
+
 \begin{verbatim}
      Sprite      VirtualSurface    VirtualScrollableSurface
        |            |      |                 |
    VisuPlayer     Panel    |             VisuField
                        ActionPopup
-          Game
+          Game                     ActionDlg <---- DialogBox
 \end{verbatim}
 
-Ces classes font régulièrement appel à l'API des régles de tbt, pour
-récupérer toutes les infos nécessaires sur le jeu, la position des
-joueurs, etc... Les classes et les méthodes sont pas encore fixées, ca
-peut bouger en fonction des évolutions. Pour l'instant, la question de
-``quelle classe fait quoi'' est pas franchement résolue, ca se fera au
-fur et à mesure en fonction de la cohérence/facilité.
+\texttt{Game} est la pièce centrale du puzzle. Elle contient l'api, la
+boucle de jeu principale, la fenêtre SDL, et des instances de toutes
+les classes sous-mentionnées. Le plus important, c'est que tous les
+autres objets de l'interface graphique contiennent une référence vers
+\emph{Game}, et de la peuvent accéder à tous les autres objets. C'est
+une sorte de globale.
+
+\texttt{Panel} représente la partie de droite de l'écran. C'est une
+des parties les plus simple a comprendre. Elle n'a pas à gérer (pour
+l'instant) d'entrée utilisateur. Elle charge pas mal de textures et de
+fonts, affiche ce qu'on lui demande via quelques méthodes publique, et
+va poller l'API pour afficher le reste (par exemple, le nombre de
+rerolls restants).
+
+\texttt{VisuField} représente, sans grande surprise, le terrain de jeu
+(la partie de gauche). Elle gère principalement le background et le
+ballon. Le ballon est la partie la plus délicate, car elle requiert
+pas mal d'interaction avec l'utilisateur lors du kickoff.
+
+\texttt{VisuPlayer} est une des plus importante. Elle représente et
+gère un joueur affiché sur le terrain, ainsi que tout ce qui gravite
+autour de lui: cercle de sélection, petite icone de status, \ldots. Il
+peut donc y avoir au maximum 2 * 11 instances de cette classe, qui
+sont gérés directement par \emph{Game}.
+
+\texttt{ActionPopup} est la fenêtre. Elle interagit principalement
+avec \emph{VisuPlayer}.
+
+\texttt{DialogBox} est l'implémentation des fenêtres
+\emph{popup}. Elle pourrait se retrouver dans le moteur SDL de base,
+mais pour l'instant elle ne permet que d'afficher des fenêtres
+spécifiques pour \ac{tbt} (exemple le plus flagrant: la fenêtre
+présentant les dés de blocage). Il y a un système de callback très
+simple, pour savoir sur quel bouton l'utilisateur a appuyé. Il suffit
+de créer une instance d'un objet dérivé de \texttt{DialogBoxCb} et de
+lui passer, pour qu'au moment opportun (le clic de souris) une méthode
+virtuelle soit appelée.
+
+\texttt{ActionDlg} est une classe prévue pour \emph{soulager} la
+classe \texttt{Game}. En gros, elle permet d'ajouter, regroupe la
+liste des boîtes de dialogue ouverte, et gère les callbacks en les
+renvoyant à la bonne personne. Le plus souvent, vers un appel à l'API
+des règles.
+
+
 
 \subsection{Considérations diverses}
 
@@ -1385,11 +1452,11 @@ fur et à mesure en fonction de la cohérence/facilité.
 fonctionne avec des méthodes virtuelles (il n'y a quasiment aucune
 template). On peut facilement dire que \texttt{virtual} est lent, mais
 ca dérange pas trop. En fait, je suis parti du principe que
-l'opération prenant tout le temps CPU est le blit. Donc, une fois les
-blits sont a peu près optimisé (cad, en faire le moins possible), ca
-suffit. Ca veut dire que je ne cherche même pas a optimiser le reste
-du code, on verra plus tard a coup de callgrind si il y a des parties
-de code trop consommatrice.
+l'opération prenant tout le temps CPU est le blit de surface
+SDL. Donc, une fois les blits sont a peu près optimisé (cad, en faire
+le moins possible), ca suffit. Ca veut dire que je ne cherche même pas
+a optimiser le reste du code, on verra plus tard a coup de callgrind
+si il y a des parties de code trop consommatrices.
 
 \textbf{Les événements}: Il y a un sytème d'événement pas trop
 explicité (bb5/client/Event.hh, dont hérite la class \texttt{Game})
