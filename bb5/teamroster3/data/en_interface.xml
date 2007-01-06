@@ -72,4 +72,30 @@
 
 	</roster>
 
+	<javascript>
+	
+		<!-- beginning of sentence: ... more than 3 Ogre. -->
+		<warning>You cannot have more than</warning>
+		
+		<!-- end of sentence: 12 players fielded, you are ... -->
+		<warning>players fielded: you are not elligible for journeymen.</warning>
+		
+		<!-- complete sentences -->
+		<warning>Please select a position before setting a name.</warning>
+		<warning>Please choose a position for this player before adding any injuries.</warning>
+		<warning>Please choose a position for this player before you modify any stats.</warning>		
+		<warning>Characteristics may not be increased by more than 2 points or above 10.</warning>
+		<warning>Characteristics may not be decreased by more than 2 points or below 1.</warning>	
+		<warning>You may not alter stats of journeymen or non-existant players.</warning>	
+		<warning>Value must be an integer. Please correct the data or the value will be set to 0.</warning>
+		<warning>Up to 8 rerolls are allowed per team.</warning>
+		<warning>Your team is excluded from the use of an apothecary.</warning>
+		<warning>Please close other box of the same type.</warning>
+		<warning>You cannot remove a starting skill.</warning>
+		<warning>You cannot remove a stat increase!</warning>
+		<warning>You need a fancy name for your team!</warning>
+		<warning>You may use up to one apothecary.</warning>
+		
+	</javascript>
+	
 </interface>

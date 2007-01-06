@@ -31,7 +31,7 @@ function isQtyProblem() {
 		stats[pos][7]++
 		
 		if (stats[pos][7] > stats[pos][6]) {
-			alert("You cannot have more than " + stats[pos][6] + " '" + stats[pos][0] + "'.")
+			alert(warning[0] + " " + stats[pos][6] + " '" + stats[pos][0] + "'.")
 			stats[pos][7]--
 			
 			return true

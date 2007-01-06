@@ -8,13 +8,13 @@
 	<title>SNORE - TBT Roster Editor</title>
 	
 	<meta name="author" content="Marc-Antonio Bisotti"/>
-	<meta name="date" content="07.09.2006" />
+	<meta name="date" content="2006-11-12T16:15:15+0100"/>
 	<meta name="copyright" content="Gnu Public License" />
 	<meta name="keywords" content="Blood Bowl Tow Bowl Tactics Team Editor Roster Editor" />
 	<meta name="description" content="Manages Tow Bowl Tactics Teamsheets according to the LRB 5.0" />
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	
-	<link rel="stylesheet" type="text/css" media="screen" href="includes/index.css" title="Default Style" />
+	<link rel="stylesheet" type="text/css" media="screen" href="index.css" title="Default Style" />
 	
 </head>
 
@@ -22,44 +22,48 @@
 
 <?php
 
-	require_once('includes/minixml.php');
-	require_once('includes/parse_xml.php');
+	require_once('backstage/minixml.php');
+	require_once('backstage/parse_xml.php');
 	
-	if ( isset($_COOKIE['lang']) ) {
-	
-		$lang = $_COOKIE['lang'];
-		
-		if ( !($lang == 'en' || $lang == 'fr' || $lang == 'de') ) {
-			$lang = 'en';
-		}
-		
-	}
-	else {
-		$lang = 'en';
-	}
-
-	$interface = parseInterface('interface_'.$lang.'.xml');
-
 	function sprint($string) {	// sprint like in "Special characters PRINT"
 		echo htmlentities($string, ENT_QUOTES, 'UTF-8');
 	}
+	
+	function checkLang() {
+		
+		if ( isset($_COOKIE['lang']) ) {
+			$lang = $_COOKIE['lang'];
+			
+			if ( $lang != 'en' && $lang != 'de' && $lang != 'fr' ) {
+				$lang = 'en';
+			}
+		}
+		else {
+			$lang = 'en';
+		}
+		
+		return $lang;
+	}
+
+	$lang = checkLang();			
+	$interface = parseInterface('data/'.$lang.'_interface.xml');
 
 ?>
 
 <div id="title">
 
 	<div id="flags" style="float: right;">
-	  <form action="cookie.php" method="POST" style="float: left">
+	  <form action="set_cookie.php" method="POST" style="float: left">
 	  <input type="hidden" name="lang" value="en"></input>
-	  <button type="submit"><img src="english_flag.jpg" /></button>
+	  <button type="submit"><img src="data/en_flag.jpg" /></button>
 	  </form>
-	  <form action="cookie.php" method="POST" style="float: left">
+	  <form action="set_cookie.php" method="POST" style="float: left">
 	  <input type="hidden" name="lang" value="fr"></input>
-	  <button type="submit"><img src="french_flag.jpg" /></button>
+	  <button type="submit"><img src="data/fr_flag.jpg" /></button>
 	  </form>
-	  <form action="cookie.php" method="POST" style="float: left">
+	  <form action="set_cookie.php" method="POST" style="float: left">
 	  <input type="hidden" name="lang" value="de"></input>
-	  <button type="submit"><img src="german_flag.jpg" /></button>
+	  <button type="submit"><img src="data/de_flag.jpg" /></button>
 	  </form>
 	</div>
 	
@@ -79,7 +83,7 @@
 		<?php
 		
 			$xmlDoc = new MiniXMLDoc();
-			$xmlDoc->fromFile('races.xml'); // to be changed wenn new races.xml arrive
+			$xmlDoc->fromFile('data/'.$lang.'_races.xml');
 			$races = $xmlDoc->toArray();
 			
 			for ( $i = 0; $i < $races['races']['race']['_num']; $i++) {

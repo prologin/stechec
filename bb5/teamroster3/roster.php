@@ -4,19 +4,19 @@
 
 <head>
 <title>TBT Snore</title>
-<link rel="stylesheet" type="text/css" media="screen" href="includes/roster.css" title="Default" />
-<script type="text/javascript" src="includes/functions.js"></script>
-<script type="text/javascript" src="includes/subroutines.js"></script>
-<script type="text/javascript" src="includes/roster.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="roster.css" title="Default" />
+<script type="text/javascript" src="onstage/functions.js"></script>
+<script type="text/javascript" src="onstage/subroutines.js"></script>
+<script type="text/javascript" src="onstage/roster.js"></script>
 <script type="text/javascript">
 
 <?php
 error_reporting(E_ALL);
 
-require_once('includes/minixml.php');
-require_once('includes/parse_xml.php');
-require_once('includes/echo_html.php');
-require_once('includes/echo_js.php');
+require_once('backstage/minixml.php');
+require_once('backstage/parse_xml.php');
+require_once('backstage/echo_html.php');
+require_once('backstage/echo_js.php');
 
 if ( isset($_COOKIE['lang']) ) {
 	
@@ -30,8 +30,9 @@ if ( isset($_COOKIE['lang']) ) {
 else {
 	$lang = 'en';
 }
+$lang = 'de';
 
-$interface = parseInterface('interface_'.$lang.'.xml');
+$interface = parseInterface('data/'.$lang.'_interface.xml');
 
 function sprint($string) {	// sprint like in "Special characters PRINT"
 	echo htmlentities($string, ENT_QUOTES, 'UTF-8');
@@ -47,16 +48,18 @@ else {
 	$chosen_race = htmlentities($_GET['race']);
 }
 
-$race = parseRaces($chosen_race, 'races.xml');
+$race = parseRaces($chosen_race, 'data/'.$lang.'_races.xml');
 if (isset($_POST['upload']) && $_POST['upload'] == true) {
 		echo writeTeamRoster($team,$race);
 }
-$skill_list = parseSkills('skills.xml');
+$skill_list = parseSkills('data/'.$lang.'_skills.xml');
 
 echo writePosStats($race)."\n";
 echo writePosSkills($race)."\n";
 echo writeTeamInfo($race)."\n";
-echo writeSkillArrays($skill_list);
+echo writeSkillArrays($skill_list)."\n";
+echo writeWarnings($interface)."\n";
+echo writeStatNames($interface)."\n";
 
 ?>
 
@@ -78,7 +81,7 @@ else {
 <body onload="<?php echo $startup_functions; ?>">
 <h1>Tow Bowl Tactics Teamroster</h1>
 
-<form id="ROSTER" action="save.php" method="post" enctype="multipart/form-data">
+<form id="ROSTER" action="save_team.php" method="post" enctype="multipart/form-data">
 <table>
 
 	<tr class="bg1 center thicker-bottom">

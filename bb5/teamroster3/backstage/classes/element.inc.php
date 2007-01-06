@@ -1063,7 +1063,7 @@ class MiniXMLElement extends MiniXMLTreeComponent {
 	
 	function toString ($depth=0)
 	{
-		if ($depth == MINIXML_NOWHITESPACES)
+		if ($depth != MINIXML_NOWHITESPACES) // set to remove whitespaces beetween tags 
 		{
 			return $this->toStringNoWhiteSpaces();
 		} else {

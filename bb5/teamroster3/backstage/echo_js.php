@@ -1,5 +1,24 @@
 <?php
 
+function writeWarnings($interface) {
+
+	echo "warning = new Array()\n";
+	
+	for ( $i=0; $i < 16; $i++ ) {
+		echo "warning[$i] = \"{$interface['javascript']['warning'][$i]}\"\n";
+	}
+
+}
+
+function writeStatNames($interface) {
+
+	echo "var MA = \"{$interface['roster']['MA']}\"\n";
+	echo "var ST = \"{$interface['roster']['ST']}\"\n";
+	echo "var AG = \"{$interface['roster']['AG']}\"\n";
+	echo "var AV = \"{$interface['roster']['AV']}\"\n";
+
+}
+
 function writePosStats($race) {
 
 	// writes one javascript-array per position

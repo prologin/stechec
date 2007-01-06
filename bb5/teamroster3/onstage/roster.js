@@ -61,12 +61,12 @@ function findInjuredPlayers() {
 }
 
 function setlogo() {
-	document.getElementById("BADGE").src = "logos/"+logo
+	document.getElementById("BADGE").src = "data/logos/"+logo
 }
 
 function checkName(row) {
 	if(!(isPlayerAssigned(row) != false)) {
-		alert("Please select a position before setting a name.")
+		alert(warning[2])
 		setRoster(row,"NAME[]","")
 	}
 }		
@@ -80,7 +80,7 @@ function fillPlayerStats(row) {
 	
 	if ( position == (positions - 1) && !(isJourneymanAllowed()) ) {
 		healthy_players = document.getElementsByName("HEALTHY")[0].value
-		alert("With " + healthy_players +" players fielded, you are not elligible for journeymen.")
+		alert(healthy_players + " " + warning[1])
 		position = positions
 	}
 	setRoster(row,"NAME[]","")
@@ -160,36 +160,36 @@ function changeStat(stat,operator,row) {
 						document.getElementsByName("MA[]")[row].value++
 						changeRoster(row,"VALUE[]",30000)
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"SKILLS[]","+MA")
+							concatRoster(row,"SKILLS[]","+"+MA)
 						}
-					} else { alert("Characteristics may not be increased by more than 2 points or above 10.") }
+					} else { alert(warning[5]) }
 					break
 				case 'ST':
 					if (st_diff < 2 && statlesserten == true) {
 						document.getElementsByName("ST[]")[row].value++
 						changeRoster(row,"VALUE[]",50000)
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"SKILLS[]","+ST")
+							concatRoster(row,"SKILLS[]","+"+ST)
 						}
-					} else { alert("Characteristics may not be increased by more than 2 points or above 10.") }
+					} else { alert(warning[5]) }
 					break
 				case 'AG':
 					if (ag_diff < 2 && statlesserten == true) {
 						document.getElementsByName("AG[]")[row].value++
 						changeRoster(row,"VALUE[]",40000)
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"SKILLS[]","+AG")
+							concatRoster(row,"SKILLS[]","+"+AG)
 						}						
-					} else { alert("Characteristics may not be increased by more than 2 points or above 10.") }
+					} else { alert(warning[5]) }
 					break
 				case 'AV':
 					if (av_diff < 2 && statlesserten == true) {
 						document.getElementsByName("AV[]")[row].value++
 						changeRoster(row,"VALUE[]",30000)
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"SKILLS[]","+AV")
+							concatRoster(row,"SKILLS[]","+"+AV)
 						}						
-					} else { alert("Characteristics may not be increased by more than 2 points or above 10.") }
+					} else { alert(warning[5]) }
 					break
 				default:
 					alert("No valid stat parameter given.")
@@ -206,39 +206,39 @@ function changeStat(stat,operator,row) {
 					if (ma_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("MA[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-MA")
+							concatRoster(row,"INJ[]","-"+MA)
 						}
-					} else { alert("Characteristics may not be decreased by more than 2 points or below 1.") }
+					} else { alert(warning[6]) }
 					break
 				case 'ST':
 					if (st_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("ST[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-ST")
+							concatRoster(row,"INJ[]","-"+ST)
 						}						
-					} else { alert("Characteristics may not be decreased by more than 2 points or below 1.") }
+					} else { alert(warning[6]) }
 					break
 				case 'AG':
 					if (ag_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("AG[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-AG")							
+							concatRoster(row,"INJ[]","-"+AG)							
 						}						
-					} else { alert("Characteristics may not be decreased by more than 2 points or below 1.") }
+					} else { alert(warning[6]) }
 					break
 				case 'AV':
 					if (av_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("AV[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-AV")
+							concatRoster(row,"INJ[]","-"+AV)
 						}
-					} else { alert("Characteristics may not be decreased by more than 2 points or below 1.") }
+					} else { alert(warning[6]) }
 					break
 				default:
 					alert("No valid stat parameter given.")
 			}
 		}
-	} else { alert("You may not alter stats of journeymen or non-existant players.") }
+	} else { alert(warning[7]) }
 	calcTeamValue()
 }
 
@@ -246,27 +246,27 @@ function calcPlayerSPP(row) {
 	if(isPlayerAssigned(row) != false) {
 		COMP = getFromRoster(row,"COMP[]")
 		if (isNaN(COMP) || COMP<0) { 
-			COMP = prompt("Value must be an integer. Please correct the data or the value will be set to 0.")
+			COMP = prompt(warning[8])
 			if (isNaN(COMP) || COMP<0) { COMP = 0 }
 		}
 		TD = getFromRoster(row,"TD[]")
 		if (isNaN(TD) || TD<0) { 
-			TD = prompt("Value must be an integer. Please correct the data or the value will be set to 0.")
+			TD = prompt(warning[8])
 			if (isNaN(TD) || TD<0) { TD = 0 }
 		}
 		INT = getFromRoster(row,"INT[]")
 		if (isNaN(INT) || INT<0) { 
-			INT = prompt("Value must be an integer. Please correct the data or the value will be set to 0.")
+			INT = prompt(warning[8])
 			if (isNaN(INT) || INT<0) { INT = 0 }
 		}
 		CAS = getFromRoster(row,"CAS[]")
 		if (isNaN(CAS) || CAS<0) { 
-			CAS = prompt("Value must be an integer. Please correct the data or the value will be set to 0.")
+			CAS = prompt(warning[8])
 			if (isNaN(CAS) || CAS<0) { CAS = 0 }
 		}
 		MVP = getFromRoster(row,"MVP[]")
 		if (isNaN(MVP) || MVP<0) { 
-			MVP = prompt("Value must be an integer. Please correct the data or the value will be set to 0.")
+			MVP = prompt(warning[8])
 			if (isNaN(MVP) || MVP<0) { MVP = 0 }
 		}
 		setRoster(row,"COMP[]",COMP)
@@ -276,7 +276,7 @@ function calcPlayerSPP(row) {
 		setRoster(row,"MVP[]",MVP)
 		document.getElementsByName("SPP[]")[row].value = COMP*1 + TD*3 + INT*2 + CAS*2 + MVP*5
 	} else { 
-		alert("Please choose a position for this player before you modify any stats.")
+		alert(warning[4])
 		setRoster(row,"COMP[]","")
 		setRoster(row,"TD[]","")
 		setRoster(row,"INT[]","")
@@ -289,7 +289,7 @@ function calcExtraValue(j) {
 	if(j == 16) {
 		if(document.getElementById('ROSTER').REROLLS.value>8) {
 			document.getElementById('ROSTER').REROLLS.value=8
-			alert("Up to 8 rerolls are allowed per team.")
+			alert(warning[9])
 		}
 		document.getElementsByName("VALUE[]")[j].value = document.getElementById('ROSTER').REROLLS.value*reroll_cost
 	}
@@ -304,11 +304,11 @@ function calcExtraValue(j) {
 	}
 	if(j == 20) {
 		if (apothecary == false) {
-			alert("Your team is excluded from the use of an apothecary.")
+			alert(warning[10])
 			document.getElementById('ROSTER').APOTHECARY.value = 0
 		}
 		if (document.getElementById('ROSTER').APOTHECARY.value > 1) {
-			alert("You may use up to one apothecary.")
+			alert(warning[15])
 			document.getElementById('ROSTER').APOTHECARY.value = 1
 		}
 	document.getElementsByName("VALUE[]")[j].value = document.getElementById('ROSTER').APOTHECARY.value*50000
@@ -341,21 +341,21 @@ function hideLayer(nr) {
 function showInjBox(row) {
 	if(isPlayerAssigned(row) != false) {
 		if(document.getElementById('inj_box').className == 'element_visible') {
-			alert("Please close other box of the same type.")
+			alert(warning[11])
 		} else {
 			statreductions = new Array(0,0,0)
 			injurystring = document.getElementsByName("INJ[]")[row].value
-			for (i=0; injurystring.match("-MA") != null; i++ ) {
+			for (i=0; injurystring.match("-"+MA) != null; i++ ) {
 				statreductions[0]++
-				injurystring = injurystring.replace(/-MA/,"0")
+				injurystring = injurystring.replace("-"+MA,"0")
 			}			
-			for (i=0; injurystring.match("-ST") != null; i++ ) {
+			for (i=0; injurystring.match("-"+ST) != null; i++ ) {
 				statreductions[1]++
-				injurystring = injurystring.replace(/-ST/,"0")
+				injurystring = injurystring.replace("-"+ST,"0")
 			}			
-			for (i=0; injurystring.match("-AG") != null; i++ ) {
+			for (i=0; injurystring.match("-"+AG) != null; i++ ) {
 				statreductions[2]++
-				injurystring = injurystring.replace(/-AG/,"0")
+				injurystring = injurystring.replace("-"+AG,"0")
 			}
 
 			document.getElementById('ROSTER').TEMPMA.value = statreductions[0]
@@ -377,7 +377,7 @@ function showInjBox(row) {
 			document.getElementById('inj_box').className = 'element_visible';
 		}	
 	} else {
-		alert("Please choose a position for this player before adding any injuries.") 
+		alert(warning[3]) 
 	}
 }
 
@@ -396,7 +396,7 @@ function showJmBox() {
 function showSkillBox(row) {
 	if(isPlayerAssigned(row) == true) {
 		if(document.getElementById('skill_box').className == 'element_visible') {
-			alert("Please close other box of the same type.")
+			alert(warning[11])
 		} 
 		else {
 			position = getFromRoster(row,"POSITION[]")
@@ -449,16 +449,16 @@ function showSkillBox(row) {
 			eliminateDoubles(possible_skills_n,chosen_skills)
 			eliminateDoubles(possible_skills_d,chosen_skills)
 			
-			if ( isStringInArray('Grab',chosen_skills) ) { 
-				deleteArrayElement('Frenzy',possible_skills_n)
-				deleteArrayElement('Frenzy',possible_skills_d)
-				impossible_skills.push('Frenzy')
+			if ( isStringInArray(skills_s[1],chosen_skills) ) { 
+				deleteArrayElement(skills_g[4],possible_skills_n)
+				deleteArrayElement(skills_g[4],possible_skills_d)
+				impossible_skills.push(skills_g[4])
 			}
 
-			if ( isStringInArray('Frenzy',chosen_skills) ) { 
-				deleteArrayElement('Grab',possible_skills_n)
-				deleteArrayElement('Grab',possible_skills_d)
-				impossible_skills.push('Grab')
+			if ( isStringInArray(skills_g[4],chosen_skills) ) { 
+				deleteArrayElement(skills_s[1],possible_skills_n)
+				deleteArrayElement(skills_s[1],possible_skills_d)
+				impossible_skills.push(skills_s[1])
 			}
 			
 			arrayToOptions(impossible_skills,'SKILLSRCF',0)
@@ -470,7 +470,7 @@ function showSkillBox(row) {
 		}
 	}
 	else { 
-		alert("You may not modify skills of empty players or journeymen.") 
+		alert(warning[7]) 
 	}
 }
 
@@ -490,21 +490,21 @@ function addskill(repertory) {
 	destination_index = document.getElementById('ROSTER').SKILLDEST.options.length
 	impossible_index = document.getElementById('ROSTER').SKILLSRCF.options.length
 	
-	if (selected_name == "Frenzy") {
-		if ( deleteSelectElement('Grab','SKILLSRCD') == true ) {
-			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Grab",0)
+	if (selected_name == skills_g[4]) {
+		if ( deleteSelectElement(skills_s[1],'SKILLSRCD') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option(skills_s[1],0)
 		}
-		if ( deleteSelectElement('Grab','SKILLSRCN') == true ) {
-			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Grab",0)
+		if ( deleteSelectElement(skills_s[1],'SKILLSRCN') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option(skills_s[1],0)
 		}
 	}
 	
-	if (selected_name == "Grab") {
-		if ( deleteSelectElement('Frenzy','SKILLSRCD') == true ) {
-			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Frenzy",0)
+	if (selected_name == skills_s[1]) {
+		if ( deleteSelectElement(skills_g[4],'SKILLSRCD') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option(skills_g[4],0)
 		}
-		if ( deleteSelectElement('Frenzy','SKILLSRCN') == true ) {
-			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option("Frenzy",0)
+		if ( deleteSelectElement(skills_g[4],'SKILLSRCN') == true ) {
+			document.getElementsByName('SKILLSRCF')[0].options[impossible_index] = new Option(skills_g[4],0)
 		}
 	}
 	
@@ -525,10 +525,10 @@ function remskill() {
 	selectedskill = x.options[x.selectedIndex].text
 	
 	if (isStringInArray(selectedskill,skills[position]) == true) {
-		alert("You cannot remove a starting skill.")
+		alert(warning[12])
 	}
 	else if (selectedskill == "+MA" || selectedskill == "+ST" || selectedskill == "+AG" || selectedskill == "+AV") {
-		alert("You cannot remove a stat increase!")
+		alert(warning[13])
 	} 
 	else {
 		repertory = findSkill(selectedskill,position)
@@ -552,32 +552,32 @@ function remskill() {
 			y[index] = new Option(selectedskill, 0)
 		}		
 		
-		if ( selectedskill == "Grab") {
+		if ( selectedskill == skills_s[1]) {
 
-				if ( deleteSelectElement('Frenzy','SKILLSRCF') == true ) {
+				if ( deleteSelectElement(skills_g[4],'SKILLSRCF') == true ) {
 
-					if ( isStringInArray('Frenzy',possible_skills_n) ) {
+					if ( isStringInArray(skills_g[4],possible_skills_n) ) {
 						index = document.getElementById('ROSTER').SKILLSRCN.options.length
-						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Frenzy', 30000)
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option(skills_g[4], 30000)
 					}
-					else if ( isStringInArray('Frenzy',possible_skills_n) ) {
+					else if ( isStringInArray(skills_g[4],possible_skills_n) ) {
 						index = document.getElementById('ROSTER').SKILLSRCN.options.length
-						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Frenzy', 20000)
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option(skills_g[4], 20000)
 					}
 				}
 		}
 				
-		if ( selectedskill == "Frenzy") {
+		if ( selectedskill == skills_g[4]) {
 
-				if ( deleteSelectElement('Grab','SKILLSRCF') == true ) {
+				if ( deleteSelectElement(skills_s[1],'SKILLSRCF') == true ) {
 
-					if ( isStringInArray('Grab',possible_skills_n) ) {
+					if ( isStringInArray(skills_s[1],possible_skills_n) ) {
 						index = document.getElementById('ROSTER').SKILLSRCN.options.length
-						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Grab', 30000)
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option(skills_s[1], 30000)
 					}
-					else if ( isStringInArray('Grab',possible_skills_n) ) {
+					else if ( isStringInArray(skills_s[1],possible_skills_n) ) {
 						index = document.getElementById('ROSTER').SKILLSRCN.options.length
-						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option('Grab', 20000)
+						document.getElementById('ROSTER').SKILLSRCN.options[index] = new Option(skills_s[1], 20000)
 					}
 				}
 		}
@@ -606,7 +606,7 @@ function setSkillchanges() {
 
 function save() {
 	if ( document.getElementsByName("TEAM")[0].value == "" ) {
-		alert("You need a fance name for your team!")
+		alert(warning[14])
 	} 
 	else {
 		document.getElementById('ROSTER').submit()

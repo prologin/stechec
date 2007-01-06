@@ -1,12 +1,34 @@
 <?php
 
-require_once('includes/minixml.php');
+require_once('backstage/minixml.php');
+require_once('backstage/parse_xml.php');
 
-header('Content-type: application/xml');
+$race = parseRaces('Wood Elf','data/en_races.xml');
+
+if ( isset($_COOKIE['lang']) ) {
+	
+	$lang = $_COOKIE['lang'];
+		
+	if ( !($lang == 'en' || $lang == 'fr' || $lang == 'de') ) {
+		$lang = 'en';
+	}
+	
+}
+else {
+	$lang = 'en';
+}
+$lang = 'de';
+
+$interface = parseInterface('data/'.$lang.'_interface.xml');
+
+for ( $i = 0; $i < $race['player_num']; $i++ ) {
+	$posNames[] = $race['player_'.$i]['title'];
+}
+
+// header('Content-type: application/xml');
 $teamname = htmlentities($_POST['TEAM']);
-header("Content-Disposition: attachment; filename=\"$teamname.xml\"");
+// header("Content-Disposition: attachment; filename=\"$teamname.xml\"");
 
-$posNames = explode(" ", $_POST['PosNames']);
 $posPics = explode(" ", $_POST['PosPics']);
 
 $xmlDoc = new MiniXMLDoc();
@@ -53,17 +75,34 @@ for( $i = 0; $i < 16; $i++) {
 		$player['ag'] = $_POST['AG'][$i];
 		$player['av'] = $_POST['AV'][$i];
 		$player['cost'] = $_POST['VALUE'][$i];
+
+		/* SKILLS */
 		
 		if ( $_POST['SKILLS'][$i] == "" ) {
-			$player['skills'] = $_POST['SKILLS'][$i];
-		}
+			$player['skills'] = "";
+		} 
 		else {
-			$skills = explode(",", $_POST['SKILLS'][$i]);
-			$player['skills']['skill'] = $skills;
+			$player['skills']['skill'] = explode(",", $_POST['SKILLS'][$i]);
+			print_r($player['skills']['skill']);
+			$translation = build_translation($lang,'en');
+			$temp = array();
+			foreach ( $player['skills']['skill'] as $key ) {
+				if ( eregi('\+', $key) ) {
+					$key = eregi_replace('\+','',$key);
+					$temp[] = '+'.$translation[$key];
+				} else {
+					$temp[] = $translation[$key];
+				}
+			}
+			print_r($temp);
+			$player['skills']['skill'] = $temp;
+			echo "\n OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO \n";
 		}
+
+		/* INJURIES */
 		
 		if ( $_POST['INJ'][$i] == "" ) {
-			$player['inj'] = $_POST['INJ'][$i];
+			$player['inj'] = "";
 		}
 		else {
 			
@@ -84,16 +123,16 @@ for( $i = 0; $i < 16; $i++) {
 					case "N":
 						$nigglings++;
 						break;
-					case "-MA":
+					case "-".$interface['roster']['MA']:
 						$ma_reduction++;
 						break;
-					case "-ST":
+					case "-".$interface['roster']["ST"]:
 						$st_reduction++;
 						break;
-					case "-AG":
+					case "-".$interface['roster']["AG"]:
 						$ag_reduction++;
 						break;
-					case "-AV":
+					case "-".$interface['roster']["AV"]:
 						$av_reduction++;
 						break;
 				}
@@ -130,4 +169,5 @@ $arrayOptions = array(
 
 $xmlDoc->fromArray($arr, $arrayOptions);
 print $xmlDoc->toString();
+
 ?>

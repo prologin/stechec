@@ -186,4 +186,36 @@ function parseTeamRoster($xmlTeamRoster) {
 		
 }
 
+function build_translation($from,$to) {
+
+	/* returns an associative array with the words from the first language as keys
+		and the words from the second language as values */
+
+	/* Skills */
+
+	$skills = parseSkills('data/'.$from.'_skills.xml');
+	$words_from = array_merge($skills['General'], $skills['Passing'], $skills['Agility'], $skills['Mutation'], $skills['Extraordinary']);
+	unset($words_from['_num']);
+
+	$skills = parseSkills('data/'.$to.'_skills.xml');
+	$words_to = array_merge($skills['General'], $skills['Passing'], $skills['Agility'], $skills['Mutation'], $skills['Extraordinary']);
+	unset($words_to['_num']);
+
+	/* Stats */
+
+	$interface = parseInterface('data/'.$from.'_interface.xml');
+	$stats_from = array($interface['roster']['MA'], $interface['roster']['ST'], $interface['roster']['AG'], $interface['roster']['AV']);
+	$words_from = array_merge($words_from, $stats_from);
+
+	$interface = parseInterface('data/'.$to.'_interface.xml');
+	$stats_to = array($interface['roster']['MA'], $interface['roster']['ST'], $interface['roster']['AG'], $interface['roster']['AV']);
+	$words_to = array_merge($words_to, $stats_to);
+
+	/* Positions */
+
+	$translation = array_combine($words_from, $words_to);
+	return $translation;
+
+}
+
 ?>
