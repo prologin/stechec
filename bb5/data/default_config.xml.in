@@ -15,15 +15,13 @@
   </client>
 
   <client id="1">
-    <champion>bb5_visu</champion>
     <mode spectator="false" />
-    <debug verbose="3" printloc="false" />
+    <debug verbose="4" printloc="false" />
   </client>
 
   <client id="2">
-    <champion>bb5_client_console</champion>
     <mode spectator="false" />
-    <debug verbose="3" printloc="false" />
+    <debug verbose="4" printloc="false" />
   </client>
 
   <server>

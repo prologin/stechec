@@ -2,9 +2,7 @@
 
 dist_pkgdata_DATA =				\
 	config_prolo.xml			\
-	config_tbt.xml 				\
 	formation.xml				\
-	team.xml				\
 	config.dtd				\
 	team.xsd				\
 	formation.dtd
