@@ -23,8 +23,10 @@
 
 BEGIN_NS(xml);
 
-XMLConfig::XMLConfig()
-  : client_section_("0")
+XMLConfig::XMLConfig(const std::string& def_file, const std::string& def_loc)
+  : client_section_("0"),
+    default_file_(def_file),
+    default_location_(def_loc)
 {
 }
 
@@ -41,37 +43,39 @@ void XMLConfig::parse(const std::string& filename)
       if (stat(filename.c_str(), &st) >= 0)
 	{
 	  realpath(filename.c_str(), resolved_path);
-	  fn = resolved_path;
-	  goto parse;
+	  XML::parse(resolved_path);
+	  return;
 	}
     }
 
-  // Search for "tbtrc" in the current directory
-  fn = "tbtrc";
-  LOG4("Looking for %1 ...", fn);
-  if (fn != filename && stat(fn.c_str(), &st) >= 0)
+  // Search in the user home directory for ~/<def_file>
+  if (default_file_ != "")
     {
-      realpath(fn.c_str(), resolved_path);
-      fn = resolved_path;
-      goto parse;
+      fn = std::string(getenv("HOME")) + "/" + default_file_;
+      LOG4("Looking for %1 ...", fn );
+      if (stat(fn.c_str(), &st) >= 0)
+	{
+	  realpath(fn.c_str(), resolved_path);
+	  XML::parse(resolved_path);
+	  return;
+	}
     }
 
-  // Search in the user home directory for ~/.tbtrc
-  fn = std::string(getenv("HOME")) + "/.tbtrc";
-  LOG4("Looking for %1 ...", fn );
-  if (stat(fn.c_str(), &st) >= 0)
+  // Search for "default_config.xml" in the package data directory
+  if (default_location_ != "")
     {
-      realpath(fn.c_str(), resolved_path);
-      fn = resolved_path;
-      goto parse;
+      fn = default_location_ + "/default_config.xml";
+      LOG4("Looking for %1 ...", fn);
+      if (fn != filename && stat(fn.c_str(), &st) >= 0)
+	{
+	  realpath(fn.c_str(), resolved_path);
+	  XML::parse(resolved_path);
+	  return;
+	}
     }
 
-  // Hu. Sorry. Prepare to catch XMLError.
-  // FIXME: should provide a default one.
-  fn = filename;
-
- parse:
-  XML::parse(fn);
+  // Hu. Sorry, nothing found.
+  PRINT_AND_THROW(XMLError, "configuration file not found");
 }
 
 void XMLConfig::switchClientSection(int client_gid) const

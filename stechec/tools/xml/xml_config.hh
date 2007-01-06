@@ -74,7 +74,7 @@ BEGIN_NS(xml);
 class XMLConfig : public XML
 {
 public:
-  XMLConfig();
+  XMLConfig(const std::string& def_file, const std::string& def_loc);
   
   void switchClientSection(int client_gid) const;
 
@@ -118,6 +118,8 @@ private:
 
   bool switchToSection(const std::string& section_name, bool first_time) const;
   mutable std::string client_section_;
+  std::string default_file_;
+  std::string default_location_;
 };
 
 template <typename T>
