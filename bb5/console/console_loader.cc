@@ -19,6 +19,8 @@
 #include "Api.hh"
 #include "interface.hh"
 
+#ifdef CONSOLE_BINARY
+
 class ConsoleApp : public ClientApp
 {
 public:
@@ -32,7 +34,7 @@ private:
 
 
 ConsoleApp::ConsoleApp(int argc, char** argv)
-  : ClientApp(argc, argv)
+  : ClientApp(argc, argv, ".tbt/tbtrc", PKGDATADIR)
 {
 }
 
@@ -69,3 +71,25 @@ int main(int argc, char** argv)
 
   return app.runApp();
 }
+
+
+#else
+
+extern "C" int run(xml::XMLConfig* cfg, Api* api, ClientCx* ccx)
+{
+  bool use_readline = true;
+  try {
+    cfg->getAttr<int>("client", "redirection", "stdin");
+    use_readline = false;
+  } catch (...) {}
+
+  CmdLineInterface i(cfg, api, ccx, use_readline);
+
+  i.hello();
+  i.init();
+  i.run();
+
+  return 0;
+}
+
+#endif /* !CONSOLE_MODULE */

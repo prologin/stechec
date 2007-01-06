@@ -257,10 +257,15 @@ void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
   our_turn_ = player_id == api_->myTeamId();
 }
 
-void CmdLineInterface::evKickOff()
+void CmdLineInterface::evKickOff(int team_id, bool place_team)
 {
-  cout << "Arbiter is asking us to place the ball. (use 'kickoff')" << endl;
-  input_.stopWaiting();
+  if (team_id == api_->myTeamId() && !place_team)
+    {
+      cout << "Arbiter is asking us to place the ball. (use 'kickoff')" << endl;
+      input_.stopWaiting();
+    }
+  else if (team_id != api_->myTeamId() && !place_team)
+    cout << "Wait that the other team place the ball" << endl;
 }
 
 void CmdLineInterface::evMoveTurnMarker()
@@ -294,9 +299,10 @@ void CmdLineInterface::evPlayerKnocked(int, int player_id)
   cout << "Player `" << player_id << "' has been knocked down." << endl;
 }
 
-void CmdLineInterface::evGiveBall()
+void CmdLineInterface::evGiveBall(int team_id)
 {
-  cout << "Touchback! receiving team can give the ball to any player on the field." << endl;
+  cout << "Touchback! receiving team (team " << team_id
+       << ") can give the ball to any player on the field." << endl;
 }
 
 void CmdLineInterface::evFollow()
@@ -304,7 +310,7 @@ void CmdLineInterface::evFollow()
   cout << "You can 'follow' the opponent player or 'stay' here." << endl;
 }
 
-void CmdLineInterface::evBlockPush(Position pos, int nb_choice, Position choices[])
+void CmdLineInterface::evBlockPush(const Position& pos, int nb_choice, const Position choices[])
 {
   cout << "You can push the player from the square" << pos << " to : " << endl;
   for (int i = 0; i < nb_choice; i++)
@@ -319,7 +325,7 @@ void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_ty
        << "' : roll [" << result << "] + ["<< modifier << "], required : ["
        << required << "]." << endl;
 	
-  if (result + modifier < required && reroll && api_->getTeamId() == team_id)
+  if (api_->getTeamId() == team_id && reroll)
     cout << "		You can use a 'reroll' or 'accept' this result." << endl;
 }
 
@@ -347,7 +353,7 @@ void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id
   if (team_id == api_->getTeamId() && choose == api_->getTeamId() && !reroll)
     cout << " You must choose a 'dice <n>'" << endl;
   if (team_id == api_->getTeamId() && choose != api_->getTeamId() && reroll)
-    cout << "		You can use a 'reroll' or 'accept' this result." << endl;
+    cout << " You can use a 'reroll' or 'accept' this result." << endl;
   if (team_id != api_->getTeamId() && choose == api_->getTeamId() && reroll)
     cout << " Wait for opponent reroll decision" << endl;
   if (team_id != api_->getTeamId() && choose == api_->getTeamId() && !reroll)

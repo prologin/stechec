@@ -47,8 +47,8 @@ private:
   virtual void          evIllegal(int was_token);
   virtual void          evInitGame();
   virtual void          evNewTurn(int player_id, int cur_half, int cur_turn);
-  virtual void          evKickOff();
-  virtual void          evGiveBall();
+  virtual void          evKickOff(int team_id, bool place_team);
+  virtual void          evGiveBall(int team_id);
   virtual void          evMoveTurnMarker();
   virtual void          evTimeExceeded();
   virtual void          evChat(const std::string& msg);
@@ -61,7 +61,7 @@ private:
 				      int nb_dice, enum eBlockDiceFace result[3],
 				      int choose, bool reroll);
   virtual void          evFollow();
-  virtual void          evBlockPush(Position pos, int nb_choice, Position choices[]);
+  virtual void          evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
 
   xml::XMLConfig*       cfg_;
   Api*                  api_;
