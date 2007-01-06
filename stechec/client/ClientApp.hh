@@ -27,7 +27,12 @@ class BaseCRules;
 class ClientApp
 {
 public:
-  ClientApp(int argc, char** argv);
+  //! @brief ClientApp constructor.
+  //! @param argc argc from main().
+  //! @param argv argv from main().
+  //! @param cfg_def_file User configuration file to load, $HOME will be appended.
+  //! @param cfg_def_loc Package data directory, where to find default configuration file.
+  ClientApp(int argc, char** argv, const std::string& cfg_def_file, const std::string& cfg_def_loc);
   virtual ~ClientApp();
 
   //! @brief Enter in the main outer client loop.

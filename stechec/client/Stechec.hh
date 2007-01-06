@@ -15,6 +15,12 @@
 
 # include "ClientApp.hh"
 
+/*!
+** @brief Stechec generic binary client.
+**
+** This is by far the most simple client available: it presents no menu, loads
+** a gui/champion/whatever, and runs it once.
+*/
 class Stechec : public ClientApp
 {
 public:

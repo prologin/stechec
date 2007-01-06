@@ -13,8 +13,10 @@
 #include "tools.hh"
 #include "Stechec.hh"
 
+// Don't give default config file path, we don't know what to launch.
+// User will have to specify one on command line.
 Stechec::Stechec(int argc, char** argv)
-  : ClientApp(argc, argv)
+  : ClientApp(argc, argv, "", "")
 {
 }
 

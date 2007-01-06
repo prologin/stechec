@@ -20,8 +20,9 @@
 #include "ChampionLoader.hh"
 #include "ClientApp.hh"
 
-ClientApp::ClientApp(int argc, char** argv)
+ClientApp::ClientApp(int argc, char** argv, const std::string& cfg_def_file, const std::string& cfg_def_loc)
   : log_client_(5),
+    cfg_(cfg_def_file, cfg_def_loc),
     argc_(argc),
     argv_(argv),
     config_file_(""),
