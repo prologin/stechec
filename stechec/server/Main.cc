@@ -52,7 +52,7 @@ static void set_opt(xml::XMLConfig& cfg, Log& log)
 int     main(int argc, char** argv)
 {
   Log   main_log(5);
-  xml::XMLConfig cfg;
+  xml::XMLConfig cfg("", ""); // No default configuration file.
 
   parse_option(argc, argv);
   parse_config(argc >= 2 ? argv[1] : NULL, cfg);

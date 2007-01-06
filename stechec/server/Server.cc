@@ -81,7 +81,8 @@ bool    Server::checkServerState(Cx* cx)
   if (server_shutdown_)
     {
       LOG2("Connection from %1 has been rejected. Server is shutdowning.", *cx);
-      Packet denial(CX_DENY);
+      CxDeny denial;
+      stringToPacket(denial.reason, "Server is shutdowning", 64);
       cx->send(&denial);
       delete cx;
       return false;

@@ -96,8 +96,9 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
     {
       pthread_mutex_unlock(&lock_);
       LOG3("Deny access for game '%1': it is already finished!", game_uid_);
-      Packet pkt_game_finished(CX_DENY);
-      cx->send(&pkt_game_finished);
+      CxDeny denial;
+      stringToPacket(denial.reason, "Game already finished", 64);
+      cx->send(&denial);
       delete cx;
       return;
     }
@@ -108,8 +109,9 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
     {
       pthread_mutex_unlock(&lock_);
       LOG3("Deny coach access for game '%1': it is already started!", game_uid_);
-      Packet pkt_full(CX_DENY);
-      cx->send(&pkt_full);
+      CxDeny denial;
+      stringToPacket(denial.reason, "Game already started", 64);
+      cx->send(&denial);
       delete cx;
       return;
     }
@@ -119,8 +121,9 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
       if (nb_coach_ >= nb_waited_coach_)
 	{
 	  LOG3("Deny access for game '%1': too many coaches!", game_uid_);
-	  Packet pkt_too_many(CX_DENY);
-	  cx->send(&pkt_too_many);
+	  CxDeny denial;
+	  stringToPacket(denial.reason, "Too many coaches", 64);
+	  cx->send(&denial);
 	  delete cx;
 	  return;
 	}
