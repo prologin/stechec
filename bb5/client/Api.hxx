@@ -292,10 +292,11 @@ inline int Api::playerId(const Point& pos)
 
 inline void Api::selectTeam(int team_id)
 {
-  assert(rules_->getState() != GS_WAIT);
   selected_team_ = NULL;
   selected_player_ = NULL;
 
+  if (rules_->getState() == GS_WAIT)
+    return;
   if (team_id == US || (team_id <= 1 && team_id == rules_->getTeamId()))
     selected_team_ = rules_->our_team_;
   if (team_id == THEM || ((team_id == 0 || team_id == 1) && team_id != rules_->getTeamId()))

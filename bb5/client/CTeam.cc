@@ -70,18 +70,24 @@ void CTeam::loadPlayerConfig(xml::XMLTeam& xml_team, int player_id)
   try {
     for (int i = 0; ; i++)
       {
+	pkt.skill[i] = -1;
 	std::string skill = xml_team.getData<std::string>("skill", i);
-	if (skill == "block")
+
+	if (skill == "Block")
 	  pkt.skill[i] = SK_BLOCK;
-	if (skill == "catch")
+	if (skill == "Catch")
 	  pkt.skill[i] = SK_CATCH;
-	if (skill == "dodge")
+	if (skill == "Dodge")
 	  pkt.skill[i] = SK_DODGE;
-	if (skill == "pass")
+	if (skill == "Pass")
 	  pkt.skill[i] = SK_PASS;
-	if (skill == "surehand")
+	if (skill == "Surehand")
 	  pkt.skill[i] = SK_SUREHANDS;
-	pkt.skill_nb++;
+
+	if (pkt.skill[i] != -1)
+	  pkt.skill_nb++;
+	else
+	  i--;
       }
   }  catch (xml::XMLError&) {}
 

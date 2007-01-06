@@ -117,12 +117,12 @@ void SRules::initHalf()
   // Match is decided by a penalty shoot-out
   if (cur_half_ > 3) 
     {
-      int coach0 = dice_->roll("3th half coach0") + team_[0]->getRerollsRemain();
-      int coach1 = dice_->roll("3th half coach1") + team_[1]->getRerollsRemain();
+      int coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
+      int coach1 = dice_->roll("3th half coach1") + team_[1]->getRemainingReroll();
       while (coach0 == coach1)
 	{
-	  coach0 = dice_->roll("3th half coach0") + team_[0]->getRerollsRemain();
-	  coach1 = dice_->roll("3th half coach1") + team_[1]->getRerollsRemain();
+	  coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
+	  coach1 = dice_->roll("3th half coach1") + team_[1]->getRemainingReroll();
 	}
       LOG4("Team %1 win the game.", (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1));
  
@@ -136,8 +136,8 @@ void SRules::initHalf()
   // Coaches recover their Rerolls, except in overtime
   if (cur_half_ != 3) 
     {
-      team_[0]->initRerolls();
-      team_[1]->initRerolls();
+      team_[0]->initReroll();
+      team_[1]->initReroll();
     }
 	
   // Say we are in a new half	
@@ -167,10 +167,12 @@ void SRules::initKickoff()
   team_[1]->prepareKickoff();
 
 
-  LOG3("Kicking team: %1", (getCurrentTeamId() + 1) % 2);
 
   // Say that we are about to initialize the kickoff.
-  MsgInitKickoff pkt((getCurrentTeamId() + 1) % 2);
+  int kicking_id = (getCurrentTeamId() + 1) % 2;
+  LOG3("Kicking team: %1", kicking_id);
+  MsgInitKickoff pkt(kicking_id);
+  pkt.place_team = 1;
   sendPacket(pkt);
 }
 
@@ -202,6 +204,9 @@ void SRules::touchdown()
   initKickoff();
 }
 
+
+
+
 /*
 ** Handle messages received from the client
 */
@@ -211,8 +216,7 @@ void SRules::msgInitGame(const MsgInitGame* m)
 {
   team_[m->client_id]->state_ = GS_INITKICKOFF;
 
-  if (team_[0]->state_ == GS_INITKICKOFF &&
-      team_[1]->state_ == GS_INITKICKOFF)
+  if (team_[0]->state_ == GS_INITKICKOFF && team_[1]->state_ == GS_INITKICKOFF)
     {
       // Decide who is the kicking team
       coach_begin_ = dice_->roll("kicking team", D2) - 1; // team_id: base 0.
@@ -230,29 +234,48 @@ void SRules::msgInitGame(const MsgInitGame* m)
 
 void SRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-  // The team is placed on the field
-  // Check the placement
-  if (!team_[m->client_id]->isPlacementValid()
-      ||!field_->isPlacementValid(m->client_id))
+  int receiving_id = getCurrentTeamId();
+  int kicking_id = (receiving_id + 1) % 2;
+    
+  // Verify that teams set up in the right order.
+  if (m->client_id == receiving_id &&
+      (team_[kicking_id]->state_ == GS_INITKICKOFF ||
+       team_[receiving_id]->state_ != GS_INITKICKOFF))
+    {
+      // receiving sets up before kicking or already sets.
+      sendIllegal(MSG_INITKICKOFF, m->client_id);
+      return;
+    }
+  if (m->client_id == kicking_id &&
+      (team_[receiving_id]->state_ != GS_INITKICKOFF ||
+       team_[kicking_id]->state_ != GS_INITKICKOFF))
+    {
+      // kicking sets up after receiving or already sets.
+      sendIllegal(MSG_INITKICKOFF, m->client_id);
+      return;
+    }
+
+  // The team is placed on the field, check the placement
+  if (!team_[m->client_id]->isPlacementValid() ||
+      !field_->isPlacementValid(m->client_id))
     {
       sendIllegal(MSG_INITKICKOFF, m->client_id);
       return;
     }
 
-  team_[m->client_id]->state_ = GS_COACH1;
-
-
-  if (team_[0]->state_ == GS_COACH1 &&
-      team_[1]->state_ == GS_COACH1)
+  team_[m->client_id]->state_ |= 0x8000000;
+  if (m->client_id == kicking_id)
     {
-      // The two teams are ready, message to kick the ball
-      MsgInitKickoff pkt((getCurrentTeamId() + 1) % 2);
+      // The receiving team has to be placed
+      MsgInitKickoff pkt(getCurrentTeamId());
+      pkt.place_team = 1;
       sendPacket(pkt);
     }
   else
     {
-      // The receiving team has to be placed
-      MsgInitKickoff pkt(getCurrentTeamId());
+      // The two teams are ready, message to kick the ball
+      MsgInitKickoff pkt((getCurrentTeamId() + 1) % 2);
+      pkt.place_team = 0;
       sendPacket(pkt);
     }
 }

@@ -121,35 +121,38 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
   cur_half_ = m->cur_half;
   LOG2("-- CRules: Initialize the half %1", cur_half_);
 
-  our_team_->initRerolls();
-  other_team_->initRerolls();
+  our_team_->initReroll();
+  other_team_->initReroll();
 	
   onEvent(m);
 }
 
 void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-  // It is not for our team
+  // Exit if is not for our team.
   if (m->client_id != getTeamId())
-    return;
-
-
-  if (getState() == GS_INITKICKOFF)
-    // Our team is already placed, we can place the ball
     {
-      onEvent(eKickOff);
+      onEvent(m);
+      return;
     }
-  else
-    // Our team has to enter the field
-    {
-      setState(GS_INITKICKOFF);
-      LOG2("-- CRules: change state: GS_INITKICKOFF");
 
-      // Now, you can safely use Api fonctions referring to teams.
+  if (m->place_team)
+    {
+      assert(!(getState() & GS_INITKICKOFF));
+      setState(GS_INITKICKOFF);
       api_->selectTeam(US);
 
+      // Our team has to enter the field
+      // FIXME: do it automatically, for now.
       our_team_->placeTeam(1);
       sendPacket(*m);
+      return;
+    }
+  else
+    {
+      assert(getState() & GS_INITKICKOFF);
+      // Inform UI that he has to place the ball
+      onEvent(m);
     }
 }
 
@@ -210,13 +213,10 @@ void        CRules::msgCustomEvent(const CustomEvent* m)
 
 void CRules::msgResult(const MsgResult* m)
 {
-  if (m->client_id == getTeamId())
+  if (m->client_id == getTeamId() && m->reroll)
     {
-      if (m->reroll == true && m->result + m->modifier < m->required)
-	{
-	  setState(GS_REROLL);
-	  LOG2("-- CRules: change state: GS_REROLL");
-	}
+      setState(GS_REROLL);
+      LOG2("-- CRules: change state: GS_REROLL");
     }
   onEvent(m);
 }
@@ -226,14 +226,14 @@ void CRules::msgBlockResult(const MsgBlockResult* m)
 {
   if (m->client_id == getTeamId())
     {
-      if (m->choose_team_id == getTeamId())
+      if (m->strongest_team_id == getTeamId())
 	setState(GS_BLOCK);
       else if (m->reroll)
 	setState(GS_REROLL);
     }
   else
     {
-      if (m->choose_team_id == getTeamId() && !m->reroll)
+      if (m->strongest_team_id == getTeamId() && !m->reroll)
 	setState(GS_BLOCK);
     }
   onEvent(m);

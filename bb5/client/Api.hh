@@ -219,7 +219,7 @@ public:
   //! @param def_p The defender id, on the other team.
   int		doBlockPlayer(int def_p);
 
-  //! @brief Move the selected player.
+  //! @brief Throw the ball to the specified position.
   //! @note Declare a PASS action before.
   //! @param to Where to throw the ball.
   int		doPassPlayer(const Point& to);

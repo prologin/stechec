@@ -27,9 +27,6 @@ void EventProcess::dispatch(const CustomEvent& ie) const
     case eInitGame:
       ev_->evInitGame();
       break;
-    case eKickOff:
-      ev_->evKickOff();
-      break;
     }
 }
 
@@ -55,6 +52,12 @@ template <>
 void EventProcess::dispatch(const MsgEndGame&) const
 {
   ev_->evEndGame();
+}
+
+template <>
+void EventProcess::dispatch(const MsgInitKickoff& m) const
+{
+  ev_->evKickOff(m.client_id, m.place_team);
 }
 
 template <>
@@ -128,9 +131,9 @@ void EventProcess::dispatch(const MsgInitHalf& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgGiveBall&) const
+void EventProcess::dispatch(const MsgGiveBall& pkt) const
 {
-  ev_->evGiveBall();
+  ev_->evGiveBall(pkt.client_id);
 }
 
 template <>
@@ -145,11 +148,10 @@ void EventProcess::dispatch(const MsgBlockResult& pkt) const
 {
   enum eBlockDiceFace results[3];
   for (int i = 0; i < pkt.nb_dice; i++)
-    {
-      results[i] = (enum eBlockDiceFace) pkt.results[i];
-    }
+    results[i] = (enum eBlockDiceFace) pkt.results[i];
+
   ev_->evBlockResult(pkt.client_id, pkt.player_id, pkt.opponent_id, pkt.nb_dice,
-		     results, pkt.choose_team_id, pkt.reroll);
+		     results, pkt.strongest_team_id, pkt.reroll);
 }
 
 template <>
@@ -182,12 +184,6 @@ void EventProcess::dispatch(const ActDeclare& pkt) const
 // We must declare them, even if they aren't used, to make the linker happy.
 template <>
 void EventProcess::dispatch<MsgInitGame>(MsgInitGame const&) const
-{
-  assert(false);
-}
-
-template <>
-void EventProcess::dispatch<MsgInitKickoff>(MsgInitKickoff const&) const
 {
   assert(false);
 }

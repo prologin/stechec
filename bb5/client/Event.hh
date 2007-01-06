@@ -22,7 +22,6 @@
 
 enum {
   eInitGame,
-  eKickOff,
 };
 
 /*!
@@ -44,12 +43,12 @@ public:
   virtual void evEndGame() {}
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, 
 			int result, int modifier, int required, bool reroll);
-  virtual void evBlockResult(int team_id, int player_id, int opponent_id, 
+  virtual void evBlockResult(int team_id, int player_id, int opponent_player_id, 
 			     int nb_dice, enum eBlockDiceFace result[3],
-			     int choose, bool reroll);
+			     int strongest_team_id, bool reroll);
   virtual void evHalf(int half);
-  virtual void evKickOff() {}
-  virtual void evGiveBall();
+  virtual void evKickOff(int team_id, bool place_team);
+  virtual void evGiveBall(int team_id);
   virtual void evMoveTurnMarker() {}
   virtual void evTimeExceeded() {}
   virtual void evChat(const std::string& msg);
@@ -62,7 +61,7 @@ public:
   virtual void evPlayerKO(int team_id, int player_id, int dice);
   virtual void evFollow();
   virtual void evDeclare(int team_id, int player_id, enum eAction action);
-  virtual void evBlockPush(Position pos, int nb_choice, Position choices[]);
+  virtual void evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
 };
 
 inline void Event::evIllegal(int) {}
@@ -70,7 +69,8 @@ inline void Event::evNewTurn(int, int, int) {}
 inline void Event::evResult(int, int, enum eRoll, int, int, int, bool) {}
 inline void Event::evBlockResult(int, int, int,	int, enum eBlockDiceFace[], int, bool) {}
 inline void Event::evHalf(int) {}
-inline void Event::evGiveBall() {}
+inline void Event::evKickOff(int, bool) {}
+inline void Event::evGiveBall(int) {}
 inline void Event::evChat(const std::string&) {}
 inline void Event::evBallPos(const Point&) {}
 inline void Event::evPlayerCreate(int, int) {}
@@ -81,6 +81,6 @@ inline void Event::evPlayerStatus(int, enum eStatus) {}
 inline void Event::evPlayerKO(int, int, int) {}
 inline void Event::evFollow() {}
 inline void Event::evDeclare(int, int, enum eAction) {}
-inline void Event::evBlockPush(Position, int, Position[]) {}
+inline void Event::evBlockPush(const Position&, int, const Position[]) {}
 
 #endif /* !EVENT_HH_ */

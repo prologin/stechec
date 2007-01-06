@@ -284,14 +284,15 @@ int SPlayer::doBlock(const ActBlock* m)
     nb_dice_ = 1;
 
   MsgBlockResult msg(team_id_);
-  if (nb_dice_ == 1)
-    msg.choose_team_id =  - 1;
-  else if (mod_st_atk < mod_st_df)
-    msg.choose_team_id = r_->getCurrentOpponentTeamId();
-  else
-    msg.choose_team_id = team_id_;
   msg.player_id = id_;
   msg.opponent_id = m->opponent_id;
+  msg.reroll = t_->canUseReroll();
+  if (nb_dice_ == 1)
+    msg.strongest_team_id = -1;
+  else if (mod_st_atk < mod_st_df)
+    msg.strongest_team_id = r_->getCurrentOpponentTeamId();
+  else
+    msg.strongest_team_id = team_id_;
   msg.nb_dice = nb_dice_;
 
   for (int i = 0; i < nb_dice_; ++i)
@@ -301,12 +302,11 @@ int SPlayer::doBlock(const ActBlock* m)
       msg.results[i] = result_[i];
     }
 
-  msg.reroll = t_->canUseReroll();
   r_->sendPacket(msg);
 
   if (t_->canUseReroll())
     t_->setConcernedPlayer(this);
-  choose_block_ = msg.choose_team_id != r_->getCurrentOpponentTeamId();
+  choose_block_ = msg.strongest_team_id != r_->getCurrentOpponentTeamId();
   action_attempted_ = R_BLOCK;
   if (mod_st_atk == mod_st_df)
     {
@@ -342,10 +342,10 @@ void SPlayer::resolveBlock(int choosen_dice)
 
 void SPlayer::resolveBlock(int chosen_dice, SPlayer* target)
 {
-LOG4("Resolve block.");
   MsgPlayerKnocked pkt1(team_id_);
   MsgPlayerKnocked pkt2(r_->getCurrentOpponentTeamId());
-  switch(result_[chosen_dice])
+
+  switch (result_[chosen_dice])
     {
     case BATTAKER_DOWN :
       checkArmor(0, 0);
@@ -614,14 +614,15 @@ void SPlayer::sendRoll(int result, int modifier, int required)
   msg.result = result;
   msg.modifier = modifier;
   msg.required = required;	
-  msg.reroll = reroll_enabled_;
-  r_->sendPacket(msg);
-	
+  msg.reroll = 0;
+
   if (reroll_enabled_ && modifier + result < required)
     {					
       t_->state_ = GS_REROLL;
       t_->setConcernedPlayer(this);
+      msg.reroll = 1;
     }
+  r_->sendPacket(msg);
 }
 
 /*
@@ -818,15 +819,15 @@ int SPlayer::finishThrow(bool reroll)
 void SPlayer::finishBlock(bool reroll)
 {
   MsgBlockResult msg(team_id_);
-  if (nb_dice_ == 1)
-    msg.choose_team_id =  - 1;
-  else if (choose_block_)
-    msg.choose_team_id = team_id_;
-  else
-    msg.choose_team_id = r_->getCurrentOpponentTeamId();
-
   msg.player_id = id_;
   msg.opponent_id = target_->id_;
+  msg.reroll = 0;
+  if (nb_dice_ == 1)
+    msg.strongest_team_id = -1;
+  else if (choose_block_)
+    msg.strongest_team_id = team_id_;
+  else
+    msg.strongest_team_id = r_->getCurrentOpponentTeamId();
   msg.nb_dice = nb_dice_;
 
   if (reroll)
@@ -841,13 +842,11 @@ void SPlayer::finishBlock(bool reroll)
   else
     {
       for (int i = 0; i < nb_dice_; ++i)
-	{
-	  msg.results[i] = result_[i];
-	}
+	msg.results[i] = result_[i];
     }
 
-  msg.reroll = false;
   r_->sendPacket(msg);
+
   if (nb_dice_ == 1)
     {
       t_->state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;

@@ -61,13 +61,13 @@ DECLARE_PACKET(ACT_BLOCKPUSH, ActBlockPush)
     int row;
     int col;
   } choice[3];
-	int square_chosen;
+  int square_chosen;
 END_PACKET
 
 DECLARE_PACKET(ACT_MULTIBLOCK, Act_MultiBlock)
   int player_id;
-  int target_location;
-  int second_location;
+  int first_opponent_id;
+  int second_opponent_id;
 END_PACKET
 
 DECLARE_PACKET(ACT_PASS, ActPass)
@@ -113,20 +113,20 @@ END_PACKET
 
 DECLARE_PACKET(MSG_RESULT, MsgResult)
   int player_id;
-  int roll_type;
+  int roll_type;   // enum eRoll
+  int reroll;      // can reroll (else the action fails)
   int result;
   int modifier;
   int required;
-  int reroll;
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
-  int choose_team_id;
   int player_id;
   int opponent_id;
+  int reroll;             // 'strongest_team_id' can reroll.
+  int strongest_team_id;  // team id that have the strongest player, can choose which dice to use, reroll.
   int nb_dice;
   int results[3];
-  int reroll;
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)

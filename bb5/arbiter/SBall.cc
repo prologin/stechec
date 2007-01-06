@@ -34,7 +34,6 @@ SPlayer* SBall::getOwner()
 
 void SBall::msgPlaceBall(const MsgBallPos* m)
 {
-  MsgBallPos mesg;
   SPlayer* p;
   
   // Called on half init. Check if this is the kicking team that
@@ -46,7 +45,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
       return;
     }
 
-  // So everybody will be aware of where the kicker put it.
+  // First msg resend to client: where the kicker put it.
   r_->sendPacket(*m);
   
   pos_.row = m->row;
@@ -99,7 +98,9 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
 	    }
 	}
     }
-		
+
+  // Second msg resend to client: where it eventually goes.
+  MsgBallPos mesg;
   mesg.row = pos_.row;
   mesg.col = pos_.col;
   r_->sendPacket(mesg);
@@ -108,7 +109,6 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
 
 void SBall::msgGiveBall(const MsgGiveBall* m)
 {
-  MsgBallPos mesg;
   SPlayer* p;
   
   // Called on half init, when the ball goes out of the pitch
@@ -128,14 +128,14 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
       return;
     }
 
+  // Second msg resend to client: where it eventually goes.
+  MsgBallPos mesg;
   mesg.row = p->getPosition().row;
   mesg.col = p->getPosition().col;
-	
-  owner_ = p;
-	
-  // So everybody will be aware of where the kicker put it.
   r_->sendPacket(mesg);
 	
+  owner_ = p;
+
   r_->kickoffFinished();
 }
 

@@ -83,31 +83,37 @@ inline const std::string& Team<T>::getCoachName() const
 }
 
 template <typename T>
-inline int Team<T>::getScore()
+inline int Team<T>::getScore() const
 {
   return score_;
 }
 
 template <typename T>
-inline int Team<T>::getRerollsRemain()
+inline int Team<T>::getReroll() const
+{
+  return reroll_;
+}
+
+template <typename T>
+inline int Team<T>::getRemainingReroll() const
 {
   return reroll_remain_;
 }
 
 template <typename T>
-inline void Team<T>::initRerolls()
-{
-  reroll_remain_ = reroll_;
-}
-
-template <typename T>
-inline bool Team<T>::canUseReroll()
+inline bool Team<T>::canUseReroll() const
 {
   return (reroll_remain_ > 0 && !reroll_used_);
 }
 
 template <typename T>
-inline bool Team<T>::isPlacementValid()
+inline void Team<T>::initReroll()
+{
+  reroll_remain_ = reroll_;
+}
+
+template <typename T>
+inline bool Team<T>::isPlacementValid() const
 {
   int reserve = 0;
   int injured_KO = 0;
