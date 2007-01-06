@@ -186,11 +186,15 @@ bool TextSurface::getAutoWrap() const
 
 void TextSurface::setTextColor(const SDL_Color& fg)
 {
+  if (memcmp(&fg_, &fg, sizeof (SDL_Color)))
+    content_changed_ = true;
   fg_ = fg;
 }
 
 void TextSurface::setBgColor(const SDL_Color& bg)
 {
+  if (memcmp(&bg_, &bg, sizeof (SDL_Color)))
+    content_changed_ = true;
   bg_ = bg;
 }
 

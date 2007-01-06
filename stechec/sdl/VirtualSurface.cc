@@ -36,6 +36,9 @@ VirtualSurface::VirtualSurface(const std::string& name, int width, int height)
 
 VirtualSurface::~VirtualSurface()
 {
+  SurfaceList::iterator it;
+  for (it = child_list_.begin(); it != child_list_.end(); ++it)
+    (*it)->parent_ = NULL;
 }
 
 void VirtualSurface::addChild(Surface* child)

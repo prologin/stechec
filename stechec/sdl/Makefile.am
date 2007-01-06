@@ -2,7 +2,7 @@
 
 SUBDIRS = . test
 
-lib_LTLIBRARIES = libstechec_sdl.la
+pkglib_LTLIBRARIES = libstechec_sdl.la
 
 libstechec_sdl_la_SOURCES =			\
 	ResourceCenter.hh			\
