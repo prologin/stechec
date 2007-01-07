@@ -1,11 +1,11 @@
 # -*-Makefile-*-
 
+#
+# FIXME: remove this directory, move into bb5/ and prologin/
+#
 dist_pkgdata_DATA =				\
 	config_prolo.xml			\
-	formation.xml				\
-	config.dtd				\
-	team.xsd				\
-	formation.dtd
+	config.dtd
 
 dist_sysconf_DATA = stechec.yml
 

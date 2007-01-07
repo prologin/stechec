@@ -180,8 +180,6 @@ AC_CONFIG_FILES([
   doc/doc.doxy
   conf/Makefile
   conf/config_prolo.xml
-  conf/team.xml
-  conf/formation.xml
   stechec/Makefile
   stechec/base_rules/Makefile
   stechec/client/Makefile
@@ -209,6 +207,7 @@ AC_CONFIG_FILES([
   bb5/data/Makefile
   bb5/data/default_config.xml
   bb5/data/team/amazon.xml
+  bb5/data/formation/default.xml
   bb5/teamroster2/Makefile
   bb5/visu2d/Makefile
   bb5/rules_test/Makefile
