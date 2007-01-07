@@ -20,88 +20,90 @@ constant:
   -
     cst_name: BAD_ARGUMENT
     cst_val: -1
-    cst_comment: One of the call function argument is incorrect.
+    cst_comment: One of the call function arguments is incorrect.
   -
     cst_name: SUCCESS
     cst_val: 0
-    cst_comment: Everything run smoothly.
+    cst_comment: Everything runs smoothly.
 
 
   - doc_extra: \subsubsection{Player status}
   -
-    cst_name: STA_UNASSIGNED
-    cst_val: 0
-    cst_comment: 
-  -
     cst_name: STA_RESERVE
     cst_val: 1
-    cst_comment: 
+    cst_comment: The player is in the reserve box.
   -
     cst_name: STA_STANDING
     cst_val: 2
-    cst_comment: 
+    cst_comment: The player is standing.
   -
     cst_name: STA_PRONE
     cst_val: 3
-    cst_comment: 
+    cst_comment: The player is prone.
   -
     cst_name: STA_STUNNED
     cst_val: 4
-    cst_comment: 
+    cst_comment: The player is stunned.
   -
     cst_name: STA_KO
     cst_val: 5
-    cst_comment: 
+    cst_comment: The player is in the KO box.
   -
     cst_name: STA_INJURED
     cst_val: 6
-    cst_comment: 
-  -
+    cst_comment: The player suffers an injury, and is out of play.
+ -
     cst_name: STA_SENTOFF
     cst_val: 7
-    cst_comment: 
+    cst_comment: The player has been sent off for a foul.
 
 
   - doc_extra: \subsubsection{Player action}
   -
     cst_name: MOVE
     cst_val: 1
-    cst_comment: 
+    cst_comment: Player may move a number of squares equal to their MA.
   -
     cst_name: BLOCK
     cst_val: 2
-    cst_comment: 
+    cst_comment: Player may block one opponent in adjacent square.
   -
     cst_name: BLITZ
     cst_val: 3
-    cst_comment: 
+    cst_comment: Player may blitz (combine block and movement).
   -
     cst_name: PASS
     cst_val: 4
-    cst_comment: 
+    cst_comment: Player may throw a pass.
   
 
   - doc_extra: \subsubsection{Player skills}
   -
     cst_name: SK_BLOCK
     cst_val: 0
-    cst_comment: 
+    cst_comment: |
+        Player will not be knocked down on a both down 
+        result on the blocking dice if skill is used.
   -
     cst_name: SK_CATCH
     cst_val: 1
-    cst_comment: 
+    cst_comment: Allowed to re-roll a failed catch roll.
   -
     cst_name: SK_DODGE
     cst_val: 2
-    cst_comment: 
+    cst_comment: |
+        Player will not be knocked down on a defender stumbles block result. 
+        Allowed to re-roll failed dodge roll once per turn.
   -
     cst_name: SK_PASS
     cst_val: 3
-    cst_comment: 
+    cst_comment: Allowed to re-roll a missed pass.
   -
     cst_name: SK_SUREHANDS
     cst_val: 4
-    cst_comment: 
+    cst_comment: |
+        Player is allowed to re-roll the dice 
+        if he fails to pick up the ball.
 
 
   - doc_extra: \subsubsection{Misc.}
@@ -132,29 +134,29 @@ function:
      \subsubsection{Field informations}
   -
     fct_name: ball_x
-    fct_summary: 
+    fct_summary: Get the x coordinate of the ball.
     fct_ret_type: int
   -
     fct_name: ball_y
-    fct_summary: 
+    fct_summary: Get the y coordinate of the ball.
     fct_ret_type: int
   -
     fct_name: team_id
-    fct_summary: Get the player team id at the specified position
+    fct_summary: Get the player team id at the specified position.
     fct_ret_type: int
     fct_arg:
       - [x, int, x coordinate on the field]
       - [y, int, y coordinate on the field]
   -
     fct_name: player_id
-    fct_summary: Get the player id at the specified position
+    fct_summary: Get the player id at the specified position.
     fct_ret_type: int
     fct_arg:
       - [x, int, x coordinate on the field]
       - [y, int, y coordinate on the field]
   -
     fct_name: tackle_zone_number
-    fct_summary:
+    fct_summary: Get the number of tackle zones at the specified position.
     fct_ret_type: int
     fct_arg:
       - [x, int, x coordinate on the field]
@@ -167,21 +169,23 @@ function:
      If a team has not been chosen, \texttt{BAD_TEAM} will be returned.
   -
     fct_name: select_team
-    fct_summary: 
+    fct_summary: Select a team.
     fct_ret_type: int
     fct_arg:
-      - [team_id, int, team identifiant (0, 1, US or THEM)]
+      - [team_id, int, team identification (0, 1, US or THEM)]
   -
     fct_name: team_reroll_number
-    fct_summary: 
+    fct_summary: Get the number of rerolls of the selected team.
     fct_ret_type: int
   -
     fct_name: reroll_used
-    fct_summary: 
+    fct_summary: |
+        Tells whether the selected team has 
+        used a reroll this turn or not.
     fct_ret_type: int
   -
     fct_name: player_number
-    fct_summary: 
+    fct_summary: Get the number of players of the selected team.
     fct_ret_type: int
 
 
@@ -191,10 +195,10 @@ function:
      If a team has not been chosen, \texttt{BAD_PLAYER} will be returned.
   -
     fct_name: select_player
-    fct_summary: 
+    fct_summary: Select a player.
     fct_ret_type: int
     fct_arg:
-      - [team_id, int, player identifiant of the selected team]
+      - [player_id, int, player identification of the selected team]
   -
     fct_name: player_status
     fct_summary: Get the player current status.
@@ -213,23 +217,23 @@ function:
     fct_ret_type: int
   -
     fct_name: player_ma
-    fct_summary: Get the player ma.
+    fct_summary: Get the movement allowance of the player.
     fct_ret_type: int
   -
     fct_name: player_ma_remain
-    fct_summary: Get the player remaining ma.
+    fct_summary: Get the remaining movement allowance of the player.
     fct_ret_type: int
   -
     fct_name: player_st
-    fct_summary: Get the player st.
+    fct_summary: Get the strength of the player.
     fct_ret_type: int
   -
     fct_name: player_ag
-    fct_summary: Get the player ag.
+    fct_summary: Get the agility of the player.
     fct_ret_type: int
   -
     fct_name: player_av
-    fct_summary: Get the player av.
+    fct_summary: Get the armour value of the player.
     fct_ret_type: int
   -
     fct_name: player_skill_number
@@ -243,7 +247,7 @@ function:
       - [index, int, skill index. from 0 to num_skill - 1]
   -
     fct_name: move_possible
-    fct_summary: 
+    fct_summary: Check if a move to the specified position is possible.
     fct_ret_type: int
     fct_arg:
       - [x, int, x coordinate on the field]
@@ -251,8 +255,8 @@ function:
   -
     fct_name: move_length
     fct_summary: |
-      Get length that a move will take to the specified destination
-      for the for selected player.
+      Get the length of the move to the specified destination
+      for the selected player.
     fct_ret_type: int
     fct_arg:
       - [x, int, x coordinate on the field]
@@ -281,11 +285,11 @@ function:
      \subsection{Command function}
   -
     fct_name: end_turn
-    fct_summary: 
+    fct_summary: End the turn.
     fct_ret_type: void
   -
     fct_name: move_turn_marker
-    fct_summary: 
+    fct_summary: Move the turn marker.
     fct_ret_type: void
   -
     fct_name: ask_illegal_procedure
@@ -293,7 +297,7 @@ function:
     fct_ret_type: void
   -
     fct_name: reroll
-    fct_summary: 
+    fct_summary: Tell if you want to reroll a dice or not.
     fct_ret_type: int
     fct_arg:
       - [value, int, whether accept (0) or reroll (1)]
@@ -307,7 +311,7 @@ function:
     fct_ret_type: int
   -
     fct_name: choose_block_dice
-    fct_summary: 
+    fct_summary: Choose a block dice.
     fct_ret_type: int
   -
     fct_name: block_push
@@ -315,36 +319,36 @@ function:
     fct_ret_type: int
   -
     fct_name: follow
-    fct_summary: 
+    fct_summary: Tell if you want to follow a pushed player.
     fct_ret_type: int
     fct_arg:
       - [value, int, whether stay here (0) or follow (1)]
   -
     fct_name: declare
-    fct_summary: 
+    fct_summary: Declare an action for that player.
     fct_ret_type: int
     fct_arg:
       - [action, int, action to declare]
   -
     fct_name: move_player
-    fct_summary: 
+    fct_summary: Move the player to the specified position.
     fct_ret_type: int
     fct_arg:
       - [x, int, x coordinate on the field]
       - [y, int, y coordinate on the field]
   -
     fct_name: stand_up_player
-    fct_summary: 
+    fct_summary: Lift the player.
     fct_ret_type: int
   -
     fct_name: block_player
-    fct_summary: 
+    fct_summary: Block an opponent player. 
     fct_ret_type: int
     fct_arg:
       - [id, int, opponent player id to block]
   -
     fct_name: pass_ball
-    fct_summary: 
+    fct_summary: Pass the ball to the specified position.
     fct_ret_type: int
     fct_arg:
       - [x, int, x coordinate on the field]
