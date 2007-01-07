@@ -8,7 +8,7 @@
 # The complete GNU General Public Licence Notice can be found as the
 # `NOTICE' file in the root directory.
 #
-# Copyright (C) 2005, 2006 Prologin
+# Copyright (C) 2005, 2006, 2007 Prologin
 #
 
 #
@@ -52,6 +52,7 @@ $gen = CPrintProto.new
 
 # les _ ont besoin d'etre echappe en latex
 def esc(str)
+  return "" unless str
   str.gsub(/_/, '\_')
 end
 
