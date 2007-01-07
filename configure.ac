@@ -211,6 +211,7 @@ AC_CONFIG_FILES([
   bb5/teamroster2/Makefile
   bb5/visu2d/Makefile
   bb5/rules_test/Makefile
+  bb5/subject/Makefile
 ])
 fi
 

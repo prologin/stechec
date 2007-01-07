@@ -1,6 +1,14 @@
 # -*- Makefile -*-
 
-SUBDIRS		= common arbiter client ai console data rules_test
+SUBDIRS = 					\
+	common					\
+	arbiter					\
+	client					\
+	ai					\
+	console					\
+	data					\
+	rules_test				\
+	subject
 
 if HAVE_PARAGUI
   SUBDIRS += teamroster2
