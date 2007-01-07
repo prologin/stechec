@@ -2,9 +2,9 @@
 
 <team bb_version="5" race="Amazon" emblem="amazon.png"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="file://@prefix@/share/@PACKAGE@/team.xsd">
+      xsi:noNamespaceSchemaLocation="file://@prefix@/share/@PACKAGE@/bb5/schema/team.xsd">
 
-  <formation>formation.xml</formation>
+  <formation>default.xml</formation>
   <name>The absoluty wonderful team</name>
   <coach>sick sad coach</coach>
   <rating>100</rating>

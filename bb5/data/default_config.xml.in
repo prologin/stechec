@@ -11,7 +11,7 @@
     <rules>bb5_client_rules</rules>
     <connect val="network" host="localhost" port="25151"
              game_uid="41" connect_on_startup="true" />
-    <team>team.xml</team>
+    <team>amazon.xml</team>
   </client>
 
   <client id="1">

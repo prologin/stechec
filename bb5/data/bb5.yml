@@ -52,7 +52,7 @@ constant:
     cst_name: STA_INJURED
     cst_val: 6
     cst_comment: The player suffers an injury, and is out of play.
- -
+  -
     cst_name: STA_SENTOFF
     cst_val: 7
     cst_comment: The player has been sent off for a foul.
