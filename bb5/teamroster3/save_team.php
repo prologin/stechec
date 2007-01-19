@@ -2,41 +2,33 @@
 
 require_once('backstage/minixml.php');
 require_once('backstage/parse_xml.php');
+require_once('backstage/helper.php');
 
-$race = parseRaces('Wood Elf','data/en_races.xml');
+$lang = checkLang();
+$race_name = htmlentities($_POST['RACE']);
+$translation = build_translation($lang,'en');
+$race_name = $translation[$race_name];
 
-if ( isset($_COOKIE['lang']) ) {
-	
-	$lang = $_COOKIE['lang'];
-		
-	if ( !($lang == 'en' || $lang == 'fr' || $lang == 'de') ) {
-		$lang = 'en';
-	}
-	
-}
-else {
-	$lang = 'en';
-}
-$lang = 'de';
-
+$race = extractRace(parseRaces('data/en_races.xml'), $race_name);
 $interface = parseInterface('data/'.$lang.'_interface.xml');
 
 for ( $i = 0; $i < $race['player_num']; $i++ ) {
 	$posNames[] = $race['player_'.$i]['title'];
 }
+$posNames[] = "";
 
-// header('Content-type: application/xml');
 $teamname = htmlentities($_POST['TEAM']);
-// header("Content-Disposition: attachment; filename=\"$teamname.xml\"");
-
+header('Content-type: application/xml');
+header("Content-Disposition: attachment; filename=\"$teamname.xml\"");
 $posPics = explode(" ", $_POST['PosPics']);
+
 
 $xmlDoc = new MiniXMLDoc();
 
 $arr = array();
 $arr['team'] = array();
 
-$arr['team']['race'] = htmlentities($_POST['RACE']);
+$arr['team']['race'] = $race_name;
 $arr['team']['BBversion'] = 5;
 $arr['team']['emblem'] = htmlentities($_POST['TEAMLOGO']);
 $arr['team']['xmlns:xsi'] = "http://www.w3.org/2001/XMLSchema-instance";
@@ -83,8 +75,6 @@ for( $i = 0; $i < 16; $i++) {
 		} 
 		else {
 			$player['skills']['skill'] = explode(",", $_POST['SKILLS'][$i]);
-			print_r($player['skills']['skill']);
-			$translation = build_translation($lang,'en');
 			$temp = array();
 			foreach ( $player['skills']['skill'] as $key ) {
 				if ( eregi('\+', $key) ) {
@@ -94,9 +84,7 @@ for( $i = 0; $i < 16; $i++) {
 					$temp[] = $translation[$key];
 				}
 			}
-			print_r($temp);
 			$player['skills']['skill'] = $temp;
-			echo "\n OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO \n";
 		}
 
 		/* INJURIES */

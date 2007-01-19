@@ -87,7 +87,7 @@ define("MINIXML_USEFROMFILECACHING", 0);
 define("MINIXML_FROMFILECACHEDIR", "/tmp");
 
 
-define("MINIXML_DEBUG", 1); /* Set Debug to 1 for more verbose output, 0 otherwise */
+define("MINIXML_DEBUG", 0); /* Set Debug to 1 for more verbose output, 0 otherwise */
 
 
 /*****************************************  end Configuration ***************************************/

@@ -24,28 +24,9 @@
 
 	require_once('backstage/minixml.php');
 	require_once('backstage/parse_xml.php');
+	require_once('backstage/helper.php');
 	
-	function sprint($string) {	// sprint like in "Special characters PRINT"
-		echo htmlentities($string, ENT_QUOTES, 'UTF-8');
-	}
-	
-	function checkLang() {
-		
-		if ( isset($_COOKIE['lang']) ) {
-			$lang = $_COOKIE['lang'];
-			
-			if ( $lang != 'en' && $lang != 'de' && $lang != 'fr' ) {
-				$lang = 'en';
-			}
-		}
-		else {
-			$lang = 'en';
-		}
-		
-		return $lang;
-	}
-
-	$lang = checkLang();			
+	$lang = checkLang();
 	$interface = parseInterface('data/'.$lang.'_interface.xml');
 
 ?>
@@ -81,17 +62,12 @@
 	<div id="list">
 
 		<?php
-		
-			$xmlDoc = new MiniXMLDoc();
-			$xmlDoc->fromFile('data/'.$lang.'_races.xml');
-			$races = $xmlDoc->toArray();
+			$races = parseRaces('data/'.$lang.'_races.xml');
+			$races_list = listRacesNames($races);
 			
-			for ( $i = 0; $i < $races['races']['race']['_num']; $i++) {
-				$name =  $races['races']['race'][$i]['_attributes']['name'];
-				echo "<a class=\"block\" href=\"roster.php?race=$name\">$name</a> \n";
+			foreach ( $races_list as $race ) {
+				echo "<a class=\"block\" href=\"roster.php?race=$race\">$race</a> \n";
 			}
-			
-		 
 		?>
 
 	</div>

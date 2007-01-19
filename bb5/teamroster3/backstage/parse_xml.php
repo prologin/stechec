@@ -1,26 +1,48 @@
 <?php
 
-function parseRaces($chosen_race, $xmlRaceFile) {
-
+function parseRaces($xmlRaceFile) {
+		
+	/* simply transform the races.xml into an array */
+		
 	$xmlDoc = new MiniXMLDoc();
 	$xmlDoc->fromFile($xmlRaceFile);
 	$races = $xmlDoc->toArray();
- 
-	for( $i = 0; $i <= $races['races']['race']['_num']; $i++) {
+		
+	return $races;	
+}
 
-		if ($chosen_race == $races['races']['race'][$i]['_attributes']['name']) {
-			$race_ID = $i; 
+function listRacesNames($races) {
+	
+	$races_list = Array();
+	
+	for( $i = 0; $i < $races['races']['race']['_num']; $i++) {
+		$races_list[] = $races['races']['race'][$i]['_attributes']['name'];
+	}
+	
+	return $races_list;
+}
+
+function extractRace($races, $chosen_race) {
+	
+	/*	cut out one race out of the several
+		and bring into a convenient form */
+		
+	$races_list = listRacesNames($races);
+	
+	$i = 0;
+ 
+	foreach ( $races_list as $string ) {
+		if ( $chosen_race == $string) {
 			break;
 		}
+		$i++;
+	}
 	
-		if ($i == $races['races']['race']['_num']) {
-			die("<p>No team selected. <a href=\"index.php\">Return</a>.</p>");
-		}
+	if ( !array_key_exists($i,$races['races']['race']) ) {
+		die('No valid team selected. <a href="roster.php">Return</a>.');
+	}
 	
-	} 
-
-	$race = $races['races']['race'][$race_ID];
-	unset($races); // we don't need the other 20 races anymore...
+	$race = $races['races']['race'][$i];
 
 	$race['apothecary'] = $race['apothecary']['_attributes']['use'];
 	$race['reroll_cost'] = $race['reroll']['_attributes']['cost'];
@@ -61,6 +83,15 @@ function parseRaces($chosen_race, $xmlRaceFile) {
 	return $race;
 }
 
+function listPositions($races, $race_name) {
+	$race = extractRace($races, $race_name);
+	for ( $i = 0; $i < $race['player_num']; $i++ ) {
+		$posNames[] = $race['player_'.$i]['title'];
+	}
+	$posNames[] = "";
+	return $posNames;
+}
+
 function parseSkills($xmlSkillFile) {
 
 	$xmlDoc = new MiniXMLDoc();
@@ -88,16 +119,29 @@ function parseInterface($xmlSkillFile) {
 	return $xmlDocArray['interface'];
 }
 
-function parseTeamRoster($xmlTeamRoster) {
+function parseTeamRoster($xmlTeamRoster, $lang) {
 
+	$translation = build_translation('en',$lang);
+	
 	$xmlDoc = new MiniXMLDoc();
 	$xmlDoc->fromFile($xmlTeamRoster);
 	$data = $xmlDoc->toArray();
 	
-	// some acrobatics with array branches
 	$data = $data['team'];
-
-	$data['race'] = $data['_attributes']['race'];
+	$race_name = $data['_attributes']['race'];
+	$races = parseRaces('data/en_races.xml');
+	$positions_from = listPositions($races, $race_name);
+	unset($races);
+	
+	$race_name = $translation[$race_name];
+	$races = parseRaces('data/'.$lang.'_races.xml');
+	$positions_to = listPositions($races, $race_name);
+	unset($races);
+	
+	$pos = array_combine($positions_from, $positions_to);
+	
+	// some acrobatics with array branches
+	$data['race'] = $race_name;
 	$data['emblem'] = $data['_attributes']['emblem'];
 	unset($data['_attributes']);
 		
@@ -112,7 +156,7 @@ function parseTeamRoster($xmlTeamRoster) {
 		if (array_key_exists($i, $data['player']) && is_array($data['player'][$i])) {
 			
 			$data['player'][$i]['name'] = $data['player'][$i]['_attributes']['name'];
-			$data['player'][$i]['position'] = $data['player'][$i]['_attributes']['position'];
+			$data['player'][$i]['position'] = $pos[$data['player'][$i]['_attributes']['position']];
 			$data['player'][$i]['number'] = $data['player'][$i]['_attributes']['number'];
 			$data['player'][$i]['image'] = $data['player'][$i]['_attributes']['display'];
 			unset($data['player'][$i]['_attributes']);
@@ -135,19 +179,19 @@ function parseTeamRoster($xmlTeamRoster) {
 				if(array_key_exists('MaReduction', $data['player'][$i]['inj'])) {
 					for ($j = 0; $j < $data['player'][$i]['inj']['MaReduction']; $j++) {
 						if ($strTemp != '') { $strTemp .= ','; }
-						$strTemp .= '-MA';
+						$strTemp .= '-'.$translation['MA'];
 					}
 				}
 				if(array_key_exists('StReduction', $data['player'][$i]['inj'])) {
 					for ($j = 0; $j < $data['player'][$i]['inj']['StReduction']; $j++) {
 						if ($strTemp != '') { $strTemp .= ','; }
-						$strTemp .= '-ST';
+						$strTemp .= '-'.$translation['ST'];
 					}
 				}
 				if(array_key_exists('AgReduction', $data['player'][$i]['inj'])) {
 					for ($j = 0; $j < $data['player'][$i]['inj']['AgReduction']; $j++) {
 						if ($strTemp != '') { $strTemp .= ','; }
-						$strTemp .= '-AG';
+						$strTemp .= '-'.$translation['AG'];
 					}
 				}
 				
@@ -161,10 +205,26 @@ function parseTeamRoster($xmlTeamRoster) {
 			
 				if(!(is_array($data['player'][$i]['skills']['skill']))) {
 					$data['player'][$i]['skills'] = $data['player'][$i]['skills']['skill'];
+					$skill = $data['player'][$i]['skills'];
+					if ( strstr($skill, '+') === FALSE ) {
+						$data['player'][$i]['skills'] = $translation[$skill];
+					} else {
+						$skill = substr($skill, 1);
+						$data['player'][$i]['skills'] = '+'.$translation[$skill];
+					}
 				}
 				else { // if ['skill'] IS an array, so, if there is more than 1 skill
 					unset($data['player'][$i]['skills']['skill']['_num']);
-					$data['player'][$i]['skills'] = implode(",", $data['player'][$i]['skills']['skill']);
+					$temp = Array();
+					foreach ( $data['player'][$i]['skills']['skill'] as $string ) {
+						if ( strstr($string, '+') === FALSE ) {
+							$temp[] = $translation[$string];
+						} else {
+							$string = substr($string, 1);
+							$temp[] = '+'.$translation[$string];
+						}
+					}
+					$data['player'][$i]['skills'] = implode(",",$temp);
 				}
 			}
 
@@ -192,30 +252,35 @@ function build_translation($from,$to) {
 		and the words from the second language as values */
 
 	/* Skills */
-
 	$skills = parseSkills('data/'.$from.'_skills.xml');
-	$words_from = array_merge($skills['General'], $skills['Passing'], $skills['Agility'], $skills['Mutation'], $skills['Extraordinary']);
-	unset($words_from['_num']);
+	$skills_from = array_merge($skills['General'], $skills['Passing'], $skills['Agility'], $skills['Mutation'], $skills['Strength'], $skills['Extraordinary']);
+	unset($skills_from['_num']);
 
 	$skills = parseSkills('data/'.$to.'_skills.xml');
-	$words_to = array_merge($skills['General'], $skills['Passing'], $skills['Agility'], $skills['Mutation'], $skills['Extraordinary']);
-	unset($words_to['_num']);
+	$skills_to = array_merge($skills['General'], $skills['Passing'], $skills['Agility'], $skills['Mutation'], $skills['Strength'], $skills['Extraordinary']);
+	unset($skills_to['_num']);
 
 	/* Stats */
 
 	$interface = parseInterface('data/'.$from.'_interface.xml');
 	$stats_from = array($interface['roster']['MA'], $interface['roster']['ST'], $interface['roster']['AG'], $interface['roster']['AV']);
-	$words_from = array_merge($words_from, $stats_from);
 
 	$interface = parseInterface('data/'.$to.'_interface.xml');
 	$stats_to = array($interface['roster']['MA'], $interface['roster']['ST'], $interface['roster']['AG'], $interface['roster']['AV']);
-	$words_to = array_merge($words_to, $stats_to);
-
-	/* Positions */
-
-	$translation = array_combine($words_from, $words_to);
+	
+	/* Races */
+	
+	$races_from = listRacesNames(parseRaces('data/'.$from.'_races.xml'));
+	$races_to = listRacesNames(parseRaces('data/'.$to.'_races.xml'));
+	
+	/* combine all */
+	
+	$skills_from = array_merge($skills_from, $stats_from, $races_from);
+	$skills_to = array_merge($skills_to, $stats_to, $races_to);
+	
+	$translation = array_combine($skills_from, $skills_to);
+	
 	return $translation;
 
 }
-
 ?>

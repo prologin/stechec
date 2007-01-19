@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <races BBversion="5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="races.xsd">
-	<race name="Amazon" emblem="amazon.jpg">
+	<race name="Amazonen" emblem="amazon.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
@@ -67,7 +67,7 @@
 		</positions>
 		<background>Chaos teams are not noted for the subtlety or originality of their game play. A simple drive up the centre of the pitch, maiming and injuring as many opposing players as possible, is about the limit of their game plan. They rarely, if ever, worry about such minor considerations like picking up the ball and scoring touchdowns not while there are any players left alive on the opposing team, anyway.</background>
 	</race>
-	<race name="Chaos Dwarf" emblem="chaosdwarves.jpg">
+	<race name="Chaoszwerge" emblem="chaosdwarves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
@@ -106,7 +106,7 @@
 		</positions>
 		<background>Chaos Dwarfs are the twisted descendants of Dwarf explorers who have been terribly affected by the forces of Chaos, turning them into evil, self-centred creatures. In one way, however, they haven't changed at all, they still love playing Blood Bowl! Chaos Dwarfs are not very numerous and make great use of sneaky Hobgoblin slaves to perform all kinds of tasks, including playing on their Blood Bowl teams.</background>
 	</race>
-	<race name="Dark Elf" emblem="darkelves.jpg">
+	<race name="Dunkelelfen" emblem="darkelves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
@@ -144,7 +144,7 @@
 		</positions>
 		<background>Evil beyond belief, skilled without doubt, the Dark Elves take to the pitch to show the world their superiority. Dark Elf teams prefer a malevolent and spiteful running game over the passing of their goodly cousins. Backed up by the ruthless Witch Elves and dangerous assassins, a Dark Elf team has all the tools to power through rather than around any opposition line.</background>
 	</race>
-	<race name="Dwarf" emblem="dwarves.jpg">
+	<race name="Zwerge" emblem="dwarves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="40000" qty="8"/>
 		<positions>
@@ -194,7 +194,7 @@
 		</positions>
 		<background>Dwarfs seem to be ideal Blood Bowl players, being compact, tough, well-armoured and having a stubborn knack of refusing to die! Most successful Dwarf teams work to the principle that if they can take out all the other team's potential scorers, and wear down the rest, then there won't be anybody left to stop them scoring the winning touchdowns!</background>
 	</race>
-	<race name="Elf" emblem="elves.jpg">
+	<race name="Elfen" emblem="elves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
@@ -226,7 +226,7 @@
 		</positions>
 		<background>When the NAF collapsed, many Elven teams were left penniless. Those teams that have survived the fallout are not as rich as the High Elf teams nor as well equipped, but they sure know how to play the game. Sporting facemasks and mohawks, they take to the pitch to relive the glory days they once played in.</background>
 	</race>
-	<race name="Goblin" emblem="goblins.jpg">
+	<race name="Goblins" emblem="goblins.jpg">
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
@@ -293,7 +293,7 @@
 		</positions>
 		<background>A Goblin team's game plan owes much more to hope than potential. Goblins can make quite good catchers because they are small and agile, but the art of throwing is sadly lost to them, while the chances of their blocking anything larger than a Halfling are remote to say the least. Still, this never seems to bother Goblin players, and occasionally the use of a particularly devious Secret Weapon will even allow a Goblin team to win a match.</background>
 	</race>
-	<race name="Halfling" emblem="halflings.jpg">
+	<race name="Halblinge" emblem="halflings.jpg">
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
@@ -326,7 +326,7 @@
 		</positions>
 		<background>The technical deficiency of Halfling teams is legendary. They're too short to throw or catch, they run at half pace, and the whole team can spend all afternoon trying to block an Ogre without any chance of success. Most Halfling coaches try to make up for quality with quantity. After all, if you can get half a dozen players in the opposing team's End Zone and, by some miracle, manage to end up with the ball, then there is a small chance that one or two of them won't be jelly by the time you throw the thing.</background>
 	</race>
-	<race name="High Elf" emblem="highelves.jpg">
+	<race name="Hochelfen" emblem="highelves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
@@ -357,7 +357,7 @@
 		</positions>
 		<background>The Elven Kingdom sponsored High Elf teams, feature a dangerous passing game and some of the most arrogant players you will find. Rich beyond the dreams of most teams, the High Elves often feature many Princes and noble born Elves on the team and what they cannot beat, they'll buy.</background>
 	</race>
-	<race name="Human" emblem="humans.jpg">
+	<race name="Menschen" emblem="humans.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
@@ -435,7 +435,7 @@
 		</positions>
 		<background>Over 8,000 years ago, the Khemri played the first games of Blood Bowl against the Slann. But, as the Kingdom died off, so did the game until its rediscovery. And as the game returned, it was inevitable that the ancient players and stars of the Khemri would return to the pitch they once played on.</background>
 	</race>
-	<race name="Lizardman" emblem="lizardmen.jpg">
+	<race name="Echsenmenschen" emblem="lizardmen.jpg">
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
@@ -467,7 +467,7 @@
 		</positions>
 		<background>The Mage-Priests foretold the game of Blood Bowl thousands of years before it was discovered by the Dwarf Roze-El. So it is no surprise that the Lizardmen play Blood Bowl. Providing an odd blend of dexterity and strength, the Lustrian team can almost last the distance against a power team such as Chaos, while remaining able to pull off the running plays of the Skaven.</background>
 	</race>
-	<race name="Necromantic" emblem="necromantics.jpg">
+	<race name="Nekromanten" emblem="necromantics.jpg">
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
@@ -608,7 +608,7 @@
 		</positions>
 		<background>Nurgle teams are a form of Chaos team whose players worship the god Nurgle. Nurgle is the Chaos god of corruption and disease, and he rewards his players by granting them a rather unpleasant disease known as Nurgle's Rot. The fact that Nurgle teams smell awful is assumed rather than proven. True, they are all made up of semi decomposed flesh surrounded by swarms of flies, but by the time anyone gets close enough to get a really accurate whiff, he has inevitably caught one of Nurgle's nasty diseases, and he usually dies before he can suggest a new personal hygiene regime.</background>
 	</race>
-	<race name="Ogre" emblem="ogres.jpg">
+	<race name="Oger" emblem="ogres.jpg">
 		<apothecary use="true"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
@@ -642,7 +642,7 @@
 		</positions>
 		<background>Ogre teams have existed since the forming of the NAF and have even had some success such as winning the XV Blood Bowl. However, as any right-minded person will tell you, having more than one Ogre in the same place at the same time is a disaster in the making. The key to an Ogre team is the Snotlings. If they are close enough to jab an Ogre in the leg to remind him that they are playing in a match then you may have the makings of a team.</background>
 	</race>
-	<race name="Orc" emblem="orc.jpg">
+	<race name="Orks" emblem="orc.jpg">
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
@@ -728,7 +728,7 @@
 		</positions>
 		<background>They may not be all that strong, they certainly aren't tough, but boy oh boy are Skaven fast! Many an opponent has been left in the starting blocks as fast-moving Skaven players scamper through a gap in the line and run in for a lightning fast touchdown.</background>
 	</race>
-	<race name="Undead" emblem="undeads.jpg">
+	<race name="Untote" emblem="undeads.jpg">
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
@@ -790,40 +790,40 @@
 		</positions>
 		<background>Although Vampire teams include a number of extremely capable players, they are let down by the unreliability of the Vampires. While they should be concentrating on the game, their attention often wanders to their hunger and before you know it they are off for a quick bite!</background>
 	</race>
-	<race name="Wood Elf" emblem="woodelves.jpg">
+	<race name="Waldelfen" emblem="woodelves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
+			<position qty="16" title="Feldspieler" cost="70000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
 				<skills/>
 			</position>
-			<position qty="4" title="Catcher" cost="90000" ma="9" st="2" ag="4" av="7" normal="ga" double="sp" display="woodelf_c.png">
+			<position qty="4" title="Fänger" cost="90000" ma="9" st="2" ag="4" av="7" normal="ga" double="sp" display="woodelf_c.png">
 				<skills>
-					<skill name="Catch"/>
-					<skill name="Dodge"/>
+					<skill name="Fangsicher"/>
+					<skill name="Ausweichen"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="90000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="woodelf_t.png">
+			<position qty="2" title="Werfer" cost="90000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="woodelf_t.png">
 				<skills>
-					<skill name="Pass"/>
+					<skill name="Wurfsicher"/>
 				</skills>
 			</position>
-			<position qty="2" title="Wardancer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_w.png">
+			<position qty="2" title="Kampftänzer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_w.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Dodge"/>
-					<skill name="Leap"/>
+					<skill name="Blocken"/>
+					<skill name="Ausweichen"/>
+					<skill name="Springen"/>
 				</skills>
 			</position>
-			<position qty="1" title="Treeman" cost="140000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
+			<position qty="1" title="Baummensch" cost="140000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Stand Firm"/>
-					<skill name="Strong Arm"/>
-					<skill name="Take Root"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Standfest"/>
+					<skill name="Starker Wurfarm"/>
+					<skill name="Wurzeln schlagen"/>
+					<skill name="Robust"/>
+					<skill name="Mitspieler werfen"/>
 				</skills>
 			</position>
 			<position qty="11" title="Journeyman" cost="50000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">

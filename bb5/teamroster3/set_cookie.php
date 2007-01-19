@@ -1,5 +1,6 @@
 <?php
-setcookie ('lang', $_POST['lang'], time()+60*60*24*30, '/', 'localhost', '0');
+setcookie ('lang', $_POST['lang'], time()+60*60*24*30, '/', 'towbowltactics.com', '0');
 
-header("Location: http://localhost/~user/teamroster/");
+header("Location: http://www.towbowltactics.com/teamroster3/");
+
 ?>

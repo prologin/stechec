@@ -17,30 +17,13 @@ require_once('backstage/minixml.php');
 require_once('backstage/parse_xml.php');
 require_once('backstage/echo_html.php');
 require_once('backstage/echo_js.php');
+require_once('backstage/helper.php');
 
-if ( isset($_COOKIE['lang']) ) {
-	
-	$lang = $_COOKIE['lang'];
-		
-	if ( !($lang == 'en' || $lang == 'fr' || $lang == 'de') ) {
-		$lang = 'en';
-	}
-	
-}
-else {
-	$lang = 'en';
-}
-$lang = 'de';
-
+$lang = checkLang();
 $interface = parseInterface('data/'.$lang.'_interface.xml');
 
-function sprint($string) {	// sprint like in "Special characters PRINT"
-	echo htmlentities($string, ENT_QUOTES, 'UTF-8');
-}
-
-
 if (isset($_POST['upload']) && $_POST['upload'] == true) {
-	$team = parseTeamRoster($_FILES['userfile']['tmp_name']);
+	$team = parseTeamRoster($_FILES['userfile']['tmp_name'], $lang);
 	$chosen_race = $team['race'];
 }
 else {
@@ -48,7 +31,9 @@ else {
 	$chosen_race = htmlentities($_GET['race']);
 }
 
-$race = parseRaces($chosen_race, 'data/'.$lang.'_races.xml');
+$races = parseRaces('data/'.$lang.'_races.xml');
+$race = extractRace($races, $chosen_race);
+
 if (isset($_POST['upload']) && $_POST['upload'] == true) {
 		echo writeTeamRoster($team,$race);
 }
