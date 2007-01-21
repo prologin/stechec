@@ -1,20 +1,5 @@
-- finish translations
-
-current limitations: 
-	rosters are potentially saved into the chosen language.
-	script needs a layer that translates the seen words back into the
-	english terms.
-			
+in chronological order:
+- translate files fr_races.xml and fr_skills.xml
+-clean up, write some doc
 - position editor
-
 - include starplayers
-
-XML
-
-(12:54:12 AM) victorz: sMAshdot: par contre, tu pourrais faire 2 3 modifs ?
-(12:54:49 AM) victorz: les espaces entre les balises
-(12:54:55 AM) victorz: <ma> 5 </ma>
-(12:54:59 AM) victorz: je suis pas fan
-(12:55:11 AM) victorz: et aussi, ne pas ajouter les joueurs qui existent pas
-(12:55:19 AM) victorz: pour qui tout est vide
-(12:55:20 AM) victorz: vala

@@ -71,12 +71,12 @@ for( $i = 0; $i < 16; $i++) {
 		/* SKILLS */
 		
 		if ( $_POST['SKILLS'][$i] == "" ) {
-			$player['skills'] = "";
+			$player['skill'] = "";
 		} 
 		else {
-			$player['skills']['skill'] = explode(",", $_POST['SKILLS'][$i]);
+			$player['skill'] = explode(",", $_POST['SKILLS'][$i]);
 			$temp = array();
-			foreach ( $player['skills']['skill'] as $key ) {
+			foreach ( $player['skill'] as $key ) {
 				if ( eregi('\+', $key) ) {
 					$key = eregi_replace('\+','',$key);
 					$temp[] = '+'.$translation[$key];
@@ -84,7 +84,7 @@ for( $i = 0; $i < 16; $i++) {
 					$temp[] = $translation[$key];
 				}
 			}
-			$player['skills']['skill'] = $temp;
+			$player['skill'] = $temp;
 		}
 
 		/* INJURIES */

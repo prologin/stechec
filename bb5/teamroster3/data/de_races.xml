@@ -4,33 +4,33 @@
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Linewoman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
+			<position qty="16" title="Feldspielerin" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
 				<skills>
-					<skill name="Dodge"/>
+					<skill name="Ausweichen"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="amazon_t.png">
+			<position qty="2" title="Werferin" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="amazon_t.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Pass"/>
+					<skill name="Ausweichen"/>
+					<skill name="Wurfsicher"/>
 				</skills>
 			</position>
-			<position qty="2" title="Catcher" cost="70000" ma="6" st="3" ag="3" av="7" normal="ga" double="sp" display="amazon_c.png">
+			<position qty="2" title="Fängerin" cost="70000" ma="6" st="3" ag="3" av="7" normal="ga" double="sp" display="amazon_c.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Catch"/>
+					<skill name="Ausweichen"/>
+					<skill name="Fangsicher"/>
 				</skills>
 			</position>
 			<position qty="4" title="Blitzer" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap" display="amazon_b.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Block"/>
+					<skill name="Ausweichen"/>
+					<skill name="Blocken"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeywoman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
+			<position qty="11" title="Wanderspielerin" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Loner"/>
+					<skill name="Ausweichen"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -40,32 +40,32 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
+			<position qty="16" title="Tiermensch" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
 				<skills>
-					<skill name="Horns"/>
+					<skill name="Hörner"/>
 				</skills>
 			</position>
-			<position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" normal="gsm" double="ap" display="chaos_w.png">
+			<position qty="4" title="Chaoskrieger" cost="100000" ma="5" st="4" ag="3" av="9" normal="gsm" double="ap" display="chaos_w.png">
 				<skills/>
 			</position>
-			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="sm" double="gap" display="minautor.png">
+			<position qty="1" title="Minotaurus" cost="150000" ma="5" st="5" ag="2" av="8" normal="sm" double="gap" display="minautor.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Frenzy"/>
-					<skill name="Horns"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Wild Animal"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Rasend"/>
+					<skill name="Hörner"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Robust"/>
+					<skill name="Tobende Bestie"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
+			<position qty="11" title="Wanderspieler" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
 				<skills>
-					<skill name="Horns"/>
-					<skill name="Loner"/>
+					<skill name="Hörner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>Chaos teams are not noted for the subtlety or originality of their game play. A simple drive up the centre of the pitch, maiming and injuring as many opposing players as possible, is about the limit of their game plan. They rarely, if ever, worry about such minor considerations like picking up the ball and scoring touchdowns not while there are any players left alive on the opposing team, anyway.</background>
+		<background>Chaosteams haben sich nicht gerade durch besonders gerissenes oder einfallsreiches Spiel einen Namen gemacht. Ihr kompliziertester Plan scheint darin zu bstehen, sich in der Mitte des Spielfeldes aufzubauen und möglichst viele gegnerische Spieler zu verprügeln und zu verletzen. Selten, wenn überhaupt, konzentrieren sie sich auf Nebensächlichkeiten wie das Aufnehmen des Balls oder das Erzielen von Touchdowns - jedenfalls nicht, solange sich noch lebende Gegenspieler auf dem Spielfeld befinden.</background>
 	</race>
 	<race name="Chaoszwerge" emblem="chaosdwarves.jpg">
 		<apothecary use="true"/>
@@ -74,75 +74,75 @@
 			<position qty="16" title="Hobgoblin" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
 				<skills/>
 			</position>
-			<position qty="6" title="Chaos dwarf" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="apm" display="chaosdwarf_b.png">
+			<position qty="6" title="Chaoszwergernblocker" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="apm" display="chaosdwarf_b.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 					<skill name="Tackle"/>
-					<skill name="Thick Skull"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
-			<position qty="2" title="Bull centaurs" cost="130000" ma="6" st="4" ag="2" av="9" normal="gs" double="ap" display="centaur.png">
+			<position qty="2" title="Stierzentaurus" cost="130000" ma="6" st="4" ag="2" av="9" normal="gs" double="ap" display="centaur.png">
 				<skills>
-					<skill name="Sprint"/>
-					<skill name="Sure Feet"/>
-					<skill name="Thick Skull"/>
+					<skill name="Sprinten"/>
+					<skill name="Sprintsicher"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
-			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="s" double="gapm" display="minautor.png">
+			<position qty="1" title="Minotaurus" cost="150000" ma="5" st="5" ag="2" av="8" normal="s" double="gapm" display="minautor.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Frenzy"/>
-					<skill name="Horns"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Wild Animal"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Rasend"/>
+					<skill name="Hörner"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Robust"/>
+					<skill name="Tobende Bestie"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
+			<position qty="11" title="Wanderspieler" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>Chaos Dwarfs are the twisted descendants of Dwarf explorers who have been terribly affected by the forces of Chaos, turning them into evil, self-centred creatures. In one way, however, they haven't changed at all, they still love playing Blood Bowl! Chaos Dwarfs are not very numerous and make great use of sneaky Hobgoblin slaves to perform all kinds of tasks, including playing on their Blood Bowl teams.</background>
+		<background>Die schrecklichen Energien des Chaos haben die Chaoszwerge zu gewalttätigen, bösartigen Kreaturen mutieren lassen. In einer Hinsicht unterscheiden sie sich jedoch nicht von normalen Zwergen - sie lieben Blood Bowl! Eine besonders hinterhältige Spieltaktik besteht darin, dass die Chaoszwerge ihre Hobgoblinsklaven zum Spielen zwingen, um dadurch ihre eigene, naturgegebene Langsamkeit auszugleichen. Wann immer es möglich ist bringen sie außerdem einen ihrer Stierzentauren mit aufs Spielfeld.</background>
 	</race>
 	<race name="Dunkelelfen" emblem="darkelves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
+			<position qty="16" title="Feldspieler" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Runner" cost="80000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="darkelf_t.png">
+			<position qty="2" title="Läufer" cost="80000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="darkelf_t.png">
 				<skills>
-					<skill name="Dump Off"/>
+					<skill name="Abspiel"/>
 				</skills>
 			</position>
-			<position qty="2" title="Assassin" cost="90000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="assasin.png">
+			<position qty="2" title="Meuchler" cost="90000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="assasin.png">
 				<skills>
-					<skill name="Shadowing"/>
-					<skill name="Stab"/>
+					<skill name="Manndeckung"/>
+					<skill name="Stich"/>
 				</skills>
 			</position>
 			<position qty="4" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_b.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 				</skills>
 			</position>
-			<position qty="2" title="Witch elf" cost="110000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="darkelf_w.png">
+			<position qty="2" title="Hexenkriegerin" cost="110000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="darkelf_w.png">
 				<skills>
-					<skill name="Frenzy"/>
-					<skill name="Dodge"/>
-					<skill name="Jump Up"/>
+					<skill name="Rasend"/>
+					<skill name="Ausweichen"/>
+					<skill name="Abrollen"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
+			<position qty="11" title="Feldspieler" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>Evil beyond belief, skilled without doubt, the Dark Elves take to the pitch to show the world their superiority. Dark Elf teams prefer a malevolent and spiteful running game over the passing of their goodly cousins. Backed up by the ruthless Witch Elves and dangerous assassins, a Dark Elf team has all the tools to power through rather than around any opposition line.</background>
+		<background>Dunkelelfen gehören sicherlich zu den besten Blood Bowlern. In ihnen vereinigen sich Geschwindigkeit, Geschick, Hinterhältigkeit und Boshaftigkeit. Obwohl ihnen das Passspiel sicherlich am Besten liegt, ziehen sie es in ihrer Bösartigkeit doch oft vor, es auf ein wildes Geprügel ankommen zu lassen. Besonders dann, wenn sich ein so unglaublicher Spieler wie Jeremiah Kool auf ihre Seit befindet.</background>
 	</race>
 	<race name="Zwerge" emblem="dwarves.jpg">
 		<apothecary use="true"/>
@@ -150,77 +150,77 @@
 		<positions>
 			<position qty="16" title="Blocker" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 					<skill name="Tackle"/>
-					<skill name="Thick Skull"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
-			<position qty="2" title="Runner" cost="80000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="dwarf_r.png">
+			<position qty="2" title="Läufer" cost="80000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="dwarf_r.png">
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Thick Skull"/>
+					<skill name="Ballgefühl"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="80000" ma="5" st="3" ag="3" av="9" normal="gs" double="ap" display="dwarf_lb.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Thick Skull"/>
+					<skill name="Blocken"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
-			<position qty="2" title="Troll slayer" cost="90000" ma="5" st="3" ag="2" av="8" normal="gs" double="ap" display="dwarf_ts.png">
+			<position qty="2" title="Trollslayer" cost="90000" ma="5" st="3" ag="2" av="8" normal="gs" double="ap" display="dwarf_ts.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Dauntless"/>
-					<skill name="Frenzy"/>
-					<skill name="Thick Skull"/>
+					<skill name="Blocken"/>
+					<skill name="Unerschrocken"/>
+					<skill name="Rasend"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
-			<position qty="1" title="Deathroller" cost="160000" ma="4" st="7" ag="1" av="10" normal="s" double="gap" display="deathroller.png">
+			<position qty="1" title="Todeswalze" cost="160000" ma="4" st="7" ag="1" av="10" normal="s" double="gap" display="deathroller.png">
 				<skills>
-					<skill name="Break Tackle"/>
-					<skill name="Dirty Player"/>
-					<skill name="Juggernaut"/>
-					<skill name="Mighty Blow"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stand Firm"/>
+					<skill name="Tackle durchbrechen"/>
+					<skill name="Brutal"/>
+					<skill name="Dampfwalze"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Keine Hände"/>
+					<skill name="Geheimwaffe"/>
+					<skill name="Standfest"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
+			<position qty="11" title="Wanderspieler" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>Dwarfs seem to be ideal Blood Bowl players, being compact, tough, well-armoured and having a stubborn knack of refusing to die! Most successful Dwarf teams work to the principle that if they can take out all the other team's potential scorers, and wear down the rest, then there won't be anybody left to stop them scoring the winning touchdowns!</background>
+		<background>Zwerge gelten im Allgemeinen als die idealen Blood Bowler. Sie sind zwar klein, dafür aber hartgesotten und schwer gepanzert. Vor allem ihre unglaubliche Starrköpfigkeit, mit der sie sich weigern, Niederlagen oder Verletzungen zu akzeptieren, zeichnet diese Raubeine besonders aus. Die erfolgreichen Zwergenteams verfolgen eine einfache Taktik. Zuerst werden die besten gegnerischen Spieler in Grund und Boden gestampft. Den Rest der Mannschaft zermürben sie dann so lange, bis niemand mehr einen Touchdown verhindern kann.</background>
 	</race>
 	<race name="Elfen" emblem="elves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
+			<position qty="16" title="Feldspieler" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="4" av="7" normal="gap" double="s" display="elf_t.png">
+			<position qty="2" title="Werfer" cost="70000" ma="6" st="3" ag="4" av="7" normal="gap" double="s" display="elf_t.png">
 				<skills>
-					<skill name="Pass"/>
+					<skill name="Wurfsicher"/>
 				</skills>
 			</position>
-			<position qty="4" title="Catcher" cost="100000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_c.png">
+			<position qty="4" title="Fänger" cost="100000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_c.png">
 				<skills>
-					<skill name="Catch"/>
-					<skill name="Nerves of Steel"/>
+					<skill name="Fangsicher"/>
+					<skill name="Nerven aus Stahl"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="110000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="elf_b.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Side Step"/>
+					<skill name="Blocken"/>
+					<skill name="Gewandt"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
+			<position qty="11" title="Wanderspieler" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -232,204 +232,204 @@
 		<positions>
 			<position qty="16" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
+					<skill name="Ausweichen"/>
+					<skill name="Lebensmüde"/>
+					<skill name="Kleinwüchsig"/>
 				</skills>
 			</position>
-			<position qty="1" title="Bombardier" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="bombardier.png">
+			<position qty="1" title="Bomber" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="bombardier.png">
 				<skills>
 					<skill name="Bombardier"/>
-					<skill name="Dodge"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
+					<skill name="Ausweichen"/>
+					<skill name="Keine Hände"/>
+					<skill name="Geheimwaffe"/>
+					<skill name="Kleinwüchsig"/>
 				</skills>
 			</position>
-			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp" display="pogoer.png">
+			<position qty="1" title="Pogo-Goblin" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp" display="pogoer.png">
 				<skills>
-					<skill name="Dirty Player"/>
-					<skill name="Dodge"/>
-					<skill name="Leap"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
-					<skill name="Very Long Legs"/>
+					<skill name="Brutal"/>
+					<skill name="Ausweichen"/>
+					<skill name="Springen"/>
+					<skill name="Geheimwaffe"/>
+					<skill name="Kleinwüchsig"/>
+					<skill name="Sehr lange Beine"/>
 				</skills>
 			</position>
 			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="looney.png">
 				<skills>
-					<skill name="Chainsaw"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
+					<skill name="Kettensäge"/>
+					<skill name="Keine Hände"/>
+					<skill name="Geheimwaffe"/>
+					<skill name="Kleinwüchsig"/>
 				</skills>
 			</position>
 			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap" display="fanatic.png">
 				<skills>
-					<skill name="Ball and Chain"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
+					<skill name="Ball und Kette"/>
+					<skill name="Keine Hände"/>
+					<skill name="Geheimwaffe"/>
+					<skill name="Kleinwüchsig"/>
 				</skills>
 			</position>
 			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap" display="troll.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Always Hungry"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Really Stupid"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Nimmersatt"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Saublöd"/>
 					<skill name="Regeneration"/>
-					<skill name="Throw Team-Mate"/>
+					<skill name="Mitspieler werfen"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
+			<position qty="11" title="Wanderspieler" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
-					<skill name="Loner"/>
+					<skill name="Ausweichen"/>
+					<skill name="Lebensmüde"/>
+					<skill name="Kleinwüchsig"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>A Goblin team's game plan owes much more to hope than potential. Goblins can make quite good catchers because they are small and agile, but the art of throwing is sadly lost to them, while the chances of their blocking anything larger than a Halfling are remote to say the least. Still, this never seems to bother Goblin players, and occasionally the use of a particularly devious Secret Weapon will even allow a Goblin team to win a match.</background>
+		<background>Das Spiel von Goblinteams basiert mehr auf dem Prinzip Hoffnung als auf echtem Können. Goblins geben zwar aufgrund ihres kleinen Wuchses und ihrer Wendigkeit recht gute Fänger ab, aber ihre Wurfkünste lassen sehr zu wünschen übrig und ihre Erfolgsaussichten beim Blocken erscheinen mehr als gering, wenn sie nicht zufällig gegen Halblinge antreten. Aber all dies hält die Goblins nicht vom Spielen ab und manchmal verhilft ihnen der Einsatz besonders hinterhältiger versteckter Waffen zu überraschenden Siegen.</background>
 	</race>
 	<race name="Halblinge" emblem="halflings.jpg">
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
+			<position qty="16" title="Halbling" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
+					<skill name="Ausweichen"/>
+					<skill name="Lebensmüde"/>
+					<skill name="Kleinwüchsig"/>
 				</skills>
 			</position>
-			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
+			<position qty="2" title="Baummensch" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Stand Firm"/>
-					<skill name="Strong Arm"/>
-					<skill name="Take Root"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Standfest"/>
+					<skill name="Starker Wurfarm"/>
+					<skill name="Wurzeln schlagen"/>
+					<skill name="Robust"/>
+					<skill name="Mitspieler werfen"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
+			<position qty="11" title="Wanderspieler" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
-					<skill name="Loner"/>
+					<skill name="Ausweichen"/>
+					<skill name="Lebensmüde"/>
+					<skill name="Kleinwüchsig"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>The technical deficiency of Halfling teams is legendary. They're too short to throw or catch, they run at half pace, and the whole team can spend all afternoon trying to block an Ogre without any chance of success. Most Halfling coaches try to make up for quality with quantity. After all, if you can get half a dozen players in the opposing team's End Zone and, by some miracle, manage to end up with the ball, then there is a small chance that one or two of them won't be jelly by the time you throw the thing.</background>
+		<background>Die körperliche Unterlegenheit der Halblinge ist allgemein bekannt. Sie sind zu klein zum Werfen oder Fangen, ihre kurzen Beine können sie nicht sehr schnell tragen und das gesamte Team könnte ohne irgendwelche Aussichten auf Erfolg einen ganzen Nachmittag mit dem Versuch verbringen, einen Oger zu blocken. Die meisten Halbling-Trainer versuchen deshalb Qualität durch Quantität zu ersetzen. Wenn du also ein halbes Dutzend Spieler in die gegnerische Endzone bringen konntest und durch glückliche Umstände den Ball ergatterst, dann besteht eine gewisse Chance, dass ein oder zwei Spieler auch noch bei Bewusstsein sind, wenn ein anderer Spieler ihnen das Leder zuwirft...</background>
 	</race>
 	<race name="Hochelfen" emblem="highelves.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
+			<position qty="16" title="Feldspieler" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s" display="highelf_t.png">
+			<position qty="2" title="Werfer" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s" display="highelf_t.png">
 				<skills>
-					<skill name="Pass"/>
-					<skill name="Safe Throw"/>
+					<skill name="Wurfsicher"/>
+					<skill name="Sicherer Wurf"/>
 				</skills>
 			</position>
-			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="highelf_c.png">
+			<position qty="4" title="Fänger" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="highelf_c.png">
 				<skills>
-					<skill name="Catch"/>
+					<skill name="Fangsicher"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_b.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
+			<position qty="11" title="Wanderspieler" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>The Elven Kingdom sponsored High Elf teams, feature a dangerous passing game and some of the most arrogant players you will find. Rich beyond the dreams of most teams, the High Elves often feature many Princes and noble born Elves on the team and what they cannot beat, they'll buy.</background>
+		<background>Hochelfen verlassen sich mehr als alle anderen Mannschaften auf das Wurfgeschick ihrer stolzen Phönixkrieger sowie die ruhigen Nerven und Hände ihrer Löwenkrieger. Die gewöhnlicheren Feldspieler müssen die mordgierigen Gegenspieler aufhalten, bis sich eine Möglichkeit für einen Pass ergibt - kein leichter Job, wenn der Ball nicht schnell genug geworfen wird...</background>
 	</race>
 	<race name="Menschen" emblem="humans.jpg">
 		<apothecary use="true"/>
 		<reroll cost="50000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
+			<position qty="16" title="Feldspieler" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
 				<skills/>
 			</position>
-			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp" display="human_c.png">
+			<position qty="4" title="Fänger" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp" display="human_c.png">
 				<skills>
-					<skill name="Catch"/>
-					<skill name="Dodge"/>
+					<skill name="Fangsicher"/>
+					<skill name="Ausweichen"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="human_t.png">
+			<position qty="2" title="Werfer" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="human_t.png">
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Pass"/>
+					<skill name="Ballgefühl"/>
+					<skill name="Wurfsicher"/>
 				</skills>
 			</position>
 			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap" display="human_b.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 				</skills>
 			</position>
 			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap" display="ogre.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Bone-Head"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Blöd"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Robust"/>
+					<skill name="Mitspieler werfen"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
+			<position qty="11" title="Wanderspieler" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>			
 		</positions>
-		<background>Although Human teams do not have the individual strengths or outstanding abilities available to other races, they do not suffer from any outstanding weakness either. This makes Human teams extremely flexible, equally at home running the ball, passing it, or ignoring it and pounding the opposition into the turf instead!</background>
+		<background>Obwohl die Mannschaften der Menschen nicht durch irgendwelche besonderen Stärken hervorstechen, weisen sie auch keine besonderen Schwächen auf. Die Mannschaften der Menschen erweisen sich daher als sehr flexibel und beherrschen sowohl das Laufspiel als auch das Passspiel. Aber auch Menschen vergessen manchmal den Ball und beschränken sich darauf, die gegnerische Mannschaft in Grund und Boden zu hämmern.</background>
 	</race>
 	<race name="Khemri" emblem="khemri.jpg">
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
+			<position qty="16" title="Skelett" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
 				<skills>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thro-Ras" cost="70000" ma="6" st="3" ag="2" av="7" normal="gp" double="as" display="khemri_t.png">
+			<position qty="2" title="Werf-Ar" cost="70000" ma="6" st="3" ag="2" av="7" normal="gp" double="as" display="khemri_t.png">
 				<skills>
-					<skill name="Pass"/>
+					<skill name="Wurfsicher"/>
 					<skill name="Regeneration"/>
-					<skill name="Sure Hands"/>
+					<skill name="Ballgefühl"/>
 				</skills>
 			</position>
-			<position qty="2" title="Blitz-Ras" cost="90000" ma="6" st="3" ag="2" av="8" normal="gs" double="ap" display="khemri_b.png">
+			<position qty="2" title="Blitz-Ra" cost="90000" ma="6" st="3" ag="2" av="8" normal="gs" double="ap" display="khemri_b.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Regeneration"/>
-				</skills>
-			</position>
-			<position qty="4" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="khemri_m.png">
-				<skills>
-					<skill name="Mighty Blow"/>
+					<skill name="Blocken"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
+			<position qty="4" title="Mummie" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="khemri_m.png">
+				<skills>
+					<skill name="Knochenbrecher"/>
+					<skill name="Regeneration"/>
+				</skills>
+			</position>
+			<position qty="11" title="Wanderspieler" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
 				<skills>
 					<skill name="Regeneration"/>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -441,8 +441,8 @@
 		<positions>
 			<position qty="16" title="Skinks" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Stunty"/>
+					<skill name="Ausweichen"/>
+					<skill name="Kleinwüchsig"/>
 				</skills>
 			</position>
 			<position qty="6" title="Saurus" cost="80000" ma="6" st="4" ag="1" av="9" normal="gs" double="ap" display="lizardmen_sa.png">
@@ -450,18 +450,18 @@
 			</position>
 			<position qty="1" title="Kroxigor" cost="140000" ma="6" st="5" ag="1" av="9" normal="s" double="gap" display="kroxigor.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Bone-Head"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Prehensile Tail"/>
-					<skill name="Thick Skull"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Blöd"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Klammerschwanz"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
+			<position qty="11" title="Wanderspieler" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Stunty"/>
-					<skill name="Loner"/>
+					<skill name="Ausweichen"/>
+					<skill name="Kleinwüchsig"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -478,33 +478,33 @@
 			</position>
 			<position qty="2" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="necromantic_g.png">
 				<skills>
-					<skill name="Dodge"/>
+					<skill name="Ausweichen"/>
 				</skills>
 			</position>
-			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="necromantic_wi.png">
+			<position qty="2" title="Verfluchter" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="necromantic_wi.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="2" title="Flesh golem" cost="110000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="necromantic_fg.png">
+			<position qty="2" title="Blutgolem" cost="110000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="necromantic_fg.png">
 				<skills>
 					<skill name="Regeneration"/>
 					<skill name="Stand Firm"/>
-					<skill name="Thick Skull"/>
+					<skill name="Robust"/>
 				</skills>
 			</position>
-			<position qty="2" title="Werewolf" cost="120000" ma="8" st="3" ag="3" av="8" normal="ga" double="sp" display="necromantic_ww.png">
+			<position qty="2" title="Werwolf" cost="120000" ma="8" st="3" ag="3" av="8" normal="ga" double="sp" display="necromantic_ww.png">
 				<skills>
-					<skill name="Claws"/>
-					<skill name="Frenzy"/>
+					<skill name="Klaue"/>
+					<skill name="Rasend"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="necromantic_z.png">
+			<position qty="11" title="Wanderspieler" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="necromantic_z.png">
 				<skills>
 					<skill name="Regeneration"/>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -514,48 +514,48 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
+			<position qty="16" title="Feldspieler" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="norse_t.png">
+			<position qty="2" title="Werfer" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="norse_t.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Pass"/>
+					<skill name="Blocken"/>
+					<skill name="Wurfsicher"/>
 				</skills>
 			</position>
-			<position qty="2" title="Runner" cost="90000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="norse_r.png">
+			<position qty="2" title="Läufer" cost="90000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="norse_r.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Dauntless"/>
+					<skill name="Blocken"/>
+					<skill name="Unerschrocken"/>
 				</skills>
 			</position>
 			<position qty="2" title="Berserker" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap" display="norse_b.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Frenzy"/>
-					<skill name="Jump Up"/>
+					<skill name="Blocken"/>
+					<skill name="Rasend"/>
+					<skill name="Abrollen"/>
 				</skills>
 			</position>
 			<position qty="2" title="Ulfwerener" cost="110000" ma="6" st="4" ag="2" av="8" normal="gs" double="ap" display="norse_u.png">
 				<skills>
-					<skill name="Frenzy"/>
+					<skill name="Rasend"/>
 				</skills>
 			</position>
-			<position qty="1" title="Snow troll" cost="140000" ma="5" st="5" ag="1" av="8" normal="s" double="gap" display="snow_troll.png">
+			<position qty="1" title="Schneetroll" cost="140000" ma="5" st="5" ag="1" av="8" normal="s" double="gap" display="snow_troll.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Claws"/>
-					<skill name="Disturbing Presence"/>
-					<skill name="Frenzy"/>
-					<skill name="Wild Animal"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Klaue"/>
+					<skill name="Abstoßendes Aussehen"/>
+					<skill name="Rasend"/>
+					<skill name="Tobende Bestie"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
+			<position qty="11" title="Wanderspieler" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
 				<skills>
-					<skill name="Block"/>
-					<skill name="Loner"/>
+					<skill name="Blocken"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -567,42 +567,42 @@
 		<positions>
 			<position qty="16" title="Rotter" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
 				<skills>
-					<skill name="Decay"/>
-					<skill name="Nurgle's Rot"/>
+					<skill name="Verrotten"/>
+					<skill name="Nurgles Verwesung"/>
 				</skills>
 			</position>
 			<position qty="4" title="Pestigor" cost="80000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="nurgle_p.png">
 				<skills>
 					<skill name="Horns"/>
-					<skill name="Nurgle's Rot"/>
+					<skill name="Nurgles Verwesung"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="4" title="Nurgle warrior" cost="110000" ma="4" st="4" ag="2" av="9" normal="gsm" double="ap" display="nurgle_w.png">
+			<position qty="4" title="Nurglekrieger" cost="110000" ma="4" st="4" ag="2" av="9" normal="gsm" double="ap" display="nurgle_w.png">
 				<skills>
-					<skill name="Disturbing Presence"/>
-					<skill name="Foul Appearance"/>
-					<skill name="Nurgle's Rot"/>
+					<skill name="Abstoßendes Aussehen"/>
+					<skill name="Widerlicher Auftritt"/>
+					<skill name="Nurgles Verwesung"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="1" title="Beast of Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" normal="s" double="gapm" display="nurgle_b.png">
+			<position qty="1" title="Biest von Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" normal="s" double="gapm" display="nurgle_b.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Disturbing Presence"/>
-					<skill name="Foul Appearance"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Nurgle's Rot"/>
-					<skill name="Really Stupid"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Abstoßendes Aussehen"/>
+					<skill name="Widerlicher Auftritt"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Nurgles Verwesung"/>
+					<skill name="Saublöd"/>
 					<skill name="Regeneration"/>
-					<skill name="Tentacles"/>
+					<skill name="Tentakel"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
+			<position qty="11" title="Wanderspieler" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
 				<skills>
-					<skill name="Decay"/>
-					<skill name="Nurgle's Rot"/>
-					<skill name="Loner"/>
+					<skill name="Verrotten"/>
+					<skill name="Nurgles Verwesung"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -614,29 +614,29 @@
 		<positions>
 			<position qty="16" title="Snotling" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Side Step"/>
-					<skill name="Stunty"/>
-					<skill name="Titchy"/>
+					<skill name="Ausweichen"/>
+					<skill name="Lebensmüde"/>
+					<skill name="Gewandt"/>
+					<skill name="Kleinwüchsig"/>
+					<skill name="Winzling"/>
 				</skills>
 			</position>
-			<position qty="6" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap" display="ogre.png">
+			<position qty="6" title="Oger" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap" display="ogre.png">
 				<skills>
-					<skill name="Bone-Head"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill name="Blöd"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Robust"/>
+					<skill name="Mitspieler werfen"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
+			<position qty="11" title="Wanderspieler" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Side Step"/>
-					<skill name="Stunty"/>
-					<skill name="Titchy"/>
-					<skill name="Loner"/>
+					<skill name="Ausweichen"/>
+					<skill name="Lebensmüde"/>
+					<skill name="Gewandt"/>
+					<skill name="Kleinwüchsig"/>
+					<skill name="Winzling"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -646,93 +646,93 @@
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
+			<position qty="16" title="Feldspieler" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
 				<skills/>
 			</position>
 			<position qty="4" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
 				<skills>
-					<skill name="Right Stuff"/>
-					<skill name="Dodge"/>
-					<skill name="Stunty"/>
+					<skill name="Lebensmüde"/>
+					<skill name="Ausweichen"/>
+					<skill name="Kleinwüchsig"/>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="5" st="3" ag="3" av="8" normal="gp" double="as" display="orc_t.png">
+			<position qty="2" title="Werfer" cost="70000" ma="5" st="3" ag="3" av="8" normal="gp" double="as" display="orc_t.png">
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Pass"/>
+					<skill name="Ballgefühl"/>
+					<skill name="Wurfsicher"/>
 				</skills>
 			</position>
-			<position qty="4" title="Black orc" cost="80000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="orc_bo.png">
+			<position qty="4" title="Schwarzorkblocker" cost="80000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="orc_bo.png">
 				<skills/>
 			</position>
 			<position qty="4" title="Blitzer" cost="80000" ma="6" st="3" ag="3" av="9" normal="gs" double="ap" display="orc_b.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 				</skills>
 			</position>
 			<position qty="1" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap" display="troll.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Always Hungry"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Really Stupid"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Nimmersatt"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Saublöd"/>
 					<skill name="Regeneration"/>
-					<skill name="Throw Team-Mate"/>
+					<skill name="Mitspieler werfen"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
+			<position qty="11" title="Wanderspieler" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>Orcs have been playing Blood Bowl since the game was invented, and Orc teams such as the Gouged Eye and Severed Heads are amongst the best in the league. Orc teams are tough and hard-hitting, grinding down the opposition's line to create gaps for their excellent Orc Blitzers to exploit.</background>
+		<background>Orks spielen Blood Bowl schon seit es erfunden wurde und Orkteams wie die Gouged Eyes und die Orkland Raiders gehören zu den besten Mannschaften der Alten Welt! Orkmannschaften sind nicht nur vielseitig veranlagt, sondern vor allem auch böse und gemein. Nachdem die Orks mit roher Gewalt eine Lücke in die gegnerische Verteidigung gerissen haben, liegt es an ihren hervorragenden Blitzern, die Touchdowns zu machen.</background>
 	</race>
 	<race name="Skaven" emblem="skavens.jpg">
 		<apothecary use="true"/>
 		<reroll cost="60000" qty="8"/>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
+			<position qty="16" title="Feldspieler" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="7" st="3" ag="3" av="7" normal="gp" double="asm" display="skaven_t.png">
+			<position qty="2" title="Werfer" cost="70000" ma="7" st="3" ag="3" av="7" normal="gp" double="asm" display="skaven_t.png">
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Pass"/>
+					<skill name="Ballgefühl"/>
+					<skill name="Wurfsicher"/>
 				</skills>
 			</position>
-			<position qty="4" title="Gutter runner" cost="80000" ma="9" st="2" ag="4" av="7" normal="ga" double="spm" display="skaven_gr.png">
+			<position qty="4" title="Gossenläufer" cost="80000" ma="9" st="2" ag="4" av="7" normal="ga" double="spm" display="skaven_gr.png">
 				<skills>
-					<skill name="Dodge"/>
+					<skill name="Ausweichen"/>
 				</skills>
 			</position>
 			<position qty="2" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="apm" display="skaven_b.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 				</skills>
 			</position>
-			<position qty="1" title="Rat ogre" cost="160000" ma="6" st="5" ag="2" av="8" normal="s" double="gapm" display="ratogre.png">
+			<position qty="1" title="Rattenoger" cost="160000" ma="6" st="5" ag="2" av="8" normal="s" double="gapm" display="ratogre.png">
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Frenzy"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Prehensile Tail"/>
-					<skill name="Wild Animal"/>
+					<skill name="Einzelgänger"/>
+					<skill name="Rasend"/>
+					<skill name="Knochenbrecher"/>
+					<skill name="Klammerschwanz"/>
+					<skill name="Tobende Bestie"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
+			<position qty="11" title="Wanderspieler" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>They may not be all that strong, they certainly aren't tough, but boy oh boy are Skaven fast! Many an opponent has been left in the starting blocks as fast-moving Skaven players scamper through a gap in the line and run in for a lightning fast touchdown.</background>
+		<background>Die Skaven sind zwar nicht besonders widerstandsfähig, aber ihre Teams verfügen mit Abstand über die schnellsten Spieler! Schon so manche Mannschaft hat sich noch gar nicht gerührt da flitzen die Skaven schon durch Lücken in der Aufstellung und erzielen den ersten Touchdown.</background>
 	</race>
 	<race name="Untote" emblem="undeads.jpg">
 		<apothecary use="false"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
+			<position qty="16" title="Skelett" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
 				<skills>
 					<skill name="Regeneration"/>
 				</skills>
@@ -744,47 +744,47 @@
 			</position>
 			<position qty="4" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="undead_g.png">
 				<skills>
-					<skill name="Dodge"/>
+					<skill name="Ausweichen"/>
 				</skills>
 			</position>
-			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="undead_w.png">
+			<position qty="2" title="Verfluchter" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="undead_w.png">
 				<skills>
-					<skill name="Block"/>
+					<skill name="Blocken"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="2" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="undead_m.png">
+			<position qty="2" title="Mumie" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="undead_m.png">
 				<skills>
-					<skill name="Mighty Blow"/>
+					<skill name="Knochenbrecher"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
+			<position qty="11" title="Wanderspieler" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
 				<skills>
 					<skill name="Regeneration"/>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>In the Old World the dead do not rest easy. Vampires lurk in haunted castles, Necromancers seek to escape death by searching for forbidden knowledge, the Liche-lords rule over legions of corpses, and on the Blood Bowl field players who died long ago return to the scenes of their former glory and play Blood Bowl once again'</background>
+		<background>In der Alten Welt finden die Toten nicht so leicht zur ewigen Ruhe. Vampire schleichen durch verfluchte Schlösser, Nekromanten versuchen dem Tod durch ihre Suche nach verbotenem Wissen zu entkommen und Todesfürsten beherrschen ganze Legionen von Untoten. Auf dem Spielfeld versuchen die Verstorbenen an den zu Lebzeiten verdienten Ruhm anzuknüpfen und spielen erneut Blood Bowl...</background>
 	</race>
 	<race name="Vampire" emblem="vampires.jpg">
 		<apothecary use="true"/>
 		<reroll cost="70000" qty="8"/>
 		<positions>
-			<position qty="16" title="Thrall" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
+			<position qty="16" title="Knecht" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
 				<skills/>
 			</position>
 			<position qty="6" title="Vampire" cost="110000" ma="6" st="4" ag="4" av="8" normal="gas" double="p" display="vampire_v.png">
 				<skills>
-					<skill name="Blood Lust"/>
-					<skill name="Hypnotic Gaze"/>
+					<skill name="Blutlust"/>
+					<skill name="Hypnotischer Blick"/>
 					<skill name="Regeneration"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
+			<position qty="11" title="Wanderspieler" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
@@ -810,7 +810,7 @@
 			</position>
 			<position qty="2" title="Kampftänzer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_w.png">
 				<skills>
-					<skill name="Blocken"/>
+					<skill name="Unerschrocken"/>
 					<skill name="Ausweichen"/>
 					<skill name="Springen"/>
 				</skills>
@@ -826,12 +826,12 @@
 					<skill name="Mitspieler werfen"/>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
+			<position qty="11" title="Wanderspieler" cost="50000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
 				<skills>
-					<skill name="Loner"/>
+					<skill name="Einzelgänger"/>
 				</skills>
 			</position>
 		</positions>
-		<background>For Wood Elves the Long pass is everything, even more so than their High Elf cousins, and all of their effort goes into being an expert at throwing or receiving. No Wood Elf worth his salt is going to be weighed down by extra Armour and be forced to lurk about, attempting to knock opposing players over. Instead they rely on their natural athletic ability to keep them out of trouble, which is normally enough ' it takes a very agile or lucky opponent to lay a hand on a Wood Elf!</background>
+		<background>Die Waldelfen schätzen das lange Passspiel noch mehr als ihre Verwandten, die Hochelfen, und alle ihre Anstrengungen zielen darauf ab, das Werfen und Fangen zu perfektionieren. Jeder Waldelf hält es für erniedrigend, sich mit schwerer Rüstung zu belasten und womöglich dazu gezwungen zu sein, auf dem Spielfeld herumzukriechen und gegnerische Spieler umzuschubsen. Sie verlassen sich völlig auf ihre angeborenen Fähigkeiten, die normalerweise auch ausreichen - nur sehr schnellen oder sehr glücklichen Spielern wird es gelingen, einen Waldelfen zu fassen zu bekommen!</background>
 	</race>
 </races>

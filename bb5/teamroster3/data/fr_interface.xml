@@ -53,9 +53,9 @@
 		
 		<rerolls>RELANCES</rerolls>
 		<fanfactor>POPULARITÉ</fanfactor>
-		<assistants></assistants>
-		<cheerleaders></cheerleaders>
-		<apothecary></apothecary>
+		<assistants>ASSISTANTS</assistants>
+		<cheerleaders>CHEERLEADER</cheerleaders>
+		<apothecary>APOTHICAIRE</apothecary>
 		<teamvalue>COUT TOTAL</teamvalue>
 		
 		<name>NOMS DES JOUEURS</name>

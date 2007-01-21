@@ -201,36 +201,40 @@ function parseTeamRoster($xmlTeamRoster, $lang) {
 			// manage skills - we want a single skill string of the 
 			// type block,frenzy,xyz in ['skills']
 			
-			if (is_array($data['player'][$i]['skills'])) {
-			
-				if(!(is_array($data['player'][$i]['skills']['skill']))) {
-					$data['player'][$i]['skills'] = $data['player'][$i]['skills']['skill'];
-					$skill = $data['player'][$i]['skills'];
-					if ( strstr($skill, '+') === FALSE ) {
-						$data['player'][$i]['skills'] = $translation[$skill];
+			if (is_array($data['player'][$i]['skill'])) {
+				unset($data['player'][$i]['skill']['_num']);
+				$temp = Array();
+				foreach ( $data['player'][$i]['skill'] as $string ) {
+					if ( strstr($string, '+') === FALSE ) {
+						$temp[] = $translation[$string];
 					} else {
+						$string = substr($string, 1);
+						$temp[] = '+'.$translation[$string];
+					}
+				}
+				$data['player'][$i]['skills'] = implode(",",$temp);
+				unset($data['player'][$i]['skill']);
+			}
+			else {
+				if ( $data['player'][$i]['skill'] == "") {
+					$data['player'][$i]['skills'] = "";
+					unset($data['player'][$i]['skill']);
+				}
+				else { /* one single skill */
+					$skill = $data['player'][$i]['skill'];
+					unset($data['player'][$i]['skill']);
+					if ( strstr($skill, '+') == FALSE ) {
+						$data['player'][$i]['skills'] = $translation[$skill];
+					}
+					else {
 						$skill = substr($skill, 1);
 						$data['player'][$i]['skills'] = '+'.$translation[$skill];
 					}
-				}
-				else { // if ['skill'] IS an array, so, if there is more than 1 skill
-					unset($data['player'][$i]['skills']['skill']['_num']);
-					$temp = Array();
-					foreach ( $data['player'][$i]['skills']['skill'] as $string ) {
-						if ( strstr($string, '+') === FALSE ) {
-							$temp[] = $translation[$string];
-						} else {
-							$string = substr($string, 1);
-							$temp[] = '+'.$translation[$string];
-						}
-					}
-					$data['player'][$i]['skills'] = implode(",",$temp);
-				}
+					unset($skill);
+				}	
 			}
-
 		}
 	}
-	
 	// sort Array by number of the player
 
 	$temp = array();
