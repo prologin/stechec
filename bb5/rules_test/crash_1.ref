@@ -1,0 +1,9 @@
+ça plante au moment de la passe. voilà la sortie du serveur
+
+[server 41] game_hosting.cc:80: Send packet ``16'' to client_id `0`
+[server 41] game_hosting.cc:80: Send packet `MSG_BALLPOS' to client_id `-1`
+[common 41] Dice.cc:99: + Cheat -1D8: `6' (bounce)
+[arbiter 41] SBall.cc:163: Ball: bounce from [row/y:13 col/x:18] to [row/y:14 col/x:18]
+tbt_server: SBall.cc:164: void SBall::afterBounce(const Position&, int): Assertion `f->intoField(pos_)' failed.
+Abandon (core dumped)
+
