@@ -84,6 +84,7 @@ block:
     input: block_2.cmd
     ref: block_2.ref
 
+
 block2:
   client_1:
     team: team.xml
@@ -95,3 +96,16 @@ block2:
     formation: formation.xml
     input: block2_2.cmd
     ref: block2_2.ref
+
+crash:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: crash_1.cmd
+    ref: crash_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: crash_2.cmd
+    ref: crash_2.ref
+

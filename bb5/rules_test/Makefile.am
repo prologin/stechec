@@ -15,6 +15,10 @@ EXTRA_DIST +=					\
 	block_1.ref				\
 	block_2.cmd				\
 	block_2.ref				\
+	crash_1.cmd				\
+	crash_1.ref				\
+	crash_2.cmd				\
+	crash_2.ref				\
 	formation.xml				\
 	kickoffbug_1.cmd			\
 	kickoffbug_1.ref			\
@@ -35,7 +39,7 @@ EXTRA_DIST +=					\
 	pickupf_1.cmd				\
 	pickupf_1.ref				\
 	pickupf_2.cmd				\
-	pickupf_2.ref				\
+	pickupf_2.ref
 	team.xml
 
 # Tests expected to pass.
@@ -50,4 +54,5 @@ MY_TESTS =					\
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
 	kickoffbug				\
-	block2
+	block2					\
+	crash
