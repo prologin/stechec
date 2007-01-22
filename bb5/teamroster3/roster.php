@@ -5,6 +5,7 @@
 <head>
 <title>TBT Snore</title>
 <link rel="stylesheet" type="text/css" media="screen" href="roster.css" title="Default" />
+<link rel="stylesheet" type="text/css" media="print" href="roster_print.css" title="Print">
 <script type="text/javascript" src="onstage/functions.js"></script>
 <script type="text/javascript" src="onstage/subroutines.js"></script>
 <script type="text/javascript" src="onstage/roster.js"></script>
@@ -149,7 +150,7 @@ else {
       </td>
 </tr>
 <tr>
-	  <td colspan="3"><?php sprint($interface['roster']['journeymen']['label']) ?> (<a class="small blue" href="javascript:showJmBox()"><?php sprint($interface['roster']['journeymen']['button']) ?></a>)</td>
+	  <td colspan="3"><?php sprint($interface['roster']['journeymen']['label']) ?> <a class="small blue" href="javascript:showJmBox()">(<?php sprint($interface['roster']['journeymen']['button']) ?>)</a></td>
 	  <td colspan="1"><input name="HEALTHY" type="text" size="2" readonly="readonly" /></td>
       <td colspan="3" class="bg1"><?php sprint($interface['roster']['assistants']) ?></td>
       <td colspan="1">

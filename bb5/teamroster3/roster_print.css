@@ -1,0 +1,65 @@
+body {
+	font-family: sans-serif;
+	font-size: 80%;
+}
+
+table {
+	border: 2px solid black;
+	border-collapse: collapse;
+}
+
+td,tr {
+	border: 1px solid gray;
+}
+
+.thicker-top {
+	border-top: 2px solid black;
+}
+
+.thicker-bottom {
+	border-bottom: 2px solid black;
+}
+
+.center {
+	text-align: center;
+}
+
+input,select {
+	border-style: none;
+}
+
+.small {
+	font-size: x-small;
+}
+
+.large {
+	font-size: x-large;
+}
+
+.bg1 { /* the lightest gray */
+	background-color: #D3D3D3;
+}
+
+.bg2 { /* somewhat darker */
+	background-color: #F0F0F0;
+}
+
+.bg3 { /* the darkest gray */
+	background-color: gray;
+}
+
+.red, .green, .blue, h1, a {
+	display: none;
+}
+
+.element_visible, .element_hidden, .repertory, .jm {
+	display: block;
+}
+
+#inj_box, #jm_box, #skill_box, #background_box, #pic_box {
+     display: none;
+}
+
+.healthy { }
+.injured { text-decoration: line-through; }
+	
