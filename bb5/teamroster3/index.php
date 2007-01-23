@@ -1,4 +1,13 @@
-<?php header('Content-type: text/html; charset="UTF-8"'); ?>
+<?php
+require_once('backstage/minixml.php');
+require_once('backstage/parse_xml.php');
+require_once('backstage/helper.php');
+
+$lang = checkLang();
+$interface = parseInterface('data/'.$lang.'/index.xml');
+
+header('Content-type: text/html; charset="UTF-8"');
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -20,31 +29,20 @@
 
 <body>
 
-<?php
-
-	require_once('backstage/minixml.php');
-	require_once('backstage/parse_xml.php');
-	require_once('backstage/helper.php');
-	
-	$lang = checkLang();
-	$interface = parseInterface('data/'.$lang.'_interface.xml');
-
-?>
-
 <div id="title">
 
 	<div id="flags" style="float: right;">
 	  <form action="set_cookie.php" method="POST" style="float: left">
 	  <input type="hidden" name="lang" value="en"></input>
-	  <button type="submit"><img src="data/en_flag.jpg" /></button>
+	  <button type="submit"><img src="data/en/flag.jpg" /></button>
 	  </form>
 	  <form action="set_cookie.php" method="POST" style="float: left">
 	  <input type="hidden" name="lang" value="fr"></input>
-	  <button type="submit"><img src="data/fr_flag.jpg" /></button>
+	  <button type="submit"><img src="data/fr/flag.jpg" /></button>
 	  </form>
 	  <form action="set_cookie.php" method="POST" style="float: left">
 	  <input type="hidden" name="lang" value="de"></input>
-	  <button type="submit"><img src="data/de_flag.jpg" /></button>
+	  <button type="submit"><img src="data/de/flag.jpg" /></button>
 	  </form>
 	</div>
 	
@@ -55,15 +53,15 @@
 
 <div id="content">
 
-<p><?php sprint($interface['index']['intro']) ?></p>
+<p><?php sprint($interface['intro']) ?></p>
 
-<h2><?php sprint($interface['index']['heading'][0]) ?></h2>
+<h2><?php sprint($interface['heading'][0]) ?></h2>
 
 	<div id="list">
 
 		<?php
-			$races = parseRaces('data/'.$lang.'_races.xml');
-			$races_list = listRacesNames($races);
+			$races = parseRaces('data/'.$lang.'/races.xml');
+			$races_list = listRaces($races);
 			
 			foreach ( $races_list as $race ) {
 				echo "<a class=\"block\" href=\"roster.php?race=$race\">$race</a> \n";
@@ -72,13 +70,13 @@
 
 	</div>
 
-<h2><?php sprint($interface['index']['heading'][1]) ?></h2>
+<h2><?php sprint($interface['heading'][1]) ?></h2>
 
 <form action="roster.php" method="post" enctype="multipart/form-data">
     <p><input type="hidden" name="MAX_FILE_SIZE" value="30000" />
     <input type="hidden" name="upload" value="true" /></p>
-    <p><?php sprint($interface['index']['upload']['label']) ?> <input name="userfile" type="file" />
-    <input type="submit" value="<?php echo $interface['index']['upload']['submit'] ?>" /></p>
+    <p><?php sprint($interface['upload']['label']) ?> <input name="userfile" type="file" />
+    <input type="submit" value="<?php echo $interface['upload']['submit'] ?>" /></p>
 </form>
 
 </div>

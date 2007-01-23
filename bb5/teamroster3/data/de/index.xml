@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<intro>Diese Seite wird dir helfen, Deine Tow Bowl Tactics Teambögen zu
+	verwalten. Dazu kannst du entweder mit einer neuen Mannschaft anfangen,
+	oder ein bestehendes, im xml-Format gespeichertes, Team laden.</intro>
+	<heading>Neues Team beginnen.</heading>
+	<heading>Gespeicherte Mannschaft laden.</heading>
+	<upload>
+		<label>Diese Datei senden:</label>
+		<submit>Abschicken</submit>
+	</upload>
+</interface>

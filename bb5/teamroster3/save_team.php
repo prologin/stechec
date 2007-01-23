@@ -9,8 +9,8 @@ $race_name = htmlentities($_POST['RACE']);
 $translation = build_translation($lang,'en');
 $race_name = $translation[$race_name];
 
-$race = extractRace(parseRaces('data/en_races.xml'), $race_name);
-$interface = parseInterface('data/'.$lang.'_interface.xml');
+$race = extractRace(parseRaces('data/en/races.xml'), $race_name);
+$interface = parseInterface('data/'.$lang.'/roster.xml');
 
 for ( $i = 0; $i < $race['player_num']; $i++ ) {
 	$posNames[] = $race['player_'.$i]['title'];
@@ -111,16 +111,16 @@ for( $i = 0; $i < 16; $i++) {
 					case "N":
 						$nigglings++;
 						break;
-					case "-".$interface['roster']['MA']:
+					case "-".$interface['MA']:
 						$ma_reduction++;
 						break;
-					case "-".$interface['roster']["ST"]:
+					case "-".$interface["ST"]:
 						$st_reduction++;
 						break;
-					case "-".$interface['roster']["AG"]:
+					case "-".$interface["AG"]:
 						$ag_reduction++;
 						break;
-					case "-".$interface['roster']["AV"]:
+					case "-".$interface["AV"]:
 						$av_reduction++;
 						break;
 				}

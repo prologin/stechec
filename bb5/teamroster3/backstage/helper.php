@@ -5,12 +5,11 @@ function sprint($string) {	// sprint like in "Special characters PRINT"
 }
 
 function checkLang() {
-	if ( isset($_COOKIE['lang']) ) {
+	
+	$lang = &$_COOKIE['lang'];
+	
+	if ( isset($lang) && is_dir('data/'.$lang) ) {
 		$lang = $_COOKIE['lang'];
-		
-		if ( $lang != 'en' && $lang != 'de' && $lang != 'fr' ) {
-			$lang = 'en';
-		}
 	}
 	else {
 		$lang = 'en';

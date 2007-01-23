@@ -12,10 +12,10 @@ function writeWarnings($interface) {
 
 function writeStatNames($interface) {
 
-	echo "var MA = \"{$interface['roster']['MA']}\"\n";
-	echo "var ST = \"{$interface['roster']['ST']}\"\n";
-	echo "var AG = \"{$interface['roster']['AG']}\"\n";
-	echo "var AV = \"{$interface['roster']['AV']}\"\n";
+	echo "var MA = \"{$interface['MA']}\"\n";
+	echo "var ST = \"{$interface['ST']}\"\n";
+	echo "var AG = \"{$interface['AG']}\"\n";
+	echo "var AV = \"{$interface['AV']}\"\n";
 
 }
 

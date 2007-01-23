@@ -2,48 +2,27 @@
 
 <interface>
 
-	<index>
-	
-		<intro>Ce site t'aidera à gérer tes fichiers d'équipe de Tow Bowl Tactics.
-		Tu peux soi commencer une nouvelle équipe en choisissant une des races qui suit, 
-		ou bien charger une fiche d'équipe sauvegardée dans le format xml.</intro>
-
-		<heading>Commencer une nouvelle équipe.</heading>
-		
-		<heading>Charger une équipe sauvegardée.</heading>
-		
-		<upload>
-		
-			<label>Envoyer ce fichier:</label>
-			<submit>Envoyer</submit>
-		
-		</upload>
-		
-	</index>
-	
-	<roster>
-	
 		<teampics>
-			<label>Customize Teampics</label>
-			<text>Why don't you just enter the filenames of the pictures you want to use.
-			Player without custom pics will use the default pictures.</text>
+			<label>Modifier les images</label>
+			<text>Entre le noms des fichiers que tu veux utiliser comme image. Une case vide
+			sera remplacée par l'image par défaut.</text>
 		</teampics>
 		
 		<background>
-			<label>Write Background</label>
-			<text>Write a background for your team!</text>
+			<label>Écrire l'histoire de l'équipe</label>
+			<text>Écris l'histoire de ton équipe!</text>
 		</background>
 		
 		<journeymen>
-			<label>players</label>
-			<button>manage</button>
-			<text>You may hire one or more of the journeymen you used after a match.
-			Simply click on the corresponding number (non-journeymen are not shown).</text>
+			<label>joueurs</label>
+			<button>gérer</button>
+			<text>Tu peux engager un des journaliers que tu as utilisé en cliquant dessus.
+			(les joueurs normaux ne sont pas montrés)</text>
 		</journeymen>
 		
-		<statchanges>Write statchanges to Roster</statchanges>
-		<save>Save Roster</save>
-		<return>Return to Start</return>	
+		<statchanges>Retenir modifications de valeurs dans la fiche</statchanges>
+		<save>Sauvegarder la fiche</save>
+		<return>Revenir à l'index</return>	
 
 	
 		<team>ÉQUIPE</team>
@@ -67,26 +46,24 @@
 		<AV>AR</AV>
 
 		<skills>COMPÉTENCES</skills>
-		<inj></inj>
+		<inj>INJ</inj>
 		
-		<comp></comp>	
-		<td></td>
-		<int></int>
-		<cas></cas>			
-		<mvp></mvp>
-		<spp></spp>
+		<comp>COM</comp>	
+		<td>TD</td>
+		<int>INT</int>
+		<cas>CAS</cas>			
+		<mvp>MVP</mvp>
+		<spp>SPP</spp>
 		
 		<value></value>	
-	
-	</roster>
-	
+
 	<javascript>
 	
 		<!-- beginning of sentence: ... more than 3 Ogre. -->
-		<warning>You cannot have more than</warning>
+		<warning>Tu ne peux pas avoir plus de</warning>
 		
 		<!-- end of sentence: 12 players fielded, you are ... -->
-		<warning>players fielded: you are not elligible for journeymen.</warning>
+		<warning>joueurs. Tu n'as pas accès aux journaliers.</warning>
 		
 		<!-- complete sentences -->
 		<warning>Please select a position before setting a name.</warning>

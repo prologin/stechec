@@ -21,7 +21,7 @@ require_once('backstage/echo_js.php');
 require_once('backstage/helper.php');
 
 $lang = checkLang();
-$interface = parseInterface('data/'.$lang.'_interface.xml');
+$interface = parseInterface('data/'.$lang.'/roster.xml');
 
 if (isset($_POST['upload']) && $_POST['upload'] == true) {
 	$team = parseTeamRoster($_FILES['userfile']['tmp_name'], $lang);
@@ -32,13 +32,13 @@ else {
 	$chosen_race = htmlentities($_GET['race']);
 }
 
-$races = parseRaces('data/'.$lang.'_races.xml');
+$races = parseRaces('data/'.$lang.'/races.xml');
 $race = extractRace($races, $chosen_race);
 
 if (isset($_POST['upload']) && $_POST['upload'] == true) {
 		echo writeTeamRoster($team,$race);
 }
-$skill_list = parseSkills('data/'.$lang.'_skills.xml');
+$skill_list = parseSkills('data/'.$lang.'/skills.xml');
 
 echo writePosStats($race)."\n";
 echo writePosSkills($race)."\n";
@@ -71,21 +71,21 @@ else {
 <table>
 
 	<tr class="bg1 center thicker-bottom">
-		<td>#</td><td><?php sprint($interface['roster']['name']) ?></td>
-		<td><?php sprint($interface['roster']['position']) ?></td>
-		<td><?php sprint($interface['roster']['MA']) ?></td>
-		<td><?php sprint($interface['roster']['ST']) ?></td>
-		<td><?php sprint($interface['roster']['AG']) ?></td>
-		<td><?php sprint($interface['roster']['AV']) ?></td>
-		<td><?php sprint($interface['roster']['skills']) ?></td>
-		<td><?php sprint($interface['roster']['inj']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['comp']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['td']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['int']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['cas']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['mvp']) ?></td>
-		<td class="bg3"><?php sprint($interface['roster']['spp']) ?></td>
-		<td><?php sprint($interface['roster']['value']) ?></td>
+		<td>#</td><td><?php sprint($interface['name']) ?></td>
+		<td><?php sprint($interface['position']) ?></td>
+		<td><?php sprint($interface['MA']) ?></td>
+		<td><?php sprint($interface['ST']) ?></td>
+		<td><?php sprint($interface['AG']) ?></td>
+		<td><?php sprint($interface['AV']) ?></td>
+		<td><?php sprint($interface['skills']) ?></td>
+		<td><?php sprint($interface['inj']) ?></td>
+		<td class="bg3"><?php sprint($interface['comp']) ?></td>
+		<td class="bg3"><?php sprint($interface['td']) ?></td>
+		<td class="bg3"><?php sprint($interface['int']) ?></td>
+		<td class="bg3"><?php sprint($interface['cas']) ?></td>
+		<td class="bg3"><?php sprint($interface['mvp']) ?></td>
+		<td class="bg3"><?php sprint($interface['spp']) ?></td>
+		<td><?php sprint($interface['value']) ?></td>
 	</tr>
 		
 <?php
@@ -108,24 +108,24 @@ else {
 
 <tr class="thicker-top">
       <td rowspan="6" colspan="2" style="width: 200px">
-      	<p><a href="javascript:show('pic_box')"><?php sprint($interface['roster']['teampics']['label']) ?></a><br />
-      	<a href="javascript:show('background_box')"><?php sprint($interface['roster']['background']['label']) ?></a><br /><br />
-      	<input name="VERBOSE" type="checkbox" checked="checked" /><?php sprint($interface['roster']['statchanges']) ?><br />
-      	<a href="javascript:save()"><?php sprint($interface['roster']['save']) ?></a><br />
-      	<a href="index.php"><?php sprint($interface['roster']['return']) ?></a>
+      	<p><a href="javascript:show('pic_box')"><?php sprint($interface['teampics']['label']) ?></a><br />
+      	<a href="javascript:show('background_box')"><?php sprint($interface['background']['label']) ?></a><br /><br />
+      	<input name="VERBOSE" type="checkbox" checked="checked" /><?php sprint($interface['statchanges']) ?><br />
+      	<a href="javascript:save()"><?php sprint($interface['save']) ?></a><br />
+      	<a href="index.php"><?php sprint($interface['return']) ?></a>
       </td>
       
       <td rowspan="6" colspan="2" style="text-align: center">
       	<p><img alt="a colorful picture" id="BADGE" style="width:104px;height:140px;" src="" /></p>
       </td>
       
-      <td colspan="3" rowspan="2"><?php sprint($interface['roster']['team']) ?></td>
+      <td colspan="3" rowspan="2"><?php sprint($interface['team']) ?></td>
       
       <td rowspan="2">
       	<input name="TEAM" type="text" size="20" value="<?php ifLoadedEcho('name',$team); ?>" />
       </td>
       
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['rerolls']) ?></td>
+      <td colspan="3" class="bg1"><?php sprint($interface['rerolls']) ?></td>
       
       <td colspan="1">
       	<input class="center" name="REROLLS" onchange="calcExtraValue(16)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('reroll',$team); ?>" />
@@ -140,7 +140,7 @@ else {
       </td>
 </tr>
 <tr>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['fanfactor']) ?></td>
+      <td colspan="3" class="bg1"><?php sprint($interface['fanfactor']) ?></td>
       <td colspan="1">
       	<input class="center" name="FANFACTOR" onchange="calcExtraValue(17)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('fanfactor',$team); ?>" />
       </td>
@@ -150,9 +150,9 @@ else {
       </td>
 </tr>
 <tr>
-	  <td colspan="3"><?php sprint($interface['roster']['journeymen']['label']) ?> <a class="small blue" href="javascript:showJmBox()">(<?php sprint($interface['roster']['journeymen']['button']) ?>)</a></td>
+	  <td colspan="3"><?php sprint($interface['journeymen']['label']) ?> <a class="small blue" href="javascript:showJmBox()">(<?php sprint($interface['journeymen']['button']) ?>)</a></td>
 	  <td colspan="1"><input name="HEALTHY" type="text" size="2" readonly="readonly" /></td>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['assistants']) ?></td>
+      <td colspan="3" class="bg1"><?php sprint($interface['assistants']) ?></td>
       <td colspan="1">
       	<input class="center" name="COACHES" onchange="calcExtraValue(18)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('assistant',$team); ?>" />
       </td>
@@ -164,11 +164,11 @@ else {
 <tr>
 
 
-      <td colspan="3"><?php sprint($interface['roster']['race']) ?></td>
+      <td colspan="3"><?php sprint($interface['race']) ?></td>
       <td>
       	<input name="RACE" type="text" size="8" value="<?php echo $chosen_race ?>" readonly="readonly" />
       </td>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['cheerleaders']) ?></td>
+      <td colspan="3" class="bg1"><?php sprint($interface['cheerleaders']) ?></td>
       <td colspan="1">
       	<input class="center" name="CHEERLEADERS" onchange="calcExtraValue(19)" type="text" size="2" maxlength="2" value="<?php ifLoadedEcho('cheerleader',$team); ?>" />
       </td>
@@ -180,9 +180,9 @@ else {
 <tr>
 
 
- <td colspan="3"><?php sprint($interface['roster']['treasury']) ?></td>
+ <td colspan="3"><?php sprint($interface['treasury']) ?></td>
       <td><input name="TREASURY" type="text" size="6" value="" /></td>
-      <td colspan="3" class="bg1"><?php sprint($interface['roster']['apothecary']) ?></td>
+      <td colspan="3" class="bg1"><?php sprint($interface['apothecary']) ?></td>
       <td colspan="1">
       	<input class="center" name="APOTHECARY" onchange="calcExtraValue(20)" type="text" size="2" maxlength="1" value="<?php ifLoadedEcho('apothecary',$team); ?>" />
       </td>
@@ -194,11 +194,11 @@ else {
 <tr>
 
 
-      <td colspan="3"><?php sprint($interface['roster']['headcoach']) ?></td>
+      <td colspan="3"><?php sprint($interface['headcoach']) ?></td>
       <td>
       	<input name="HEADCOACH" type="text" size="8" value="" />
       </td>
-      <td colspan="7" class="bg1"><?php sprint($interface['roster']['teamvalue']) ?></td>
+      <td colspan="7" class="bg1"><?php sprint($interface['teamvalue']) ?></td>
       <td>
       	<input name="TEAMVALUE" type="text" size="6" readonly="readonly" value="" />
       </td>
@@ -207,7 +207,7 @@ else {
 
 
 <div id="pic_box" class="element_hidden">
-	<p><?php sprint($interface['roster']['teampics']['text']) ?></p>
+	<p><?php sprint($interface['teampics']['text']) ?></p>
 	<table>
 	<?php
 		echo "<tr><td>Team</td>";
@@ -233,7 +233,7 @@ else {
 </div>
 
 <div id="jm_box" class="element_hidden">
-<p><?php sprint($interface['roster']['journeymen']['text']) ?></p>
+<p><?php sprint($interface['journeymen']['text']) ?></p>
 <table>
 <tr>
 <?php writeLegalize(); ?>

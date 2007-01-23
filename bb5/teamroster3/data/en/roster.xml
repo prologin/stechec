@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-	<index>
-		<intro>This site will help you to manage your Tow Bowl Tactics Teamroster. 
-		You can either start with a new team, choosing one of the following races, 
-		or load a previously saved teamsheet in the xml format.</intro>
-		<heading>Start a fresh team.</heading>
-		<heading>Load a saved team.</heading>
-		<upload>
-			<label>Send this file:</label>
-			<submit>Send File</submit>
-		</upload>
-	</index>
-	
-	<roster>
-	
 		<teampics>
 			<label>Customize Teampics</label>
 			<text>Why don't you just enter the filenames of the pictures you want to use.
@@ -69,8 +55,6 @@
 		<spp>SPP</spp>
 		
 		<value>VALUE</value>	
-
-	</roster>
 
 	<javascript>
 	
