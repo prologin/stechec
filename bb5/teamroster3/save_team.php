@@ -148,12 +148,12 @@ for( $i = 0; $i < 16; $i++) {
 }
 
 $arrayOptions = array(
-	'attributes'	=> array(
-			'player'	=> array('name','number','position','display'),
-			'team'		=> array('race','BBversion','emblem','xmlns:xsi','xsi:noNamespaceSchemaLocation'),
-			'inj'		=> array('missNextMatch','nigglingInjuries','MaReduction','StReduction','AgReduction','Avreduction')
-			),
-);
+	'attributes'    => array(
+		'player'        => array('name','number','position','display'),
+		'team'          => array('race','BBversion','emblem','xmlns:xsi','xsi:noNamespaceSchemaLocation'),
+		'inj'           => array('missNextMatch','nigglingInjuries','MaReduction','StReduction','AgReduction','Avreduction')
+	),
+ );
 
 $xmlDoc->fromArray($arr, $arrayOptions);
 print $xmlDoc->toString();

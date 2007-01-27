@@ -18,4 +18,19 @@ function checkLang() {
 	return $lang;
 }
 
+class benchmark{
+    function start(){
+        $time = explode(' ', microtime());
+        $this->start = $time[0] + $time[1];
+    }
+
+    function stop(){
+        $time = explode(' ', microtime());
+        $this->stop = $time[0] + $time[1];
+    }
+    
+    function time(){
+        return number_format(($this->stop - $this->start), '4');
+    }
+}
 ?>
