@@ -347,7 +347,7 @@ void SPlayer::resolveBlock(int chosen_dice, SPlayer* target)
 
   switch (result_[chosen_dice])
     {
-    case BATTAKER_DOWN :
+    case BATTACKER_DOWN :
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
         setStatus(STA_PRONE);

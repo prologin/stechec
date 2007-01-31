@@ -51,7 +51,7 @@ enum eDiceFaceNumber {
 
 //! @brief Faces of block dice.
 enum eBlockDiceFace {
-  BATTAKER_DOWN = 1,
+  BATTACKER_DOWN = 1,
   BBOTH_DOWN,
   BPUSHED,
   BDEFENDER_STUMBLE,

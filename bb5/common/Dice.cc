@@ -50,7 +50,7 @@ int Dice::roll(enum eDiceFaceNumber type, int nb_dice)
       val = 1 + (int)(6.0 * rand() / (RAND_MAX + 1.0));
       switch (val)
         {
-        case 1: val=BATTAKER_DOWN; break;
+        case 1: val=BATTACKER_DOWN; break;
         case 2: val=BBOTH_DOWN; break;
         case 3:
         case 4: val=BPUSHED; break;
@@ -110,8 +110,8 @@ const char* Dice::stringify(enum eBlockDiceFace face)
 {
   switch (face)
     {
-    case BATTAKER_DOWN:
-      return "BATTAKER_DOWN";
+    case BATTACKER_DOWN:
+      return "BATTACKER_DOWN";
     case BBOTH_DOWN:
       return "BBOTH_DOWN";
     case BPUSHED:
