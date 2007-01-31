@@ -33,4 +33,12 @@ class benchmark{
         return number_format(($this->stop - $this->start), '4');
     }
 }
+
+if (! function_exists('array_combine')) {
+  function array_combine($keys, $values) {
+   foreach($keys as $key) $out[$key] = array_shift($values);
+   return $out;
+  }
+}
+
 ?>
