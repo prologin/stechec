@@ -2,7 +2,7 @@
 
 <team bb_version="5" race="Amazon" emblem="amazon.png"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="file://@pkgdatadir@/team.xsd">
+      xsi:noNamespaceSchemaLocation="file://@pkgdatadir@/bb5/schema/team.xsd">
 
   <formation>formation.xml</formation>
   <name>Amazon</name>
