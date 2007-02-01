@@ -67,7 +67,6 @@ void ActionPopup::prepareDeclareMenu(VisuPlayer* vp, enum eStatus player_status)
 {
   static enum eAction std_act[] = {eActMove, eActBlock, eActPass, eActBlitz};
   static enum eAction get_up_act[] = {eActGetUp};
-  static enum eAction roll_over_act[] = {eActRollOver};
   int i;
 
   for (i = 0; i < 12; i++)
@@ -81,11 +80,7 @@ void ActionPopup::prepareDeclareMenu(VisuPlayer* vp, enum eStatus player_status)
 	display_act_[i] = get_up_act[i];
     }
   else if (player_status == STA_STUNNED)
-    {
-      display_act_nb_ = sizeof (roll_over_act) / sizeof (enum eAction);
-      for (int i = 0; i < display_act_nb_; i++)
-	display_act_[i] = roll_over_act[i];
-    }
+	  ;
   else if (player_status == STA_STANDING)
     {
       display_act_nb_ = sizeof (std_act) / sizeof (enum eAction);

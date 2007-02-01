@@ -198,11 +198,6 @@ void VisuPlayer::selectAction(enum eAction item)
       target_action_ = eActAggress;
       break;
 
-    case eActRollOver:
-      LOG2("ROLLOVER - not implemented yet. but what it is exactly?");
-      game_.unsetState(stDoAction);
-      break;
-
     default:
       LOG2("Invalid action selection: %1", item);
       game_.unsetState(stDoAction);

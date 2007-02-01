@@ -31,7 +31,6 @@ enum eAction {
   eActPass,
   eActAggress,
   eActBlitz,
-  eActRollOver,
   eActGetUp,
   eActTransmit,
   eActThrowTm,
