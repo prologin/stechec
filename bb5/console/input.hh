@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -44,9 +44,6 @@ public:
   ///! @brief Tell to process input again.
   void stopWaiting();
 
-  ///! @brief Server has finished to process our input.
-  void syncDone();
-  
 public:
 
   struct InputCommand
@@ -122,7 +119,6 @@ private:
   bool                  want_exit_;
   bool			cmd_processed_;   ///< Stop processing input if a command was executed.
   int			wait_;            ///< Don't process input util it is our turn.
-  int			sync_;		  ///< Number of 'sync' from server to receive before proceding input.
   bool			use_readline_;    ///< Use readline, if it was compiled (default).
 
   // for read().

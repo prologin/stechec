@@ -1,16 +1,16 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
-** 
-** Copyright (C) 2006 The TBT Team.
-** 
+**
+** Copyright (C) 2006, 2007 The TBT Team.
+**
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
 ** as published by the Free Software Foundation; either version 2
 ** of the License, or (at your option) any later version.
-** 
+**
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
-** 
+**
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
@@ -87,27 +87,27 @@ inline int Api::doPlaceBall(const Point& pos)
   pkt.row = bpos.row;
   pkt.col = bpos.col;
   rules_->sendPacket(pkt);
-	
+
   return SUCCESS;
 }
 
 inline int Api::doGiveBall(int p)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-	
+
   if (rules_->getState() != GS_TOUCHBACK)
     {
       LOG2("There is no touchback.");
       return INVALID_ACTION;
     }
-	
-  if (getPlayer(p) == NULL) 
+
+  if (getPlayer(p) == NULL)
     {
       LOG2("Player `%1' does not exist.", p);
       return BAD_PLAYER;
     }
-	
-  if (getPlayer(p)->getStatus() != STA_STANDING) 
+
+  if (getPlayer(p)->getStatus() != STA_STANDING)
     {
       LOG2("Player `%1' can't carry the ball.", p);
       return INVALID_ACTION;
@@ -132,7 +132,7 @@ inline int Api::doReroll(bool reroll)
       LOG2("Cannot do reroll nor accept (no dice to reroll).");
       return INVALID_ACTION;
     }
-		
+
   MsgReroll msg(rules_->our_team_->getTeamId());
   msg.reroll = reroll;
   rules_->sendPacket(msg);

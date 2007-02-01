@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -36,7 +36,6 @@ public:
   Event() {}
   virtual ~Event() {}
 
-  virtual void evSync() {}
   virtual void evIllegal(int was_token);
   virtual void evInitGame() {}
   virtual void evNewTurn(int team_id, int cur_half, int cur_turn);

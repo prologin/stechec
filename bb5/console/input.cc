@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -207,20 +207,17 @@ void Input::cmdKickOff(const string& cmd, const string& args)
   Position pb;
   is >> pb.row;
   is >> pb.col;
-  if (!api_->doPlaceBall(pb))
-    sync_++;
+  api_->doPlaceBall(pb);
 }
 
 void Input::cmdReroll(const string&, const string&)
 {
-  if (!api_->doReroll(true))
-    sync_++;
+  api_->doReroll(true);
 }
 
 void Input::cmdAccept(const string&, const string&)
 {
-  if (!api_->doReroll(false))
-    sync_++;
+  api_->doReroll(false);
 }
 
 void Input::cmdMove(const string& cmd, const string& args)
@@ -249,8 +246,7 @@ void Input::cmdStandUp(const string& cmd, const string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  if (!api_->doStandUpPlayer())
-    sync_++;
+  api_->doStandUpPlayer();
 }
 
 void Input::cmdBlock(const string& cmd, const string& args)
@@ -273,20 +269,17 @@ void Input::cmdPass(const string& cmd, const string& args)
   is >> pos.row;
   is >> pos.col;
   api_->selectPlayer(p_id);
-  if (!api_->doPassPlayer(pos))
-    sync_++;
+  api_->doPassPlayer(pos);
 }
 
 void Input::cmdIllegal(const string&, const string&)
 {
   api_->doAskIllegalProcedure();
-  sync_++;
 }
 
 void Input::cmdEnd(const string&, const string&)
 {
   api_->doEndTurn();
-  sync_++;
 }
 
 void Input::cmdDice(const string& cmd, const string& args)
@@ -294,8 +287,7 @@ void Input::cmdDice(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int n = -1;
   is >> n;
-  if (!api_->doChooseBlockDice(n))
-    sync_++;
+  api_->doChooseBlockDice(n);
 }
 
 void Input::cmdGiveBall(const string& cmd, const string& args)
@@ -303,8 +295,7 @@ void Input::cmdGiveBall(const string& cmd, const string& args)
   istringstream is(cmd + " " + args);
   int p = -1;
   is >> p;
-  if (!api_->doGiveBall(p))
-    sync_++;
+  api_->doGiveBall(p);
 }
 
 void Input::cmdCheat(const string& cmd, const string& args)
@@ -315,7 +306,6 @@ void Input::cmdCheat(const string& cmd, const string& args)
   while (roll != -1)
     {
       api_->doCheatDice(roll);
-      sync_++;
       roll = -1;
       is >> roll;
     }
@@ -374,7 +364,6 @@ void Input::cmdPrintString(const std::string& args)
 void Input::cmdMoveTurnMarker(const std::string&)
 {
   api_->doMoveTurnMarker();
-  sync_++;
 }
 
 void Input::cmdMovePlayer(const std::string& args)
@@ -386,8 +375,7 @@ void Input::cmdMovePlayer(const std::string& args)
   is >> pos.row;
   is >> pos.col;
   api_->selectPlayer(p);
-  if (!api_->doMovePlayer(pos))
-    sync_++;
+  api_->doMovePlayer(pos);
 }
 
 //
@@ -402,20 +390,17 @@ void Input::cmdBlockBlock(const string& args)
   is >> p_id;
   is >> p_did;
   api_->selectPlayer(p_id);
-  if (!api_->doBlockPlayer(p_did))
-    sync_++;
+  api_->doBlockPlayer(p_did);
 }
 
 void Input::cmdBlockFollow(const std::string&)
 {
-  if (!api_->doFollow(true))
-    sync_++;
+  api_->doFollow(true);
 }
 
 void Input::cmdBlockStay(const std::string&)
 {
-  if (!api_->doFollow(false))
-    sync_++;
+  api_->doFollow(false);
 }
 
 void Input::cmdBlockPush(const string& args)
@@ -423,8 +408,7 @@ void Input::cmdBlockPush(const string& args)
   istringstream is(args);
   int n = -1;
   is >> n;
-  if (!api_->doBlockPush(n))
-    sync_++;
+  api_->doBlockPush(n);
 }
 
 
@@ -438,8 +422,7 @@ void Input::cmdDeclareMove(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  if (!api_->doDeclare(MOVE))
-    sync_++;
+  api_->doDeclare(MOVE);
 }
 
 void Input::cmdDeclareBlock(const std::string& args)
@@ -448,8 +431,7 @@ void Input::cmdDeclareBlock(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  if (!api_->doDeclare(BLOCK))
-    sync_++;
+  api_->doDeclare(BLOCK);
 }
 
 void Input::cmdDeclareBlitz(const std::string& args)
@@ -458,8 +440,7 @@ void Input::cmdDeclareBlitz(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  if (!api_->doDeclare(BLITZ))
-    sync_++;
+  api_->doDeclare(BLITZ);
 }
 
 void Input::cmdDeclarePass(const std::string& args)
@@ -468,8 +449,7 @@ void Input::cmdDeclarePass(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  if (!api_->doDeclare(PASS))
-    sync_++;
+  api_->doDeclare(PASS);
 }
 
 
@@ -482,7 +462,6 @@ Input::Input(CmdLineInterface* i, Api* gc, bool use_readline)
     i_(i),
     want_exit_(false),
     wait_(0),
-    sync_(0),
     use_readline_(use_readline),
     read_size_(0)
 {
@@ -523,14 +502,6 @@ void Input::stopWaiting()
   wait_--;
 }
 
-void Input::syncDone()
-{
-  // FIXME: in fact, counting it doesn't work.
-  if (--sync_ < 0)
-    sync_ = 0;
-}
-
-
 bool Input::process()
 {
   // #$^#$%^#$^ poll() on MacOsX (at least 10.4) doesn't accept STDIN_FILENO
@@ -540,7 +511,7 @@ bool Input::process()
   tval.tv_usec = 50 * 1000;
   fd_set fds;
   FD_ZERO(&fds);
-  if (wait_ <= 0 && sync_ == 0)
+  if (wait_ <= 0 && !api_->isBusy())
     FD_SET(STDIN_FILENO, &fds);
 
   int ret = 42;

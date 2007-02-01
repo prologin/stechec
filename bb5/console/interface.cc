@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -47,6 +47,7 @@ void CmdLineInterface::init()
   api_->setEventHandler(this);
 
   // Generic client may have already connected us.
+  // FIXME: actually, it _must_ have connected us. remove this code.
   if (!ccx_->isConnected())
     {
       if (!standalone_)
@@ -226,11 +227,6 @@ void CmdLineInterface::printPlayer(int player_id, int team_id)
 //
 // Events (virtual methods called from Event).
 //
-
-void CmdLineInterface::evSync()
-{
-  input_.syncDone();
-}
 
 void CmdLineInterface::evIllegal(int was_token)
 {

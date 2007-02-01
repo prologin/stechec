@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -61,7 +61,6 @@ public:
 private:
 
   // Methods to catch server response.
-  void msgSync(const MsgSync* m);
   void msgIllegal(const MsgIllegal* m);
   void msgInitGame(const MsgInitGame* m);
   void msgInitHalf(const MsgInitHalf* m);
