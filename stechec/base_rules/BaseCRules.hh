@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 **
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -32,6 +32,19 @@ public:
   //! @return -1 when server, otherwise [|0..nb_players-1|]
   int           getTeamId() const;
 
+  //! @brief Check if rules is processing an order, ie when an
+  //!   order has been issued to the server, and waiting that the
+  //!   server send it last answer. When sending a sequence of commands,
+  //!   it is generally advised to wait that a command is finished before
+  //!   sending another one. It is not mandatory.
+  //! @return true if rules
+  bool		isBusy() const;
+
+  //! @brief Send a packet to the other side.
+  //! @param p A packet to send.
+  //! @note Override method in BaseRule, to be able to increment busy_count_.
+  void          sendPacket(const Packet& p) const;
+  
   //! @brief Register the class that will handle events.
   //! @param evp Class that will receive event. Contest-specific.
   void          setEventHandler(Event* evp);
@@ -49,11 +62,17 @@ public:
   //! @brief Get the real API for the contest (client-side only).
   virtual Api*  getApi() = 0;
 
+protected:
+  void		incrementBusyCount();
+  void		decrementBusyCount();
+
 private:
+  void		msgCatchSync(const MsgSync* m);
   void          msgCatchUid(const ClientUid* m);
   void          msgCatchGameFinished(const GameFinished* m);
   int           team_id_;
   EventProcess  evp_;
+  mutable int	busy_count_;
 };
 
 # include "BaseCRules.hxx"

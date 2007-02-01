@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -17,6 +17,18 @@
 inline int      BaseCRules::getTeamId() const
 {
   return team_id_;
+}
+
+inline bool	BaseCRules::isBusy() const
+{
+  return busy_count_ > 0;
+}
+
+inline void	BaseCRules::sendPacket(const Packet& p) const
+{
+  assert(packet_sender_ != NULL);
+  packet_sender_->sendPacket(p);
+  busy_count_++;
 }
 
 inline void     BaseCRules::setEventHandler(Event* evp)

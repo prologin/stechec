@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -36,6 +36,12 @@ bool EventProcess::hasEventHandler() const
 // create symbols for some message that should exists in order
 // to link the binary with all symbols, but not used
 // by the UI.
+template <>
+void EventProcess::dispatch(const MsgSync&) const
+{
+  assert(false);
+}
+
 template <>
 void EventProcess::dispatch(const ClientUid&) const
 {

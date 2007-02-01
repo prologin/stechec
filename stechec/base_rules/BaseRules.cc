@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -70,17 +70,14 @@ void    BaseRules::handlePacket(const Packet* p)
       for (it = pkt_hdl_[p->token].begin(); it != pkt_hdl_[p->token].end(); ++it)
         if (it->first & state_)
           {
-            if (it->second->handle(p) && sync_)
-	      sendPacket(MsgSync());
-            handled = true;
+            it->second->handle(p);
+	    handled = true;
           }
       if (!handled)
-	{
-	  WARN("handlePacket: msg '%1` doesn't have handler for state %2", pkt_hdl_[p->token].begin()->second->getCstStr(), state_);
-	  if (sync_)
-	    sendPacket(MsgSync());
-	}
+	WARN("handlePacket: msg '%1` doesn't have handler for state %2", pkt_hdl_[p->token].begin()->second->getCstStr(), state_);
     }
+  if (sync_)
+    sendPacket(MsgSync());
 }
 
 int        BaseRules::getState() const

@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -50,6 +50,12 @@ public:
   //!  that are playing.
   int           getTeamNumber() const;
 
+  //! @brief Check if the rules is processing some command, or if it
+  //!  safe to send the next one in a sequence.
+  //! @see BaseCRules::isBusy()
+  //! @return true if rules is processing a message.
+  bool		isBusy() const;
+  
 protected:
   T*            rules_; ///< Contest CRules.
 };
@@ -100,6 +106,12 @@ template <typename T>
 inline int BaseApi<T>::getTeamNumber() const
 {
   return rules_->getTeamNumber();
+}
+
+template <typename T>
+inline bool BaseApi<T>::isBusy() const
+{
+  return rules_->isBusy();
 }
 
 #endif /* !BASEAPI_HH_ */
