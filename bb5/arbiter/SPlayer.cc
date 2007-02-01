@@ -26,11 +26,11 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t)
     d_(r->getDice()),
     target_(NULL)
 {
-  r_->HANDLE_F_WITH(ACT_DECLARE, SPlayer, this, msgDeclare, filterDeclare, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(ACT_MOVE, SPlayer, this, msgMove, filterMove, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(ACT_STANDUP, SPlayer, this, msgStandUp, filterStandUp, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(ACT_BLOCK, SPlayer, this, msgBlock, filterBlock, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(ACT_PASS, SPlayer, this, msgPass, filterPass, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_DECLARE, SPlayer, this, msgDeclare, filterDeclare, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_MOVE, SPlayer, this, msgMove, filterMove, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_STANDUP, SPlayer, this, msgStandUp, filterStandUp, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_BLOCK, SPlayer, this, msgBlock, filterBlock, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_PASS, SPlayer, this, msgPass, filterPass, GS_COACHBOTH);
 }
 
 /*
@@ -101,17 +101,17 @@ bool SPlayer::tryAction(int modifier)
 ** Move action
 */
 
-int SPlayer::doMove(const ActMove* m)
+int SPlayer::doMove(const MsgMove* m)
 {
   // Check the player has enough ma remaining
   if (ma_remain_ < m->nb_move)
     {
       LOG4("Move: not enough movement remaining");
-      r_->sendIllegal(ACT_MOVE, m->client_id);
+      r_->sendIllegal(MSG_MOVE, m->client_id);
       return 0;
     }
     
-  ActMove res_move(team_id_);
+  MsgMove res_move(team_id_);
   SBall* b = r_->getBall();  
   int illegal = 0;
   bool knocked = false;
@@ -205,7 +205,7 @@ int SPlayer::doMove(const ActMove* m)
   if (res_move.nb_move > 0)
     r_->sendPacket(res_move);
   if (illegal)
-    r_->sendIllegal(ACT_MOVE, m->client_id);
+    r_->sendIllegal(MSG_MOVE, m->client_id);
   if (b->getPosition() != pos_ball)
     {
       MsgBallPos mesg;
@@ -231,7 +231,7 @@ int SPlayer::doMove(const ActMove* m)
 ** Stand up action
 */
 
-void SPlayer::doStandUp(const ActStandUp*)
+void SPlayer::doStandUp(const MsgStandUp*)
 {
   if (ma_ < 3)
     {
@@ -254,7 +254,7 @@ void SPlayer::doStandUp(const ActStandUp*)
 ** Block action
 */
 
-int SPlayer::doBlock(const ActBlock* m)
+int SPlayer::doBlock(const MsgBlock* m)
 {
   int other_team_id = m->client_id == 0 ? 1 : 0;
   target_ = r_->getTeam(other_team_id)->getPlayer(m->opponent_id);
@@ -420,7 +420,7 @@ void SPlayer::blockPushChoice(SPlayer* target)
   LOG3("attacker: %1  defender: ", pos_, target->pos_);
   LOG3("c1: %1 c2: %2 c3: %3", choice[0], choice[1], choice[2]);
 
-  ActBlockPush pkt(r_->getCurrentTeamId());
+  MsgBlockPush pkt(r_->getCurrentTeamId());
   pkt.target_row = dt.row;
   pkt.target_col = dt.col;
   pkt.nb_choice = 0;
@@ -531,7 +531,7 @@ void SPlayer::follow(bool follow)
 ** Pass action.
 */
 
-int SPlayer::doPass(const ActPass* m)
+int SPlayer::doPass(const MsgPass* m)
 {
   SBall* b = r_->getBall();
 
@@ -539,7 +539,7 @@ int SPlayer::doPass(const ActPass* m)
   if (b->getOwner() != this)
     {
       LOG2("You must own the ball");
-      r_->sendIllegal(ACT_PASS, m->client_id);
+      r_->sendIllegal(MSG_PASS, m->client_id);
       return 0;
     }
 	
@@ -560,7 +560,7 @@ int SPlayer::doPass(const ActPass* m)
   else
     {
       LOG2("Too far");
-      r_->sendIllegal(ACT_PASS, m->client_id);
+      r_->sendIllegal(MSG_PASS, m->client_id);
       return 0;
     }
 
@@ -687,7 +687,7 @@ int SPlayer::finishMove(bool reroll)
     }
 
   // Ok... Move on.
-  ActMove res_move(team_id_);
+  MsgMove res_move(team_id_);
   res_move.player_id = id_;
   res_move.nb_move = 1;
   res_move.moves[0].row = aim_.row;
@@ -991,7 +991,7 @@ enum eStatus SPlayer::rollCasualty()
 ** Messages, filters
 */
 
-void SPlayer::msgDeclare(const ActDeclare* m)
+void SPlayer::msgDeclare(const MsgDeclare* m)
 {
   if (!t_->canDeclareAction(m))
     return;
@@ -999,7 +999,7 @@ void SPlayer::msgDeclare(const ActDeclare* m)
   r_->sendPacket(*m);
 }
 
-void SPlayer::msgMove(const ActMove* m)
+void SPlayer::msgMove(const MsgMove* m)
 {
   if (!t_->canDoAction(m, this))
     return;
@@ -1007,14 +1007,14 @@ void SPlayer::msgMove(const ActMove* m)
     r_->turnOver();
 }
 
-void SPlayer::msgStandUp(const ActStandUp* m)
+void SPlayer::msgStandUp(const MsgStandUp* m)
 {
   if (!t_->canDoAction(m, this))
     return;
   doStandUp(m);
 }
 
-void SPlayer::msgBlock(const ActBlock* m)
+void SPlayer::msgBlock(const MsgBlock* m)
 {
   if (!t_->canDoAction(m, this))
     return;
@@ -1022,7 +1022,7 @@ void SPlayer::msgBlock(const ActBlock* m)
     r_->turnOver();
 }
 
-void SPlayer::msgPass(const ActPass* m)
+void SPlayer::msgPass(const MsgPass* m)
 {
   if (!t_->canDoAction(m, this))
     return;
@@ -1031,35 +1031,35 @@ void SPlayer::msgPass(const ActPass* m)
 }
 
 
-bool SPlayer::filterDeclare(const ActDeclare* m)
+bool SPlayer::filterDeclare(const MsgDeclare* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;
   return true;
 }
 
-bool SPlayer::filterMove(const ActMove* m)
+bool SPlayer::filterMove(const MsgMove* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;
   return true;
 }
 
-bool SPlayer::filterStandUp(const ActStandUp* m)
+bool SPlayer::filterStandUp(const MsgStandUp* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;
   return true;
 }
 
-bool SPlayer::filterBlock(const ActBlock* m)
+bool SPlayer::filterBlock(const MsgBlock* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;
   return true;
 }
 
-bool SPlayer::filterPass(const ActPass* m)
+bool SPlayer::filterPass(const MsgPass* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;

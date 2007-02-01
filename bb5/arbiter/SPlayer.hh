@@ -67,30 +67,30 @@ public:
 
 private:
 
-  void msgDeclare(const ActDeclare* m);
-  void msgMove(const ActMove* m);
-  void msgStandUp(const ActStandUp* m);
-  void msgBlock(const ActBlock* m);
-  void msgPass(const ActPass* m);
-  bool filterDeclare(const ActDeclare* m);
-  bool filterMove(const ActMove* m);
-  bool filterStandUp(const ActStandUp* m);
-  bool filterBlock(const ActBlock* m);
-  bool filterPass(const ActPass* m);
+  void msgDeclare(const MsgDeclare* m);
+  void msgMove(const MsgMove* m);
+  void msgStandUp(const MsgStandUp* m);
+  void msgBlock(const MsgBlock* m);
+  void msgPass(const MsgPass* m);
+  bool filterDeclare(const MsgDeclare* m);
+  bool filterMove(const MsgMove* m);
+  bool filterStandUp(const MsgStandUp* m);
+  bool filterBlock(const MsgBlock* m);
+  bool filterPass(const MsgPass* m);
   
   void sendRoll(int result, int modifier, int required);
 	
   //! @brief Move this player.
   //! @return non-zero if action failed.
-  int doMove(const ActMove* m);
+  int doMove(const MsgMove* m);
   //! @brief Stand up this player.
-  void doStandUp(const ActStandUp* m);
+  void doStandUp(const MsgStandUp* m);
   //! @brief Block a player.
   //! @return non-zero if action failed.
-  int doBlock(const ActBlock* m);
+  int doBlock(const MsgBlock* m);
   //! @brief Do a pass.
   //! @return non-zero if action failed.
-  int doPass(const ActPass* m);
+  int doPass(const MsgPass* m);
 
   void resolveBlock(int choosen_dice, SPlayer* target);
 

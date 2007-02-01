@@ -36,12 +36,12 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_TIMEEXCEEDED, CRules, this, msgTimeExceeded, GS_ALL);
   HANDLE_WITH(MSG_ILLEGAL, CRules, this, msgIllegal, GS_ALL);
   HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, GS_ALL);
-  HANDLE_WITH(ACT_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, GS_ALL);
+  HANDLE_WITH(MSG_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, GS_ALL);
   HANDLE_WITH(CUSTOM_EVENT, CRules, this, msgCustomEvent, GS_ALL);
   HANDLE_WITH(MSG_RESULT, CRules, this, msgResult, GS_ALL);
   HANDLE_WITH(MSG_BLOCKRESULT, CRules, this, msgBlockResult, GS_COACHBOTH | GS_REROLL | GS_BLOCK);
   HANDLE_WITH(MSG_BLOCKDICE, CRules, this, msgBlockDice, GS_BLOCK);
-  HANDLE_WITH(ACT_BLOCKPUSH, CRules, this, actBlockPush, GS_PUSH | GS_COACHBOTH | GS_BLOCK);
+  HANDLE_WITH(MSG_BLOCKPUSH, CRules, this, msgBlockPush, GS_PUSH | GS_COACHBOTH | GS_BLOCK);
   HANDLE_WITH(MSG_FOLLOW, CRules, this, msgFollow, GS_PUSH | GS_COACHBOTH | GS_BLOCK | GS_FOLLOW);
   
   api_ = new Api(this);
@@ -194,7 +194,7 @@ void        CRules::msgChatMessage(const MsgChat* m)
   onEvent(m);
 }
 
-void        CRules::msgMoveTurnMarker(const ActMoveTurnMarker* m)
+void        CRules::msgMoveTurnMarker(const MsgMoveTurnMarker* m)
 {
   onEvent(m);
 }
@@ -238,7 +238,7 @@ void CRules::msgBlockDice(const MsgBlockDice* m)
   setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
 }
 
-void CRules::actBlockPush(const ActBlockPush* m)
+void CRules::msgBlockPush(const MsgBlockPush* m)
 {
   if (getState() == GS_PUSH)
     {

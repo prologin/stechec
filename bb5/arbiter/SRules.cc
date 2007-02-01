@@ -37,8 +37,8 @@ SRules::SRules()
   HANDLE_WITH(MSG_INITKICKOFF, SRules, this, msgInitKickoff, GS_INITKICKOFF);
   HANDLE_WITH(MSG_ENDTURN, SRules, this, msgPlayTurn, GS_COACHBOTH);
   HANDLE_WITH(MSG_CHAT, SRules, this, msgForwardChat, GS_ALL);
-  HANDLE_WITH(ACT_MOVETURNMARKER, SRules, this, msgMoveTurnMarker, GS_COACHBOTH);
-  HANDLE_WITH(ACT_ILLEGALPROC, SRules, this, msgIllegalProcedure, GS_COACHBOTH);
+  HANDLE_WITH(MSG_MOVETURNMARKER, SRules, this, msgMoveTurnMarker, GS_COACHBOTH);
+  HANDLE_WITH(MSG_ILLEGALPROC, SRules, this, msgIllegalProcedure, GS_COACHBOTH);
 
   // Try to cope with synchronization problems (especially when clients
   // run in batch mode)
@@ -346,13 +346,13 @@ void SRules::msgForwardChat(const MsgChat* m)
   sendPacket(*m);
 }
 
-void SRules::msgMoveTurnMarker(const ActMoveTurnMarker* m)
+void SRules::msgMoveTurnMarker(const MsgMoveTurnMarker* m)
 {
   // If its not its turn, warn.
   if (getState() == GS_COACH1 && m->client_id == 1
       || getState() == GS_COACH2 && m->client_id == 0)
     {
-      sendIllegal(ACT_MOVETURNMARKER, m->client_id);
+      sendIllegal(MSG_MOVETURNMARKER, m->client_id);
       return;
     }
 
@@ -361,7 +361,7 @@ void SRules::msgMoveTurnMarker(const ActMoveTurnMarker* m)
   sendPacket(*m);
 }
 
-void SRules::msgIllegalProcedure(const ActIllegalProc*)
+void SRules::msgIllegalProcedure(const MsgIllegalProc*)
 {
   // FIXME: todo
 }

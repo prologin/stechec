@@ -58,12 +58,12 @@ inline void Api::doEndTurn()
 
 inline void Api::doMoveTurnMarker()
 {
-  rules_->sendPacket(ActMoveTurnMarker());
+  rules_->sendPacket(MsgMoveTurnMarker());
 }
 
 inline void Api::doAskIllegalProcedure()
 {
-  rules_->sendPacket(ActIllegalProc());
+  rules_->sendPacket(MsgIllegalProc());
 }
 
 inline int Api::doPlaceBall(const Point& pos)
@@ -172,7 +172,7 @@ inline int Api::doBlockPush(int n)
       LOG2("You do not have the choice...");
       return INVALID_ACTION;
     }
-  ActBlockPush msg(rules_->our_team_->getTeamId());
+  MsgBlockPush msg(rules_->our_team_->getTeamId());
   msg.square_chosen = n;
   rules_->sendPacket(msg);
   return SUCCESS;

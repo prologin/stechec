@@ -55,7 +55,7 @@ void EventProcess::dispatch(const MsgInitKickoff& m) const
 }
 
 template <>
-void EventProcess::dispatch(const ActMoveTurnMarker&) const
+void EventProcess::dispatch(const MsgMoveTurnMarker&) const
 {
   ev_->evMoveTurnMarker();
 }
@@ -91,7 +91,7 @@ void EventProcess::dispatch(const MsgPlayerPos& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const ActMove& pkt) const
+void EventProcess::dispatch(const MsgMove& pkt) const
 {
   // FIXME: may send all movements to UI, to have a nice animation.
   Point pos;
@@ -155,7 +155,7 @@ void EventProcess::dispatch(const MsgFollow&) const
 }
 
 template <>
-void EventProcess::dispatch(const ActBlockPush& pkt) const
+void EventProcess::dispatch(const MsgBlockPush& pkt) const
 {
   Position pos(pkt.target_row, pkt.target_col);
   Position choices[3];
@@ -167,7 +167,7 @@ void EventProcess::dispatch(const ActBlockPush& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const ActDeclare& pkt) const
+void EventProcess::dispatch(const MsgDeclare& pkt) const
 {
   ev_->evDeclare(pkt.client_id, pkt.player_id, (enum eAction) pkt.action);
 }

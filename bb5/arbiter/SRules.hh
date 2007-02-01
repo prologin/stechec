@@ -89,8 +89,8 @@ private:
   void msgInitKickoff(const MsgInitKickoff* m);
   void msgPlayTurn(const MsgEndTurn* m);
   void msgForwardChat(const MsgChat* m);
-  void msgMoveTurnMarker(const ActMoveTurnMarker* m);
-  void msgIllegalProcedure(const ActIllegalProc* m);
+  void msgMoveTurnMarker(const MsgMoveTurnMarker* m);
+  void msgIllegalProcedure(const MsgIllegalProc* m);
 
   Timer     timer_;
 

@@ -37,7 +37,7 @@ public:
 
   int state_;	///< Team state on client side.
 
-  bool canDeclareAction(const ActDeclare* pkt);
+  bool canDeclareAction(const MsgDeclare* pkt);
 
   //! @brief Check if this player can do this action
   bool canDoAction(const Packet* pkt, SPlayer* p);
@@ -55,14 +55,14 @@ private:
   void msgReroll(const MsgReroll* m);
   void msgBlockDice(const MsgBlockDice* m);
   void msgFollow(const MsgFollow* m);
-  void msgBlockPush(const ActBlockPush* m);
+  void msgBlockPush(const MsgBlockPush* m);
   bool filterTeamInfo(const MsgTeamInfo* m);
   bool filterPlayerCreate(const MsgPlayerCreate* m);
   bool filterPlayerPos(const MsgPlayerPos* m);
   bool filterReroll(const MsgReroll* m);
   bool filterBlockDice(const MsgBlockDice* m);
   bool filterFollow(const MsgFollow* m);
-  bool filterBlockPush(const ActBlockPush* m);
+  bool filterBlockPush(const MsgBlockPush* m);
 
   SRules* r_;
   SPlayer* concerned_player_; // When we are waiting for a reroll decision

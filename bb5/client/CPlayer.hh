@@ -62,17 +62,17 @@ private:
   CRules* r_;
 
   // Message from server.
-  void msgDeclareAction(const ActDeclare* m);
+  void msgDeclareAction(const MsgDeclare* m);
   void msgPlayerPos(const MsgPlayerPos* m);
-  void msgPlayerMove(const ActMove* m);
+  void msgPlayerMove(const MsgMove* m);
   void msgPlayerKnocked(const MsgPlayerKnocked* m);
   void msgPlayerStatus(const MsgPlayerStatus* m);
   void msgPlayerKO(const MsgPlayerKO* m);
 
   // Filter messages. Say yes if this message is for this player.
-  bool filterDeclareAction(const ActDeclare* m);
+  bool filterDeclareAction(const MsgDeclare* m);
   bool filterPlayerPos(const MsgPlayerPos* m);
-  bool filterPlayerMove(const ActMove* m);
+  bool filterPlayerMove(const MsgMove* m);
   bool filterPlayerKnocked(const MsgPlayerKnocked* m);
   bool filterPlayerStatus(const MsgPlayerStatus* m);
   bool filterPlayerKO(const MsgPlayerKO* m);

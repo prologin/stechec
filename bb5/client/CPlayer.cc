@@ -25,9 +25,9 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   player_position_ = m->player_position;
   player_picture_ = packetToString(m->player_img);
 
-  r_->HANDLE_F_WITH(ACT_DECLARE, CPlayer, this, msgDeclareAction, filterDeclareAction, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_DECLARE, CPlayer, this, msgDeclareAction, filterDeclareAction, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_ALL | GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
-  r_->HANDLE_F_WITH(ACT_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
+  r_->HANDLE_F_WITH(MSG_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
   r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_ALL);
   r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_INITKICKOFF);
@@ -66,7 +66,7 @@ int CPlayer::declareAction(enum eAction action)
       return INVALID_ACTION;
     }
   
-  ActDeclare pkt;
+  MsgDeclare pkt;
   pkt.player_id = id_;
   pkt.action = action;
   r_->sendPacket(pkt);
@@ -108,7 +108,7 @@ int CPlayer::move(const Position& to)
       return INVALID_ACTION;
     }
 
-  ActMove pkt;
+  MsgMove pkt;
   const PosList& p = f->getPath(pos_, to, this);
   if (p.empty())
     {
@@ -149,7 +149,7 @@ int CPlayer::standUp()
       return INVALID_ACTION;
     }
 		
-  ActStandUp pkt;
+  MsgStandUp pkt;
   pkt.player_id = id_;
   r_->sendPacket(pkt);
   return SUCCESS;
@@ -184,7 +184,7 @@ int CPlayer::block(CPlayer* opponent)
       return INVALID_ACTION;
     }
       
-  ActBlock pkt;
+  MsgBlock pkt;
   pkt.player_id = id_;
   pkt.opponent_id = opponent->getId();
   r_->sendPacket(pkt);
@@ -209,7 +209,7 @@ int CPlayer::pass(const Position& to)
       return INVALID_ACTION;
     }
 	
-  ActPass pkt;
+  MsgPass pkt;
   pkt.player_id = id_;
   pkt.dest_row = to.row;
   pkt.dest_col = to.col;
@@ -233,7 +233,7 @@ const std::string& CPlayer::getPlayerPicture() const
 ** Messages.
 */
 
-void CPlayer::msgDeclareAction(const ActDeclare* m)
+void CPlayer::msgDeclareAction(const MsgDeclare* m)
 {
   // End of action
   if (m->action == NONE)
@@ -257,7 +257,7 @@ void CPlayer::msgPlayerPos(const MsgPlayerPos* m)
   r_->onEvent(m);
 }
 
-void CPlayer::msgPlayerMove(const ActMove* m)
+void CPlayer::msgPlayerMove(const MsgMove* m)
 {
   // FIXME: should consider all steps, to have a smothing graphical effect.
   Position pos;
@@ -313,7 +313,7 @@ void CPlayer::msgPlayerKO(const MsgPlayerKO* m)
 ** Message filters.
 */
 
-bool CPlayer::filterDeclareAction(const ActDeclare* m)
+bool CPlayer::filterDeclareAction(const MsgDeclare* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;
@@ -327,7 +327,7 @@ bool CPlayer::filterPlayerPos(const MsgPlayerPos* m)
   return true;
 }
 
-bool CPlayer::filterPlayerMove(const ActMove* m)
+bool CPlayer::filterPlayerMove(const MsgMove* m)
 {
   if (m->client_id != team_id_ || m->player_id != id_)
     return false;

@@ -70,14 +70,14 @@ private:
   void msgEndGame(const MsgEndGame* m);
   void msgTimeExceeded(const MsgTimeExceeded* m);
   void msgChatMessage(const MsgChat* m);
-  void msgMoveTurnMarker(const ActMoveTurnMarker* m);
+  void msgMoveTurnMarker(const MsgMoveTurnMarker* m);
   void msgCustomEvent(const CustomEvent* m);
   void msgResult(const MsgResult* m);
   void msgBlockResult(const MsgBlockResult* m);
   void msgBlockDice(const MsgBlockDice* m);
   void msgFollow(const MsgFollow* m);
 	
-  void actBlockPush(const ActBlockPush* m);
+  void msgBlockPush(const MsgBlockPush* m);
 
   const xml::XMLConfig& cfg_;
   Api*                  api_;

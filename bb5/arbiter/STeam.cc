@@ -29,7 +29,7 @@ STeam::STeam(int team_id, SRules* r)
   r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_BLOCKDICE, STeam, this, msgBlockDice, filterBlockDice, GS_COACHBOTH);
   r_->HANDLE_F_WITH(MSG_FOLLOW, STeam, this, msgFollow, filterFollow, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(ACT_BLOCKPUSH, STeam, this, msgBlockPush, filterBlockPush, GS_COACHBOTH);
+  r_->HANDLE_F_WITH(MSG_BLOCKPUSH, STeam, this, msgBlockPush, filterBlockPush, GS_COACHBOTH);
 }
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -179,14 +179,14 @@ bool STeam::filterFollow(const MsgFollow* m)
   return true;
 }
 
-void STeam::msgBlockPush(const ActBlockPush* m)
+void STeam::msgBlockPush(const MsgBlockPush* m)
 {
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
   concerned_player_->blockPush(m->square_chosen);
 }
 
-bool STeam::filterBlockPush(const ActBlockPush* m)
+bool STeam::filterBlockPush(const MsgBlockPush* m)
 {
   if (m->client_id != team_id_)
     return false;
@@ -224,7 +224,7 @@ void STeam::setConcernedPlayer(SPlayer* p)
   concerned_player_ = p;
 }
 
-bool STeam::canDeclareAction(const ActDeclare* pkt)
+bool STeam::canDeclareAction(const MsgDeclare* pkt)
 {
   SPlayer* p = player_[pkt->player_id];
 	
@@ -250,7 +250,7 @@ bool STeam::canDeclareAction(const ActDeclare* pkt)
   if (curr_acting_player_ != -1)
     {
       player_[curr_acting_player_]->setHasPlayed();
-      ActDeclare m(pkt->client_id);
+      MsgDeclare m(pkt->client_id);
       m.player_id = curr_acting_player_;
       m.action = NONE;
       r_->sendPacket(m);
@@ -323,13 +323,13 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
     }
 
   // If he is stunned or out of the field, he can't do it
-  if (pkt->token == ACT_STANDUP && p->getStatus() != STA_PRONE)
+  if (pkt->token == MSG_STANDUP && p->getStatus() != STA_PRONE)
     {
       LOG4("Cannot do action: player must be prone to stand up");
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }
-  if (pkt->token != ACT_STANDUP && p->getStatus() != STA_STANDING)
+  if (pkt->token != MSG_STANDUP && p->getStatus() != STA_STANDING)
     {
       LOG4("Cannot do action: player must stand up");
       r_->sendIllegal(pkt->token, pkt->client_id);
@@ -338,11 +338,11 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
 
   // Check the action declared is fit to the action
   if ((p->getAction() == MOVE && 
-        (pkt->token == ACT_PASS ||pkt->token == ACT_BLOCK))
+        (pkt->token == MSG_PASS ||pkt->token == MSG_BLOCK))
 	||(p->getAction() == BLOCK &&
-	    (pkt->token == ACT_PASS ||pkt->token == ACT_MOVE))
-	||(p->getAction() == BLITZ &&  pkt->token == ACT_PASS)
-	||(p->getAction() == PASS  &&  pkt->token == ACT_BLOCK))
+	    (pkt->token == MSG_PASS ||pkt->token == MSG_MOVE))
+	||(p->getAction() == BLITZ &&  pkt->token == MSG_PASS)
+	||(p->getAction() == PASS  &&  pkt->token == MSG_BLOCK))
     {
       LOG4("Cannot do action: declare action does not fit");
       r_->sendIllegal(pkt->token, pkt->client_id);
@@ -350,7 +350,7 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
     }
     
   // Cannot try to stand up more than once
-  if (pkt->token == ACT_STANDUP)
+  if (pkt->token == MSG_STANDUP)
 	{
 	  if (p->getMaRemain() != p->getMa())
 	    {

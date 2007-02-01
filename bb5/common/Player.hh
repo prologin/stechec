@@ -30,12 +30,12 @@
 const int MAX_MOVE = 16;
 const int MAX_SKILL = 16;
 
-DECLARE_PACKET(ACT_DECLARE, ActDeclare)
+DECLARE_PACKET(MSG_DECLARE, MsgDeclare)
   int player_id;
   int action;
 END_PACKET
 
-DECLARE_PACKET(ACT_MOVE, ActMove)
+DECLARE_PACKET(MSG_MOVE, MsgMove)
   int player_id;
   int nb_move;
   struct {
@@ -44,16 +44,16 @@ DECLARE_PACKET(ACT_MOVE, ActMove)
   } moves[MAX_MOVE];
 END_PACKET
 
-DECLARE_PACKET(ACT_STANDUP, ActStandUp)
+DECLARE_PACKET(MSG_STANDUP, MsgStandUp)
   int player_id;
 END_PACKET
 
-DECLARE_PACKET(ACT_BLOCK, ActBlock)
+DECLARE_PACKET(MSG_BLOCK, MsgBlock)
   int player_id;
   int opponent_id;
 END_PACKET
 
-DECLARE_PACKET(ACT_BLOCKPUSH, ActBlockPush)
+DECLARE_PACKET(MSG_BLOCKPUSH, MsgBlockPush)
   int target_row;
   int target_col;
   int nb_choice;
@@ -64,13 +64,13 @@ DECLARE_PACKET(ACT_BLOCKPUSH, ActBlockPush)
   int square_chosen;
 END_PACKET
 
-DECLARE_PACKET(ACT_MULTIBLOCK, Act_MultiBlock)
+DECLARE_PACKET(MSG_MULTIBLOCK, Act_MultiBlock)
   int player_id;
   int first_opponent_id;
   int second_opponent_id;
 END_PACKET
 
-DECLARE_PACKET(ACT_PASS, ActPass)
+DECLARE_PACKET(MSG_PASS, MsgPass)
   int player_id;
   int dest_row;
   int dest_col;
