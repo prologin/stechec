@@ -34,10 +34,12 @@ public:
   void bounce(int nb = 1);
   //! @brief Player try to catch the ball.
   bool catchBall(SPlayer *p, int modifier);
-  //! @brief Return the ball owner, NULL if nobody
+  //! @brief Return the ball owner, NULL if nobody.
   SPlayer* getOwner();
-  //! @brief remove ball from field (before a kickoff)
+  //! @brief Remove ball from field (before a kickoff).
   void removeFromField();
+  //! @brief Scatter ball in a random direction.
+  //! @param nb Number of squares covered.
   void scatter(int nb);
   void setThrown();
 
@@ -48,12 +50,12 @@ private:
   
 
   void afterBounce(const Position& delta, int amplitude);
-  //! @brief throwin in case the ball leave the field.
+  //! @brief Throwin in case the ball leave the field.
   void throwin();
 
   SRules* r_;
   SPlayer* owner_; ///< Ball owner, or NULL if nobody
-	bool thrown_;
+  bool thrown_;
 
 };
   
