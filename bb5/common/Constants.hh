@@ -127,12 +127,12 @@ enum eStatus {
 //! @brief Player actions.
 //! @note You can get a stringified version into the
 //!   class Player.
-enum eAction {
-  NONE = 0,
-  MOVE,
-  BLOCK,
-  BLITZ,
-  PASS
+enum eDeclaredAction {
+  DCL_NONE = 0,
+  DCL_MOVE,
+  DCL_BLOCK,
+  DCL_BLITZ,
+  DCL_PASS
 };
 
 //! @brief Type of dice Roll

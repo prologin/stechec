@@ -229,7 +229,7 @@ void Game::evPlayerKnocked(int, int player_id)
   LOG4("A player was knocked down.");
 
   std::ostringstream os;
-  os << "Player " << player_id << " has knocked down";
+  os << "Player " << (player_id + 1) << " has been knocked down";
   game_dlg_->push(eDlgActInfo);
   game_dlg_->setText(os.str());
 }

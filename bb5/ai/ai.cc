@@ -57,7 +57,7 @@ void AIApp::handleMyTurn()
 
   // Say we'll move, and move it one row down
   pos.row += 1;
-  api_->doDeclare(MOVE);
+  api_->doDeclare(DCL_MOVE);
 
   // XXX: big kludge. wait a little, then process some api messages to catch
   // the 'declaration is ok' answer from server. otherwise, rules at client side

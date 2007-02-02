@@ -169,7 +169,7 @@ void EventProcess::dispatch(const MsgBlockPush& pkt) const
 template <>
 void EventProcess::dispatch(const MsgDeclare& pkt) const
 {
-  ev_->evDeclare(pkt.client_id, pkt.player_id, (enum eAction) pkt.action);
+  ev_->evDeclare(pkt.client_id, pkt.player_id, (enum eDeclaredAction) pkt.action);
 }
 
 

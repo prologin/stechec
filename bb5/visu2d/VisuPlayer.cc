@@ -154,8 +154,13 @@ void VisuPlayer::selectAction(enum eAction item)
   //  - do this action immediately (try to stand up, in case we were prone)
   switch (item)
     {
+      case eActGetUp:
+  	if (!is_second_action_)
+  	  api_->doDeclare(DCL_MOVE);
+	target_action_ = eActGetUp;
+	break;
     case eActBlitz:
-      api_->doDeclare(BLITZ);
+      api_->doDeclare(DCL_BLITZ);
       api_->doStandUpPlayer();
       act_popup_->prepareActionMenu(eActBlitz);
       circle_selected_.setFrame(2);
@@ -166,7 +171,7 @@ void VisuPlayer::selectAction(enum eAction item)
     case eActPass:
       if (!is_second_action_)
 	{
-	  api_->doDeclare(PASS);
+	  api_->doDeclare(DCL_PASS);
 	  api_->doStandUpPlayer();
 	  act_popup_->prepareActionMenu(eActPass);
 	  circle_selected_.setFrame(2);
@@ -182,14 +187,14 @@ void VisuPlayer::selectAction(enum eAction item)
     case eActMove:
       if (!is_second_action_)
 	{
-	  api_->doDeclare(MOVE);
+	  api_->doDeclare(DCL_MOVE);
 	  api_->doStandUpPlayer();
 	}
       target_action_ = eActMove;
       break;
 
     case eActBlock:
-      api_->doDeclare(BLOCK);
+      api_->doDeclare(DCL_BLOCK);
       api_->doStandUpPlayer();
       target_action_ = eActBlock;
       break;
@@ -212,6 +217,10 @@ void VisuPlayer::targetAction(enum eAction item)
 
   switch (item)
     {
+      case eActGetUp:
+	LOG2("STANDUP - send to api.");
+	api_->doStandUpPlayer();
+	break;
     case eActMove:
       LOG2("MOVE to %1 - send to api.", to);
       api_->doMovePlayer(to);
@@ -259,10 +268,6 @@ void VisuPlayer::update()
       LOG4("Switch status for player %1 to %2.", p_->getId(), last_player_status_);
       switch (last_player_status_)
 	{
-	case STA_RESERVE:
-	  status_.setFrame(5);
-	  status_.show();
-	  break;
 	case STA_PRONE:
 	  status_.setFrame(1);
 	  status_.show();
@@ -275,7 +280,17 @@ void VisuPlayer::update()
 	  status_.setFrame(3);
 	  status_.show();
 	  break;
+	case STA_INJURED:
+	  status_.setFrame(4);
+	  status_.show();
+	  break;
+	case STA_SENTOFF:
+	  status_.setFrame(5);
+	  status_.show();
+	  break;
 	case STA_STANDING:
+	  //FIXME: check for ball.
+	case STA_RESERVE:
 	default:
 	  status_.hide();
 	  break;
@@ -342,7 +357,7 @@ void VisuPlayer::update()
     actionFinished();
   
   // Draw path
-  if (game_.isStateSet(stDoAction) && target_action_ == eActMove)
+  if (game_.isStateSet(stDoAction) && (target_action_ == eActMove || target_action_ == eActGetUp))
     drawPath();
   else
     path_.clear();

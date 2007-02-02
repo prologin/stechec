@@ -422,7 +422,7 @@ void Input::cmdDeclareMove(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  api_->doDeclare(MOVE);
+  api_->doDeclare(DCL_MOVE);
 }
 
 void Input::cmdDeclareBlock(const std::string& args)
@@ -431,7 +431,7 @@ void Input::cmdDeclareBlock(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  api_->doDeclare(BLOCK);
+  api_->doDeclare(DCL_BLOCK);
 }
 
 void Input::cmdDeclareBlitz(const std::string& args)
@@ -440,7 +440,7 @@ void Input::cmdDeclareBlitz(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  api_->doDeclare(BLITZ);
+  api_->doDeclare(DCL_BLITZ);
 }
 
 void Input::cmdDeclarePass(const std::string& args)
@@ -449,7 +449,7 @@ void Input::cmdDeclarePass(const std::string& args)
   int p = -1;
   is >> p;
   api_->selectPlayer(p);
-  api_->doDeclare(PASS);
+  api_->doDeclare(DCL_PASS);
 }
 
 

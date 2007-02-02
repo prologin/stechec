@@ -24,7 +24,7 @@ inline Player::Player(const MsgPlayerCreate* m)
     av_(m->av),
     ma_remain_(-1),
     has_played_(false),
-    action_(NONE),
+    action_(DCL_NONE),
     will_prone_(false)
 {
   name_ = packetToString(m->name);
@@ -103,12 +103,12 @@ inline void Player::setHasPlayed()
   has_played_ = true;
 }
 
-inline enum eAction Player::getAction() const
+inline enum eDeclaredAction Player::getAction() const
 {
   return action_;
 }
 
-inline void Player::setAction(enum eAction action)
+inline void Player::setAction(enum eDeclaredAction action)
 {
   action_ = action;
 }
@@ -125,7 +125,7 @@ inline const Player::SkillList& Player::getSkillList() const
 
 inline void Player::resetTurn()
 {
-  action_ = NONE;
+  action_ = DCL_NONE;
   has_played_ = false;
   ma_remain_ = ma_;
   will_prone_ = (status_ == STA_STUNNED);
@@ -157,19 +157,19 @@ inline const char* Player::stringify(enum eStatus status)
   return "kikoolol";
 }
 
-inline const char* Player::stringify(enum eAction action)
+inline const char* Player::stringify(enum eDeclaredAction action)
 {
   switch (action)
     {
-    case NONE:
+    case DCL_NONE:
       return "None";
-    case MOVE:
+    case DCL_MOVE:
       return "Move";
-    case BLOCK:
+    case DCL_BLOCK:
       return "Block";
-    case BLITZ:
+    case DCL_BLITZ:
       return "Blitz";
-    case PASS:
+    case DCL_PASS:
       return "Pass";
     }
   return "kikoolol";

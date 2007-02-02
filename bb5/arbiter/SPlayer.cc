@@ -268,7 +268,7 @@ int SPlayer::doBlock(const MsgBlock* m)
       return 0;
     }
 
-  if (getAction() == BLOCK)
+  if (getAction() == DCL_BLOCK)
     setHasPlayed();
   else
     ma_remain_ = ma_remain_ - 1;
@@ -995,7 +995,7 @@ void SPlayer::msgDeclare(const MsgDeclare* m)
 {
   if (!t_->canDeclareAction(m))
     return;
-  action_ = (enum eAction )m->action;
+  action_ = (enum eDeclaredAction )m->action;
   r_->sendPacket(*m);
 }
 

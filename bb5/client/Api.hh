@@ -188,7 +188,7 @@ public:
 
   //! @brief Declare an action for the selected player.
   //! @param action Action to declare.
-  int		doDeclare(enum eAction action);
+  int		doDeclare(enum eDeclaredAction action);
 
   //! @brief After a block action, choose which block dice to use.
   //! @note Wait for the right server reponse before calling it.
@@ -211,16 +211,16 @@ public:
   int		doStandUpPlayer();
 
   //! @brief Move the selected player.
-  //! @note Declare a MOVE or BLITZ action before.
+  //! @note Declare a DCL_MOVE or DCL_BLITZ action before.
   int		doMovePlayer(const Point& to);
 
   //! @brief Block with the selected player.
-  //! @note Declare a BLOCK or BLITZ action before.
+  //! @note Declare a DCL_BLOCK or DCL_BLITZ action before.
   //! @param def_p The defender id, on the other team.
   int		doBlockPlayer(int def_p);
 
   //! @brief Throw the ball to the specified position.
-  //! @note Declare a PASS action before.
+  //! @note Declare a DCL_PASS action before.
   //! @param to Where to throw the ball.
   int		doPassPlayer(const Point& to);
 

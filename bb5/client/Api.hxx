@@ -139,13 +139,13 @@ inline int Api::doReroll(bool reroll)
   return SUCCESS;
 }
 
-inline int Api::doDeclare(enum eAction action)
+inline int Api::doDeclare(enum eDeclaredAction action)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   CHECK_TEAM;
   CHECK_PLAYER;
 
-  if (action == NONE)
+  if (action == DCL_NONE)
     return INVALID_ACTION;
   return rules_->our_team_->declareAction(selected_player_, action);
 }

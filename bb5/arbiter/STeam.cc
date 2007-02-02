@@ -229,8 +229,8 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
   SPlayer* p = player_[pkt->player_id];
 	
   // Check the action exists.
-  if (pkt->action != MOVE && pkt->action != BLOCK 
-       && pkt->action != BLITZ && pkt->action != PASS)
+  if (pkt->action != DCL_MOVE && pkt->action != DCL_BLOCK 
+       && pkt->action != DCL_BLITZ && pkt->action != DCL_PASS)
     {
       LOG4("Must declare an existing action");
       r_->sendIllegal(pkt->token, pkt->client_id);
@@ -252,7 +252,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
       player_[curr_acting_player_]->setHasPlayed();
       MsgDeclare m(pkt->client_id);
       m.player_id = curr_acting_player_;
-      m.action = NONE;
+      m.action = DCL_NONE;
       r_->sendPacket(m);
       curr_acting_player_ = -1;
     }
@@ -266,7 +266,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
     }
 
   // Check if the player is not performing an other action.
-  if (p->getAction() != NONE)
+  if (p->getAction() != DCL_NONE)
     {
       LOG4("Cannot declare action: this player is performing an action");
       r_->sendIllegal(pkt->token, pkt->client_id);
@@ -278,7 +278,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
     return false;
 
   // Check if he can declare this action
-  if (pkt->action == BLITZ)
+  if (pkt->action == DCL_BLITZ)
 	{ 
 	  if (blitz_done_)
 	    {
@@ -288,7 +288,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
 	    }
 	  blitz_done_ = true;
 	}
-  if (pkt->action == PASS)
+  if (pkt->action == DCL_PASS)
 	{ 
 	  if (pass_done_)
 	    {
@@ -337,12 +337,12 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
     }
 
   // Check the action declared is fit to the action
-  if ((p->getAction() == MOVE && 
+  if ((p->getAction() == DCL_MOVE && 
         (pkt->token == MSG_PASS ||pkt->token == MSG_BLOCK))
-	||(p->getAction() == BLOCK &&
+	||(p->getAction() == DCL_BLOCK &&
 	    (pkt->token == MSG_PASS ||pkt->token == MSG_MOVE))
-	||(p->getAction() == BLITZ &&  pkt->token == MSG_PASS)
-	||(p->getAction() == PASS  &&  pkt->token == MSG_BLOCK))
+	||(p->getAction() == DCL_BLITZ &&  pkt->token == MSG_PASS)
+	||(p->getAction() == DCL_PASS  &&  pkt->token == MSG_BLOCK))
     {
       LOG4("Cannot do action: declare action does not fit");
       r_->sendIllegal(pkt->token, pkt->client_id);

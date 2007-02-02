@@ -31,7 +31,7 @@ public:
   virtual ~CPlayer();
 
   //! @brief Declare an action for the player.
-  int declareAction(enum eAction action);
+  int declareAction(enum eDeclaredAction action);
 
   //! @brief Move the player on the field.
   int move(const Position& to);

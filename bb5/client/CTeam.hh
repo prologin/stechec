@@ -47,7 +47,7 @@ public:
 
   //! @brief Declare an action for the player
   //!  Called from the UI.
-  int declareAction(CPlayer* p, enum eAction action);
+  int declareAction(CPlayer* p, enum eDeclaredAction action);
 
 
 private:

@@ -118,14 +118,14 @@ void CTeam::placeTeam(int formation_id)
       }
 }
 
-int CTeam::declareAction(CPlayer* p, enum eAction action)
+int CTeam::declareAction(CPlayer* p, enum eDeclaredAction action)
 {
-  if (blitz_done_ && action == BLITZ)
+  if (blitz_done_ && action == DCL_BLITZ)
     {
       LOG2("You have halready done a blitz action this turn.");
       return INVALID_ACTION;
     }
-  if (pass_done_ && action == PASS)
+  if (pass_done_ && action == DCL_PASS)
     {
       LOG2("You have halready done a pass action this turn.");
       return INVALID_ACTION;

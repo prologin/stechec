@@ -52,7 +52,7 @@ void CPlayer::subMa(int dep)
   ma_remain_ -= dep;
 }
 
-int CPlayer::declareAction(enum eAction action)
+int CPlayer::declareAction(enum eDeclaredAction action)
 {
   if (has_played_)
     {
@@ -60,7 +60,7 @@ int CPlayer::declareAction(enum eAction action)
       return INVALID_ACTION;
     }
     
-  if (action_ != NONE)
+  if (action_ != DCL_NONE)
     {
       LOG2("This player is performing an action.");
       return INVALID_ACTION;
@@ -97,12 +97,12 @@ int CPlayer::move(const Position& to)
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == NONE)
+  if (action_ == DCL_NONE)
     {
       LOG2("Player must declare an action before moving");
       return INVALID_ACTION;
     }
-  if (action_ == BLOCK)
+  if (action_ == DCL_BLOCK)
     {
       LOG2("Player can't move in a block action");
       return INVALID_ACTION;
@@ -138,12 +138,12 @@ int CPlayer::standUp()
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == NONE)
+  if (action_ == DCL_NONE)
     {
       LOG2("Player must declare an action before standing up");
       return INVALID_ACTION;
     }
-  if (action_ == BLOCK)
+  if (action_ == DCL_BLOCK)
     {
       LOG2("Player can't stand up in a block action");
       return INVALID_ACTION;
@@ -168,17 +168,17 @@ int CPlayer::block(CPlayer* opponent)
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == NONE)
+  if (action_ == DCL_NONE)
     {
       LOG2("Player must declare an action before blocking");
       return INVALID_ACTION;
     }
-  if (action_ == MOVE)
+  if (action_ == DCL_MOVE)
     {
       LOG2("Player can't block in a move action");
       return INVALID_ACTION;
     }
-  if (action_ == PASS)
+  if (action_ == DCL_PASS)
     {
       LOG2("Player can't block in a pass action");
       return INVALID_ACTION;
@@ -198,12 +198,12 @@ int CPlayer::pass(const Position& to)
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == NONE)
+  if (action_ == DCL_NONE)
     {
       LOG2("Player must declare an action before throwing");
       return INVALID_ACTION;
     }
-  if (action_ != PASS)
+  if (action_ != DCL_PASS)
     {
       LOG2("Player must declare a pass action to throw");
       return INVALID_ACTION;
@@ -236,7 +236,7 @@ const std::string& CPlayer::getPlayerPicture() const
 void CPlayer::msgDeclareAction(const MsgDeclare* m)
 {
   // End of action
-  if (m->action == NONE)
+  if (m->action == DCL_NONE)
     {
       has_played_ = true;
       r_->onEvent(m);
@@ -245,7 +245,7 @@ void CPlayer::msgDeclareAction(const MsgDeclare* m)
     }
   
   // Beginning of the action
-  action_ = (enum eAction)m->action;
+  action_ = (enum eDeclaredAction)m->action;
   r_->onEvent(m);
   LOG2("player %1 begins a %2 action", id_, stringify(action_));
 }
