@@ -146,13 +146,9 @@ private:
 
   int           state_;
   int           team_number_;
-  bool		sync_;
 
 protected:
 
-  //! @brief Activate/Disactivate synchronization packet.
-  void		setSync(bool enable);
-  
   PacketSender* packet_sender_;
   typedef std::vector<std::pair<int, BasePacketHandler*> > PktHList;
   PktHList      pkt_hdl_[MAX_TOKEN];

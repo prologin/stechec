@@ -19,7 +19,6 @@
 BaseRules::BaseRules()
   : state_(GS_WAIT),
     team_number_(0),
-    sync_(false),
     packet_sender_(NULL)
 {
 }
@@ -76,8 +75,6 @@ void    BaseRules::handlePacket(const Packet* p)
       if (!handled)
 	WARN("handlePacket: msg '%1` doesn't have handler for state %2", pkt_hdl_[p->token].begin()->second->getCstStr(), state_);
     }
-  if (sync_)
-    sendPacket(MsgSync());
 }
 
 int        BaseRules::getState() const
@@ -114,9 +111,4 @@ void        BaseRules::unserialize(std::istream& is)
 void        BaseRules::setSendPacketObject(PacketSender* ps)
 {
   packet_sender_ = ps;
-}
-
-void	    BaseRules::setSync(bool enable)
-{
-  sync_ = enable;
 }

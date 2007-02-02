@@ -102,7 +102,7 @@ void    ClientCx::setReady()
 {
   if (cx_ == NULL)
     {
-      WARN("You are not connected ! connect first.");
+      WARN("You are not connected! connect first.");
       return;
     }
   LOG5("Send `CX_READY' (from client_id: %1)", team_id_);

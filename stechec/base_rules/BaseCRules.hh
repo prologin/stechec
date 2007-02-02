@@ -62,10 +62,6 @@ public:
   //! @brief Get the real API for the contest (client-side only).
   virtual Api*  getApi() = 0;
 
-protected:
-  void		incrementBusyCount();
-  void		decrementBusyCount();
-
 private:
   void		msgCatchSync(const MsgSync* m);
   void          msgCatchUid(const ClientUid* m);

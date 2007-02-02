@@ -49,23 +49,13 @@ void    BaseCRules::onEvent(const Packet* pkt)
     pkt_hdl_[pkt->token].begin()->second->dispatchUIEvent(&evp_, *pkt);
 }
 
-void	BaseCRules::incrementBusyCount()
+void	BaseCRules::msgCatchSync(const MsgSync* m)
 {
-  busy_count_++;
-}
-
-void	BaseCRules::decrementBusyCount()
-{
-  if (--busy_count_)
+  if (m->client_id == team_id_ && --busy_count_ < 0)
     {
       WARN("busy count goes under 0");
       busy_count_ = 0;
     }
-}
-
-void	BaseCRules::msgCatchSync(const MsgSync* m)
-{
-  decrementBusyCount();
 }
 
 

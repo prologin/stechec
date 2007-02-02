@@ -39,10 +39,6 @@ SRules::SRules()
   HANDLE_WITH(MSG_CHAT, SRules, this, msgForwardChat, GS_ALL);
   HANDLE_WITH(MSG_MOVETURNMARKER, SRules, this, msgMoveTurnMarker, GS_COACHBOTH);
   HANDLE_WITH(MSG_ILLEGALPROC, SRules, this, msgIllegalProcedure, GS_COACHBOTH);
-
-  // Try to cope with synchronization problems (especially when clients
-  // run in batch mode)
-  setSync(true);
 }
 
 SRules::~SRules()

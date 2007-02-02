@@ -19,7 +19,8 @@
 
 # include "tools.hh"
 
-/*! @brief Must be derived by somebody already owning BaseRules,
+/*!
+** @brief Must be derived by somebody already owning BaseRules,
 **    in order to really send packet.
 **
 ** @author victor
