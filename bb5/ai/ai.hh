@@ -34,6 +34,8 @@ private:
   virtual void showVersion();
   virtual int onPlay(bool replay);
 
+  void waitUntilReady();
+  
   void handleKickOff();
   void handleMyTurn();
   

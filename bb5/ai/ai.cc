@@ -35,6 +35,21 @@ void AIApp::showVersion()
 	    << "Copyright (C) 2007 TBT Team.\n";
 }
 
+/* block until rules is ready to process another command */
+void AIApp::waitUntilReady()
+{
+  while (true)
+    {
+      while (ccx_.process())
+	;
+      if (!api_->isBusy())
+	return;
+
+      // Wait a little, do not eat 100% cpu.
+      usleep(25 * 1000);
+    }
+}
+
 void AIApp::handleKickOff()
 {
   // Try to place the ball somewhere.
@@ -55,19 +70,13 @@ void AIApp::handleMyTurn()
   Position pos = p->getPosition();
   LOG2("player 10 is at %1", pos);
 
-  // Say we'll move, and move it one row down
+  // Say we'll be moving player 10.
   pos.row += 1;
   api_->doDeclare(DCL_MOVE);
 
-  // XXX: big kludge. wait a little, then process some api messages to catch
-  // the 'declaration is ok' answer from server. otherwise, rules at client side
-  // won't let you move the player.
-  // we should have a better way to signal "this player can really move now".
-  usleep(25 * 1000);
-  while (ccx_.process())
-    ;
-  // XXX: end of kludge zone.
-
+  // Wait until rules process this command.
+  waitUntilReady();
+  
   // Really move it.
   api_->doMovePlayer(pos);
 
