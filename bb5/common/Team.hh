@@ -50,6 +50,11 @@ public:
   int getScore() const;
   int getReroll() const;
   int getRemainingReroll() const;
+
+  //! @brief Check if team has not used reroll during this turn,
+  //!  and if it has at least a remaining reroll.
+  //! @note It doesn't check if it is team's turn (which is also
+  //!  required to use reroll) !
   bool canUseReroll() const;
   void initReroll();
   void resetTurn();

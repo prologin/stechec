@@ -208,10 +208,11 @@ public:
   int           doFollow(bool follow);
 
   //! @brief Stand up the selected player.
+  //! @note Declare a DCL_MOVE or DCL_BLITZ or DCL_PASS action before.
   int		doStandUpPlayer();
 
   //! @brief Move the selected player.
-  //! @note Declare a DCL_MOVE or DCL_BLITZ action before.
+  //! @note Declare a DCL_MOVE or DCL_BLITZ or DCL_PASS action before.
   int		doMovePlayer(const Point& to);
 
   //! @brief Block with the selected player.

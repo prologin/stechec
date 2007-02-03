@@ -69,7 +69,7 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
     {
       rollInjury(0);
       if (status_ == STA_STUNNED)
-	setStatus(STA_RESERVE);
+        setStatus(STA_RESERVE);
     }
   else
     f_->setPlayer(pos, this);
@@ -87,7 +87,7 @@ bool SPlayer::tryAction(int modifier)
   if (dice_res != 6 && (dice_modif < required || dice_res == 1))
     {
       LOG6("[%1] Action _failed_, dice: %2, w/modifiers: %3, required: %4, ag: %5.", id_, dice_res, dice_modif,
-					required, ag_ );
+          required, ag_ );
       sendRoll(dice_res, modifier, required);
       return false;
     }
@@ -128,7 +128,7 @@ int SPlayer::doMove(const MsgMove* m)
       aim.col = m->moves[i].col;
       if (!pos_.isNear(aim))
         {
-	  LOG4("Move: not an adjacent case");
+          LOG4("Move: not an adjacent case");
           illegal = 1;
           break;
         }
@@ -138,8 +138,8 @@ int SPlayer::doMove(const MsgMove* m)
       int nb_tackles_aim = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), aim);
       if (nb_tackles_pos > 0)
         {
-	  action_attempted_ = R_DODGE;
-	  reroll_enabled_ = t_->canUseReroll();
+          action_attempted_ = R_DODGE;
+          reroll_enabled_ = t_->canUseReroll();
           if (tryAction(1 - nb_tackles_aim))
             {
               LOG5("Player has successfully dodged out from %1.", pos_);
@@ -147,20 +147,21 @@ int SPlayer::doMove(const MsgMove* m)
           else
             {
               LOG5("Player fails to dodge out from %1.", pos_);
-	      aim_ = aim;
-	      if (reroll_enabled_) {
-		if (res_move.nb_move > 0)
-		  r_->sendPacket(res_move);
-		return 0;
-	      }
+              aim_ = aim;
+              if (reroll_enabled_)
+                {
+                  if (res_move.nb_move > 0)
+                    r_->sendPacket(res_move);
+                  return 0;
+                }
 
               knocked = true;
-	      checkArmor(0, 0);
-	      if (status_ == STA_STANDING)
-		setStatus(STA_PRONE);
-	      MsgPlayerKnocked pkt(m->client_id);
-	      pkt.player_id = id_;
-	      r_->sendPacket(pkt);
+              checkArmor(0, 0);
+              if (status_ == STA_STANDING)
+                setStatus(STA_PRONE);
+              MsgPlayerKnocked pkt(m->client_id);
+              pkt.player_id = id_;
+              r_->sendPacket(pkt);
             }
         }
 
@@ -176,19 +177,19 @@ int SPlayer::doMove(const MsgMove* m)
         if (knocked)
           {
             picking_failed = true;
-	    b->bounce();
+            b->bounce();
           }
         else
           {
-	    action_attempted_ = R_PICKUP;
-	    reroll_enabled_ = t_->canUseReroll();
+            action_attempted_ = R_PICKUP;
+            reroll_enabled_ = t_->canUseReroll();
             picking_failed = !b->catchBall(this, 1);
-	    if (picking_failed && reroll_enabled_)
-	      {
-		if (res_move.nb_move > 0)
-		  r_->sendPacket(res_move);
-		return 0;
-	      }
+            if (picking_failed && reroll_enabled_)
+              {
+                if (res_move.nb_move > 0)
+                  r_->sendPacket(res_move);
+                return 0;
+              }
           }
       
       if (knocked || picking_failed)
@@ -215,15 +216,15 @@ int SPlayer::doMove(const MsgMove* m)
     }
   if (knocked||picking_failed)
     return 1;
-	
+
   // Check if the player scores a touchdown
   if (b->getOwner() == this)
     {
       // I know it's ugly, but it's late...
-      int row = 25 * (1 - team_id_);
+      int row = (ROWS - 1) * (1 - team_id_);
       if (pos_.row == row)
-	r_->touchdown();
-    }	
+        r_->touchdown();
+    }
   return 0;
 }
 
@@ -241,7 +242,7 @@ void SPlayer::doStandUp(const MsgStandUp*)
       reroll_enabled_ = t_->canUseReroll();
       sendRoll(result, 0, 4);
       if (result >= 4)
-	    setStatus(STA_STANDING);
+        setStatus(STA_STANDING);
     }
   else
     {
@@ -264,7 +265,7 @@ int SPlayer::doBlock(const MsgBlock* m)
       || !pos_.isNear(target_->getPosition()))
     {
       LOG3("Cannot block player '%1` at %2 (status: %3).", other_team_id,
-	   		target_->getPosition(), target_->status_);
+          target_->getPosition(), target_->status_);
       return 0;
     }
 
@@ -275,7 +276,7 @@ int SPlayer::doBlock(const MsgBlock* m)
   
   int mod_st_atk = getSt();
   int mod_st_df = target_->getSt();
-	
+
   if (mod_st_atk > 2 * mod_st_df || mod_st_df > 2 * mod_st_atk)
     nb_dice_ = 3;
   else if (mod_st_atk != mod_st_df)
@@ -311,11 +312,11 @@ int SPlayer::doBlock(const MsgBlock* m)
   if (mod_st_atk == mod_st_df)
     {
       if (t_->canUseReroll())
-	{
-	  t_->state_ = GS_REROLL;
-	}
+        {
+          t_->state_ = GS_REROLL;
+        }
       else
-	resolveBlock(0, target_);
+        resolveBlock(0, target_);
     }
   else if (mod_st_atk > mod_st_df)
     {
@@ -324,13 +325,13 @@ int SPlayer::doBlock(const MsgBlock* m)
   else
     {
       if (t_->canUseReroll())
-	{
-	  t_->state_ = GS_REROLL;
-	}
+        {
+          t_->state_ = GS_REROLL;
+        }
       else
-	{
-	  r_->getTeam(other_team_id)->state_ = GS_BLOCK;
-	}
+        {
+          r_->getTeam(other_team_id)->state_ = GS_BLOCK;
+        }
     }
   return 0;
 }
@@ -353,25 +354,25 @@ void SPlayer::resolveBlock(int chosen_dice, SPlayer* target)
         setStatus(STA_PRONE);
       pkt1.player_id = id_;
       r_->sendPacket(pkt1);
-			if (r_->getBall()->getOwner() == this)
-			  r_->getBall()->bounce();
+      if (r_->getBall()->getOwner() == this)
+        r_->getBall()->bounce();
       r_->turnOver();
       break;
     case BBOTH_DOWN :
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
-	      setStatus(STA_PRONE);
+        setStatus(STA_PRONE);
       target->checkArmor(0, 0);
       if (target->getStatus() == STA_STANDING)
-	      target->setStatus(STA_PRONE);
+        target->setStatus(STA_PRONE);
       pkt1.player_id = id_;
       r_->sendPacket(pkt1);
       pkt2.player_id = target->getId();
       r_->sendPacket(pkt2);
-			if (r_->getBall()->getOwner() == this)
-			  r_->getBall()->bounce();
-			if (r_->getBall()->getOwner() == target)
-			  r_->getBall()->bounce();
+      if (r_->getBall()->getOwner() == this)
+        r_->getBall()->bounce();
+      if (r_->getBall()->getOwner() == target)
+        r_->getBall()->bounce();
       r_->turnOver();
       break;
     case BPUSHED :
@@ -428,39 +429,39 @@ void SPlayer::blockPushChoice(SPlayer* target)
   for (int i = 0; i < 3; i++)
     if (f_->intoField(choice[i]) && f_->getPlayer(choice[i]) == NULL)
       {
-	pkt.choice[pkt.nb_choice].row = choice[i].row;
-	pkt.choice[pkt.nb_choice].col = choice[i].col;
-	choices_[pkt.nb_choice] = choice[i];
-	pkt.nb_choice++;
+        pkt.choice[pkt.nb_choice].row = choice[i].row;
+        pkt.choice[pkt.nb_choice].col = choice[i].col;
+        choices_[pkt.nb_choice] = choice[i];
+        pkt.nb_choice++;
       }
 
   // If there is no choice -> out of the field.
   if (pkt.nb_choice == 0)
     {
       for (int i = 0; i < 3; i++)
-	if (!f_->intoField(choice[i])&&pkt.nb_choice == 0)
-	  {
-	    pkt.choice[pkt.nb_choice].row = choice[i].row;
-	    pkt.choice[pkt.nb_choice].col = choice[i].col;
-	    choices_[pkt.nb_choice] = choice[i];
-	    pkt.nb_choice++;
-	  }
+        if (!f_->intoField(choice[i])&&pkt.nb_choice == 0)
+          {
+            pkt.choice[pkt.nb_choice].row = choice[i].row;
+            pkt.choice[pkt.nb_choice].col = choice[i].col;
+            choices_[pkt.nb_choice] = choice[i];
+            pkt.nb_choice++;
+          }
     }
-		
+
   // Else -> all possibilities
   if (pkt.nb_choice == 0)
     {
       for (int i = 0; i < 3; i++)
-	{
-	  pkt.choice[pkt.nb_choice].row = choice[i].row;
-	  pkt.choice[pkt.nb_choice].col = choice[i].col;
-	  choices_[pkt.nb_choice] = choice[i];
-	  pkt.nb_choice++;
-      	}
+      {
+        pkt.choice[pkt.nb_choice].row = choice[i].row;
+        pkt.choice[pkt.nb_choice].col = choice[i].col;
+        choices_[pkt.nb_choice] = choice[i];
+        pkt.nb_choice++;
+      }
     }
 
   r_->sendPacket(pkt);
-	
+
   if (pkt.nb_choice == 1)
     blockPush(0);
   else
@@ -485,9 +486,9 @@ void SPlayer::blockPush(int chosen_square)
   else
     {
       // Oh, another player to move.
-			r_->getTeam(r_->getCurrentTeamId())->setConcernedPlayer(target_);
+      r_->getTeam(r_->getCurrentTeamId())->setConcernedPlayer(target_);
       target_->aim_ = to;
-			target_->pusher_ = this;
+      target_->pusher_ = this;
       target_->blockPushChoice(other_target);
     }
 }
@@ -502,7 +503,7 @@ void SPlayer::blockFollow()
   else
     {
       t_->state_ = GS_FOLLOW;
-			t_->setConcernedPlayer(this);
+      t_->setConcernedPlayer(this);
       r_->sendPacket(MsgFollow(team_id_));
     }
 }
@@ -519,11 +520,11 @@ void SPlayer::follow(bool follow)
       MsgPlayerKnocked pkt(r_->getCurrentOpponentTeamId());
       target_->checkArmor(0, 0);
       if (target_->getStatus() == STA_STANDING)
-	target_->setStatus(STA_PRONE);
+        target_->setStatus(STA_PRONE);
       pkt.player_id = target_->getId();
       r_->sendPacket(pkt);
-			if (r_->getBall()->getOwner() == target_)
-			  r_->getBall()->bounce();
+      if (r_->getBall()->getOwner() == target_)
+        r_->getBall()->bounce();
     }
 }
 
@@ -542,10 +543,18 @@ int SPlayer::doPass(const MsgPass* m)
       r_->sendIllegal(MSG_PASS, m->client_id);
       return 0;
     }
-	
+
   ma_remain_ = 0;
 
   Position dest(m->dest_row, m->dest_col);
+  
+  if (!f_->intoField(dest))
+    {
+      LOG2("You must aim at a square in the field.");
+      r_->sendIllegal(MSG_PASS,m->client_id);
+      return 0;
+    }
+
   float dist = pos_.distance(dest);
   int dist_modifier;
 
@@ -575,7 +584,7 @@ int SPlayer::doPass(const MsgPass* m)
   if (!tryAction(modifier))
     {
       if (reroll_enabled_) {
-	return 0;
+        return 0;
       }
       catch_mod = 0;
       b->scatter(1);
@@ -599,7 +608,7 @@ int SPlayer::doPass(const MsgPass* m)
     b->bounce();
   
   // The ball checks if a player of the current team catch it
-	
+
   return 0;
 }
 
@@ -613,11 +622,11 @@ void SPlayer::sendRoll(int result, int modifier, int required)
   msg.roll_type = action_attempted_;
   msg.result = result;
   msg.modifier = modifier;
-  msg.required = required;	
+  msg.required = required;
   msg.reroll = 0;
 
   if (reroll_enabled_ && modifier + result < required)
-    {					
+    {
       t_->state_ = GS_REROLL;
       t_->setConcernedPlayer(this);
       msg.reroll = 1;
@@ -692,7 +701,7 @@ int SPlayer::finishMove(bool reroll)
   res_move.nb_move = 1;
   res_move.moves[0].row = aim_.row;
   res_move.moves[0].col = aim_.col;
-	
+
   setPosition(aim_, true);
   ma_remain_--;
 
@@ -701,7 +710,7 @@ int SPlayer::finishMove(bool reroll)
     if (knocked)
       {
         picking_failed = true;
-	b->bounce();
+        b->bounce();
       }
     else
       {
@@ -725,15 +734,15 @@ int SPlayer::finishMove(bool reroll)
     }
   if (knocked||picking_failed)
     return 1;
-	
+  
   // Check if the player scores a touchdown
   if (b->getOwner() == this)
     {
       // I know it's ugly, but it's late...
-      int row = 25 * (1 - team_id_);
+      int row = (ROWS - 1) * (1 - team_id_);
       if (pos_.row == row)
-	r_->touchdown();
-    }	
+        r_->touchdown();
+    }
   return 0;
 }
 
@@ -745,7 +754,7 @@ void SPlayer::finishStandUp(bool reroll)
       action_attempted_ = R_STANDUP;
       sendRoll(result, 0, 4);
       if (result >= 4)
-	setStatus(STA_STANDING);
+        setStatus(STA_STANDING);
     }
 }
 
@@ -756,17 +765,17 @@ int SPlayer::finishPickUp(bool reroll)
   if (reroll)
     {
       if (b->catchBall(this, 1))
-	{
-	  // I know it's ugly, but it's late...
-	  int row = 25 * (1 - team_id_);
-	  if (pos_.row == row)
-	    r_->touchdown();
-	  return 0;
-	}
-				
+        {
+          // I know it's ugly, but it's late...
+          int row = (ROWS - 1) * (1 - team_id_);
+          if (pos_.row == row)
+            r_->touchdown();
+          return 0;
+        }
+      
       return 1;
     }
-	
+  
   b->bounce();
   return 1;
 }
@@ -812,7 +821,7 @@ int SPlayer::finishThrow(bool reroll)
     b->bounce();
   
   // The ball checks if a player of the current team catch it
-	
+
   return 0;
 }
 
@@ -833,16 +842,16 @@ void SPlayer::finishBlock(bool reroll)
   if (reroll)
     {
       for (int i = 0; i < nb_dice_; ++i)
-	{
-	  result_[i] = (enum eBlockDiceFace)d_->roll("finishblock", DBLOCK);
-	  LOG5("Rolled block dice: %1", Dice::stringify(result_[i]));
-	  msg.results[i] = result_[i];
-	}
+        {
+          result_[i] = (enum eBlockDiceFace)d_->roll("finishblock", DBLOCK);
+          LOG5("Rolled block dice: %1", Dice::stringify(result_[i]));
+          msg.results[i] = result_[i];
+        }
     }
   else
     {
       for (int i = 0; i < nb_dice_; ++i)
-	msg.results[i] = result_[i];
+        msg.results[i] = result_[i];
     }
 
   r_->sendPacket(msg);
@@ -873,7 +882,7 @@ void SPlayer::setStatus(enum eStatus new_status)
       pkt.status = new_status;
       r_->sendPacket(pkt);
     }
-	
+
   switch (new_status)
     {
     case STA_RESERVE:
@@ -937,7 +946,7 @@ void SPlayer::prepareKickoff()
       msg.dice = dice;
       r_->sendPacket(msg);
       if (dice > 3)
-	setStatus(STA_RESERVE);
+        setStatus(STA_RESERVE);
       break;
 
     default:
