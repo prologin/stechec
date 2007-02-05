@@ -35,7 +35,11 @@ DECLARE_PACKET(MSG_GIVEBALL, MsgGiveBall)
   int player_id;
 END_PACKET
 
-
+//! @brief Scatter template.
+//! @note It is slightly different from BB's template.
+//!  123
+//!  8B4
+//!  765
 enum eScatterDirection {
   N = 2,
   S = 6,
