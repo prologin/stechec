@@ -45,14 +45,14 @@ EXTRA_DIST +=					\
 # Tests expected to pass.
 MY_TESTS =					\
 	basic					\
-	pickup					\
-	pickup_fail				\
+	block					\
+	block2					\
+	kickoffbug				\
 	move					\
 	pass					\
-	block					\
-	block2
+	pickup					\
+	pickup_fail
 
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
-	kickoffbug				\
 	crash

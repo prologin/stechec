@@ -71,7 +71,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
   {"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
   {"cheat", &Input::cmdCheat, "<n> <n> <...>|force next dice rolls to give these results (cheat)."},
-  {"wait", &Input::cmdWait, "do not process input util it's your turn."},
+  {"wait", &Input::cmdWait, "do not process input until it's your turn."},
   {NULL, NULL, NULL}
 };
 

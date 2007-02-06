@@ -25,7 +25,7 @@ using namespace std;
 CmdLineInterface::CmdLineInterface(xml::XMLConfig* cfg,
                                    Api* api,
                                    ClientCx* client_cx,
-				   bool use_readline)
+                                   bool use_readline)
   : cfg_(cfg),
     api_(api),
     ccx_(client_cx),
@@ -141,19 +141,19 @@ void CmdLineInterface::printField()
             cout << " ";
 
           // print square content.
-	  Point pos(col, row);
-	  int team_id = api_->teamId(pos);
-	  int player_id = api_->playerId(pos);
-	  api_->selectTeam(team_id);
-	  api_->selectPlayer(player_id);
+          Point pos(col, row);
+          int team_id = api_->teamId(pos);
+          int player_id = api_->playerId(pos);
+          api_->selectTeam(team_id);
+          api_->selectPlayer(player_id);
           if (player_id > -1)
             {
               char pdb, pde;
-	      if (api_->getPlayer()->getStatus() != STA_STANDING)
-		pdb = '[';
-	      else
-		pdb = team_id == api_->myTeamId() ? '<' : '{';
-	      pde = team_id == api_->myTeamId() ? '>' : '}';
+              if (api_->getPlayer()->getStatus() != STA_STANDING)
+                pdb = '[';
+              else
+              pdb = team_id == api_->myTeamId() ? '<' : '{';
+              pde = team_id == api_->myTeamId() ? '>' : '}';
               if (api_->ball() == pos)
                 pde = '@';
               cout << pdb << player_id << pde;
@@ -165,8 +165,8 @@ void CmdLineInterface::printField()
               cout << "   ";
 
           // Keep at least one space as separator.
-	  if (player_id < 10)
-	    cout << " ";
+          if (player_id < 10)
+            cout << " ";
         }
       cout << "|\n";
     }
@@ -193,20 +193,20 @@ void CmdLineInterface::printPlayerList()
       api_->selectTeam(k == 0 ? US : THEM);
       team_size = api_->getTeam()->getNbPlayer();
       for (int i = 0; i < team_size; i++)
-	{
-	  p = api_->getPlayer(i);
-	  justify_name = i >= 10 ? 15 : 16;
-	  cout << (k == 0 ? "* " : "+ ") << i << ": " << setw(justify_name)
-	       << p->getName() << " ";
-	  if (p->getStatus() != STA_STANDING &&
-	      p->getStatus() != STA_PRONE &&
-	      p->getStatus() != STA_STUNNED)
-	    cout << "out of the field";
-	  else
-	    cout << p->getPosition();
-	  cout << "  " << p->stringify(p->getStatus())
-	       << endl;
-	}
+        {
+          p = api_->getPlayer(i);
+          justify_name = i >= 10 ? 15 : 16;
+          cout << (k == 0 ? "* " : "+ ") << i << ": " << setw(justify_name)
+               << p->getName() << " ";
+          if (p->getStatus() != STA_STANDING &&
+              p->getStatus() != STA_PRONE &&
+              p->getStatus() != STA_STUNNED)
+            cout << "out of the field";
+          else
+            cout << p->getPosition();
+          cout << "  " << p->stringify(p->getStatus())
+               << endl;
+        }
     }
   api_->selectTeam(US);
 }
@@ -245,7 +245,7 @@ void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
   if (player_id == api_->myTeamId())
     {
       cout << "It's our turn (turn " << cur_turn << ", half "
-	   << cur_half << ")..." << endl;
+           << cur_half << ")..." << endl;
       input_.stopWaiting();
     }
   else
@@ -261,7 +261,7 @@ void CmdLineInterface::evKickOff(int team_id, bool place_team)
       input_.stopWaiting();
     }
   else if (team_id != api_->myTeamId() && !place_team)
-    cout << "Wait that the other team place the ball" << endl;
+    cout << "Wait that the other team places the ball" << endl;
 }
 
 void CmdLineInterface::evMoveTurnMarker()
@@ -271,7 +271,7 @@ void CmdLineInterface::evMoveTurnMarker()
 
 void CmdLineInterface::evTimeExceeded()
 {
-  cout << "You were too slow, slug !" << endl;
+  cout << "You were too slow, slug!" << endl;
 }
 
 void CmdLineInterface::evChat(const std::string& msg)
@@ -297,8 +297,13 @@ void CmdLineInterface::evPlayerKnocked(int, int player_id)
 
 void CmdLineInterface::evGiveBall(int team_id)
 {
-  cout << "Touchback! receiving team (team " << team_id
-       << ") can give the ball to any player on the field." << endl;
+  if (team_id == api_->myTeamId())
+    {
+      cout << "Touchback! Arbiter is asking us to place the ball. (use 'giveBall')" << endl;
+      input_.stopWaiting();
+    }
+  else
+    cout << "Touchback! Wait that the other team gives the ball and plays his turn." << endl;
 }
 
 void CmdLineInterface::evFollow()
@@ -314,33 +319,33 @@ void CmdLineInterface::evBlockPush(const Position& pos, int nb_choice, const Pos
 }
 
 void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_type, 
-				int result, int modifier, int required, bool reroll)
+                                int result, int modifier, int required, bool reroll)
 {
   cout << "Player `" << player_id << "' tried an action : `"
        << Dice::stringify(action_type)
        << "' : roll [" << result << "] + ["<< modifier << "], required : ["
        << required << "]." << endl;
-	
+
   if (api_->getTeamId() == team_id && reroll)
-    cout << "		You can use a 'reroll' or 'accept' this result." << endl;
+    cout << "You can use a 'reroll' or 'accept' this result." << endl;
 }
 
 void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id, 
-				     int nb_dice, enum eBlockDiceFace result[3],
-				     int choose, bool reroll)
+                                     int nb_dice, enum eBlockDiceFace result[3],
+                                     int choose, bool reroll)
 {
   if (team_id != api_->getTeamId())
     cout << "Opponent ";
-	
+
   cout << "Player `" << player_id << "' tried to block " << "player `" 
        << opponent_id << "'" << endl;
-	
+
   cout << "Result : ";
   for (int i = 0; i < nb_dice; i++)
     {
       cout << i << "- " << Dice::stringify(result[i]);
       if (i != nb_dice - 1)
-	cout << ", ";
+        cout << ", ";
     }
   cout << endl;
 
@@ -353,5 +358,5 @@ void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id
   if (team_id != api_->getTeamId() && choose == api_->getTeamId() && reroll)
     cout << " Wait for opponent reroll decision" << endl;
   if (team_id != api_->getTeamId() && choose == api_->getTeamId() && !reroll)
-    cout << " You must choose a 'dice <n>'" << endl;	
+    cout << " You must choose a 'dice <n>'" << endl;
 }

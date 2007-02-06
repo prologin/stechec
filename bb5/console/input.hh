@@ -118,7 +118,7 @@ private:
   CmdLineInterface*     i_;
   bool                  want_exit_;
   bool			cmd_processed_;   ///< Stop processing input if a command was executed.
-  int			wait_;            ///< Don't process input util it is our turn.
+  int			wait_;            ///< Don't process input until it is our turn (to play or to give the ball).
   bool			use_readline_;    ///< Use readline, if it was compiled (default).
 
   // for read().

@@ -1,9 +1,5 @@
   - you are coach '1'
   - current game state: Undefined
-  - ball position: [x:6 y:13]
+  - ball position: [x:7 y:9]
   - our team  : 'Amazon', coached by 'coach' (11 players)
   - other team: 'Amazon', coached by 'coach' (11 players)
-
-BUG d'engagement. Quand la balle n'atterit pas dans la zone du joueur qui reçoit, le coach qui reçoit choisi à qui il donne la balle. Ici, la balle attéri sur un joueur de l'équipe qui engage et il réussi à l'attraper et à la conserver. 
-
-!! Touchback! receiving team can give the ball to any player on the field.!!
