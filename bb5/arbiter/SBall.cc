@@ -154,7 +154,7 @@ bool SBall::invalidBallPlacement()
 {
   SField* f = r_->getField();
   if (!f->intoField(pos_)
-      || (r_->getCurrentTeamId() == 0 && pos_.row > ROWS / 2)
+      || (r_->getCurrentTeamId() == 0 && pos_.row >= ROWS / 2)
       || (r_->getCurrentTeamId() == 1 && pos_.row < ROWS / 2))
     {
       pos_.col = -1;
