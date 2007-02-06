@@ -100,9 +100,9 @@ private:
   SWeather* weather_;
   SBall*    ball_;
   SField*   field_;
-  Dice*	    dice_;
+  Dice*     dice_;
   int       coach_begin_;
-  int	    coach_receiver_;	
+  int       coach_receiver_;
 };
 
 # include "SRules.hxx"

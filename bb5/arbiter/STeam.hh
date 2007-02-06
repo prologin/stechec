@@ -35,7 +35,7 @@ class STeam : public Team<SPlayer>
 public:
   STeam(int team_id, SRules* r);
 
-  int state_;	///< Team state on client side.
+  int state_; ///< Team state on client side.
 
   bool canDeclareAction(const MsgDeclare* pkt);
 
@@ -45,8 +45,15 @@ public:
   void resetTurn();
   void setProneStunned();
   void prepareKickoff();
+
+  //! @brief Return current active player.
+  SPlayer* getActivePlayer();
+
+  //! @brief Set player waiting for a reroll or follow decision.
   void setConcernedPlayer(SPlayer* p);
-  int curr_acting_player_;
+
+  //! @brief Set current pusher (not necessarily from this team).
+  void setPusher(SPlayer* p);
 
 private:
   void msgTeamInfo(const MsgTeamInfo* m);
@@ -64,8 +71,10 @@ private:
   bool filterFollow(const MsgFollow* m);
   bool filterBlockPush(const MsgBlockPush* m);
 
+  int active_player_id_; // Store ID is enough, since active player is from active team.
   SRules* r_;
-  SPlayer* concerned_player_; // When we are waiting for a reroll decision
+  SPlayer* concerned_player_; // When we are waiting for a reroll or a follow decision.
+  SPlayer* pusher_; // When we are waiting for a blockPush choice.
 };
 
 #endif /* !STEAM_HH_ */

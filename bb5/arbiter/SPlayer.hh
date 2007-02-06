@@ -47,19 +47,24 @@ public:
   void setProne();
   
   //! @brief player goes in reserve if he can.
-  // 		KO players try to regain consciousness
+  //   KO players try to regain consciousness
   void prepareKickoff();
-	
+
   //! @brief Try some action, consider player's agility.
   bool tryAction(int modifier);
-	
+
   //! @brief Finish the current action
   void finishAction(bool reroll);
 
-  void resolveBlock(int choosen_dice);
-  void blockPush(int chosens_square);
+  //! @brief Apply block dice result
+  void resolveBlock(int chosen_dice);
+
+  //! @brief Apply blockpush choice
+  void blockPush(const MsgBlockPush* m);
+
+  //! @brief Apply follow or not decision.
   void follow(bool follow);
-	
+
   enum eRoll action_attempted_;
   bool reroll_enabled_;
   int nb_dice_;
@@ -79,7 +84,7 @@ private:
   bool filterPass(const MsgPass* m);
   
   void sendRoll(int result, int modifier, int required);
-	
+
   //! @brief Move this player.
   //! @return non-zero if action failed.
   int doMove(const MsgMove* m);
@@ -92,19 +97,17 @@ private:
   //! @return non-zero if action failed.
   int doPass(const MsgPass* m);
 
-  void resolveBlock(int choosen_dice, SPlayer* target);
-
+  //! @
   void blockPushChoice(SPlayer* target);
   
   void blockFollow();
 
-	
   int finishMove(bool reroll);
   void finishStandUp(bool reroll);
   int finishPickUp(bool reroll);
   int finishThrow(bool reroll);
   void finishBlock(bool reroll);
-		
+  
   //! @brief Check for armor and eventually injury.
   void checkArmor(int arMod, int injMod);
   //! @brief Roll for injury.
@@ -112,20 +115,25 @@ private:
   //! @brief Roll for casualty.
   enum eStatus rollCasualty();
 
-  Position aim_;
+  Position aim_; ///< Where the player'd like to go to.
 
   bool choose_block_;
   enum eBlockDiceFace result_[3];
-  Position choices_[3];
+
+  //! @brief Push next player if there is no other player behind.
+  void blockPush(int chosen_square);
+  Position push_choices_[3];
+  int nb_push_choices_;
+
   bool target_knocked_;
-	
-  SRules* r_;	///< Server rules.
-  STeam* t_;	///< Player's team.
-  SField* f_;   ///< Game field (same as SRules' one, it is used quite frequently).
-  Dice* d_;	///< The dice (same remark).
+
+  SRules* r_; ///< Server rules.
+  STeam* t_; ///< Player's team.
+  SField* f_; ///< Game field (same as SRules' one, it is used quite frequently).
+  Dice* d_; ///< The dice (same remark).
   
-  SPlayer* target_; ///< Player that is the target of a block.
-	
+  SPlayer* target_; ///< Player that is the target of a block or a push.
+
 };
 
 

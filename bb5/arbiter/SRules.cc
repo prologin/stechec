@@ -101,25 +101,25 @@ void SRules::initHalf()
       sendPacket(pkt);
       return;
     }
-		
+
   // Switch the kicking team on second period.
   if (cur_half_ == 2)
     coach_begin_ = (coach_begin_ + 1) % 2;
-		
+
   // New toss for the third period
   if (cur_half_ == 3)
     coach_begin_ = dice_->roll("kicking team",  D2) - 1;
-	
+
   // Match is decided by a penalty shoot-out
   if (cur_half_ > 3) 
     {
       int coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
       int coach1 = dice_->roll("3th half coach1") + team_[1]->getRemainingReroll();
       while (coach0 == coach1)
-	{
-	  coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
-	  coach1 = dice_->roll("3th half coach1") + team_[1]->getRemainingReroll();
-	}
+        {
+          coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
+          coach1 = dice_->roll("3th half coach1") + team_[1]->getRemainingReroll();
+        }
       LOG4("Team %1 win the game.", (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1));
  
       LOG4("End of game.");
@@ -128,19 +128,19 @@ void SRules::initHalf()
       sendPacket(pkt);
       return;
     }
-  	
+
   // Coaches recover their Rerolls, except in overtime
   if (cur_half_ != 3) 
     {
       team_[0]->initReroll();
       team_[1]->initReroll();
     }
-	
-  // Say we are in a new half	
+
+  // Say we are in a new half
   MsgInitHalf pkt;
   pkt.cur_half = cur_half_;
   sendPacket(pkt);
-	
+
   LOG3("Initialize half %1.", cur_half_);
 
   coach_receiver_ = coach_begin_;
@@ -173,7 +173,7 @@ void SRules::initKickoff()
 }
 
 void SRules::turnOver()
-{	
+{
   msgPlayTurn(NULL);
 }
 
@@ -182,20 +182,20 @@ void SRules::touchdown()
   LOG3("TOUCHDOWN!!!!!!!");
   // For the moment, only the case of touchdowns score during the good turn
   // TODO : update scores...
-	
-	
+
+
   // If it is the third period, the match is over
   initHalf();
-	
+
   // Check it is not the last turn of the half
   if (cur_turn_ == 8
-      &&(getState() == GS_COACH1 && coach_begin_ == 1
-	 || getState() == GS_COACH2 && coach_begin_ == 0))
+      && (getState() == GS_COACH1 && coach_begin_ == 1
+        || getState() == GS_COACH2 && coach_begin_ == 0))
     {
       initHalf();
       return;
     }
-		
+
   coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
   initKickoff();
 }
@@ -282,7 +282,7 @@ void SRules::kickoffFinished()
     setState(GS_COACH2);
   else
     setState(GS_COACH1);
-		
+
   msgPlayTurn(NULL);
 }
 
@@ -316,7 +316,7 @@ void SRules::msgPlayTurn(const MsgEndTurn* m)
     }
   // Switch playing team
   setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
-	
+
   if (getState() == GS_COACH1)
     {
       team_[1]->setProneStunned();

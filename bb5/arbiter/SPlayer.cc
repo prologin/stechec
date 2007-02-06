@@ -264,7 +264,7 @@ int SPlayer::doBlock(const MsgBlock* m)
       || target_->status_ != STA_STANDING
       || !pos_.isNear(target_->getPosition()))
     {
-      LOG3("Cannot block player '%1` at %2 (status: %3).", other_team_id,
+      LOG3("Cannot block player '%1` at %2 (status: %3).", m->opponent_id,
           target_->getPosition(), target_->status_);
       return 0;
     }
@@ -316,7 +316,7 @@ int SPlayer::doBlock(const MsgBlock* m)
           t_->state_ = GS_REROLL;
         }
       else
-        resolveBlock(0, target_);
+        resolveBlock(0);
     }
   else if (mod_st_atk > mod_st_df)
     {
@@ -336,12 +336,7 @@ int SPlayer::doBlock(const MsgBlock* m)
   return 0;
 }
 
-void SPlayer::resolveBlock(int choosen_dice)
-{
-  resolveBlock(choosen_dice, target_);
-}
-
-void SPlayer::resolveBlock(int chosen_dice, SPlayer* target)
+void SPlayer::resolveBlock(int chosen_dice)
 {
   MsgPlayerKnocked pkt1(team_id_);
   MsgPlayerKnocked pkt2(r_->getCurrentOpponentTeamId());
@@ -362,31 +357,31 @@ void SPlayer::resolveBlock(int chosen_dice, SPlayer* target)
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
         setStatus(STA_PRONE);
-      target->checkArmor(0, 0);
-      if (target->getStatus() == STA_STANDING)
-        target->setStatus(STA_PRONE);
+      target_->checkArmor(0, 0);
+      if (target_->getStatus() == STA_STANDING)
+        target_->setStatus(STA_PRONE);
       pkt1.player_id = id_;
       r_->sendPacket(pkt1);
-      pkt2.player_id = target->getId();
+      pkt2.player_id = target_->getId();
       r_->sendPacket(pkt2);
       if (r_->getBall()->getOwner() == this)
         r_->getBall()->bounce();
-      if (r_->getBall()->getOwner() == target)
+      if (r_->getBall()->getOwner() == target_)
         r_->getBall()->bounce();
       r_->turnOver();
       break;
     case BPUSHED :
-      blockPushChoice(target);
+      blockPushChoice(target_);
       target_knocked_ = false;
       pusher_ = NULL;
       break;
     case BDEFENDER_STUMBLE :
-      blockPushChoice(target);
+      blockPushChoice(target_);
       target_knocked_ = true;
       pusher_ = NULL;
       break;
     case BDEFENDER_DOWN : 
-      blockPushChoice(target);
+      blockPushChoice(target_);
       target_knocked_ = true;
       pusher_ = NULL;
       break;
@@ -395,74 +390,82 @@ void SPlayer::resolveBlock(int chosen_dice, SPlayer* target)
 
 void SPlayer::blockPushChoice(SPlayer* target)
 {
-  Position choice[3];
+  Position squares[3];
   Position dt = target->getPosition();
   Position d = dt - getPosition();
   aim_ = dt;
   target_ = target;
 
-  choice[1] = dt + d;
+  squares[1] = dt + d;
   if (d.col == 0)
     {
-      choice[0] = dt + d + Position(0, -1);
-      choice[2] = dt + d + Position(0, 1);
+      squares[0] = dt + d + Position(0, -1);
+      squares[2] = dt + d + Position(0, 1);
     }
   else if (d.row == 0)
     {
-      choice[0] = dt + d + Position(-1, 0);
-      choice[2] = dt + d + Position(1, 0);
+      squares[0] = dt + d + Position(-1, 0);
+      squares[2] = dt + d + Position(1, 0);
     }
   else
     {
-      choice[0] = dt + d + Position(-d.row, 0);
-      choice[2] = dt + d + Position(0, -d.col);
+      squares[0] = dt + d + Position(-d.row, 0);
+      squares[2] = dt + d + Position(0, -d.col);
     }
 
-  LOG3("attacker: %1  defender: ", pos_, target->pos_);
-  LOG3("c1: %1 c2: %2 c3: %3", choice[0], choice[1], choice[2]);
+  LOG3("Pusher pos: %1 Aimed pos: %2", pos_, target->pos_);
+  LOG3("Opposite squares: c1: %1 c2: %2 c3: %3", squares[0], squares[1], squares[2]);
 
   MsgBlockPush pkt(r_->getCurrentTeamId());
   pkt.target_row = dt.row;
   pkt.target_col = dt.col;
   pkt.nb_choice = 0;
 
+  // Look for empty squares into the field.
   for (int i = 0; i < 3; i++)
-    if (f_->intoField(choice[i]) && f_->getPlayer(choice[i]) == NULL)
+    if (f_->intoField(squares[i]) && f_->getPlayer(squares[i]) == NULL)
       {
-        pkt.choice[pkt.nb_choice].row = choice[i].row;
-        pkt.choice[pkt.nb_choice].col = choice[i].col;
-        choices_[pkt.nb_choice] = choice[i];
+        pkt.choice[pkt.nb_choice].row = squares[i].row;
+        pkt.choice[pkt.nb_choice].col = squares[i].col;
+        push_choices_[pkt.nb_choice] = squares[i];
         pkt.nb_choice++;
       }
 
-  // If there is no choice -> out of the field.
+  // No choice -> Try to push out of the field.
   if (pkt.nb_choice == 0)
     {
       for (int i = 0; i < 3; i++)
-        if (!f_->intoField(choice[i])&&pkt.nb_choice == 0)
+        if (!f_->intoField(squares[i]) && pkt.nb_choice == 0)
           {
-            pkt.choice[pkt.nb_choice].row = choice[i].row;
-            pkt.choice[pkt.nb_choice].col = choice[i].col;
-            choices_[pkt.nb_choice] = choice[i];
+            pkt.choice[pkt.nb_choice].row = squares[i].row;
+            pkt.choice[pkt.nb_choice].col = squares[i].col;
+            push_choices_[pkt.nb_choice] = squares[i];
             pkt.nb_choice++;
           }
     }
 
-  // Else -> all possibilities
+  // Still no one possibility -> all possibilities
   if (pkt.nb_choice == 0)
     {
       for (int i = 0; i < 3; i++)
       {
-        pkt.choice[pkt.nb_choice].row = choice[i].row;
-        pkt.choice[pkt.nb_choice].col = choice[i].col;
-        choices_[pkt.nb_choice] = choice[i];
+        pkt.choice[pkt.nb_choice].row = squares[i].row;
+        pkt.choice[pkt.nb_choice].col = squares[i].col;
+        push_choices_[pkt.nb_choice] = squares[i];
         pkt.nb_choice++;
       }
     }
 
+  nb_push_choices_ = pkt.nb_choice;
+  LOG3("Final number of choices: %1", nb_push_choices_);
+  for (int i = 0; i < nb_push_choices_; i++)
+    LOG3("Choice #%1: %2", i, push_choices_[i]);
+
+  target_->pusher_ = this;
+  r_->getTeam(getTeamId())->setPusher(this);
   r_->sendPacket(pkt);
 
-  if (pkt.nb_choice == 1)
+  if (nb_push_choices_ == 1)
     blockPush(0);
   else
     {
@@ -470,23 +473,42 @@ void SPlayer::blockPushChoice(SPlayer* target)
     }
 }
 
+void SPlayer::blockPush(const MsgBlockPush* m)
+{
+  if (nb_push_choices_ -1 < m->square_chosen || m->square_chosen < 0)
+    {
+      LOG2("Invalid push choice.");
+      r_->sendIllegal(MSG_BLOCKPUSH, m->client_id);
+      return;
+    }
+  if (pusher_ == NULL && (team_id_ != r_->getCurrentTeamId() || this != r_->getTeam(team_id_)->getActivePlayer()))
+    {
+      LOG2("This player shouldn't push anyone.");
+      r_->sendIllegal(MSG_BLOCKPUSH, m->client_id);
+      return;
+    }
+
+  r_->sendPacket(*m);
+
+  blockPush(m->square_chosen);
+}
+
 void SPlayer::blockPush(int chosen_square)
 {
-  Position to(choices_[chosen_square].row, choices_[chosen_square].col);
+  Position to(push_choices_[chosen_square].row, push_choices_[chosen_square].col);
   SPlayer* other_target = f_->getPlayer(to);
 
-  LOG2("blockpush 2nd phase: %1", to);
-  
-
+  LOG2("Blockpush 2nd phase: Try to move player %1 (team %2) to %3", id_, team_id_, to);
+ 
   if (other_target == NULL)
     {
-      target_->setPosition(to, true);
+      target_->setPosition(to, true); //FIXME: ball must bounce if end player is pushed on its square.
       blockFollow();
     }
   else
     {
       // Oh, another player to move.
-      r_->getTeam(r_->getCurrentTeamId())->setConcernedPlayer(target_);
+      r_->getTeam(r_->getCurrentTeamId())->setPusher(target_); //FIXME: add cosmetic getCurrentTeam() to SRules
       target_->aim_ = to;
       target_->pusher_ = this;
       target_->blockPushChoice(other_target);
@@ -512,10 +534,9 @@ void SPlayer::follow(bool follow)
 {
   if (follow)
     {
-      f_->setPlayer(pos_, NULL);
       setPosition(aim_, true);
     }
-  if (target_knocked_&& target_->status_ == STA_STANDING)
+  if (target_knocked_ && target_->status_ == STA_STANDING)
     {
       MsgPlayerKnocked pkt(r_->getCurrentOpponentTeamId());
       target_->checkArmor(0, 0);
@@ -859,7 +880,7 @@ void SPlayer::finishBlock(bool reroll)
   if (nb_dice_ == 1)
     {
       t_->state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
-      resolveBlock(0, target_);
+      resolveBlock(0);
     }
   else if (!choose_block_)
     {
