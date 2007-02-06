@@ -50,9 +50,9 @@ MY_TESTS =					\
 	move					\
 	pass					\
 	block
+	block2					\
 
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
 	kickoffbug				\
-	block2					\
 	crash

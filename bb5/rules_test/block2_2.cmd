@@ -14,9 +14,6 @@ reroll
 cheat 4
 declare block 3
 block 3 3
-# la il devrait demainder reroll ou accept ? mais il ne le fait pas.
-# a mon avis, le probleme est la.
-# accept
 block push 1
 
 # et a ce moment... c'est le drame.
@@ -30,3 +27,6 @@ block push 1
 # #1  0xa6e607ab in SPlayer::blockPush (this=0x80a9810, chosen_square=1) at SPlayer.cc:481
 # #2  0xa6e522ac in STeam::msgBlockPush (this=0x809dc60, m=0x80a5ba8) at STeam.cc:186
 # #3  0xa6e595c6 in PacketHandler<42, STeam>::handle (this=0x809de28, p=0x80a5ba8) at ./../common/Player.hh:56
+
+quit
+
