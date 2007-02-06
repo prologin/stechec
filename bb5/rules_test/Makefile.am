@@ -39,7 +39,7 @@ EXTRA_DIST +=					\
 	pickupf_1.cmd				\
 	pickupf_1.ref				\
 	pickupf_2.cmd				\
-	pickupf_2.ref
+	pickupf_2.ref				\
 	team.xml
 
 # Tests expected to pass.
@@ -49,8 +49,8 @@ MY_TESTS =					\
 	pickup_fail				\
 	move					\
 	pass					\
-	block
-	block2					\
+	block					\
+	block2
 
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
