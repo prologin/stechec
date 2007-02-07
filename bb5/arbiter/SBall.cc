@@ -139,13 +139,14 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
       return;
     }
 
-  // Second msg resend to client: where it eventually goes.
+  // Second msg resend to client: where it goes.
   MsgBallPos mesg;
   mesg.row = p->getPosition().row;
   mesg.col = p->getPosition().col;
   r_->sendPacket(mesg);
 
   owner_ = p;
+  pos_ = Position(p->getPosition());
 
   r_->kickoffFinished();
 }
