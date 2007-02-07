@@ -15,6 +15,14 @@ EXTRA_DIST +=					\
 	block_1.ref				\
 	block_2.cmd				\
 	block_2.ref				\
+	block2_1.cmd				\
+	block2_1.ref				\
+	block2_2.cmd				\
+	block2_2.ref				\
+	blockfollow1_1.cmd			\
+	blockfollow1_1.ref			\
+	blockfollow1_2.cmd			\
+	blockfollow1_2.ref			\
 	crash_1.cmd				\
 	crash_1.ref				\
 	crash_2.cmd				\
@@ -32,6 +40,10 @@ EXTRA_DIST +=					\
 	pass_1.ref				\
 	pass_2.cmd				\
 	pass_2.ref				\
+	pass2_1.cmd				\
+	pass2_1.ref				\
+	pass2_2.cmd				\
+	pass2_2.ref				\
 	pickup_1.cmd				\
 	pickup_1.ref				\
 	pickup_2.cmd				\
@@ -55,5 +67,6 @@ MY_TESTS =					\
 
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
+	blockfollow1				\
 	pass2					\
 	crash

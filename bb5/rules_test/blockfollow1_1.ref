@@ -1,0 +1,14 @@
+Note: Ball and player 0 should be at the same position.
+  - you are coach '0'
+  - current game state: Undefined
+  - ball position: [x:2 y:13]
+  - our team  : 'The absoluty wonderful team', coached by 'sick sad coach' (11 players)
+  - other team: 'The absoluty wonderful team', coached by 'sick sad coach' (11 players)
+Player '0' (team 0) - Mary-Ann
+  position      : [row/y:13 col/x:2]
+  carateristics : ma: 6 | st: 3 | ag: 3 | av: 7
+  skills        : SK_BLOCK | SK_DODGE
+  ma_remain     : 6
+  has_played    : no
+  status        : Standing
+

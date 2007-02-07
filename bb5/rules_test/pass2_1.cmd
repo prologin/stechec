@@ -1,4 +1,3 @@
-# test a tricky mix of reroll and failed pass.
 # kickoff on 9,9, scatter on 7,7
 
 wait
@@ -36,3 +35,4 @@ end
 wait
 # player 1, turn 2
 # not reached
+print This should not be printed, in any case.
