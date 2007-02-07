@@ -48,6 +48,18 @@ pass:
     input: pass_2.cmd
     ref: pass_2.ref
 
+pass2:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pass2_1.cmd
+    ref: pass2_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pass2_2.cmd
+    ref: pass2_2.ref
+
 pickup:
   client_1:
     team: team.xml

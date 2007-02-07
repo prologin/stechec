@@ -55,4 +55,5 @@ MY_TESTS =					\
 
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
+	pass2					\
 	crash
