@@ -1,4 +1,6 @@
 wait
+# Kickoff.
+# Ball is scattered and rebounds in 7 7.
 cheat 1 1 1
 kickoff 9 9
 
@@ -7,6 +9,10 @@ print global
 print END DIFF
 
 wait
-# player 1 turn 2
+# Turn 1.
+# Do nothing.
+end
+
 wait
-# not reached
+# Turn 2, not reached.
+print This should not be printed, in any case.

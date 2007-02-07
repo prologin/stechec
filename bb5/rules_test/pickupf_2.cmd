@@ -1,27 +1,19 @@
-# le premier wait est fait pour attendre le debut du kickoff
 wait
-# a ce moment, on est dans la phase kick-off
-
+# Kickoff.
+# Ball is scattered on player 10, who fails to catch it.
+# Ball finally rebounds to 8 6.
 cheat 1 1 1 1
 kickoff 10 8
 
-# fait 'print global' apres le kick off
 print BEGIN DIFF
 print global
 print END DIFF
 
-# a ce moment, vu qu'on a fait 'kickoff', on passe en phase tour1 joueur1 
-# ce wait sert a attendre patiemment le tour1 joueur2, sinon ce client quitte
-# (plus de commande), et le test foire
-
 wait
-# a ce moment, tour1 joueur2
-
-# termine son tour immediatement, on veut rien faire.
+# Turn 1.
+# Do nothing.
 end
 
-# a ce moment, tour2 joueur1. le joueur1 s'occupe de quitter la partie, 
-# il suffit d'attendre (un hypothetique tour2 joueur2).
 wait
-
-# - never reached -
+# Turn 2, never reached.
+print This should not be printed, in any case.

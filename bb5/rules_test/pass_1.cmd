@@ -1,17 +1,22 @@
-# test a simple ball pickup and throw.
-# kickoff on 9,9, scatter on 7,7
-
 wait
-# player 1, turn 1
+# Turn 1.
 
-# move, and throw will a reroll.
+# Move and pick up the ball.
 cheat 3
 declare pass 10
 move 10 7 7
+# Throw the ball to an empty square.
+# Fail first, causing a reroll.
 cheat 1 5 4
 pass 10 4 4
 reroll
-# turnover here.
+
+# Normally, there should be a turnover here, because the ball lands in an empty square.
+# If not, end the turn.
+end
+
+wait
+# Turn 2.
 
 print BEGIN DIFF
 print global

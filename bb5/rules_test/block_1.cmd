@@ -1,18 +1,24 @@
 wait
-# tour 1, joueur 1
+# Turn 1.
 
-# bloque un joueur, poursuit, termine le tour.
-cheat 5 6 6 6 4 3
+# Block a player, follow.
+# Blocked player will be injured.
+cheat 5
+cheat 6 6 6 6 1
 declare block 0
 block 0 0
 accept
 block push 2
 block follow
 
+# Blocked player should be injured and out of the field.
 print BEGIN DIFF
 print players
 print END DIFF
 
+# End the turn.
 end
+
 wait
-# - never reached -
+# Turn 2, never reached.
+print This should not be print, in any case.

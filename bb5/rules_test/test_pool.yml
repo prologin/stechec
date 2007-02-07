@@ -12,77 +12,17 @@ basic:
     input: basic_2.cmd
     ref: basic_2.ref
 
-move:
+blitz1:
   client_1:
     team: team.xml
     formation: formation.xml
-    input: move_1.cmd
-    ref: move_1.ref
+    input: blitz1_1.cmd
+    ref: blitz1_1.ref
   client_2:
     team: team.xml
     formation: formation.xml
-    input: move_2.cmd
-    ref: move_2.ref
-
-kickoffbug:
-  client_1:
-    team: team.xml
-    formation: formation.xml
-    input: kickoffbug_1.cmd
-    ref: kickoffbug_1.ref
-  client_2:
-    team: team.xml
-    formation: formation.xml
-    input: kickoffbug_2.cmd
-    ref: kickoffbug_2.ref
-
-pass:
-  client_1:
-    team: team.xml
-    formation: formation.xml
-    input: pass_1.cmd
-    ref: pass_1.ref
-  client_2:
-    team: team.xml
-    formation: formation.xml
-    input: pass_2.cmd
-    ref: pass_2.ref
-
-pass2:
-  client_1:
-    team: team.xml
-    formation: formation.xml
-    input: pass2_1.cmd
-    ref: pass2_1.ref
-  client_2:
-    team: team.xml
-    formation: formation.xml
-    input: pass2_2.cmd
-    ref: pass2_2.ref
-
-pickup:
-  client_1:
-    team: team.xml
-    formation: formation.xml
-    input: pickup_1.cmd
-    ref: pickup_1.ref
-  client_2:
-    team: team.xml
-    formation: formation.xml
-    input: pickup_2.cmd
-    ref: pickup_2.ref
-
-pickup_fail:
-  client_1:
-    team: team.xml
-    formation: formation.xml
-    input: pickupf_1.cmd
-    ref: pickupf_1.ref
-  client_2:
-    team: team.xml
-    formation: formation.xml
-    input: pickupf_2.cmd
-    ref: pickupf_2.ref
+    input: blitz1_2.cmd
+    ref: blitz1_2.ref
 
 block:
   client_1:
@@ -131,4 +71,76 @@ crash:
     formation: formation.xml
     input: crash_2.cmd
     ref: crash_2.ref
+
+kickoffbug:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: kickoffbug_1.cmd
+    ref: kickoffbug_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: kickoffbug_2.cmd
+    ref: kickoffbug_2.ref
+
+move:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: move_1.cmd
+    ref: move_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: move_2.cmd
+    ref: move_2.ref
+
+pass:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pass_1.cmd
+    ref: pass_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pass_2.cmd
+    ref: pass_2.ref
+
+pass2:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pass2_1.cmd
+    ref: pass2_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pass2_2.cmd
+    ref: pass2_2.ref
+
+pickup:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pickup_1.cmd
+    ref: pickup_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pickup_2.cmd
+    ref: pickup_2.ref
+
+pickup_fail:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: pickupf_1.cmd
+    ref: pickupf_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: pickupf_2.cmd
+    ref: pickupf_2.ref
 

@@ -11,6 +11,10 @@ EXTRA_DIST +=					\
 	basic_1.ref				\
 	basic_2.cmd				\
 	basic_2.ref				\
+	blitz1_1.cmd				\
+	blitz1_1.ref				\
+	blitz1_2.cmd				\
+	blitz1_2.ref				\
 	block_1.cmd				\
 	block_1.ref				\
 	block_2.cmd				\
@@ -57,8 +61,10 @@ EXTRA_DIST +=					\
 # Tests expected to pass.
 MY_TESTS =					\
 	basic					\
+	blitz1					\
 	block					\
 	block2					\
+	crash					\
 	kickoffbug				\
 	move					\
 	pass					\
@@ -68,5 +74,4 @@ MY_TESTS =					\
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
 	blockfollow1				\
-	pass2					\
-	crash
+	pass2

@@ -1,4 +1,24 @@
 wait
-# tour 1, joueur 1. on veut rien faire.
-end
-wait
+# Turn 1.
+
+# Move a player, so that it uses a reroll.
+cheat 1 6
+declare move 2
+move 2 14 3
+reroll
+
+# Block with another player, to push someone.
+cheat 3
+declare block 3
+block 3 3
+block push 1
+
+# A bug happened here, server crashed or pushed a wrong player.
+
+block follow
+
+print BEGIN DIFF
+print players
+print END DIFF
+
+quit

@@ -1,11 +1,15 @@
 wait
-cheat 1 7 6
+# Kickoff.
+# Ball scattered on kicking team's front line.
+# If it goes to a player of the kicking team, catch it.
+cheat 1 7
+cheat 6
 kickoff 12 7
+
 print BEGIN DIFF
 print global
 print END DIFF
-wait
 
-# Bug d'engagement.
-# Quand le ballon n'atterit pas, après dispersion, dans la zone du joueur qui reçoit, il doit y avoir "Touchback".
-# Ici, le ballon était envoyé dans le camp adverse, mais dispersé vers la première ligne de l'envoyeur qui arrivait à conserver la balle.
+wait
+# Turn 1, not reached.
+print This should not be print, in any case.
