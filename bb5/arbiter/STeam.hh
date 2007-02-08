@@ -49,7 +49,7 @@ public:
   //! @brief Return current active player.
   SPlayer* getActivePlayer();
 
-  //! @brief Set player waiting for a reroll or follow decision.
+  //! @brief Set player waiting for a reroll decision.
   void setConcernedPlayer(SPlayer* p);
 
   //! @brief Set current pusher (not necessarily from this team).
@@ -73,7 +73,7 @@ private:
 
   int active_player_id_; // Store ID is enough, since active player is from active team.
   SRules* r_;
-  SPlayer* concerned_player_; // When we are waiting for a reroll or a follow decision.
+  SPlayer* concerned_player_; // When we are waiting for a reroll decision.
   SPlayer* pusher_; // When we are waiting for a blockPush choice.
 };
 

@@ -40,6 +40,16 @@ inline int SRules::getCurrentOpponentTeamId() const
   return (id + 1) % 2;
 }
 
+inline STeam* SRules::getCurrentTeam()
+{
+  return getTeam(getCurrentTeamId());
+}
+
+inline STeam* SRules::getCurrentOpponentTeam()
+{
+  return getTeam(getCurrentOpponentTeamId());
+}
+
 inline SField* SRules::getField()
 {
   return field_;

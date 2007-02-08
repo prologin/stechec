@@ -44,13 +44,21 @@ public:
   STeam* getTeam(int team_id);
   Dice* getDice();
 
-  //! @brief Return the current playing team.
+  //! @brief Return the current playing team id.
   //! @return -1 if no one play, otherwise 0 or 1.
   int getCurrentTeamId() const;
 
-  //! @brief Return the current opposing playing team.
+  //! @brief Return the current playing team.
+  //! @return NULL if no one play.
+  STeam* getCurrentTeam();
+
+  //! @brief Return the current opposing playing team id.
   //! @return -1 if no one play, otherwise 0 or 1.
   int getCurrentOpponentTeamId() const;
+
+  //! @brief Return the current opposing playing team.
+  //! @return NULL if no one play.
+  STeam* getCurrentOpponentTeam();
 
   //! @brief Called when game is starting.
   virtual void serverStartup();
@@ -72,7 +80,6 @@ public:
   virtual void serialize(std::ostream& os) const;
   virtual void unserialize(std::istream& is);
 
-  
 private:
 
   //! @brief Initialize rules and launch game.
@@ -82,8 +89,6 @@ private:
   void initHalf();
   //!@ brief Called before a kickoff.
   void initKickoff();
-
-
   
   void msgInitGame(const MsgInitGame* m);
   void msgInitKickoff(const MsgInitKickoff* m);

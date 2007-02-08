@@ -64,14 +64,14 @@ MY_TESTS =					\
 	blitz1					\
 	block					\
 	block2					\
+	blockfollow1				\
 	crash					\
 	kickoffbug				\
 	move					\
-	pass					\
 	pickup					\
 	pickup_fail
 
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
-	blockfollow1				\
+	pass					\
 	pass2

@@ -30,6 +30,12 @@ class SBall : public Ball
 public:
   SBall(SRules* r);
 
+  //! @brief Set ball position and advertise the client if it changed.
+  //! @note Use this function instead of setPosition(pos), if you
+  //!   want to advertise the client in the same time.
+  //! @param pos Where to place the ball.
+  //! @param advertise_client Whether or not send a MSG_BALLPOS to clients.
+  void setPosition(const Position& pos, bool advertise_client = true);
   //! @brief Bounce the ball around.
   void bounce(int nb = 1);
   //! @brief Player try to catch the ball.

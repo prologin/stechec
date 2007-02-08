@@ -61,7 +61,7 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
   // Check for the ball
   if (r_->getBall()->getOwner() == this) 
     {
-      r_->getBall()->setPosition(pos_);
+      r_->getBall()->setPosition(pos_, advertise_client);
     }
 
   // Pushed off-field. Go into reserve if stunned.
@@ -508,7 +508,7 @@ void SPlayer::blockPush(int chosen_square)
   else
     {
       // Oh, another player to move.
-      r_->getTeam(r_->getCurrentTeamId())->setPusher(target_); //FIXME: add cosmetic getCurrentTeam() to SRules
+      r_->getCurrentTeam()->setPusher(target_);
       target_->aim_ = to;
       target_->pusher_ = this;
       target_->blockPushChoice(other_target);

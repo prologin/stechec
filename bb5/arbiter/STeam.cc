@@ -169,7 +169,7 @@ void STeam::msgFollow(const MsgFollow* m)
 {
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
-  concerned_player_->follow(m->follow);
+  getActivePlayer()->follow(m->follow);
 }
 
 bool STeam::filterFollow(const MsgFollow* m)
