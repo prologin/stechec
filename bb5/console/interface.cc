@@ -269,9 +269,20 @@ void CmdLineInterface::evMoveTurnMarker()
   cout << "The turn marker has been moved." << endl;
 }
 
-void CmdLineInterface::evTimeExceeded()
+void CmdLineInterface::evTurnOver(int motive)
 {
-  cout << "You were too slow, slug!" << endl;
+  switch(motive)
+    {
+      case TOM_TOUCHDOOOWN:
+        cout << "Touchdooown!" << endl;
+        break;
+      case TOM_TIMEEXCEEDED:
+        cout << "You were too slow, slug!" << endl;
+        break;
+      default:
+        cout << "Turnover." << endl;
+        break;
+    }
 }
 
 void CmdLineInterface::evChat(const std::string& msg)

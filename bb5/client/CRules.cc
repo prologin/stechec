@@ -33,7 +33,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, GS_INITKICKOFF);
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, GS_ALL);
   HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, GS_ALL);
-  HANDLE_WITH(MSG_TIMEEXCEEDED, CRules, this, msgTimeExceeded, GS_ALL);
+  HANDLE_WITH(MSG_TURNOVER, CRules, this, msgTurnOver, GS_ALL);
   HANDLE_WITH(MSG_ILLEGAL, CRules, this, msgIllegal, GS_ALL);
   HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, GS_ALL);
   HANDLE_WITH(MSG_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, GS_ALL);
@@ -117,7 +117,7 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
 
   our_team_->initReroll();
   other_team_->initReroll();
-	
+
   onEvent(m);
 }
 
@@ -165,13 +165,13 @@ void        CRules::msgPlayTurn(const MsgNewTurn* m)
   if (m->client_id == getTeamId())
     {
       LOG2("-- CRules: change state: GS_COACH (Our turn, turn %1, half %2)",
-	   m->cur_turn, m->cur_half);
+          m->cur_turn, m->cur_half);
       our_team_->resetTurn();
     }
   else
     {
       LOG2("-- CRules: change state: GS_COACH (Their turn, turn %1, half %2)",
-	   m->cur_turn, m->cur_half);
+          m->cur_turn, m->cur_half);
       other_team_->resetTurn();
     }
   onEvent(m);
@@ -184,7 +184,7 @@ void        CRules::msgEndGame(const MsgEndGame* m)
   onEvent(m);
 }
 
-void        CRules::msgTimeExceeded(const MsgTimeExceeded* m)
+void        CRules::msgTurnOver(const MsgTurnOver* m)
 {
   onEvent(m);
 }
@@ -221,14 +221,14 @@ void CRules::msgBlockResult(const MsgBlockResult* m)
   if (m->client_id == getTeamId())
     {
       if (m->strongest_team_id == getTeamId())
-	setState(GS_BLOCK);
+        setState(GS_BLOCK);
       else if (m->reroll)
-	setState(GS_REROLL);
+        setState(GS_REROLL);
     }
   else
     {
       if (m->strongest_team_id == getTeamId() && !m->reroll)
-	setState(GS_BLOCK);
+        setState(GS_BLOCK);
     }
   onEvent(m);
 }

@@ -51,7 +51,7 @@ const int COLS             = 15; ///< [| 0, 14 |]
 const int ROWS             = 26; ///< [| 0, 25 |]
 
 //! @brief Maximum number of players on a team.
-const int MAX_PLAYER	   = 16;
+const int MAX_PLAYER       = 16;
 
 
 //! @brief Constants that can be returned by the API.
@@ -70,22 +70,22 @@ enum {
   MSG_INITGAME,
   MSG_INITHALF,
   MSG_INITKICKOFF,
-  MSG_CHEATDICE,	// 15
+  MSG_CHEATDICE,        // 15
   MSG_RESULT,
   MSG_BLOCKRESULT,
   MSG_BLOCKDICE,
   MSG_FOLLOW,
-  MSG_REROLL,		// 20
+  MSG_REROLL,           // 20
   MSG_NEWTURN,
   MSG_ENDTURN,
   MSG_ENDGAME,
   MSG_BALLPOS,
-  MSG_GIVEBALL,		// 25
+  MSG_GIVEBALL,         // 25
   MSG_WEATHER,
-  MSG_TIMEEXCEEDED,
+  MSG_TURNOVER,
   MSG_TEAMINFO,
   MSG_PLAYERCREATE,
-  MSG_PLAYERPOS,	// 30
+  MSG_PLAYERPOS,        // 30
   MSG_PLAYERKNOCKED,
   MSG_PLAYERSTATUS,
   MSG_PLAYERKO,
@@ -144,6 +144,7 @@ enum eRoll {
   R_PICKUP,
   R_ARMOUR,
   R_INJURY,
+  
   R_THROW,
   R_CATCH,
   R_BLOCK
@@ -158,6 +159,19 @@ enum eSkill {
   SK_DODGE,
   SK_PASS,
   SK_SUREHANDS
+};
+
+//! @brief Motive for turnover.
+//! @note FIXME: propose a stringified version.
+enum eTurnOverMotive {
+  TOM_KNOCKEDDOWN,
+  TOM_LOSTBALL,
+  TOM_FAILEDPICKUP,
+  TOM_TOUCHDOOOWN,
+  TOM_TIMEEXCEEDED,
+  TOM_FUMBLEDPASS,
+  TOM_THROWNTMFAILED,
+  TOM_EJECTEDFORAFOUL
 };
 
 //@}
@@ -179,10 +193,11 @@ DECLARE_PACKET(MSG_NEWTURN, MsgNewTurn)
   int cur_half;
   int cur_turn;
 END_PACKET
-DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn);
+DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn)
 DECLARE_EMPTY_PACKET(MSG_ENDGAME, MsgEndGame);
-DECLARE_EMPTY_PACKET(MSG_TIMEEXCEEDED, MsgTimeExceeded);
-
+DECLARE_PACKET(MSG_TURNOVER, MsgTurnOver)
+  int motive;
+END_PACKET
 DECLARE_EMPTY_PACKET(MSG_MOVETURNMARKER, MsgMoveTurnMarker);
 DECLARE_EMPTY_PACKET(MSG_ILLEGALPROC, MsgIllegalProc);
 

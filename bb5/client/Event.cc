@@ -61,9 +61,9 @@ void EventProcess::dispatch(const MsgMoveTurnMarker&) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgTimeExceeded&) const
+void EventProcess::dispatch(const MsgTurnOver& pkt) const
 {
-  ev_->evTimeExceeded();
+  ev_->evTurnOver(pkt.motive);
 }
 
 template <>
@@ -145,7 +145,7 @@ void EventProcess::dispatch(const MsgBlockResult& pkt) const
     results[i] = (enum eBlockDiceFace) pkt.results[i];
 
   ev_->evBlockResult(pkt.client_id, pkt.player_id, pkt.opponent_id, pkt.nb_dice,
-		     results, pkt.strongest_team_id, pkt.reroll);
+      results, pkt.strongest_team_id, pkt.reroll);
 }
 
 template <>

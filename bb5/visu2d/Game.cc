@@ -182,9 +182,9 @@ void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
   for (int j = 0; j < 16; j++)
     {
       if (player_[team_id][j] != NULL)
-	player_[team_id][j]->newTurn();
+        player_[team_id][j]->newTurn();
       if (player_[other_team_id][j] != NULL)
-	player_[other_team_id][j]->finishedTurn();
+        player_[other_team_id][j]->finishedTurn();
     }
   
   unsetState(stWaitKoffBall);
@@ -217,11 +217,26 @@ void Game::evMoveTurnMarker()
   LOG2("Move turn marker ? Ahah, not implemented yet.");
 }
 
-void Game::evTimeExceeded()
+void Game::evTurnOver(int motive)
 {
-  LOG2("Time exceeded. You were too slow.");
-  game_dlg_->push(eDlgActInfo);
-  game_dlg_->setText("Time exceeded, you were too slow");
+  switch(motive)
+    {
+      case TOM_TOUCHDOOOWN:
+        LOG2("TOUCHDOOOWN!");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Touchdooown!");
+        break;
+      case TOM_TIMEEXCEEDED:
+        LOG2("Time exceeded. You were too slow.");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Time exceeded, you were too slow");
+        break;
+      default: //FIXME: Detail other cases.
+        LOG2("Turnover.");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Turnover.");
+        break;
+    }
 }
 
 void Game::evPlayerKnocked(int, int player_id)
@@ -313,11 +328,11 @@ void Game::evGiveBall(int team_id)
 }
 
 void Game::evResult(int team_id, int player_id, enum eRoll action_type, int result, 
-		    int modifier, int required, bool reroll)
+                    int modifier, int required, bool reroll)
 {
   LOG4("Player `%1' tried an action : `%2' : roll [%3] + [%4], required : [%5].",
        player_id, Dice::stringify(action_type), result, modifier, required);
-	
+
   if (api_->getTeamId() == team_id && reroll)
     {
       LOG4(" -> You can use a 'reroll' or 'accept' this result.");
@@ -326,8 +341,8 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
 }
 
 void Game::evBlockResult(int team_id, int player_id, int opponent_player_id,
-			 int nb_dice, enum eBlockDiceFace result[3],
-			 int strongest_team_id, bool can_reroll)
+                         int nb_dice, enum eBlockDiceFace result[3],
+                         int strongest_team_id, bool can_reroll)
 {
   player_id = opponent_player_id;
 
@@ -441,31 +456,31 @@ int Game::run()
 
       // Block push choice
       if (isStateSet(stBlockPushChoice))
-	{
-	  for (int i = 0; i < 3 && block_push_[i].isShown(); i++)
-	    if (block_push_[i].getScreenRect().inside(inp.mouse_))
-	      {
-		block_push_[i].setFrame(2);
-		if (inp.button_[1])
-		  {
-		    LOG1("block push ok...");
-		    api_->doBlockPush(i);
-		    for (int j = 0; j < 3; j++)
-		      block_push_[j].hide();
-		    unsetState(stBlockPushChoice);
-		  }
-	      }
-	    else
-	      block_push_[i].setFrame(1);
-	}
+        {
+          for (int i = 0; i < 3 && block_push_[i].isShown(); i++)
+            if (block_push_[i].getScreenRect().inside(inp.mouse_))
+              {
+                block_push_[i].setFrame(2);
+                if (inp.button_[1])
+                  {
+                    LOG1("block push ok...");
+                    api_->doBlockPush(i);
+                    for (int j = 0; j < 3; j++)
+                      block_push_[j].hide();
+                    unsetState(stBlockPushChoice);
+                  }
+                     }
+            else
+              block_push_[i].setFrame(1);
+        }
       
       // Field border around squares.
       if (win_.getInput().key_pressed_[SDLK_s])
-	field_->setDrawTicks(!field_->getDrawTicks());
+        field_->setDrawTicks(!field_->getDrawTicks());
 
       // End turn
       if (win_.getInput().key_pressed_[SDLK_e])
-	api_->doEndTurn();
+        api_->doEndTurn();
       
       // Print FPS
       std::ostringstream os;

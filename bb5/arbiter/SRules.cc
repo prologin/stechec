@@ -80,7 +80,8 @@ void SRules::serverProcess()
 {
   if (timer_.isTimeElapsed())
     {
-      sendPacket(MsgTimeExceeded());
+      sendPacket(MsgTurnOver(TOM_TIMEEXCEEDED));
+      //FIXME: Make armor and injury rolls, and eventually let the ball bounces.
       // go on next turn...
       msgPlayTurn(NULL);
     }
@@ -172,8 +173,10 @@ void SRules::initKickoff()
   sendPacket(pkt);
 }
 
-void SRules::turnOver()
+void SRules::turnOver(enum eTurnOverMotive m)
 {
+  // FIXME: check if a turnover has already been declared this turn.
+  sendPacket(MsgTurnOver(m));
   msgPlayTurn(NULL);
 }
 
@@ -181,8 +184,10 @@ void SRules::touchdown()
 {
   LOG3("TOUCHDOWN!!!!!!!");
   // For the moment, only the case of touchdowns score during the good turn
-  // TODO : update scores...
+  // FIXME: update scores...
 
+  // Let enough time to the scoring coach to cheer his team and place the ball.
+  timer_.stop();
 
   // If it is the third period, the match is over
   initHalf();

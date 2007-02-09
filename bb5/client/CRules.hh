@@ -68,7 +68,7 @@ private:
   void msgGiveBall(const MsgGiveBall* m);
   void msgPlayTurn(const MsgNewTurn* m);
   void msgEndGame(const MsgEndGame* m);
-  void msgTimeExceeded(const MsgTimeExceeded* m);
+  void msgTurnOver(const MsgTurnOver* m);
   void msgChatMessage(const MsgChat* m);
   void msgMoveTurnMarker(const MsgMoveTurnMarker* m);
   void msgCustomEvent(const CustomEvent* m);
@@ -76,7 +76,6 @@ private:
   void msgBlockResult(const MsgBlockResult* m);
   void msgBlockDice(const MsgBlockDice* m);
   void msgFollow(const MsgFollow* m);
-	
   void msgBlockPush(const MsgBlockPush* m);
 
   const xml::XMLConfig& cfg_;

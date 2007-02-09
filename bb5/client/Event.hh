@@ -41,15 +41,15 @@ public:
   virtual void evNewTurn(int team_id, int cur_half, int cur_turn);
   virtual void evEndGame() {}
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, 
-			int result, int modifier, int required, bool reroll);
-  virtual void evBlockResult(int team_id, int player_id, int opponent_player_id, 
-			     int nb_dice, enum eBlockDiceFace result[3],
-			     int strongest_team_id, bool reroll);
+                        int result, int modifier, int required, bool reroll);
+  virtual void evBlockResult(int team_id, int player_id, int opponent_player_id,
+                             int nb_dice, enum eBlockDiceFace result[3],
+                             int strongest_team_id, bool reroll);
   virtual void evHalf(int half);
   virtual void evKickOff(int team_id, bool place_team);
   virtual void evGiveBall(int team_id);
   virtual void evMoveTurnMarker() {}
-  virtual void evTimeExceeded() {}
+  virtual void evTurnOver(int motive) {}
   virtual void evChat(const std::string& msg);
   virtual void evBallPos(const Point& pos);
   virtual void evPlayerCreate(int team_id, int player_id);
@@ -66,7 +66,7 @@ public:
 inline void Event::evIllegal(int) {}
 inline void Event::evNewTurn(int, int, int) {}
 inline void Event::evResult(int, int, enum eRoll, int, int, int, bool) {}
-inline void Event::evBlockResult(int, int, int,	int, enum eBlockDiceFace[], int, bool) {}
+inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[], int, bool) {}
 inline void Event::evHalf(int) {}
 inline void Event::evKickOff(int, bool) {}
 inline void Event::evGiveBall(int) {}

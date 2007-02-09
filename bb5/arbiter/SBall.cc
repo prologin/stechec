@@ -200,8 +200,8 @@ void SBall::afterBounce(const Position& delta, int amplitude)
                   &&p->getTeamId() == r_->getCurrentTeamId());
               if (catchBall(p, 0))
                 {
-                  if (thrown_&&p->getTeamId() != r_->getCurrentTeamId())
-                    r_->turnOver();
+                  if (thrown_ && p->getTeamId() != r_->getCurrentTeamId())
+                    r_->turnOver(TOM_LOSTBALL);
                   thrown_ = false;
                 }
             }
@@ -212,7 +212,7 @@ void SBall::afterBounce(const Position& delta, int amplitude)
         {
           if (thrown_)
             {
-              r_->turnOver();
+              r_->turnOver(TOM_LOSTBALL);
               thrown_ = false;
             }
         }

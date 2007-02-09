@@ -103,7 +103,7 @@ private:
   virtual void evNewTurn(int player_id, int cur_half, int cur_turn);
   virtual void evEndGame();
   virtual void evMoveTurnMarker();
-  virtual void evTimeExceeded();
+  virtual void evTurnOver(int motive);
   virtual void evPlayerKnocked(int team_id, int player_id);
   virtual void evKickOff(int team_id, bool place_team);
   virtual void evChat(const std::string& msg);
@@ -113,10 +113,10 @@ private:
   virtual void evBallPos(const Point& pos);
   virtual void evGiveBall(int team_id);
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, int result, 
-			int modifier, int required, bool reroll);
+                        int modifier, int required, bool reroll);
   virtual void evBlockResult(int team_id, int player_id, int opponent_player_id, 
-			     int nb_dice, enum eBlockDiceFace result[3],
-			     int strongest_team_id, bool reroll);
+                             int nb_dice, enum eBlockDiceFace result[3],
+                             int strongest_team_id, bool reroll);
   virtual void evFollow();
   virtual void evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
 

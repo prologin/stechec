@@ -72,7 +72,7 @@ public:
   void kickoffFinished();
 
   //! @brief Cause a turn over. Call it when, eg, an action failed.
-  void turnOver();
+  void turnOver(enum eTurnOverMotive m);
   
   //! @brief Adapt score and launch the kickoff
   void touchdown();
