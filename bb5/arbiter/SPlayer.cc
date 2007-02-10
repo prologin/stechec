@@ -972,6 +972,10 @@ void SPlayer::prepareKickoff()
         setStatus(STA_RESERVE);
       break;
 
+    case STA_RESERVE:
+    case STA_INJURED:
+      break;
+
     default:
       WARN("case `%1` not handled...", stringify(status_));
       break;
