@@ -80,23 +80,10 @@ void SRules::serverProcess()
 {
   if (timer_.isTimeElapsed())
     {
-      switch(getState())
-        {
-          case GS_COACH1:
-          case GS_COACH2:
-          case GS_REROLL:
-          case GS_BLOCK:
-          case GS_PUSH:
-          case GS_FOLLOW:
-          case GS_SKILL:
-          case GS_COACHBOTH:
-            // In play.
-            turnOver(TOM_TIMEEXCEEDED);
-            break;
-          default:
-            WARN("Elapsed timer is not handled in state %1.", getState()); // FIXME: stringify state.
-            break;
-        }
+      sendPacket(MsgTurnOver(TOM_TIMEEXCEEDED));
+      //FIXME: Make armor and injury rolls, and eventually let the ball bounces.
+      // go on next turn...
+      msgPlayTurn(NULL);
     }
 }
 

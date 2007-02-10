@@ -47,16 +47,9 @@ void SBall::setPosition(const Position& pos, bool advertise_client)
 void SBall::msgPlaceBall(const MsgBallPos* m)
 {
   SPlayer* p;
-
-  // Called on half init.
-  if (r_->getState() != GS_INITKICKOFF)
-    {
-      LOG4("MsgBallPos is not handled in state %1.", r_->getState());
-      r_->sendIllegal(MSG_BALLPOS, m->client_id);
-      return;
-    }
-
-  // Check if this is the kicking team that place the ball.
+  
+  // Called on half init. Check if this is the kicking team that
+  // place the ball.
   if (r_->getCurrentOpponentTeamId() != m->client_id)
     {
       LOG4("Ball: unallowed kick-off from %1.", m->client_id);
