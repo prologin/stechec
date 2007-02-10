@@ -66,14 +66,22 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
           //        invalid, like stopping the game.
           delete player_[m->player_id];
           player_[m->player_id] = NULL;
+          LOG2("Team %1. Player %2 creation refused.", team_id_, m->player_id);
+          r_->sendIllegal(MSG_PLAYERCREATE, m->client_id);
         }
     }
-  
+  else
+    {
+      LOG2("Team %1. Player %2 already exists.", team_id_, m->player_id);
+      r_->sendIllegal(MSG_PLAYERCREATE, m->client_id);
+    }
 }
 
 bool STeam::filterPlayerCreate(const MsgPlayerCreate* m)
 {
-  if (m->client_id != team_id_ || m->player_id < 0 || m->player_id >= MAX_PLAYER)
+  if (m->client_id != team_id_
+      || state_ != GS_INITGAME
+      || m->player_id < 0 || m->player_id >= MAX_PLAYER)
     return false;
   return true;
 }
@@ -105,7 +113,9 @@ void STeam::msgPlayerPos(const MsgPlayerPos* m)
 
 bool STeam::filterPlayerPos(const MsgPlayerPos* m)
 {
-  if (m->client_id != team_id_ || m->player_id < 0 || m->player_id >= MAX_PLAYER )
+  if (m->client_id != team_id_
+      || state_ != GS_INITKICKOFF
+      || m->player_id < 0 || m->player_id >= MAX_PLAYER)
     return false;
   return true;
 }

@@ -80,10 +80,23 @@ void SRules::serverProcess()
 {
   if (timer_.isTimeElapsed())
     {
-      sendPacket(MsgTurnOver(TOM_TIMEEXCEEDED));
-      //FIXME: Make armor and injury rolls, and eventually let the ball bounces.
-      // go on next turn...
-      msgPlayTurn(NULL);
+      switch(getState())
+        {
+          case GS_COACH1:
+          case GS_COACH2:
+          case GS_REROLL:
+          case GS_BLOCK:
+          case GS_PUSH:
+          case GS_FOLLOW:
+          case GS_SKILL:
+          case GS_COACHBOTH:
+            // In play.
+            turnOver(TOM_TIMEEXCEEDED);
+            break;
+          default:
+            WARN("Elapsed timer is not handled in state %1.", getState()); // FIXME: stringify state.
+            break;
+        }
     }
 }
 
@@ -175,8 +188,9 @@ void SRules::initKickoff()
 
 void SRules::turnOver(enum eTurnOverMotive m)
 {
-  // FIXME: check if a turnover has already been declared this turn.
+  // FIXME: Make sure that armor and injury rolls (and eventually ball bounces) have been done before.
   sendPacket(MsgTurnOver(m));
+  // Go on next turn.
   msgPlayTurn(NULL);
 }
 
@@ -221,6 +235,7 @@ void SRules::msgInitGame(const MsgInitGame* m)
     {
       // Decide who is the kicking team
       coach_begin_ = dice_->roll("kicking team", D2) - 1; // team_id: base 0.
+      // FIXME: Give the choice to either kick or receive.
       LOG3("Coach %1 plays first (receiving team).", coach_begin_);
 
   // Send some objects to clients -> weather wil be introduce with advanced Rules
