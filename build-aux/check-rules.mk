@@ -23,6 +23,20 @@ clean-local::
 	-rm -rf *-rules-test
 	-rm -f *.log
 
+# launch a single test
+$(MY_TESTS) $(MY_XTESTS)::
+	-@rm -rf log
+	@LD_LIBRARY_PATH="$(libdir)"				\
+	RUBYLIB="$(pkglibdir)/ruby"				\
+	BASHLIB="$(pkglibdir)/bash"				\
+	PATH="$(bindir):$$PATH"					\
+	srcdir="$(srcdir)/"					\
+	xml_parser_path="$(pkglibdir)/bash/"			\
+	$(RUBY) $(pkglibdir)/ruby/rules_test.rb			\
+	  $(YAML_TEST_POOL) $(YAML_FILE) $@ > $@.log 2>&1;	\
+	test $$? -eq 0 && echo "PASS: $@" || echo "FAIL: $@";
+
+# launch all tests
 installcheck-local::
 	-@rm -rf log
 	@to=0;						\
