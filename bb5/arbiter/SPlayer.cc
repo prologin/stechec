@@ -615,6 +615,8 @@ int SPlayer::doPass(const MsgPass* m)
       b->scatter(1);
     }
 
+  b->setThrown();
+
   MsgBallPos mesg;
   mesg.row = b->getPosition().row;
   mesg.col = b->getPosition().col;
