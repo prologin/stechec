@@ -72,6 +72,18 @@ crash:
     input: crash_2.cmd
     ref: crash_2.ref
 
+crowd1:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: crowd1_1.cmd
+    ref: crowd1_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: crowd1_2.cmd
+    ref: crowd1_2.ref
+
 kickoffbug:
   client_1:
     team: team.xml
