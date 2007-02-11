@@ -12,8 +12,6 @@ pass 10 4 4
 reroll
 
 # Normally, there should be a turnover here, because the ball lands in an empty square.
-# If not, end the turn.
-end
 
 wait
 # Turn 2.
