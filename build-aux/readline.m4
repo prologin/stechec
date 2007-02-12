@@ -25,7 +25,7 @@ AC_DEFUN([STECHEC_CHECK_READLINE],
    fi
 
    if test x"$dir_readline" != xno; then
-       READLINE_LIBS="${READLINE_LIBS}-lreadline"
+       READLINE_LIBS="${READLINE_LIBS}-lreadline -lncurses"
        sav_LIBS="$LIBS"
        sav_CPPFLAGS="$CPPFLAGS"
        LIBS="$LIBS $READLINE_LIBS"
