@@ -193,7 +193,7 @@ void STeam::msgBlockPush(const MsgBlockPush* m)
       return;
     }
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
-  pusher_->blockPush(m);
+  current_pusher_->blockPush(m);
 }
 
 bool STeam::filterBlockPush(const MsgBlockPush* m)
@@ -207,7 +207,7 @@ void STeam::resetTurn()
 {
   active_player_id_ = -1;
   concerned_player_ = NULL;
-  pusher_ = NULL;
+  current_pusher_ = NULL;
   blitz_done_ = false;
   pass_done_ = false;
   reroll_used_ = false;
@@ -242,7 +242,7 @@ void STeam::setConcernedPlayer(SPlayer* p)
 
 void STeam::setPusher(SPlayer* p)
 {
-  pusher_ = p;
+  current_pusher_ = p;
 }
 
 bool STeam::canDeclareAction(const MsgDeclare* pkt)

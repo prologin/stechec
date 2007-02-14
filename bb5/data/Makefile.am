@@ -20,7 +20,7 @@ install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
 	-for i in $(DIRS); do \
 	  cp -r $(srcdir)/$$i $(DESTDIR)$(pkgdatadir); \
-          rm -rf `find $(srcdir)/$$i -name .svn`; \
+          rm -rf `find $(DESTDIR)$(pkgdatadir)/$$i -name .svn`; \
 	done
 
 uninstall-hook:

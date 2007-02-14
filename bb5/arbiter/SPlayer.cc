@@ -500,7 +500,7 @@ void SPlayer::blockPush(int chosen_square)
   Position to(push_choices_[chosen_square].row, push_choices_[chosen_square].col);
   SPlayer* other_target = f_->getPlayer(to);
 
-  LOG2("Blockpush 2nd phase: Try to move player %1 (team %2) to %3", id_, team_id_, to);
+  LOG2("Blockpush 2nd phase: Try to move player %1 (team %2) to %3", target_->getId(), target_->getTeamId(), to);
  
   if (other_target == NULL)
     {
@@ -527,7 +527,6 @@ void SPlayer::blockFollow()
   else
     {
       t_->state_ = GS_FOLLOW;
-      t_->setConcernedPlayer(this);
       r_->sendPacket(MsgFollow(team_id_));
     }
 }

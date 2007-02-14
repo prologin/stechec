@@ -74,7 +74,7 @@ private:
   int active_player_id_; // Store ID is enough, since active player is from active team.
   SRules* r_;
   SPlayer* concerned_player_; // When we are waiting for a reroll decision.
-  SPlayer* pusher_; // When we are waiting for a blockPush choice.
+  SPlayer* current_pusher_; // When we are waiting for a blockPush choice.
 };
 
 #endif /* !STEAM_HH_ */

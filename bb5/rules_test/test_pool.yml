@@ -60,6 +60,18 @@ blockfollow1:
     input: blockfollow1_2.cmd
     ref: blockfollow1_2.ref
 
+blockfollow2:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: blockfollow2_1.cmd
+    ref: blockfollow2_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: blockfollow2_2.cmd
+    ref: blockfollow2_2.ref
+
 crash:
   client_1:
     team: team.xml

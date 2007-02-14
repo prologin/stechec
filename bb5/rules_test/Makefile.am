@@ -27,6 +27,10 @@ EXTRA_DIST +=					\
 	blockfollow1_1.ref			\
 	blockfollow1_2.cmd			\
 	blockfollow1_2.ref			\
+	blockfollow2_1.cmd			\
+	blockfollow2_1.ref			\
+	blockfollow2_2.cmd			\
+	blockfollow2_2.ref			\
 	crash_1.cmd				\
 	crash_1.ref				\
 	crash_2.cmd				\
@@ -69,6 +73,7 @@ MY_TESTS =					\
 	block					\
 	block2					\
 	blockfollow1				\
+	blockfollow2				\
 	crash					\
 	kickoffbug				\
 	move					\
