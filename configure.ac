@@ -26,6 +26,7 @@ STECHEC_ADDMODULE([prologin])
 STECHEC_ADDMODULE([ant])
 STECHEC_ADDMODULE([prolo2005])
 STECHEC_ADDMODULE([prolo2006])
+STECHEC_ADDMODULE([prolo2007])
 
 # Modules dependencies
 DEPENDS=""
@@ -34,6 +35,7 @@ DEPENDS_prologin="sdl,mysql"
 DEPENDS_ant="prologin"
 DEPENDS_prolo2005="prologin"
 DEPENDS_prolo2006="prologin"
+DEPENDS_prolo2007="prologin"
 
 # Can select which module(s) to build
 AC_MSG_CHECKING([for modules to build])
@@ -191,7 +193,7 @@ AC_CONFIG_FILES([
   stechec/tools/xml_test/Makefile
   stechec/sdl/Makefile
   stechec/sdl/test/Makefile
-])  
+])
 
 #
 # BB5 output files
@@ -261,6 +263,15 @@ AC_CONFIG_FILES([
   prologin/prolo2006/virchor/Makefile
 ])
 fi
+
+if test x$BUILD_prolo2007 != x; then
+AC_CONFIG_FILES([
+  prologin/prolo2007/Makefile
+  prologin/prolo2007/rules/Makefile
+  prologin/prolo2007/data/Makefile
+])
+fi
+
 
 fi # !BUILD_prologin
 
