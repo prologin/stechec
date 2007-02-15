@@ -23,6 +23,10 @@ accept
 
 block follow
 
+# Move one more player, just to make sure that server is still responsive.
+declare move 10
+move 10 7 7
+
 print BEGIN DIFF
 print players
 print END DIFF
