@@ -220,6 +220,8 @@ void CRules::msgBlockResult(const MsgBlockResult* m)
 {
   if (m->client_id == getTeamId())
     {
+      if (! m->reroll)
+        our_team_->getPlayer(m->player_id)->subMa(1);
       if (m->strongest_team_id == getTeamId())
         setState(GS_BLOCK);
       else if (m->reroll)
@@ -227,6 +229,8 @@ void CRules::msgBlockResult(const MsgBlockResult* m)
     }
   else
     {
+      if (! m->reroll)
+        other_team_->getPlayer(m->player_id)->subMa(1);
       if (m->strongest_team_id == getTeamId() && !m->reroll)
         setState(GS_BLOCK);
     }
