@@ -75,6 +75,7 @@ MY_TESTS =					\
 	blockfollow1				\
 	blockfollow2				\
 	crash					\
+	crowd1					\
 	kickoffbug				\
 	move					\
 	pass					\
@@ -83,6 +84,5 @@ MY_TESTS =					\
 	pickup_fail
 
 # Tests expected to fail (show bugs that should be corrected)
-MY_XTESTS =					\
-	crowd1
+MY_XTESTS =					
 

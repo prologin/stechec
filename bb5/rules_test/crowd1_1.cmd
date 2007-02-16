@@ -12,6 +12,9 @@ move 0 13 0
 # Do nothing else.
 end
 
+# Drop End Turn event.
+wait
+
 wait
 # Turn 2, not reached.
 print This should not be printed, in any case.
