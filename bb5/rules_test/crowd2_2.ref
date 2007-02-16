@@ -1,0 +1,12 @@
+Player '0' (team 0) - Mary-Ann
+  position      : out of the field
+  carateristics : ma: 6 | st: 3 | ag: 3 | av: 7
+  skills        : SK_BLOCK | SK_DODGE
+  ma_remain     : 5
+  has_played    : no
+  status        : Reserve
+  - you are coach '0'
+  - current game state: Undefined
+  - ball position: [x:0 y:11]
+  - our team  : 'Amazon', coached by 'coach' (11 players)
+  - other team: 'Amazon', coached by 'coach' (11 players)

@@ -96,6 +96,18 @@ crowd1:
     input: crowd1_2.cmd
     ref: crowd1_2.ref
 
+crowd2:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: crowd2_1.cmd
+    ref: crowd2_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: crowd2_2.cmd
+    ref: crowd2_2.ref
+
 kickoffbug:
   client_1:
     team: team.xml

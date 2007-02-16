@@ -84,5 +84,6 @@ MY_TESTS =					\
 	pickup_fail
 
 # Tests expected to fail (show bugs that should be corrected)
-MY_XTESTS =					
+MY_XTESTS =					\
+	crowd2
 
