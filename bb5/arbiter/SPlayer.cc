@@ -373,19 +373,19 @@ void SPlayer::resolveBlock(int chosen_dice)
       //FIXME: This turnover comes too late. Motive is not accurate. Being placed prone is not a turnover, unless it is a player from the active team holding the ball.
       break;
     case BPUSHED :
-      blockPushChoice(target_);
       target_knocked_ = false;
       pusher_ = NULL;
+      blockPushChoice(target_);
       break;
     case BDEFENDER_STUMBLE :
-      blockPushChoice(target_);
       target_knocked_ = true;
       pusher_ = NULL;
+      blockPushChoice(target_);
       break;
     case BDEFENDER_DOWN : 
-      blockPushChoice(target_);
       target_knocked_ = true;
       pusher_ = NULL;
+      blockPushChoice(target_);
       break;
     }
 }
@@ -483,6 +483,7 @@ void SPlayer::blockPush(const MsgBlockPush* m)
       r_->sendIllegal(MSG_BLOCKPUSH, m->client_id);
       return;
     }
+
   if (pusher_ == NULL && (team_id_ != r_->getCurrentTeamId() || this != r_->getTeam(team_id_)->getActivePlayer()))
     {
       LOG2("This player shouldn't push anyone.");
@@ -501,7 +502,7 @@ void SPlayer::blockPush(int chosen_square)
   SPlayer* other_target = f_->getPlayer(to);
 
   LOG2("Blockpush 2nd phase: Try to move player %1 (team %2) to %3", target_->getId(), target_->getTeamId(), to);
- 
+
   if (other_target == NULL)
     {
       target_->setPosition(to, true); //FIXME: ball must bounce if end player is pushed on its square.
