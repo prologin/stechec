@@ -296,8 +296,9 @@ bool SBall::catchBall(SPlayer *p, int modifier)
 // Spectators throwing the ball
 void SBall::throwin()
 {
+  owner_ = NULL;
   Position d(0, 0); // Direction of the throw.
-  int reach = r_->getDice()->roll("ball throwin");
+  int reach = r_->getDice()->roll("ball throwin", D6, 2) - 1;
   LOG5("Ball: gets throwed by spectators at %1", pos_);
 
   // Get the border we just crossed:
@@ -312,7 +313,7 @@ void SBall::throwin()
     d.row = -1;
 
   // Throw the ball
-  if (d.row)
+  if (d.row == 0)
     {
       switch (r_->getDice()->roll("throwin dir", D3))
       {

@@ -8,13 +8,14 @@ wait
 # Turn 1.
 
 # Push player 0 off the pitch.
-cheat 3 
+cheat 3
+# Injury roll.
 cheat 1 1
-cheat 1 1
+# Throw-in roll.
+cheat 5 5 1
 declare block 0
 block 0 0
 accept
-
 block follow
 
 # Player 0 should be stunned, then placed in reserve.

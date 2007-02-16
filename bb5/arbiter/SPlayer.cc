@@ -58,21 +58,22 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
       r_->sendPacket(pkt);
     }
   pos_ = pos;
-  // Check for the ball
-  if (r_->getBall()->getOwner() == this) 
-    {
-      r_->getBall()->setPosition(pos_, advertise_client);
-    }
-
-  // Pushed off-field. Go into reserve if stunned.
+  // Pushed off-field.
   if (!f_->intoField(pos))
     {
       rollInjury(0);
+      // Go into reserve if stunned.
       if (status_ == STA_STUNNED)
         setStatus(STA_RESERVE);
+      // Check for the ball.
+      if (r_->getBall()->getOwner() == this)
+        r_->getBall()->throwin();
     }
   else
     f_->setPlayer(pos, this);
+  // Check for the ball.
+  if (r_->getBall()->getOwner() == this) 
+    r_->getBall()->setPosition(pos_, advertise_client);
 }
 
 // Standard action. Launch a D6:

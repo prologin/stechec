@@ -48,16 +48,15 @@ public:
   //! @param nb Number of squares covered.
   void scatter(int nb);
   void setThrown();
+  //! @brief Throwin in case the ball leave the field.
+  void throwin();
 
 private:
   void msgPlaceBall(const MsgBallPos* m);
   void msgGiveBall(const MsgGiveBall* m);
   bool invalidBallPlacement();
   
-
   void afterBounce(const Position& delta, int amplitude);
-  //! @brief Throwin in case the ball leave the field.
-  void throwin();
 
   SRules* r_;
   SPlayer* owner_; ///< Ball owner, or NULL if nobody

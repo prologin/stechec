@@ -5,8 +5,8 @@ Player '0' (team 0) - Mary-Ann
   ma_remain     : 5
   has_played    : no
   status        : Reserve
-  - you are coach '0'
+  - you are coach '1'
   - current game state: Undefined
-  - ball position: [x:0 y:11]
+  - ball position: [x:9 y:22]
   - our team  : 'Amazon', coached by 'coach' (11 players)
   - other team: 'Amazon', coached by 'coach' (11 players)

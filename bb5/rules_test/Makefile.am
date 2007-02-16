@@ -39,6 +39,10 @@ EXTRA_DIST +=					\
 	crowd1_1.ref				\
 	crowd1_2.cmd				\
 	crowd1_2.ref				\
+	crowd2_1.cmd				\
+	crowd2_1.ref				\
+	crowd2_2.cmd				\
+	crowd2_2.ref				\
 	formation.xml				\
 	kickoffbug_1.cmd			\
 	kickoffbug_1.ref			\
@@ -76,6 +80,7 @@ MY_TESTS =					\
 	blockfollow2				\
 	crash					\
 	crowd1					\
+	crowd2					\
 	kickoffbug				\
 	move					\
 	pass					\
@@ -84,6 +89,5 @@ MY_TESTS =					\
 	pickup_fail
 
 # Tests expected to fail (show bugs that should be corrected)
-MY_XTESTS =					\
-	crowd2
+MY_XTESTS =					
 
