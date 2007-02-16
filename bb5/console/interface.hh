@@ -49,7 +49,7 @@ private:
   virtual void          evKickOff(int team_id, bool place_team);
   virtual void          evGiveBall(int team_id);
   virtual void          evMoveTurnMarker();
-  virtual void          evTurnOver(int motive);
+  virtual void          evTurnOver(enum eTurnOverMotive motive);
   virtual void          evChat(const std::string& msg);
   virtual void          evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerMove(int team_id, int player_id, const Point& pos);

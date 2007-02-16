@@ -217,24 +217,54 @@ void Game::evMoveTurnMarker()
   LOG2("Move turn marker ? Ahah, not implemented yet.");
 }
 
-void Game::evTurnOver(int motive)
+void Game::evTurnOver(enum eTurnOverMotive motive)
 {
   switch(motive)
     {
+      case TOM_KNOCKEDDOWN:
+        LOG2("Turnover (Player is knocked down).");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Turnover (Player is knocked down).");
+        break;
+      case TOM_LOSTBALL:
+        LOG2("Turnover (Ball is not caught).");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Turnover (Ball is not caught).");
+        break;
+      case TOM_FAILEDPICKUP:
+        LOG2("Turnover (Player fails to pick up the ball).");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Turnover (Player fails to pick up the ball).");
+        break;
       case TOM_TOUCHDOOOWN:
         LOG2("TOUCHDOOOWN!");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Touchdooown!");
         break;
       case TOM_TIMEEXCEEDED:
-        LOG2("Time exceeded. You were too slow.");
+        LOG2("Turnover (Time exceeded).");
         game_dlg_->push(eDlgActInfo);
-        game_dlg_->setText("Time exceeded, you were too slow");
+        game_dlg_->setText("Turnover (Time exceeded).");
         break;
-      default: //FIXME: Detail other cases.
-        LOG2("Turnover.");
+      case TOM_FUMBLEDPASS:
+        LOG2("Turnover (Pass attempt is fumbled).");
         game_dlg_->push(eDlgActInfo);
-        game_dlg_->setText("Turnover.");
+        game_dlg_->setText("Turnover (Pass attempt is fumbled).");
+        break;
+      case TOM_THROWNTMFAILED:
+        LOG2("Turnover (Team mate's throw fails).");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Turnover (Team mate's throw fails).");
+        break;
+      case TOM_EJECTEDFORAFOUL:
+        LOG2("Turnover (Referee ejects a player).");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Turnover (Referee ejects a player).");
+        break;
+      default:
+        WARN("Received turnover message with unknown motive.");
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Turnover (Unknown motive).");
         break;
     }
 }

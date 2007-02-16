@@ -164,7 +164,7 @@ enum eSkill {
 //! @brief Motive for turnover.
 //! @note FIXME: propose a stringified version.
 enum eTurnOverMotive {
-  TOM_KNOCKEDDOWN,
+  TOM_KNOCKEDDOWN = 0,
   TOM_LOSTBALL,
   TOM_FAILEDPICKUP,
   TOM_TOUCHDOOOWN,
@@ -196,7 +196,7 @@ END_PACKET
 DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn)
 DECLARE_EMPTY_PACKET(MSG_ENDGAME, MsgEndGame);
 DECLARE_PACKET(MSG_TURNOVER, MsgTurnOver)
-  int motive;
+  int motive; // enum eTurnOverMotive
 END_PACKET
 DECLARE_EMPTY_PACKET(MSG_MOVETURNMARKER, MsgMoveTurnMarker);
 DECLARE_EMPTY_PACKET(MSG_ILLEGALPROC, MsgIllegalProc);

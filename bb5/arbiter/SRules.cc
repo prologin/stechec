@@ -80,10 +80,8 @@ void SRules::serverProcess()
 {
   if (timer_.isTimeElapsed())
     {
-      sendPacket(MsgTurnOver(TOM_TIMEEXCEEDED));
       //FIXME: Make armor and injury rolls, and eventually let the ball bounces.
-      // go on next turn...
-      msgPlayTurn(NULL);
+      turnOver(TOM_TIMEEXCEEDED);
     }
 }
 
@@ -173,10 +171,10 @@ void SRules::initKickoff()
   sendPacket(pkt);
 }
 
-void SRules::turnOver(enum eTurnOverMotive m)
+void SRules::turnOver(enum eTurnOverMotive motive)
 {
   // FIXME: Make sure that armor and injury rolls (and eventually ball bounces) have been done before.
-  sendPacket(MsgTurnOver(m));
+  sendPacket(MsgTurnOver(motive));
   // Go on next turn.
   msgPlayTurn(NULL);
 }

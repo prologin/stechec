@@ -269,18 +269,37 @@ void CmdLineInterface::evMoveTurnMarker()
   cout << "The turn marker has been moved." << endl;
 }
 
-void CmdLineInterface::evTurnOver(int motive)
+void CmdLineInterface::evTurnOver(enum eTurnOverMotive motive)
 {
   switch(motive)
     {
+      case TOM_KNOCKEDDOWN:
+        cout << "Turnover (Player is knocked down)." << endl;
+        break;
+      case TOM_LOSTBALL:
+        cout << "Turnover (Ball is not caught)." << endl;
+        break;
+      case TOM_FAILEDPICKUP:
+        cout << "Turnover (Player fails to pick up the ball)." << endl;
+        break;
       case TOM_TOUCHDOOOWN:
         cout << "Touchdooown!" << endl;
         break;
       case TOM_TIMEEXCEEDED:
         cout << "You were too slow, slug!" << endl;
         break;
+      case TOM_FUMBLEDPASS:
+        cout << "Turnover (Pass attempt is fumbled)." << endl;
+        break;
+      case TOM_THROWNTMFAILED:
+        cout << "Turnover (Team mate's throw fails)." << endl;
+        break;
+      case TOM_EJECTEDFORAFOUL:
+        cout << "Turnover (Referee ejects a player)." << endl;
+        break;
       default:
-        cout << "Turnover." << endl;
+        WARN("Received turnover message with unknown motive.");
+        cout << "Turnover (Unknown motive)." << endl;
         break;
     }
 }

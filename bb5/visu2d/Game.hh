@@ -103,7 +103,7 @@ private:
   virtual void evNewTurn(int player_id, int cur_half, int cur_turn);
   virtual void evEndGame();
   virtual void evMoveTurnMarker();
-  virtual void evTurnOver(int motive);
+  virtual void evTurnOver(enum eTurnOverMotive motive);
   virtual void evPlayerKnocked(int team_id, int player_id);
   virtual void evKickOff(int team_id, bool place_team);
   virtual void evChat(const std::string& msg);

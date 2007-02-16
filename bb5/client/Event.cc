@@ -63,7 +63,7 @@ void EventProcess::dispatch(const MsgMoveTurnMarker&) const
 template <>
 void EventProcess::dispatch(const MsgTurnOver& pkt) const
 {
-  ev_->evTurnOver(pkt.motive);
+  ev_->evTurnOver((enum eTurnOverMotive) pkt.motive);
 }
 
 template <>

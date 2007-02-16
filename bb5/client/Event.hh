@@ -49,7 +49,7 @@ public:
   virtual void evKickOff(int team_id, bool place_team);
   virtual void evGiveBall(int team_id);
   virtual void evMoveTurnMarker() {}
-  virtual void evTurnOver(int motive);
+  virtual void evTurnOver(enum eTurnOverMotive motive);
   virtual void evChat(const std::string& msg);
   virtual void evBallPos(const Point& pos);
   virtual void evPlayerCreate(int team_id, int player_id);
@@ -70,7 +70,7 @@ inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[], int,
 inline void Event::evHalf(int) {}
 inline void Event::evKickOff(int, bool) {}
 inline void Event::evGiveBall(int) {}
-inline void Event::evTurnOver(int) {}
+inline void Event::evTurnOver(enum eTurnOverMotive) {}
 inline void Event::evChat(const std::string&) {}
 inline void Event::evBallPos(const Point&) {}
 inline void Event::evPlayerCreate(int, int) {}
