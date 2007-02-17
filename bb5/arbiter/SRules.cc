@@ -174,7 +174,9 @@ void SRules::initKickoff()
 void SRules::turnOver(enum eTurnOverMotive motive)
 {
   // FIXME: Make sure that armor and injury rolls (and eventually ball bounces) have been done before.
-  sendPacket(MsgTurnOver(motive));
+  MsgTurnOver pkt(getCurrentTeamId());
+  pkt.motive = motive;
+  sendPacket(pkt);
   // Go on next turn.
   msgPlayTurn(NULL);
 }
