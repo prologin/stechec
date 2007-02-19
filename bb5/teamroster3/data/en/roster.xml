@@ -74,7 +74,7 @@
 		<warning>Value must be an integer. Please correct the data or the value will be set to 0.</warning>
 		<warning>Up to 8 rerolls are allowed per team.</warning>
 		<warning>Your team is excluded from the use of an apothecary.</warning>
-		<warning>Please close other box of the same type.</warning>
+		<warning>Please close other box.</warning>
 		<warning>You cannot remove a starting skill.</warning>
 		<warning>You cannot remove a stat increase!</warning>
 		<warning>You need a fancy name for your team!</warning>

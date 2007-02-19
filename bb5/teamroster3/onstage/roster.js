@@ -334,13 +334,14 @@ function calcTeamValue() {
 	}
 }
 
-function hideLayer(nr) {
-	document.getElementById(nr).className = 'element_hidden';
+function hideLayer(ID) {
+	document.getElementById(ID).className = 'element_hidden';
+	box_visible = false;
 }
 
 function showInjBox(row) {
 	if(isPlayerAssigned(row) != false) {
-		if(document.getElementById('inj_box').className == 'element_visible') {
+		if(box_visible == true) {
 			alert(warning[11])
 		} else {
 			statreductions = new Array(0,0,0)
@@ -375,6 +376,7 @@ function showInjBox(row) {
 				}
 			}	
 			document.getElementById('inj_box').className = 'element_visible';
+			box_visible = true;
 		}	
 	} else {
 		alert(warning[3]) 
@@ -382,20 +384,25 @@ function showInjBox(row) {
 }
 
 function showJmBox() {
-	document.getElementById('jm_box').className = 'element_visible'
-	for ( i = 0; i < 16; i++ ) {
-		if ( isPlayerAssigned(i) != 2 ) {
-			document.getElementById('jm'+i).style.display = "none";
-		}
-		else {
-			document.getElementById('jm'+i).style.display = "block";
+	if ( box_visible == true ) {
+		alert(warning[11])
+	} else {
+		document.getElementById('jm_box').className = 'element_visible';
+		box_visible = true;
+		for ( i = 0; i < 16; i++ ) {
+			if ( isPlayerAssigned(i) != 2 ) {
+				document.getElementById('jm'+i).style.display = "none";
+			}
+			else {
+				document.getElementById('jm'+i).style.display = "block";
+			}
 		}
 	}
 }
 
 function showSkillBox(row) {
 	if(isPlayerAssigned(row) == true) {
-		if(document.getElementById('skill_box').className == 'element_visible') {
+		if( box_visible == true ) {
 			alert(warning[11])
 		} 
 		else {
@@ -467,6 +474,7 @@ function showSkillBox(row) {
 			arrayToOptions(chosen_skills,'SKILLDEST',0)
 
 			document.getElementById('skill_box').className = 'element_visible';
+			box_visible = true;
 		}
 	}
 	else { 
@@ -614,5 +622,11 @@ function save() {
 }
 
 function show(ID) {
-	document.getElementById(ID).className = 'element_visible';
+	if ( box_visible == true ) {
+		alert(warning[11]);
+	}
+	else {
+		box_visible = true;
+		document.getElementById(ID).className = 'element_visible';	
+	}
 }

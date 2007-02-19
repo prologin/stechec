@@ -48,7 +48,7 @@ echo writeWarnings($interface)."\n";
 echo writeStatNames($interface)."\n";
 
 ?>
-
+var box_visible = new Boolean(false) 
 </script>
 
 </head>

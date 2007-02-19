@@ -75,7 +75,7 @@
 		<warning>La valeur doit être entière. Corrige le ou la valeur sera de 0.</warning>
 		<warning>Un maximum de 8 relances est autorisé par équipe.</warning>
 		<warning>Ton équipe ne peut pas engager d'apothicaire.</warning>
-		<warning>Finis d'abord d'éditer l'autre joueur.</warning>
+		<warning>Ferme d'abord l'autre fenêtre.</warning>
 		<warning>Tu ne peux pas supprimer une compétence de départ!</warning>
 		<warning>Tu ne peux pas supprimer une augmentation de caractéristique!</warning>
 		<warning>Il faut un nom original à ton équipe!</warning>
