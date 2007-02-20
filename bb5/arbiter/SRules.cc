@@ -31,7 +31,7 @@ SRules::SRules()
   timer_.setAllowedTime(60 * 4); // 4min per turn.
 
   dice_ = new Dice(this);
-  
+
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, SRules, this, msgInitGame, GS_INITGAME);
   HANDLE_WITH(MSG_INITKICKOFF, SRules, this, msgInitKickoff, GS_INITKICKOFF);
@@ -80,8 +80,9 @@ void SRules::serverProcess()
 {
   if (timer_.isTimeElapsed())
     {
-      //FIXME: Make armor and injury rolls, and eventually let the ball bounces.
-      turnOver(TOM_TIMEEXCEEDED);
+      getCurrentTeam()->turnover(TOM_TIMEEXCEEDED);
+      //FIXME: complete armor and bounce rolls first.
+      turnOver();
     }
 }
 
@@ -171,13 +172,8 @@ void SRules::initKickoff()
   sendPacket(pkt);
 }
 
-void SRules::turnOver(enum eTurnOverMotive motive)
+void SRules::turnOver()
 {
-  // FIXME: Make sure that armor and injury rolls (and eventually ball bounces) have been done before.
-  MsgTurnOver pkt(getCurrentTeamId());
-  pkt.motive = motive;
-  sendPacket(pkt);
-  // Go on next turn.
   msgPlayTurn(NULL);
 }
 
@@ -229,7 +225,6 @@ void SRules::msgInitGame(const MsgInitGame* m)
   /*  MsgWeather pkt;
       pkt.weather = weather_->getWeather();
       sendPacket(pkt);*/
-
       
       initHalf();
     }

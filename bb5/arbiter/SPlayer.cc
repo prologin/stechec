@@ -345,6 +345,7 @@ void SPlayer::resolveBlock(int chosen_dice)
   switch (result_[chosen_dice])
     {
     case BATTACKER_DOWN :
+      r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
         setStatus(STA_PRONE);
@@ -352,10 +353,10 @@ void SPlayer::resolveBlock(int chosen_dice)
       r_->sendPacket(pkt1);
       if (r_->getBall()->getOwner() == this)
         r_->getBall()->bounce();
-      r_->turnOver(TOM_KNOCKEDDOWN);
-      //FIXME: This turnover comes too late. Motive is not accurate. Being placed prone is not a turnover, unless it is a player from the active team holding the ball.
+      r_->turnOver();
       break;
     case BBOTH_DOWN :
+      r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
         setStatus(STA_PRONE);
@@ -370,8 +371,7 @@ void SPlayer::resolveBlock(int chosen_dice)
         r_->getBall()->bounce();
       if (r_->getBall()->getOwner() == target_)
         r_->getBall()->bounce();
-      r_->turnOver(TOM_KNOCKEDDOWN);
-      //FIXME: This turnover comes too late. Motive is not accurate. Being placed prone is not a turnover, unless it is a player from the active team holding the ball.
+      r_->turnOver();
       break;
     case BPUSHED :
       target_knocked_ = false;
@@ -690,7 +690,7 @@ void SPlayer::finishAction(bool reroll)
       break;
     }
   if (result == 1)
-    r_->turnOver(TOM_KNOCKEDDOWN); //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before? Moreover, this motive is not accurate.
+    r_->turnOver();
   assert(result != -1);
 }
 
@@ -1038,9 +1038,13 @@ void SPlayer::msgMove(const MsgMove* m)
   if (!t_->canDoAction(m, this))
     return;
   if (doMove(m))
-    r_->turnOver(TOM_KNOCKEDDOWN);
+  {
+    r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
+    r_->turnOver();
+  }
   //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before?
   // Note also that a player being placed PRONE is not a turnover unless it is a player from the active team holding the ball.
+  //FIXME: turnover OR turnOver or both?
 }
 
 void SPlayer::msgStandUp(const MsgStandUp* m)
@@ -1055,9 +1059,13 @@ void SPlayer::msgBlock(const MsgBlock* m)
   if (!t_->canDoAction(m, this))
     return;
   if (doBlock(m))
-    r_->turnOver(TOM_KNOCKEDDOWN);
+  {
+    r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
+    r_->turnOver();
+  }
   //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before?
   // Note also that a player being placed PRONE is not a turnover unless it is a player from the active team holding the ball.
+  //FIXME: turnover OR turnOver or both?
 }
 
 void SPlayer::msgPass(const MsgPass* m)
@@ -1065,9 +1073,13 @@ void SPlayer::msgPass(const MsgPass* m)
   if (!t_->canDoAction(m, this))
     return;
   if (doPass(m))
-    r_->turnOver(TOM_FUMBLEDPASS);
+  {
+    r_->getCurrentTeam()->turnover(TOM_FUMBLEDPASS);
+    r_->turnOver();
+  }
   //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before?
   // What's the exact motive of the turnover here? fumbled pass or lost ball?
+  //FIXME: turnover OR turnOver or both?
 }
 
 

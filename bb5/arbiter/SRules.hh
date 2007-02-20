@@ -71,9 +71,9 @@ public:
   //! @brief The ball is in game, receiving team can play
   void kickoffFinished();
 
-  //! @brief Cause a turn over. Call it when, eg, an action failed.
-  void turnOver(enum eTurnOverMotive motive);
-  
+  //!@brief Go on next turn.
+  void turnOver();
+
   //! @brief Adapt score and launch the kickoff
   void touchdown();
 

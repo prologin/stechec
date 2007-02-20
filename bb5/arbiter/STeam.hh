@@ -46,12 +46,15 @@ public:
   void setProneStunned();
   void prepareKickoff();
 
+  //! @brief Announce a turnover.
+  void turnover(enum eTurnOverMotive motive);
+  //! @brief Return true if a turnover has been announced.
+  bool isTurnover();
+
   //! @brief Return current active player.
   SPlayer* getActivePlayer();
-
   //! @brief Set player waiting for a reroll decision.
   void setConcernedPlayer(SPlayer* p);
-
   //! @brief Set current pusher (not necessarily from this team).
   void setPusher(SPlayer* p);
 
@@ -75,6 +78,7 @@ private:
   SRules* r_;
   SPlayer* concerned_player_; // When we are waiting for a reroll decision.
   SPlayer* current_pusher_; // When we are waiting for a blockPush choice.
+  bool turnover_;
 };
 
 #endif /* !STEAM_HH_ */

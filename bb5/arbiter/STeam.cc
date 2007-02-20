@@ -211,6 +211,7 @@ void STeam::resetTurn()
   blitz_done_ = false;
   pass_done_ = false;
   reroll_used_ = false;
+  turnover_ = false;
   for (int i = 0; i < MAX_PLAYER; i++)
     if (player_[i] != NULL)
       player_[i]->resetTurn();
@@ -228,6 +229,22 @@ void STeam::prepareKickoff()
   for (int i = 0; i < MAX_PLAYER; i++)
     if (player_[i] != NULL)
       player_[i]->prepareKickoff();  
+}
+
+void STeam::turnover(enum eTurnOverMotive motive)
+{
+  if (! turnover_)
+    {
+      turnover_ = true;
+      MsgTurnOver pkt(team_id_);
+      pkt.motive = motive;
+      r_->sendPacket(pkt);
+    }
+}
+
+bool STeam::isTurnover()
+{
+  return turnover_;
 }
 
 SPlayer* STeam::getActivePlayer()
