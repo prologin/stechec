@@ -27,6 +27,9 @@
 # define UID_COACH_BASE  0        ///< Base uid for coachs
 # define UID_VIEWER_BASE 100      ///< Base uid for viewers
 
+//! @brief Reserved token pool for datatfs/stechec (0-31)
+const unsigned RULES_TOKEN_START = 16;
+
 //! @brief Maximum number of different packets that we can handle.
 const unsigned MAX_TOKEN = 256;
 
@@ -41,20 +44,20 @@ const int VS_READY      = 0x2000; ///< All viewers are ready.
 
 // Synchronization packet. Sent (if rules wish) when an incoming packet
 // is done (processing finished).
-const int MSG_SYNC      = 252;
+const int MSG_SYNC      = 10;
 DECLARE_EMPTY_PACKET(MSG_SYNC, MsgSync);
 
 // Custom events.
-const int CUSTOM_EVENT  = 253;
+const int CUSTOM_EVENT  = 11;
 
 // The packet used by the server to give an uid for the client.
-const int CLIENT_UID    = 254;
+const int CLIENT_UID    = 12;
 DECLARE_PACKET(CLIENT_UID, ClientUid);
   int nb_team;
 END_PACKET
 
 // Packet sent by the server to say that game is now finished.
-const int GAME_FINISHED = 255;
+const int GAME_FINISHED = 13;
 DECLARE_EMPTY_PACKET(GAME_FINISHED, GameFinished);
 
 /*!
@@ -112,8 +115,8 @@ public:
   void          setState(int new_state);
 
   //! @brief Debug function. Return a stringified packet token.
-  std::string   getPacketStr(int token) const;
-
+  const char*	stringifyToken(int token) const;
+  virtual const char* tokenToString(int token) const;
   
 
   /*!

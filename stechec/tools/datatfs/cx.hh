@@ -28,7 +28,7 @@
 //! @brief Network tokens.
 //! Handled by Stechec, either client, server, or base_rules.
 enum {
-  CX_INIT = 0x1000,
+  CX_INIT,
   CX_ACCEPT,
   CX_DENY,
   CX_QUERYLIST,

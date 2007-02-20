@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -33,7 +33,6 @@ public:
   virtual ~BasePacketHandler() {}
   virtual bool handle(const Packet* p) = 0;
   virtual int getCstValue() const = 0;
-  virtual const char* getCstStr() const = 0;
   virtual void dispatchUIEvent(const EventProcess* evp,
                                const Packet& pkt) = 0;
 };
@@ -79,13 +78,12 @@ public:                                                         \
     if (filt_f_ &&						\
 	!(obj_->*filt_f_)(reinterpret_cast<const PClass*>(p)))	\
       return false;						\
-    LOG5("PacketHandler gets message '"                         \
-         #Cst "' (client_id: %1 )", p->client_id);         \
+    LOG5("PacketHandler gets message `"                         \
+         #Cst "' (client_id: %1)", p->client_id);               \
     (obj_->*f_)(reinterpret_cast<const PClass*>(p));            \
     return true;                                                \
   }                                                             \
   virtual int getCstValue() const { return Cst; }               \
-  virtual const char* getCstStr() const { return #Cst; }        \
   virtual void dispatchUIEvent(const EventProcess* evp,         \
                                const Packet& pkt)               \
   {                                                             \
@@ -103,7 +101,7 @@ struct PClass : public Packet                                   \
 
 // Ugly. To have balanced braces.
 # define END_PACKET };
- 
+
 //! @brief Declare a Packet without additional attributes 
 # define DECLARE_EMPTY_PACKET(Cst, PClass)      \
   DECLARE_PACKET(Cst, PClass)                   \

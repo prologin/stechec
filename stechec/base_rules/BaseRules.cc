@@ -56,11 +56,16 @@ void    BaseRules::setTeamNumber(int value)
 
 void    BaseRules::handlePacket(const Packet* p)
 {
-  assert(p->token < MAX_TOKEN);
+  if (p->token < 0 || p->token >= MAX_TOKEN)
+    {
+      WARN("handlePacket: token not in allowed range: `%1'", p->token);
+    }
+
   if (pkt_hdl_[p->token].empty())
     {
       // This token has no associated object. This is an error.
-      WARN("handlePacket: unknown packet token = %1", p->token);
+      WARN("handlePacket: unknown packet token: `%1'",
+	   stringifyToken(p->token));
     }
   else
     {
@@ -73,7 +78,8 @@ void    BaseRules::handlePacket(const Packet* p)
 	    handled = true;
           }
       if (!handled)
-	WARN("handlePacket: msg '%1` doesn't have handler for state %2", pkt_hdl_[p->token].begin()->second->getCstStr(), state_);
+	WARN("handlePacket: msg `%1' doesn't have handler for state `%2'",
+	     stringifyToken(p->token), state_);
     }
 }
 
@@ -87,15 +93,39 @@ void        BaseRules::setState(int new_state)
   state_ = new_state;
 }
 
-std::string BaseRules::getPacketStr(int token) const
+const char* BaseRules::stringifyToken(int token) const
 {
-  if (pkt_hdl_[token].empty())
-    {
-      std::ostringstream os;
-      os << "`" << token << "'";
-      return os.rdbuf()->str();
-    }
-  return std::string(pkt_hdl_[token].begin()->second->getCstStr());
+  static const char *base_token_str[] = {
+    "CX_INIT",
+    "CX_ACCEPT",
+    "CX_DENY",
+    "CX_QUERYLIST",
+    "CX_LIST",
+    "CX_JOIN",
+    "CX_READY",
+    "CX_ABORT",
+    "n/a",
+    "n/a",
+    "MSG_SYNC",
+    "CUSTOM_EVENT",
+    "CLIENT_UID",
+    "GAME_FINISHED",
+    "n/a",
+    "n/a"
+  };
+  
+  if (token < 0)
+    return "error: < 0";
+  if (token < RULES_TOKEN_START)
+    return base_token_str[token];
+      
+  // Ask upper level for stringified token
+  return tokenToString(token);
+}
+
+const char* BaseRules::tokenToString(int) const
+{
+  return "n/a";
 }
 
 void        BaseRules::serialize(std::ostream& os) const
