@@ -57,11 +57,7 @@ public:
   //! @brief Graphic info.
   const std::string& getPlayerPicture() const;
 
-  
-private:
-  CRules* r_;
-
-  // Message from server.
+  // Called by CPlayerMsg.
   void msgDeclareAction(const MsgDeclare* m);
   void msgPlayerPos(const MsgPlayerPos* m);
   void msgPlayerMove(const MsgMove* m);
@@ -69,13 +65,8 @@ private:
   void msgPlayerStatus(const MsgPlayerStatus* m);
   void msgPlayerKO(const MsgPlayerKO* m);
 
-  // Filter messages. Say yes if this message is for this player.
-  bool filterDeclareAction(const MsgDeclare* m);
-  bool filterPlayerPos(const MsgPlayerPos* m);
-  bool filterPlayerMove(const MsgMove* m);
-  bool filterPlayerKnocked(const MsgPlayerKnocked* m);
-  bool filterPlayerStatus(const MsgPlayerStatus* m);
-  bool filterPlayerKO(const MsgPlayerKO* m);
+private:
+  CRules* r_;
 
   // for graphic UI.
   int player_position_;

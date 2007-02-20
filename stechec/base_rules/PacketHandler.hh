@@ -31,7 +31,7 @@ class BasePacketHandler
 {
 public:
   virtual ~BasePacketHandler() {}
-  virtual bool handle(const Packet* p) = 0;
+  virtual void handle(const Packet* p) = 0;
   virtual int getCstValue() const = 0;
   virtual void dispatchUIEvent(const EventProcess* evp,
                                const Packet& pkt) = 0;
@@ -70,18 +70,13 @@ class PacketHandler<Cst, T> : public BasePacketHandler          \
 {                                                               \
 public:                                                         \
   typedef void (T::*fct_t)(const PClass*);                      \
-  typedef bool (T::*filter_fct_t)(const PClass*);               \
-  PacketHandler<Cst, T>(T* obj, fct_t f, filter_fct_t ff)       \
-    : obj_(obj), f_(f), filt_f_(ff) {}                          \
-  virtual bool handle(const Packet* p)                          \
+  PacketHandler<Cst, T>(T* obj, fct_t f)                        \
+    : obj_(obj), f_(f) {}                                       \
+  virtual void handle(const Packet* p)                          \
   {                                                             \
-    if (filt_f_ &&						\
-	!(obj_->*filt_f_)(reinterpret_cast<const PClass*>(p)))	\
-      return false;						\
     LOG5("PacketHandler gets message `"                         \
          #Cst "' (client_id: %1)", p->client_id);               \
     (obj_->*f_)(reinterpret_cast<const PClass*>(p));            \
-    return true;                                                \
   }                                                             \
   virtual int getCstValue() const { return Cst; }               \
   virtual void dispatchUIEvent(const EventProcess* evp,         \
@@ -92,7 +87,6 @@ public:                                                         \
 private:                                                        \
   T* obj_;                                                      \
   fct_t f_;                                                     \
-  filter_fct_t filt_f_;						\
 };                                                              \
 struct PClass : public Packet                                   \
 {                                                               \
@@ -107,11 +101,8 @@ struct PClass : public Packet                                   \
   DECLARE_PACKET(Cst, PClass)                   \
   END_PACKET 
 
-#define HANDLE_WITH(Token, Class, Object, Method, When)                        \
-  handleWith(new PacketHandler<Token, Class>(Object, &Class::Method, NULL), When)
-
-#define HANDLE_F_WITH(Token, Class, Object, Method, Filter, When)              \
-  handleWith(new PacketHandler<Token, Class>(Object, &Class::Method, &Class::Filter), When)
+#define HANDLE_WITH(Token, Class, Object, Method, When)				\
+  handleWith(new PacketHandler<Token, Class>(Object, &Class::Method), When)
 
 
 #endif /* !PACKETHANDLER_HH_ */

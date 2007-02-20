@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -26,11 +26,6 @@ SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t)
     d_(r->getDice()),
     target_(NULL)
 {
-  r_->HANDLE_F_WITH(MSG_DECLARE, SPlayer, this, msgDeclare, filterDeclare, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_MOVE, SPlayer, this, msgMove, filterMove, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_STANDUP, SPlayer, this, msgStandUp, filterStandUp, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_BLOCK, SPlayer, this, msgBlock, filterBlock, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_PASS, SPlayer, this, msgPass, filterPass, GS_COACHBOTH);
 }
 
 /*
@@ -1080,40 +1075,4 @@ void SPlayer::msgPass(const MsgPass* m)
   //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before?
   // What's the exact motive of the turnover here? fumbled pass or lost ball?
   //FIXME: turnover OR turnOver or both?
-}
-
-
-bool SPlayer::filterDeclare(const MsgDeclare* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool SPlayer::filterMove(const MsgMove* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool SPlayer::filterStandUp(const MsgStandUp* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool SPlayer::filterBlock(const MsgBlock* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool SPlayer::filterPass(const MsgPass* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
 }

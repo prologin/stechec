@@ -17,6 +17,8 @@
 #include "Constants.hh"
 #include "Dice.hh"
 #include "SRules.hh"
+#include "STeamMsg.hh"
+#include "SPlayerMsg.hh"
 #include "xml/xml_config.hh"
 
 SRules::SRules()
@@ -31,6 +33,8 @@ SRules::SRules()
   timer_.setAllowedTime(60 * 4); // 4min per turn.
 
   dice_ = new Dice(this);
+  team_msg_ = new STeamMsg(this);
+  player_msg_ = new SPlayerMsg(this);
 
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, SRules, this, msgInitGame, GS_INITGAME);
@@ -49,6 +53,8 @@ SRules::~SRules()
   delete ball_;
   delete field_;
   delete dice_;
+  delete team_msg_;
+  delete player_msg_;
 }
 
 void SRules::serialize(std::ostream& os) const
@@ -72,8 +78,10 @@ const char* SRules::tokenToString(int token) const
 
 void SRules::serverStartup()
 {
-  team_[0] = new STeam(0, this);
-  team_[1] = new STeam(1, this);
+  team_[0] = new STeam(0, this, player_msg_);
+  team_[1] = new STeam(1, this, player_msg_);
+  team_msg_->setTeam(0, team_[0]);
+  team_msg_->setTeam(1, team_[1]);
 
   //  weather_ = new SWeather();
   ball_ = new SBall(this);

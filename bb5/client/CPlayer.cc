@@ -15,6 +15,7 @@
 */
 
 #include "CRules.hh"
+#include "CField.hh"
 #include "CPlayer.hh"
 
 CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
@@ -24,13 +25,6 @@ CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   position_name_ = packetToString(m->position_name);
   player_position_ = m->player_position;
   player_picture_ = packetToString(m->player_img);
-
-  r_->HANDLE_F_WITH(MSG_DECLARE, CPlayer, this, msgDeclareAction, filterDeclareAction, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_PLAYERPOS, CPlayer, this, msgPlayerPos, filterPlayerPos, GS_ALL | GS_INITGAME | GS_INITKICKOFF | GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_MOVE, CPlayer, this, msgPlayerMove, filterPlayerMove, GS_COACHBOTH | GS_REROLL);
-  r_->HANDLE_F_WITH(MSG_PLAYERKNOCKED, CPlayer, this, msgPlayerKnocked, filterPlayerKnocked, GS_COACHBOTH | GS_REROLL);
-  r_->HANDLE_F_WITH(MSG_PLAYERSTATUS, CPlayer, this, msgPlayerStatus, filterPlayerStatus, GS_ALL);
-  r_->HANDLE_F_WITH(MSG_PLAYERKO, CPlayer, this, msgPlayerKO, filterPlayerKO, GS_INITKICKOFF);
 }
 
 CPlayer::~CPlayer()
@@ -307,50 +301,4 @@ void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
 void CPlayer::msgPlayerKO(const MsgPlayerKO* m)
 {
   r_->onEvent(m);
-}
-
-/*
-** Message filters.
-*/
-
-bool CPlayer::filterDeclareAction(const MsgDeclare* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool CPlayer::filterPlayerPos(const MsgPlayerPos* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool CPlayer::filterPlayerMove(const MsgMove* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool CPlayer::filterPlayerKnocked(const MsgPlayerKnocked* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool CPlayer::filterPlayerStatus(const MsgPlayerStatus* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
-}
-
-bool CPlayer::filterPlayerKO(const MsgPlayerKO* m)
-{
-  if (m->client_id != team_id_ || m->player_id != id_)
-    return false;
-  return true;
 }

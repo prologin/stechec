@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -15,15 +15,14 @@
 */
 
 #include "CRules.hh"
+#include "CPlayerMsg.hh"
 #include "CTeam.hh"
 
-CTeam::CTeam(int team_id, CRules* r)
+CTeam::CTeam(int team_id, CRules* r, CPlayerMsg* pm)
   : Team<CPlayer>(team_id),
-    r_(r)
+    r_(r),
+    pm_(pm)
 {
-  r_->HANDLE_F_WITH(MSG_TEAMINFO, CTeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_PLAYERCREATE, CTeam, this, msgPlayerCreate, filterPlayerCreate, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_REROLL, CTeam, this, msgReroll, filterReroll, GS_REROLL);
 }
 
 CTeam::~CTeam()
@@ -141,24 +140,11 @@ void CTeam::msgTeamInfo(const MsgTeamInfo* m)
   reroll_ = m->reroll;
 }
 
-bool CTeam::filterTeamInfo(const MsgTeamInfo* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
-}
-
 void CTeam::msgPlayerCreate(const MsgPlayerCreate* m)
 {
   player_[m->player_id] = new CPlayer(r_, m);
+  pm_->setPlayer(m->client_id, m->player_id, player_[m->player_id]);
   r_->onEvent(m);
-}
-
-bool CTeam::filterPlayerCreate(const MsgPlayerCreate* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
 }
 
 void CTeam::msgReroll(const MsgReroll* m)
@@ -169,11 +155,4 @@ void CTeam::msgReroll(const MsgReroll* m)
       reroll_used_ = true;
       reroll_remain_ = reroll_remain_ - 1;
     }
-}
-
-bool CTeam::filterReroll(const MsgReroll* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
 }

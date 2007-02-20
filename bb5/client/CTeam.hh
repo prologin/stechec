@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@
 # include "xml/xml_formation.hh"
 
 class CRules;
+class CPlayerMsg;
 
 /*!
 ** @brief Team implementation on client side
@@ -30,7 +31,7 @@ class CRules;
 class CTeam : public Team<CPlayer>
 {
 public:
-  CTeam(int team_id, CRules *r);
+  CTeam(int team_id, CRules *r, CPlayerMsg *pm);
   virtual ~CTeam();
 
   //! @brief Load team configuration from xml.
@@ -49,17 +50,14 @@ public:
   //!  Called from the UI.
   int declareAction(CPlayer* p, enum eDeclaredAction action);
 
-
-private:
+  // Called by CTeamMsg.
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
   void msgReroll(const MsgReroll* m);
 
-  bool filterTeamInfo(const MsgTeamInfo* m);
-  bool filterPlayerCreate(const MsgPlayerCreate* m);
-  bool filterReroll(const MsgReroll* m);
-
+private:
   CRules* r_;
+  CPlayerMsg* pm_;
   xml::XMLTeam xml_team_;
   xml::XMLFormation xml_formation_;
 };

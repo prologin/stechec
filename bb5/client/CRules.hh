@@ -19,16 +19,21 @@
 
 # include "BaseCRules.hh"
 # include "BaseApi.hh"
+# include "Constants.hh"
 # include "Weather.hh"
-# include "CField.hh"
-# include "CBall.hh"
 # include "CTeam.hh"
+# include "CPlayer.hh"
+# include "CBall.hh"
+# include "CField.hh"
 
 // Mostly a big hack, to have BaseCRules::onEvent(int) working.
 DECLARE_EMPTY_PACKET(CUSTOM_EVENT, CustomEvent);
 
 namespace xml { class XMLConfig; }
 class Api;
+class Weather;
+class CTeamMsg;
+class CPlayerMsg;
 
 //! @brief Constants for switchTeam().
 enum eSelTeam {
@@ -90,6 +95,8 @@ private:
   CField*   field_;
   CTeam*    our_team_;
   CTeam*    other_team_;
+  CTeamMsg* team_msg_;
+  CPlayerMsg* player_msg_;
 };
 
 # include "CRules.hxx"

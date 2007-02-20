@@ -17,11 +17,15 @@ libbb5_client_rules_common_la_SOURCES =		\
 	CField.hh				\
 	CPlayer.cc				\
 	CPlayer.hh				\
+	CPlayerMsg.hh				\
+	CPlayerMsg.cc				\
 	CRules.cc				\
 	CRules.hh				\
 	CRules.hxx				\
 	CTeam.hh				\
 	CTeam.cc				\
+	CTeamMsg.hh				\
+	CTeamMsg.cc				\
 	Event.hh				\
 	Event.cc
 

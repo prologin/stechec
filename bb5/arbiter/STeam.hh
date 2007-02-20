@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -21,8 +21,10 @@
 # include "Team.hh"
 
 class SRules;
+class SPlayerMsg;
 
-/*! @brief Team management for the server.
+/*!
+** @brief Team management for the server.
 **
 ** Now it's time to implement THE rules :)
 ** It seems to be a good place to start here.
@@ -33,7 +35,7 @@ class SRules;
 class STeam : public Team<SPlayer>
 {  
 public:
-  STeam(int team_id, SRules* r);
+  STeam(int team_id, SRules* r, SPlayerMsg* pm);
 
   int state_; ///< Team state on client side.
 
@@ -58,7 +60,6 @@ public:
   //! @brief Set current pusher (not necessarily from this team).
   void setPusher(SPlayer* p);
 
-private:
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
   void msgPlayerPos(const MsgPlayerPos* m);
@@ -66,16 +67,12 @@ private:
   void msgBlockDice(const MsgBlockDice* m);
   void msgFollow(const MsgFollow* m);
   void msgBlockPush(const MsgBlockPush* m);
-  bool filterTeamInfo(const MsgTeamInfo* m);
-  bool filterPlayerCreate(const MsgPlayerCreate* m);
-  bool filterPlayerPos(const MsgPlayerPos* m);
-  bool filterReroll(const MsgReroll* m);
-  bool filterBlockDice(const MsgBlockDice* m);
-  bool filterFollow(const MsgFollow* m);
-  bool filterBlockPush(const MsgBlockPush* m);
 
+private:
   int active_player_id_; // Store ID is enough, since active player is from active team.
   SRules* r_;
+  SPlayerMsg* pm_;
+
   SPlayer* concerned_player_; // When we are waiting for a reroll decision.
   SPlayer* current_pusher_; // When we are waiting for a blockPush choice.
   bool turnover_;

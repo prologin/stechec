@@ -15,10 +15,12 @@
 */
 
 #include "Constants.hh"
+#include "xml/xml_config.hh"
 #include "Event.hh"
 #include "Api.hh"
+#include "CTeamMsg.hh"
+#include "CPlayerMsg.hh"
 #include "CRules.hh"
-#include "xml/xml_config.hh"
 
 
 CRules::CRules(const xml::XMLConfig& cfg)
@@ -45,11 +47,15 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_FOLLOW, CRules, this, msgFollow, GS_PUSH | GS_COACHBOTH | GS_BLOCK | GS_FOLLOW);
   
   api_ = new Api(this);
+  team_msg_ = new CTeamMsg(this);
+  player_msg_ = new CPlayerMsg(this);
 }
 
 CRules::~CRules()
 {
   delete api_;
+  delete team_msg_;
+  delete player_msg_;
 }
 
 void        CRules::serialize(std::ostream& os) const
@@ -103,11 +109,13 @@ void        CRules::msgInitGame(const MsgInitGame* m)
   HANDLE_WITH(MSG_BALLPOS, CBall, ball_, setPosition, GS_ALL);
 
   // Create, populate our team from the xml file, and send it.
-  our_team_ = new CTeam(getTeamId(), this);
+  our_team_ = new CTeam(getTeamId(), this, player_msg_);
+  team_msg_->setTeam(our_team_->getTeamId(), our_team_);
   our_team_->loadConfig(cfg_.getData<std::string>("client", "team"));
 
   // Other team.
-  other_team_ = new CTeam(getTeamId() == 0 ? 1 : 0, this);
+  other_team_ = new CTeam(getTeamId() == 0 ? 1 : 0, this, player_msg_);
+  team_msg_->setTeam(other_team_->getTeamId(), other_team_);
 
   // Kludge. Allow UI to do something while in GS_INITGAME.
   onEvent(eInitGame);

@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -15,21 +15,16 @@
 */
 
 #include "SRules.hh"
+#include "SPlayerMsg.hh"
 #include "STeam.hh"
 
-STeam::STeam(int team_id, SRules* r)
+STeam::STeam(int team_id, SRules* r, SPlayerMsg* pm)
   : Team<SPlayer>(team_id),
     state_(GS_INITGAME),
     active_player_id_(-1),
-    r_(r)
+    r_(r),
+    pm_(pm)
 {
-  r_->HANDLE_F_WITH(MSG_TEAMINFO, STeam, this, msgTeamInfo, filterTeamInfo, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_PLAYERCREATE, STeam, this, msgPlayerCreate, filterPlayerCreate, GS_INITGAME);
-  r_->HANDLE_F_WITH(MSG_PLAYERPOS, STeam, this, msgPlayerPos, filterPlayerPos, GS_INITKICKOFF);
-  r_->HANDLE_F_WITH(MSG_REROLL, STeam, this, msgReroll, filterReroll, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_BLOCKDICE, STeam, this, msgBlockDice, filterBlockDice, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_FOLLOW, STeam, this, msgFollow, filterFollow, GS_COACHBOTH);
-  r_->HANDLE_F_WITH(MSG_BLOCKPUSH, STeam, this, msgBlockPush, filterBlockPush, GS_COACHBOTH);
 }
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
@@ -42,14 +37,6 @@ void STeam::msgTeamInfo(const MsgTeamInfo* m)
   r_->sendPacket(*m);
 }
 
-bool STeam::filterTeamInfo(const MsgTeamInfo* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
-}
-
-
 void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
 {
   // Create the player.
@@ -58,6 +45,7 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
       player_[m->player_id] = new SPlayer(r_, m, this);
       if (player_[m->player_id]->acceptPlayerCreation())
         {
+	  pm_->setPlayer(m->client_id, m->player_id, player_[m->player_id]);
           r_->sendPacket(*m);
         }
       else
@@ -75,13 +63,6 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
       LOG2("Team %1. Player %2 already exists.", team_id_, m->player_id);
       r_->sendIllegal(MSG_PLAYERCREATE, m->client_id);
     }
-}
-
-bool STeam::filterPlayerCreate(const MsgPlayerCreate* m)
-{
-  if (m->client_id != team_id_ || m->player_id < 0 || m->player_id >= MAX_PLAYER)
-    return false;
-  return true;
 }
 
 // Receive players initial position, on kick-off.
@@ -107,13 +88,6 @@ void STeam::msgPlayerPos(const MsgPlayerPos* m)
             }
         }
     }
-}
-
-bool STeam::filterPlayerPos(const MsgPlayerPos* m)
-{
-  if (m->client_id != team_id_ || m->player_id < 0 || m->player_id >= MAX_PLAYER )
-    return false;
-  return true;
 }
 
 // Want to use a reroll
@@ -143,13 +117,6 @@ void STeam::msgReroll(const MsgReroll* m)
   concerned_player_->finishAction(m->reroll);
 }
 
-bool STeam::filterReroll(const MsgReroll* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
-}
-
 void STeam::msgBlockDice(const MsgBlockDice* m)
 {
   if (concerned_player_->nb_dice_ <= m->dice)
@@ -164,25 +131,11 @@ void STeam::msgBlockDice(const MsgBlockDice* m)
   concerned_player_->resolveBlock(m->dice);
 }
 
-bool STeam::filterBlockDice(const MsgBlockDice*)
-{
-  if (r_->getCurrentTeamId() != team_id_)
-    return false;
-  return true;
-}
-
 void STeam::msgFollow(const MsgFollow* m)
 {
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
   getActivePlayer()->follow(m->follow);
-}
-
-bool STeam::filterFollow(const MsgFollow* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
 }
 
 void STeam::msgBlockPush(const MsgBlockPush* m)
@@ -196,12 +149,7 @@ void STeam::msgBlockPush(const MsgBlockPush* m)
   current_pusher_->blockPush(m);
 }
 
-bool STeam::filterBlockPush(const MsgBlockPush* m)
-{
-  if (m->client_id != team_id_)
-    return false;
-  return true;
-}
+
 
 void STeam::resetTurn()
 {

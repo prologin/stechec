@@ -25,6 +25,8 @@
 # include "SPlayer.hh"
 
 typedef Field<SPlayer> SField;
+class STeamMsg;
+class SPlayerMsg;
 
 /*!
 ** @brief Rules implementation for the server.
@@ -108,6 +110,8 @@ private:
   SBall*    ball_;
   SField*   field_;
   Dice*     dice_;
+  STeamMsg* team_msg_;
+  SPlayerMsg* player_msg_;
   int       coach_begin_;
   int       coach_receiver_;
 };

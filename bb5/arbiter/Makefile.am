@@ -5,8 +5,12 @@ lib_LTLIBRARIES = bb5_arbiter.la
 bb5_arbiter_la_SOURCES =			\
 	STeam.cc				\
 	STeam.hh				\
+	STeamMsg.cc				\
+	STeamMsg.hh				\
 	SPlayer.hh				\
 	SPlayer.cc				\
+	SPlayerMsg.cc				\
+	SPlayerMsg.hh				\
 	SRules.cc				\
 	SRules.hh				\
 	SRules.hxx				\

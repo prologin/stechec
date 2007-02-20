@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -70,19 +70,14 @@ public:
   int nb_dice_;
   SPlayer* pusher_; ///< Player who pushes you.
 
-private:
-
   void msgDeclare(const MsgDeclare* m);
   void msgMove(const MsgMove* m);
   void msgStandUp(const MsgStandUp* m);
   void msgBlock(const MsgBlock* m);
   void msgPass(const MsgPass* m);
-  bool filterDeclare(const MsgDeclare* m);
-  bool filterMove(const MsgMove* m);
-  bool filterStandUp(const MsgStandUp* m);
-  bool filterBlock(const MsgBlock* m);
-  bool filterPass(const MsgPass* m);
-  
+
+private:
+
   void sendRoll(int result, int modifier, int required);
 
   //! @brief Move this player.
@@ -97,7 +92,6 @@ private:
   //! @return non-zero if action failed.
   int doPass(const MsgPass* m);
 
-  //! @
   void blockPushChoice(SPlayer* target);
   
   void blockFollow();
