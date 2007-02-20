@@ -58,6 +58,8 @@ public:
   //! @brief Get the api.
   virtual Api* getApi();
 
+  virtual const char* tokenToString(int token) const;
+
 private:
 
   // Methods to catch server response.

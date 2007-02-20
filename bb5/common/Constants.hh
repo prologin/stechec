@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 **
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@
 */
 //@{
 
-# include "PacketHandler.hh"
+# include "BaseRules.hh"
 
 // Constants describing the current status of the game.
 const int GS_INITGAME      = 0x0001;
@@ -63,43 +63,44 @@ const int SUCCESS          = 0;
 
 //! @brief Tokens used for the game.
 //! @see Packet.
-//! @note Keep this list below 250, otherwise you'll run into trouble.
+//! @note Keep this list below MAX_TOKEN (256), otherwise you'll run into trouble.
 enum {
-  MSG_CHAT = 10,
+  MSG_CHAT = RULES_TOKEN_START,
   MSG_ILLEGAL,
   MSG_INITGAME,
   MSG_INITHALF,
   MSG_INITKICKOFF,
-  MSG_CHEATDICE,        // 15
+  MSG_CHEATDICE,
   MSG_RESULT,
   MSG_BLOCKRESULT,
   MSG_BLOCKDICE,
   MSG_FOLLOW,
-  MSG_REROLL,           // 20
+  MSG_REROLL,
   MSG_NEWTURN,
   MSG_ENDTURN,
   MSG_ENDGAME,
   MSG_BALLPOS,
-  MSG_GIVEBALL,         // 25
+  MSG_GIVEBALL,
   MSG_WEATHER,
   MSG_TURNOVER,
   MSG_TEAMINFO,
   MSG_PLAYERCREATE,
-  MSG_PLAYERPOS,        // 30
+  MSG_PLAYERPOS,
   MSG_PLAYERKNOCKED,
   MSG_PLAYERSTATUS,
   MSG_PLAYERKO,
   MSG_SKILL,
-  MSG_ROLLINFO,     // 35 FIXME: complete usage
+  MSG_ROLLINFO,     // FIXME: complete usage
   MSG_MOVETURNMARKER,
   MSG_ILLEGALPROC,
   MSG_DECLARE,
   MSG_MOVE,
-  MSG_STANDUP,      // 40
+  MSG_STANDUP,
   MSG_BLOCK,
   MSG_BLOCKPUSH,
   MSG_MULTIBLOCK,
-  MSG_PASS
+  MSG_PASS,
+  RULES_TOKEN_LAST,
 };
 
 //! @brief Player status.
@@ -173,6 +174,10 @@ enum eTurnOverMotive {
   TOM_THROWNTMFAILED,
   TOM_EJECTEDFORAFOUL
 };
+
+//! @brief Token string constants for bb5 rules.
+//! @note Keep it syncronized with all MSG_ enum below.
+extern const char *bb5_token_str[RULES_TOKEN_LAST - RULES_TOKEN_START];
 
 //@}
 

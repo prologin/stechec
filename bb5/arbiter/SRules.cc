@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -60,6 +60,14 @@ void SRules::unserialize(std::istream& is)
 {
   int foo;
   is >> foo;
+}
+
+const char* SRules::tokenToString(int token) const
+{
+  token -= RULES_TOKEN_START;
+  if (token >= sizeof (bb5_token_str) / sizeof (const char *))
+    return "(overflow)";
+  return bb5_token_str[token];
 }
 
 void SRules::serverStartup()
@@ -201,8 +209,6 @@ void SRules::touchdown()
   coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
   initKickoff();
 }
-
-
 
 
 /*

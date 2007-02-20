@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -81,6 +81,8 @@ public:
   virtual void unserialize(std::istream& is);
 
 private:
+
+  const char* tokenToString(int token) const;
 
   //! @brief Initialize rules and launch game.
   //! called once in a game.

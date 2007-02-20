@@ -4,6 +4,7 @@ noinst_LTLIBRARIES = libbb5_common.la
 
 libbb5_common_la_SOURCES =			\
 	Module.cc				\
+	Constants.cc				\
 	Constants.hh				\
 	Ball.hh					\
 	Dice.cc					\
