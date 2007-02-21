@@ -32,19 +32,18 @@
 # include "BaseRules.hh"
 
 // Constants describing the current status of the game.
-const int GS_INITGAME      = 0x0001;
-const int GS_INITKICKOFF   = 0x0002;
-const int GS_COACH1        = 0x0004; ///< Coach 1 turn.
-const int GS_COACH2        = 0x0008; ///< Coach 2 turn.
-const int GS_PAUSE         = 0x0010;
-const int GS_TOUCHBACK     = 0x0020;
-const int GS_REROLL        = 0x0040; ///< wait for coach to use or not a reroll
-const int GS_BLOCK         = 0x0080; ///< wait for coach to choose a block dice
-const int GS_PUSH          = 0x0100; ///< wait for coach to choose a square
-const int GS_FOLLOW        = 0x0200; ///< wait for coach to follow or not
-const int GS_SKILL         = 0x0400; ///< wait for coach to use or not a skill
-
-const int GS_COACHBOTH     = 0x000C; ///< Any coach turn.
+enum {
+  GS_INITGAME = 1,  
+  GS_INITKICKOFF, 
+  GS_COACH1,      ///< Coach 1 turn.
+  GS_COACH2,      ///< Coach 2 turn.
+  GS_TOUCHBACK,   
+  GS_REROLL,      ///< wait for coach to use or not a reroll
+  GS_BLOCK,       ///< wait for coach to choose a block dice
+  GS_PUSH,        ///< wait for coach to choose a square
+  GS_FOLLOW,      ///< wait for coach to follow or not
+  GS_SKILL,       ///< wait for coach to use or not a skill
+};
 
 // Field limits.
 const int COLS             = 15; ///< [| 0, 14 |]

@@ -72,7 +72,7 @@ void    BaseRules::handlePacket(const Packet* p)
       bool handled = false;
       PktHList::iterator it;
       for (it = pkt_hdl_[p->token].begin(); it != pkt_hdl_[p->token].end(); ++it)
-        if (it->first & state_)
+        if (it->first == 0 || it->first == state_)
           {
             it->second->handle(p);
 	    handled = true;

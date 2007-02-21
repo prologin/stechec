@@ -26,10 +26,10 @@ STeamMsg::STeamMsg(SRules *r)
   r_->HANDLE_WITH(MSG_TEAMINFO, STeamMsg, this, msgTeamInfo, GS_INITGAME);
   r_->HANDLE_WITH(MSG_PLAYERCREATE, STeamMsg, this, msgPlayerCreate, GS_INITGAME);
   r_->HANDLE_WITH(MSG_PLAYERPOS, STeamMsg, this, msgPlayerPos, GS_INITKICKOFF);
-  r_->HANDLE_WITH(MSG_REROLL, STeamMsg, this, msgReroll, GS_COACHBOTH);
-  r_->HANDLE_WITH(MSG_BLOCKDICE, STeamMsg, this, msgBlockDice, GS_COACHBOTH);
-  r_->HANDLE_WITH(MSG_FOLLOW, STeamMsg, this, msgFollow, GS_COACHBOTH);
-  r_->HANDLE_WITH(MSG_BLOCKPUSH, STeamMsg, this, msgBlockPush, GS_COACHBOTH);
+  r_->HANDLE_WITH(MSG_REROLL, STeamMsg, this, msgReroll, 0);
+  r_->HANDLE_WITH(MSG_BLOCKDICE, STeamMsg, this, msgBlockDice, 0);
+  r_->HANDLE_WITH(MSG_FOLLOW, STeamMsg, this, msgFollow, 0);
+  r_->HANDLE_WITH(MSG_BLOCKPUSH, STeamMsg, this, msgBlockPush, 0);
 }
 
 STeamMsg::~STeamMsg()
@@ -76,28 +76,60 @@ void STeamMsg::msgPlayerPos(const MsgPlayerPos* m)
 
 void STeamMsg::msgReroll(const MsgReroll* m)
 {
-  STeam *t = getTeam(m->token, m->client_id);
-  if (t != NULL)
-    t->msgReroll(m);
+  STeam* t;
+
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
+  t = getTeam(m->token, m->client_id);
+  if (t == NULL)
+    return;
+  t->msgReroll(m);
 }
 
 void STeamMsg::msgBlockDice(const MsgBlockDice* m)
 {
-  STeam *t = getTeam(m->token, m->client_id);
-  if (t != NULL)
-    t->msgBlockDice(m);
+  STeam* t;
+
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
+  t = getTeam(m->token, m->client_id);
+  if (t == NULL)
+    return;
+  t->msgBlockDice(m);
 }
 
 void STeamMsg::msgFollow(const MsgFollow* m)
 {
-  STeam *t = getTeam(m->token, m->client_id);
-  if (t != NULL)
-    t->msgFollow(m);
+  STeam* t;
+
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
+  t = getTeam(m->token, m->client_id);
+  if (t == NULL)
+    return;
+  t->msgFollow(m);
 }
 
 void STeamMsg::msgBlockPush(const MsgBlockPush* m)
 {
-  STeam *t = getTeam(m->token, m->client_id);
-  if (t != NULL)
-    t->msgBlockPush(m);
+  STeam* t;
+
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
+  t = getTeam(m->token, m->client_id);
+  if (t == NULL)
+    return;
+  t->msgBlockPush(m);
 }

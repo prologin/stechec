@@ -34,9 +34,8 @@ const unsigned RULES_TOKEN_START = 16;
 const unsigned MAX_TOKEN = 256;
 
 // Some very common game state.
-const int GS_WAIT       = 0x4000; ///< Coach waiting for another coach.
-const int GS_END        = 0x8000; ///< End of game, nothing to do anymore.
-const int GS_ALL        = 0x3FFF; ///< All events, except GS_WAIT and GS_END.
+const int GS_WAIT       = 0xFFFE; ///< Coach waiting for another coach.
+const int GS_END        = 0xFFFF; ///< End of game, nothing to do anymore.
 
 // Viewers State (VS). Only for the server. Set by the server.
 const int VS_HAVEVIEWER = 0x0800; ///< If there is at least one viewer.
@@ -104,7 +103,7 @@ public:
   void          sendPacket(const Packet& p) const;
 
   //! @brief Register a packet handler.
-  void          handleWith(BasePacketHandler* bph, int when = GS_ALL);
+  void          handleWith(BasePacketHandler* bph, int when = 0);
 
   //! @brief Get the number of teams.
   int           getTeamNumber() const;

@@ -26,12 +26,12 @@ CPlayerMsg::CPlayerMsg(CRules *r)
       p_[1][i] = NULL;
     }
 
-  r_->HANDLE_WITH(MSG_DECLARE, CPlayerMsg, this, msgDeclareAction, GS_COACHBOTH);
-  r_->HANDLE_WITH(MSG_PLAYERPOS, CPlayerMsg, this, msgPlayerPos, GS_ALL);
-  r_->HANDLE_WITH(MSG_MOVE, CPlayerMsg, this, msgPlayerMove, GS_COACHBOTH | GS_REROLL);
-  r_->HANDLE_WITH(MSG_PLAYERKNOCKED, CPlayerMsg, this, msgPlayerKnocked, GS_COACHBOTH | GS_REROLL);
-  r_->HANDLE_WITH(MSG_PLAYERSTATUS, CPlayerMsg, this, msgPlayerStatus, GS_ALL);
-  r_->HANDLE_WITH(MSG_PLAYERKO, CPlayerMsg, this, msgPlayerKO, GS_INITKICKOFF);
+  r_->HANDLE_WITH(MSG_DECLARE, CPlayerMsg, this, msgDeclareAction, 0);
+  r_->HANDLE_WITH(MSG_PLAYERPOS, CPlayerMsg, this, msgPlayerPos, 0);
+  r_->HANDLE_WITH(MSG_MOVE, CPlayerMsg, this, msgPlayerMove, 0);
+  r_->HANDLE_WITH(MSG_PLAYERKNOCKED, CPlayerMsg, this, msgPlayerKnocked, 0);
+  r_->HANDLE_WITH(MSG_PLAYERSTATUS, CPlayerMsg, this, msgPlayerStatus, 0);
+  r_->HANDLE_WITH(MSG_PLAYERKO, CPlayerMsg, this, msgPlayerKO, 0);
 }
 
 CPlayerMsg::~CPlayerMsg()
@@ -62,6 +62,11 @@ CPlayer* CPlayerMsg::getPlayer(int token, int team_id, int player_id)
 
 void CPlayerMsg::msgDeclareAction(const MsgDeclare* m)
 {
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
   CPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
   if (p != NULL)
     p->msgDeclareAction(m);
@@ -76,6 +81,12 @@ void CPlayerMsg::msgPlayerPos(const MsgPlayerPos* m)
 
 void CPlayerMsg::msgPlayerMove(const MsgMove* m)
 {
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2 &&
+      r_->getState() != GS_REROLL)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
   CPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
   if (p != NULL)
     p->msgPlayerMove(m);
@@ -83,6 +94,12 @@ void CPlayerMsg::msgPlayerMove(const MsgMove* m)
 
 void CPlayerMsg::msgPlayerKnocked(const MsgPlayerKnocked* m)
 {
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2 &&
+      r_->getState() != GS_REROLL)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
   CPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
   if (p != NULL)
     p->msgPlayerKnocked(m);
@@ -97,6 +114,11 @@ void CPlayerMsg::msgPlayerStatus(const MsgPlayerStatus* m)
 
 void CPlayerMsg::msgPlayerKO(const MsgPlayerKO* m)
 {
+  if (r_->getState() != GS_INITKICKOFF)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
   CPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
   if (p != NULL)
     p->msgPlayerKO(m);

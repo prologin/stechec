@@ -383,8 +383,6 @@ inline const char* Api::gameStateString() const
       return "GS_COACH1";
     case GS_COACH2:
       return "GS_COACH2";
-    case GS_PAUSE:
-      return "GS_PAUSE";
     case GS_TOUCHBACK:
       return "GS_TOUCHBACK";
     case GS_REROLL:

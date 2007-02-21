@@ -20,9 +20,9 @@ BaseCRules::BaseCRules()
   : team_id_(-1),
     busy_count_(0)
 {
-  HANDLE_WITH(MSG_SYNC, BaseCRules, this, msgCatchSync, GS_ALL);
+  HANDLE_WITH(MSG_SYNC, BaseCRules, this, msgCatchSync, 0);
   HANDLE_WITH(CLIENT_UID, BaseCRules, this, msgCatchUid, GS_WAIT);
-  HANDLE_WITH(GAME_FINISHED, BaseCRules, this, msgCatchGameFinished, GS_ALL | GS_END);
+  HANDLE_WITH(GAME_FINISHED, BaseCRules, this, msgCatchGameFinished, 0);
 }
 
 BaseCRules::~BaseCRules()

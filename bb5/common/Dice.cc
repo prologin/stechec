@@ -22,7 +22,7 @@ Dice::Dice(BaseRules* r)
 {
   srand((unsigned)time(0));
 
-  r->HANDLE_WITH(MSG_CHEATDICE, Dice, this, msgCheatDice, GS_ALL);
+  r->HANDLE_WITH(MSG_CHEATDICE, Dice, this, msgCheatDice, 0);
 }
 
 Dice::~Dice()

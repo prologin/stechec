@@ -30,22 +30,22 @@ CRules::CRules(const xml::XMLConfig& cfg)
 {
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, CRules, this, msgInitGame, GS_WAIT);
-  HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, GS_ALL);
-  HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, GS_ALL);
-  HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, GS_INITKICKOFF);
-  HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, GS_ALL);
-  HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, GS_ALL);
-  HANDLE_WITH(MSG_TURNOVER, CRules, this, msgTurnOver, GS_ALL);
-  HANDLE_WITH(MSG_ILLEGAL, CRules, this, msgIllegal, GS_ALL);
-  HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, GS_ALL);
-  HANDLE_WITH(MSG_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, GS_ALL);
-  HANDLE_WITH(CUSTOM_EVENT, CRules, this, msgCustomEvent, GS_ALL);
-  HANDLE_WITH(MSG_RESULT, CRules, this, msgResult, GS_ALL);
-  HANDLE_WITH(MSG_BLOCKRESULT, CRules, this, msgBlockResult, GS_COACHBOTH | GS_REROLL | GS_BLOCK);
-  HANDLE_WITH(MSG_BLOCKDICE, CRules, this, msgBlockDice, GS_BLOCK);
-  HANDLE_WITH(MSG_BLOCKPUSH, CRules, this, msgBlockPush, GS_PUSH | GS_COACHBOTH | GS_BLOCK);
-  HANDLE_WITH(MSG_FOLLOW, CRules, this, msgFollow, GS_PUSH | GS_COACHBOTH | GS_BLOCK | GS_FOLLOW);
-  
+  HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, 0);
+  HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, 0);
+  HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, 0);
+  HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, 0);
+  HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, 0);
+  HANDLE_WITH(MSG_TURNOVER, CRules, this, msgTurnOver, 0);
+  HANDLE_WITH(MSG_ILLEGAL, CRules, this, msgIllegal, 0);
+  HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, 0);
+  HANDLE_WITH(MSG_MOVETURNMARKER, CRules, this, msgMoveTurnMarker, 0);
+  HANDLE_WITH(CUSTOM_EVENT, CRules, this, msgCustomEvent, 0);
+  HANDLE_WITH(MSG_RESULT, CRules, this, msgResult, 0);
+  HANDLE_WITH(MSG_BLOCKRESULT, CRules, this, msgBlockResult, 0);
+  HANDLE_WITH(MSG_BLOCKDICE, CRules, this, msgBlockDice, 0);
+  HANDLE_WITH(MSG_BLOCKPUSH, CRules, this, msgBlockPush, 0);
+  HANDLE_WITH(MSG_FOLLOW, CRules, this, msgFollow, 0);
+
   api_ = new Api(this);
   team_msg_ = new CTeamMsg(this);
   player_msg_ = new CPlayerMsg(this);
@@ -106,7 +106,7 @@ void        CRules::msgInitGame(const MsgInitGame* m)
   ball_ = new CBall(this);
   field_ = new CField;
   HANDLE_WITH(MSG_WEATHER, Weather, weather_, setWeather, GS_INITGAME);
-  HANDLE_WITH(MSG_BALLPOS, CBall, ball_, setPosition, GS_ALL);
+  HANDLE_WITH(MSG_BALLPOS, CBall, ball_, setPosition, 0);
 
   // Create, populate our team from the xml file, and send it.
   our_team_ = new CTeam(getTeamId(), this, player_msg_);
