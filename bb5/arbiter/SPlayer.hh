@@ -98,7 +98,7 @@ private:
 
   int finishMove(bool reroll);
   void finishStandUp(bool reroll);
-  int finishPickUp(bool reroll);
+  int finishPickUp(bool reroll, bool pickup);
   int finishThrow(bool reroll);
   void finishBlock(bool reroll);
   

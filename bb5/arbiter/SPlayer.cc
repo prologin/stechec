@@ -151,6 +151,7 @@ int SPlayer::doMove(const MsgMove* m)
                   return 0;
                 }
 
+              r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
               knocked = true;
               checkArmor(0, 0);
               if (status_ == STA_STANDING)
@@ -245,6 +246,7 @@ void SPlayer::doStandUp(const MsgStandUp*)
       ma_remain_ = ma_ - 3;
       setStatus(STA_STANDING);
     }
+  //FIXME: advertise client.
 }
 
 /*
@@ -626,7 +628,10 @@ int SPlayer::doPass(const MsgPass* m)
       b->catchBall(p, catch_mod);
     }
   else
-    b->bounce();
+    {
+      b->bounce();
+      return 1;
+    }
   
   // The ball checks if a player of the current team catch it
 
@@ -662,7 +667,7 @@ void SPlayer::sendRoll(int result, int modifier, int required)
 void SPlayer::finishAction(bool reroll)
 {
   reroll_enabled_ = false;
-  int result = -1;
+  int result = -1; //FIXME: Useless with the new turnover flag.
   switch (action_attempted_)
     {
     case R_DODGE : result = finishMove(reroll);
@@ -670,12 +675,11 @@ void SPlayer::finishAction(bool reroll)
     case R_STANDUP : finishStandUp(reroll);
       result = 0;
       break;
-    case R_PICKUP : result = finishPickUp(reroll);
+    case R_PICKUP : result = finishPickUp(reroll, true);
       break;
-    case R_THROW : finishThrow(reroll);
-      result = 0;
+    case R_THROW : result = finishThrow(reroll);
       break;
-    case R_CATCH : finishPickUp(reroll);
+    case R_CATCH : finishPickUp(reroll, false);
       result = 0;
       break;
     case R_BLOCK : finishBlock(reroll);
@@ -685,7 +689,10 @@ void SPlayer::finishAction(bool reroll)
       break;
     }
   if (result == 1)
-    r_->turnOver();
+    {
+      r_->getCurrentTeam()->turnover(TOM_EJECTEDFORAFOUL); //FIXME: Inconsistent or useless.
+      r_->turnOver();
+    }
   assert(result != -1);
 }
 
@@ -707,6 +714,7 @@ int SPlayer::finishMove(bool reroll)
   else
     {
       LOG5("Player has been knocked out from %1.", pos_);
+      r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
       knocked = true;
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
@@ -776,10 +784,12 @@ void SPlayer::finishStandUp(bool reroll)
       sendRoll(result, 0, 4);
       if (result >= 4)
         setStatus(STA_STANDING);
+      //FIXME: advertise client.
     }
 }
 
-int SPlayer::finishPickUp(bool reroll)
+//FIXME: Separate pickup and catch resolution.
+int SPlayer::finishPickUp(bool reroll, bool pickup)
 {
   SBall* b = r_->getBall();  
 
@@ -793,12 +803,20 @@ int SPlayer::finishPickUp(bool reroll)
             r_->touchdown();
           return 0;
         }
-      
+      else
+        {
+          if (pickup)
+            r_->getCurrentTeam()->turnover(TOM_FAILEDPICKUP);
+          return 1;
+        }
+    }
+  else
+    {
+      if (pickup)
+        r_->getCurrentTeam()->turnover(TOM_FAILEDPICKUP);
+      b->bounce();
       return 1;
     }
-  
-  b->bounce();
-  return 1;
 }
 
 int SPlayer::finishThrow(bool reroll)
@@ -836,14 +854,14 @@ int SPlayer::finishThrow(bool reroll)
   r_->sendPacket(mesg);
 
   SPlayer* p = f_->getPlayer(b->getPosition());
-  if (p != NULL&&p->getStatus() == STA_STANDING)
+  if (p != NULL && p->getStatus() == STA_STANDING)
     b->catchBall(p, catch_mod);
   else
     b->bounce();
   
   // The ball checks if a player of the current team catch it
 
-  return 0;
+  return r_->getCurrentTeam()->isTurnover();
 }
 
 void SPlayer::finishBlock(bool reroll)
@@ -1033,13 +1051,7 @@ void SPlayer::msgMove(const MsgMove* m)
   if (!t_->canDoAction(m, this))
     return;
   if (doMove(m))
-  {
-    r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
     r_->turnOver();
-  }
-  //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before?
-  // Note also that a player being placed PRONE is not a turnover unless it is a player from the active team holding the ball.
-  //FIXME: turnover OR turnOver or both?
 }
 
 void SPlayer::msgStandUp(const MsgStandUp* m)
@@ -1054,13 +1066,7 @@ void SPlayer::msgBlock(const MsgBlock* m)
   if (!t_->canDoAction(m, this))
     return;
   if (doBlock(m))
-  {
-    r_->getCurrentTeam()->turnover(TOM_KNOCKEDDOWN);
     r_->turnOver();
-  }
-  //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before?
-  // Note also that a player being placed PRONE is not a turnover unless it is a player from the active team holding the ball.
-  //FIXME: turnover OR turnOver or both?
 }
 
 void SPlayer::msgPass(const MsgPass* m)
@@ -1068,11 +1074,5 @@ void SPlayer::msgPass(const MsgPass* m)
   if (!t_->canDoAction(m, this))
     return;
   if (doPass(m))
-  {
-    r_->getCurrentTeam()->turnover(TOM_FUMBLEDPASS);
     r_->turnOver();
-  }
-  //FIXME: Throwing turnover here is doubtful, hasn't it been already thrown before?
-  // What's the exact motive of the turnover here? fumbled pass or lost ball?
-  //FIXME: turnover OR turnOver or both?
 }
