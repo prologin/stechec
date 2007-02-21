@@ -29,7 +29,7 @@ SRules::SRules(StechecGameData* data, StechecServer* server,
   HANDLE_WITH(MSG_INIT_GAME, SRules, this, msgInitGame, GS_INITGAME);
   HANDLE_WITH(MSG_BEFORE_TURN, SRules, this, msgBeforeTurn, GS_BEFORETURN);
   HANDLE_WITH(MSG_AFTER_TURN, SRules, this, msgAfterTurn, GS_AFTERTURN);
-  HANDLE_WITH(MSG_CHAMPION_ERROR, SRules, this, msgChampionError, GS_ALL);
+  HANDLE_WITH(MSG_CHAMPION_ERROR, SRules, this, msgChampionError, 0);
 
   setState(GS_BEFOREGAME);
 }

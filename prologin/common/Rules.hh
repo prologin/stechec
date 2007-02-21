@@ -51,19 +51,21 @@ const int MAX_COACH             = 16;
 
 // Constants describing the current state of the game.
 // GS_CLIENT_END is like GS_END, but client must wait for GAME_FINISHED
-//   from BaseCRules before GS_END could be really set.
-const int GS_BEFOREGAME         = 0x0001;
-const int GS_INITGAME           = 0x0002;
-const int GS_BEFORETURN         = 0x0004;
-const int GS_PLAYTURN           = 0x0008;
-const int GS_ENDTURN            = 0x0010;
-const int GS_AFTERTURN          = 0x0020;
-const int GS_AFTERGAME          = 0x0040;
-const int GS_CLIENT_END         = 0x0080;
+// from BaseCRules before GS_END could be really set.
+enum {
+  GS_BEFOREGAME = 1,
+  GS_INITGAME,
+  GS_BEFORETURN,
+  GS_PLAYTURN,
+  GS_ENDTURN,
+  GS_AFTERTURN,
+  GS_AFTERGAME,
+  GS_CLIENT_END,
+};
 
-// Kind of packets used by the base rules of stechec.
-enum { 
-  STECHEC_PKT = 0,
+// Kind of tokens used by the base rules of stechec.
+enum {
+  STECHEC_PKT = RULES_TOKEN_START,
   MSG_BEFORE_GAME,
   MSG_INIT_GAME,
   MSG_BEFORE_TURN,

@@ -25,12 +25,12 @@ CRules::CRules(const xml::XMLConfig& cfg,
     differ_(differ),
     client_entry_(clientep)
 {
-  HANDLE_WITH(STECHEC_PKT, CRules, this, msgStechecPkt, (GS_ALL | GS_WAIT) & ~GS_CLIENT_END);
+  HANDLE_WITH(STECHEC_PKT, CRules, this, msgStechecPkt, 0);
   HANDLE_WITH(MSG_BEFORE_GAME, CRules, this, msgBeforeGame, GS_WAIT);
   HANDLE_WITH(MSG_INIT_GAME, CRules, this, msgInitGame, GS_INITGAME);
-  HANDLE_WITH(MSG_BEFORE_TURN, CRules, this, msgBeforeTurn, GS_BEFORETURN | GS_AFTERTURN);
+  HANDLE_WITH(MSG_BEFORE_TURN, CRules, this, msgBeforeTurn, 0);
   HANDLE_WITH(MSG_AFTER_TURN, CRules, this, msgAfterTurn, GS_AFTERTURN);
-  HANDLE_WITH(MSG_AFTER_GAME, CRules, this, msgAfterGame, (GS_ALL | GS_WAIT) & ~GS_CLIENT_END);
+  HANDLE_WITH(MSG_AFTER_GAME, CRules, this, msgAfterGame, 0);
 
   // We won't receive any, but it must know it.
   HANDLE_WITH(CUSTOM_EVENT, CRules, this, msgFoo, 0);
@@ -78,6 +78,9 @@ void CRules::sigAlrm()
 
 void CRules::msgStechecPkt(const StechecPkt* m)
 {
+  if (getState() == GS_END || getState() == GS_CLIENT_END)
+    return;
+  
   StechecPkt pkt(*m);
   if (getState() == GS_AFTERTURN)
     {
@@ -145,6 +148,9 @@ void CRules::msgInitGame(const MsgInitGame*)
 
 void CRules::msgBeforeTurn(const MsgBeforeTurn*)
 {
+  if (getState() != GS_BEFORETURN && getState() != GS_AFTERTURN)
+    return;
+  
   data_->current_turn_++;
   LOG2("================== Turn %1 ==================",
        data_->getCurrentTurn());
@@ -185,6 +191,9 @@ void CRules::msgAfterTurn(const MsgAfterTurn*)
 // Be prepared to handle it correctly.
 void CRules::msgAfterGame(const MsgAfterGame*)
 {
+  if (getState() == GS_END || getState() == GS_CLIENT_END)
+    return;
+  
   if (getState() != GS_WAIT)
     {
       int r = client_entry_->afterGame();
