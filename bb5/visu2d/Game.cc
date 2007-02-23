@@ -279,6 +279,13 @@ void Game::evPlayerKnocked(int, int player_id)
   game_dlg_->setText(os.str());
 }
 
+void Game::evDrawKicker(int team_id)
+{
+  //FIXME: to do.
+  if (team_id == api_->myTeamId())
+    api_->doChooseKickoff(false); // Choose to receive.
+}
+
 void Game::evKickOff(int team_id, bool place_team)
 {
   unsetState(stWait);

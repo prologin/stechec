@@ -176,6 +176,11 @@ int reroll(int value)
   return api->reroll(value);
 }
 
+int choose_kickoff(int value)
+{
+  return api->choose_kickoff(value);
+}
+
 int place_ball()
 {
   return api->place_ball();

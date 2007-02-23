@@ -31,6 +31,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, CRules, this, msgInitGame, GS_WAIT);
   HANDLE_WITH(MSG_INITHALF, CRules, this, msgInitHalf, 0);
+  HANDLE_WITH(MSG_DRAWKICKER, CRules, this, msgDrawKicker, 0);
   HANDLE_WITH(MSG_INITKICKOFF, CRules, this, msgInitKickoff, 0);
   HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, 0);
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, 0);
@@ -137,6 +138,19 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
   onEvent(m);
 }
 
+void        CRules::msgDrawKicker(const MsgDrawKicker* m)
+{
+  assert(getState() != GS_DRAWKICKER);
+
+  if (m->client_id == getTeamId())
+    {
+      setState(GS_DRAWKICKER);
+      LOG2("-- CRules: change state: GS_DRAWKICKER");
+    }
+
+  onEvent(m);
+}
+
 void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
   // Exit if is not for our team.
@@ -148,7 +162,7 @@ void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 
   if (m->place_team)
     {
-      assert(!(getState() & GS_INITKICKOFF));
+      assert(getState() != GS_INITKICKOFF);
       setState(GS_INITKICKOFF);
       api_->selectTeam(US);
 
@@ -160,7 +174,7 @@ void        CRules::msgInitKickoff(const MsgInitKickoff* m)
     }
   else
     {
-      assert(getState() & GS_INITKICKOFF);
+      assert(getState() == GS_INITKICKOFF);
       // Inform UI that he has to place the ball
       onEvent(m);
     }

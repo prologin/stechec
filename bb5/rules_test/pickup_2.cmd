@@ -1,4 +1,8 @@
 wait
+# Choose to kick off.
+choose kickoff
+
+wait
 # Kickoff.
 # Ball
 cheat 1 1 1 1

@@ -49,6 +49,12 @@ void EventProcess::dispatch(const MsgEndGame&) const
 }
 
 template <>
+void EventProcess::dispatch(const MsgDrawKicker& m) const
+{
+  ev_->evDrawKicker(m.client_id);
+}
+
+template <>
 void EventProcess::dispatch(const MsgInitKickoff& m) const
 {
   ev_->evKickOff(m.client_id, m.place_team);

@@ -1,4 +1,8 @@
 wait
+# Choose to kick off.
+choose kickoff
+
+wait
 # Kickoff.
 # Ball scattered out of the field.
 cheat 1 1

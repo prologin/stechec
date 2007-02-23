@@ -1,4 +1,8 @@
 wait
+# Choose to kick off.
+choose kickoff
+
+wait
 # Kickoff.
 # Ball scattered on player 10, who catches it.
 cheat 1 1 6

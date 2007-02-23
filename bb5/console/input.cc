@@ -58,6 +58,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"help", &Input::cmdHelp, "print this help"},
   {"print", &Input::cmdPrint, "<subcmd>|print some informations ('help print')"},
   {"say", &Input::cmdSay, "<s>|chat with others"},
+  {"choose", &Input::cmdChoose, "<subcmd>|choose to kick off or receive ('help choose')"},
   {"kickoff", &Input::cmdKickOff, "<r> <c>|place the ball on <r, c>"},
   {"giveBall", &Input::cmdGiveBall, "<id>|give the ball to the player'id'"},
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
@@ -88,6 +89,12 @@ Input::InputSubCommand Input::print_cmd_[] = {
 Input::InputSubCommand Input::move_cmd_[] = {
   {"turnmarker", &Input::cmdMoveTurnMarker, "move the turn marker"},
   {"", &Input::cmdMovePlayer, "<p> <r> <c>|move player <p> to <r,c>"},
+  {NULL, NULL, NULL}
+};
+
+Input::InputSubCommand Input::choose_cmd_[] = {
+  {"kickoff", &Input::cmdChooseKickoff, "Choose to kick off first"},
+  {"receive", &Input::cmdChooseReceive, "Choose to receive first"},
   {NULL, NULL, NULL}
 };
 
@@ -149,6 +156,13 @@ void Input::cmdHelp(const string& cmd, const string&)
           cmd_name = move_cmd_[i].name;
           cmd_doc = move_cmd_[i].doc;
         }
+      else if (cmd == "choose")
+        {
+          if (choose_cmd_[i].name == NULL)
+            return;
+          cmd_name = choose_cmd_[i].name;
+          cmd_doc = choose_cmd_[i].doc;
+        }
       else if (cmd == "block")
         {
           if (block_cmd_[i].name == NULL)
@@ -195,10 +209,17 @@ void Input::cmdPrint(const string& cmd, const string& args)
     cmdPrintString(cmd + " " + args);
 }
 
-
 void Input::cmdSay(const string& cmd, const string& args)
 {
   api_->sendChatMessage(cmd + " " + args);
+}
+
+void Input::cmdChoose(const string& cmd, const string& args)
+{
+  if (cmd == "kickoff")
+    cmdChooseKickoff(args);
+  else if (cmd == "receive")
+    cmdChooseReceive(args);
 }
 
 void Input::cmdKickOff(const string& cmd, const string& args)
@@ -355,6 +376,20 @@ void Input::cmdPrintThem(const std::string& args)
 void Input::cmdPrintString(const std::string& args)
 {
   cout << args << endl;
+}
+
+//
+// Choose commands
+//
+
+void Input::cmdChooseKickoff(const std::string& args)
+{
+  api_->doChooseKickoff(true);
+}
+
+void Input::cmdChooseReceive(const std::string& args)
+{
+  api_->doChooseKickoff(false);
 }
 
 //
@@ -527,41 +562,41 @@ bool Input::process()
         PRINT_AND_THROW(Exception, "stdin select");
       if (ret > 0
 #ifdef USE_READLINE
-	  && use_readline_)
-	{
-	  rl_callback_read_char();
-	}
+          && use_readline_)
+        {
+          rl_callback_read_char();
+        }
       else if (ret > 0
 #endif // !USE_READLINE
-	       )
-	{
-	  if (read_size_ == 0)
-	    {
-	      read_size_ = read(STDIN_FILENO, buf_, 1024);
-	      read_index_ = 0;
-	    }
-	  if (read_size_ < 0)
-	    PRINT_AND_THROW(Exception, "stdin read");
-	  if (read_size_ == 0)
-	    return true;
+          )
+        {
+          if (read_size_ == 0)
+            {
+              read_size_ = read(STDIN_FILENO, buf_, 1024);
+              read_index_ = 0;
+            }
+          if (read_size_ < 0)
+            PRINT_AND_THROW(Exception, "stdin read");
+          if (read_size_ == 0)
+            return true;
 
-	  for (; read_index_ < read_size_; read_index_++)
-	    {
-	      if (buf_[read_index_] == '\n')
-		{
-		  if (cmd_ != "")
-		    processCommand(cmd_);
-		  cmd_ = "";
-		  read_index_++;
-		  break;
-		}
-	      else
-		cmd_ += buf_[read_index_];
-	    }
-	  if (read_index_ == read_size_)
-	    read_size_ = 0;
+          for (; read_index_ < read_size_; read_index_++)
+            {
+              if (buf_[read_index_] == '\n')
+                {
+                  if (cmd_ != "")
+                    processCommand(cmd_);
+                  cmd_ = "";
+                  read_index_++;
+                  break;
+                }
+              else
+                cmd_ += buf_[read_index_];
+            }
+          if (read_index_ == read_size_)
+            read_size_ = 0;
 
-	}
+        }
     }
   return want_exit_;
 }
@@ -680,6 +715,24 @@ char* cmd_generator_move(const char* text, int state)
   return NULL;
 }
 
+// Get next matching word in 'choose' command
+char* cmd_generator_choose(const char* text, int state)
+{
+  static int list_index;
+  static int len;
+  const char* name;
+
+  if (state == 0)
+    {
+      list_index = 0;
+      len = strlen(text);
+    }
+  while ((name = input_inst->choose_cmd_[list_index++].name) != NULL)
+    if (strncmp(name, text, len) == 0)
+      return strdup(name);
+  return NULL;
+}
+
 // Get next matching word in 'block' command
 char* cmd_generator_block(const char* text, int state)
 {
@@ -753,6 +806,8 @@ char** cmd_completion(const char* text, int start, int)
     matches = rl_completion_matches(text, cmd_generator_print);
   else if (strncmp(rl_line_buffer, "move", 4) == 0)
     matches = rl_completion_matches(text, cmd_generator_move);
+  else if (strncmp(rl_line_buffer, "choose", 2) == 0)
+    matches = rl_completion_matches(text, cmd_generator_choose);
   else if (strncmp(rl_line_buffer, "block", 5) == 0)
     matches = rl_completion_matches(text, cmd_generator_block);
   else if (strncmp(rl_line_buffer, "declare", 4) == 0)

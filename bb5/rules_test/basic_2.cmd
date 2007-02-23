@@ -1,4 +1,8 @@
 wait
+# Choose to kick off.
+choose kickoff
+
+wait
 # Kickoff.
 print BEGIN DIFF
 print hello world from 2

@@ -32,7 +32,7 @@ AIApp::~AIApp()
 void AIApp::showVersion()
 {
   std::cout << "TowBowlTactics AI client v" PACKAGE_VERSION << "\n"
-	    << "Copyright (C) 2007 TBT Team.\n";
+            << "Copyright (C) 2007 TBT Team.\n";
 }
 
 /* block until rules is ready to process another command */
@@ -41,13 +41,19 @@ void AIApp::waitUntilReady()
   while (true)
     {
       while (ccx_.process())
-	;
+        ;
       if (!api_->isBusy())
-	return;
+        return;
 
       // Wait a little, do not eat 100% cpu.
       usleep(25 * 1000);
     }
+}
+
+void AIApp::handleDrawKicker()
+{
+  // Choose to receive.
+  api_->doChooseKickoff(false);
 }
 
 void AIApp::handleKickOff()
@@ -109,25 +115,28 @@ int AIApp::onPlay(bool)
 
       // Tracks game state change.
       if (api_->getState() != cur_state)
-	{
-	  LOG2("new game state: %1", api_->gameStateString());
-	  cur_state = api_->getState();
-	}
+        {
+          LOG2("new game state: %1", api_->gameStateString());
+          cur_state = api_->getState();
+        }
 
       switch (cur_state)
-	{
-	case GS_INITKICKOFF:
-	  handleKickOff();
-	  break;
-	case GS_COACH1:
-	  if (api_->myTeamId() == 0)
-	    handleMyTurn();
-	  break;
-	case GS_COACH2:
-	  if (api_->myTeamId() == 1)
-	    handleMyTurn();
-	  break;
-	}
+        {
+          case GS_DRAWKICKER:
+            handleDrawKicker();
+            break;
+          case GS_INITKICKOFF:
+            handleKickOff();
+            break;
+          case GS_COACH1:
+            if (api_->myTeamId() == 0)
+              handleMyTurn();
+            break;
+          case GS_COACH2:
+            if (api_->myTeamId() == 1)
+              handleMyTurn();
+            break;
+        }
 
       // Wait a little (25ms). Otherwise, we would run an active loop and take 100% cpu.
       usleep(25 * 1000);

@@ -63,6 +63,7 @@ public:
   static InputCommand main_cmd_[];
   static InputSubCommand print_cmd_[];
   static InputSubCommand move_cmd_[];
+  static InputSubCommand choose_cmd_[];
   static InputSubCommand block_cmd_[];
   static InputSubCommand declare_cmd_[];
 
@@ -73,6 +74,7 @@ private:
   void cmdHelp(const std::string& cmd, const std::string& args);
   void cmdPrint(const std::string& cmd, const std::string& args);
   void cmdSay(const std::string& cmd, const std::string& args);
+  void cmdChoose(const std::string& cmd, const std::string& args);
   void cmdKickOff(const std::string& cmd, const std::string& args);
   void cmdIllegal(const std::string& cmd, const std::string& args);
   void cmdEnd(const std::string& cmd, const std::string& args);
@@ -98,6 +100,10 @@ private:
   void cmdPrintThem(const std::string& args);
   void cmdPrintString(const std::string& args);
 
+  // Choose commands
+  void cmdChooseKickoff(const std::string& args);
+  void cmdChooseReceive(const std::string& args);
+
   // Move commands
   void cmdMoveTurnMarker(const std::string& args);
   void cmdMovePlayer(const std::string& args);
@@ -117,15 +123,15 @@ private:
   Api*                  api_;
   CmdLineInterface*     i_;
   bool                  want_exit_;
-  bool			cmd_processed_;   ///< Stop processing input if a command was executed.
-  int			wait_;            ///< Don't process input until it is our turn (to play or to give the ball).
-  bool			use_readline_;    ///< Use readline, if it was compiled (default).
+  bool                  cmd_processed_;   ///< Stop processing input if a command was executed.
+  int                   wait_;            ///< Don't process input until it is our turn (to play or to give the ball).
+  bool                  use_readline_;    ///< Use readline, if it was compiled (default).
 
   // for read().
-  std::string		cmd_;             ///< What we read from stdin, when no using libreadline.
-  int			read_size_;
-  int			read_index_;
-  char			buf_[1024];
+  std::string           cmd_;             ///< What we read from stdin, when no using libreadline.
+  int                   read_size_;
+  int                   read_index_;
+  char                  buf_[1024];
 };
 
 #endif /* !INPUT_HH_ */

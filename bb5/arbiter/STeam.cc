@@ -45,7 +45,7 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
       player_[m->player_id] = new SPlayer(r_, m, this);
       if (player_[m->player_id]->acceptPlayerCreation())
         {
-	  pm_->setPlayer(m->client_id, m->player_id, player_[m->player_id]);
+          pm_->setPlayer(m->client_id, m->player_id, player_[m->player_id]);
           r_->sendPacket(*m);
         }
       else
@@ -56,7 +56,7 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
           player_[m->player_id] = NULL;
           LOG2("Team %1. Player %2 creation refused.", team_id_, m->player_id);
           r_->sendIllegal(MSG_PLAYERCREATE, m->client_id);
-	}
+        }
     }
   else
     {
@@ -93,7 +93,7 @@ void STeam::msgPlayerPos(const MsgPlayerPos* m)
 // Want to use a reroll
 void STeam::msgReroll(const MsgReroll* m)
 {
-  if (m->reroll&(reroll_used_||reroll_remain_ == 0))
+  if (m->reroll && (reroll_used_ || reroll_remain_ == 0))
     {
       r_->sendIllegal(MSG_REROLL, m->client_id);
       return;

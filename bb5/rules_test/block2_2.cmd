@@ -1,4 +1,8 @@
 wait
+# Choose to kick off.
+choose kickoff
+
+wait
 #Kickoff.
 cheat 1 1 1
 kickoff 2 2

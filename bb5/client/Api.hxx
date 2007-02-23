@@ -66,6 +66,21 @@ inline void Api::doAskIllegalProcedure()
   rules_->sendPacket(MsgIllegalProc());
 }
 
+inline int Api::doChooseKickoff(bool kickoff)
+{
+  assert(rules_->getState() != GS_WAIT);
+  if (false) //FIXME: Do some checks?
+    {
+      LOG2("You do not have the choice...");
+      return INVALID_ACTION;
+    }
+
+  MsgDrawKicker pkt;
+  pkt.kickoff = kickoff;
+  rules_->sendPacket(pkt);
+  return SUCCESS;
+}
+
 inline int Api::doPlaceBall(const Point& pos)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
@@ -80,7 +95,7 @@ inline int Api::doPlaceBall(const Point& pos)
       || (rules_->getTeamId() == 1 && bpos.row > 12))
     {
       LOG2("Kickoff rejected. Ball in your part of the field (%1): %2",
-	   selected_team_->getTeamId(),  pos);
+          selected_team_->getTeamId(),  pos);
       return INVALID_ACTION;
     }
   MsgBallPos pkt;

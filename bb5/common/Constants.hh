@@ -34,6 +34,7 @@
 // Constants describing the current status of the game.
 enum {
   GS_INITGAME = 1,  
+  GS_DRAWKICKER,
   GS_INITKICKOFF, 
   GS_COACH1,      ///< Coach 1 turn.
   GS_COACH2,      ///< Coach 2 turn.
@@ -68,6 +69,7 @@ enum {
   MSG_ILLEGAL,
   MSG_INITGAME,
   MSG_INITHALF,
+  MSG_DRAWKICKER,
   MSG_INITKICKOFF,
   MSG_CHEATDICE,
   MSG_RESULT,
@@ -186,6 +188,9 @@ extern const char *bb5_token_str[RULES_TOKEN_LAST - RULES_TOKEN_START];
 DECLARE_EMPTY_PACKET(MSG_INITGAME, MsgInitGame);
 DECLARE_PACKET(MSG_INITHALF, MsgInitHalf)
   int cur_half;
+END_PACKET
+DECLARE_PACKET(MSG_DRAWKICKER, MsgDrawKicker);
+  bool kickoff;
 END_PACKET
 DECLARE_PACKET(MSG_INITKICKOFF, MsgInitKickoff);
   int place_team;

@@ -47,11 +47,11 @@ public:
   //! @brief Get the current turn.
   //! @return The current turn in the range of [1, 8], or 0
   //!   if in other state (kickoff, ...)
-  int			turn() const;
+  int                   turn() const;
 
   //! @brief Get the current half.
   //! @return The current half.
-  int			half() const;
+  int                   half() const;
  
   //! @brief Grab your team id.
   //! @return A team identifiant, in the range [0, 1].
@@ -63,12 +63,12 @@ public:
   //! @brief Get the stringified version of game status.
   //!  Mainly useful for debugging.
   //! @return The current game status.
-  const char*		gameStateString() const;
+  const char*           gameStateString() const;
 
   //! @brief Get the player team id at the specified position.
   //! @param pos A position on the field.
   //! @return A team id, or -1 if there is nobody at this position.
-  int			teamId(const Point& pos);
+  int                   teamId(const Point& pos);
   
   //! @brief Select team to fetch information from.
   //!   Further call to all other API function will return
@@ -91,7 +91,7 @@ public:
   //! @brief Get the player id at the specified position.
   //! @param pos A position on the field.
   //! @return A player id, or -1 if there is nobody at this position.
-  int			playerId(const Point& pos);
+  int                   playerId(const Point& pos);
 
   //! @brief Get the selected player.
   //! @return The selected player.
@@ -109,13 +109,13 @@ public:
   //! @brief Get the number of possible action for the selected player.
   //! @fixme NOT IMPLEMENTED
   //! @return The number of possible action
-  int			actionPossibleNumber() const;
+  int                   actionPossibleNumber() const;
 
   //! @brief Get a possible action for the selected player.
   //! @param index Action index, in the range [0 - actionPossibleNumber() - 1].
   //! @fixme NOT IMPLEMENTED
   //! @return Action that this player may perform.
-  int			actionPossible(int index) const;
+  int                   actionPossible(int index) const;
 
   //! @brief Length that a move will take to the specified destination
   //!   for the for selected player.
@@ -172,6 +172,12 @@ public:
   //! @brief Ask for an illegal procedure.
   void          doAskIllegalProcedure();
 
+  //! @brief Choose to kick off or receive.
+  //! @param kickoff
+  //!   @c true if coach want to kick off.
+  //!   @c false if coach want to receive.
+  int           doChooseKickoff(bool kickoff);
+
   //! @brief Place the ball, on the kick off.
   //! @param pos Position to place the ball.
   int           doPlaceBall(const Point& pos);
@@ -184,17 +190,17 @@ public:
   //! @brief Reroll or accept the last dice roll.
   //! @param reroll @c true if coach want to reroll,
   //!   @c false to accept the result.
-  int 		doReroll(bool reroll);
+  int           doReroll(bool reroll);
 
   //! @brief Declare an action for the selected player.
   //! @param action Action to declare.
-  int		doDeclare(enum eDeclaredAction action);
+  int           doDeclare(enum eDeclaredAction action);
 
   //! @brief After a block action, choose which block dice to use.
   //! @note Wait for the right server reponse before calling it.
   //! @param n A number between 1 and 3, depending on the previous
   //!  returned server message.
-  int		doChooseBlockDice(int n);
+  int           doChooseBlockDice(int n);
 
   //! @brief After a block action, push the defender to the selected square.
   //! @note Wait for the right server reponse before calling it.
@@ -209,25 +215,25 @@ public:
 
   //! @brief Stand up the selected player.
   //! @note Declare a DCL_MOVE or DCL_BLITZ or DCL_PASS action before.
-  int		doStandUpPlayer();
+  int           doStandUpPlayer();
 
   //! @brief Move the selected player.
   //! @note Declare a DCL_MOVE or DCL_BLITZ or DCL_PASS action before.
-  int		doMovePlayer(const Point& to);
+  int           doMovePlayer(const Point& to);
 
   //! @brief Block with the selected player.
   //! @note Declare a DCL_BLOCK or DCL_BLITZ action before.
   //! @param def_p The defender id, on the other team.
-  int		doBlockPlayer(int def_p);
+  int           doBlockPlayer(int def_p);
 
   //! @brief Throw the ball to the specified position.
   //! @note Declare a DCL_PASS action before.
   //! @param to Where to throw the ball.
-  int		doPassPlayer(const Point& to);
+  int           doPassPlayer(const Point& to);
 
   //! @brief Choose the next dice result.
   //! @param roll Next result to obtain, between 1 and number of dice faces.
-  void		doCheatDice(int roll);
+  void          doCheatDice(int roll);
 
   //! @brief Send a chat message. Can be called every time.
   //! @param msg Message to send.

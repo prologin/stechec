@@ -1,4 +1,8 @@
 wait
+# Choose to kick off.
+choose kickoff
+
+wait
 # Kickoff.
 # Ball is scattered on player 10, who fails to catch it.
 # Ball finally rebounds to 8 6.

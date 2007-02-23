@@ -105,6 +105,7 @@ private:
   virtual void evMoveTurnMarker();
   virtual void evTurnOver(enum eTurnOverMotive motive);
   virtual void evPlayerKnocked(int team_id, int player_id);
+  virtual void evDrawKicker(int team_id);
   virtual void evKickOff(int team_id, bool place_team);
   virtual void evChat(const std::string& msg);
   virtual void evPlayerCreate(int team_id, int player_id);

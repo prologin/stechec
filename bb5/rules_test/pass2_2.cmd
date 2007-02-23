@@ -1,4 +1,8 @@
 wait
+# Choose to kick off.
+choose kickoff
+
+wait
 # Kickoff.
 # Ball is scattered and rebounds in 7 7.
 cheat 1 1 1

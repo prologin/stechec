@@ -38,6 +38,7 @@ SRules::SRules()
 
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, SRules, this, msgInitGame, GS_INITGAME);
+  HANDLE_WITH(MSG_DRAWKICKER, SRules, this, msgDrawKicker, GS_DRAWKICKER);
   HANDLE_WITH(MSG_INITKICKOFF, SRules, this, msgInitKickoff, GS_INITKICKOFF);
   HANDLE_WITH(MSG_ENDTURN, SRules, this, msgPlayTurn, 0);
   HANDLE_WITH(MSG_CHAT, SRules, this, msgForwardChat, 0);
@@ -106,7 +107,7 @@ void SRules::initHalf()
 {
   cur_turn_ = 0;
   cur_half_++;
-  
+
   // If there is a winner after 2 or 3 halfs
   if (cur_half_ > 2 && team_[0]->getScore() != team_[1]->getScore())
     {
@@ -117,14 +118,6 @@ void SRules::initHalf()
       sendPacket(pkt);
       return;
     }
-
-  // Switch the kicking team on second period.
-  if (cur_half_ == 2)
-    coach_begin_ = (coach_begin_ + 1) % 2;
-
-  // New toss for the third period
-  if (cur_half_ == 3)
-    coach_begin_ = dice_->roll("kicking team",  D2) - 1;
 
   // Match is decided by a penalty shoot-out
   if (cur_half_ > 3) 
@@ -152,15 +145,31 @@ void SRules::initHalf()
       team_[1]->initReroll();
     }
 
-  // Say we are in a new half
+  // Say we are in a new half. No reply is expected.
   MsgInitHalf pkt;
   pkt.cur_half = cur_half_;
   sendPacket(pkt);
 
   LOG3("Initialize half %1.", cur_half_);
 
-  coach_receiver_ = coach_begin_;
-  initKickoff();
+  setState(GS_DRAWKICKER);
+
+  // Switch the kicking team on second period.
+  if (cur_half_ == 2)
+    {
+      coach_begin_ = (coach_begin_ + 1) % 2;
+
+      msgDrawKicker(NULL);
+    }
+
+  // New toss for the first and third period
+  if (cur_half_ == 1 || cur_half_ == 3)
+    {
+      coach_begin_ = dice_->roll("choosing team",  D2) % 2;
+
+      MsgDrawKicker msgdk(coach_begin_);
+      sendPacket(msgdk);
+    }
 }
 
 void SRules::initKickoff()
@@ -226,22 +235,43 @@ void SRules::touchdown()
 // A coach has finished to set up his game.
 void SRules::msgInitGame(const MsgInitGame* m)
 {
-  team_[m->client_id]->state_ = GS_INITKICKOFF;
+  team_[m->client_id]->state_ = GS_DRAWKICKER;
 
-  if (team_[0]->state_ == GS_INITKICKOFF && team_[1]->state_ == GS_INITKICKOFF)
+  if (team_[0]->state_ == GS_DRAWKICKER && team_[1]->state_ == GS_DRAWKICKER)
     {
-      // Decide who is the kicking team
-      coach_begin_ = dice_->roll("kicking team", D2) - 1; // team_id: base 0.
-      // FIXME: Give the choice to either kick or receive.
-      LOG3("Coach %1 plays first (receiving team).", coach_begin_);
-
-  // Send some objects to clients -> weather wil be introduce with advanced Rules
-  /*  MsgWeather pkt;
+      // Send some objects to clients -> weather wil be introduce with advanced Rules
+      /*
+      MsgWeather pkt;
       pkt.weather = weather_->getWeather();
-      sendPacket(pkt);*/
+      sendPacket(pkt);
+      */
       
       initHalf();
     }
+}
+
+void SRules::msgDrawKicker(const MsgDrawKicker* m)
+{
+  if (m != NULL)
+    {
+      if (m->client_id != coach_begin_)
+        {
+          LOG2("Coach %1 doesn't have the choice.", m->client_id);
+          sendIllegal(m->token, m->client_id);
+          return;
+        }
+      coach_begin_ = m->kickoff ? (coach_begin_ + 1) % 2 : coach_begin_;
+    }
+
+  LOG3("Coach %1 plays first (receiving team).", coach_begin_);
+
+  coach_receiver_ = coach_begin_;
+
+  setState(GS_INITKICKOFF);
+  team_[0]->state_ = GS_INITKICKOFF;
+  team_[1]->state_ = GS_INITKICKOFF;
+
+  initKickoff();
 }
 
 void SRules::msgInitKickoff(const MsgInitKickoff* m)

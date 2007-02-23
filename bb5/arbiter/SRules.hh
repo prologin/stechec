@@ -95,6 +95,7 @@ private:
   void initKickoff();
   
   void msgInitGame(const MsgInitGame* m);
+  void msgDrawKicker(const MsgDrawKicker* m);
   void msgInitKickoff(const MsgInitKickoff* m);
   void msgPlayTurn(const MsgEndTurn* m);
   void msgForwardChat(const MsgChat* m);
@@ -112,6 +113,8 @@ private:
   Dice*     dice_;
   STeamMsg* team_msg_;
   SPlayerMsg* player_msg_;
+  //! @brief Coach who chooses to kick or receive the ball.
+  //!   Coach who receives the ball.
   int       coach_begin_;
   int       coach_receiver_;
 };

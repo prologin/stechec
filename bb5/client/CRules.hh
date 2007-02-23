@@ -71,6 +71,7 @@ private:
   void msgIllegal(const MsgIllegal* m);
   void msgInitGame(const MsgInitGame* m);
   void msgInitHalf(const MsgInitHalf* m);
+  void msgDrawKicker(const MsgDrawKicker* m);
   void msgInitKickoff(const MsgInitKickoff* m);
   void msgGiveBall(const MsgGiveBall* m);
   void msgPlayTurn(const MsgNewTurn* m);
