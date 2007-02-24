@@ -392,6 +392,8 @@ inline const char* Api::gameStateString() const
     {
     case GS_INITGAME:
       return "GS_INITGAME";
+    case GS_DRAWKICKER:
+      return "GS_DRAWKICKER";
     case GS_INITKICKOFF:
       return "GS_INITKICKOFF";
     case GS_COACH1:
@@ -408,6 +410,8 @@ inline const char* Api::gameStateString() const
       return "GS_PUSH";
     case GS_FOLLOW:
       return "GS_FOLLOW";
+    case GS_SKILL:
+      return "GS_SKILL";
     }
   return BaseApi<CRules>::getStateString();
 }

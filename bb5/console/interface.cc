@@ -91,7 +91,7 @@ void CmdLineInterface::printGlobal()
   api_->selectTeam(US);
   t = api_->getTeam();
   cout << "  - you are coach '" << api_->getTeamId() << "'\n" 
-       << "  - current game state: " << api_->getStateString() << "\n"
+       << "  - current game state: " << api_->gameStateString() << "\n"
     //       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
     //       << "' (" << api_->getWeather()->getWeather() << ")\n"
        << "  - ball position: " << api_->ball() << "\n"

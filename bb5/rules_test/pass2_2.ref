@@ -1,5 +1,5 @@
   - you are coach '1'
-  - current game state: Undefined
+  - current game state: GS_COACH2
   - ball position: [x:4 y:11]
   - our team  : 'Amazon', coached by 'coach' (11 players)
   - other team: 'Amazon', coached by 'coach' (11 players)
