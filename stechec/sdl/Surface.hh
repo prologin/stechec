@@ -170,7 +170,6 @@ protected:
 
 private:
   std::string   filename_;
-
   Rect          rect_;          ///< Position & Size of surface, relative to its parent.
   Rect          orig_rect_;     ///< Rect size with zoom_ == 1.
   double        zoom_;

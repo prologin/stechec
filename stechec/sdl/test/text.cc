@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 **
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 #include "SDLWindow.hh"
 #include "Sprite.hh"
 #include "TextSurface.hh"
+#include "InputTextSurface.hh"
 
 /*!
 ** @file text.cc
@@ -30,10 +31,11 @@ int main(int, char**)
 
   SDLWindow win;
   win.init(NULL);
+  Input& inp = win.getInput();
 
   // To get images from the current directory.
   ResourceCenter::getInst()->setResourcePrefix("./");
-  
+
   // Get the main VirtualSurface.
   VirtualSurface& screen = win.getScreen();
 
@@ -41,7 +43,7 @@ int main(int, char**)
   Surface ground("ground_1200_800.png");
   ground.setPos(-30, -30);
   screen.addChild(&ground);
-  
+
   // Kludge. Get font from installed version of stechec.
   ResourceCenter::getInst()->setResourcePrefix();
 
@@ -72,12 +74,24 @@ int main(int, char**)
   text4.setZ(1);
   screen.addChild(&text4);
 
+  static SDL_Color white_color = { 255, 255, 255, SDL_ALPHA_OPAQUE };
+  InputTextSurface it("Vera.ttf", 300);
+  it.setPos(10, 10);
+  it.setZ(2);
+  it.setTextColor(white_color);
+  it.setRenderMethod(eTextSolid);
+  screen.addChild(&it);
 
   Timer t1(3);
   t1.start();
 
   while (true)
     {
+      if (it.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
+	it.acquireInput("lala");
+      if (it.isAcquireFinished())
+	it.resetAcquire();
+
       if (win.processOneFrame())
 	break;
       if (t1.isTimeElapsed())

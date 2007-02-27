@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -87,8 +87,14 @@ public:
   
   virtual void update();
 
-private:
+protected:
+
+  //! @brief Called when a new text surface is generated.
+  virtual void customTextRender(SDL_Surface* surf, int line);
+  
   TTF_Font*     font_;
+
+private:
   Surface       surf_font_ref_;
   SDL_Color	fg_;
   SDL_Color	bg_;
@@ -99,9 +105,9 @@ private:
   enum eTextRenderMethod method_;
 
   bool          auto_wrap_;
-  bool          content_changed_;
 
 protected:
+  bool          content_changed_;
   typedef std::deque<std::string> LineList;
   LineList      lines_;
   std::string   text_;

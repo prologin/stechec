@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 **
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -50,9 +50,13 @@ public:
 
   virtual void update();
 
+protected:
+  virtual void customTextRender(SDL_Surface* surf, int line);
+
 private:
   std::string lock_id_;
   bool have_text_;       ///< User has finished typing text.
+  bool show_cursor_;
   int index_;
 };
 

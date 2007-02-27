@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 **
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 **
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -107,25 +107,31 @@ const std::string& Input::getString() const
 
 void Input::update(SDL_Event& event)
 {
+  char c;
+
   switch (event.type)
     {
     case SDL_KEYDOWN:
+      modifier_pressed_ = event.key.keysym.mod & ~modifier_;
+      modifier_ = event.key.keysym.mod;
+      c = (char)event.key.keysym.sym;
+      if (isalpha(c) && (modifier_ & KMOD_SHIFT) != 0)
+	c = toupper(c);
+
       if (lock_id_ == "")
         {
           key_pressed_[event.key.keysym.sym] = true;
           key_[event.key.keysym.sym] = true;
-          if (isascii(event.key.keysym.sym))
-            string_ = string_ + (char)event.key.keysym.sym;
+          if (isascii(event.key.keysym.sym) && !iscntrl(event.key.keysym.sym))
+	    string_ = string_ + c;
         }
       else
         {
           key_pressed_lock_[event.key.keysym.sym] = true;
           key_lock_[event.key.keysym.sym] = true;
-          if (isascii(event.key.keysym.sym))
-            string_lock_ = string_lock_ + (char)event.key.keysym.sym;
+          if (isascii(event.key.keysym.sym) && !iscntrl(event.key.keysym.sym))
+	    string_lock_ = string_lock_ + c;
         }
-      modifier_pressed_ = event.key.keysym.mod & ~modifier_;
-      modifier_ = event.key.keysym.mod;
       break;
 
     case SDL_KEYUP:

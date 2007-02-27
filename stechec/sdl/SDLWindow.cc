@@ -103,7 +103,8 @@ void SDLWindow::init(xml::XMLConfig* xml)
 
   SDL_WM_SetCaption("TBT Game", NULL);
   SDL_WM_GrabInput(SDL_GRAB_OFF);
-
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+  
   if (TTF_Init() < 0 || !TTF_WasInit())
     PRINT_AND_THROW(TTFError, "Error initializing TTF");
 

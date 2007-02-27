@@ -1,7 +1,7 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
-** Copyright (C) 2006 The TBT Team.
+** Copyright (C) 2006, 2007 The TBT Team.
 ** 
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
@@ -204,9 +204,14 @@ void TextSurface::setRenderMethod(enum eTextRenderMethod m)
 }
 
 
+void TextSurface::customTextRender(SDL_Surface* surf, int line)
+{
+}
+
 void TextSurface::update()
 {
   SDL_Surface *temp_surf = NULL;
+  int line = 0;
   
   // Print the text, if changed.
   if (content_changed_)
@@ -247,10 +252,15 @@ void TextSurface::update()
 	  temp.setInheritAlpha(true);
 	  temp.setPos(4, 4 + (index++ * line_skip_));
 	  temp.blit(*this);
+	  customTextRender(temp_surf, line);
 
 	  SDL_FreeSurface(temp_surf);
 	  temp_surf = NULL;
+	  line++;
 	}
+
+      if (lines_.empty())
+	customTextRender(temp_surf, -1);
 
       redraw_all_ = true;
       content_changed_ = false;
