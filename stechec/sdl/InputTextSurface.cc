@@ -46,8 +46,10 @@ void InputTextSurface::acquireInput(const std::string& lock_id)
   if (show_cursor_)
     return;
 
+  if (!inp.lockKeyboard(lock_id))
+    return;
+
   lock_id_ = lock_id;
-  inp.lockKeyboard(lock_id_);
   index_ = text_.size();
   content_changed_ = true;
 }

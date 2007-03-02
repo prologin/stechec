@@ -64,7 +64,8 @@ public:
 
   //! @brief Locks the keyboard, so that key_ and key_pressed_
   //!  will always be empty, until it is unlocked with the same lock_id.
-  void lockKeyboard(const std::string& lock_id);
+  //! @return true if lock is successful, else false (already locked).
+  bool lockKeyboard(const std::string& lock_id);
   //! @brief Unlock the keyboard.
   //! @return true if unlock successful (same lock_id), else false.
   bool unlockKeyboard(const std::string& lock_id);

@@ -65,10 +65,12 @@ void Input::reset()
   mouse_delta_ = Point(0, 0);
 }
 
-void Input::lockKeyboard(const std::string& lock_id)
+bool Input::lockKeyboard(const std::string& lock_id)
 {
-  if (lock_id == "")
-    return;
+  // FIXME: already locked, refuse lock. should instead blow widget
+  //   that locked it.
+  if (lock_id == "" || lock_id_ != "")
+    return false;
   lock_id_ = lock_id;
   for (int i = 0; i < SDLK_LAST; i++)
     {
@@ -79,6 +81,7 @@ void Input::lockKeyboard(const std::string& lock_id)
     }
   string_lock_ = string_;
   string_ = "";
+  return true;
 }
 
 bool Input::unlockKeyboard(const std::string& lock_id)

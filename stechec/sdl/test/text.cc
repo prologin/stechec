@@ -82,6 +82,11 @@ int main(int, char**)
   it.setRenderMethod(eTextSolid);
   screen.addChild(&it);
 
+  InputTextSurface it2("Vera.ttf", 300);
+  it2.setPos(10, 60);
+  it2.setZ(2);
+  screen.addChild(&it2);
+
   Timer t1(3);
   t1.start();
 
@@ -92,6 +97,11 @@ int main(int, char**)
       if (it.isAcquireFinished())
 	it.resetAcquire();
 
+      if (it2.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
+	it2.acquireInput("lala2");
+      if (it2.isAcquireFinished())
+	it2.resetAcquire();
+      
       if (win.processOneFrame())
 	break;
       if (t1.isTimeElapsed())
