@@ -147,6 +147,7 @@ class MiniXMLTreeComponent {
 	function _spaceStr ($numSpaces)
 	{
 		$retStr = '';
+		
 		if ($numSpaces < 0)
 		{
 			return $retStr;

@@ -96,7 +96,7 @@ define("MINIXML_USE_SIMPLE", 0);
 
 define("MINIXML_VERSION", "1.3.0"); /* Version information */
 
-define("MINIXML_NOWHITESPACES", -999); /* Flag that may be passed to the toString() methods */
+define("MINIXML_NOWHITESPACES", 0); /* Flag that may be passed to the toString() methods */
 
 
 

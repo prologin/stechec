@@ -1117,7 +1117,7 @@ class MiniXMLElement extends MiniXMLTreeComponent {
 		if ($onlyTxtChild)
 		{
 			$nextDepth = 0;
-			$retString .= "> ";
+			$retString .= ">";
 		} else {
 			$nextDepth = $depth+1;
 			$retString .= ">\n";
@@ -1153,7 +1153,7 @@ class MiniXMLElement extends MiniXMLTreeComponent {
 		/* add the indented closing tag */
 		if ($onlyTxtChild)
 		{
-			$retString .= " </$elementName>\n";
+			$retString .= "</$elementName>\n";
 		} else {
 			$retString .= "$spaces</$elementName>\n";
 		}
