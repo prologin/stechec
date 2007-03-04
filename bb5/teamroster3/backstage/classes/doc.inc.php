@@ -752,22 +752,13 @@ class MiniXMLDoc {
 	** The optional DEPTH may be passed to set the space offset for the
 	** first element.
 	**
-	** If the optional DEPTH is set to MINIXML_NOWHITESPACES.  
-	** When it is, no \n or whitespaces will be inserted in the xml string
-	** (ie it will all be on a single line with no spaces between the tags.
-	**
 	** Returns a string of XML representing the document.
 	*/
-	function toString ($depth=0)
+	function toString ($depth=-1) // nasty hack to have the first element after <?xml with 0 spaces
 	{
 		$retString = $this->xxmlDoc->toString($depth);
-		
-		if ($depth == MINIXML_NOWHITESPACES)
-		{
-			$xmlhead = "<?xml version=\"1.0\"\\1?>";
-		} else {
-			$xmlhead = "<?xml version=\"1.0\"\\1?>\n ";
-		}
+		$xmlhead = "<?xml version=\"1.0\"\\1?>\n";
+
 		$search = array("/<PSYCHOGENIC_ROOT_ELEMENT([^>]*)>\s*/smi",
 				"/<\/PSYCHOGENIC_ROOT_ELEMENT>/smi");
 		$replace = array($xmlhead,

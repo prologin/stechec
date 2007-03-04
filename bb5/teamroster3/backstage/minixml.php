@@ -96,10 +96,6 @@ define("MINIXML_USE_SIMPLE", 0);
 
 define("MINIXML_VERSION", "1.3.0"); /* Version information */
 
-define("MINIXML_NOWHITESPACES", 0); /* Flag that may be passed to the toString() methods */
-
-
-
 $MiniXMLLocation = dirname(__FILE__);
 define("MINIXML_CLASSDIR", "$MiniXMLLocation/classes");
 require_once(MINIXML_CLASSDIR . "/doc.inc.php");

@@ -1044,17 +1044,7 @@ class MiniXMLElement extends MiniXMLTreeComponent {
 	** after newlines for elements at this level (adding 1 space per level in
 	** depth).  SPACEOFFSET defaults to 0.
 	**
-	** If SPACEOFFSET is passed as MINIXML_NOWHITESPACES.  
-	** no \n or whitespaces will be inserted in the xml string
-	** (ie it will all be on a single line with no spaces between the tags.
-	**
 	** Returns the XML string.
-	**
-	**
-	** Note: Since the toString() method recurses into child elements and because
-	** of the MINIXML_NOWHITESPACES and our desire to avoid testing for this value
-	** on every element (as it does not change), here we split up the toString method
-	** into 2 subs: toStringWithWhiteSpaces(DEPTH) and toStringNoWhiteSpaces().
 	**
 	** Each of these methods, which are to be considered private (?), in turn recurses
 	** calling the appropriate With/No WhiteSpaces toString on it's children - thereby
@@ -1063,15 +1053,10 @@ class MiniXMLElement extends MiniXMLTreeComponent {
 	
 	function toString ($depth=0)
 	{
-		if ($depth != MINIXML_NOWHITESPACES) // set to remove whitespaces beetween tags 
-		{
-			return $this->toStringNoWhiteSpaces();
-		} else {
-			return $this->toStringWithWhiteSpaces($depth);
-		}
+		return $this->toStringWithNewLines($depth);
 	}
 	
-	function toStringWithWhiteSpaces ($depth=0)
+	function toStringWithNewLines ($depth=0)
 	{
 		$attribString = '';
 		$elementName = $this->xname;
@@ -1127,10 +1112,10 @@ class MiniXMLElement extends MiniXMLTreeComponent {
 		
 		for ($i=0; $i < $this->xnumChildren ; $i++)
 		{
-			if (method_exists($this->xchildren[$i], 'toStringWithWhiteSpaces') )
+			if (method_exists($this->xchildren[$i], 'toStringWithNewLines') )
 			{
 			
-				$newStr = $this->xchildren[$i]->toStringWithWhiteSpaces($nextDepth);
+				$newStr = $this->xchildren[$i]->toStringWithNewLines($nextDepth);
 				
 					
 				if (! is_null($newStr))
@@ -1160,70 +1145,6 @@ class MiniXMLElement extends MiniXMLTreeComponent {
 		return $retString;
 		
 	} /* end method toString */
-	
-	
-	
-	
-	function toStringNoWhiteSpaces ()
-	{
-		$retString = '';
-		$attribString = '';
-		$elementName = $this->xname;
-		
-		foreach ($this->xattributes as $attrname => $attrvalue)
-		{
-			$attribString .= "$attrname=\"$attrvalue\" ";
-		}
-		
-		$retString = "<$elementName";
-		
-		
-		if ($attribString)
-		{
-			$attribString = rtrim($attribString);
-			$retString .= " $attribString";
-		}
-		
-		if (! $this->xnumChildren)
-		{
-			/* No kids -> no sub-elements, no text, nothing - consider a <unary/> element */
-			
-			$retString .= " />";
-			return $retString;
-		}
-		
-		
-		/* If we've gotten this far, the element has
-		** kids or text - consider a <binary>otherstuff</binary> element 
-		*/
-		$retString .= ">";
-		
-		/* Loop over all kids, getting associated strings */
-		for ($i=0; $i < $this->xnumChildren ; $i++)
-		{
-			if (method_exists($this->xchildren[$i], 'toStringNoWhiteSpaces') )
-			{
-				$newStr = $this->xchildren[$i]->toStringNoWhiteSpaces();
-					
-				if (! is_null($newStr))
-				{
-					$retString .= $newStr;
-				}
-				
-			} else {
-				_MiniXMLLog("Invalid child found in $elementName");
-				
-			} /* end if has a toString method */
-			
-		} /* end loop over all children */
-		
-		/* add the indented closing tag */
-		$retString .= "</$elementName>";
-		
-		return $retString;
-		
-	} /* end method toStringNoWhiteSpaces */
-	
 	
 	/* toStructure
 	**
@@ -1442,16 +1363,11 @@ class MiniXMLElementComment extends MiniXMLElement {
 	
 	function toString ($depth=0)
 	{
-		if ($depth == MINIXML_NOWHITESPACES)
-		{
-			return $this->toStringNoWhiteSpaces();
-		} else {
-			return $this->toStringWithWhiteSpaces($depth);
-		}
+		return $this->toStringWithNewLines($depth);
 	}
 	
 		
-	function toStringWithWhiteSpaces ($depth=0)
+	function toStringWithNewLines ($depth=0)
 	{
 
 		$spaces = $this->_spaceStr($depth) ;
@@ -1472,7 +1388,7 @@ class MiniXMLElementComment extends MiniXMLElement {
 		
 		for ($i=0; $i < $this->xnumChildren ; $i++)
 		{
-			$retString .= $this->xchildren[$i]->toStringWithWhiteSpaces($nextDepth);
+			$retString .= $this->xchildren[$i]->toStringWithNewLines($nextDepth);
 		}
 		
 		$retString .= "\n$spaces -->\n";
@@ -1480,39 +1396,8 @@ class MiniXMLElementComment extends MiniXMLElement {
 		
 		return $retString;
 	}
-	
-	
-	function toStringNoWhiteSpaces ()
-	{
-		$retString = '';
-		
-		$retString = "<!-- ";
-		
-		if (! $this->xnumChildren)
-		{
-			/* No kids, no text - consider a <unary/> element */
-			$retString .= " -->";
-			return $retString;
-		}
-		
-		
-		/* If we get here, the element does have children... get their contents */
-		for ($i=0; $i < $this->xnumChildren ; $i++)
-		{
-			$retString .= $this->xchildren[$i]->toStringNoWhiteSpaces();
-		}
-		
-		$retString .= " -->";
-		
-		
-		return $retString;
-	}
-		
-	
+
 }
-
-
-
 
 /***************************************************************************************************
 ****************************************************************************************************
@@ -1545,13 +1430,7 @@ class MiniXMLElementCData extends MiniXMLElement {
 		}
 	}
 	
-
-	function toStringNoWhiteSpaces ()
-	{
-		return $this->toString(MINIXML_NOWHITESPACES);
-	}
-	
-	function toStringWithWhiteSpaces ($depth=0)
+	function toStringWithNewLines ($depth=0)
 	{
 		return $this->toString($depth);
 	}
@@ -1559,10 +1438,6 @@ class MiniXMLElementCData extends MiniXMLElement {
 	function toString ($depth=0)
 	{
 		$spaces = '';
-		if ($depth != MINIXML_NOWHITESPACES)
-		{
-			$spaces = $this->_spaceStr($depth);
-		}
 		
 		$retString = "$spaces<![CDATA[ ";
 		
@@ -1614,16 +1489,11 @@ class MiniXMLElementDocType extends MiniXMLElement {
 	}
 	function toString ($depth)
 	{
-		if ($depth == MINIXML_NOWHITESPACES)
-		{
-			return $this->toStringNoWhiteSpaces();
-		} else {
-			return $this->toStringWithWhiteSpaces($depth);
-		}
+		return $this->toStringWithNewLines($depth);
 	}
 	
 		
-	function toStringWithWhiteSpaces ($depth=0)
+	function toStringWithNewLines ($depth=0)
 	{
 
 		$spaces = $this->_spaceStr($depth);
@@ -1641,7 +1511,7 @@ class MiniXMLElementDocType extends MiniXMLElement {
 		for ( $i=0; $i < $this->xnumChildren; $i++)
 		{
 			
-			$retString .= $this->xchildren[$i]->toStringWithWhiteSpaces($nextDepth);
+			$retString .= $this->xchildren[$i]->toStringWithNewLines($nextDepth);
 			
 		}
 		
@@ -1649,34 +1519,7 @@ class MiniXMLElementDocType extends MiniXMLElement {
 		
 		return $retString;
 	}
-
-
-	function toStringNoWhiteSpaces ()
-	{
-	
-		$retString = "<!DOCTYPE " . $this->dtattr . " [ ";
-		
-		if (! $this->xnumChildren)
-		{
-			$retString .= "]>\n";
-			return $retString;
-		}
-		
-		for ( $i=0; $i < $this->xnumChildren; $i++)
-		{
-			
-			$retString .= $this->xchildren[$i]->toStringNoWhiteSpaces();
-			
-		}
-		
-		$retString .= " ]>\n";
-		
-		return $retString;
-	}
-
-
 }
-
 
 /***************************************************************************************************
 ****************************************************************************************************
@@ -1714,10 +1557,6 @@ class MiniXMLElementEntity extends MiniXMLElement {
 	{
 		
 		$spaces = '';
-		if ($depth != MINIXML_NOWHITESPACES)
-		{
-			$spaces = $this->_spaceStr($depth);
-		} 
 		
 		$retString = "$spaces<!ENTITY " . $this->name();
 		
@@ -1726,14 +1565,12 @@ class MiniXMLElementEntity extends MiniXMLElement {
 			$retString .= ">\n";
 			return $retString;
 		}
-		
-		 $nextDepth = ($depth == MINIXML_NOWHITESPACES) ? MINIXML_NOWHITESPACES
-										: $depth + 1;
+
 		$retString .= '"';
 		for ( $i=0; $i < $this->xnumChildren; $i++)
 		{
 			
-			$retString .= $this->xchildren[$i]->toString(MINIXML_NOWHITESPACES);
+			$retString .= $this->xchildren[$i]->toString();
 			
 		}
 		$retString .= '"';
@@ -1742,13 +1579,7 @@ class MiniXMLElementEntity extends MiniXMLElement {
 		return $retString;
 	}
 	
-	
-	function toStringNoWhiteSpaces ()
-	{
-		return $this->toString(MINIXML_NOWHITESPACES);
-	}
-	
-	function toStringWithWhiteSpaces ($depth=0)
+	function toStringWithNewLines ($depth=0)
 	{
 		return $this->toString($depth);
 	}

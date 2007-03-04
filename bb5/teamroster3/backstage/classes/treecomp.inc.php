@@ -155,7 +155,7 @@ class MiniXMLTreeComponent {
 			
 		for($i = 0; $i < $numSpaces; $i++)
 		{
-			$retStr .= ' ';
+			$retStr .= '	';
 		}
 		
 		return $retStr;

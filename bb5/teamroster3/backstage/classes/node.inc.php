@@ -259,10 +259,6 @@ class MiniXMLNode extends MiniXMLTreeComponent {
 	
 	function toString ($depth=0)
 	{
-		if ($depth == MINIXML_NOWHITESPACES)
-		{
-			return $this->toStringNoWhiteSpaces();
-		}
 		
 		if (MINIXML_DEBUG > 0)
 		{
@@ -288,31 +284,10 @@ class MiniXMLNode extends MiniXMLTreeComponent {
 	}
 	
 	
-	function toStringWithWhiteSpaces ($depth=0)
+	function toStringWithNewLines ($depth=0)
 	{
 		return $this->toString($depth);
 	}
-	
-	function toStringNoWhiteSpaces ()
-	{
-	
-		if (MINIXML_DEBUG > 0)
-		{
-			_MiniXMLLog("MiniXMLNode::toStringNoWhiteSpaces() call with depth $depth");
-		}
-		
-		if (! is_null($this->xtext) )
-		{
-			/* a text element */
-			$retStr = $this->xtext;
-		} elseif (! is_null($this->xnumeric)) {
-			/* a numeric element */
-			$retStr =  $this->xnumeric;
-		}
-		
-		return $retStr;
-	}
-	
 	
 } /* end class definition */
 
