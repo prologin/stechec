@@ -42,7 +42,7 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
   // Create the player.
   if (player_[m->player_id] == NULL)
     {
-      player_[m->player_id] = new SPlayer(r_, m, this);
+      player_[m->player_id] = new SPlayer(r_, m, this, pm_);
       if (player_[m->player_id]->acceptPlayerCreation())
         {
           pm_->setPlayer(m->client_id, m->player_id, player_[m->player_id]);

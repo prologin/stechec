@@ -18,12 +18,13 @@
 #include "SRules.hh"
 #include "SPlayer.hh"
 
-SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t)
+SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t, SPlayerMsg* pm)
   : Player(m),
     r_(r),
     t_(t),
     f_(r->getField()),
     d_(r->getDice()),
+    pm_(pm),
     target_(NULL)
 {
 }
@@ -45,13 +46,8 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
   if (f_->intoField(pos_))
     f_->setPlayer(pos_, NULL);
   if (advertise_client && pos_ != pos)
-    {
-      MsgPlayerPos pkt(team_id_);
-      pkt.player_id = id_;
-      pkt.row = pos.row;
-      pkt.col = pos.col;
-      r_->sendPacket(pkt);
-    }
+    pm_->sendPosition(id_, team_id_);
+
   pos_ = pos;
   // Pushed off-field.
   if (!f_->intoField(pos))
@@ -84,12 +80,12 @@ bool SPlayer::tryAction(int modifier)
     {
       LOG6("[%1] Action _failed_, dice: %2, w/modifiers: %3, required: %4, ag: %5.", id_, dice_res, dice_modif,
           required, ag_ );
-      sendRoll(dice_res, modifier, required);
+      pm_->sendRoll(dice_res, modifier, required, this);
       return false;
     }
   LOG6("[%1] Action succeed, dice: %2, w/modifiers: %3, required: %4, ag: %5.", id_, dice_res,
        dice_modif, required, ag_);
-  sendRoll(dice_res, modifier, required);
+  pm_->sendRoll(dice_res, modifier, required, this);
   return true;
 }
 
@@ -156,9 +152,7 @@ int SPlayer::doMove(const MsgMove* m)
               checkArmor(0, 0);
               if (status_ == STA_STANDING)
                 setStatus(STA_PRONE);
-              MsgPlayerKnocked pkt(m->client_id);
-              pkt.player_id = id_;
-              r_->sendPacket(pkt);
+              pm_->sendMsgKnocked(this);
             }
         }
 
@@ -206,10 +200,7 @@ int SPlayer::doMove(const MsgMove* m)
     r_->sendIllegal(MSG_MOVE, m->client_id);
   if (b->getPosition() != pos_ball)
     {
-      MsgBallPos mesg;
-      mesg.row = b->getPosition().row;
-      mesg.col = b->getPosition().col;
-      r_->sendPacket(mesg);
+      b->sendPosition();
     }
   if (knocked||picking_failed)
     return 1;
@@ -237,7 +228,7 @@ void SPlayer::doStandUp(const MsgStandUp*)
       int result = d_->roll("standup");
       action_attempted_ = R_STANDUP;
       reroll_enabled_ = t_->canUseReroll();
-      sendRoll(result, 0, 4);
+      pm_->sendRoll(result, 0, 4, this);
       if (result >= 4)
         setStatus(STA_STANDING);
     }
@@ -336,9 +327,6 @@ int SPlayer::doBlock(const MsgBlock* m)
 
 void SPlayer::resolveBlock(int chosen_dice)
 {
-  MsgPlayerKnocked pkt1(team_id_);
-  MsgPlayerKnocked pkt2(r_->getCurrentOpponentTeamId());
-
   switch (result_[chosen_dice])
     {
     case BATTACKER_DOWN :
@@ -346,8 +334,7 @@ void SPlayer::resolveBlock(int chosen_dice)
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
         setStatus(STA_PRONE);
-      pkt1.player_id = id_;
-      r_->sendPacket(pkt1);
+      pm_->sendMsgKnocked(this);
       if (r_->getBall()->getOwner() == this)
         r_->getBall()->bounce();
       r_->turnOver();
@@ -360,10 +347,8 @@ void SPlayer::resolveBlock(int chosen_dice)
       target_->checkArmor(0, 0);
       if (target_->getStatus() == STA_STANDING)
         target_->setStatus(STA_PRONE);
-      pkt1.player_id = id_;
-      r_->sendPacket(pkt1);
-      pkt2.player_id = target_->getId();
-      r_->sendPacket(pkt2);
+      pm_->sendMsgKnocked(this);
+      pm_->sendMsgKnocked(target_);
       if (r_->getBall()->getOwner() == this)
         r_->getBall()->bounce();
       if (r_->getBall()->getOwner() == target_)
@@ -419,51 +404,44 @@ void SPlayer::blockPushChoice(SPlayer* target)
   MsgBlockPush pkt(r_->getCurrentTeamId());
   pkt.target_row = dt.row;
   pkt.target_col = dt.col;
-  pkt.nb_choice = 0;
+  nb_push_choices_ = 0;
 
   // Look for empty squares into the field.
   for (int i = 0; i < 3; i++)
     if (f_->intoField(squares[i]) && f_->getPlayer(squares[i]) == NULL)
       {
-        pkt.choice[pkt.nb_choice].row = squares[i].row;
-        pkt.choice[pkt.nb_choice].col = squares[i].col;
-        push_choices_[pkt.nb_choice] = squares[i];
-        pkt.nb_choice++;
+        push_choices_[nb_push_choices_] = squares[i];
+        nb_push_choices_++;
       }
 
   // No choice -> Try to push out of the field.
-  if (pkt.nb_choice == 0)
+  if (nb_push_choices_ == 0)
     {
       for (int i = 0; i < 3; i++)
-        if (!f_->intoField(squares[i]) && pkt.nb_choice == 0)
+        if (!f_->intoField(squares[i]) && nb_push_choices_ == 0)
           {
-            pkt.choice[pkt.nb_choice].row = squares[i].row;
-            pkt.choice[pkt.nb_choice].col = squares[i].col;
-            push_choices_[pkt.nb_choice] = squares[i];
-            pkt.nb_choice++;
+            push_choices_[nb_push_choices_] = squares[i];
+            nb_push_choices_++;
           }
     }
 
   // Still no one possibility -> all possibilities
-  if (pkt.nb_choice == 0)
+  if (nb_push_choices_ == 0)
     {
       for (int i = 0; i < 3; i++)
       {
-        pkt.choice[pkt.nb_choice].row = squares[i].row;
-        pkt.choice[pkt.nb_choice].col = squares[i].col;
-        push_choices_[pkt.nb_choice] = squares[i];
-        pkt.nb_choice++;
+        push_choices_[nb_push_choices_] = squares[i];
+        nb_push_choices_++;
       }
     }
 
-  nb_push_choices_ = pkt.nb_choice;
   LOG3("Final number of choices: %1", nb_push_choices_);
   for (int i = 0; i < nb_push_choices_; i++)
     LOG3("Choice #%1: %2", i, push_choices_[i]);
 
   target_->pusher_ = this;
   r_->getTeam(getTeamId())->setPusher(this);
-  r_->sendPacket(pkt);
+  r_->sendMsgBlockPush(nb_push_choices_, push_choices_, target_);
 
   if (nb_push_choices_ == 1)
     blockPush(0);
@@ -538,12 +516,10 @@ void SPlayer::follow(bool follow)
     }
   if (target_knocked_ && target_->status_ == STA_STANDING)
     {
-      MsgPlayerKnocked pkt(r_->getCurrentOpponentTeamId());
       target_->checkArmor(0, 0);
       if (target_->getStatus() == STA_STANDING)
         target_->setStatus(STA_PRONE);
-      pkt.player_id = target_->getId();
-      r_->sendPacket(pkt);
+      pm_->sendMsgKnocked(target_);
       if (r_->getBall()->getOwner() == target_)
         r_->getBall()->bounce();
     }
@@ -615,10 +591,7 @@ int SPlayer::doPass(const MsgPass* m)
 
   b->setThrown();
 
-  MsgBallPos mesg;
-  mesg.row = b->getPosition().row;
-  mesg.col = b->getPosition().col;
-  r_->sendPacket(mesg);
+  b->sendPosition();
 
   SPlayer* p = f_->getPlayer(b->getPosition());
   if (p != NULL&&p->getStatus() == STA_STANDING)
@@ -638,27 +611,6 @@ int SPlayer::doPass(const MsgPass* m)
   return 0;
 }
 
-/*
-** Sending roll result
-*/
-void SPlayer::sendRoll(int result, int modifier, int required)
-{
-  MsgResult msg(team_id_);
-  msg.player_id = id_;
-  msg.roll_type = action_attempted_;
-  msg.result = result;
-  msg.modifier = modifier;
-  msg.required = required;
-  msg.reroll = 0;
-
-  if (reroll_enabled_ && modifier + result < required)
-    {
-      t_->state_ = GS_REROLL;
-      t_->setConcernedPlayer(this);
-      msg.reroll = 1;
-    }
-  r_->sendPacket(msg);
-}
 
 /*
 ** Use of reroll
@@ -719,9 +671,7 @@ int SPlayer::finishMove(bool reroll)
       checkArmor(0, 0);
       if (status_ == STA_STANDING)
         setStatus(STA_PRONE);
-      MsgPlayerKnocked pkt(team_id_);
-      pkt.player_id = id_;
-      r_->sendPacket(pkt);
+      pm_->sendMsgKnocked(this);
     }
 
   // Ok... Move on.
@@ -756,10 +706,7 @@ int SPlayer::finishMove(bool reroll)
   r_->sendPacket(res_move);
   if (b->getPosition() != pos_ball)
     {
-      MsgBallPos mesg;
-      mesg.row = b->getPosition().row;
-      mesg.col = b->getPosition().col;
-      r_->sendPacket(mesg);
+      b->sendPosition();
     }
   if (knocked||picking_failed)
     return 1;
@@ -781,7 +728,7 @@ void SPlayer::finishStandUp(bool reroll)
     {
       int result = d_->roll("finishstandup");
       action_attempted_ = R_STANDUP;
-      sendRoll(result, 0, 4);
+      pm_->sendRoll(result, 0, 4, this);
       if (result >= 4)
         setStatus(STA_STANDING);
       //FIXME: advertise client.
@@ -848,10 +795,7 @@ int SPlayer::finishThrow(bool reroll)
     }
   b->setThrown();
 
-  MsgBallPos mesg;
-  mesg.row = b->getPosition().row;
-  mesg.col = b->getPosition().col;
-  r_->sendPacket(mesg);
+  b->sendPosition();
 
   SPlayer* p = f_->getPlayer(b->getPosition());
   if (p != NULL && p->getStatus() == STA_STANDING)
@@ -916,10 +860,7 @@ void SPlayer::setStatus(enum eStatus new_status)
 
   if (status_ != new_status)
     {
-      MsgPlayerStatus pkt(team_id_);
-      pkt.player_id = id_;
-      pkt.status = new_status;
-      r_->sendPacket(pkt);
+      pm_->sendStatus(new_status, this);
     }
 
   switch (new_status)
@@ -967,7 +908,6 @@ void SPlayer::setProne()
 
 void SPlayer::prepareKickoff()
 {
-  MsgPlayerKO msg;
   int dice;
   
   switch (status_)
@@ -981,9 +921,7 @@ void SPlayer::prepareKickoff()
 
     case STA_KO:
       dice = d_->roll("ko");
-      msg.player_id = id_;
-      msg.dice = dice;
-      r_->sendPacket(msg);
+      pm_->sendMsgKO(dice, this);
       if (dice > 3)
         setStatus(STA_RESERVE);
       break;

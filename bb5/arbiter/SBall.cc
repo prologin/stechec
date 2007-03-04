@@ -349,3 +349,11 @@ void SBall::setThrown()
 {
   thrown_ = true;
 }
+
+void SBall::afterBounce()
+{
+  MsgBallPos mesg;
+  mesg.row = pos_.row;
+  mesg.col = pos_.col;
+  r_->sendPacket(mesg);
+}

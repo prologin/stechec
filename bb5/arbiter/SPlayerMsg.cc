@@ -43,7 +43,73 @@ void SPlayerMsg::setPlayer(int team_id, int player_id, SPlayer* p)
   p_[team_id][player_id] = p;
 }
 
+void SPlayerMsg::sendPosition(SPlayer* p)
+{
+  MsgPlayerPos pkt(p->getTeamId());
+  pkt.player_id = p->getId();
+  pkt.row = p->getPosition().row;
+  pkt.col = p->getPosition().col;
+  r_->sendPacket(pkt);
+}
 
+void SPlayerMsg::sendMsgKnocked(Splayer* p)
+{
+  MsgPlayerKnocked pkt(p->getTeamId());
+  pkt.player_id = p->getId();
+  r_->sendPacket(pkt);
+}
+
+void SPlayerMsh:sendMsgBlockPush(int nb_choice, Position[] choices, SPlayer* target) {
+  MsgBlockPush pkt(r_->getCurrentTeamId());
+  pkt.target_row = target->getPosition().row;
+  pkt.target_col = target->getPosition().col;
+  pkt.nb_choice = nb_choice;
+  for (int i = 0; i < nb_choice; i++)
+    {
+      pkt.choice[i].row = choices[i].row;
+      pkt.choice[i].col = choices[i].col;
+    }
+  r_->sendPacket(pkt);
+}
+
+/*
+** Sending roll result
+*/
+void SPlayerMsg::sendRoll(int result, int modifier, int required, SPlayer* p)
+{
+  MsgResult msg(p->getTeamId());
+  msg.player_id = p->getId();
+  msg.roll_type = p->action_attempted_;
+  msg.result = result;
+  msg.modifier = modifier;
+  msg.required = required;
+  msg.reroll = 0;
+
+  if (p->reroll_enabled_ && modifier + result < required)
+    {
+      r_->getTeam(p->getTeamId())->state_ = GS_REROLL;
+      r_->getTeam(p->getTeamId())->setConcernedPlayer(this);
+      msg.reroll = 1;
+    }
+  r_->sendPacket(msg);
+}
+
+void SPlayerMsg::sendStatus(enum eStatus status, SPlayer* p)
+{
+  MsgPlayerStatus pkt(p->getTeamId());
+  pkt.player_id = p->getId();
+  pkt.status = status;
+  r_->sendPacket(msg);
+}
+
+void SPlayerMsg::sendMsgKO(int dice, SPlayer* p)
+{
+  MsgPlayerKO msg;
+  msg.player_id = p->getId();
+  msg.dice = dice;
+  r_->sendPacket(msg);
+}      
+      
 SPlayer* SPlayerMsg::getPlayer(int token, int team_id, int player_id)
 {
   if (team_id < 0 || team_id > 1 ||
