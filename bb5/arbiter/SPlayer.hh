@@ -24,11 +24,12 @@
 class SRules;
 class STeam;
 typedef Field<SPlayer> SField;
+class SPlayerMsg;
 
 class SPlayer : public Player
 {
 public:
-  SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t);
+  SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t, SPlayerMsg* pm);
 
   //! @brief Check some thing, if this player could be valid.
   bool acceptPlayerCreation();
@@ -125,7 +126,7 @@ private:
   STeam* t_; ///< Player's team.
   SField* f_; ///< Game field (same as SRules' one, it is used quite frequently).
   Dice* d_; ///< The dice (same remark).
-  SPlayerMsg pm_;
+  SPlayerMsg* pm_;
   
   SPlayer* target_; ///< Player that is the target of a block or a push.
 

@@ -51,7 +51,7 @@ public:
   //! @brief Throwin in case the ball leave the field.
   void throwin();
 
-  void sendBallPosition();
+  void sendPosition();
 
 private:
   void msgPlaceBall(const MsgBallPos* m);

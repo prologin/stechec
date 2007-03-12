@@ -28,8 +28,8 @@ public:
   void setPlayer(int team_id, int player_id, SPlayer* p);
   
   void sendPosition(SPlayer* p);
-  void sendMsgKnocked(Splayer* p);
-  void sendMsgBlockPush(int nb_choice, Position[] choices, SPlayer* target_);
+  void sendMsgKnocked(SPlayer* p);
+  void sendMsgBlockPush(int nb_choice, Position choices[], SPlayer* target_);
   void sendRoll(int result, int modifier, int required, SPlayer* p);
   void sendStatus(enum eStatus status, SPlayer* p);
   void sendMsgKO(int dice, SPlayer* p);

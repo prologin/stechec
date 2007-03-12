@@ -52,14 +52,14 @@ void SPlayerMsg::sendPosition(SPlayer* p)
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsg::sendMsgKnocked(Splayer* p)
+void SPlayerMsg::sendMsgKnocked(SPlayer* p)
 {
   MsgPlayerKnocked pkt(p->getTeamId());
   pkt.player_id = p->getId();
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsh:sendMsgBlockPush(int nb_choice, Position[] choices, SPlayer* target) {
+void SPlayerMsg::sendMsgBlockPush(int nb_choice, Position choices[], SPlayer* target) {
   MsgBlockPush pkt(r_->getCurrentTeamId());
   pkt.target_row = target->getPosition().row;
   pkt.target_col = target->getPosition().col;
@@ -88,7 +88,7 @@ void SPlayerMsg::sendRoll(int result, int modifier, int required, SPlayer* p)
   if (p->reroll_enabled_ && modifier + result < required)
     {
       r_->getTeam(p->getTeamId())->state_ = GS_REROLL;
-      r_->getTeam(p->getTeamId())->setConcernedPlayer(this);
+      r_->getTeam(p->getTeamId())->setConcernedPlayer(p);
       msg.reroll = 1;
     }
   r_->sendPacket(msg);
@@ -99,7 +99,7 @@ void SPlayerMsg::sendStatus(enum eStatus status, SPlayer* p)
   MsgPlayerStatus pkt(p->getTeamId());
   pkt.player_id = p->getId();
   pkt.status = status;
-  r_->sendPacket(msg);
+  r_->sendPacket(pkt);
 }
 
 void SPlayerMsg::sendMsgKO(int dice, SPlayer* p)

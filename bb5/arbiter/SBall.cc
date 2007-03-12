@@ -35,12 +35,7 @@ SPlayer* SBall::getOwner()
 void SBall::setPosition(const Position& pos, bool advertise_client)
 {
   if (advertise_client && pos_ != pos)
-    {
-      MsgBallPos msg;
-      msg.row = pos.row;
-      msg.col = pos.col;
-      r_->sendPacket(msg);
-    }
+    sendPosition();
   pos_ = pos;
 }
 
@@ -122,11 +117,9 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
         }
     }
 
-  // Second msg resend to client: where it eventually goes.
-  MsgBallPos mesg;
-  mesg.row = pos_.row;
-  mesg.col = pos_.col;
-  r_->sendPacket(mesg);
+  // First msg resent to client: where it eventually goes.
+  sendPosition();
+
   r_->kickoffFinished();
 }
 
@@ -151,14 +144,11 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
       return;
     }
 
-  // Second msg resend to client: where it goes.
-  MsgBallPos mesg;
-  mesg.row = p->getPosition().row;
-  mesg.col = p->getPosition().col;
-  r_->sendPacket(mesg);
-
   owner_ = p;
   pos_ = Position(p->getPosition());
+
+  // Second msg resent to client: where it goes.
+  sendPosition();
 
   r_->kickoffFinished();
 }
@@ -234,10 +224,7 @@ void SBall::afterBounce(const Position& delta, int amplitude)
         }
     }
 
-  MsgBallPos mesg;
-  mesg.row = pos_.row;
-  mesg.col = pos_.col;
-  r_->sendPacket(mesg);
+  sendPosition();
 }
 
 void SBall::bounce(int nb)
@@ -339,10 +326,7 @@ void SBall::removeFromField()
 {
   owner_ = NULL;
   pos_ = Position(-1,-1);
-  MsgBallPos mesg;
-  mesg.row = pos_.row;
-  mesg.col = pos_.col;
-  r_->sendPacket(mesg);
+  sendPosition();
 }
 
 void SBall::setThrown()
@@ -350,10 +334,11 @@ void SBall::setThrown()
   thrown_ = true;
 }
 
-void SBall::afterBounce()
+void SBall::sendPosition()
 {
   MsgBallPos mesg;
   mesg.row = pos_.row;
   mesg.col = pos_.col;
   r_->sendPacket(mesg);
 }
+

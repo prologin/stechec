@@ -17,6 +17,7 @@
 #include "Dice.hh"
 #include "SRules.hh"
 #include "SPlayer.hh"
+#include "SPlayerMsg.hh"
 
 SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t, SPlayerMsg* pm)
   : Player(m),
@@ -46,7 +47,7 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
   if (f_->intoField(pos_))
     f_->setPlayer(pos_, NULL);
   if (advertise_client && pos_ != pos)
-    pm_->sendPosition(id_, team_id_);
+    pm_->sendPosition(this);
 
   pos_ = pos;
   // Pushed off-field.
@@ -401,9 +402,6 @@ void SPlayer::blockPushChoice(SPlayer* target)
   LOG3("Pusher pos: %1 Aimed pos: %2", pos_, target->pos_);
   LOG3("Opposite squares: c1: %1 c2: %2 c3: %3", squares[0], squares[1], squares[2]);
 
-  MsgBlockPush pkt(r_->getCurrentTeamId());
-  pkt.target_row = dt.row;
-  pkt.target_col = dt.col;
   nb_push_choices_ = 0;
 
   // Look for empty squares into the field.
@@ -441,7 +439,7 @@ void SPlayer::blockPushChoice(SPlayer* target)
 
   target_->pusher_ = this;
   r_->getTeam(getTeamId())->setPusher(this);
-  r_->sendMsgBlockPush(nb_push_choices_, push_choices_, target_);
+  pm_->sendMsgBlockPush(nb_push_choices_, push_choices_, target_);
 
   if (nb_push_choices_ == 1)
     blockPush(0);
