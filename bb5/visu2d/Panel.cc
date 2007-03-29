@@ -35,9 +35,9 @@ Panel::Panel(Game& g)
     misc_("Bobtag.ttf", 32, 80, 50),
     skills_("Bobtag.ttf", 16, 100, 80)
 {
-  setZ(-1);
-  
   setPos(Point(500, 0));
+
+  bg_.setZ(-1);
   addChild(&bg_);
 
   wheel_.setPos(113, 506);
@@ -112,13 +112,10 @@ Panel::Panel(Game& g)
       digit_time_[i].load("image/panel/digits_time.png");
       digit_time_[i].splitNbFrame(10, 1);
       addChild(&digit_time_[i]);
-      LOG2("add digit %1", i);
     }
-  digit_time_[0].setPos(160, 546);
-  digit_time_[0].setFrame(2);
-  digit_time_[1].setPos(185, 546);
-  digit_time_[1].setFrame(4);
-  digit_time_[2].setPos(205, 546);
+  digit_time_[0].setPos(161, 546);
+  digit_time_[1].setPos(188, 546);
+  digit_time_[2].setPos(203, 546);
 }
 
 Panel::~Panel()
