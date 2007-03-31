@@ -56,6 +56,12 @@ void AIApp::handleDrawKicker()
   api_->doChooseKickoff(false);
 }
 
+void AIApp::handleTeamPlacement()
+{
+  // Default placement is just fine.
+  api_->doEndPlacement();
+}
+
 void AIApp::handleKickOff()
 {
   // Try to place the ball somewhere.
@@ -126,6 +132,9 @@ int AIApp::onPlay(bool)
             handleDrawKicker();
             break;
           case GS_INITKICKOFF:
+            handleTeamPlacement();
+            break;
+          case GS_KICKOFF:
             handleKickOff();
             break;
           case GS_COACH1:

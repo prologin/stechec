@@ -3,6 +3,10 @@ wait
 choose kickoff
 
 wait
+#Team placement.
+place end
+
+wait
 # Kickoff.
 # Ball is scattered off-field.
 cheat 1 1

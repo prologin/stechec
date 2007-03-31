@@ -3,6 +3,10 @@ wait
 choose kickoff
 
 wait
+#Team placement.
+place end
+
+wait
 # Kickoff.
 # Ball scattered on player 10, who fails to catch it.
 cheat 1 1 1 1

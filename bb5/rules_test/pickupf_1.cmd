@@ -1,4 +1,8 @@
 wait
+#Team placement.
+place end
+
+wait
 # Turn 1.
 
 # effectue toutes les actions qu'on veut...

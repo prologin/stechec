@@ -1,4 +1,8 @@
 wait
+#Team placement.
+place end
+
+wait
 # Turn 1.
 
 # Move and pick up the ball.

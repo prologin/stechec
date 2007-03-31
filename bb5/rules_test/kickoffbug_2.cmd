@@ -3,6 +3,10 @@ wait
 choose kickoff
 
 wait
+#Team placement.
+place end
+
+wait
 # Kickoff.
 # Ball scattered on kicking team's front line.
 # If it goes to a player of the kicking team, catch it.

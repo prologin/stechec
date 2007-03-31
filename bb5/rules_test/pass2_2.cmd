@@ -3,6 +3,10 @@ wait
 choose kickoff
 
 wait
+#Team placement.
+place end
+
+wait
 # Kickoff.
 # Ball is scattered and rebounds in 7 7.
 cheat 1 1 1

@@ -59,6 +59,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"print", &Input::cmdPrint, "<subcmd>|print some informations ('help print')"},
   {"say", &Input::cmdSay, "<s>|chat with others"},
   {"choose", &Input::cmdChoose, "<subcmd>|choose to kick off or receive ('help choose')"},
+  {"place", &Input::cmdPlace, "<subcmd>|set up team placement ('help place')"},
   {"kickoff", &Input::cmdKickOff, "<r> <c>|place the ball on <r, c>"},
   {"giveBall", &Input::cmdGiveBall, "<id>|give the ball to the player'id'"},
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
@@ -95,6 +96,13 @@ Input::InputSubCommand Input::move_cmd_[] = {
 Input::InputSubCommand Input::choose_cmd_[] = {
   {"kickoff", &Input::cmdChooseKickoff, "Choose to kick off first"},
   {"receive", &Input::cmdChooseReceive, "Choose to receive first"},
+  {NULL, NULL, NULL}
+};
+
+Input::InputSubCommand Input::place_cmd_[] = {
+  {"", &Input::cmdPlaceField, "<p> <r> <c>|Place the player <p> at <r,c>."},
+  {"reserve", &Input::cmdPlaceReserve, "<p>|Place the player <p> in the reserve."},
+  {"end", &Input::cmdEndPlacement, "End team placement."},
   {NULL, NULL, NULL}
 };
 
@@ -163,6 +171,13 @@ void Input::cmdHelp(const string& cmd, const string&)
           cmd_name = choose_cmd_[i].name;
           cmd_doc = choose_cmd_[i].doc;
         }
+      else if (cmd == "place")
+        {
+          if (place_cmd_[i].name == NULL)
+            return;
+          cmd_name = place_cmd_[i].name;
+          cmd_doc = place_cmd_[i].doc;
+        }
       else if (cmd == "block")
         {
           if (block_cmd_[i].name == NULL)
@@ -220,6 +235,16 @@ void Input::cmdChoose(const string& cmd, const string& args)
     cmdChooseKickoff(args);
   else if (cmd == "receive")
     cmdChooseReceive(args);
+}
+
+void Input::cmdPlace(const string& cmd, const string& args)
+{
+  if (cmd == "end")
+    cmdEndPlacement(args);
+  else if (cmd == "reserve")
+    cmdPlaceReserve(args);
+  else
+    cmdPlaceField(cmd + " " + args);
 }
 
 void Input::cmdKickOff(const string& cmd, const string& args)
@@ -390,6 +415,37 @@ void Input::cmdChooseKickoff(const std::string& args)
 void Input::cmdChooseReceive(const std::string& args)
 {
   api_->doChooseKickoff(false);
+}
+
+//
+// Place commands
+//
+
+void Input::cmdEndPlacement(const std::string& args)
+{
+  api_->doEndPlacement();
+}
+
+void Input::cmdPlaceReserve(const std::string& args)
+{
+  istringstream is(args);
+  int p = -1;
+  Position pos(-1,-1);
+  is >> p;
+  api_->selectPlayer(p);
+  api_->doPlacePlayer(pos);
+}
+
+void Input::cmdPlaceField(const std::string& args)
+{
+  istringstream is(args);
+  int p = -1;
+  Position pos;
+  is >> p;
+  is >> pos.row;
+  is >> pos.col;
+  api_->selectPlayer(p);
+  api_->doPlacePlayer(pos);
 }
 
 //
@@ -679,7 +735,7 @@ char* cmd_generator(const char* text, int state)
   return NULL;
 }
 
-// Get next matching word in 'move' command
+// Get next matching word in 'print' command
 char* cmd_generator_print(const char* text, int state)
 {
   static int list_index;
@@ -728,6 +784,24 @@ char* cmd_generator_choose(const char* text, int state)
       len = strlen(text);
     }
   while ((name = input_inst->choose_cmd_[list_index++].name) != NULL)
+    if (strncmp(name, text, len) == 0)
+      return strdup(name);
+  return NULL;
+}
+
+// Get next matching word in 'place' command
+char* cmd_generator_place(const char* text, int state)
+{
+  static int list_index;
+  static int len;
+  const char* name;
+
+  if (state == 0)
+    {
+      list_index = 0;
+      len = strlen(text);
+    }
+  while ((name = input_inst->place_cmd_[list_index++].name) != NULL)
     if (strncmp(name, text, len) == 0)
       return strdup(name);
   return NULL;
@@ -808,6 +882,8 @@ char** cmd_completion(const char* text, int start, int)
     matches = rl_completion_matches(text, cmd_generator_move);
   else if (strncmp(rl_line_buffer, "choose", 2) == 0)
     matches = rl_completion_matches(text, cmd_generator_choose);
+  else if (strncmp(rl_line_buffer, "place", 3) == 0)
+    matches = rl_completion_matches(text, cmd_generator_place);
   else if (strncmp(rl_line_buffer, "block", 5) == 0)
     matches = rl_completion_matches(text, cmd_generator_block);
   else if (strncmp(rl_line_buffer, "declare", 4) == 0)

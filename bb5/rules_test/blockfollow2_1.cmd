@@ -1,4 +1,8 @@
 wait
+#Team placement.
+place end
+
+wait
 # Give ball to player 0.
 giveBall 0
 

@@ -169,7 +169,7 @@ void Game::unselectAllPlayer()
 
 void Game::evIllegal(int token)
 {
-  LOG4("An illegal token was received (%1)", token);
+  LOG4("An illegal token was received (%1).", bb5_token_str[token]);
 }
 
 void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
@@ -288,19 +288,34 @@ void Game::evDrawKicker(int team_id)
 
 void Game::evKickOff(int team_id, bool place_team)
 {
-  unsetState(stWait);
-  if (team_id == api_->myTeamId() && !place_team)
+  if (place_team)
+    if (team_id == api_->myTeamId())
+    {
+      //FIXME: allow coach to replace his players.
+      api_->doEndPlacement();
+    }
+    else
+    {
+      //FIXME: (un)setState...
+      // game_dlg_->push(eDlgActInfo);
+      // game_dlg_->setText("Wait that the other team sets up on the field.");
+    }
+  else
+  {
+    unsetState(stWait);
+    if (team_id == api_->myTeamId())
     {
       setState(stDoKoffBall);
       game_dlg_->push(eDlgActInfo);
       game_dlg_->setText("Kickoff. Place the ball.");
     }
-  else if (team_id != api_->myTeamId() && !place_team)
+    else
     {
       setState(stWaitKoffBall);
       game_dlg_->push(eDlgActInfo);
-      game_dlg_->setText("Waiting that the other place the ball.");
+      game_dlg_->setText("Waiting that the other team places the ball.");
     }
+  }
 }
 
 void Game::evChat(const std::string& msg)

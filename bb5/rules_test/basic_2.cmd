@@ -3,6 +3,10 @@ wait
 choose kickoff
 
 wait
+#Team placement.
+place end
+
+wait
 # Kickoff.
 print BEGIN DIFF
 print hello world from 2

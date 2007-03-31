@@ -1,4 +1,8 @@
 wait
+#Team placement.
+place end
+
+wait
 # Turn 1.
 
 # Simply move a player and dodge.

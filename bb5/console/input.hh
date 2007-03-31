@@ -64,6 +64,7 @@ public:
   static InputSubCommand print_cmd_[];
   static InputSubCommand move_cmd_[];
   static InputSubCommand choose_cmd_[];
+  static InputSubCommand place_cmd_[];
   static InputSubCommand block_cmd_[];
   static InputSubCommand declare_cmd_[];
 
@@ -75,6 +76,7 @@ private:
   void cmdPrint(const std::string& cmd, const std::string& args);
   void cmdSay(const std::string& cmd, const std::string& args);
   void cmdChoose(const std::string& cmd, const std::string& args);
+  void cmdPlace(const std::string& cmd, const std::string& args);
   void cmdKickOff(const std::string& cmd, const std::string& args);
   void cmdIllegal(const std::string& cmd, const std::string& args);
   void cmdEnd(const std::string& cmd, const std::string& args);
@@ -103,6 +105,11 @@ private:
   // Choose commands
   void cmdChooseKickoff(const std::string& args);
   void cmdChooseReceive(const std::string& args);
+
+  // Place commands
+  void cmdPlaceField(const std::string& args);
+  void cmdPlaceReserve(const std::string& args);
+  void cmdEndPlacement(const std::string& args);
 
   // Move commands
   void cmdMoveTurnMarker(const std::string& args);

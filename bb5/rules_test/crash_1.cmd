@@ -1,4 +1,8 @@
 wait
+#Team placement.
+place end
+
+wait
 # Turn 1.
 
 # Player 10 moves and catches the ball.

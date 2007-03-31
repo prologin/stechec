@@ -37,6 +37,7 @@ private:
   void waitUntilReady();
   
   void handleDrawKicker();
+  void handleTeamPlacement();
   void handleKickOff();
   void handleMyTurn();
   

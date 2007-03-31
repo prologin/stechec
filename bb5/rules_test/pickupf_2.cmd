@@ -3,6 +3,10 @@ wait
 choose kickoff
 
 wait
+#Team placement.
+place end
+
+wait
 # Kickoff.
 # Ball is scattered on player 10, who fails to catch it.
 # Ball finally rebounds to 8 6.

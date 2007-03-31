@@ -230,7 +230,7 @@ void CmdLineInterface::printPlayer(int player_id, int team_id)
 
 void CmdLineInterface::evIllegal(int was_token)
 {
-  cout << "An illegal action was tried (token: " << was_token << "). Bouh." << endl;
+  cout << "An illegal action was tried (token: " << bb5_token_str[was_token] << "). Bouh." << endl;
 }
 
 void CmdLineInterface::evInitGame()
@@ -266,13 +266,22 @@ void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
 
 void CmdLineInterface::evKickOff(int team_id, bool place_team)
 {
-  if (team_id == api_->myTeamId() && !place_team)
+  if (place_team)
+    if (team_id == api_->myTeamId())
+    {
+      cout << "Arbiter is asking us to set up on the field. (use 'place')" << endl;
+      input_.stopWaiting();
+    }
+    else
+      cout << "Wait that the other team sets up on the field." << endl;
+  else
+    if (team_id == api_->myTeamId())
     {
       cout << "Arbiter is asking us to place the ball. (use 'kickoff')" << endl;
       input_.stopWaiting();
     }
-  else if (team_id != api_->myTeamId() && !place_team)
-    cout << "Wait that the other team places the ball" << endl;
+    else
+      cout << "Wait that the other team places the ball." << endl;
 }
 
 void CmdLineInterface::evMoveTurnMarker()
