@@ -24,6 +24,7 @@
 
 # include "PacketHandler.hh"
 
+//FIXME: 'race' info is missing.
 DECLARE_PACKET(MSG_TEAMINFO, MsgTeamInfo)
   int team_name[8];
   int coach_name[8];

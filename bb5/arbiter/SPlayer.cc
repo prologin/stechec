@@ -971,8 +971,51 @@ enum eStatus SPlayer::rollCasualty()
 
 
 /*
-** Messages, filters
+** Messages
 */
+
+// Receive player initial position, on kick-off.
+void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
+{
+  const Position new_pos(m->row, m->col);
+  SPlayer* out_goer = f_->getPlayer(new_pos);
+
+  if (t_->state_ != GS_INITKICKOFF)
+  {
+    r_->sendIllegal(m->token, m->client_id);
+  }
+  else if (status_ != STA_RESERVE && status_ != STA_STANDING)
+  {
+    r_->sendIllegal(m->token, m->client_id);
+  }
+  // Place player in the reserve if placement is out of the field, or in the wrong field side.
+  else if (!f_->intoField(new_pos)
+      || t_->getTeamId() == 0 && new_pos.row >= ROWS / 2
+      || t_->getTeamId() == 1 && new_pos.row < ROWS / 2)
+  {
+    // Do nothing if the player is already in the reserve.
+    if (status_ != STA_RESERVE)
+    {
+      f_->setPlayer(pos_, NULL);
+      setStatus(STA_RESERVE);
+    }
+  }
+  // Do nothing if the player is already standing at this place.
+  else if (! (status_ == STA_STANDING && pos_ == new_pos))
+  {
+    if (out_goer != NULL)
+    {
+      f_->setPlayer(new_pos,NULL);
+      out_goer->setStatus(STA_RESERVE);
+    }
+    if (status_ == STA_RESERVE)
+      setStatus(STA_STANDING);
+    // Note: SPlayer::setPosition(new_pos, true) doesn't advertise the client
+    // in case of the player was already at this position and in the reserve.
+    setPosition(new_pos, false);
+    r_->sendPacket(*m);
+  }
+}
 
 void SPlayer::msgDeclare(const MsgDeclare* m)
 {

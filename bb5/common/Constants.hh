@@ -34,11 +34,12 @@
 // Constants describing the current status of the game.
 enum {
   GS_INITGAME = 1,  
-  GS_DRAWKICKER,
-  GS_INITKICKOFF, 
+  GS_DRAWKICKER,  ///< wait for coach to choose either to kick or to receive.
+  GS_INITKICKOFF, ///< wait for coach to set up team placement.
+  GS_KICKOFF,     ///< wait for coach to place the ball on the field.
   GS_COACH1,      ///< Coach 1 turn.
   GS_COACH2,      ///< Coach 2 turn.
-  GS_TOUCHBACK,   
+  GS_TOUCHBACK,   ///< wait for coach to give the ball to one of his players.
   GS_REROLL,      ///< wait for coach to use or not a reroll
   GS_BLOCK,       ///< wait for coach to choose a block dice
   GS_PUSH,        ///< wait for coach to choose a square
@@ -49,6 +50,7 @@ enum {
 // Field limits.
 const int COLS             = 15; ///< [| 0, 14 |]
 const int ROWS             = 26; ///< [| 0, 25 |]
+const int SIDE             = 4;  ///< [| 0, 3 |] [| 11, 14 |]
 
 //! @brief Maximum number of players on a team.
 const int MAX_PLAYER       = 16;

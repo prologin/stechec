@@ -153,28 +153,27 @@ void        CRules::msgDrawKicker(const MsgDrawKicker* m)
 
 void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-  // Exit if is not for our team.
   if (m->client_id != getTeamId())
     {
+      // Inform UI that other team is concerned.
       onEvent(m);
-      return;
     }
-
-  if (m->place_team)
+  else if (m->place_team)
     {
       assert(getState() != GS_INITKICKOFF);
       setState(GS_INITKICKOFF);
       api_->selectTeam(US);
 
       // Our team has to enter the field
-      // FIXME: do it automatically, for now.
+      // FIXME: Automatically use default placement, for now.
       our_team_->placeTeam(1);
-      sendPacket(*m);
-      return;
+      // Inform UI that he has to place players.
+      onEvent(m);
     }
   else
     {
       assert(getState() == GS_INITKICKOFF);
+      setState(GS_KICKOFF);
       // Inform UI that he has to place the ball
       onEvent(m);
     }

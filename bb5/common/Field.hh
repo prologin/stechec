@@ -121,17 +121,17 @@ inline int Field<T>::isPlacementValid(int team_id)
   Position p;
 
   // Check the other half of the field
-  for (p.row = (1 - team_id)*13; p.row <= (1 - team_id)*13 + 12; p.row++)
-    for (p.col = 0; p.col <= 14; p.col++)
+  for (p.row = (1 - team_id) * (ROWS / 2); p.row <= (1 - team_id) * (ROWS / 2) + (ROWS / 2) - 1; p.row++)
+    for (p.col = 0; p.col <= COLS - 1; p.col++)
       if (getPlayer(p) != NULL
 	  && getPlayer(p)->getTeamId() == team_id)
-	return false;
+        return false;
 
   int nb_player = 0;
   int nb_player_wide = 0;
   // Check the left wide zone
-  for (p.row = team_id*12 + 1; p.row <= team_id*12 + 12; p.row++)
-    for (p.col = 0; p.col <= 3; p.col++)
+  for (p.row = team_id * ((ROWS / 2) - 1) + 1; p.row <= team_id * ((ROWS / 2) - 1) + ((ROWS / 2) - 1); p.row++)
+    for (p.col = 0; p.col <= SIDE - 1; p.col++)
       if (getPlayer(p) != NULL 
 	  && getPlayer(p)->getTeamId() == team_id)
 	{
@@ -143,8 +143,8 @@ inline int Field<T>::isPlacementValid(int team_id)
 	
   nb_player_wide = 0;
   // Check the right wide zone
-  for (p.row = team_id*12 + 1; p.row <= team_id*12 + 12; p.row++)
-    for (p.col = 11; p.col <= 14; p.col++)
+  for (p.row = team_id * ((ROWS / 2) - 1) + 1; p.row <= team_id * ((ROWS / 2) - 1) + ((ROWS / 2) - 1); p.row++)
+    for (p.col = COLS - SIDE; p.col <= COLS - 1; p.col++)
       if (getPlayer(p) != NULL 
 	  && getPlayer(p)->getTeamId() == team_id)
 	{
@@ -156,8 +156,8 @@ inline int Field<T>::isPlacementValid(int team_id)
 	
   int nb_player_LoS = 0;
   // Check the LoS
-  p.row = team_id + 12;
-  for (p.col = 4; p.col <= 10; p.col++)
+  p.row = team_id + (ROWS / 2) - 1;
+  for (p.col = SIDE; p.col <= (COLS - 1) - SIDE; p.col++)
     if (getPlayer(p) != NULL 
 	&& getPlayer(p)->getTeamId() == team_id)
       {
@@ -166,8 +166,8 @@ inline int Field<T>::isPlacementValid(int team_id)
       }
 
   // Check the end zone
-  p.row = team_id*25;
-  for (p.col = 0; p.col <= 14; p.col++)
+  p.row = team_id * (ROWS - 1);
+  for (p.col = 0; p.col <= COLS - 1; p.col++)
     if (getPlayer(p) != NULL 
 	&& getPlayer(p)->getTeamId() == team_id)
       {
@@ -175,16 +175,16 @@ inline int Field<T>::isPlacementValid(int team_id)
       }
 	
   // Check the middle of the field
-  for (p.row = team_id*13 + 1; p.row <= team_id*13 + 11; p.row++)
-    for (p.col = 4; p.col <= 10; p.col++)
+  for (p.row = team_id * (ROWS / 2) + 1; p.row <= (team_id + 1) * (ROWS / 2) - 2; p.row++)
+    for (p.col = SIDE; p.col <= (COLS - 1) - SIDE; p.col++)
       if (getPlayer(p) != NULL 
 	  && getPlayer(p)->getTeamId() == team_id)
 	{
 	  nb_player++;
 	}
 	
-  // The where the team has less than 11 players is treated in Team
-  return (nb_player < 12 &&(nb_player_LoS >= 3 ||nb_player_LoS == nb_player));
+  // The case where the team has less than 11 players is treated in Team
+  return (nb_player < 12 && (nb_player_LoS >= 3 || nb_player_LoS == nb_player));
 }
 
 #endif /* !FIELD_HH_ */

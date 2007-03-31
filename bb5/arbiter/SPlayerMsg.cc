@@ -25,6 +25,7 @@ SPlayerMsg::SPlayerMsg(SRules* r)
       p_[0][i] = NULL;
       p_[1][i] = NULL;
     }
+  r_->HANDLE_WITH(MSG_PLAYERPOS, SPlayerMsg, this, msgPlayerPos, GS_INITKICKOFF);
   r_->HANDLE_WITH(MSG_DECLARE, SPlayerMsg, this, msgDeclare, 0);
   r_->HANDLE_WITH(MSG_MOVE, SPlayerMsg, this, msgMove, 0);
   r_->HANDLE_WITH(MSG_STANDUP, SPlayerMsg, this, msgStandUp, 0);
@@ -123,6 +124,17 @@ SPlayer* SPlayerMsg::getPlayer(int token, int team_id, int player_id)
   return p_[team_id][player_id];
 }
 
+void SPlayerMsg::msgPlayerPos(const MsgPlayerPos* m)
+{
+  SPlayer *p;
+ 
+  p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p == NULL)
+    r_->sendIllegal(m->token, m->client_id);
+  else
+    p->msgPlayerPos(m);
+}
+
 void SPlayerMsg::msgDeclare(const MsgDeclare* m)
 {
   SPlayer* p;
@@ -134,8 +146,9 @@ void SPlayerMsg::msgDeclare(const MsgDeclare* m)
     }
   p = getPlayer(m->token, m->client_id, m->player_id);
   if (p == NULL)
-    return;
-  p->msgDeclare(m);
+    r_->sendIllegal(m->token, m->client_id);
+  else
+    p->msgDeclare(m);
 }
 
 void SPlayerMsg::msgMove(const MsgMove* m)
@@ -149,8 +162,9 @@ void SPlayerMsg::msgMove(const MsgMove* m)
     }
   p = getPlayer(m->token, m->client_id, m->player_id);
   if (p == NULL)
-    return;
-  p->msgMove(m);
+    r_->sendIllegal(m->token, m->client_id);
+  else
+    p->msgMove(m);
 }
 
 void SPlayerMsg::msgStandUp(const MsgStandUp* m)
@@ -164,8 +178,9 @@ void SPlayerMsg::msgStandUp(const MsgStandUp* m)
     }
   p = getPlayer(m->token, m->client_id, m->player_id);
   if (p == NULL)
-    return;
-  p->msgStandUp(m);
+    r_->sendIllegal(m->token, m->client_id);
+  else
+    p->msgStandUp(m);
 }
 
 void SPlayerMsg::msgBlock(const MsgBlock* m)
@@ -179,8 +194,9 @@ void SPlayerMsg::msgBlock(const MsgBlock* m)
     }
   p = getPlayer(m->token, m->client_id, m->player_id);
   if (p == NULL)
-    return;
-  p->msgBlock(m);
+    r_->sendIllegal(m->token, m->client_id);
+  else
+    p->msgBlock(m);
 }
 
 void SPlayerMsg::msgPass(const MsgPass* m)
@@ -194,6 +210,7 @@ void SPlayerMsg::msgPass(const MsgPass* m)
     }
   p = getPlayer(m->token, m->client_id, m->player_id);
   if (p == NULL)
-    return;
-  p->msgPass(m);
+    r_->sendIllegal(m->token, m->client_id);
+  else
+    p->msgPass(m);
 }

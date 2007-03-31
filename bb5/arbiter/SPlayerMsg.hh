@@ -37,6 +37,7 @@ public:
 private:
   SPlayer* getPlayer(int token, int team_id, int player_id);
 
+  void msgPlayerPos(const MsgPlayerPos* m);
   void msgDeclare(const MsgDeclare* m);
   void msgMove(const MsgMove* m);
   void msgStandUp(const MsgStandUp* m);

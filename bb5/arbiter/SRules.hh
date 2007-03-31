@@ -73,7 +73,7 @@ public:
   //! @brief The ball is in game, receiving team can play
   void kickoffFinished();
 
-  //!@brief Go on next turn.
+  //! @brief Go on next turn.
   void turnOver();
 
   //! @brief Adapt score and launch the kickoff
@@ -89,9 +89,9 @@ private:
   //! @brief Initialize rules and launch game.
   //! called once in a game.
   void initGame();
-  //!@ brief Called before a half.
+  //! @brief Called before a half.
   void initHalf();
-  //!@ brief Called before a kickoff.
+  //! @brief Called before a kickoff.
   void initKickoff();
   
   void msgInitGame(const MsgInitGame* m);

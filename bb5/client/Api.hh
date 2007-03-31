@@ -178,6 +178,15 @@ public:
   //!   @c false if coach want to receive.
   int           doChooseKickoff(bool kickoff);
 
+  //! @brief Place the selected player, before a kick off.
+  //! @note If there is already a player on this square, he will be placed in the reserve.
+  //! @param pos Position to place the player.
+  //!   @c NULL to place the player in the reserve.
+  int           doPlacePlayer(const Point& pos);
+
+  //! @brief End team's placement, before a kick off.
+  int           doEndPlacement();
+
   //! @brief Place the ball, on the kick off.
   //! @param pos Position to place the ball.
   int           doPlaceBall(const Point& pos);

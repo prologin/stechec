@@ -81,9 +81,36 @@ inline int Api::doChooseKickoff(bool kickoff)
   return SUCCESS;
 }
 
+inline int Api::doPlacePlayer(const Point& pos)
+{
+  assert(rules_->getState() == GS_INITKICKOFF);
+  CHECK_TEAM;
+  CHECK_PLAYER;
+
+  Position player_pos(pos);
+  MsgPlayerPos pkt;
+  pkt.player_id = selected_player_->getId();
+  pkt.col = player_pos.col;
+  pkt.row = player_pos.row;
+  rules_->sendPacket(pkt);
+
+  return SUCCESS;
+}
+
+inline int Api::doEndPlacement()
+{
+  assert(rules_->getState() == GS_INITKICKOFF);
+
+  MsgInitKickoff pkt;
+  pkt.place_team = 1;
+  rules_->sendPacket(pkt);
+
+  return SUCCESS;
+}
+
 inline int Api::doPlaceBall(const Point& pos)
 {
-  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  assert(rules_->getState() == GS_KICKOFF);
 
   Position bpos(pos);
   if (!rules_->field_->intoField(bpos))
@@ -396,6 +423,8 @@ inline const char* Api::gameStateString() const
       return "GS_DRAWKICKER";
     case GS_INITKICKOFF:
       return "GS_INITKICKOFF";
+    case GS_KICKOFF:
+      return "GS_KICKOFF";
     case GS_COACH1:
       return "GS_COACH1";
     case GS_COACH2:

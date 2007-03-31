@@ -62,7 +62,6 @@ public:
 
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
-  void msgPlayerPos(const MsgPlayerPos* m);
   void msgReroll(const MsgReroll* m);
   void msgBlockDice(const MsgBlockDice* m);
   void msgFollow(const MsgFollow* m);

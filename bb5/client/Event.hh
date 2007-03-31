@@ -57,7 +57,7 @@ public:
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evPlayerKnocked(int team_id, int player_id);
-  virtual void evPlayerStatus(int team_id, enum eStatus status);
+  virtual void evPlayerStatus(int team_id, int player_id, enum eStatus status);
   virtual void evPlayerKO(int team_id, int player_id, int dice);
   virtual void evFollow();
   virtual void evDeclare(int team_id, int player_id, enum eDeclaredAction action);
@@ -79,7 +79,7 @@ inline void Event::evPlayerCreate(int, int) {}
 inline void Event::evPlayerPos(int, int, const Point&) {}
 inline void Event::evPlayerMove(int, int, const Point&) {}
 inline void Event::evPlayerKnocked(int, int) {}
-inline void Event::evPlayerStatus(int, enum eStatus) {}
+inline void Event::evPlayerStatus(int, int, enum eStatus) {}
 inline void Event::evPlayerKO(int, int, int) {}
 inline void Event::evFollow() {}
 inline void Event::evDeclare(int, int, enum eDeclaredAction) {}

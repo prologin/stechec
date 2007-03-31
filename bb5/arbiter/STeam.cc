@@ -65,31 +65,6 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
     }
 }
 
-// Receive players initial position, on kick-off.
-void STeam::msgPlayerPos(const MsgPlayerPos* m)
-{
-  const Position pos(m->row, m->col);
-  SPlayer* p = getPlayer(m->player_id);
-  if (p == NULL || !r_->getField()->intoField(pos))
-    r_->sendIllegal(m->token, m->client_id);
-  else
-    {
-      // not in their field side - error.
-      if (team_id_ == 0 && pos.row >= ROWS / 2
-          || team_id_ == 1 && pos.row < ROWS / 2)
-        r_->sendIllegal(m->token, m->client_id);
-      else
-        {
-          if (p->getStatus() == STA_RESERVE)
-            {
-              p->setStatus(STA_STANDING);
-              p->setPosition(pos, false);
-              r_->sendPacket(*m);
-            }
-        }
-    }
-}
-
 // Want to use a reroll
 void STeam::msgReroll(const MsgReroll* m)
 {

@@ -25,7 +25,6 @@ STeamMsg::STeamMsg(SRules *r)
 
   r_->HANDLE_WITH(MSG_TEAMINFO, STeamMsg, this, msgTeamInfo, GS_INITGAME);
   r_->HANDLE_WITH(MSG_PLAYERCREATE, STeamMsg, this, msgPlayerCreate, GS_INITGAME);
-  r_->HANDLE_WITH(MSG_PLAYERPOS, STeamMsg, this, msgPlayerPos, GS_INITKICKOFF);
   r_->HANDLE_WITH(MSG_REROLL, STeamMsg, this, msgReroll, 0);
   r_->HANDLE_WITH(MSG_BLOCKDICE, STeamMsg, this, msgBlockDice, 0);
   r_->HANDLE_WITH(MSG_FOLLOW, STeamMsg, this, msgFollow, 0);
@@ -65,13 +64,6 @@ void STeamMsg::msgPlayerCreate(const MsgPlayerCreate* m)
   STeam *t = getTeam(m->token, m->client_id);
   if (t != NULL)
     t->msgPlayerCreate(m);
-}
-
-void STeamMsg::msgPlayerPos(const MsgPlayerPos* m)
-{
-  STeam *t = getTeam(m->token, m->client_id);
-  if (t != NULL)
-    t->msgPlayerPos(m);
 }
 
 void STeamMsg::msgReroll(const MsgReroll* m)

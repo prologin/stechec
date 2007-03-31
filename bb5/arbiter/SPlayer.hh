@@ -71,6 +71,7 @@ public:
   int nb_dice_;
   SPlayer* pusher_; ///< Player who pushes you.
 
+  void msgPlayerPos(const MsgPlayerPos* m);
   void msgDeclare(const MsgDeclare* m);
   void msgMove(const MsgMove* m);
   void msgStandUp(const MsgStandUp* m);

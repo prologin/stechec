@@ -187,10 +187,8 @@ void SRules::initKickoff()
   team_[0]->prepareKickoff();
   team_[1]->prepareKickoff();
 
-
-
   // Say that we are about to initialize the kickoff.
-  int kicking_id = (getCurrentTeamId() + 1) % 2;
+  int kicking_id = getCurrentOpponentTeamId();
   LOG3("Kicking team: %1", kicking_id);
   MsgInitKickoff pkt(kicking_id);
   pkt.place_team = 1;
@@ -235,6 +233,7 @@ void SRules::touchdown()
 // A coach has finished to set up his game.
 void SRules::msgInitGame(const MsgInitGame* m)
 {
+  //FIXME: Do some checks: min. number of players, etc.
   team_[m->client_id]->state_ = GS_DRAWKICKER;
 
   if (team_[0]->state_ == GS_DRAWKICKER && team_[1]->state_ == GS_DRAWKICKER)
@@ -267,13 +266,10 @@ void SRules::msgDrawKicker(const MsgDrawKicker* m)
 
   coach_receiver_ = coach_begin_;
 
-  setState(GS_INITKICKOFF);
-  team_[0]->state_ = GS_INITKICKOFF;
-  team_[1]->state_ = GS_INITKICKOFF;
-
   initKickoff();
 }
 
+// Coach has finished to place his team, before a kick-off.
 void SRules::msgInitKickoff(const MsgInitKickoff* m)
 {
   int receiving_id = getCurrentTeamId();
@@ -284,7 +280,7 @@ void SRules::msgInitKickoff(const MsgInitKickoff* m)
       (team_[kicking_id]->state_ == GS_INITKICKOFF ||
        team_[receiving_id]->state_ != GS_INITKICKOFF))
     {
-      // receiving sets up before kicking or already sets.
+      // Receiving sets up before kicking or is already set.
       sendIllegal(MSG_INITKICKOFF, m->client_id);
       return;
     }
@@ -292,7 +288,7 @@ void SRules::msgInitKickoff(const MsgInitKickoff* m)
       (team_[receiving_id]->state_ != GS_INITKICKOFF ||
        team_[kicking_id]->state_ != GS_INITKICKOFF))
     {
-      // kicking sets up after receiving or already sets.
+      // Kicking sets up after receiving or is already set.
       sendIllegal(MSG_INITKICKOFF, m->client_id);
       return;
     }
@@ -305,7 +301,8 @@ void SRules::msgInitKickoff(const MsgInitKickoff* m)
       return;
     }
 
-  team_[m->client_id]->state_ |= 0x8000000;
+  team_[m->client_id]->state_ = GS_KICKOFF;
+
   if (m->client_id == kicking_id)
     {
       // The receiving team has to be placed
@@ -316,7 +313,9 @@ void SRules::msgInitKickoff(const MsgInitKickoff* m)
   else
     {
       // The two teams are ready, message to kick the ball
-      MsgInitKickoff pkt((getCurrentTeamId() + 1) % 2);
+      setState(GS_KICKOFF);
+
+      MsgInitKickoff pkt(getCurrentOpponentTeamId());
       pkt.place_team = 0;
       sendPacket(pkt);
     }

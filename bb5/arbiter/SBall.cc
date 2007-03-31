@@ -23,7 +23,7 @@ SBall::SBall(SRules* r)
     owner_(NULL),
     thrown_(false)
 {
-  r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_INITKICKOFF);
+  r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_KICKOFF);
   r_->HANDLE_WITH(MSG_GIVEBALL, SBall, this, msgGiveBall, GS_TOUCHBACK);
 }
 
@@ -43,8 +43,8 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
 {
   SPlayer* p;
   
-  // Called on half init. Check if this is the kicking team that
-  // place the ball.
+  // Called on kick off.
+  // Check if this is the kicking team that place the ball.
   if (r_->getCurrentOpponentTeamId() != m->client_id)
     {
       LOG4("Ball: unallowed kick-off from %1.", m->client_id);
