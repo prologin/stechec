@@ -94,6 +94,8 @@ private:
   //! @brief Called before a kickoff.
   void initKickoff();
   
+  void checkGameEnd();
+
   void msgInitGame(const MsgInitGame* m);
   void msgDrawKicker(const MsgDrawKicker* m);
   void msgInitKickoff(const MsgInitKickoff* m);
@@ -114,8 +116,9 @@ private:
   STeamMsg* team_msg_;
   SPlayerMsg* player_msg_;
   //! @brief Coach who chooses to kick or receive the ball.
-  //!   Coach who receives the ball.
+  //!   Coach who receives the ball at the beginning of the half-time.
   int       coach_begin_;
+  //! @brief Coach who receives the ball.
   int       coach_receiver_;
 };
 

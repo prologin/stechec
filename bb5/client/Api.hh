@@ -181,7 +181,8 @@ public:
   //! @brief Place the selected player, before a kick off.
   //! @note If there is already a player on this square, he will be placed in the reserve.
   //! @param pos Position to place the player.
-  //!   @c NULL to place the player in the reserve.
+  //!   @c (-1,-1) to place the player in the reserve.
+  //!     Any other coordinates out of team's zone do the same.
   int           doPlacePlayer(const Point& pos);
 
   //! @brief End team's placement, before a kick off.

@@ -47,9 +47,13 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
   if (f_->intoField(pos_))
     f_->setPlayer(pos_, NULL);
   if (advertise_client && pos_ != pos)
+  {
+    pos_ = pos;
     pm_->sendPosition(this);
-
-  pos_ = pos;
+  }
+  else
+    pos_ = pos;
+  
   // Pushed off-field.
   if (!f_->intoField(pos))
     {

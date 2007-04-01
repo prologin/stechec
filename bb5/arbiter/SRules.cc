@@ -103,12 +103,9 @@ void SRules::serverProcess()
     }
 }
 
-void SRules::initHalf()
+void SRules::checkGameEnd()
 {
-  cur_turn_ = 0;
-  cur_half_++;
-
-  // If there is a winner after 2 or 3 halfs
+  // Game ends if scores differ after 2 or 3 halfs.
   if (cur_half_ > 2 && team_[0]->getScore() != team_[1]->getScore())
     {
       LOG4("Team %1 win the game.", (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1));
@@ -116,10 +113,15 @@ void SRules::initHalf()
       setState(GS_END);
       MsgEndGame pkt;
       sendPacket(pkt);
-      return;
     }
+}
 
-  // Match is decided by a penalty shoot-out
+void SRules::initHalf()
+{
+  cur_turn_ = 0;
+  cur_half_++;
+
+  // After 3 halfs, match is decided by a penalty shoot-out.
   if (cur_half_ > 3) 
     {
       int coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
@@ -129,14 +131,9 @@ void SRules::initHalf()
           coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
           coach1 = dice_->roll("3th half coach1") + team_[1]->getRemainingReroll();
         }
-      LOG4("Team %1 win the game.", (team_[0]->getScore() > team_[1]->getScore() ? 0 : 1));
- 
-      LOG4("End of game.");
-      setState(GS_END);
-      MsgEndGame pkt;
-      sendPacket(pkt);
-      return;
     }
+
+  checkGameEnd();
 
   // Coaches recover their Rerolls, except in overtime
   if (cur_half_ != 3) 
@@ -202,27 +199,28 @@ void SRules::turnOver()
 
 void SRules::touchdown()
 {
-  LOG3("TOUCHDOWN!!!!!!!");
   // For the moment, only the case of touchdowns score during the good turn
+  LOG3("TOUCHDOWN!!!!!!!");
   // FIXME: update scores...
 
   // Let enough time to the scoring coach to cheer his team and place the ball.
   timer_.stop();
 
-  // If it is the third period, the match is over
-  initHalf();
+  checkGameEnd();
 
   // Check it is not the last turn of the half
-  if (cur_turn_ == 8
+  // FIXME: 3 is for tests. must be 8.
+  if (cur_turn_ == 3
       && (getState() == GS_COACH1 && coach_begin_ == 1
         || getState() == GS_COACH2 && coach_begin_ == 0))
     {
       initHalf();
-      return;
     }
-
-  coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
-  initKickoff();
+  else
+    {
+      coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
+      initKickoff();
+    }
 }
 
 

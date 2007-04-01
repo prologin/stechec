@@ -35,8 +35,12 @@ SPlayer* SBall::getOwner()
 void SBall::setPosition(const Position& pos, bool advertise_client)
 {
   if (advertise_client && pos_ != pos)
+  {
+    pos_ = pos;
     sendPosition();
-  pos_ = pos;
+  }
+  else
+    pos_ = pos;
 }
 
 void SBall::msgPlaceBall(const MsgBallPos* m)
