@@ -30,31 +30,33 @@ typedef std::vector<StechecPkt*>      CommandListRef;
 */
 class StechecGameData
 {
-public:
-  StechecGameData();
-  virtual ~StechecGameData();
+   public:
+      StechecGameData();
+      virtual ~StechecGameData();
 
-  //! @brief Get the number of team in play.
-  int   getNbPlayer() const;
-  //! @brief Get the current turn number.
-  int   getCurrentTurn() const;
-  //! @brief Get the team identifier.
-  int   getUid() const;
+      //! @brief Get the number of team in play.
+      int   getNbPlayer() const;
+      //! @brief Get the current turn number.
+      int   getCurrentTurn() const;
+      //! @brief Get the team identifier.
+      int   getUid() const;
 
-private:
-  friend class SRules;
-  friend class CRules;
-  friend class StechecApi;
-  
-  int   nb_player_;
-  int   current_turn_;
-  int   uid_;
+      virtual void  AddPlayer(int uid, int team) {};
+
+   private:
+      friend class SRules;
+      friend class CRules;
+      friend class StechecApi;
+
+      int   nb_player_;
+      int   current_turn_;
+      int   uid_;
 };
 
 inline StechecGameData::StechecGameData()
-  : nb_player_(0),
-    current_turn_(0),
-    uid_(-1)
+   : nb_player_(0),
+     current_turn_(0),
+     uid_(-1)
 {
 }
 
@@ -65,17 +67,17 @@ inline StechecGameData::~StechecGameData()
 
 inline int StechecGameData::getNbPlayer() const
 {
-  return nb_player_;
+   return nb_player_;
 }
 
 inline int StechecGameData::getCurrentTurn() const
 {
-  return current_turn_;
+   return current_turn_;
 }
 
 inline int StechecGameData::getUid() const
 {
-  return uid_;
+   return uid_;
 }
 
 #endif // !STECHECGAMEDATA_HH_

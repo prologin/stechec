@@ -91,7 +91,6 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
   int uid = -1;
 
   pthread_mutex_lock(&lock_);
-
   if (state_ == eFinishing || state_ == eFinished || state_ == eCrashed)
     {
       pthread_mutex_unlock(&lock_);
@@ -128,7 +127,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
 	  return;
 	}
       uid = nb_coach_++ + UID_COACH_BASE;
-      LOG4("Grant access for coach `%1' (league id: %2), game '%3'.", uid, 
+      LOG4("Grant access for coach `%1' (league id: %2), game '%3'.", uid,
       		client_extid, game_uid_);
       if (nb_coach_ == nb_waited_coach_ && nb_viewer_ >= nb_waited_viewer_)
         state_ = ePlaying;
@@ -145,6 +144,8 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
 
   // Accepted.
   GameClient* cl = new GameClient(this, cx, uid, client_extid, nb_waited_coach_);
+  LOG1("Adding client with ext_id : %1 and uid :%2", client_extid, uid);
+  rules_->AddPlayer(client_extid, uid);
   client_list_.push_back(cl);
 
   pthread_mutex_unlock(&lock_);
@@ -202,7 +203,7 @@ void GameHosting::servePlaying(GameClient* cl, Packet* pkt)
       spectatorReadiness(cl);
       return;
     }
-  
+
   if (cl->isCoach())
     {
       rules_->handlePacket(pkt);
@@ -242,7 +243,7 @@ void GameHosting::run(Log& log)
       for (it = client_list_.begin(); it != client_list_.end(); ++it)
 	if ((*it)->isCoach())
 	  stats_list_.push_back(&(*it)->getClientStatistic());
-    }     
+    }
 
   if (start_timeout.isTimeElapsed())
     {
@@ -264,7 +265,7 @@ void GameHosting::run(Log& log)
 	      // Maybe the server has something to do
 	      // (called at least every 500ms).
 	      rules_->serverProcess();
-	  
+
 	      client_poll_.poll();
 	      if (nb_coach_ != nb_waited_coach_)
 		{

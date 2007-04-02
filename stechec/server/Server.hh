@@ -51,20 +51,19 @@ public:
   bool          checkRemoteTCP(TcpCx* cx, const Packet& pkt);
   void	        serveGameList(Cx* cx);
   void	        serveJoinGame(Cx* cx, Packet* pkt);
-
 private:
   bool          cleanFinishedGame();
   static void   wantShutdown(int signal);
 
   static Server                 *inst;
-  
+
   const xml::XMLConfig&         cfg_;
 
   const struct RuleDescription* desc_;
   Library                       rules_;
   typedef BaseSRules*           (*create_rules_t)(const xml::XMLConfig*);
   create_rules_t                create_rules_fun_;
-  
+
   typedef std::map<int, GameHosting*> GameList;
   typedef GameList::iterator    GameIter;
   GameList                      games_;

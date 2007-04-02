@@ -24,33 +24,34 @@ class CoachErrorCustom;
 
 class BaseSRules : public BaseRules
 {
-public:
-  BaseSRules();
-  virtual ~BaseSRules();
+   public:
+      BaseSRules();
+      virtual ~BaseSRules();
 
-  //! @brief Get the viewer state.
-  int           getViewerState() const;
-  //! @brief Set the viewer state.
-  void          setViewerState(int value);
+      //! @brief Get the viewer state.
+      int           getViewerState() const;
+      //! @brief Set the viewer state.
+      void          setViewerState(int value);
 
-  //! @brief Called when the game is about to start, and all clients have
-  //! joined (server-side only).
-  virtual void  serverStartup() {}
-  //! @brief Periodically called when the game is launched.
-  virtual void  serverProcess() {}
+      //! @brief Called when the game is about to start, and all clients have
+      //! joined (server-side only).
+      virtual void  serverStartup() {}
+      //! @brief Periodically called when the game is launched.
+      virtual void  serverProcess() {}
 
-  //! @brief Called when a coach is disconnected.
-  //! @param cec Custom data that SRules could save, it will be retourned
-  //!   back on the call of outputStat.
-  //! @return true if the game should go on, false if must stop now.
-  virtual bool  coachKilled(int coach_id, CoachErrorCustom*& cec);
+      //! @brief Called when a coach is disconnected.
+      //! @param cec Custom data that SRules could save, it will be retourned
+      //!   back on the call of outputStat.
+      //! @return true if the game should go on, false if must stop now.
+      virtual bool  coachKilled(int coach_id, CoachErrorCustom*& cec);
 
-  //! @brief Called after the game is finished, to output some game statistics.
-  //!  Called for each coach.
-  virtual void  outputStat(int coach_id, ClientStatistic& client_stat);
-  
-private:
-  int           viewer_state_;
+      //! @brief Called after the game is finished, to output some game statistics.
+      //!  Called for each coach.
+      virtual void  outputStat(int coach_id, ClientStatistic& client_stat);
+
+      virtual void AddPlayer(int uid, int team) {}
+   private:
+      int           viewer_state_;
 };
 
 #endif /* !BASESRULES_HH_ */

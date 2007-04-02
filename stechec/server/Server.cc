@@ -29,7 +29,7 @@ Server::Server(const xml::XMLConfig& cfg)
   assert(inst == NULL);
   inst = this;
   pthread_mutex_init(&lock_, NULL);
-  
+
   // Catch ctl-c, to properly shutdown the server.
   struct sigaction act;
   int netbsdsuck;
@@ -37,7 +37,7 @@ Server::Server(const xml::XMLConfig& cfg)
   act.sa_handler = &Server::wantShutdown;
   act.sa_flags = 0;
   sigaction(SIGINT, &act, NULL);
-  
+
   // Load shared library to get the rules.
   rules_.open(cfg.getData<std::string>("server", "rules"));
   create_rules_fun_ = (create_rules_t)(rules_.getSymbol("load_server_rules"));
@@ -181,7 +181,7 @@ void	Server::serveJoinGame(Cx* cx, Packet* pkt)
 
   if (!checkRemoteModuleDesc(cx, *pkt_join, game_uid))
     return;
-  
+
   GameIter it = games_.find(game_uid);
   if (it == games_.end())
     {
@@ -237,11 +237,11 @@ void        Server::run()
   TcpCx		listen_socket;
   TcpCxListener listener(&listen_socket, this);
   Timer		wait_timeout(0);
-  
+
   is_persistent_ = cfg_.getAttr<bool>("server", "options", "persistent");
   if (!is_persistent_)
     wait_timeout.setAllowedTime(cfg_.getAttr<int>("server", "options", "wait_timeout"));
-  
+
   LOG2("Listening on port %1", cfg_.getAttr<int>("server", "listen", "port"));
   if (wait_timeout.getAllowedTime() > 0)
     {
