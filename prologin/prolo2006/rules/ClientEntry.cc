@@ -120,7 +120,7 @@ int        ClientEntry::beforeGame()
 
 int        ClientEntry::initGame()
 {
-  memset(g_->visibility, 0, sizeof (char) * MAX_MAP_SIZE * MAX_MAP_SIZE* MAX_MAP_SIZE * MAX_MAP_SIZE);
+   memset(g_->visibility, 0, sizeof (char) * MAX_MAP_SIZE * MAX_MAP_SIZE* MAX_MAP_SIZE * MAX_MAP_SIZE);
    for (int row = 0; row < g_->map_size.row; ++row)
      for (int col = 0; col < g_->map_size.col; ++col)
        {

@@ -57,9 +57,9 @@ class SRules : public BaseSRules
       virtual void serverStartup();
       virtual void serverProcess();
 
-      virtual void AddPlayer (int uid, int team)
+      virtual void AddPlayer (int team, int uid)
       {
-	 data_->AddPlayer(uid, team);
+	 data_->AddPlayer(team, uid);
       }
 
 	 virtual bool  coachKilled(int coach_id, CoachErrorCustom*& cec);

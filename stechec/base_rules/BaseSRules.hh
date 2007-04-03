@@ -49,7 +49,7 @@ class BaseSRules : public BaseRules
       //!  Called for each coach.
       virtual void  outputStat(int coach_id, ClientStatistic& client_stat);
 
-      virtual void AddPlayer(int uid, int team) {}
+      virtual void AddPlayer(int team, int uid) {}
    private:
       int           viewer_state_;
 };

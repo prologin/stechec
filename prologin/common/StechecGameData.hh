@@ -41,7 +41,7 @@ class StechecGameData
       //! @brief Get the team identifier.
       int   getUid() const;
 
-      virtual void  AddPlayer(int uid, int team) {};
+      virtual void  AddPlayer(int team, int uid) {};
 
    private:
       friend class SRules;
