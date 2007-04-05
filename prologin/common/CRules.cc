@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2005, 2006 Prologin
+** Copyright (C) 2005, 2006, 2007 Prologin
 */
 
 # include "Contest.hh"
@@ -74,6 +74,13 @@ void CRules::sigAlrm()
   stringToPacket(pkt_err.reason,
                  "Timeout ! Champion had taken too much time.", 64);
   sendPacket(pkt_err);
+}
+
+const char* CRules::tokenToString(unsigned token) const
+{
+  if (token >= sizeof (prologin_token_str) / sizeof (const char *))
+    return "(overflow)";
+  return prologin_token_str[token];
 }
 
 void CRules::msgStechecPkt(const StechecPkt* m)

@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2005, 2006 Prologin
+** Copyright (C) 2005, 2006, 2007 Prologin
 */
 
 #include "Contest.hh"
@@ -47,6 +47,13 @@ SRules::~SRules()
   delete data_;
 
   std::for_each(coach_error_, coach_error_ + MAX_COACH, Deleter());
+}
+
+const char* SRules::tokenToString(unsigned token) const
+{
+  if (token >= sizeof (prologin_token_str) / sizeof (const char *))
+    return "(overflow)";
+  return prologin_token_str[token];
 }
 
 // Check if a hook was successful, and send data to clients

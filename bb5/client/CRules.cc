@@ -75,9 +75,8 @@ Api*    CRules::getApi()
   return api_;
 }
 
-const char* CRules::tokenToString(int token) const
+const char* CRules::tokenToString(unsigned token) const
 {
-  token -= RULES_TOKEN_START;
   if (token >= sizeof (bb5_token_str) / sizeof (const char *))
     return "(overflow)";
   return bb5_token_str[token];

@@ -67,7 +67,7 @@ const int SUCCESS          = 0;
 //! @see Packet.
 //! @note Keep this list below MAX_TOKEN (256), otherwise you'll run into trouble.
 enum {
-  MSG_CHAT = RULES_TOKEN_START,
+  MSG_CHAT,
   MSG_ILLEGAL,
   MSG_INITGAME,
   MSG_INITHALF,
@@ -180,7 +180,7 @@ enum eTurnOverMotive {
 
 //! @brief Token string constants for bb5 rules.
 //! @note Keep it syncronized with all MSG_ enum below.
-extern const char *bb5_token_str[RULES_TOKEN_LAST - RULES_TOKEN_START];
+extern const char *bb5_token_str[RULES_TOKEN_LAST];
 
 //@}
 

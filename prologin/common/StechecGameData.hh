@@ -30,33 +30,34 @@ typedef std::vector<StechecPkt*>      CommandListRef;
 */
 class StechecGameData
 {
-   public:
-      StechecGameData();
-      virtual ~StechecGameData();
+public:
+  StechecGameData();
+  virtual ~StechecGameData();
+  
+  //! @brief Get the number of team in play.
+  int   getNbPlayer() const;
+  //! @brief Get the current turn number.
+  int   getCurrentTurn() const;
+  //! @brief Get the team identifier.
+  int   getUid() const;
 
-      //! @brief Get the number of team in play.
-      int   getNbPlayer() const;
-      //! @brief Get the current turn number.
-      int   getCurrentTurn() const;
-      //! @brief Get the team identifier.
-      int   getUid() const;
+protected:
+  virtual void AddPlayer(int, int) {}
 
-      virtual void  AddPlayer(int team, int uid) {};
-
-   private:
-      friend class SRules;
-      friend class CRules;
-      friend class StechecApi;
-
-      int   nb_player_;
-      int   current_turn_;
-      int   uid_;
+private:
+  friend class SRules;
+  friend class CRules;
+  friend class StechecApi;
+  
+  int   nb_player_;
+  int   current_turn_;
+  int   uid_;
 };
 
 inline StechecGameData::StechecGameData()
-   : nb_player_(0),
-     current_turn_(0),
-     uid_(-1)
+  : nb_player_(0),
+    current_turn_(0),
+    uid_(-1)
 {
 }
 

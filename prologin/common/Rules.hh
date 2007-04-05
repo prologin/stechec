@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2005, 2006 Prologin
+** Copyright (C) 2005, 2006, 2007 Prologin
 */
 
 #ifndef RULES_HH_
@@ -47,7 +47,7 @@
 # include "BaseRules.hh"
 
 // Maximum number of coach (real players) that these rulesets can handle.
-const int MAX_COACH             = 16;
+const int MAX_COACH = 16;
 
 // Constants describing the current state of the game.
 // GS_CLIENT_END is like GS_END, but client must wait for GAME_FINISHED
@@ -65,14 +65,20 @@ enum {
 
 // Kind of tokens used by the base rules of stechec.
 enum {
-  STECHEC_PKT = RULES_TOKEN_START,
+  STECHEC_PKT,
   MSG_BEFORE_GAME,
   MSG_INIT_GAME,
   MSG_BEFORE_TURN,
   MSG_AFTER_TURN,
   MSG_AFTER_GAME,
-  MSG_CHAMPION_ERROR
+  MSG_CHAMPION_ERROR,
+  RULES_TOKEN_LAST,
 };
+
+//! @brief Token string constants for prologin rules.
+//! @note Keep it syncronized with all MSG_ enum below.
+extern const char *prologin_token_str[RULES_TOKEN_LAST];
+
 
 // Packets.
 DECLARE_EMPTY_PACKET(MSG_BEFORE_GAME, MsgBeforeGame);

@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2005, 2006 Prologin
+** Copyright (C) 2005, 2006, 2007 Prologin
 */
 
 #ifndef SRULES_HH_
@@ -34,9 +34,9 @@ class StechecServerEntry;
 */
 class CoachErrorCustom
 {
-   public:
-      int           fail_turn_;
-      std::string   fail_reason_;
+public:
+  int           fail_turn_;
+  std::string   fail_reason_;
 };
 
 /*!
@@ -44,46 +44,48 @@ class CoachErrorCustom
 */
 class SRules : public BaseSRules
 {
-   public:
-      SRules(StechecGameData* data, StechecServer* server,
-	     StechecServerResolver* resolver, StechecServerEntry* serverep);
-      virtual ~SRules();
+public:
+  SRules(StechecGameData* data, StechecServer* server,
+	 StechecServerResolver* resolver, StechecServerEntry* serverep);
+  virtual ~SRules();
+  
+private:
+  // not yet used.
+  virtual void serialize(std::ostream&) const {}
+  virtual void unserialize(std::istream&) {}
+  
+  virtual const char* tokenToString(unsigned token) const;
 
-   private:
-      // not yet used.
-      virtual void serialize(std::ostream&) const {}
-      virtual void unserialize(std::istream&) {}
+  virtual void serverStartup();
+  virtual void serverProcess();
 
-      virtual void serverStartup();
-      virtual void serverProcess();
+  virtual void addPlayer(int client_id, int league_id)
+  {
+    data_->AddPlayer(league_id, client_id);
+  }
 
-      virtual void AddPlayer (int team, int uid)
-      {
-	 data_->AddPlayer(team, uid);
-      }
+  virtual bool  coachKilled(int coach_id, CoachErrorCustom*& cec);
+  virtual void  outputStat(int coach_id, ClientStatistic& coach_stat);
+  
+  bool afterHook(int res, const char* hook_name);
+  bool waitAllClient(int client_id);
 
-	 virtual bool  coachKilled(int coach_id, CoachErrorCustom*& cec);
-      virtual void  outputStat(int coach_id, ClientStatistic& coach_stat);
+  void msgStechecPkt(const StechecPkt* m);
+  void msgInitGame(const MsgInitGame* m);
+  void msgBeforeTurn(const MsgBeforeTurn* m);
+  void msgAfterTurn(const MsgAfterTurn* m);
+  void msgChampionError(const MsgChampionError* m);
 
-      bool afterHook(int res, const char* hook_name);
-      bool waitAllClient(int client_id);
+  int                    wait_nb_;                ///< Number of ready coach.
+  int                    wait_tab_[MAX_COACH];    ///< Uid list of ready coach.
+  CoachErrorCustom*      coach_error_[MAX_COACH]; ///< Array of received coach error.
 
-      void msgStechecPkt(const StechecPkt* m);
-      void msgInitGame(const MsgInitGame* m);
-      void msgBeforeTurn(const MsgBeforeTurn* m);
-      void msgAfterTurn(const MsgAfterTurn* m);
-      void msgChampionError(const MsgChampionError* m);
+  CommandList command_list_;
 
-      int                    wait_nb_;                ///< Number of ready coach.
-      int                    wait_tab_[MAX_COACH];    ///< Uid list of ready coach.
-      CoachErrorCustom*      coach_error_[MAX_COACH]; ///< Array of received coach error.
-
-      CommandList command_list_;
-
-      StechecGameData*       data_;
-      StechecServer*         server_;
-      StechecServerResolver* resolver_;
-      StechecServerEntry*    server_entry_;
+  StechecGameData*       data_;
+  StechecServer*         server_;
+  StechecServerResolver* resolver_;
+  StechecServerEntry*    server_entry_;
 };
 
 //! @}

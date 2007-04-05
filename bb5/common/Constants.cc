@@ -16,7 +16,7 @@
 
 #include "Constants.hh"
 
-const char *bb5_token_str[RULES_TOKEN_LAST - RULES_TOKEN_START] = {
+const char *bb5_token_str[RULES_TOKEN_LAST] = {
   "MSG_CHAT",
   "MSG_ILLEGAL",
   "MSG_INITGAME",

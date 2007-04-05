@@ -14,6 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "datatfs/cx.hh"
 #include "BaseRules.hh"
 
 BaseRules::BaseRules()
@@ -56,7 +57,7 @@ void    BaseRules::setTeamNumber(int value)
 
 void    BaseRules::handlePacket(const Packet* p)
 {
-  if (p->token < 0 || p->token >= MAX_TOKEN)
+  if (p->token >= MAX_TOKEN)
     {
       WARN("handlePacket: token not in allowed range: `%1'", p->token);
     }
@@ -93,9 +94,9 @@ void        BaseRules::setState(int new_state)
   state_ = new_state;
 }
 
-const char* BaseRules::stringifyToken(int token) const
+const char* BaseRules::stringifyToken(unsigned token) const
 {
-  static const char *base_token_str[] = {
+  static const char *cx_token_str[] = {
     "CX_INIT",
     "CX_ACCEPT",
     "CX_DENY",
@@ -104,26 +105,25 @@ const char* BaseRules::stringifyToken(int token) const
     "CX_JOIN",
     "CX_READY",
     "CX_ABORT",
-    "n/a",
-    "n/a",
+  };
+
+  static const char *base_token_str[] = {
     "MSG_SYNC",
     "CUSTOM_EVENT",
     "CLIENT_UID",
     "GAME_FINISHED",
-    "n/a",
-    "n/a"
   };
-  
-  if (token < 0)
-    return "error: < 0";
-  if (token < RULES_TOKEN_START)
-    return base_token_str[token];
-      
+
+  if (token >= CX_TOKEN_START && token < CX_TOKEN_LAST)
+    return cx_token_str[token - CX_TOKEN_START];
+  if (token >= BASE_TOKEN_START && token < BASE_TOKEN_LAST)
+    return base_token_str[token - BASE_TOKEN_START];
+
   // Ask upper level for stringified token
   return tokenToString(token);
 }
 
-const char* BaseRules::tokenToString(int) const
+const char* BaseRules::tokenToString(unsigned) const
 {
   return "n/a";
 }

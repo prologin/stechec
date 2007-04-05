@@ -144,8 +144,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
 
   // Accepted.
   GameClient* cl = new GameClient(this, cx, uid, client_extid, nb_waited_coach_);
-  LOG1("Adding client with ext_id : %1 and uid :%2", client_extid, uid);
-  rules_->AddPlayer(client_extid, uid);
+  rules_->addPlayer(client_extid, uid);
   client_list_.push_back(cl);
 
   pthread_mutex_unlock(&lock_);

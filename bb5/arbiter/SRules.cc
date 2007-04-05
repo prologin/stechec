@@ -69,9 +69,8 @@ void SRules::unserialize(std::istream& is)
   is >> foo;
 }
 
-const char* SRules::tokenToString(int token) const
+const char* SRules::tokenToString(unsigned token) const
 {
-  token -= RULES_TOKEN_START;
   if (token >= sizeof (bb5_token_str) / sizeof (const char *))
     return "(overflow)";
   return bb5_token_str[token];

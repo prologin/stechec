@@ -63,9 +63,9 @@ public:
   //! @brief Get the api.
   virtual Api* getApi();
 
-  virtual const char* tokenToString(int token) const;
-
 private:
+
+  virtual const char* tokenToString(unsigned token) const;
 
   // Methods to catch server response.
   void msgIllegal(const MsgIllegal* m);

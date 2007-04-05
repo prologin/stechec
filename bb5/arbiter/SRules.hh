@@ -84,7 +84,7 @@ public:
 
 private:
 
-  const char* tokenToString(int token) const;
+  const char* tokenToString(unsigned token) const;
 
   //! @brief Initialize rules and launch game.
   //! called once in a game.

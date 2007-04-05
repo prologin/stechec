@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2005, 2006 Prologin
+** Copyright (C) 2005, 2006, 2007 Prologin
 */
 
 #ifndef CRULES_HH_
@@ -50,12 +50,14 @@ private:
   virtual void serialize(std::ostream&) const {}
   virtual void unserialize(std::istream&) {}
 
+  virtual const char* tokenToString(unsigned token) const;
+
   virtual Api* getApi() { return reinterpret_cast<Api*>(api_); }
 
   virtual void sigSegv();
   virtual void sigBus();
   virtual void sigAlrm();
-  
+
   bool afterHook(int res, const char* hook_name);
 
   void msgStechecPkt(const StechecPkt* m);

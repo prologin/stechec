@@ -24,40 +24,40 @@
 # include "PacketHandler.hh"
 # include "PacketSender.hh"
 
-# define UID_COACH_BASE  0        ///< Base uid for coachs
-# define UID_VIEWER_BASE 100      ///< Base uid for viewers
+# define UID_COACH_BASE		0        ///< Base uid for coachs
+# define UID_VIEWER_BASE	100      ///< Base uid for viewers
 
-//! @brief Reserved token pool for datatfs/stechec (0-31)
-const unsigned RULES_TOKEN_START = 16;
-
-//! @brief Maximum number of different packets that we can handle.
-const unsigned MAX_TOKEN = 256;
+//! @brief Maximum number of different packets, and base for specials one.
+const unsigned MAX_TOKEN	= 256;
+const unsigned BASE_TOKEN_START = MAX_TOKEN - 8;
 
 // Some very common game state.
-const int GS_WAIT       = 0xFFFE; ///< Coach waiting for another coach.
-const int GS_END        = 0xFFFF; ///< End of game, nothing to do anymore.
+const int GS_WAIT		= 0xFFFE; ///< Coach waiting for another coach.
+const int GS_END		= 0xFFFF; ///< End of game, nothing to do anymore.
 
 // Viewers State (VS). Only for the server. Set by the server.
-const int VS_HAVEVIEWER = 0x0800; ///< If there is at least one viewer.
-const int VS_READY      = 0x2000; ///< All viewers are ready.
+const unsigned VS_HAVEVIEWER	= 0x0800; ///< If there is at least one viewer.
+const unsigned VS_READY		= 0x2000; ///< All viewers are ready.
 
 // Synchronization packet. Sent (if rules wish) when an incoming packet
 // is done (processing finished).
-const int MSG_SYNC      = 10;
+const unsigned MSG_SYNC		= BASE_TOKEN_START;
 DECLARE_EMPTY_PACKET(MSG_SYNC, MsgSync);
 
 // Custom events.
-const int CUSTOM_EVENT  = 11;
+const unsigned CUSTOM_EVENT	= BASE_TOKEN_START + 1;
 
 // The packet used by the server to give an uid for the client.
-const int CLIENT_UID    = 12;
+const unsigned CLIENT_UID	= BASE_TOKEN_START + 2;
 DECLARE_PACKET(CLIENT_UID, ClientUid);
   int nb_team;
 END_PACKET
 
 // Packet sent by the server to say that game is now finished.
-const int GAME_FINISHED = 13;
+const unsigned GAME_FINISHED	= BASE_TOKEN_START + 3;
 DECLARE_EMPTY_PACKET(GAME_FINISHED, GameFinished);
+
+const unsigned BASE_TOKEN_LAST	= BASE_TOKEN_START + 4;
 
 /*!
 ** @brief Rule module description.
@@ -114,8 +114,7 @@ public:
   void          setState(int new_state);
 
   //! @brief Debug function. Return a stringified packet token.
-  const char*	stringifyToken(int token) const;
-  virtual const char* tokenToString(int token) const;
+  const char*	stringifyToken(unsigned token) const;
   
 
   /*!
@@ -143,6 +142,9 @@ public:
   /*!
   ** @}
   */
+
+protected:
+  virtual const char* tokenToString(unsigned token) const;
   
 private:
 

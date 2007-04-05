@@ -25,17 +25,20 @@
 
 # include "tools.hh"
 
+const unsigned CX_TOKEN_START = 0x8000;
+
 //! @brief Network tokens.
 //! Handled by Stechec, either client, server, or base_rules.
-enum {
-  CX_INIT,
+enum eCxToken {
+  CX_INIT = CX_TOKEN_START,
   CX_ACCEPT,
   CX_DENY,
   CX_QUERYLIST,
   CX_LIST,
   CX_JOIN,
   CX_READY,
-  CX_ABORT
+  CX_ABORT,
+  CX_TOKEN_LAST,
 };
 
 // Please don't play with them.

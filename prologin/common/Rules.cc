@@ -7,12 +7,22 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2005, 2006 Prologin
+** Copyright (C) 2005, 2006, 2007 Prologin
 */
 
 # include "ClientCx.hh"
 # include "Contest.hh"
 # include "CRules.hh"
+
+const char *prologin_token_str[RULES_TOKEN_LAST] = {
+  "STECHEC_PKT",
+  "MSG_BEFORE_GAME",
+  "MSG_INIT_GAME",
+  "MSG_BEFORE_TURN",
+  "MSG_AFTER_TURN",
+  "MSG_AFTER_GAME",
+  "MSG_CHAMPION_ERROR",
+};
 
 // Here we are after the connection with the server, but before the UI
 // is loaded (client-side only). It is useful to set the rules in a
