@@ -57,7 +57,7 @@ static struct parse_state	tab_conf[] =
 /*
 ** Check if the conf enter in a new state
 */
-static int	change_state(const char *line, enum e_parse_state *state)
+static int	change_state(const char *line, int num_line, enum e_parse_state *state)
 {
   int 		i;
 
@@ -66,6 +66,11 @@ static int	change_state(const char *line, enum e_parse_state *state)
     {  
       *state = tab_conf[i].state;
       return 1;
+    }
+  if (line[0] != ' ')
+    {
+       fprintf(stderr, "%d: skip unknown stanza: %s\n", num_line, line);
+       *state = init;
     }
   return 0;
 }
@@ -159,10 +164,10 @@ int			read_conf(const char *conf_file, struct s_conf **conf)
     line[strlen(line) - 1] = '\0';
     if (line[0] == '#' || line[0] == '\n' || line[0] == '\0')
       continue ;
-    if (change_state(line, &state))
+    if (change_state(line, num_line, &state))
       continue ;
     for (i = 0; tab_conf[i].key; ++i)
-      if (state == tab_conf[i].state)
+      if (state == tab_conf[i].state && tab_conf[i].fct)
       {
         tab_conf[i].fct(line, num_line, *conf);
         continue;
