@@ -1,4 +1,4 @@
-#
+# -*- ruby -*-
 # Stechec project is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -7,17 +7,8 @@
 # The complete GNU General Public Licence Notice can be found as the
 # `NOTICE' file in the root directory.
 #
-# Copyright (C) 2005, 2006 Prologin
+# Copyright (C) 2005, 2006, 2007 Prologin
 #
-
-#
-# Reporte par un candidat, a enrober le code avec ca.
-#
-# try {
-#    // ici le code de play_turn
-# } catch (Exception e) {
-# 	  e.printStackTrace();
-# }
 
 
 # C++ generator, for java-interface
@@ -56,6 +47,7 @@ class JavaCxxFileGenerator < CxxProto
 #include <java/lang/Throwable.h>
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
+#include <stdio.h>
 
 #include \"#{@java_file}.h\"
 #include \"#{@java_interface}.h\"
@@ -124,8 +116,14 @@ struct JavaVm
     @types = @types_orig
     for_each_user_fun do |name, type_ret, args|
       print_proto(name, type_ret, args, 'extern "C"')
-      print_body "  javaVm.c->" + name + "();"
-     end
+      @f.puts "", "{"
+      @f.puts "  try {"
+      @f.puts "    javaVm.c->" + name + "();"
+      @f.puts "  } catch (java::lang::Throwable *t) {"
+      @f.puts '    fprintf(stderr, "Unhandled Java exception:\n");'
+      @f.puts "    t->printStackTrace();", "  }"
+      @f.puts "}"
+    end
 
     @f.close
   end
@@ -225,16 +223,21 @@ class JavaFileGenerator < FileGenerator
     #
     # Makefile generation
     #
+    target = $conf['conf']['player_lib']
     @f = File.new(@path + "Makefile", 'w')
     @f.print <<-EOF
-#
-# Makefile
-#
+# -*- Makefile -*-
 
-SRC     = #{@java_interface}.java #{@java_file}.java  # Ajoutez ici vos fichiers .java
-NAME    = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-include ../includes/makejava
+# Tu peux rajouter des fichiers .ml ou changer les flags de g++
+#{target}-srcs = Interface.java Prologin.java
+#{target}-cxxflags = -I. -ggdb3
+
+# Evite de toucher a ce qui suit
+#{target}-dists = interface.hh
+#{target}-srcs += interface.cc ../includes/main.c
+include ../includes/rules.mk
     EOF
     @f.close
   end

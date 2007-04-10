@@ -1,4 +1,4 @@
-#
+# -*- ruby -*-
 # Stechec project is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -7,14 +7,14 @@
 # The complete GNU General Public Licence Notice can be found as the
 # `NOTICE' file in the root directory.
 #
-# Copyright (C) 2005, 2006 Prologin
+# Copyright (C) 2005, 2006, 2007 Prologin
 #
 
 if ARGV[0] == "--version"
   print <<EOF
 generator 3.0
 
-Copyright (C) 2005, 2006 Prologin.
+Copyright (C) 2005, 2006, 2007 Prologin.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
@@ -86,18 +86,21 @@ def make_includes
   install_path = Pathname.new($install_path) + "includes"
   install_path.mkpath
 
-  # copy main.c into includes.
+  # copy main.c and rules.ml into includes.
   if Pathname.new('files/main.c').exist?
     File.copy 'files/main.c', install_path.to_s
+    File.copy 'files/rules.mk', install_path.to_s
   else
     File.copy Pathname.new(PKGDATADIR) + 'files/main.c', install_path.to_s
+    File.copy Pathname.new(PKGDATADIR) + 'files/rules.mk', install_path.to_s
   end
 
-  CMakefile.new.build_client(install_path)
-  CxxMakefile.new.build_client(install_path)
-  JavaMakefile.new.build_client(install_path)
+  # these 4 are not needed anymore for client, it uses rules.mk
+#   CMakefile.new.build_client(install_path)
+#   CxxMakefile.new.build_client(install_path)
+#   JavaMakefile.new.build_client(install_path)
+#   CamlMakefile.new.build_client(install_path)
   PascalMakefile.new.build_client(install_path)
-  CamlMakefile.new.build_client(install_path)
   HaskellMakefile.new.build_client(install_path)
   RubyMakefile.new.build_client(install_path)
   LuaMakefile.new.build_client(install_path)

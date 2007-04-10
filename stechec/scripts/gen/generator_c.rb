@@ -1,4 +1,4 @@
-#
+# -*- ruby -*-
 # Stechec project is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -7,7 +7,7 @@
 # The complete GNU General Public Licence Notice can be found as the
 # `NOTICE' file in the root directory.
 #
-# Copyright (C) 2005, 2006 Prologin
+# Copyright (C) 2005, 2006, 2007 Prologin
 #
 
 require "pathname"
@@ -37,19 +37,23 @@ class CFileGenerator < CProto
   end
 
   def generate_makefile
+    target = $conf['conf']['player_lib']
     @f = File.open(@path + "Makefile", 'w')
     @f.print <<-EOF
-#
-# Makefile
-#
+# -*- Makefile -*-
 
-INCL      = #{@header_file} # Ajoutez ici vos fichiers .h eventuels
-SRC       = #{@source_file} # Ajoutez ici vos fichiers .c
-NAME      = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-MY_CFLAGS = -ggdb3
+# Tu peux rajouter des fichiers sources, headers, ou changer
+# des flags de compilation.
+#{target}-srcs = #{@source_file}
+#{target}-dists =
+#{target}-cflags = -ggdb3
 
-include ../includes/makec
+# Evite de toucher a ce qui suit
+#{target}-dists += #{@header_file}
+#{target}-srcs += ../includes/main.c
+include ../includes/rules.mk
     EOF
     @f.close
   end

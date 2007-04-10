@@ -13,7 +13,7 @@
 #  along with the Stechec project; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-#  Copyright 2005, 2006 Prologin EPITA
+#  Copyright (C) 2005, 2006, 2007 Prologin
 #
 
 EXTRA_DIST =					\
@@ -70,6 +70,7 @@ dist_bash_SCRIPTS =				\
 
 nobase_pkgdata_DATA =				\
 	files/main.c				\
+	files/rules.mk				\
 	files/interface.cc			\
 	files/Api.cc				\
 	files/Api.hh				\

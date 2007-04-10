@@ -1,4 +1,4 @@
-#
+# -*- ruby -*-
 # Stechec project is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -122,17 +122,21 @@ class CamlFileGenerator < FileGenerator
   end
   
   def generate_makefile
+    target = $conf['conf']['player_lib']
     @f = File.open(@path + "Makefile", 'w')
     @f.print <<-EOF
-#
-# Makefile
-#
+# -*- Makefile -*-
 
-SRC       = #{@caml_file} # Ajoutez ici vos fichiers .c
-NAME      = #{$conf['conf']['player_lib']}.so
-CAMLFLAGS = -g
+lib_TARGETS = #{target}
 
-include ../includes/makecaml
+# Tu peux rajouter des fichiers .ml ou changer les flags de ocamlc
+#{target}-srcs = api.ml #{@caml_file}
+#{target}-camlflags = -g
+
+# Evite de toucher a ce qui suit
+#{target}-dists = interface.h
+#{target}-srcs += interface.c ../includes/main.c
+include ../includes/rules.mk
     EOF
     @f.close
   end
