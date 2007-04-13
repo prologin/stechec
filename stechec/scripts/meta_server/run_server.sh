@@ -25,7 +25,7 @@
 
 if [ "$#" -le 6 ]; then
     cat <<EOF
-Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <game_id> <port> [players_id ...] \
+Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <match_id> <port> [players_id ...] \
           -- extra_args
 EOF
     exit 1
@@ -37,7 +37,7 @@ cd /tmp
 contest_lib_name=$1
 contest_dir_name=$2
 is_competition=$3
-game_id=$4
+match_id=$4
 port=$5
 
 shift 5
@@ -72,8 +72,8 @@ done
 source "`dirname $0`/meta_cx.sh"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
-log_file=$contest_path/$contest_dir_name/matchs/match_$game_id/visio
-out_file=$contest_path/$contest_dir_name/matchs/match_$game_id/server.out
+log_file=$contest_path/$contest_dir_name/matchs/match_$match_id/visio
+out_file=$contest_path/$contest_dir_name/matchs/match_$match_id/server.out
 
 
 #
@@ -127,7 +127,7 @@ if [ $is_competition = "0" ]; then
 
     # Now upload log and visio files.
     # FIXME: make it no-NFS aware.
-    mkdir -p $contest_path/$contest_dir_name/matchs/match_$game_id
+    mkdir -p $contest_path/$contest_dir_name/matchs/match_$match_id
     upload_file $real_out_file $out_file
     upload_file $real_log_file $log_file
 
