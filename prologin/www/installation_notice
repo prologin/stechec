@@ -43,7 +43,7 @@ create /etc/apache2/sites-available/stechec
 
 $ svn co https://projects.nekeme.net/svn/tbt/trunk stechec
 $ ./bootstrap
-$ ./configure --without-sdl --with-mysql \
+$ ./configure --without-sdl \
               --with-modules="modules_you_want" \
               --prefix="the path you want to install binaries"
 $ make

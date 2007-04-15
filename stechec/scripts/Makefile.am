@@ -18,8 +18,7 @@
 
 EXTRA_DIST =					\
 	files					\
-	conf.rb.in				\
-	meta_server/meta_cx.sh.in
+	conf.rb.in
 
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
@@ -58,15 +57,6 @@ nodist_ruby_DATA =				\
 dist_bash_DATA =				\
 	run.sh					\
 	xmlparser.awk
-
-nodist_bash_DATA =				\
-	meta_server/meta_cx.sh
-
-dist_bash_SCRIPTS =				\
-	meta_server/check_cheating.sh		\
-	meta_server/compile_champion.sh		\
-	meta_server/run_client.sh		\
-	meta_server/run_server.sh
 
 nobase_pkgdata_DATA =				\
 	files/main.c				\

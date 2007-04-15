@@ -1,11 +1,9 @@
 # -*- Makefile -*-
 
-SUBDIRS	= common tkrun
+SUBDIRS	= common tkrun web_meta
 
-SUBDIRS += $(BUILD_ant) $(BUILD_prolo2005) $(BUILD_prolo2006) $(BUILD_prolo2007)
-
-if HAVE_MYSQL
-SUBDIRS +=					\
-	meta_server				\
-	main_server
-endif
+SUBDIRS += 
+	$(BUILD_ant)
+	$(BUILD_prolo2005)
+	$(BUILD_prolo2006)
+	$(BUILD_prolo2007)

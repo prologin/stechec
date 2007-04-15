@@ -1,0 +1,305 @@
+#! /usr/bin/perl -w
+
+use strict;
+
+use YAML ('LoadFile');
+use POSIX qw(:signal_h :sys_wait_h);
+use IO::Socket::INET;
+use IO::Select;
+use FileHandle;
+use Getopt::Std;
+use Data::Dumper;
+
+# globals
+my %m = ();         # meta config
+my @proc = ();      # list of launched processus (matchs)
+my $msock = undef;  # socket to main_server
+my $read_set;
+
+
+##########################################################################
+# CX
+##########################################################################
+
+# called once on startup
+sub meta_init($$)
+{
+	my ($cfg, $local_ip) = @_;
+
+    $m{'local_ip'} = $local_ip || "localhost";
+    $m{'main_ip'} = $$cfg{'internal'}{'main_host'} || "localhost";
+    $m{'main_port'} = $$cfg{'internal'}{'main_port'} || 3917;
+    $m{'heartbeat_period'} = $$cfg{'internal'}{'heartbeat_period'};
+
+    $m{'cmd_path'} = $$cfg{'command'}{'cmd_path'} || "";
+    $m{'cmd_path'} =~ s!([^/])$!$1/!;
+	$m{'cmd'} = {  
+        "compil" => $cfg->{'command'}{'compil'},
+        "check_cheat" => $cfg->{'command'}{'check_cheat'},
+        "server" => $cfg->{'command'}{'server'},
+        "client" => $cfg->{'command'}{'client'},
+    };
+}
+
+# called when we are disconnected from meta
+sub meta_disconnect()
+{
+	$m{'slots'} = 0;
+	$m{'tmp_msg'} = "";
+	$m{'last_heartbeat'} = 0;
+
+	$read_set = IO::Select->new;
+    if (defined($msock)) {
+        print "[cx] close socket...";
+        close $msock;
+        print " done.\n"
+    }
+	$msock = undef;
+
+    # FIXME: destroy all running process
+    map { close $$_{'fd'} if defined $$_{'fd'}; } @proc;
+    @proc = ();
+}
+
+# connect to main_server, check connection
+# return 0 if connection is ok, else -1.
+sub meta_connect()
+{
+	return 0 if defined $msock;
+
+	$msock = IO::Socket::INET->new(PeerAddr => $m{'main_ip'},
+								  PeerPort => $m{'main_port'},
+								  Proto => 'tcp',
+								  Type => SOCK_STREAM,
+								  Timeout => 5);
+	if (!defined($msock)) {
+		print "[cx] $@\n";
+		return -1;
+	}
+    print "[cx] connected to main_server\n";
+	$read_set->add($msock);
+    send_heartbeat();
+	return 0;
+}
+
+
+sub send_msg($)
+{
+	my ($msg) = @_;
+
+    return unless defined($msock);
+	if (!$msock->connected() || !defined($msock->send($msg, MSG_DONTWAIT))) {
+		print "[cx] connection lost while writing: $!\n";
+		meta_disconnect;
+	}
+}
+
+sub recv_msg()
+{
+	my $msg;
+
+	if (!defined($msock->recv($msg, 1024, MSG_DONTWAIT)) ||
+        !defined($msg) || length($msg) == 0) {
+		print "[cx] connection lost while reading: $!\n";
+		meta_disconnect;
+        return;
+	}
+	$msg = $m{'tmp_msg'} . $msg;
+	my @line = split(/\n/, $msg);
+	$m{'tmp_msg'} = "";
+	$m{'tmp_msg'} = pop @line unless $msg =~ /\n$/;
+
+	# handle commands
+	foreach my $line (@line) {
+		my ($cmd, @argv) = split / /, $line;
+		next unless length $cmd;
+		if (exists $m{'cmd'}{$cmd}) {
+			process_fork($cmd, $m{'cmd'}{$cmd}, @argv);
+		} else {
+			print "[cmd] unknown command '$cmd'\n";
+		}
+	}
+}
+
+sub send_heartbeat()
+{
+	if (time > $m{'last_heartbeat'} + $m{'heartbeat_period'}) {
+		$m{'last_heartbeat'} = time;
+        print "[cx] ping, slot used: $m{'slots'}\n";
+		send_msg("ping slots $m{'slots'}\n.\n");
+	}
+}
+
+
+##########################################################################
+# PROCESS
+##########################################################################
+
+sub process_finish 
+{
+	my ($proc) = @_;
+
+	if (!defined($proc) || 
+        !exists $proc->{'exit_status'} ||
+		!exists $proc->{'pipe_closed'}) {
+		return;
+	}
+
+	# process has been properly closed, send results to the main_server
+	print "[proc] finished: id: $proc->{'id_match'}, pid: $proc->{'pid'}, ";
+	print "exit: $proc->{'exit_status'}, slot: $m{'slots'}\n";
+
+    send_msg "result $proc->{'cmd'} $proc->{'id_match'} $proc->{'exit_status'}";
+    if (length $proc->{'log'} > 0) {
+        send_msg " begin_log\n";
+        send_msg "$proc->{'log'}";
+        send_msg "\n" unless $proc->{'log'} =~ /\n$/;
+        send_msg "end_log\n";
+    } else {
+        send_msg "\n";
+    }
+    send_msg ".\n";
+
+	# remove from list
+	@proc = grep { $_ != $proc } @proc;
+	$m{'slots'}--;
+}
+
+sub process_wait 
+{
+	my $pid;
+	my $exit_status;
+
+	while (($pid = waitpid(-1, WNOHANG)) > 0) {
+		if (WIFEXITED($?)) {
+			$exit_status = WEXITSTATUS($?);
+
+			my ($my_proc, @err) = grep { $_->{'pid'} == $pid } @proc;
+            return unless defined $my_proc;
+			print "[proc] WARNING: duplicate pids ($pid)\n" if (@err > 0);
+			$my_proc->{"exit_status"} = $exit_status if defined($my_proc);
+			process_finish $my_proc;
+		}
+	}
+}
+
+sub process_fork($$$)
+{
+	my ($cmd, $cmd_run, @argv) = @_;
+	my $pid;
+	my ($readfh, $writefh) = FileHandle::pipe;
+    my $id_match = shift @argv;
+
+    if ($id_match !~ /^\d+$/) {
+        print "[proc] id '$id_match' is not an integer\n";
+        # do nothing. main will eventually expires this malformated
+        # match query.
+        return;
+    }
+
+	unshift(@argv, $m{'cmd_path'} . "/" . $cmd_run);
+	die "fork failed: $!" unless defined($pid = fork);
+
+	# child
+	if ($pid == 0) {
+		local *WRITE_ME = $writefh;
+		open STDOUT, ">&WRITE_ME";
+		close $readfh;
+		close WRITE_ME;
+		close STDIN;
+		exec { $argv[0] } @argv;
+		die "exec failed: $!\n";
+	}
+
+	# parent
+	close $writefh;
+	push @proc, {
+		'pid' => $pid,
+		'fd' => $readfh,
+		'id_match' => $id_match,
+		'cmd' => $cmd,
+		'log' => "",
+    };
+	$read_set->add($readfh);
+	$m{'slots'}++;
+	print "[proc] created:  id: $id_match, pid: $pid, " .
+		"type: " . $cmd . ", slot: $m{'slots'}\n";
+}
+
+
+sub process_read($) 
+{
+	my ($fd) = @_;
+	my $msg;
+
+	my ($my_proc, @err) = grep { fileno($_->{'fd'}) == fileno($fd) } @proc;
+	print "[proc] WARNING: duplicate pipe fd\n" if (@err > 0);
+
+	if (eof($fd) || !defined($fd->read($msg, 128)) || length($msg) == 0) {
+		# read is finished
+		$read_set->remove($fd);
+		close $fd;
+		$my_proc->{'pipe_closed'} = 1;
+		process_finish $my_proc;
+	} else {
+		$my_proc->{"log"} .= $msg if defined($my_proc);
+	}
+}
+
+##########################################################################
+# MAIN
+##########################################################################
+
+# read command line args
+my %opts = ();
+getopts("vhc:d:", \%opts);
+if (defined($opts{h}) || defined($opts{v})) {
+	print "meta.pl -[hvc]\n";
+	print "options:\n";
+	print "  -h          show this help\n";
+	print "  -v          show version\n";
+    print "  -d          set local ip [localhost]\n";
+	print "  -c <conf>   use this configuration file [stechec.yml]\n";
+	exit 0;
+}
+
+# read conf
+$opts{'c'} ||= "stechec.yml";
+my ($cfg) = YAML::LoadFile($opts{c});
+
+# init
+my $sigset = POSIX::SigSet->new(SIGCHLD);
+my $old_sigset = POSIX::SigSet->new;
+
+my $loop = 1;
+$SIG{CHLD} = \&process_wait;
+$SIG{INT} = sub { $loop = 0; };
+$SIG{TERM} = sub { $loop = 0; };
+$SIG{PIPE} = 'IGNORE';
+
+meta_init($cfg, $opts{'d'});
+meta_disconnect();
+
+while ($loop) {
+	# while we are not connected, do nothing else.
+	if (meta_connect() < 0) {
+		sleep 5;
+		next;
+    }
+
+	# sleep until someone (sock, process) want to talks
+	my @ready = $read_set->can_read(5);
+	sigprocmask(SIG_BLOCK, $sigset, $old_sigset);
+	foreach my $fd (@ready) {
+        last unless defined $msock;
+		if (fileno($fd) == fileno($msock)) {
+			recv_msg;
+		} else {
+			process_read $fd;
+		}
+	}
+	send_heartbeat;
+	sigprocmask(SIG_SETMASK, $old_sigset);
+}
+
+print "[meta]: finished\n";

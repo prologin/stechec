@@ -1,0 +1,760 @@
+#! /usr/bin/perl -w
+
+use strict;
+
+use YAML ('LoadFile');
+use POSIX qw(:signal_h :sys_wait_h);
+use DBI;
+use IO::Socket::INET;
+use IO::Select;
+use Getopt::Std;
+use Data::Dumper;
+
+# globals
+my %cconf;		# informations about computer's list
+my @clist;		# computer's list
+my %mconf;		# information about match's list
+my %mlist;		# match's list
+
+my $rctl_fd;    # unix socket, for remote control
+my $dbh;		# handle to database
+
+
+##########################################################################
+# COMPUTER
+##########################################################################
+
+sub computer_pool_init($)
+{
+	my ($cfg) = @_;
+
+	$cconf{'cfg'} = $cfg;
+	$cconf{'slot_available'} = 0;
+	$cconf{'last_expire'} = time;
+	$cconf{'sel'} = IO::Select->new;
+	$cconf{'fd_listen'} =
+		IO::Socket::INET->new(Listen     => 10,
+							  LocalPort  => $$cfg{'meta_port'} || 3917,
+							  Reuse      => 1,
+							  Proto      => 'tcp',
+							  Type       => SOCK_STREAM);
+
+	if (!defined($cconf{'fd_listen'})) {
+		die "[computer] can't listen: $!\n";
+	}
+	$cconf{'sel'}->add($cconf{'fd_listen'});
+
+	print "[computer] init ok\n";
+}
+
+sub computer_accept()
+{
+	my $c = {
+		'fd' => undef,
+		'ip' => "",
+		'port' => -1,
+		'slots' => $cconf{'cfg'}{'max_process'},
+		'status' => 1, # not used yet
+		'last_heartbeat' => time(),
+		'tmp_msg' => "",
+	};
+	my $addr;
+
+	($$c{'fd'}, $addr) = $cconf{'fd_listen'}->accept;
+	if (!defined($$c{'fd'})) {
+		print "[computer] accept failed: $!\n";
+		return;
+	}
+
+	($c->{'port'}, $c->{'ip'}) = sockaddr_in($addr);
+	$c->{'ip'} = inet_ntoa($c->{'ip'});
+
+	print "[computer] accept connection from $$c{'ip'}:$$c{'port'}\n";
+	$cconf{'sel'}->add($$c{'fd'});
+	push @clist, $c;
+}
+
+sub computer_kill($)
+{
+	my ($c) = @_;
+
+	print "[computer] kill $$c{'ip'}:$$c{'port'}\n";
+
+	if (defined($$c{'fd'})) {
+		$cconf{'sel'}->remove($$c{'fd'});
+		$$c{'fd'}->close;
+	}
+	$cconf{'slot_available'} -= $cconf{'cfg'}{'max_process'} - $$c{'slots'};
+	@clist = grep { $_ != $c } @clist;
+}
+
+# return the computer that have the lighter load, or undef
+# if none is available.
+sub computer_reserve_slot()
+{
+	my $c;
+
+	return undef if @clist == 0;
+	@clist = sort {$$a{'slots'} <=> $$b{'slots'} } @clist;
+	$c = $clist[0];
+	return undef if ($$c{'slots'} >= $cconf{'cfg'}{'max_process'});
+	$$c{'slots'}++;
+	$cconf{'slot_available'}--;
+	return $c;
+}
+
+sub computer_release_slot($)
+{
+    my ($c) = @_;
+
+  	$$c{'slots'}--;
+	$cconf{'slot_available'}++;
+}
+
+sub computer_available_slot()
+{
+    return $cconf{'slot_available'};
+}
+
+sub computer_recv_heartbeat
+{
+    my ($c, @argv) = @_;
+
+    $c->{'last_heartbeat'} = time();
+    while (@argv > 0) {
+        if (shift(@argv) eq "slots") {
+            my $slot = shift(@argv);
+            if ($slot =~ /^(\d+)$/) {
+                $cconf{'slot_available'} += $c->{'slots'} - $1;
+                $c->{'slots'} = $1;
+                print "[computer] ping from $$c{'ip'}:$$c{'port'}, slot used: $1, " .
+                    "total aval: $cconf{'slot_available'}\n";
+            }
+        }
+    }
+}
+
+sub send_msg($$)
+{
+	my ($c, $msg) = @_;
+
+	if (!$$c{'fd'}->connected() ||
+        !defined($$c{'fd'}->send($msg, MSG_DONTWAIT))) {
+		print "[computer] connection lost while writing: $!\n";
+		computer_kill $c;
+		return -1;
+	}
+	return 0;
+}
+
+sub recv_msg($)
+{
+	my ($c) = @_;
+	my $msg;
+
+	if (!defined($$c{'fd'}->recv($msg, 1024, MSG_DONTWAIT)) ||
+		length($msg) == 0) {
+		print "[computer] connection lost while reading: $!\n";
+		computer_kill $c;
+		return;
+	}
+
+	$msg = $c->{'tmp_msg'} . $msg;
+    my @line = split(/\n\.\n/, $msg);
+	$c->{'tmp_msg'} = "";
+	$c->{'tmp_msg'} = pop @line unless $msg =~ /\.\n$/;
+
+	# dispatch commands
+	foreach my $line (@line) {
+		my ($cmd, @argv) = split / /, $line;
+		next unless length $cmd;
+		if ($cmd eq "ping") {
+            computer_recv_heartbeat($c, @argv);
+		} elsif ($cmd eq "result") {
+			result_dispatch($c, @argv);
+		} else {
+			print "[computer] unknown message '$cmd'\n";
+		}
+	}
+}
+
+# check every 8s, remove computer after 'heartbeat_timeout' of last heartbeat.
+sub computer_periodic
+{
+	my $now = time;
+
+	return unless $now > $cconf{'last_expire'} + 8;
+	print "[computer] check expire: " . scalar(@clist) . " running computer\n";
+
+	foreach my $c (@clist) {
+		if ($now > $$c{'last_heartbeat'} + $cconf{'cfg'}{'heartbeat_timeout'}) {
+			print "[computer] expire $$c{'ip'}:$$c{'port'}";
+			computer_kill $c;
+		}
+	}
+	$cconf{'last_expire'} = $now;
+}
+
+##########################################################################
+# MATCHS
+##########################################################################
+
+sub match_pool_init
+{
+	$mconf{'sth_poll_match'} =
+		$dbh->prepare(q{SELECT id, type FROM matchs WHERE status = 0});
+	$mconf{'sth_update_status'} =
+		$dbh->prepare(q{UPDATE matchs SET status = ? WHERE id = ?});
+	$mconf{'sth_get_participant'} =
+		$dbh->prepare(q{SELECT id, id_champion FROM competiteur
+							WHERE id_match = ?});
+	$mconf{'last_expire'} = time;
+	print "[match] init ok\n";
+}
+
+# create a new match, without reserving a slot for it.
+sub match_create($$)
+{
+	my ($id_match, $match_type) = @_;
+
+	$mlist{$id_match} = {
+		'id' => $id_match,
+		'type' => $match_type,
+		'started' => time(),
+        'computer' => [ ],
+	};
+	return $mlist{$id_match};
+}
+
+# reserve an additionnal slot for a match.
+# return undef if not possible.
+sub match_add_slot($)
+{
+    my ($m) = @_;
+    my $c = computer_reserve_slot;
+
+    return undef unless defined $c;
+    push @{ $$m{'computer'} }, $c;
+    return $c;
+}
+
+# delete a running match, and update status in the db.
+# TODO: if match aborted and meta connected, send msg to kill process
+sub match_finish($$)
+{
+	my ($m, $new_status) = @_;
+
+	print "[match $$m{'id'}] delete, status: $new_status\n";
+	$mconf{'sth_update_status'}->execute($new_status, $$m{'id'});
+    map { computer_release_slot($_); } @{ $$m{'computer'} };
+	delete $mlist{$$m{'id'}};
+}
+
+sub match_start($$)
+{
+	my ($id_match, $type_match) = @_;
+	my @client = ();
+	my $nb_comp;
+    my $err;
+
+	# mark game as starting
+	$mconf{'sth_update_status'}->execute(1, $id_match);
+
+	# retrieve participating competitors id.
+	$mconf{'sth_get_participant'}->execute($id_match);
+	while (my $row = $mconf{'sth_get_participant'}->fetchrow_hashref) {
+		print "[match $id_match] add champion: $$row{'id_champion'}\n";
+		push @client, $$row{'id'};
+	}
+	$mconf{'sth_get_participant'}->finish;
+
+	# sanity check
+	if ($type_match != 3 && @client != 1) {
+		print "[match $id_match] ERROR: type: $type_match, and " . scalar(@client) .
+			" client(s) found (must be: 1)\n";
+		$mconf{'sth_update_status'}->execute(2, $id_match);
+		return -2;
+	}
+	if ($type_match == 3 && @client < 1) {
+		print "[match $id_match] ERROR: type: $type_match, and no client found\n";
+		$mconf{'sth_update_status'}->execute(2, $id_match);
+		return -2;
+	}
+
+	# see if there is enough slot before continuing.
+	$nb_comp = ($type_match == 3) ? @client + 1 : 1;
+	if (computer_available_slot() < $nb_comp) {
+		print "[match $id_match] not enough slot " .
+			"(required: $nb_comp, available: " . computer_available_slot() . ")\n";
+		$mconf{'sth_update_status'}->execute(0, $id_match);
+		return -1;
+	}
+
+    # create the match.
+    my $m = match_create($id_match, $type_match);
+    # reserve a slot. we always need at least one.
+    my $c = match_add_slot($m);
+    if (!defined $c) {
+        match_finish($c, 0);    # should retry later
+        return -1;              # break run-matchs loop.
+    }
+
+	# execute what's match type requires.
+	# exec function should return:
+	#   0: exec ok
+	#  -1: exec failed, should retry match later
+	#  -2: exec failed, can't retry
+	if ($type_match == 1) {
+		$err = exec_compil($m, $c);
+        match_finish($m, $err == -1 ? 0 : 2) if ($err < 0);
+	}
+
+	if ($type_match == 2) {
+		$err = exec_check_cheat($m, $c);
+        match_finish($m, $err == -1 ? 0 : 2) if ($err < 0);
+	}
+
+	if ($type_match == 3) {
+		# run the server
+		$err = exec_server($m, $c);
+		if ($err < 0) {
+			match_finish($m, $err == -1 ? 0 : 2);
+			return -2;
+		}
+
+		# run clients
+		foreach my $id_client (@client) {
+            # reserve another slot.
+            $c = match_add_slot($m);
+            if (!defined $c) {
+                match_finish($m, 0);
+                return -1;
+            }
+
+			$err = exec_client($m, $c, $id_client);
+			if ($err < 0) {
+				match_finish($m, $err == -1 ? 0 : 2);
+				return -2;
+			}
+		}
+	}
+	return 0;
+}
+
+sub match_pool_poll()
+{
+	$mconf{'sth_poll_match'}->execute;
+    if ($mconf{'sth_poll_match'}->rows == 0) {
+        $mconf{'sth_poll_match'}->finish;
+        return;
+    }
+
+	while (my $row = $mconf{'sth_poll_match'}->fetchrow_hashref) {
+		print "[match $$row{'id'}] started, type: $$row{'type'}\n";
+		last if match_start($$row{'id'}, $$row{'type'}) == -1;
+	}
+	$mconf{'sth_poll_match'}->finish;
+}
+
+# remove match started from a too long time (after 'match_timeout')
+sub match_periodic()
+{
+	my $now = time;
+
+	return unless $now > $mconf{'last_expire'} + 8;
+
+	print "[match] check expire: " . scalar(keys %mlist) . " running matchs\n";
+	foreach my $m (values %mlist) {
+		if (time > $$m{'started'} + $cconf{'cfg'}{'match_timeout'}) {
+			match_finish($m, 2);
+		}
+	}
+	$mconf{'last_expire'} = $now;
+}
+
+##########################################################################
+# EXEC GAMES
+##########################################################################
+
+sub exec_compil($$)
+{
+	my ($m, $c) = @_;
+
+	# search match data in db
+	my $sth = $dbh->prepare("SELECT game.repertoire, game.id AS game_id, champion.id_candidat," .
+							"champion.id AS champion_id" .
+							" FROM matchs, game, champion, competiteur" .
+							" WHERE matchs.id = ?" .
+							" AND game.id = matchs.id_game" .
+							" AND game.id = champion.id_game" .
+							" AND matchs.id = competiteur.id_match" .
+							" AND champion.id = competiteur.id_champion");
+	$sth->execute($$m{'id'});
+	if ($sth->rows != 1) {
+		print "[match $$m{'id'}] exec_compil: error, 1 row expected\n";
+		return -2;
+	}
+	my $row = $sth->fetchrow_hashref;
+	$$m{'id_champion'} = $$row{'champion_id'};
+	$$m{'id_game'} = $$row{'game_id'};
+
+	# send our order
+	send_msg($c,"compil $$m{'id'} $$row{'repertoire'} $$row{'id_candidat'} $$row{'champion_id'}\n");
+	return 0;
+}
+
+sub exec_check_cheat($$)
+{
+	my ($m, $c) = @_;
+
+	# search match data in db
+	my $sth = $dbh->prepare("SELECT game.repertoire, champion.id_candidat, champion.id AS champion_id" .
+							" FROM matchs, game, champion, competiteur" .
+							" WHERE matchs.id = ?" .
+							" AND game.id = matchs.id_game" .
+							" AND game.id = champion.id_game" .
+							" AND matchs.id = competiteur.id_match" .
+							" AND champion.id = competiteur.id_champion");
+	$sth->execute($$m{'id'});
+	if ($sth->rows != 1) {
+		print "[match $$m{'id'}] exec_cheat: error, 1 row expected\n";
+		return -2;
+	}
+	my $row = $sth->fetchrow_hashref;
+	$$m{'id_champion'} = $$row{'champion_id'};
+
+	# send our order
+	send_msg($c, "check_cheat $$m{'id'} $$row{'repertoire'} $$row{'id_candidat'} $$row{'champion_id'}\n");
+	return 0;
+}
+
+my $port_server = 23516;
+
+sub exec_server($$)
+{
+	my ($m, $c) = @_;
+
+	# get match data from db
+	my $sth = $dbh->prepare("SELECT COUNT(competiteur.id) AS nb_participant, game.lib_name," .
+                            " game.repertoire, matchs.is_competition," .
+							" matchs.id AS match_id, matchs.opt_match" .
+							" FROM matchs, game, competiteur" .
+							" WHERE matchs.id = ?" .
+							" AND game.id = matchs.id_game" .
+							" AND competiteur.id_match = matchs.id" .
+							" GROUP BY matchs.id");
+	$sth->execute($$m{'id'});
+	if ($sth->rows != 1) {
+		print "[match $$m{'id'}] exec_server: error, 1 row expected\n";
+		return -2;
+	}
+	my $row = $sth->fetchrow_hashref;
+    $port_server++;
+
+	# send our order
+	send_msg($c, "server $$m{'id'} $$row{'lib_name'} $$row{'repertoire'} " .
+			 "$$row{'is_competition'} $$row{'match_id'} $port_server " .
+			 "$$row{'nb_participant'} -- $$row{'opt_match'}\n");
+	return 0;
+}
+
+sub exec_client($$$)
+{
+	my ($m, $c, $id_client) = @_;
+
+	# get match data from db
+	my $sth = $dbh->prepare("SELECT game.lib_name, game.repertoire, matchs.is_competition," .
+							" champion.id_candidat, champion.id AS champion_id," .
+                            " competiteur.id AS competiteur_id, competiteur.id_match" .
+							" FROM competiteur, game, champion, matchs" .
+							" WHERE competiteur.id = ?" .
+							" AND champion.id = competiteur.id_champion" .
+							" AND game.id = champion.id_game" .
+							" AND matchs.id = competiteur.id_match");
+	$sth->execute($id_client);
+	if ($sth->rows != 1) {
+		print "[match $$m{'id'}] exec_client: error, 1 row expected\n";
+		return -2;
+	}
+	my $row = $sth->fetchrow_hashref;
+	my $ip_server = "localhost";
+
+	# send our order
+	send_msg($c, "client $$m{'id'} $$row{'lib_name'} $$row{'repertoire'} " .
+			 "$$row{'is_competition'} $$row{'id_candidat'} $$row{'champion_id'} " .
+			 "$$row{'competiteur_id'} $$row{'id_match'} $port_server $ip_server\n");
+	return 0;
+}
+
+##############################################
+sub result_compil
+{
+	my ($id_match, $m, $exit_status, $log) = @_;
+
+	# update database
+	my $sth = $dbh->prepare("UPDATE champion SET level = ? WHERE id = ?");
+	if ($exit_status != 0) {
+		$sth->execute(5, $$m{'id_champion'});
+        match_finish($m, 2);
+		return;
+	}
+	$sth->execute(1, $$m{'id_champion'});
+
+	# create a new match, to check cheat
+	$sth = $dbh->prepare("INSERT INTO matchs (id_game, type) VALUES (?, 2)");
+	$sth->execute($$m{'id_game'});
+	my $id_new_match = $dbh->{'mysql_insertid'};
+
+	$sth = $dbh->prepare("INSERT INTO competiteur (id_champion, id_match)" .
+						 " VALUES (?, ?);",);
+	$sth->execute($$m{'id_champion'}, $id_new_match);
+
+    match_finish($m, 3);
+}
+
+sub result_cheat
+{
+	my ($id_match, $m, $exit_status, $log) = @_;
+
+	my $sth = $dbh->prepare("UPDATE champion SET level = ? WHERE id = ?");
+    $sth->execute($exit_status == 0 ? 2 : 4, $$m{'id_champion'});
+
+    match_finish($m, $exit_status == 0 ? 3 : 2);
+}
+
+sub result_server
+{
+	my ($id_match, $m, $exit_status, $log) = @_;
+
+    if ($exit_status != 0) {
+        match_finish($m, 2);
+        return;
+    }
+
+    my @res = ();
+	foreach my $l (grep { length $_ } split ('\n', $log)) {
+        my ($id_participant, $score, $fail_turn, $log) = ($l =~ /^(\d+) (\d+) ([-]?\d+) (.*)$/);
+        if (!defined($id_participant) || !defined($score) || !defined($fail_turn)) {
+            print "[match $$m{'id'}] error parsing '$l' ($id_participant, $score, $fail_turn)\n";
+            match_finish($m, 2);
+            return;
+        }
+        push(@res, {
+            'id' => $id_participant,
+            'score' => $score,
+            'log' => $log,
+        });
+    }
+
+    # well done !
+    my $sth = $dbh->prepare("UPDATE competiteur SET score = ?, log = ? WHERE id = ?");
+    foreach (@res) {
+        $sth->execute($$_{'score'}, $$_{'log'}, $$_{'id'});
+    }
+    match_finish($m, 3);
+}
+
+
+# parse results from meta_server. if match_id couldn't be retrieved,
+# well... wait that the match get's expired.
+# otherwise, collect data, and update db.
+#
+# argv should contain, in order:
+#  - id_match
+#  - exit_status
+#  - log: join the remaining, check begin/end balise
+sub result_dispatch($$)
+{
+	my ($c, @argv) = @_;
+	my ($m, $cmd_type, $match_type, $id_match, $exit_status, $log);
+
+    $cmd_type = shift @argv;
+	$id_match = shift @argv;
+	$exit_status = shift @argv;
+	($log) = (join(" ", @argv) =~ /\Abegin_log(.*)end_log\Z/sm);
+
+	if ($id_match !~ /^\d+$/) {
+		print "[match] unable to retrieve match id\n";
+		return;
+	}
+	if (!exists $mlist{$id_match}) {
+        if ($cmd_type ne "client") {
+            print "[match $id_match] unknown match, can't get results / expire\n";
+        }
+		return;
+	}
+	$m = $mlist{$id_match};
+
+	if ($exit_status !~ /^\d+$/) {
+		print "[match $id_match] bad exit status ($exit_status)\n";
+        match_expire($m, 0);
+		return;
+	}
+
+    if ($$m{'type'} == 1 && $cmd_type eq "compil") {
+        result_compil($id_match, $m, $exit_status, $log);
+    } elsif ($$m{'type'} == 2 && $cmd_type eq "check_cheat") {
+        result_cheat($id_match, $m, $exit_status, $log);
+    } elsif ($$m{'type'} == 3) {
+        if ($cmd_type eq "server") {
+            result_server($id_match, $m, $exit_status, $log);
+        } elsif ($cmd_type eq "client") {
+            # FIXME: should remove client per client, and delete match when there is
+            # no computer associated.
+            # now, free every slot when server is finished
+        }
+    } else {
+        print "[match $id_match] type: $$m{'type'}, cmd_type: '$cmd_type', " .
+            " what must I do ?\n";
+        match_finish($m, 2);
+    }
+}
+
+
+##########################################################################
+# REMOTE CTL
+##########################################################################
+
+sub rctl_init
+{
+    unlink("/tmp/.sun_meta");
+	$rctl_fd =
+		IO::Socket::UNIX->new(Local      => "/tmp/.sun_meta",
+                              Listen     => 2,
+							  Type       => SOCK_STREAM);
+    if (!defined($rctl_fd)) {
+        print "[rctl] can't open socket: $!\n";
+    } else {
+        system("chmod 777 /tmp/.sun_meta");
+        $cconf{'sel'}->add($rctl_fd);
+    }
+}
+
+sub rctl_answer_machine($$)
+{
+    my ($fd, $arg) = @_;
+
+    if ($arg eq "list") {
+        foreach my $c (@clist) {
+            my $usage = ($$c{'slots'} * 100) / $cconf{'cfg'}{'max_process'};
+            $fd->send("$$c{'ip'} $$c{'port'} $$c{'status'} " .
+                      "$$c{'last_heartbeat'} $$c{'slots'} $usage\n", 0);
+        }
+    } elsif ($arg eq "summary") {
+        $fd->send(scalar(@clist) . " $cconf{'slot_available'}\n", 0);
+    } else {
+        print "[rctl] machine: unknown command: $arg\n";
+    }
+}
+
+sub rctl_answer_match($$)
+{
+    my ($fd, $arg) = @_;
+
+    if ($arg eq "list") {
+        foreach my $m (values %mlist) {
+            my @type_list = ("", "Compilation", "Detection triche", "Match");
+            $fd->send("$$m{'id'} $type_list[$$m{'type'}] $$m{'started'} " .
+                      scalar(@{ $$m{'computer'} }) . "\n", 0);
+        }
+    } elsif ($arg eq "summary") {
+        $fd->send(scalar(keys %mlist) . "\n", 0);
+    } else {
+        print "[rctl] match: unknown command: $arg\n";
+    }
+}
+
+
+sub rctl_answer()
+{
+    my ($fd, $msg, $cmd, $arg);
+    my %cmd_list = ('machine' => \&rctl_answer_machine,
+                    'match' => \&rctl_answer_match,
+                    );
+
+    $fd = $rctl_fd->accept;
+    return unless defined $fd;
+
+    $fd->recv($msg, 64, 0);
+    print "[rctl] cmd: $msg\n";
+    ($cmd, $arg) = split / /, $msg;
+    $cmd_list{$cmd}($fd, $arg) if exists $cmd_list{$cmd};
+    $fd->close;
+}
+
+##########################################################################
+# MAIN
+##########################################################################
+
+# read and parse command line args
+my %opts = ();
+getopts("vhc:", \%opts);
+
+if (defined($opts{h}) || defined($opts{v})) {
+	print "main.pl -[hvc]\n";
+	print "options:\n";
+	print "  -h          show this help\n";
+	print "  -v          show version\n";
+	print "  -c <conf>   use this configuration file [stechec.yml]\n";
+	exit 0;
+}
+
+# read conf
+my $cfg;
+$opts{c} = "stechec.yml" unless defined($opts{c});
+$cfg = YAML::LoadFile($opts{c});
+
+# connect to mysql
+my $db = $$cfg{'database'};
+my $source = "dbi:mysql:database=$db->{'database'}";
+if (!exists $$cfg{'database'}{'sock'}) {
+	$source .= ";host=$db->{'ip'};port=$db->{'port'}";
+}
+$dbh = DBI->connect($source, $db->{'login'}, $db->{'pass'},
+					{ RaiseError => 1, AutoCommit => 1 });
+$dbh->{mysql_auto_reconnect} = 1;
+
+# init
+my $loop = 1;
+$SIG{INT} = sub { $loop = 0; };
+$SIG{TERM} = sub { $loop = 0; };
+$SIG{PIPE} = 'IGNORE';
+
+computer_pool_init($cfg->{'internal'});
+match_pool_init;
+rctl_init;
+
+my $sigset = POSIX::SigSet->new(SIGINT, SIGTERM);
+my $old_sigset = POSIX::SigSet->new;
+my $sleep_time = $cfg->{'internal'}{'wait_sleep'} || 5;
+
+# main loop
+while ($loop) {
+	my @ready = $cconf{'sel'}->can_read($sleep_time);
+
+	# Don't allow ctl-c while processing data. It _might_ corrupt db data.
+	sigprocmask(SIG_BLOCK, $sigset, $old_sigset);
+
+	foreach my $fd (@ready) {
+        my $ifd = fileno($fd);
+		if (fileno($cconf{'fd_listen'}) == $ifd) {
+			computer_accept;
+        } elsif (fileno($rctl_fd) == $ifd) {
+            rctl_answer;
+		} else {
+			my ($c) = grep { fileno($_->{'fd'}) == $ifd } @clist;
+			recv_msg $c if defined $c;
+			$fd->close unless defined $c;
+		}
+	}
+
+	computer_periodic;
+	match_periodic;
+	match_pool_poll;
+
+	sigprocmask(SIG_SETMASK, $old_sigset);
+}
+
+# end
+$dbh->disconnect;
+print "[main]: finished\n";

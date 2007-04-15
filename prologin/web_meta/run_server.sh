@@ -25,7 +25,7 @@
 
 if [ "$#" -le 6 ]; then
     cat <<EOF
-Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <match_id> <port> [players_id ...] \
+Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <game_id> <port> [players_id ...] \
           -- extra_args
 EOF
     exit 1
@@ -37,25 +37,18 @@ cd /tmp
 contest_lib_name=$1
 contest_dir_name=$2
 is_competition=$3
-match_id=$4
+game_id=$4
 port=$5
+nb_player=$6
 
-shift 5
+shift 7
 
 # open temporary files for logs.
 tmp_dir=`mktemp -q -d /tmp/match_XXXXXX`
 real_log_file=$tmp_dir/visio.log
 real_out_file=$tmp_dir/server.out
 
-# count players. compat witch stechec v2.
-nb_player=0
-while [ "x$1" != "x--" ]; do
-    nb_player=$((nb_player + 1))
-    shift 1
-done
-
 # parse extra arguments, to fill our xml.
-shift 1
 map="ERROR_not_set"
 max_turn=10
 while [ $# -gt 1 ]; do
@@ -72,8 +65,8 @@ done
 source "`dirname $0`/meta_cx.sh"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
-log_file=$contest_path/$contest_dir_name/matchs/match_$match_id/visio
-out_file=$contest_path/$contest_dir_name/matchs/match_$match_id/server.out
+log_file=$contest_path/$contest_dir_name/matchs/match_$game_id/visio
+out_file=$contest_path/$contest_dir_name/matchs/match_$game_id/server.out
 
 
 #
@@ -127,7 +120,7 @@ if [ $is_competition = "0" ]; then
 
     # Now upload log and visio files.
     # FIXME: make it no-NFS aware.
-    mkdir -p $contest_path/$contest_dir_name/matchs/match_$match_id
+    mkdir -p $contest_path/$contest_dir_name/matchs/match_$game_id
     upload_file $real_out_file $out_file
     upload_file $real_log_file $log_file
 
