@@ -153,38 +153,42 @@ CREATE TABLE `page` (
 -- Dumping data for table `page`
 --
 
-INSERT INTO `page` VALUES (0,'Accueil',0,'accueil.php',0,0,637,511,0);
-INSERT INTO `page` VALUES (11,'Faq',1,'info/faq.php',1,0,165,511,0);
-INSERT INTO `page` VALUES (3,'Jeux',0,'',0,0,0,511,0);
-INSERT INTO `page` VALUES (5,'Statistiques',0,'',0,0,0,254,0);
-INSERT INTO `page` VALUES (43,'Mes process',1,'perso/tasks.php',4,0,0,255,4);
-INSERT INTO `page` VALUES (10,'ReadMe',1,'info/doc.php',1,0,537,511,0);
-INSERT INTO `page` VALUES (39,'Classement',1,'project/game_classement.php',3,0,677,255,6);
-INSERT INTO `page` VALUES (20,'Candidats',1,'individus/candidat.php',2,0,80,511,0);
-INSERT INTO `page` VALUES (21,'Orgas',1,'individus/orgas.php',2,0,23,511,0);
-INSERT INTO `page` VALUES (41,'Mon profil',1,'perso/my_profile.php',4,0,0,511,1);
-INSERT INTO `page` VALUES (200,'Info individu',1,'perso/profile.php',2,1,94,511,0);
-INSERT INTO `page` VALUES (32,'Informations',1,'project/game_info.php',3,0,807,511,1);
-INSERT INTO `page` VALUES (35,'Créer',1,'project/game_new.php',3,0,11,194,9);
-INSERT INTO `page` VALUES (30,'Liste',1,'project/game_list.php',3,0,889,511,0);
+INSERT INTO `page` VALUES (0,'Accueil',0,'accueil.php',0,0,0,511,0);
 INSERT INTO `page` VALUES (1,'Informations',0,'',0,0,0,511,0);
+INSERT INTO `page` VALUES (3,'Jeux',0,'',0,0,0,511,0);
+INSERT INTO `page` VALUES (4,'Meta serveur',0,'',0,0,0,254,0);
+INSERT INTO `page` VALUES (5,'Statistiques',0,'',0,0,0,254,0);
+INSERT INTO `page` VALUES (11,'Faq',1,'info/faq.php',1,0,0,511,0);
+INSERT INTO `page` VALUES (43,'Mes process',1,'perso/tasks.php',4,0,0,255,4);
+INSERT INTO `page` VALUES (10,'ReadMe',1,'info/doc.php',1,0,0,511,0);
+INSERT INTO `page` VALUES (39,'Classement',1,'project/game_classement.php',3,0,0,255,6);
+INSERT INTO `page` VALUES (20,'Candidats',1,'individus/candidat.php',2,0,0,511,0);
+INSERT INTO `page` VALUES (21,'Orgas',1,'individus/orgas.php',2,0,0,511,0);
+INSERT INTO `page` VALUES (41,'Mon profil',1,'perso/my_profile.php',4,0,0,511,1);
+INSERT INTO `page` VALUES (200,'Info individu',1,'perso/profile.php',2,1,0,511,0);
+INSERT INTO `page` VALUES (32,'Informations',1,'project/game_info.php',3,0,0,511,1);
+INSERT INTO `page` VALUES (35,'Créer',1,'project/game_new.php',3,0,0,194,9);
+INSERT INTO `page` VALUES (30,'Liste',1,'project/game_list.php',3,0,0,511,0);
 INSERT INTO `page` VALUES (201,'Nouveau commentaire',1,'comment/comment_new.php',2,1,0,254,0);
 INSERT INTO `page` VALUES (202,'Info commentaire',1,'comment/comment_view.php',2,1,0,254,0);
-INSERT INTO `page` VALUES (25,'Commentaires',1,'comment/comment_list.php',2,0,4,254,0);
-INSERT INTO `page` VALUES (141,'Modifier une news',1,'news/news_edit.php',1,1,31,254,0);
-INSERT INTO `page` VALUES (140,'Poster une news',1,'news/news_post.php',1,1,6,254,0);
+INSERT INTO `page` VALUES (25,'Commentaires',1,'comment/comment_list.php',2,0,0,254,0);
+INSERT INTO `page` VALUES (141,'Modifier une news',1,'news/news_edit.php',1,1,0,254,0);
+INSERT INTO `page` VALUES (140,'Poster une news',1,'news/news_post.php',1,1,0,254,0);
 INSERT INTO `page` VALUES (666,'Pretty printer',1,'pretty_printer/pretty_choose.php',3,1,0,255,0);
-INSERT INTO `page` VALUES (14,'News',1,'news/news_disp.php',1,0,100,254,0);
-INSERT INTO `page` VALUES (36,'Fichiers',1,'project/files.php',3,0,472,511,5);
+INSERT INTO `page` VALUES (14,'News',1,'news/news_disp.php',1,0,0,254,0);
+INSERT INTO `page` VALUES (36,'Fichiers',1,'project/files.php',3,0,0,511,5);
 INSERT INTO `page` VALUES (42,'Mes notes',1,'perso/my_notes.php',4,0,0,1,0);
-INSERT INTO `page` VALUES (24,'Trombi',1,'individus/candidat_photo.php',2,0,19,254,0);
-INSERT INTO `page` VALUES (38,'Match',1,'project/game_match.php',3,0,5346,255,7);
-INSERT INTO `page` VALUES (55,'Pages',1,'stats/stats_access.php',5,0,134,511,1);
+INSERT INTO `page` VALUES (24,'Trombi',1,'individus/candidat_photo.php',2,0,0,254,0);
+INSERT INTO `page` VALUES (38,'Match',1,'project/game_match.php',3,0,0,255,7);
+INSERT INTO `page` VALUES (55,'Pages',1,'stats/stats_access.php',5,0,0,511,1);
 INSERT INTO `page` VALUES (46,'Mes acces',1,'perso/my_access.php',4,0,0,128,5);
-INSERT INTO `page` VALUES (54,'Connexions',1,'stats/stats_connec.php',5,0,85,254,2);
-INSERT INTO `page` VALUES (26,'Recherche',1,'individus/search.php',2,0,32,255,0);
-INSERT INTO `page` VALUES (300,'Champion',1,'project/game_champion.php',3,0,2624,255,8);
-INSERT INTO `page` VALUES (241,'Trombi (assistant)',1,'individus/orga_photo.php',2,1,2,254,0);
+INSERT INTO `page` VALUES (54,'Connexions',1,'stats/stats_connec.php',5,0,0,254,2);
+INSERT INTO `page` VALUES (26,'Recherche',1,'individus/search.php',2,0,0,255,0);
+INSERT INTO `page` VALUES (300,'Champion',1,'project/game_champion.php',3,0,0,255,8);
+INSERT INTO `page` VALUES (241,'Trombi (assistant)',1,'individus/orga_photo.php',2,1,0,254,0);
+INSERT INTO `page` VALUES (400,'Status',1,'meta/status.php',4,0,0,254,1);
+INSERT INTO `page` VALUES (401,'Machines',1,'project/game_champion.php',4,0,0,254,2);
+INSERT INTO `page` VALUES (402,'Matchs',1,'project/game_champion.php',4,0,0,254,3);
 
 --
 -- Table structure for table `profil`
@@ -315,6 +319,6 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` VALUES (1,2,1,'Marchand','Joseph','alcooladmin','prolo','prologin@epita.fr','photo/fun/clown.jpg','','','','2005-01-01','','',0,0,'0d16e46644f979f5f25fdefe2ed4515a',0);
-INSERT INTO `user` VALUES (2,1,1,'At','Candide','Cand','cand','cand@gaim.com','photo/fun/clown.jpg','','','','2005-01-01','','',0,23,'0d16e46644f979f5f25fdefe2ed4515a',0);
+INSERT INTO `user` VALUES (1,2,1,'Marchand','Joseph','alcooladmin','prolo','prologin@epita.fr','photo/fun/clown.jpg','','','','2005-01-01','','',0,0,'1a1dc91c907325c69271ddf0c944bc72',0);
+INSERT INTO `user` VALUES (2,1,1,'At','Candide','Cand','cand','cand@gaim.com','photo/fun/clown.jpg','','','','2005-01-01','','',0,23,'1a1dc91c907325c69271ddf0c944bc72',0);
 
