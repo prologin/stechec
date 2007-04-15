@@ -26,6 +26,16 @@
 
 ?>
 
+<?php
+style_title("Pourquoi mon champion ou la partie reste dans l'état \"nouveau\"");
+?>
+
+<pre>
+
+Cela indique qu'il y a un problème dans la machinerie derrière le site web. Il n'y 
+a réellement pas grand chose que vous puissiez faire, contactez nous pour que nous
+résolvions le problème.
+</pre>
 
 <?php
 style_title("Que contient le \"Log du Champion\"");
@@ -36,8 +46,6 @@ Ce log contient la sortie standard et d'erreur de votre code. On y ajoute
 juste quelques renseignements (commencant toujours par [Client]) utiles.
 </pre>
 
-
-
 <?php
 style_title("Qu'est-ce que le \"log visio\"");
 ?>
@@ -46,11 +54,15 @@ style_title("Qu'est-ce que le \"log visio\"");
 C'est un fichier qui contient toutes les informations d'un match afin de
 pourvoir le re-visionner plus tard avec une interface graphique.
 
+Pour l'instant, cette fonctionalité est desactivé, vous n'aurez que des echec
+si vous essayez de telecharger ce fichier.
+</pre>
+<!--
 Ce fichier est _binaire_, c'est à dire que si vous essayez de l'ouvrir
 avec un éditeur texte, vous verrez n'importe quoi. Des fois, des caractères
 ascii bizarres formant un mot s'affichent, ce n'est que la partie visible
 d'optimisations internes faisant appels à des algorithmes compliqués.
-</pre>
+-->
 
 
 <?php

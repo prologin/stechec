@@ -29,6 +29,9 @@ style_title("Comment ca marche ? Petit mode d'emploi");
 ?>
 
 <pre>
+Ceci est un exemple pour le jeu 'Fourmis'. Pour les autres, la marche
+à suivre est identique.
+
 Allez dans la section Jeux -> Liste.
 Sélectionnez 'fourmis', et rendez-vous dans Jeux -> Fichiers.
 Téléchargez le sujet ainsi que la tarball 'code-v?.tar.gz'.
@@ -40,9 +43,7 @@ que sous un système unix pas trop exotique (Linux). Vous pouvez néanmoins coder
 sous Windows, à condition de faire vous même une tarball contenant tous les
 fichiers sources.
 
-Les champions C, Pascal et Java contiennent un petit exemple de code qui prend 4
-fourmis et leur fait faire des allez-retour en prenant la nourriture au passage.
-
+A ce moment, vous avez décompréssé la tarball et codé un petit champion.
 Une fois que votre code vous plaît, et que vous avez envie de l'essayer sur le
 serveur, utilisez la cible tar du Makefile :
 $ make tar

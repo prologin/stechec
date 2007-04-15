@@ -145,12 +145,10 @@ INSERT INTO `page` VALUES (3,'Jeux',0,'',0,0,0,511,0);
 INSERT INTO `page` VALUES (4,'Meta serveur',0,'',0,0,0,254,0);
 INSERT INTO `page` VALUES (5,'Statistiques',0,'',0,0,0,254,0);
 INSERT INTO `page` VALUES (11,'Faq',1,'info/faq.php',1,0,0,511,0);
-INSERT INTO `page` VALUES (43,'Mes process',1,'perso/tasks.php',4,0,0,255,4);
 INSERT INTO `page` VALUES (10,'ReadMe',1,'info/doc.php',1,0,0,511,0);
 INSERT INTO `page` VALUES (39,'Classement',1,'project/game_classement.php',3,0,0,255,6);
 INSERT INTO `page` VALUES (20,'Candidats',1,'individus/candidat.php',2,0,0,511,0);
 INSERT INTO `page` VALUES (21,'Orgas',1,'individus/orgas.php',2,0,0,511,0);
-INSERT INTO `page` VALUES (41,'Mon profil',1,'perso/my_profile.php',4,0,0,511,1);
 INSERT INTO `page` VALUES (200,'Info individu',1,'perso/profile.php',2,1,0,511,0);
 INSERT INTO `page` VALUES (32,'Informations',1,'project/game_info.php',3,0,0,511,1);
 INSERT INTO `page` VALUES (35,'Créer',1,'project/game_new.php',3,0,0,194,9);
@@ -163,18 +161,16 @@ INSERT INTO `page` VALUES (140,'Poster une news',1,'news/news_post.php',1,1,0,25
 INSERT INTO `page` VALUES (666,'Pretty printer',1,'pretty_printer/pretty_choose.php',3,1,0,255,0);
 INSERT INTO `page` VALUES (14,'News',1,'news/news_disp.php',1,0,0,254,0);
 INSERT INTO `page` VALUES (36,'Fichiers',1,'project/files.php',3,0,0,511,5);
-INSERT INTO `page` VALUES (42,'Mes notes',1,'perso/my_notes.php',4,0,0,1,0);
 INSERT INTO `page` VALUES (24,'Trombi',1,'individus/candidat_photo.php',2,0,0,254,0);
 INSERT INTO `page` VALUES (38,'Match',1,'project/game_match.php',3,0,0,255,7);
 INSERT INTO `page` VALUES (55,'Pages',1,'stats/stats_access.php',5,0,0,511,1);
-INSERT INTO `page` VALUES (46,'Mes acces',1,'perso/my_access.php',4,0,0,128,5);
 INSERT INTO `page` VALUES (54,'Connexions',1,'stats/stats_connec.php',5,0,0,254,2);
 INSERT INTO `page` VALUES (26,'Recherche',1,'individus/search.php',2,0,0,255,0);
 INSERT INTO `page` VALUES (300,'Champion',1,'project/game_champion.php',3,0,0,255,8);
 INSERT INTO `page` VALUES (241,'Trombi (assistant)',1,'individus/orga_photo.php',2,1,0,254,0);
-INSERT INTO `page` VALUES (400,'Status',1,'meta/status.php',4,0,0,254,1);
-INSERT INTO `page` VALUES (401,'Machines',1,'project/game_champion.php',4,0,0,254,2);
-INSERT INTO `page` VALUES (402,'Matchs',1,'project/game_champion.php',4,0,0,254,3);
+INSERT INTO `page` VALUES (40,'Status',1,'meta/status.php',4,0,0,254,1);
+INSERT INTO `page` VALUES (41,'Machines',1,'project/game_champion.php',4,0,0,254,2);
+INSERT INTO `page` VALUES (42,'Matchs',1,'project/game_champion.php',4,0,0,254,3);
 
 --
 -- Table structure for table `profil`
