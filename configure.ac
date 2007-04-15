@@ -188,7 +188,6 @@ AC_CONFIG_FILES([
   stechec/client/Makefile
   stechec/scripts/Makefile
   stechec/scripts/conf.rb
-  stechec/scripts/meta_server/meta_cx.sh
   stechec/server/Makefile
   stechec/tools/Makefile
   stechec/tools/xml_test/Makefile
@@ -226,6 +225,7 @@ if test x$BUILD_prologin != x; then
 AC_CONFIG_FILES([
   prologin/Makefile
   prologin/web_meta/Makefile
+  prologin/web_meta/meta_cx.sh
   prologin/common/Makefile
   prologin/tkrun/Makefile
 ])
