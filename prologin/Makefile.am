@@ -2,8 +2,8 @@
 
 SUBDIRS	= common tkrun web_meta
 
-SUBDIRS += 
-	$(BUILD_ant)
-	$(BUILD_prolo2005)
-	$(BUILD_prolo2006)
+SUBDIRS += 					\
+	$(BUILD_ant)				\
+	$(BUILD_prolo2005)			\
+	$(BUILD_prolo2006)			\
 	$(BUILD_prolo2007)

@@ -19,7 +19,9 @@ internal:
   max_process: 10
   heartbeat_period: 12
   heartbeat_timeout: 30
-  match_timeout: 15
+  match_timeout: 360
+  server_port_range_begin: 28100
+  server_port_range_end: 28600
 
 # Commandes a executer par le meta_server
 command:

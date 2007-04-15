@@ -25,7 +25,8 @@ function show_machine_summary()
   $e = explode(" ", $msg);
 
   style_text("Machines connectés: $e[0]<br>" .
-             "Slots disponibles: $e[1]");
+             "Slots par machine: $e[1]<br>" .
+             "Slots disponibles: $e[2]");
 }
 
 function show_match_summary()

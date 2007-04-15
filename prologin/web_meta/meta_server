@@ -22,11 +22,10 @@ my $read_set;
 ##########################################################################
 
 # called once on startup
-sub meta_init($$)
+sub meta_init($)
 {
-	my ($cfg, $local_ip) = @_;
+	my ($cfg) = @_;
 
-    $m{'local_ip'} = $local_ip || "localhost";
     $m{'main_ip'} = $$cfg{'internal'}{'main_host'} || "localhost";
     $m{'main_port'} = $$cfg{'internal'}{'main_port'} || 3917;
     $m{'heartbeat_period'} = $$cfg{'internal'}{'heartbeat_period'};
@@ -49,11 +48,7 @@ sub meta_disconnect()
 	$m{'last_heartbeat'} = 0;
 
 	$read_set = IO::Select->new;
-    if (defined($msock)) {
-        print "[cx] close socket...";
-        close $msock;
-        print " done.\n"
-    }
+    close $msock if defined $msock;
 	$msock = undef;
 
     # FIXME: destroy all running process
@@ -78,7 +73,6 @@ sub meta_connect()
 	}
     print "[cx] connected to main_server\n";
 	$read_set->add($msock);
-    send_heartbeat();
 	return 0;
 }
 
@@ -258,7 +252,6 @@ if (defined($opts{h}) || defined($opts{v})) {
 	print "options:\n";
 	print "  -h          show this help\n";
 	print "  -v          show version\n";
-    print "  -d          set local ip [localhost]\n";
 	print "  -c <conf>   use this configuration file [stechec.yml]\n";
 	exit 0;
 }
@@ -277,7 +270,7 @@ $SIG{INT} = sub { $loop = 0; };
 $SIG{TERM} = sub { $loop = 0; };
 $SIG{PIPE} = 'IGNORE';
 
-meta_init($cfg, $opts{'d'});
+meta_init($cfg);
 meta_disconnect();
 
 while ($loop) {
@@ -286,6 +279,7 @@ while ($loop) {
 		sleep 5;
 		next;
     }
+	send_heartbeat;
 
 	# sleep until someone (sock, process) want to talks
 	my @ready = $read_set->can_read(5);
@@ -298,7 +292,6 @@ while ($loop) {
 			process_read $fd;
 		}
 	}
-	send_heartbeat;
 	sigprocmask(SIG_SETMASK, $old_sigset);
 }
 

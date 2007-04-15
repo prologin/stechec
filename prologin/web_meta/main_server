@@ -53,6 +53,7 @@ sub computer_accept()
 		'fd' => undef,
 		'ip' => "",
 		'port' => -1,
+        'srv_port' => $cconf{'cfg'}{'server_port_range_begin'},
 		'slots' => $cconf{'cfg'}{'max_process'},
 		'status' => 1, # not used yet
 		'last_heartbeat' => time(),
@@ -209,6 +210,10 @@ sub match_pool_init
 		$dbh->prepare(q{SELECT id, id_champion FROM competiteur
 							WHERE id_match = ?});
 	$mconf{'last_expire'} = time;
+
+    # set all running matchs to waiting.
+	$dbh->do("UPDATE matchs SET status = 0 WHERE status = 0");
+
 	print "[match] init ok\n";
 }
 
@@ -316,6 +321,7 @@ sub match_start($$)
 
 	if ($type_match == 3) {
 		# run the server
+        my $server_computer = $c;
 		$err = exec_server($m, $c);
 		if ($err < 0) {
 			match_finish($m, $err == -1 ? 0 : 2);
@@ -331,7 +337,7 @@ sub match_start($$)
                 return -1;
             }
 
-			$err = exec_client($m, $c, $id_client);
+			$err = exec_client($m, $c, $server_computer, $id_client);
 			if ($err < 0) {
 				match_finish($m, $err == -1 ? 0 : 2);
 				return -2;
@@ -361,7 +367,7 @@ sub match_periodic()
 {
 	my $now = time;
 
-	return unless $now > $mconf{'last_expire'} + 8;
+	return unless $now > $mconf{'last_expire'} + 32;
 
 	print "[match] check expire: " . scalar(keys %mlist) . " running matchs\n";
 	foreach my $m (values %mlist) {
@@ -428,8 +434,6 @@ sub exec_check_cheat($$)
 	return 0;
 }
 
-my $port_server = 23516;
-
 sub exec_server($$)
 {
 	my ($m, $c) = @_;
@@ -449,18 +453,21 @@ sub exec_server($$)
 		return -2;
 	}
 	my $row = $sth->fetchrow_hashref;
-    $port_server++;
+
+    if (++$$c{'srv_port'} > $cconf{'cfg'}{'server_port_range_end'}) {
+        $$c{'srv_port'} = $cconf{'cfg'}{'server_port_range_begin'};
+    }
 
 	# send our order
 	send_msg($c, "server $$m{'id'} $$row{'lib_name'} $$row{'repertoire'} " .
-			 "$$row{'is_competition'} $$row{'match_id'} $port_server " .
+			 "$$row{'is_competition'} $$row{'match_id'} $$c{'srv_port'} " .
 			 "$$row{'nb_participant'} -- $$row{'opt_match'}\n");
 	return 0;
 }
 
-sub exec_client($$$)
+sub exec_client($$$$)
 {
-	my ($m, $c, $id_client) = @_;
+	my ($m, $c, $server_computer, $id_client) = @_;
 
 	# get match data from db
 	my $sth = $dbh->prepare("SELECT game.lib_name, game.repertoire, matchs.is_competition," .
@@ -477,12 +484,12 @@ sub exec_client($$$)
 		return -2;
 	}
 	my $row = $sth->fetchrow_hashref;
-	my $ip_server = "localhost";
 
 	# send our order
 	send_msg($c, "client $$m{'id'} $$row{'lib_name'} $$row{'repertoire'} " .
 			 "$$row{'is_competition'} $$row{'id_candidat'} $$row{'champion_id'} " .
-			 "$$row{'competiteur_id'} $$row{'id_match'} $port_server $ip_server\n");
+			 "$$row{'competiteur_id'} $$row{'id_match'} $$server_computer{'srv_port'} " .
+             "$$server_computer{'ip'}\n");
 	return 0;
 }
 
@@ -526,7 +533,7 @@ sub result_server
 {
 	my ($id_match, $m, $exit_status, $log) = @_;
 
-    if ($exit_status != 0) {
+    if ($exit_status != 0 || !defined $log) {
         match_finish($m, 2);
         return;
     }
@@ -641,7 +648,8 @@ sub rctl_answer_machine($$)
                       "$$c{'last_heartbeat'} $$c{'slots'} $usage\n", 0);
         }
     } elsif ($arg eq "summary") {
-        $fd->send(scalar(@clist) . " $cconf{'slot_available'}\n", 0);
+        $fd->send(scalar(@clist) . " $cconf{'cfg'}{'max_process'} ".
+                  "$cconf{'slot_available'}\n", 0);
     } else {
         print "[rctl] machine: unknown command: $arg\n";
     }
