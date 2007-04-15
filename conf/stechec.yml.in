@@ -1,0 +1,38 @@
+# 
+# Fichier de conf Yaml de Stechec Meta-server et Main-server 
+#
+
+# Information sur la base de données. Uniquement pour le main_server
+database:
+  ip: localhost
+  port: 3306
+  sock: /var/run/mysqld/mysqld.sock
+  login: stechec
+  pass: tty4ever
+  database: stechec
+
+# Configuration du main_server et du meta_server
+internal:
+  main_host: 192.168.200.1
+  main_port: 3917
+  wait_sleep: 5
+  max_process: 10
+  heartbeat_period: 12
+  heartbeat_timeout: 30
+  match_timeout: 15
+
+# Commandes a executer par le meta_server
+command:
+  cmd_path: @prefix@/lib/@PACKAGE@/bash
+  compil: compile_champion.sh
+  check_cheat: check_cheating.sh
+  server: run_server.sh
+  client: run_client.sh
+
+# Methode pour recuperer les tarballs / uploader les logs
+# method peut etre: nfs ou ssh
+connection:
+  method: nfs
+  contest_path: /mnt/goinfre/stechec/goinfre
+  stechec_install_path: @prefix@
+  host:
