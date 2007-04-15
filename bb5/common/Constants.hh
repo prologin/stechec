@@ -168,7 +168,8 @@ enum eSkill {
 //! @brief Motive for turnover.
 //! @note FIXME: propose a stringified version.
 enum eTurnOverMotive {
-  TOM_KNOCKEDDOWN = 0,
+  TOM_NONE,
+  TOM_KNOCKEDDOWN,
   TOM_LOSTBALL,
   TOM_FAILEDPICKUP,
   TOM_TOUCHDOOOWN,
