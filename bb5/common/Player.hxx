@@ -123,6 +123,11 @@ inline const Player::SkillList& Player::getSkillList() const
   return skill_list_;
 }
 
+inline bool Player::hasUsedSkill(enum eSkill skill) const
+{
+  return std::find(used_skill_list_.begin(), used_skill_list_.end(), skill) != used_skill_list_.end();
+}
+
 inline void Player::resetTurn()
 {
   action_ = DCL_NONE;

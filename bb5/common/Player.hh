@@ -148,7 +148,7 @@ class Player
 {
 public:
   typedef std::vector<enum eSkill> SkillList;
-
+  
   Player(const MsgPlayerCreate* m);
   virtual ~Player();
 
@@ -193,6 +193,10 @@ public:
   //! @note Don't use this method in rules, you should better use @c hasSkill.
   const SkillList& getSkillList() const;
 
+  //! @brief Check if this player has used this skill.
+  //! @param skill Skill to check for.
+  bool hasUsedSkill(enum eSkill skill) const;
+
   //! @brief Called on new turn.
   void resetTurn();
 
@@ -222,6 +226,7 @@ protected:
 
 private:
   SkillList	skill_list_; ///< List of skills that this player have.
+  SkillList	used_skill_list_; ///< List of skills that this player have used this turn.
 };
 
 # include "Player.hxx"
