@@ -70,20 +70,6 @@ CREATE TABLE `game` (
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 
---
--- Table structure for table `machine`
---
-
-CREATE TABLE `machine` (
-  `id` int(11) NOT NULL auto_increment,
-  `ip` text NOT NULL,
-  `port_meta` int(11) NOT NULL default '0',
-  `port_server` int(11) NOT NULL default '0',
-  `nb_pross` int(11) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  `exec_server` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
 
 --
 -- Table structure for table `matchs`
