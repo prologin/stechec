@@ -1,0 +1,115 @@
+Quick HowTo on how to install stechec, and mostly its web interface.
+
+Written by Benoit Tricot and Alban Lefebvre.
+Modified by Olivier Gournet.
+
+Do this in order, it (should) work.
+
+------------------------
+** install some required packages
+# apt-get install libyaml-perl libdbd-mysql-perl
+
+
+------------------------
+** php
+in /etc/php4/apache2/php.ini
+set register_globals = on
+
+
+------------------------
+** apache
+create /etc/apache2/sites-available/stechec
+===>
+<VirtualHost *:80>
+        ServerName stechec.prologin.org
+        
+        DocumentRoot /home/stechec/www
+        <Directory /home/stechec/www/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        LogLevel warn
+        ErrorLog /var/log/apache2/stechec-error.log
+        CustomLog /var/log/apache2/stechec-access.log combined
+</VirtualHost>
+<===
+
+
+------------------------
+** retrieve and compile the whole package
+
+$ svn co https://projects.nekeme.net/svn/tbt/trunk stechec
+$ ./bootstrap
+$ ./configure --without-sdl --with-mysql \
+              --with-modules="modules_you_want" \
+              --prefix="the path you want to install binaries"
+$ make
+$ make install-strip
+
+-> for instance, --with-modules=ant,prolo2005,prolo2006
+-> the binaries' install path will be called $prefix
+
+
+-------------------------
+** mysql: dump database
+
+$ mysql -u root -e "CREATE DATABASE stechec"
+$ mysql -u root stechec < prologin/www/stechec.sql 
+$ mysql -u root -e "GRANT SELECT,INSERT,UPDATE,DELETE ON stechec.* TO 'stechec'@'localhost' IDENTIFIED BY 'bloarps';"
+$ mysql -u root -e "GRANT SELECT,INSERT,UPDATE,DELETE ON stechec.* TO 'stechec'@'computer-ip' IDENTIFIED BY 'bloarps';"
+
+The account 'stechec' doesn't need remote access to the database anymore.
+You've got 2 accounts on the website:
+  - prolo/pass  (admin account)
+  - cand/pass   (user account)
+
+------------------------
+** configuring apps:
+
+  * $prefix/etc/stechec.yml: 
+  (warning: it is yaml, use only spaces, and _no_ tabulation)
+    - section 'database': fill it
+   it will use 'sock' if defined, otherwise 'ip':'port'.
+
+    - section 'internal':
+   main_host: set to main_server/website ip.
+   other values should be good.
+
+    - section 'connection':
+   contest_path: set to the path where you want to
+                 store your champions ($contest_path)
+
+(note: make a backup of stechec.yml, so further make install won't blow it)
+
+  * copy (or symlink) prologin/www to the path you set in apache2
+
+  * www/includes/config.php
+    change it to $contest_path (see below)
+
+  * www/includes/password.php
+    fix db info
+
+  * allow access to meta server and apache on $contest_path:
+    $ chmod -R 777 $contest_path
+    or use a nfs access, with squash_all to some user.
+
+
+--------------------------
+** generate makefiles: 
+
+$ cd $prefix/bin
+$ ./generator server prolo200? $contest_path
+
+
+---------------------------
+** launch everthing:
+
+$ $prefix/bin/main_server -c $prefix/etc/stechec.yml
+(on multiple other computers:)
+$ $prefix/bin/meta_server -c $prefix/etc/stechec.yml
+
+For production, launch them in a SCREEN, or better, find some
+way of have them always running (FIXME: do an /etc/init.d script).
