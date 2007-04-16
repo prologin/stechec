@@ -75,9 +75,9 @@ define get_ocaml_objs
   $(1)-camlobjs := $$(foreach s,$$(filter %.ml,$$($(1)-srcs)),$$(s:.ml=.o))
   ifneq ($$($(1)-camlobjs),)
     $(1)-objs := $(1)-caml.o $(value $(1)-objs)
+    $(1)-cflags := $$($(1)-cflags) $$(OCAML_CFLAGS)
+    $(1)-ldflags := $$($(1)-ldflags) $$(OCAML_LIBS)
   endif
-  $(1)-cflags := $$($(1)-cflags) $$(OCAML_CFLAGS)
-  $(1)-ldflags := $$($(1)-ldflags) $$(OCAML_LIBS)
   cleanfiles := $$($(1)-camlobjs) $$($(1)-camlobjs:.o=.cmo) $$($(1)-camlobjs:.o=.cmi) $$(cleanfiles)
 
   $(1)-caml.o: override _CAMLFLAGS = $$($(1)-camlflags)
