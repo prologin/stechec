@@ -441,7 +441,7 @@ sub exec_server($$)
 	# get match data from db
 	my $sth = $dbh->prepare("SELECT COUNT(competiteur.id) AS nb_participant, game.lib_name," .
                             " game.repertoire, matchs.is_competition," .
-							" matchs.id AS match_id, matchs.opt_match" .
+							" matchs.id AS match_id, game.arg_server, matchs.opt_match" .
 							" FROM matchs, game, competiteur" .
 							" WHERE matchs.id = ?" .
 							" AND game.id = matchs.id_game" .
@@ -461,7 +461,7 @@ sub exec_server($$)
 	# send our order
 	send_msg($c, "server $$m{'id'} $$row{'lib_name'} $$row{'repertoire'} " .
 			 "$$row{'is_competition'} $$row{'match_id'} $$c{'srv_port'} " .
-			 "$$row{'nb_participant'} -- $$row{'opt_match'}\n");
+			 "$$row{'nb_participant'} -- $$row{'arg_server'} $$row{'opt_match'} \n");
 	return 0;
 }
 
