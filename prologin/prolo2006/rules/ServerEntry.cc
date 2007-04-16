@@ -557,45 +557,54 @@ bool        ServerEntry::isMatchFinished()
   return g_->player_turn >= g_->max_date;
 }
 
-static int	*tab_score = NULL;
 
-void		ServerEntry::calculScore()
-{
-  for (int id = 0; id < g_->getNbPlayer(); ++id)
-    {
-      int score = g_->players[id].getScore();
-      for (int i = 0; i < 5; ++i)
-	if (tab_score[i] == -1)
-	  {
-	    tab_score[i] = score;
-	    break;
-	  }
-	else if (score == tab_score[i])
-	  break;
-	else if (score > tab_score[i])
-	  {
-	    int tmp2 = tab_score[i];
-	    for (int j = i, tmp = 0; j < 5; tmp = tab_score[j + 1],
-		   tab_score[j + 1] = tmp2, ++j, tmp2 = tmp)
-	      ;
-	    tab_score[i] = score;
-	    break;
-	  }
-    }
-}
-
+// Compute score, players are sorted by their collected money.
+//
+// We will return 1000 pts for the first,
+//                800 for the second,
+//                ...
 int        ServerEntry::getScore(int uid)
 {
-  if (tab_score == NULL)
+  static int score[MAX_COACH];
+  static bool score_computed = false;
+
+  // Don't give any credit if no turn where played.
+  if (g_->player_turn < 1)
+    return 0;
+  
+  if (score_computed == false)
     {
-      tab_score = new int[6]();
-      for (int i = 0; i < 6; ++i)
-	tab_score[i] = -1;
-      calculScore();
+      int tab[MAX_COACH];
+      int val = 1000;
+
+      // Get score for all players
+      for (int id = 0; id < g_->getNbPlayer(); ++id)
+        tab[id] = g_->players[id].getScore();
+
+      for (int i = 0; i < g_->getNbPlayer(); ++i)
+        {
+          int max_score = -1;
+          int id = -1;
+
+          // Search player that have the best score
+          for (int j = 0; j < g_->getNbPlayer(); ++j)
+            if (max_score < tab[j])
+              {
+                max_score = tab[j];
+                id = j;
+              }
+
+          if (id == -1) // Sanity check
+            {
+              WARN("BUG: %1", __func__);
+              return 0;
+            }
+          score[id] = val;
+          tab[id] = -1;
+          val -= 200;
+        }
+      score_computed = true;
     }
-  // TODO gestion des ex aequo
-  for (int i = 0; i < 5; ++i)
-    if (g_->players[uid].getScore() == tab_score[i])
-      return (5 - i) * 200;
-  return 0;
+  
+  return score[uid];
 }
