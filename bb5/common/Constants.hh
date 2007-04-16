@@ -168,7 +168,7 @@ enum eSkill {
 //! @brief Motive for turnover.
 //! @note FIXME: propose a stringified version.
 enum eTurnOverMotive {
-  TOM_NONE,
+  TOM_NONE = 0,
   TOM_KNOCKEDDOWN,
   TOM_LOSTBALL,
   TOM_FAILEDPICKUP,
@@ -179,8 +179,27 @@ enum eTurnOverMotive {
   TOM_EJECTEDFORAFOUL
 };
 
+//! @brief List of possible errors, for use in MsgIllegal.
+//! @note FIXME: propose a stringified version.
+enum eError {
+  ERR_NONE = 0,
+  ERR_UNASSIGNED,
+  ERR_UNREADABLE,
+  ERR_WRONGCONTEXT,
+  ERR_CANNOTENTERINPLAY,
+  ERR_TOOMANYPLAYERSINWIDEZONE,
+  ERR_LINEOFSCRIMMAGENOTFILLED,
+  ERR_TOOMANYPLAYERSINRESERVE,
+  ERR_INVALIDBALLPLACEMENT,
+  ERR_CANNOTCARRYTHEBALL,
+  ERR_HASPLAYED,
+  ERR_ISPLAYING,
+  ERR_SINGLEACTIONUSED
+};
+
+
 //! @brief Token string constants for bb5 rules.
-//! @note Keep it syncronized with all MSG_ enum below.
+//! @note Keep it synchronized with all MSG_ enum below.
 extern const char *bb5_token_str[RULES_TOKEN_LAST];
 
 //@}
@@ -220,6 +239,7 @@ END_PACKET
 // A coach tried something forbidden.
 DECLARE_PACKET(MSG_ILLEGAL, MsgIllegal)
   int was_token;
+  int error;
 END_PACKET
 
 #endif /* !CONSTANTS_HH_ */
