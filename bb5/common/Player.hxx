@@ -128,11 +128,17 @@ inline bool Player::hasUsedSkill(enum eSkill skill) const
   return std::find(used_skill_list_.begin(), used_skill_list_.end(), skill) != used_skill_list_.end();
 }
 
+inline void Player::useSkill(enum eSkill skill)
+{
+  used_skill_list_.push_back(skill);
+}
+
 inline void Player::resetTurn()
 {
   action_ = DCL_NONE;
   has_played_ = false;
   ma_remain_ = ma_;
+  used_skill_list_.clear();
   will_prone_ = (status_ == STA_STUNNED);
 }
 

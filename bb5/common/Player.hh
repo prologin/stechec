@@ -197,6 +197,9 @@ public:
   //! @param skill Skill to check for.
   bool hasUsedSkill(enum eSkill skill) const;
 
+  //! @brief Mark the skill as used for this turn.
+  void useSkill(enum eSkill skill);
+
   //! @brief Called on new turn.
   void resetTurn();
 
