@@ -48,12 +48,12 @@ public:
   SRules(StechecGameData* data, StechecServer* server,
 	 StechecServerResolver* resolver, StechecServerEntry* serverep);
   virtual ~SRules();
-  
+
 private:
   // not yet used.
   virtual void serialize(std::ostream&) const {}
   virtual void unserialize(std::istream&) {}
-  
+
   virtual const char* tokenToString(unsigned token) const;
 
   virtual void serverStartup();
@@ -61,12 +61,12 @@ private:
 
   virtual void addPlayer(int client_id, int league_id)
   {
-    data_->AddPlayer(league_id, client_id);
+    data_->AddPlayer(client_id, league_id);
   }
 
   virtual bool  coachKilled(int coach_id, CoachErrorCustom*& cec);
   virtual void  outputStat(int coach_id, ClientStatistic& coach_stat);
-  
+
   bool afterHook(int res, const char* hook_name);
   bool waitAllClient(int client_id);
 
