@@ -41,7 +41,7 @@ game_id=$4
 port=$5
 nb_player=$6
 
-shift 7
+shift 6
 
 # open temporary files for logs.
 tmp_dir=`mktemp -q -d /tmp/match_XXXXXX`
