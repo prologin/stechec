@@ -4,34 +4,34 @@
 <config>
 
   <game>
-    <nb_team>2</nb_team>
     <nb_team>1</nb_team>
     <max_turn>30</max_turn>
+    <map>simple.map</map>
   </game>
 
   <client>
-    <rules>ant</rules>
+    <rules>outatime</rules>
     <connect val="network" host="localhost" port="25150"
              game_uid="40" connect_on_startup="true" />
   </client>
 
   <client id="1">
-    <champion>/home/victor/tbt/local/ant/c/champion</champion>
+    <champion>/home/victor/work/tbt/local/prolo2006/c/champion</champion>
     <mode replay="false" spectator="false" />
     <limit memory="10000" time="500" time_reserve="2500" />
     <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
   </client>
 
   <client id="2">
-    <champion>ant_sdlvisu</champion>
+    <champion>outatime_sdlvisu</champion>
     <mode replay="false" file="match.log" spectator="true" />
     <limit memory="0" time="500" time_reserve="2500" />
-    <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
+    <debug valgrind="false" gdb="false" verbose="5" printloc="true" />
   </client>
 
   <server>
-    <rules>ant</rules>
-    <options persistent="true" start_game_timeout="30" />
+    <rules>outatime</rules>
+    <options persistent="false" start_game_timeout="30" />
     <listen port="25150" />
     <log enabled="false" file="match.log" />
     <nb_spectator>1</nb_spectator>
