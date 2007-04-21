@@ -182,16 +182,20 @@ void OutAGui::initMapSquare(int x, int y)
 
 void OutAGui::setZoom(int dec)
 {
-  double zoom = vscreen_->getZoom();
-
-  if (dec > 0 && zoom < 7)
+  int zoom_val = (int)vscreen_->getZoom();
+  int zoom = 0;
+  
+  while ((zoom_val >>= 1))
     zoom++;
-  else if (dec < 0 && zoom > 1)
+  
+  if (dec > 0 && zoom < 3)
+    zoom++;
+  else if (dec < 0 && zoom > 0)
     zoom--;
   else
     return;
-  case_size_ = (int)(128 / zoom);
-  vscreen_->setZoom(zoom);
+  case_size_ = (int)(128 / (1 << zoom));
+  vscreen_->setZoom(1 << zoom);
   win_.clearScreen();
 }
 
@@ -222,7 +226,8 @@ void OutAGui::goodmanMove(int player_id, int unit_id, const Position& pos)
 {
   LOG3("+++ goodmanMove: team %1 uid %2 to %3",
        player_id, unit_id, pos);
-  unit_[player_id][unit_id].move(Point(pos) * case_size_, 20.);
+  unit_[player_id][unit_id].show();
+  unit_[player_id][unit_id].move(Point(pos) * case_size_, 40.);
 }
 
 void OutAGui::goodmanChangeState(int team_id, int unit_id, int new_state)
@@ -278,7 +283,7 @@ int OutAGui::run()
   while (api_->getState() != GS_END)
     {
       // Bye bye dude.
-      if (input.key_pressed_[(unsigned char)'q'])
+      if (input.key_pressed_[SDLK_q])
         return 0;
  
       // Say we are ready for the next turn.
@@ -286,10 +291,9 @@ int OutAGui::run()
         ccx_->setReady();
 
       // Zoom in-out
-      if (input.key_pressed_[(unsigned char)'-'])
+      if (input.key_pressed_[SDLK_MINUS] || input.key_pressed_[SDLK_m])
         setZoom(1);
-              
-      if (input.key_pressed_[(unsigned char)'+'] || input.key_pressed_[(unsigned char)'p'])
+      if (input.key_pressed_[SDLK_PLUS] || input.key_pressed_[SDLK_p])
         setZoom(-1);
 
       // See a specific player view.
@@ -302,7 +306,7 @@ int OutAGui::run()
           }
 
       // See all the map
-      if (input.key_pressed_[(unsigned char)'0'])
+      if (input.key_pressed_[SDLK_0])
         {
           LOG2("Switch to super-user view");
           api_->switchTeam(-1);
