@@ -26,7 +26,7 @@ function show_machine_summary()
 
   style_text("Machines connectés: $e[0]<br>" .
              "Slots par machine: $e[1]<br>" .
-             "Slots disponibles: $e[2]");
+             "Slots disponible: $e[2]");
 }
 
 function show_match_summary()
@@ -36,6 +36,7 @@ function show_match_summary()
   $msg = get_ctl_data("match summary");
   $e = explode(" ", $msg);
   
+  style_text("Matchs en attente: $e[1]\n");
   style_text("Matchs en cours: $e[0]\n");
 }
 

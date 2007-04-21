@@ -210,6 +210,7 @@ sub match_pool_init
 		$dbh->prepare(q{SELECT id, id_champion FROM competiteur
 							WHERE id_match = ?});
 	$mconf{'last_expire'} = time;
+    $mconf{'nb_waiting'} = 0;
 
     # set all running matchs to waiting.
 	$dbh->do("UPDATE matchs SET status = 0 WHERE status = 0");
@@ -354,10 +355,12 @@ sub match_pool_poll()
         $mconf{'sth_poll_match'}->finish;
         return;
     }
+    $mconf{'nb_waiting'} = scalar($mconf{'sth_poll_match'}->rows);
 
 	while (my $row = $mconf{'sth_poll_match'}->fetchrow_hashref) {
 		print "[match $$row{'id'}] started, type: $$row{'type'}\n";
 		last if match_start($$row{'id'}, $$row{'type'}) == -1;
+        $mconf{'nb_waiting'}--;
 	}
 	$mconf{'sth_poll_match'}->finish;
 }
@@ -666,7 +669,7 @@ sub rctl_answer_match($$)
                       scalar(@{ $$m{'computer'} }) . "\n", 0);
         }
     } elsif ($arg eq "summary") {
-        $fd->send(scalar(keys %mlist) . "\n", 0);
+        $fd->send(scalar(keys %mlist) . " $mconf{'nb_waiting'}\n", 0);
     } else {
         print "[rctl] match: unknown command: $arg\n";
     }
