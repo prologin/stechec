@@ -169,8 +169,8 @@ INSERT INTO `page` VALUES (26,'Recherche',1,'individus/search.php',2,0,0,255,0);
 INSERT INTO `page` VALUES (300,'Champion',1,'project/game_champion.php',3,0,0,255,8);
 INSERT INTO `page` VALUES (241,'Trombi (assistant)',1,'individus/orga_photo.php',2,1,0,254,0);
 INSERT INTO `page` VALUES (40,'Status',1,'meta/status.php',4,0,0,254,1);
-INSERT INTO `page` VALUES (41,'Machines',1,'project/game_champion.php',4,0,0,254,2);
-INSERT INTO `page` VALUES (42,'Matchs',1,'project/game_champion.php',4,0,0,254,3);
+INSERT INTO `page` VALUES (41,'Machines',1,'meta/machine.php',4,0,0,254,2);
+INSERT INTO `page` VALUES (42,'Matchs',1,'meta/matchs.php',4,0,0,254,3);
 
 --
 -- Table structure for table `profil`
