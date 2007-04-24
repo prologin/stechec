@@ -195,14 +195,14 @@ do {                                                                            
   }                                                                             \
 } while (0)
 
-# define ERR(Msg...) LOG(0, String::compose(Msg))
-# define WARN(Msg...) LOG(1, String::compose(Msg))
+# define ERR(Msg,...) LOG(0, String::compose(Msg))
+# define WARN(Msg,...) LOG(1, String::compose(Msg))
 
-# define LOG1(Msg...) LOG(2, String::compose(Msg))
-# define LOG2(Msg...) LOG(3, String::compose(Msg))
-# define LOG3(Msg...) LOG(4, String::compose(Msg))
-# define LOG4(Msg...) LOG(5, String::compose(Msg))
-# define LOG5(Msg...) LOG(6, String::compose(Msg))
-# define LOG6(Msg...) LOG(7, String::compose(Msg))
+# define LOG1(Msg,...) LOG(2, String::compose(Msg))
+# define LOG2(Msg,...) LOG(3, String::compose(Msg))
+# define LOG3(Msg,...) LOG(4, String::compose(Msg))
+# define LOG4(Msg,...) LOG(5, String::compose(Msg))
+# define LOG5(Msg,...) LOG(6, String::compose(Msg))
+# define LOG6(Msg,...) LOG(7, String::compose(Msg))
 
 #endif /* !LOG_H_ */
