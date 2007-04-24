@@ -66,8 +66,8 @@ void    BaseCRules::msgCatchUid(const ClientUid* m)
        m->client_id, m->team_id);
   coach_id_ = m->client_id;
   team_id_ = m->team_id;
-  LOG2("nb coach: %1 nb team: %2", m->nb_coach, m->nb_team);
   setTeamNumber(m->nb_coach, m->nb_team);
+
   assert(packet_sender_ != NULL);
   packet_sender_->setTeamId(m->client_id);
 }

@@ -209,7 +209,7 @@ void GameHosting::servePlaying(GameClient* cl, Packet* pkt)
   if (cl->isCoach())
     {
       rules_->handlePacket(pkt);
-      sendPacket(MsgSync(cl->getId()));
+      // sendPacket(MsgSync(cl->getId()));
     }
   else
     {
