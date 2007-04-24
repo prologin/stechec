@@ -33,7 +33,7 @@ GameClient::GameClient(GameHosting* gh, Cx* cx, int id, int league_id,
 
   ClientUid pkt_id(CLIENT_UID);
   pkt_id.client_id = id;
-  pkt_id.team_id = league_id;
+  pkt_id.league_id = league_id;
   pkt_id.nb_team = nb_team;
   pkt_id.nb_coach = nb_coach;
   cx->send(&pkt_id);

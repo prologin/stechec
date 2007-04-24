@@ -33,8 +33,8 @@ public:
   int           getCoachId() const;
 
   //! @brief Get team id.
-  //! @return -1 when server, otherwise [|0..nb_team-1|]
-  int           getTeamId() const;
+  //! @return -1 when server, otherwise a positive integer.
+  int           getLeagueId() const;
 
   //! @brief Check if rules is processing an order, ie when an
   //!   order has been issued to the server, and waiting that the
@@ -72,7 +72,7 @@ private:
   void          msgCatchGameFinished(const GameFinished* m);
 
   int           coach_id_;
-  int		team_id_;
+  int		league_id_;
   EventProcess  evp_;
   mutable int	busy_count_;
 };

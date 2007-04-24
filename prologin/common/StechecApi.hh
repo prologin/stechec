@@ -105,7 +105,7 @@ inline void StechecApi::SendToServer(const StechecPkt& com)
 
 inline bool StechecApi::isViewer() const
 {
-  return rules_->getTeamId() >= UID_VIEWER_BASE;
+  return rules_->getCoachId() >= UID_VIEWER_BASE;
 }
 
 inline int StechecApi::getTimeRemaining() const

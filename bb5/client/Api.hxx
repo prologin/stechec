@@ -118,8 +118,8 @@ inline int Api::doPlaceBall(const Point& pos)
       LOG2("Kickoff rejected. Ball not on the field: %1", pos);
       return INVALID_ACTION;
     }
-  if ((rules_->getTeamId() == 0 && bpos.row < 13)
-      || (rules_->getTeamId() == 1 && bpos.row > 12))
+  if ((rules_->getCoachId() == 0 && bpos.row < 13)
+      || (rules_->getCoachId() == 1 && bpos.row > 12))
     {
       LOG2("Kickoff rejected. Ball in your part of the field (%1): %2",
           selected_team_->getTeamId(),  pos);
@@ -305,7 +305,7 @@ inline int Api::half() const
 
 inline int Api::myTeamId() const
 {
-  return rules_->getTeamId();
+  return rules_->getCoachId();
 }
 
 inline Point Api::ball() const
@@ -339,9 +339,9 @@ inline void Api::selectTeam(int team_id)
 
   if (rules_->getState() == GS_WAIT)
     return;
-  if (team_id == US || (team_id <= 1 && team_id == rules_->getTeamId()))
+  if (team_id == US || (team_id <= 1 && team_id == rules_->getCoachId()))
     selected_team_ = rules_->our_team_;
-  if (team_id == THEM || ((team_id == 0 || team_id == 1) && team_id != rules_->getTeamId()))
+  if (team_id == THEM || ((team_id == 0 || team_id == 1) && team_id != rules_->getCoachId()))
     selected_team_ = rules_->other_team_;
 }
 

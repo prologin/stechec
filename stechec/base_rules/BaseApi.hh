@@ -99,7 +99,7 @@ inline const char* BaseApi<T>::getStateString() const
 template <typename T>
 inline int BaseApi<T>::getTeamId() const
 {
-  return rules_->getTeamId();
+  return rules_->getCoachId();
 }
 
 template <typename T>

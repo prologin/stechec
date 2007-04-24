@@ -95,7 +95,7 @@ void        CRules::msgIllegal(const MsgIllegal* m)
 void        CRules::msgInitGame(const MsgInitGame* m)
 {
   // We _must_ have our uid at this time.
-  assert(getTeamId() >= 0);
+  assert(getCoachId() >= 0);
 
   // Change our game state.
   setState(GS_INITGAME);
@@ -109,12 +109,12 @@ void        CRules::msgInitGame(const MsgInitGame* m)
   HANDLE_WITH(MSG_BALLPOS, CBall, ball_, setPosition, 0);
 
   // Create, populate our team from the xml file, and send it.
-  our_team_ = new CTeam(getTeamId(), this, player_msg_);
+  our_team_ = new CTeam(getCoachId(), this, player_msg_);
   team_msg_->setTeam(our_team_->getTeamId(), our_team_);
   our_team_->loadConfig(cfg_.getData<std::string>("client", "team"));
 
   // Other team.
-  other_team_ = new CTeam(getTeamId() == 0 ? 1 : 0, this, player_msg_);
+  other_team_ = new CTeam(getCoachId() == 0 ? 1 : 0, this, player_msg_);
   team_msg_->setTeam(other_team_->getTeamId(), other_team_);
 
   // Kludge. Allow UI to do something while in GS_INITGAME.
@@ -141,7 +141,7 @@ void        CRules::msgDrawKicker(const MsgDrawKicker* m)
 {
   assert(getState() != GS_DRAWKICKER);
 
-  if (m->client_id == getTeamId())
+  if (m->client_id == getCoachId())
     {
       setState(GS_DRAWKICKER);
       LOG2("-- CRules: change state: GS_DRAWKICKER");
@@ -152,7 +152,7 @@ void        CRules::msgDrawKicker(const MsgDrawKicker* m)
 
 void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-  if (m->client_id != getTeamId())
+  if (m->client_id != getCoachId())
     {
       // Inform UI that other team is concerned.
       onEvent(m);
@@ -190,7 +190,7 @@ void        CRules::msgPlayTurn(const MsgNewTurn* m)
 
   // Who will play.
   setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
-  if (m->client_id == getTeamId())
+  if (m->client_id == getCoachId())
     {
       LOG2("-- CRules: change state: GS_COACH (Our turn, turn %1, half %2)",
           m->cur_turn, m->cur_half);
@@ -235,7 +235,7 @@ void        CRules::msgCustomEvent(const CustomEvent* m)
 
 void CRules::msgResult(const MsgResult* m)
 {
-  if (m->client_id == getTeamId() && m->reroll)
+  if (m->client_id == getCoachId() && m->reroll)
     {
       setState(GS_REROLL);
       LOG2("-- CRules: change state: GS_REROLL");
@@ -246,11 +246,11 @@ void CRules::msgResult(const MsgResult* m)
 
 void CRules::msgBlockResult(const MsgBlockResult* m)
 {
-  if (m->client_id == getTeamId())
+  if (m->client_id == getCoachId())
     {
       if (! m->reroll)
         our_team_->getPlayer(m->player_id)->subMa(1);
-      if (m->strongest_team_id == getTeamId())
+      if (m->strongest_team_id == getCoachId())
         setState(GS_BLOCK);
       else if (m->reroll)
         setState(GS_REROLL);
@@ -259,7 +259,7 @@ void CRules::msgBlockResult(const MsgBlockResult* m)
     {
       if (! m->reroll)
         other_team_->getPlayer(m->player_id)->subMa(1);
-      if (m->strongest_team_id == getTeamId() && !m->reroll)
+      if (m->strongest_team_id == getCoachId() && !m->reroll)
         setState(GS_BLOCK);
     }
   onEvent(m);
@@ -276,7 +276,7 @@ void CRules::msgBlockPush(const MsgBlockPush* m)
     {
       setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
     }
-  else if (m->client_id == getTeamId())
+  else if (m->client_id == getCoachId())
     {
       setState(GS_PUSH);
       onEvent(m);
@@ -289,7 +289,7 @@ void CRules::msgFollow(const MsgFollow* m)
     {
       setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
     }
-  else if (m->client_id == getTeamId())
+  else if (m->client_id == getCoachId())
     {
       setState(GS_FOLLOW);
       onEvent(m);

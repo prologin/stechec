@@ -1,16 +1,16 @@
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
-** 
+**
 ** Copyright (C) 2006 The TBT Team.
-** 
+**
 ** This program is free software; you can redistribute it and/or
 ** modify it under the terms of the GNU General Public License
 ** as published by the Free Software Foundation; either version 2
 ** of the License, or (at your option) any later version.
-** 
+**
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
-** 
+**
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
@@ -50,7 +50,7 @@ const unsigned CUSTOM_EVENT	= BASE_TOKEN_START + 1;
 // The packet used by the server to give an uid for the client.
 const unsigned CLIENT_UID	= BASE_TOKEN_START + 2;
 DECLARE_PACKET(CLIENT_UID, ClientUid);
-  int team_id;
+  int league_id;
   int nb_coach;
   int nb_team;
 END_PACKET
@@ -98,7 +98,7 @@ public:
   ** management.
   ** @{
   */
-  
+
   //! @brief Send a packet to the other side.
   //! @param p A packet to send.
   //! @see setSendPacketObject
@@ -112,7 +112,7 @@ public:
 
   //! @brief Get the number of teams.
   int           getTeamNumber() const;
-  
+
   //! @brief Get the current game state.
   int           getState() const;
   //! @brief Set the current game state.
@@ -120,7 +120,7 @@ public:
 
   //! @brief Debug function. Return a stringified packet token.
   const char*	stringifyToken(unsigned token) const;
-  
+
 
   /*!
   ** @}
@@ -150,7 +150,7 @@ public:
 
 protected:
   virtual const char* tokenToString(unsigned token) const;
-  
+
 private:
 
   int           state_;

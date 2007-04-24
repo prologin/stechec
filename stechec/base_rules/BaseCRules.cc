@@ -18,7 +18,7 @@
 
 BaseCRules::BaseCRules()
   : coach_id_(-1),
-    team_id_(-1),
+    league_id_(-1),
     busy_count_(0)
 {
   HANDLE_WITH(MSG_SYNC, BaseCRules, this, msgCatchSync, 0);
@@ -63,9 +63,9 @@ void	BaseCRules::msgCatchSync(const MsgSync* m)
 void    BaseCRules::msgCatchUid(const ClientUid* m)
 {
   LOG3("[ %1:%2 ] <= Look! This is my new shining uid!",
-       m->client_id, m->team_id);
+       m->client_id, m->league_id);
   coach_id_ = m->client_id;
-  team_id_ = m->team_id;
+  league_id_ = m->league_id;
   setTeamNumber(m->nb_coach, m->nb_team);
 
   assert(packet_sender_ != NULL);

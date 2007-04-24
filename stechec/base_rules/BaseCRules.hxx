@@ -19,9 +19,9 @@ inline int      BaseCRules::getCoachId() const
   return coach_id_;
 }
 
-inline int      BaseCRules::getTeamId() const
+inline int      BaseCRules::getLeagueId() const
 {
-  return team_id_;
+  return league_id_;
 }
 
 inline bool	BaseCRules::isBusy() const
