@@ -57,13 +57,17 @@ public:
   //! @param gh Pointer to the associated game.
   //! @param cx The associated Cx object.
   //! @param id The unique client connection id (See UID_VIEWER_BASE and UID_COACH_BASE).
-  //! @param client_gid The client external game identifier (eg: for league).
-  //! @param nb_team Number of coach for this game.
-  GameClient(GameHosting* gh, Cx* cx, int id, int client_gid, int nb_team);
+  //! @param league_id The client external game identifier.
+  //! @param nb_team Number of team for this game.
+  //! @param nb_coach Number of coach for this game.
+  GameClient(GameHosting* gh, Cx* cx, int id, int league_id, int nb_team, int nb_coach);
   virtual ~GameClient();
 
   //! @brief Get the client id.
   int           getId() const;
+
+  //! @brief Get the client league id.
+  int		getLeagueId() const;
 
   //! @brief Close client connection.
   //! @note Connection is immediately closed unless close_pending_ is true.
@@ -103,6 +107,7 @@ private:
 
   GameHosting*		gh_;
   int			id_;         ///< Player uid.
+  int			league_id_;  ///< Player league id.
 
   //! True if this client is ready (mostly for the next turn)
   //! (sync visio with game).

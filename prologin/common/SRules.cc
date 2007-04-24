@@ -22,7 +22,7 @@ SRules::SRules(StechecGameData* data, StechecServer* server,
     resolver_(resolver),
     server_entry_(serverep)
 {
-  for (int i = 0; i < MAX_COACH; i++)
+  for (int i = 0; i < MAX_PLAYER; i++)
     coach_error_[i] = NULL;
   
   HANDLE_WITH(STECHEC_PKT, SRules, this, msgStechecPkt, GS_AFTERTURN);
@@ -46,7 +46,7 @@ SRules::~SRules()
   delete server_;
   delete data_;
 
-  std::for_each(coach_error_, coach_error_ + MAX_COACH, Deleter());
+  std::for_each(coach_error_, coach_error_ + MAX_PLAYER, Deleter());
 }
 
 const char* SRules::tokenToString(unsigned token) const
@@ -54,6 +54,19 @@ const char* SRules::tokenToString(unsigned token) const
   if (token >= sizeof (prologin_token_str) / sizeof (const char *))
     return "(overflow)";
   return prologin_token_str[token];
+}
+
+// Correspondance id <-> league_id will be kept in StechecGameData.
+void SRules::addPlayer(int client_id, int league_id)
+{
+  if (client_id < 0 || client_id >= MAX_PLAYER ||
+      league_id < 0 || league_id >= MAX_TEAM)
+    return;
+  data_->team_[client_id] = league_id;
+
+  MsgListTeam pkt(client_id);
+  pkt.team_id = league_id;
+  sendPacket(pkt);
 }
 
 // Check if a hook was successful, and send data to clients

@@ -41,9 +41,10 @@ public:
 
   //! @brief Called before the game is started. For each client, correspondance
   //!  between client_id and league_id (ext_id) is given.
+  //! @note This function is called before serverStartup().
   //! @note Added for prologin.
   virtual void  addPlayer(int client_id, int league_id);
-  
+
   //! @brief Called when a coach is disconnected.
   //! @param cec Custom data that SRules could save, it will be given
   //!   on further calls to outputStat.

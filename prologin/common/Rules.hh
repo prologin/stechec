@@ -46,8 +46,11 @@
 
 # include "BaseRules.hh"
 
-// Maximum number of coach (real players) that these rulesets can handle.
-const int MAX_COACH = 16;
+// Maximum number of players (connected client) that these rulesets can handle.
+const int MAX_PLAYER = 60;
+
+// Maximum number of teams these rulesets can handle.
+const int MAX_TEAM = 6;
 
 // Constants describing the current state of the game.
 // GS_CLIENT_END is like GS_END, but client must wait for GAME_FINISHED
@@ -66,6 +69,7 @@ enum {
 // Kind of tokens used by the base rules of stechec.
 enum {
   STECHEC_PKT,
+  MSG_LIST_TEAM,
   MSG_BEFORE_GAME,
   MSG_INIT_GAME,
   MSG_BEFORE_TURN,
@@ -81,6 +85,9 @@ extern const char *prologin_token_str[RULES_TOKEN_LAST];
 
 
 // Packets.
+DECLARE_PACKET(MSG_LIST_TEAM, MsgListTeam)
+  int team_id;
+END_PACKET
 DECLARE_EMPTY_PACKET(MSG_BEFORE_GAME, MsgBeforeGame);
 DECLARE_EMPTY_PACKET(MSG_INIT_GAME, MsgInitGame);
 DECLARE_EMPTY_PACKET(MSG_BEFORE_TURN, MsgBeforeTurn);

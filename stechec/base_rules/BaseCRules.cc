@@ -17,7 +17,8 @@
 # include "BaseCRules.hh"
 
 BaseCRules::BaseCRules()
-  : team_id_(-1),
+  : coach_id_(-1),
+    team_id_(-1),
     busy_count_(0)
 {
   HANDLE_WITH(MSG_SYNC, BaseCRules, this, msgCatchSync, 0);
@@ -51,7 +52,7 @@ void    BaseCRules::onEvent(const Packet* pkt)
 
 void	BaseCRules::msgCatchSync(const MsgSync* m)
 {
-  if (m->client_id == team_id_ && --busy_count_ < 0)
+  if (m->client_id == coach_id_ && --busy_count_ < 0)
     {
       WARN("busy count goes under 0");
       busy_count_ = 0;
@@ -61,11 +62,14 @@ void	BaseCRules::msgCatchSync(const MsgSync* m)
 
 void    BaseCRules::msgCatchUid(const ClientUid* m)
 {
-  LOG3("[ %1 ] <= Look! This is my new shining uid!", m->client_id);
-  team_id_ = m->client_id;
-  setTeamNumber(m->nb_team);
+  LOG3("[ %1:%2 ] <= Look! This is my new shining uid!",
+       m->client_id, m->team_id);
+  coach_id_ = m->client_id;
+  team_id_ = m->team_id;
+  LOG2("nb coach: %1 nb team: %2", m->nb_coach, m->nb_team);
+  setTeamNumber(m->nb_coach, m->nb_team);
   assert(packet_sender_ != NULL);
-  packet_sender_->setTeamId(team_id_);
+  packet_sender_->setTeamId(m->client_id);
 }
 
 void    BaseCRules::msgCatchGameFinished(const GameFinished*)

@@ -14,6 +14,11 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+inline int      BaseCRules::getCoachId() const
+{
+  return coach_id_;
+}
+
 inline int      BaseCRules::getTeamId() const
 {
   return team_id_;

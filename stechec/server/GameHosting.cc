@@ -32,12 +32,15 @@ GameHosting::GameHosting(int game_uid,
   pthread_mutex_lock(&lock_);
   client_poll_.setLock(&lock_);
 
-  nb_waited_coach_ = cfg.getData<int>("game", "nb_team");
-  rules->setTeamNumber(nb_waited_coach_);
+  nb_team_ = cfg.getData<int>("game", "nb_team");
+  int nb_per_team = cfg.getAttr<int>("game", "nb_team", "player_per_team");
+
+  nb_waited_coach_ = nb_team_ * nb_per_team;
+  rules->setTeamNumber(nb_waited_coach_, nb_team_);
   nb_waited_viewer_ = cfg.getData<int>("server", "nb_spectator");
 
-  LOG1("Creating a new game, uid '%1`. Wait for `%2' teams and `%3' spectators.", game_uid,
-       nb_waited_coach_, nb_waited_viewer_);
+  LOG1("Creating a new game, uid '%1`. Wait for `%2' coachs and `%3' spectators.",
+       game_uid, nb_waited_coach_, nb_waited_viewer_);
 
   if (cfg.getAttr<bool>("server", "log", "enabled"))
     {
@@ -46,7 +49,8 @@ GameHosting::GameHosting(int game_uid,
 
       ClientUid pkt_id(CLIENT_UID);
       pkt_id.client_id = UID_COACH_BASE;
-      pkt_id.nb_team = nb_waited_coach_;
+      pkt_id.nb_team = nb_team_;
+      pkt_id.nb_coach = nb_waited_coach_;
       log_.send(&pkt_id);
       LOG4("Log game into file `%1`", filename);
     }
@@ -143,8 +147,7 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
     }
 
   // Accepted.
-  GameClient* cl = new GameClient(this, cx, uid, client_extid, nb_waited_coach_);
-  rules_->addPlayer(client_extid, uid);
+  GameClient* cl = new GameClient(this, cx, uid, client_extid, nb_team_, nb_waited_coach_);
   client_list_.push_back(cl);
 
   pthread_mutex_unlock(&lock_);
@@ -217,6 +220,8 @@ void GameHosting::servePlaying(GameClient* cl, Packet* pkt)
 
 void GameHosting::run(Log& log)
 {
+  GameClientIter it;
+
   self_ = pthread_self();
 
   // Set logger options.
@@ -238,7 +243,6 @@ void GameHosting::run(Log& log)
   // Fill stats_list.
   if (state_ == ePlaying)
     {
-      GameClientIter it;
       for (it = client_list_.begin(); it != client_list_.end(); ++it)
 	if ((*it)->isCoach())
 	  stats_list_.push_back(&(*it)->getClientStatistic());
@@ -256,6 +260,12 @@ void GameHosting::run(Log& log)
     {
       LOG5("Game starting... %1 connected", nb_coach_);
       rules_->setSendPacketObject(this);
+
+      // Send to the rules the correspondance between league_id and id.
+      for (it = client_list_.begin(); it != client_list_.end(); ++it)
+	if ((*it)->isCoach())
+	  rules_->addPlayer((*it)->getId(), (*it)->getLeagueId());
+
       rules_->serverStartup();
       if (rules_->getState() != GS_END)
 	{

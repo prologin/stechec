@@ -52,7 +52,7 @@ bool StechecApi::switchTeam(int team_id)
     team_id = -1;
   if (team_id >= g->getNbPlayer())
     return false;
-  g->uid_ = team_id;
+  g->id_ = team_id;
   teamSwitched();
   return true;
 }

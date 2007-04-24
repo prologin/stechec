@@ -56,16 +56,13 @@ private:
 
   virtual const char* tokenToString(unsigned token) const;
 
+  virtual void addPlayer(int client_id, int league_id);
+
   virtual void serverStartup();
   virtual void serverProcess();
 
-  virtual void addPlayer(int client_id, int league_id)
-  {
-    data_->AddPlayer(client_id, league_id);
-  }
-
-  virtual bool  coachKilled(int coach_id, CoachErrorCustom*& cec);
-  virtual void  outputStat(int coach_id, ClientStatistic& coach_stat);
+  virtual bool coachKilled(int coach_id, CoachErrorCustom*& cec);
+  virtual void outputStat(int coach_id, ClientStatistic& coach_stat);
 
   bool afterHook(int res, const char* hook_name);
   bool waitAllClient(int client_id);
@@ -76,9 +73,9 @@ private:
   void msgAfterTurn(const MsgAfterTurn* m);
   void msgChampionError(const MsgChampionError* m);
 
-  int                    wait_nb_;                ///< Number of ready coach.
-  int                    wait_tab_[MAX_COACH];    ///< Uid list of ready coach.
-  CoachErrorCustom*      coach_error_[MAX_COACH]; ///< Array of received coach error.
+  int                    wait_nb_;			///< Number of ready player.
+  int                    wait_tab_[MAX_PLAYER];		///< Uid list of ready player.
+  CoachErrorCustom*      coach_error_[MAX_PLAYER];	///< Array of received player error.
 
   CommandList command_list_;
 

@@ -61,6 +61,7 @@ private:
   bool afterHook(int res, const char* hook_name);
 
   void msgStechecPkt(const StechecPkt* m);
+  void msgListTeam(const MsgListTeam* m);
   void msgBeforeGame(const MsgBeforeGame* m);
   void msgInitGame(const MsgInitGame* m);
   void msgBeforeTurn(const MsgBeforeTurn* m);

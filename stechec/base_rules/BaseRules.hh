@@ -50,6 +50,8 @@ const unsigned CUSTOM_EVENT	= BASE_TOKEN_START + 1;
 // The packet used by the server to give an uid for the client.
 const unsigned CLIENT_UID	= BASE_TOKEN_START + 2;
 DECLARE_PACKET(CLIENT_UID, ClientUid);
+  int team_id;
+  int nb_coach;
   int nb_team;
 END_PACKET
 
@@ -106,6 +108,9 @@ public:
   void          handleWith(BasePacketHandler* bph, int when = 0);
 
   //! @brief Get the number of teams.
+  int           getCoachNumber() const;
+
+  //! @brief Get the number of teams.
   int           getTeamNumber() const;
   
   //! @brief Get the current game state.
@@ -132,8 +137,8 @@ public:
   //! @brief Called on each recieved packet.
   void          handlePacket(const Packet* p);
 
-  //! @brief Set the team number.
-  void          setTeamNumber(int value);
+  //! @brief Set the team/coach number.
+  void          setTeamNumber(int coach_nb, int team_nb);
 
   // see later...
   virtual void  serialize(std::ostream& os) const;
@@ -149,6 +154,7 @@ protected:
 private:
 
   int           state_;
+  int           coach_number_;
   int           team_number_;
 
 protected:

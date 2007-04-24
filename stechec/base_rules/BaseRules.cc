@@ -19,6 +19,7 @@
 
 BaseRules::BaseRules()
   : state_(GS_WAIT),
+    coach_number_(0),
     team_number_(0),
     packet_sender_(NULL)
 {
@@ -45,14 +46,20 @@ void    BaseRules::handleWith(BasePacketHandler* bph, int when)
   pkt_hdl_[bph->getCstValue()].push_back(std::make_pair(when, bph));
 }
 
+int     BaseRules::getCoachNumber() const
+{
+  return coach_number_;
+}
+
 int     BaseRules::getTeamNumber() const
 {
   return team_number_;
 }
 
-void    BaseRules::setTeamNumber(int value)
+void    BaseRules::setTeamNumber(int coach_nb, int team_nb)
 {
-  team_number_ = value;
+  coach_number_ = coach_nb;
+  team_number_ = team_nb;
 }
 
 void    BaseRules::handlePacket(const Packet* p)

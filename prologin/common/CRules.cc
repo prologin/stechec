@@ -26,6 +26,7 @@ CRules::CRules(const xml::XMLConfig& cfg,
     client_entry_(clientep)
 {
   HANDLE_WITH(STECHEC_PKT, CRules, this, msgStechecPkt, 0);
+  HANDLE_WITH(MSG_LIST_TEAM, CRules, this, msgListTeam, GS_WAIT);
   HANDLE_WITH(MSG_BEFORE_GAME, CRules, this, msgBeforeGame, GS_WAIT);
   HANDLE_WITH(MSG_INIT_GAME, CRules, this, msgInitGame, GS_INITGAME);
   HANDLE_WITH(MSG_BEFORE_TURN, CRules, this, msgBeforeTurn, 0);
@@ -116,14 +117,22 @@ bool CRules::afterHook(int res, const char* hook_name)
   return true;
 }
 
+void CRules::msgListTeam(const MsgListTeam* m)
+{
+  data_->team_[m->client_id] = m->team_id;
+}
+   
 // Called before the champion is loaded.
 void CRules::msgBeforeGame(const MsgBeforeGame*)
 {
-  data_->nb_player_ = getTeamNumber();
+  data_->nb_player_ = getCoachNumber();
+  data_->nb_team_ = getTeamNumber();
+  LOG2("nbplayer: %1, nbteam: %2", data_->nb_player_, data_->nb_team_);
   if (getTeamId() < UID_VIEWER_BASE)
-    data_->uid_ = getTeamId();
-  else
-    data_->uid_ = -1;
+    {
+      data_->id_ = getCoachId();
+      data_->team_id_ = getTeamId();
+    }
 
   setState(GS_BEFOREGAME);
   int r = client_entry_->beforeGame();

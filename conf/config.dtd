@@ -2,8 +2,9 @@
 
 <!ELEMENT config (game?, client*, server?)>
 
-<!ELEMENT game (nb_team, max_turn?, map?)>
+<!ELEMENT game (nb_team, player_per_team?, max_turn?, map?)>
   <!ELEMENT nb_team (#PCDATA)>
+    <!ATTLIST nb_team player_per_team CDATA "1">
   <!ELEMENT max_turn (#PCDATA)>
   <!ELEMENT map (#PCDATA)>
 

@@ -98,6 +98,7 @@ private:
   ClientStatisticList   stats_list_;      ///< Stats of coachs. To output statistics after they exited.
   int                   nb_coach_;        ///< Number of coach connected.
   int                   nb_waited_coach_; ///< Number of waited coach, before starting game.
+  int                   nb_team_;         ///< Number of playing teams.
   int                   viewer_base_uid_; ///< Current uid to assign to new viewers.
   int                   nb_viewer_;       ///< Number of viewers currently connected.
   int                   nb_waited_viewer_;///< Number of waited viewer, before starting game.

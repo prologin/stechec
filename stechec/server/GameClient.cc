@@ -16,22 +16,26 @@
 
 BEGIN_NS(server);
 
-GameClient::GameClient(GameHosting* gh, Cx* cx, int id, int ext_id, int nb_team)
+GameClient::GameClient(GameHosting* gh, Cx* cx, int id, int league_id,
+		       int nb_team, int nb_coach)
   : Client(cx),
     gh_(gh),
     id_(id),
+    league_id_(league_id),
     is_ready_(false),
     client_stat_(NULL)
 {
   if (id_ < UID_VIEWER_BASE)
-    client_stat_ = new ClientStatistic(id, ext_id);
+    client_stat_ = new ClientStatistic(id, league_id);
 
   Packet acpt(CX_ACCEPT);
   cx->send(&acpt);
 
   ClientUid pkt_id(CLIENT_UID);
   pkt_id.client_id = id;
+  pkt_id.team_id = league_id;
   pkt_id.nb_team = nb_team;
+  pkt_id.nb_coach = nb_coach;
   cx->send(&pkt_id);
 }
 
@@ -53,6 +57,11 @@ ClientStatistic& GameClient::getClientStatistic()
 int GameClient::getId() const
 {
   return id_;
+}
+
+int GameClient::getLeagueId() const
+{
+  return league_id_;
 }
 
 bool GameClient::isCoach() const

@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #include "GameData.hh"
@@ -17,7 +17,8 @@
 ServerEntry::ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg) :
    StechecServerEntry(game, server, cfg)
 {
-   g_->max_date = -1;
+  g_->max_date = -1;
+  std::fill(score_, score_ + MAX_PLAYER, 0);
 }
 
 ServerEntry::~ServerEntry()
@@ -554,7 +555,42 @@ int         ServerEntry::afterGame()
 
 bool        ServerEntry::isMatchFinished()
 {
-  return g_->player_turn >= g_->max_date;
+  if (g_->player_turn < g_->max_date)
+    return false;
+
+  // Don't give any credit if no turn where played.
+  if (g_->player_turn < 1)
+    return true;
+  
+  int tab[MAX_PLAYER];
+  int val = 1000;
+      
+  // Get score for all players
+  for (int id = 0; id < g_->getNbPlayer(); ++id)
+    tab[id] = g_->players[id].getScore();
+  
+  for (int i = 0; i < g_->getNbPlayer(); ++i)
+    {
+      int max_score = -1;
+      int id = -1;
+      
+      // Search player that have the best score
+      for (int j = 0; j < g_->getNbPlayer(); ++j)
+	if (max_score < tab[j])
+	  {
+	    max_score = tab[j];
+	    id = j;
+	  }
+      
+      if (id == -1) // Sanity check
+	{
+	  WARN("BUG: %1", __func__);
+	  return 0;
+	}
+      score_[id] = val;
+      tab[id] = -1;
+      val -= 200;
+    }
 }
 
 
@@ -565,46 +601,5 @@ bool        ServerEntry::isMatchFinished()
 //                ...
 int        ServerEntry::getScore(int uid)
 {
-  static int score[MAX_COACH];
-  static bool score_computed = false;
-
-  // Don't give any credit if no turn where played.
-  if (g_->player_turn < 1)
-    return 0;
-  
-  if (score_computed == false)
-    {
-      int tab[MAX_COACH];
-      int val = 1000;
-
-      // Get score for all players
-      for (int id = 0; id < g_->getNbPlayer(); ++id)
-        tab[id] = g_->players[id].getScore();
-
-      for (int i = 0; i < g_->getNbPlayer(); ++i)
-        {
-          int max_score = -1;
-          int id = -1;
-
-          // Search player that have the best score
-          for (int j = 0; j < g_->getNbPlayer(); ++j)
-            if (max_score < tab[j])
-              {
-                max_score = tab[j];
-                id = j;
-              }
-
-          if (id == -1) // Sanity check
-            {
-              WARN("BUG: %1", __func__);
-              return 0;
-            }
-          score[id] = val;
-          tab[id] = -1;
-          val -= 200;
-        }
-      score_computed = true;
-    }
-  
-  return score[uid];
+  return score_[uid];
 }

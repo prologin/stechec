@@ -294,5 +294,4 @@ echo "
    Building with readline:  ${HAVE_READLINE}
    Building with sdl:	    ${HAVE_SDL}
    Building with paragui:   ${HAVE_PARAGUI}
-   Building with mysql:	    ${HAVE_MYSQL}
 "

@@ -45,8 +45,10 @@ private:
   void	        deloreanEndTurn();
   void		almanachEndTurn();
   void		betEndTurn(Bet*);
+
   std::string	mapFile;
 
+  int		score_[MAX_PLAYER];
 };
 
 #endif // !SERVERENTRY_HH_

@@ -28,8 +28,12 @@ public:
   BaseCRules();
   virtual ~BaseCRules();
   
-  //! @brief Get the team id.
-  //! @return -1 when server, otherwise [|0..nb_players-1|]
+  //! @brief Get coach id.
+  //! @return -1 when server, otherwise [|0..nb_coach-1|]
+  int           getCoachId() const;
+
+  //! @brief Get team id.
+  //! @return -1 when server, otherwise [|0..nb_team-1|]
   int           getTeamId() const;
 
   //! @brief Check if rules is processing an order, ie when an
@@ -66,7 +70,9 @@ private:
   void		msgCatchSync(const MsgSync* m);
   void          msgCatchUid(const ClientUid* m);
   void          msgCatchGameFinished(const GameFinished* m);
-  int           team_id_;
+
+  int           coach_id_;
+  int		team_id_;
   EventProcess  evp_;
   mutable int	busy_count_;
 };
