@@ -59,8 +59,7 @@ const char* SRules::tokenToString(unsigned token) const
 // Correspondance id <-> league_id will be kept in StechecGameData.
 void SRules::addPlayer(int client_id, int league_id)
 {
-  if (client_id < 0 || client_id >= MAX_PLAYER ||
-      league_id < 0 || league_id >= MAX_TEAM)
+  if (client_id < 0 || client_id >= MAX_PLAYER || league_id < 0)
     return;
   data_->team_[client_id] = league_id;
 
@@ -158,7 +157,6 @@ void SRules::serverStartup()
 {
   data_->nb_player_ = getCoachNumber();
   data_->nb_team_ = getTeamNumber();
-  LOG1("server startup: coach: %1, team nb: %2", data_->nb_player_, data_->nb_team_);
 
   if (!checkTeamFilling())
     {
