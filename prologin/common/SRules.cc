@@ -98,11 +98,75 @@ bool SRules::afterHook(int res, const char* hook_name)
   return true;
 }
 
+// Check all teams are full, and we have the exact number of announced
+// connected team / clients than in the xml.
+// Maybe we can remove this check, but rules must be made accordingly.
+bool SRules::checkTeamFilling()
+{
+  const int player_per_team = getCoachNumber() /  getTeamNumber();
+  struct {
+    int team_id;
+    int count;
+  } team_count[MAX_TEAM];
+  int team_count_size = 0;
+  int j;
+
+  for (int i = 0; i < getCoachNumber(); i++)
+    {
+      if (data_->team_[i] == -1)
+	{
+	  ERR("id %1 is not filled", i);
+	  return false;
+	}
+      for (j = 0; j < team_count_size; j++)
+	if (team_count[j].team_id == data_->team_[i])
+	  {
+	    team_count[j].count++;
+	    break;
+	  }
+      if (j == team_count_size)
+	{
+	  team_count[j].team_id = data_->team_[i];
+	  team_count[j].count = 1;
+	  if (team_count_size++ >= getTeamNumber())
+	    {
+	      ERR("%1 teams were announced, more were created/connected",
+		  getTeamNumber());
+	      return false;
+	    }
+	}
+    }
+  if (team_count_size != getTeamNumber())
+    {
+      ERR("not enough team connected (%1/%2)",
+	  team_count_size, getTeamNumber());
+      return false;
+    }
+
+  for (int i = 0; i < team_count_size; i++)
+    if (team_count[i].count != player_per_team)
+      {
+	ERR("not enough player connected to the team %1 (%2/%3)",
+	    team_count[i].team_id, team_count[i].count, player_per_team);
+	return false;
+      }
+  return true;
+}
+
 // Called _once_, when all clients are connected.
 void SRules::serverStartup()
 {
-  data_->nb_player_ = getTeamNumber();
+  data_->nb_player_ = getCoachNumber();
+  data_->nb_team_ = getTeamNumber();
+  LOG1("server startup: coach: %1, team nb: %2", data_->nb_player_, data_->nb_team_);
 
+  if (!checkTeamFilling())
+    {
+      sendPacket(MsgAfterGame());
+      setState(GS_END);
+      return;
+    }
+  
   int r = server_entry_->beforeGame();
   if (!afterHook(r, "beforeGame"))
     return;
@@ -121,7 +185,7 @@ void SRules::serverProcess()
       setViewerState(getViewerState() & ~VS_READY);
 
       // Go to the next turn.
-      data_->current_turn_++;
+     data_->current_turn_++;
       LOG2("================== Turn %1 ==================",
 	   data_->getCurrentTurn());
       
@@ -184,7 +248,7 @@ bool SRules::waitAllClient(int client_id)
       }
 
   wait_tab_[wait_nb_++] = client_id;
-  if (wait_nb_ == getTeamNumber())
+  if (wait_nb_ == getCoachNumber())
     {
       wait_nb_ = 0;
       return true;

@@ -66,7 +66,8 @@ private:
 
   bool afterHook(int res, const char* hook_name);
   bool waitAllClient(int client_id);
-
+  bool checkTeamFilling();
+    
   void msgStechecPkt(const StechecPkt* m);
   void msgInitGame(const MsgInitGame* m);
   void msgBeforeTurn(const MsgBeforeTurn* m);
