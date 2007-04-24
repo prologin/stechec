@@ -17,6 +17,7 @@
 SRules::SRules(StechecGameData* data, StechecServer* server,
                StechecServerResolver* resolver, StechecServerEntry* serverep)
   : wait_nb_(0),
+    league_tab_size_(0),
     data_(data),
     server_(server),
     resolver_(resolver),
@@ -57,14 +58,31 @@ const char* SRules::tokenToString(unsigned token) const
 }
 
 // Correspondance id <-> league_id will be kept in StechecGameData.
+// Remap league_id to team_id in the range [0 - MAX_TEAM-1]
 void SRules::addPlayer(int client_id, int league_id)
 {
   if (client_id < 0 || client_id >= MAX_PLAYER || league_id < 0)
     return;
-  data_->team_[client_id] = league_id;
 
+  int i;
+  for (i = 0; i < league_tab_size_; i++)
+    if (league_tab_[i].league_id == league_id)
+      {
+	league_tab_[i].count++;
+	break;
+      }
+  if (i == league_tab_size_)
+    {
+      league_tab_[i].league_id = league_id;
+      league_tab_[i].count = 1;
+      if (++league_tab_size_ > MAX_TEAM)
+	ERR("too much team (max %1)", MAX_TEAM);
+    }
+
+  LOG1("set team_id %1 -> %2", i, league_id);
+  data_->team_[client_id] = i;
   MsgListTeam pkt(client_id);
-  pkt.team_id = league_id;
+  pkt.team_id = i;
   sendPacket(pkt);
 }
 
@@ -103,50 +121,26 @@ bool SRules::afterHook(int res, const char* hook_name)
 bool SRules::checkTeamFilling()
 {
   const int player_per_team = getCoachNumber() /  getTeamNumber();
-  struct {
-    int team_id;
-    int count;
-  } team_count[MAX_TEAM];
-  int team_count_size = 0;
-  int j;
 
-  for (int i = 0; i < getCoachNumber(); i++)
+  if (league_tab_size_ != getTeamNumber())
     {
-      if (data_->team_[i] == -1)
-	{
-	  ERR("id %1 is not filled", i);
-	  return false;
-	}
-      for (j = 0; j < team_count_size; j++)
-	if (team_count[j].team_id == data_->team_[i])
-	  {
-	    team_count[j].count++;
-	    break;
-	  }
-      if (j == team_count_size)
-	{
-	  team_count[j].team_id = data_->team_[i];
-	  team_count[j].count = 1;
-	  if (team_count_size++ >= getTeamNumber())
-	    {
-	      ERR("%1 teams were announced, more were created/connected",
-		  getTeamNumber());
-	      return false;
-	    }
-	}
-    }
-  if (team_count_size != getTeamNumber())
-    {
-      ERR("not enough team connected (%1/%2)",
-	  team_count_size, getTeamNumber());
+      ERR("not enough, or too much team connected (%1/%2)",
+	  league_tab_size_, getTeamNumber());
       return false;
     }
 
-  for (int i = 0; i < team_count_size; i++)
-    if (team_count[i].count != player_per_team)
+  for (int i = 0; i < getCoachNumber(); i++)
+    if (data_->team_[i] == -1)
+      {
+	ERR("id %1 is not filled", i);
+	return false;
+      }
+
+  for (int i = 0; i < getTeamNumber(); i++)
+    if (league_tab_[i].count != player_per_team)
       {
 	ERR("not enough player connected to the team %1 (%2/%3)",
-	    team_count[i].team_id, team_count[i].count, player_per_team);
+	    league_tab_[i].league_id, league_tab_[i].count, player_per_team);
 	return false;
       }
   return true;

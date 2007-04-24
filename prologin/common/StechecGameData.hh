@@ -53,6 +53,7 @@ public:
   //! @return A team uid (not in a range) for a real player,
   //!   -1 for visu.
   //! @note Don't make any sense to call it from the server side.
+  //! @note Shortcut for getTeamId(getUid());
   int	getTeamId() const;
 
   //! @brief Get a player's team identifier from it's unique identifier
@@ -61,7 +62,7 @@ public:
   int	getTeamId(int player_id) const;
 
   //! @brief Get all player uid belonging to a team.
-  //! @param team_id The wanted team identifiant.
+  //! @param team_id Wanted team identifiant.
   //! @param tab Returned uids, tab must at least be of size (MAX_PLAYER / MAX_TEAM).
   //! @param size Number of returned entry in 'tab'.
   //! @return true if this function is successful.
@@ -77,7 +78,6 @@ private:
   int   nb_team_;
   int   current_turn_;
   int   id_;
-  int	team_id_;
   int	team_[MAX_PLAYER];
 
 };
@@ -86,8 +86,7 @@ inline StechecGameData::StechecGameData()
   : nb_player_(0),
     nb_team_(0),
     current_turn_(0),
-    id_(-1),
-    team_id_(-1)
+    id_(-1)
 {
   for (int i = 0; i < MAX_PLAYER; i++)
     team_[i] = -1;
@@ -120,7 +119,7 @@ inline int StechecGameData::getUid() const
 
 inline int StechecGameData::getTeamId() const
 {
-  return team_id_;
+  return team_[id_];
 }
 
 inline int StechecGameData::getTeamId(int player_id) const

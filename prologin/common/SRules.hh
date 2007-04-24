@@ -78,6 +78,14 @@ private:
   int                    wait_tab_[MAX_PLAYER];		///< Uid list of ready player.
   CoachErrorCustom*      coach_error_[MAX_PLAYER];	///< Array of received player error.
 
+  // Correspondance between league_id and team_id.
+  struct LeagueTab
+  {
+    int league_id;
+    int count;
+  } league_tab_[MAX_TEAM];
+  int league_tab_size_;
+  
   CommandList command_list_;
 
   StechecGameData*       data_;
