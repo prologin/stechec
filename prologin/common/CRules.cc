@@ -128,7 +128,7 @@ void CRules::msgBeforeGame(const MsgBeforeGame*)
   data_->nb_player_ = getCoachNumber();
   data_->nb_team_ = getTeamNumber();
   LOG2("nbplayer: %1, nbteam: %2", data_->nb_player_, data_->nb_team_);
-  if (getTeamId() < UID_VIEWER_BASE)
+  if (getCoachId() < UID_VIEWER_BASE)
     {
       data_->id_ = getCoachId();
       data_->team_id_ = getTeamId();
@@ -176,7 +176,7 @@ void CRules::msgBeforeTurn(const MsgBeforeTurn*)
     return;
 
 
-  if (getTeamId() >= UID_VIEWER_BASE)
+  if (getCoachId() >= UID_VIEWER_BASE)
     setState(GS_AFTERTURN);
   else
     {
