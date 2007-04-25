@@ -89,9 +89,14 @@ void ClientApp::parseConfig()
 // Set some basic settings based on XML config file.
 void ClientApp::setOpt()
 {
-  cfg_.switchClientSection(client_gid_);
-  log_client_.setVerboseLevel(cfg_.getAttr<int>("client", "debug", "verbose"));
-  log_client_.setPrintLoc(cfg_.getAttr<bool>("client", "debug", "printloc"));
+  try {
+    cfg_.switchClientSection(client_gid_);
+    log_client_.setVerboseLevel(cfg_.getAttr<int>("client", "debug", "verbose"));
+    log_client_.setPrintLoc(cfg_.getAttr<bool>("client", "debug", "printloc"));
+  } catch (const xml::XMLError& e) {
+    ERR("%1", e.what());
+    exit(4);
+  }
 }
 
 
