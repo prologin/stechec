@@ -35,6 +35,10 @@ function add_match()
   $one_my = false;
   $id_champion = array();
   $champions = split(":", $_POST["_form_match_champ"]);
+  $nb_instance = 1;
+  if (is_numeric($_POST["_form_match_instance"]))
+    $nb_instance = $_POST["_form_match_instance"];
+  
   foreach ($champions as $champion)
   {
     if ($champion == "")
@@ -45,7 +49,7 @@ function add_match()
                     " AND (level = 3".
                     "      OR (level = 2 AND id_candidat = ".$user["id"]."))");
     if (db_num_rows($res) <= 0)
-      style_alert("Can't add champion: ".$champion);
+      style_alert("Can't add champion: ". $champion);
     else 
     {
       $data = db_fetch_array($res);
@@ -57,28 +61,36 @@ function add_match()
   
   if (count($id_champion) == 0)
   {
-    style_alert("Pas un seul chmpion valide.");
+    style_alert("Pas un seul champion valide.");
     return;
   } else if (access_check(ACL_CANDIDAT) && $one_my == false)
   {
-    style_alert("Au moins un des champions doit vous apartenir.");
+    style_alert("Au moins un des champions doit vous appartenir.");
     return;
   }
 
   //
   // Insert new entry in matchs table
   //
-  db_query("INSERT INTO matchs (id_game, id_createur, opt_match, type, is_competition, date)".
+  db_query("INSERT INTO matchs (id_game, id_createur, opt_match, type,
+               is_competition, date, nb_champion_instance)".
            " VALUES ($_info_id, ".$user["id"].",\"".
-           $_POST["_form_match_opt"]."\", 3, 0, NOW())"); 
+           $_POST["_form_match_opt"]."\", 3, 0, NOW(), $nb_instance)"); 
 
   // Get id of new matchs
   $id_match = db_insert_id();
 
   // Insert new entry in competiteur table for each champion
+  $team_id = 1;
   foreach ($id_champion as $champion)
-    db_query("INSERT INTO competiteur (id_champion, id_match)".
-             " VALUES ($champion, $id_match)");
+    {
+      for ($i = 0; $i < $nb_instance; $i++)
+        {
+          db_query("INSERT INTO competiteur (id_champion, id_match, id_team)" .
+                   " VALUES ($champion, $id_match, $team_id)");
+        }
+      $team_id++;
+    }
 }
 
 function show_match($id_match)
@@ -151,7 +163,8 @@ function table_add_match($id_game)
 
   $list = array(
                 array("", "<b>Ajout d'un match</b>", "title", ACL_ASSIST_ALL, 0),
-                array("match_opt", "Option du match", "text", ACL_ALL, ACL_ALL),
+                array("match_opt", "Options du match", "text", ACL_ALL, ACL_ALL),
+                array("match_instance", "Nombre d'instance par champion", "text", ACL_ALL, ACL_ALL),
                 array("match_champ", "Champions participant (RegExp: id[:id]*)", "text", ACL_ALL, ACL_ALL),
                );
 

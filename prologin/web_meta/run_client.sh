@@ -21,10 +21,10 @@
 # /!\ With no NFS don't work.
 #
 
-if [ "$#" -ne 9 ]; then
+if [ "$#" -ne 10 ]; then
     cat <<EOF
 Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <candidate_id>
-          <champion_id> <competiteur_id> <game_id> <port> <ip_server>
+          <champion_id> <competiteur_id> <team_id> <game_id> <port> <ip_server>
 EOF
     exit 11
 fi
@@ -38,9 +38,10 @@ is_competition=$3
 candidat_id=$4
 champion_id=$5
 competiteur_id=$6
-game_id=$7
-port=$8
-ip_server=$9
+team_id=$7
+game_id=$8
+port=$9
+ip_server=$10
 
 time_limit=200
 reserve_time=2000
@@ -88,7 +89,7 @@ cat > $config_file <<EOF
 <!DOCTYPE config SYSTEM "file://${stechec_install_path}/share/stechec/config.dtd">
 <config>
 
-  <client id="${competiteur_id}">
+  <client id="${team_id}">
     <rules>$contest_lib_name</rules>
     <champion>$champion_library</champion>
     <connect val="network" host="$ip_server" port="$port" game_uid="$game_id" />
@@ -109,14 +110,14 @@ if [ $is_competition = "0" ]; then
     echo " * Time limit: $time_limit (reserve $reserve_time)" >> $real_out_file
     echo >> $real_out_file
 
-    $stechec_install_path/bin/stechec $competiteur_id $config_file                     \
+    $stechec_install_path/bin/stechec $team_id $config_file                     \
        2>&1 | sed -e 's/\[[01];3[0-9]m//g;s/\[0m//g' >> $real_out_file
     res=$?
 
     # eventually upload log file.
     upload_file $real_out_file $out_file
 else
-    $stechec_install_path/bin/stechec $competiteur_id $config_file                     \
+    $stechec_install_path/bin/stechec $team_id $config_file                     \
        > /dev/null 2> /dev/null 
     res=$?
 fi

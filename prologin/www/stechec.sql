@@ -49,6 +49,7 @@ CREATE TABLE `competiteur` (
   `id` int(11) NOT NULL auto_increment,
   `id_champion` int(11) NOT NULL default '0',
   `id_match` int(11) NOT NULL default '0',
+  `id_team` int(11) NOT NULL default '0',
   `score` int(11) NOT NULL default '0',
   `log` text,
   PRIMARY KEY  (`id`)
@@ -84,6 +85,7 @@ CREATE TABLE `matchs` (
   `date` datetime default NULL,
   `is_competition` tinyint(4) default NULL,
   `id_createur` int(11) default NULL,
+  `nb_champion_instance` int(11) NOT NULL default '1',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 

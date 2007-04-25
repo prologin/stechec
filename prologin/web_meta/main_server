@@ -463,8 +463,9 @@ sub exec_server($$)
 
 	# send our order
 	send_msg($c, "server $$m{'id'} $$row{'lib_name'} $$row{'repertoire'} " .
-			 "$$row{'is_competition'} $$row{'match_id'} $$c{'srv_port'} " .
-			 "$$row{'nb_participant'} -- $$row{'arg_server'} $$row{'opt_match'} \n");
+			 "$$row{'is_competition'} $$row{'match_id'} $$row{'nb_champion_instance'} " .
+             "$$c{'srv_port'} $$row{'nb_participant'} -- " .
+             "$$row{'arg_server'} $$row{'opt_match'} \n");
 	return 0;
 }
 
@@ -475,7 +476,8 @@ sub exec_client($$$$)
 	# get match data from db
 	my $sth = $dbh->prepare("SELECT game.lib_name, game.repertoire, matchs.is_competition," .
 							" champion.id_candidat, champion.id AS champion_id," .
-                            " competiteur.id AS competiteur_id, competiteur.id_match" .
+                            " competiteur.id_team AS team_id, competiteur.id_match" .
+                            " competiteur.id AS competiteur_id" .
 							" FROM competiteur, game, champion, matchs" .
 							" WHERE competiteur.id = ?" .
 							" AND champion.id = competiteur.id_champion" .
@@ -491,8 +493,8 @@ sub exec_client($$$$)
 	# send our order
 	send_msg($c, "client $$m{'id'} $$row{'lib_name'} $$row{'repertoire'} " .
 			 "$$row{'is_competition'} $$row{'id_candidat'} $$row{'champion_id'} " .
-			 "$$row{'competiteur_id'} $$row{'id_match'} $$server_computer{'srv_port'} " .
-             "$$server_computer{'ip'}\n");
+			 "$$row{'competiteur_id'} $$row{'team_id'} $$row{'id_match'} " .
+             "$$server_computer{'srv_port'} $$server_computer{'ip'}\n");
 	return 0;
 }
 

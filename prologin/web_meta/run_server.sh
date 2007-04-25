@@ -14,7 +14,7 @@
 #  along with the Stechec project; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-#  Copyright (C) 2005, 2006 Prologin
+#  Copyright (C) 2005, 2006, 2007 Prologin
 #
 
 
@@ -23,10 +23,10 @@
 #
 
 
-if [ "$#" -le 6 ]; then
+if [ "$#" -le 7 ]; then
     cat <<EOF
-Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <game_id> <port> [players_id ...] \
-          -- extra_args
+Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <game_id>
+          <nb_champion_instance> <port> <nb_player> -- extra_args
 EOF
     exit 1
 fi
@@ -38,10 +38,12 @@ contest_lib_name=$1
 contest_dir_name=$2
 is_competition=$3
 game_id=$4
-port=$5
-nb_player=$6
+nb_champion_instance=$5
+port=$6
+nb_player=$7
+# '--' -> $8
 
-shift 6
+shift 8
 
 # open temporary files for logs.
 tmp_dir=`mktemp -q -d /tmp/match_XXXXXX`
@@ -51,6 +53,7 @@ real_out_file=$tmp_dir/server.out
 # parse extra arguments, to fill our xml.
 map="ERROR_not_set"
 max_turn=10
+nb_team=$((nb_player / nb_champion_instance))
 while [ $# -gt 1 ]; do
     case $1 in
         -map) map=$2 ;;
@@ -79,7 +82,7 @@ cat > $config_file <<EOF
 <config>
 
   <game>
-    <nb_team>$nb_player</nb_team>
+    <nb_team player_per_team="$nb_champion_instance">$nb_team</nb_team>
     <max_turn>$max_turn</max_turn>
     <map>$map</map>
   </game>
