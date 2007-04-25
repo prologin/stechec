@@ -77,7 +77,8 @@ private:
   int                    wait_nb_;			///< Number of ready player.
   int                    wait_tab_[MAX_PLAYER];		///< Uid list of ready player.
   CoachErrorCustom*      coach_error_[MAX_PLAYER];	///< Array of received player error.
-
+  int                    coach_killed_nb_;        ///< Number of coach killed.
+  
   // Correspondance between league_id and team_id.
   struct LeagueTab
   {

@@ -53,7 +53,7 @@ ClientStatistic& GameClient::getClientStatistic()
   assert(client_stat_ != NULL);
   return *client_stat_;
 }
-  
+
 int GameClient::getId() const
 {
   return id_;
@@ -81,7 +81,7 @@ void GameClient::setReady(bool value)
 
 void GameClient::kill(std::string fail_msg)
 {
-  if (client_stat_)
+  if (client_stat_ && client_stat_->fail_reason_ == "")
     client_stat_->fail_reason_ = fail_msg;
 
   gh_->clientDied(this);
@@ -95,6 +95,7 @@ void GameClient::kill(std::string fail_msg)
 
 
 // Called when this client can fetch a packet.
+// Return true if client should be removed from the list.
 bool GameClient::recvReady()
 {
   Packet* pkt;
@@ -102,16 +103,17 @@ bool GameClient::recvReady()
 
   assert(state != eFinished && state != eCrashed && state != eStarting);
 
+  if (cx_ == NULL)
+    return true;
+
   // Connection recieved errors, but we have not closed the connection to
-  // keep the receive buffer.
+  // keep the receive buffer. If there is any error on read, just close.
   if (close_pending_)
     {
       delete cx_;
       cx_ = NULL;
       return true;
     }
-  if (cx_ == NULL)
-    return true;
 
   try {
     pkt = cx_->receive();
@@ -128,10 +130,6 @@ bool GameClient::recvReady()
       return true;
     }
 
-  // We only wait that this client quits.
-  if (state == eFinishing)
-    return false;
-  
   switch (state)
     {
     case eWaiting:
@@ -147,10 +145,15 @@ bool GameClient::recvReady()
       gh_->servePlaying(this, pkt);
       break;
 
+    case eFinishing:
+      // We only wait that this client quits.
+      break;
+
     default:
       WARN("BUG - should not be here.");
       break;
     }
+
   return false;
 }
 
@@ -169,7 +172,7 @@ void GameClient::Send::operator() (GameClient* cl)
   // Refuse sending packet if we know that client is already dead.
   if (cl->close_pending_ || cl->cx_ == NULL)
     return;
-  
+
   try {
     cl->cx_->send(&p_);
   } catch (const NetError& e) {

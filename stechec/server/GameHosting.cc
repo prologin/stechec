@@ -269,7 +269,7 @@ void GameHosting::run(Log& log)
       rules_->serverStartup();
       if (rules_->getState() != GS_END)
 	{
-	  while (rules_->getState() != GS_END)
+	  while (rules_->getState() != GS_END && state_ == ePlaying)
 	    {
 	      // Maybe the server has something to do
 	      // (called at least every 500ms).

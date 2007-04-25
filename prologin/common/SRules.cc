@@ -17,6 +17,7 @@
 SRules::SRules(StechecGameData* data, StechecServer* server,
                StechecServerResolver* resolver, StechecServerEntry* serverep)
   : wait_nb_(0),
+    coach_killed_nb_(0),
     league_tab_size_(0),
     data_(data),
     server_(server),
@@ -193,6 +194,7 @@ void SRules::serverProcess()
 bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
 {
   LOG2("coach killed: %1 %2", coach_id, coach_error_[coach_id]);
+  coach_killed_nb_++;
   if (coach_error_[coach_id] != NULL)
     {
       // We already have a failure reports from the client itself.
@@ -240,7 +242,11 @@ bool SRules::waitAllClient(int client_id)
       }
 
   wait_tab_[wait_nb_++] = client_id;
+<<<<<<< .mine
+  if (wait_nb_ >= getTeamNumber() - coach_killed_nb_)
+=======
   if (wait_nb_ == getCoachNumber())
+>>>>>>> .r967
     {
       wait_nb_ = 0;
       return true;
