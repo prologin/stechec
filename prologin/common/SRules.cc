@@ -242,11 +242,7 @@ bool SRules::waitAllClient(int client_id)
       }
 
   wait_tab_[wait_nb_++] = client_id;
-<<<<<<< .mine
   if (wait_nb_ >= getTeamNumber() - coach_killed_nb_)
-=======
-  if (wait_nb_ == getCoachNumber())
->>>>>>> .r967
     {
       wait_nb_ = 0;
       return true;
