@@ -37,7 +37,7 @@ elif [ "$1" == "--version" ]; then
     cat <<EOF
 run 3.1
 
-Copyright (C) 2005, 2006 Prologin.
+Copyright (C) 2005, 2006, 2007 Prologin.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
@@ -56,13 +56,16 @@ abort()
 # parse xml file, with our shiny awk parser
 #
 output=`awk -f "${xml_parser_path}xmlparser.awk" "$1"`
-awk -f "${xml_parser_path}xmlparser.awk" "$1" > awk
 [ $? -ne 0 ] && abort "Cannot parse $1."
 # then go back to ugly sed scripts
 clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT/id=([0-9]+).*$!\1!p' | grep -v 0 | uniq`
+NB_INSTANCE=`echo "$output" | sed -nr 's!^CONFIG/GAME/NB_TEAM/player_per_team=([0-9]+).*$!\1!p' | uniq`
 USE_VALGRIND=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/valgrind=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
 USE_GDB=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/gdb=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
 
+if [ "x$NB_INSTANCE" = x ]; then
+    NB_INSTANCE=1
+fi
 if [ ! `which $CLIENT_BIN` ]; then
     abort "$CLIENT_BIN: command not found. Check your \$PATH."
 elif [ ! `which $SERVER_BIN` ]; then
@@ -92,7 +95,8 @@ pid_server=$!
 # spawn clients
 #
 for id in $clients; do
-    echo "======== launch client id $id"  1>&2
+for i in `seq 1 $NB_INSTANCE`; do
+    echo "======== launch client id $id ($i)"  1>&2
     case $USE_VALGRIND in
 	*x${id}x*) VALGRIND=valgrind ;;
     esac
@@ -103,7 +107,6 @@ for id in $clients; do
     else
 	if [[ "x$STDIN_REDIR" != "x" &&"x$STDOUT_REDIR" != "x"  ]]; then
 	    $VALGRIND $CLIENT_BIN $id "$1" < $STDIN_REDIR > $STDOUT_REDIR &
-	    sleep 1 # BB5 Kludge. Be sure that clients have their uid.
 	else
 	    $VALGRIND $CLIENT_BIN $id "$1" &
 	fi
@@ -111,6 +114,7 @@ for id in $clients; do
     fi
 
     unset VALGRIND STDIN_REDIR
+done
 done
 
 # if the user wants to abort on 'wait', try to kill the server
