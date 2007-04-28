@@ -143,22 +143,23 @@ enum eDeclaredAction {
 //! @note You can get a stringified version into the
 //!   class Dice.
 enum eRoll {
-  R_DODGE,
-  R_STANDUP,
-  R_PICKUP,
+  R_NONE = 0,
   R_ARMOUR,
-  R_INJURY,
-  
-  R_THROW,
+  R_BLOCK,
   R_CATCH,
-  R_BLOCK
+  R_DODGE,
+  R_INJURY,
+  R_PICKUP,
+  R_STANDUP,
+  R_THROW
 };
 
 //! @brief List of player skills.
 //! @note You can get a stringified version into the
 //!   class Player.
 enum eSkill {
-  SK_BLOCK = 0,
+  SK_NONE = 0,
+  SK_BLOCK,
   SK_CATCH,
   SK_DODGE,
   SK_PASS,

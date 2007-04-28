@@ -57,6 +57,7 @@ public:
   //! @note It doesn't check if it is team's turn (which is also
   //!  required to use reroll) !
   bool canUseReroll() const;
+  void useReroll();
   void initReroll();
   void resetTurn();
   bool isPlacementValid() const;

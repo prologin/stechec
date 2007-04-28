@@ -121,13 +121,15 @@ const char* Dice::stringify(enum eBlockDiceFace face)
     case BDEFENDER_DOWN:
       return "BDEFENDER_DOWN";
     }
-  return "kikoolol";
+  return "bdf_kikoolol";
 }
 
 const char* Dice::stringify(enum eRoll roll)
 {
   switch (roll)
     {
+    case R_NONE:
+      return "R_NONE";
     case R_DODGE:
       return "R_DODGE";
     case R_STANDUP:
@@ -145,5 +147,5 @@ const char* Dice::stringify(enum eRoll roll)
     case R_BLOCK:
       return "R_BLOCK";
     }
-  return "kikoolol";
+  return "r_kikoolol";
 }

@@ -165,7 +165,7 @@ inline const char* Player::stringify(enum eStatus status)
     case STA_SENTOFF:
       return "Sent Off";
     }
-  return "kikoolol";
+  return "sta_kikoolol";
 }
 
 inline const char* Player::stringify(enum eDeclaredAction action)
@@ -183,13 +183,15 @@ inline const char* Player::stringify(enum eDeclaredAction action)
     case DCL_PASS:
       return "Pass";
     }
-  return "kikoolol";
+  return "dcl_kikoolol";
 }
 
 inline const char* Player::stringify(enum eSkill skill)
 {
   switch (skill)
     {
+    case SK_NONE:
+      return "SK_NONE";
     case SK_BLOCK:
       return "SK_BLOCK";
     case SK_CATCH:
@@ -201,7 +203,7 @@ inline const char* Player::stringify(enum eSkill skill)
     case SK_SUREHANDS:
       return "SK_SUREHANDS";
     }
-  return "kikoolol";
+  return "sk_kikoolol";
 }
 
 

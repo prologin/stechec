@@ -107,6 +107,13 @@ inline bool Team<T>::canUseReroll() const
 }
 
 template <typename T>
+inline void Team<T>::useReroll()
+{
+  reroll_remain_ --;
+  reroll_used_ = true;
+}
+
+template <typename T>
 inline void Team<T>::initReroll()
 {
   reroll_remain_ = reroll_;
