@@ -137,6 +137,10 @@ DECLARE_PACKET(MSG_FOLLOW, MsgFollow)
   int follow;
 END_PACKET
 
+DECLARE_PACKET(MSG_SKILL, MsgSkill)
+  int player_id;
+  int skill;  // enum eSkill
+END_PACKET
 
 
 /*!
