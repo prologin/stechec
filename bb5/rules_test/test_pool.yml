@@ -108,17 +108,29 @@ crowd2:
     input: crowd2_2.cmd
     ref: crowd2_2.ref
 
-kickoffbug:
+kickoff_basic:
   client_1:
     team: team.xml
     formation: formation.xml
-    input: kickoffbug_1.cmd
-    ref: kickoffbug_1.ref
+    input: kickoff_basic_1.cmd
+    ref: kickoff_basic_1.ref
   client_2:
     team: team.xml
     formation: formation.xml
-    input: kickoffbug_2.cmd
-    ref: kickoffbug_2.ref
+    input: kickoff_basic_2.cmd
+    ref: kickoff_basic_2.ref
+
+kickoff_scatter_scrimmage:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: kickoff_scatter_scrimmage_1.cmd
+    ref: kickoff_scatter_scrimmage_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: kickoff_scatter_scrimmage_2.cmd
+    ref: kickoff_scatter_scrimmage_2.ref
 
 move:
   client_1:

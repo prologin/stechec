@@ -44,10 +44,14 @@ EXTRA_DIST +=					\
 	crowd2_2.cmd				\
 	crowd2_2.ref				\
 	formation.xml				\
-	kickoffbug_1.cmd			\
-	kickoffbug_1.ref			\
-	kickoffbug_2.cmd			\
-	kickoffbug_2.ref			\
+	kickoff_basic_1.cmd			\
+	kickoff_basic_1.ref			\
+	kickoff_basic_2.cmd			\
+	kickoff_basic_2.ref			\
+	kickoff_scatter_scrimmage_1.cmd		\
+	kickoff_scatter_scrimmage_1.ref		\
+	kickoff_scatter_scrimmage_2.cmd		\
+	kickoff_scatter_scrimmage_2.ref		\
 	move_1.cmd				\
 	move_1.ref				\
 	move_2.cmd				\
@@ -81,8 +85,9 @@ MY_TESTS =					\
 	crash					\
 	crowd1					\
 	crowd2					\
-	kickoffbug				\
 	move					\
+	kickoff_basic				\
+	kickoff_scatter_scrimmage		\
 	pass					\
 	pass2					\
 	pickup					\
