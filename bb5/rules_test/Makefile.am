@@ -52,10 +52,14 @@ EXTRA_DIST +=					\
 	kickoff_scatter_scrimmage_1.ref		\
 	kickoff_scatter_scrimmage_2.cmd		\
 	kickoff_scatter_scrimmage_2.ref		\
-	move_1.cmd				\
-	move_1.ref				\
-	move_2.cmd				\
-	move_2.ref				\
+	move_basic_1.cmd			\
+	move_basic_1.ref			\
+	move_basic_2.cmd			\
+	move_basic_2.ref			\
+	move_dodge_1.cmd			\
+	move_dodge_1.ref			\
+	move_dodge_2.cmd			\
+	move_dodge_2.ref			\
 	pass_1.cmd				\
 	pass_1.ref				\
 	pass_2.cmd				\
@@ -85,9 +89,10 @@ MY_TESTS =					\
 	crash					\
 	crowd1					\
 	crowd2					\
-	move					\
 	kickoff_basic				\
 	kickoff_scatter_scrimmage		\
+	move_basic				\
+	move_dodge				\
 	pass					\
 	pass2					\
 	pickup					\

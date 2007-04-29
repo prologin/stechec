@@ -1,16 +1,18 @@
 wait
-# Choose to kick off.
+# Choose to kick off the ball.
 choose kickoff
 
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
-# Kickoff.
+# Kick-off.
 cheat 1 1 1
-kickoff 4 4
+kickoff 2 2
 
 wait
 # Turn 1, never reached.
+print BEGIN DIFF
 print This should not be printed, in any case.
+print END DIFF
