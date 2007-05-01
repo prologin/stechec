@@ -19,7 +19,8 @@ template <typename T>
 inline Team<T>::Team(int team_id)
   : team_id_(team_id),
     score_(0),
-    reroll_(0)
+    reroll_(0),
+    reroll_used_(false)
 {
   for (int i = 0; i < MAX_PLAYER; i++)
     player_[i] = NULL;
