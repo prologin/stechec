@@ -377,7 +377,15 @@ void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_ty
        << required << "]." << endl;
 
   if (api_->getTeamId() == team_id && reroll)
-    cout << "You can use a 'reroll' or 'accept' this result." << endl;
+    {
+      // cout << "You can use a 'reroll' or 'accept' this result." << endl;
+      // Automatically accepts successful roll dices for now.
+      // FIXME: Implement it as an option only.
+      if ((result == 1) || ((result != 6) && (result + modifier < required)))
+        cout << "You can use a 'reroll' or 'accept' this result." << endl;
+      else
+        api_->doReroll(false);
+    }
 }
 
 void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id, 
