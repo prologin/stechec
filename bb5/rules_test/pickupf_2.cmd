@@ -1,13 +1,13 @@
 wait
-# Choose to kick off.
+# Choose to kick off the ball.
 choose kickoff
 
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
-# Kickoff.
+# Kick-off.
 # Ball is scattered on player 10, who fails to catch it.
 # Ball finally rebounds to 8 6.
 cheat 1 1 1 1

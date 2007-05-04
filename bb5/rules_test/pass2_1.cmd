@@ -1,5 +1,5 @@
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
@@ -32,9 +32,13 @@ pass 10 12 4
 cheat 6 6
 declare move 2
 move 2 11 4
+accept
+accept
 move 2 6 0
 end
 
 wait
 # Turn 2, not reached.
+print BEGIN DIFF
 print This should not be printed, in any case.
+print END DIFF

@@ -1,13 +1,13 @@
 wait
-# Choose to kick off.
+# Choose to kick off the ball.
 choose kickoff
 
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
-# Kickoff.
+# Kick-off.
 # Ball scattered out of the field.
 cheat 1 1
 kickoff 0 0

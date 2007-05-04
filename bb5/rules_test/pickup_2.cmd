@@ -1,15 +1,15 @@
 wait
-# Choose to kick off.
+# Choose to kick off the ball.
 choose kickoff
 
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
-# Kickoff.
+# Kick-off.
 # Ball
-cheat 1 1 1 1
+cheat 3 1 5
 kickoff 10 8
 
 print BEGIN DIFF

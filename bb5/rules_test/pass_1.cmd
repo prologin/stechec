@@ -1,5 +1,5 @@
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
@@ -9,6 +9,8 @@ wait
 cheat 3
 declare pass 10
 move 10 7 7
+accept
+
 # Throw the ball to an empty square.
 # Fail first, causing a reroll.
 cheat 1 5 4

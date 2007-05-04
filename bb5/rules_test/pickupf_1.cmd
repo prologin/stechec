@@ -1,6 +1,10 @@
 wait
-#Team placement.
+# Team placement.
 place end
+
+wait
+# Don't reroll failed catch ball roll at kick-off.
+accept
 
 wait
 # Turn 1.

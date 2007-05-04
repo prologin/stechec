@@ -1,12 +1,12 @@
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
 # Turn 1.
 
-# Move a player, so that it uses a reroll.
-cheat 1 6
+# Move a player, so that he uses a team reroll.
+cheat 1 6 6
 declare move 2
 move 2 14 3
 reroll

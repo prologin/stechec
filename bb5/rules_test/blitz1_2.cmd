@@ -1,21 +1,21 @@
 wait
-# Choose to kick off.
+# Choose to kick off the ball.
 choose kickoff
 
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
-# Kickoff.
-# Ball scattered on player 10, who catches it.
-cheat 1 1 6
-kickoff 10 8
+# Kick-off.
+# Ball is scattered out of the field.
+cheat 1 1
+kickoff 0 0
 
 print BEGIN DIFF
 print global
 print END DIFF
 
 wait
-# Turn 1, not reached.
+# Turn 2, not reached.
 print This should not be printed, in any case.

@@ -1,5 +1,5 @@
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait

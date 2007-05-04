@@ -1,20 +1,20 @@
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
 # Turn 1.
 
-# Player 10 moves and catches the ball.
+# Player 10 moves and picks up the ball.
 cheat 6
 declare move 10
-move 10 6 8
+move 10 7 7
+accept
 move 10 9 9
 
 # Block with players 9.
-cheat 5
-# Blocked player is injured.
-cheat 6 6 6 6 1
+cheat 5 # Defender down.
+cheat 6 6 6 6 1 # Blocked player is injured.
 declare block 9
 block 9 9
 accept
@@ -22,9 +22,8 @@ block push 0
 block follow
 
 # Block with players 8.
-cheat 5
-# Blocked player is stunned.
-cheat 6 6 1 1
+cheat 5 # Defender down.
+cheat 6 6 1 1 # Blocked player is stunned.
 declare block 8
 block 8 8
 accept
@@ -46,6 +45,8 @@ declare pass 10
 move 10 12 13
 cheat 6 6
 pass 10 18 13
+accept
+accept
 
 # A bug happened here, causing a server crash.
 

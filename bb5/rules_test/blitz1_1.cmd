@@ -1,6 +1,10 @@
 wait
-#Team placement.
+# Team placement.
 place end
+
+wait
+# Give ball to player 10.
+giveBall 10
 
 wait
 # Turn 1.
@@ -16,6 +20,7 @@ block push 2
 block follow
 cheat 6
 move 0 14 0
+accept
 move 0 17 0
 
 # Player 10 throws the ball to player 0.
@@ -23,6 +28,8 @@ cheat 6 6
 declare pass 10
 move 10 9 1
 pass 10 17 0
+accept
+accept
 
 print BEGIN DIFF
 print global

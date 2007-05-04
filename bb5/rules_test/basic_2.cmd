@@ -1,13 +1,13 @@
 wait
-# Choose to kick off.
+# Choose to kick off the ball.
 choose kickoff
 
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
-# Kickoff.
+# Kick-off.
 print BEGIN DIFF
 print hello world from 2
 print END DIFF

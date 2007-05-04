@@ -87,17 +87,17 @@ MY_TESTS =					\
 	blockfollow1				\
 	blockfollow2				\
 	crash					\
-	crowd1					\
-	crowd2					\
 	kickoff_basic				\
 	kickoff_scatter_scrimmage		\
 	move_basic				\
 	move_dodge				\
 	pass					\
 	pass2					\
-	pickup					\
-	pickup_fail
+	pickup
 
 # Tests expected to fail (show bugs that should be corrected)
-MY_XTESTS =					
+MY_XTESTS =					\
+	crowd1					\
+	crowd2					\
+	pickup_fail
 

@@ -1,13 +1,13 @@
 wait
-# Choose to kick off.
+# Choose to kick off the ball.
 choose kickoff
 
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
-# Kickoff.
+# Kick-off.
 # Ball is scattered, rebounds and stops in 7 7.
 cheat 1 1 1
 kickoff 9 9
@@ -19,4 +19,6 @@ end
 
 wait
 # Turn 2, not reached.
+print BEGIN DIFF
 print This should not be printed, in any case.
+print END DIFF

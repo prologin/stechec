@@ -1,5 +1,5 @@
 wait
-#Team placement.
+# Team placement.
 place end
 
 wait
@@ -9,6 +9,7 @@ wait
 cheat 6
 declare move 10
 move 10 6 8
+accept
 move 10 9 9
 
 print BEGIN DIFF

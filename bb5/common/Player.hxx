@@ -115,6 +115,7 @@ inline void Player::setAction(enum eDeclaredAction action)
 
 inline bool Player::hasSkill(enum eSkill skill) const
 {
+  return false; //FIXME: waiting for skills implementation.
   return std::find(skill_list_.begin(), skill_list_.end(), skill) != skill_list_.end();
 }
 
