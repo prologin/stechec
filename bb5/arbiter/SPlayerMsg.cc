@@ -31,6 +31,7 @@ SPlayerMsg::SPlayerMsg(SRules* r)
   r_->HANDLE_WITH(MSG_STANDUP, SPlayerMsg, this, msgStandUp, 0);
   r_->HANDLE_WITH(MSG_BLOCK, SPlayerMsg, this, msgBlock, 0);
   r_->HANDLE_WITH(MSG_PASS, SPlayerMsg, this, msgPass, 0);
+  r_->HANDLE_WITH(MSG_SKILL, SPlayerMsg, this, msgSkill, 0);
 }
 
 SPlayerMsg::~SPlayerMsg()
@@ -44,21 +45,10 @@ void SPlayerMsg::setPlayer(int team_id, int player_id, SPlayer* p)
   p_[team_id][player_id] = p;
 }
 
-void SPlayerMsg::sendPosition(SPlayer* p)
-{
-  MsgPlayerPos pkt(p->getTeamId());
-  pkt.player_id = p->getId();
-  pkt.row = p->getPosition().row;
-  pkt.col = p->getPosition().col;
-  r_->sendPacket(pkt);
-}
 
-void SPlayerMsg::sendMsgKnocked(SPlayer* p)
-{
-  MsgPlayerKnocked pkt(p->getTeamId());
-  pkt.player_id = p->getId();
-  r_->sendPacket(pkt);
-}
+/*
+** Messages senders.
+*/
 
 void SPlayerMsg::sendMsgBlockPush(int nb_choice, Position choices[], SPlayer* target) {
   MsgBlockPush pkt(r_->getCurrentTeamId());
@@ -73,25 +63,39 @@ void SPlayerMsg::sendMsgBlockPush(int nb_choice, Position choices[], SPlayer* ta
   r_->sendPacket(pkt);
 }
 
-/*
-** Sending roll result
-*/
-void SPlayerMsg::sendRoll(int result, int modifier, int required, SPlayer* p)
+void SPlayerMsg::sendMsgKnocked(SPlayer* p)
+{
+  MsgPlayerKnocked pkt(p->getTeamId());
+  pkt.player_id = p->getId();
+  r_->sendPacket(pkt);
+}
+
+void SPlayerMsg::sendMsgKO(int dice, SPlayer* p)
+{
+  MsgPlayerKO msg;
+  msg.player_id = p->getId();
+  msg.dice = dice;
+  r_->sendPacket(msg);
+}      
+
+void SPlayerMsg::sendPosition(SPlayer* p)
+{
+  MsgPlayerPos pkt(p->getTeamId());
+  pkt.player_id = p->getId();
+  pkt.row = p->getPosition().row;
+  pkt.col = p->getPosition().col;
+  r_->sendPacket(pkt);
+}
+
+void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int required, int reroll, SPlayer* p)
 {
   MsgResult msg(p->getTeamId());
   msg.player_id = p->getId();
-  msg.roll_type = p->action_attempted_;
+  msg.roll_type = type;
   msg.result = result;
   msg.modifier = modifier;
   msg.required = required;
-  msg.reroll = 0;
-
-  if (p->reroll_enabled_ && modifier + result < required)
-    {
-      r_->getTeam(p->getTeamId())->state_ = GS_REROLL;
-      r_->getTeam(p->getTeamId())->setConcernedPlayer(p);
-      msg.reroll = 1;
-    }
+  msg.reroll = reroll;
   r_->sendPacket(msg);
 }
 
@@ -103,14 +107,11 @@ void SPlayerMsg::sendStatus(enum eStatus status, SPlayer* p)
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsg::sendMsgKO(int dice, SPlayer* p)
-{
-  MsgPlayerKO msg;
-  msg.player_id = p->getId();
-  msg.dice = dice;
-  r_->sendPacket(msg);
-}      
-      
+
+/*
+** Messages receivers.
+*/
+
 SPlayer* SPlayerMsg::getPlayer(int token, int team_id, int player_id)
 {
   if (team_id < 0 || team_id > 1 ||
@@ -118,99 +119,110 @@ SPlayer* SPlayerMsg::getPlayer(int token, int team_id, int player_id)
       p_[team_id][player_id] == NULL)
     {
       WARN("invalid player: team `%1', id `%2' (token: `%2')",
-	   team_id, player_id, r_->stringifyToken(token));
+          team_id, player_id, r_->stringifyToken(token));
+      r_->sendIllegal(token, team_id, ERR_NONEXISTENTPLAYER);
       return NULL;
     }
   return p_[team_id][player_id];
 }
 
-void SPlayerMsg::msgPlayerPos(const MsgPlayerPos* m)
+void SPlayerMsg::msgBlock(const MsgBlock* m)
 {
-  SPlayer *p;
- 
-  p = getPlayer(m->token, m->client_id, m->player_id);
+  SPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
   if (p == NULL)
-    r_->sendIllegal(m->token, m->client_id);
-  else
-    p->msgPlayerPos(m);
+    return;
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+      return;
+    }
+  p->msgBlock(m);
 }
 
 void SPlayerMsg::msgDeclare(const MsgDeclare* m)
 {
-  SPlayer* p;
-
+  SPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p == NULL)
+    return;
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
       WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
-  p = getPlayer(m->token, m->client_id, m->player_id);
-  if (p == NULL)
-    r_->sendIllegal(m->token, m->client_id);
-  else
-    p->msgDeclare(m);
+  p->msgDeclare(m);
 }
 
 void SPlayerMsg::msgMove(const MsgMove* m)
 {
-  SPlayer* p;
-
+  SPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p == NULL)
+    return;
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
       WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
-  p = getPlayer(m->token, m->client_id, m->player_id);
-  if (p == NULL)
-    r_->sendIllegal(m->token, m->client_id);
-  else
-    p->msgMove(m);
-}
-
-void SPlayerMsg::msgStandUp(const MsgStandUp* m)
-{
-  SPlayer* p;
-
-  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
-    {
-      WARN("bad game state (%1)", r_->getState());
-      return;
-    }
-  p = getPlayer(m->token, m->client_id, m->player_id);
-  if (p == NULL)
-    r_->sendIllegal(m->token, m->client_id);
-  else
-    p->msgStandUp(m);
-}
-
-void SPlayerMsg::msgBlock(const MsgBlock* m)
-{
-  SPlayer* p;
-
-  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
-    {
-      WARN("bad game state (%1)", r_->getState());
-      return;
-    }
-  p = getPlayer(m->token, m->client_id, m->player_id);
-  if (p == NULL)
-    r_->sendIllegal(m->token, m->client_id);
-  else
-    p->msgBlock(m);
+  p->msgMove(m);
 }
 
 void SPlayerMsg::msgPass(const MsgPass* m)
 {
-  SPlayer* p;
-
+  SPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p == NULL)
+    return;
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
       WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
-  p = getPlayer(m->token, m->client_id, m->player_id);
-  if (p == NULL)
-    r_->sendIllegal(m->token, m->client_id);
-  else
-    p->msgPass(m);
+  p->msgPass(m);
 }
+
+void SPlayerMsg::msgPlayerPos(const MsgPlayerPos* m)
+{
+  SPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p == NULL)
+    return;
+  if (r_->getState() != GS_INITKICKOFF)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+      return;
+    }
+  p->msgPlayerPos(m);
+}
+
+void SPlayerMsg::msgStandUp(const MsgStandUp* m)
+{
+  SPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p == NULL)
+    return;
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+      return;
+    }
+  p->msgStandUp(m);
+}
+
+void SPlayerMsg::msgSkill(const MsgSkill* m)
+{
+  SPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p == NULL)
+    return;
+  if (r_->getState() != GS_COACH1
+      && r_->getState() != GS_COACH2
+      && r_->getState() != GS_KICKOFF)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+      return;
+    }
+  p->msgSkill(m);
+}
+

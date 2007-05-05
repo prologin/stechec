@@ -11,6 +11,8 @@ bb5_arbiter_la_SOURCES =			\
 	SPlayer.cc				\
 	SPlayerMsg.cc				\
 	SPlayerMsg.hh				\
+	SActionHandler.cc			\
+	SActionHandler.hh			\
 	SRules.cc				\
 	SRules.hh				\
 	SRules.hxx				\

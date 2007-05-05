@@ -23,45 +23,60 @@ class SRules;
 class SPlayer;
 
 /*!
-** @brief Blood Bowl Ball for the server.
+** @brief Ball for the server.
+**
+** It symbolizes the ball, checks all ball manipulations.
+**
+** You will have only one instance of this class at runtime,
+** handled by SRules class.
 */
 class SBall : public Ball
 {
 public:
   SBall(SRules* r);
 
-  //! @brief Set ball position and advertise the client if it changed.
+  //! @brief Sets ball position and advertises the client if it changed.
   //! @note Use this function instead of setPosition(pos), if you
   //!   want to advertise the client in the same time.
   //! @param pos Where to place the ball.
   //! @param advertise_client Whether or not send a MSG_BALLPOS to clients.
   void setPosition(const Position& pos, bool advertise_client = true);
-  //! @brief Bounce the ball around.
-  void bounce(int nb = 1);
-  //! @brief Player try to catch the ball.
-  bool catchBall(SPlayer *p, int modifier);
-  //! @brief Return the ball owner, NULL if nobody.
-  SPlayer* getOwner();
-  //! @brief Remove ball from field (before a kickoff).
+  //! @brief Removes the ball from the field.
+  //! @note Use it before a kickoff.
   void removeFromField();
-  //! @brief Scatter ball in a random direction.
+
+  //! @brief Returns the ball's owner, NULL if nobody.
+  SPlayer* getOwner() const;
+  //! @brief Sets the ball owner.
+  void setOwner(SPlayer* p);
+
+  //! @brief Bounces the ball around.
+  void bounce(int nb = 1);
+  //! @brief Scatters the ball in a random direction.
   //! @param nb Number of squares covered.
   void scatter(int nb);
-  void setThrown();
-  //! @brief Throwin in case the ball leave the field.
-  void throwin();
 
-  void sendPosition();
+  //! @brief Makes spectators throw the ball in the field.
+  void throwIn();
+  void setThrown();
+  bool hasBeenThrown();
+
+  void resetTurn();
+  void sendPosition(); //FIXME: should be private?
 
 private:
-  void msgPlaceBall(const MsgBallPos* m);
-  void msgGiveBall(const MsgGiveBall* m);
-  bool invalidBallPlacement();
-  
+  //! @brief Makes land the ball on the field.
+  //! @param delta Direction.
+  //! @param amplitude Distance.
   void afterBounce(const Position& delta, int amplitude);
 
+  void msgPlaceBall(const MsgBallPos* m);
+  void msgGiveBall(const MsgGiveBall* m);
+  bool invalidKickoffDestination(const Position& pos) const;
+  void touchback();
+  
   SRules* r_;
-  SPlayer* owner_; ///< Ball owner, or NULL if nobody
+  SPlayer* owner_; ///< Ball's owner, or NULL if nobody.
   bool thrown_;
 
 };

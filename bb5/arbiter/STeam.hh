@@ -26,8 +26,8 @@ class SPlayerMsg;
 /*!
 ** @brief Team management for the server.
 **
-** Now it's time to implement THE rules :)
-** It seems to be a good place to start here.
+** It symbolizes team and checks the validity of
+** coach's decisions (reroll and block dices).
 **
 ** You will have 2 instances of this class at runtime,
 ** handled by the SRules class.
@@ -48,17 +48,11 @@ public:
   void setProneStunned();
   void prepareKickoff();
 
-  //! @brief Announce a turnover.
-  void turnover(enum eTurnOverMotive motive);
-  //! @brief Return true if a turnover has been announced.
-  bool isTurnover();
-
   //! @brief Return current active player.
   SPlayer* getActivePlayer();
-  //! @brief Set player waiting for a reroll decision.
-  void setConcernedPlayer(SPlayer* p);
   //! @brief Set current pusher (not necessarily from this team).
   void setPusher(SPlayer* p);
+  void setNbChoices(int nb);
 
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
@@ -72,9 +66,8 @@ private:
   SRules* r_;
   SPlayerMsg* pm_;
 
-  SPlayer* concerned_player_; // When we are waiting for a reroll decision.
+  int nb_choices_; // Number of block dices or squares to push to.
   SPlayer* current_pusher_; // When we are waiting for a blockPush choice.
-  bool turnover_;
 };
 
 #endif /* !STEAM_HH_ */

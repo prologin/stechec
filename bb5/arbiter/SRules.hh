@@ -23,6 +23,7 @@
 # include "SWeather.hh"
 # include "STeam.hh"
 # include "SPlayer.hh"
+# include "SActionHandler.hh"
 
 typedef Field<SPlayer> SField;
 class STeamMsg;
@@ -31,6 +32,12 @@ class SPlayerMsg;
 /*!
 ** @brief Rules implementation for the server.
 ** @ingroup rules
+**
+** It symbolizes the main referee, who manages
+** game state, teams, turns, turnover and score.
+**
+** You will have only one instance of this class at runtime,
+** handled by the stechec server.
 */
 class SRules : public BaseSRules
 {
@@ -38,14 +45,17 @@ public:
   SRules();
   virtual ~SRules();
   
-  //! @brief Send a MSG_ILLEGAL packet.
+  //! @brief Send a MSG_ILLEGAL packet. Deprecated.
   void sendIllegal(int token, int from) const;
+  //! @brief Send a MSG_ILLEGAL packet with error code.
+  void sendIllegal(int token, int from, enum eError error) const;
   
   SField* getField();
   SBall* getBall();
   STeam* getTeam(int team_id);
   Dice* getDice();
-
+  SActionHandler* getActionHandler();
+ 
   //! @brief Return the current playing team id.
   //! @return -1 if no one play, otherwise 0 or 1.
   int getCurrentTeamId() const;
@@ -62,6 +72,11 @@ public:
   //! @return NULL if no one play.
   STeam* getCurrentOpponentTeam();
 
+  int getOpponentTeamId(int team_id) const;
+  int getOpponentTeamId(STeam* team) const;
+  STeam* getOpponentTeam(int team_id);
+  STeam* getOpponentTeam(STeam* team);
+
   //! @brief Called when game is starting.
   virtual void serverStartup();
 
@@ -71,10 +86,15 @@ public:
   virtual void serverProcess();
 
   //! @brief The ball is in game, receiving team can play
-  void kickoffFinished();
+  void finishKickoff();
 
   //! @brief Go on next turn.
-  void turnOver();
+  void nextTurn();
+
+  //! @brief Announce a turnover.
+  void turnover(enum eTurnOverMotive motive);
+  //! @brief Return true if a turnover has been announced.
+  bool isTurnover();
 
   //! @brief Adapt score and launch the kickoff
   void touchdown();
@@ -108,6 +128,7 @@ private:
 
   int       cur_turn_;
   int       cur_half_;
+  enum eTurnOverMotive turnover_;
   STeam*    team_[2];
   SWeather* weather_;
   SBall*    ball_;
@@ -115,6 +136,7 @@ private:
   Dice*     dice_;
   STeamMsg* team_msg_;
   SPlayerMsg* player_msg_;
+  SActionHandler* action_handler_;
   //! @brief Coach who chooses to kick or receive the ball.
   //!   Coach who receives the ball at the beginning of the half-time.
   int       coach_begin_;

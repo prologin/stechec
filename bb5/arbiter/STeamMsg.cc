@@ -46,7 +46,8 @@ STeam* STeamMsg::getTeam(int token, int team_id)
   if (team_id < 0 || team_id > 1 || t_[team_id] == NULL)
     {
       WARN("invalid coach id `%1' (token: `%2')",
-	   team_id, r_->stringifyToken(token));
+          team_id, r_->stringifyToken(token));
+      r_->sendIllegal(token, team_id);
       return NULL;
     }
   return t_[team_id];
@@ -70,15 +71,17 @@ void STeamMsg::msgReroll(const MsgReroll* m)
 {
   STeam* t;
 
-  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
+  if (r_->getState() != GS_COACH1
+      && r_->getState() != GS_COACH2
+      && r_->getState() != GS_KICKOFF)
     {
       WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id);
       return;
     }
   t = getTeam(m->token, m->client_id);
-  if (t == NULL)
-    return;
-  t->msgReroll(m);
+  if (t != NULL)
+    t->msgReroll(m);
 }
 
 void STeamMsg::msgBlockDice(const MsgBlockDice* m)
@@ -88,12 +91,12 @@ void STeamMsg::msgBlockDice(const MsgBlockDice* m)
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
       WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id);
       return;
     }
   t = getTeam(m->token, m->client_id);
-  if (t == NULL)
-    return;
-  t->msgBlockDice(m);
+  if (t != NULL)
+    t->msgBlockDice(m);
 }
 
 void STeamMsg::msgFollow(const MsgFollow* m)
@@ -103,12 +106,12 @@ void STeamMsg::msgFollow(const MsgFollow* m)
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
       WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id);
       return;
     }
   t = getTeam(m->token, m->client_id);
-  if (t == NULL)
-    return;
-  t->msgFollow(m);
+  if (t != NULL)
+    t->msgFollow(m);
 }
 
 void STeamMsg::msgBlockPush(const MsgBlockPush* m)
@@ -118,10 +121,10 @@ void STeamMsg::msgBlockPush(const MsgBlockPush* m)
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
       WARN("bad game state (%1)", r_->getState());
+      r_->sendIllegal(m->token, m->client_id);
       return;
     }
   t = getTeam(m->token, m->client_id);
-  if (t == NULL)
-    return;
-  t->msgBlockPush(m);
+  if (t != NULL)
+    t->msgBlockPush(m);
 }

@@ -24,6 +24,7 @@
 SRules::SRules()
   : cur_turn_(0),
     cur_half_(0),
+    turnover_(TOM_NONE),
     weather_(NULL),
     ball_(NULL),
     field_(NULL)
@@ -35,6 +36,7 @@ SRules::SRules()
   dice_ = new Dice(this);
   team_msg_ = new STeamMsg(this);
   player_msg_ = new SPlayerMsg(this);
+  action_handler_ = new SActionHandler(this);
 
   // Register tokens that we must handle ourself.
   HANDLE_WITH(MSG_INITGAME, SRules, this, msgInitGame, GS_INITGAME);
@@ -96,9 +98,7 @@ void SRules::serverProcess()
 {
   if (timer_.isTimeElapsed())
     {
-      getCurrentTeam()->turnover(TOM_TIMEEXCEEDED);
-      //FIXME: complete armor and bounce rolls first.
-      turnOver();
+      turnover(TOM_TIMEEXCEEDED);
     }
 }
 
@@ -191,10 +191,23 @@ void SRules::initKickoff()
   sendPacket(pkt);
 }
 
-void SRules::turnOver()
+void SRules::turnover(enum eTurnOverMotive motive)
 {
-  msgPlayTurn(NULL);
+  if ((turnover_ == TOM_NONE) || (motive == TOM_TIMEEXCEEDED) || (motive == TOM_TOUCHDOOOWN))
+    {
+      turnover_ = motive;
+      MsgTurnOver pkt(getCurrentTeamId());
+      pkt.motive = motive;
+      sendPacket(pkt);
+    }
+  action_handler_->process();
 }
+
+bool SRules::isTurnover()
+{
+  return (turnover_ != TOM_NONE);
+}
+
 
 void SRules::touchdown()
 {
@@ -253,7 +266,7 @@ void SRules::msgDrawKicker(const MsgDrawKicker* m)
       if (m->client_id != coach_begin_)
         {
           LOG2("Coach %1 doesn't have the choice.", m->client_id);
-          sendIllegal(m->token, m->client_id);
+          sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
           return;
         }
       coach_begin_ = m->kickoff ? (coach_begin_ + 1) % 2 : coach_begin_;
@@ -278,7 +291,7 @@ void SRules::msgInitKickoff(const MsgInitKickoff* m)
        team_[receiving_id]->state_ != GS_INITKICKOFF))
     {
       // Receiving sets up before kicking or is already set.
-      sendIllegal(MSG_INITKICKOFF, m->client_id);
+      sendIllegal(MSG_INITKICKOFF, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
   if (m->client_id == kicking_id &&
@@ -286,7 +299,7 @@ void SRules::msgInitKickoff(const MsgInitKickoff* m)
        team_[kicking_id]->state_ != GS_INITKICKOFF))
     {
       // Kicking sets up after receiving or is already set.
-      sendIllegal(MSG_INITKICKOFF, m->client_id);
+      sendIllegal(MSG_INITKICKOFF, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
 
@@ -318,27 +331,39 @@ void SRules::msgInitKickoff(const MsgInitKickoff* m)
     }
 }
 
-void SRules::kickoffFinished()
+void SRules::finishKickoff()
 {
   if (coach_receiver_ == 0)
     setState(GS_COACH2);
   else
     setState(GS_COACH1);
 
-  msgPlayTurn(NULL);
+  nextTurn();
 }
 
 void SRules::msgPlayTurn(const MsgEndTurn* m)
 {
-  // Check if it's the right team that asked for an EndTurn.
-  if (m != NULL &&
-      ((getState() != GS_COACH1 && m->client_id == 0)
-       || (getState() != GS_COACH2 && m->client_id == 1)))
+  // Checks if it's the right team that asked for an EndTurn.
+  if ((getState() != GS_COACH1 && m->client_id == 0)
+      || (getState() != GS_COACH2 && m->client_id == 1))
     {
-      sendIllegal(MSG_ENDTURN, m->client_id);
-      return;
+      LOG2("Coach `%1' is not allowed to end the turn of team `%2'.",
+          m->client_id, getCurrentTeamId());
+      sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
     }
-  
+  else if (!action_handler_->isEmpty())
+    {
+      LOG2("Coach `%1' can not end his turn, since there are actions pending.", m->client_id);
+      sendIllegal(m->token, m->client_id);
+    }
+  else
+    {
+      nextTurn();
+    }
+}
+
+void SRules::nextTurn()
+{
   // Next turn if this is the receiving team.
   if (getState() == GS_COACH1 && coach_begin_ == 1
       || getState() == GS_COACH2 && coach_begin_ == 0)
@@ -347,7 +372,7 @@ void SRules::msgPlayTurn(const MsgEndTurn* m)
       LOG2("=== Go on turn `%1`", cur_turn_);
     }
   else
-    LOG2("=== Next team play turn `%1`", cur_turn_);
+    LOG2("=== Next team plays turn `%1`", cur_turn_);
 
   // Finished ? Go on the next half ? 
   // FIXME: 3 is for tests. must be 8.
@@ -359,6 +384,8 @@ void SRules::msgPlayTurn(const MsgEndTurn* m)
   // Switch playing team
   setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
 
+  turnover_ = TOM_NONE;
+  ball_->resetTurn();
   if (getState() == GS_COACH1)
     {
       team_[1]->setProneStunned();
@@ -390,7 +417,7 @@ void SRules::msgMoveTurnMarker(const MsgMoveTurnMarker* m)
   if (getState() == GS_COACH1 && m->client_id == 1
       || getState() == GS_COACH2 && m->client_id == 0)
     {
-      sendIllegal(MSG_MOVETURNMARKER, m->client_id);
+      sendIllegal(MSG_MOVETURNMARKER, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
 

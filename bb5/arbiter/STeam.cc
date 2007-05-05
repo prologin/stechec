@@ -61,80 +61,95 @@ void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
   else
     {
       LOG2("Team %1. Player %2 already exists.", team_id_, m->player_id);
-      r_->sendIllegal(MSG_PLAYERCREATE, m->client_id);
+      r_->sendIllegal(MSG_PLAYERCREATE, m->client_id, ERR_ALREADYEXISTS);
     }
 }
 
-// Want to use a reroll
 void STeam::msgReroll(const MsgReroll* m)
 {
-  if (m->reroll && (reroll_used_ || reroll_remain_ == 0))
+  if (state_ != GS_REROLL)
     {
-      r_->sendIllegal(MSG_REROLL, m->client_id);
-      return;
+      LOG2("Coach %1 has not to reroll or accept a roll now.");
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
     }
-
-  if (!canUseReroll()||(state_ != GS_REROLL&&state_ != GS_BLOCK))
+  else if (m->reroll && !canUseReroll())
     {
-      r_->sendIllegal(MSG_REROLL, m->client_id);
-      return;
+      LOG2("Coach %1 can not use team reroll for this turn.", team_id_);
+      r_->sendIllegal(m->token, m->client_id);
     }
-
-  r_->sendPacket(*m);
-  if (state_ != GS_BLOCK)
-    state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
-
-  if (m->reroll)
+  else
     {
-      reroll_used_ = true;
-      reroll_remain_ = reroll_remain_ - 1;
+      LOG2("Coach %1 %2.", team_id_, m->reroll?"uses a team reroll":"accepts the roll result");
+      r_->sendPacket(*m);
+      state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+      if (m->reroll)
+        {
+          useReroll();
+        }
+      r_->getActionHandler()->process(m->reroll);
     }
-  concerned_player_->finishAction(m->reroll);
 }
 
 void STeam::msgBlockDice(const MsgBlockDice* m)
 {
-  if (concerned_player_->nb_dice_ <= m->dice)
+  if (state_ != GS_BLOCK)
     {
-      r_->sendIllegal(MSG_BLOCKDICE, m->client_id);
+      LOG2("Coach %1 doesn't have to choose a block dice now.", team_id_);
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+      return;
+    }
+  if (m->dice < 0 || nb_choices_ <= m->dice)
+    {
+      LOG2("The choice number %1 is out of range [0,%2[.",
+          m->dice, r_->getActionHandler()->getPlayer()->nb_block_dice_);
+      r_->sendIllegal(m->token, m->client_id, ERR_UNREADABLE);
       return;
     }
 
   MsgBlockDice msg(r_->getCurrentTeamId());
   r_->sendPacket(msg);
-  r_->getTeam(m->client_id)->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
-  concerned_player_->resolveBlock(m->dice);
+  state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+  r_->getActionHandler()->process(false, m->dice);
 }
 
 void STeam::msgFollow(const MsgFollow* m)
 {
+  if (state_ != GS_FOLLOW)
+    {
+      LOG2("Coach %1 doesn't have the choice to follow or not now.", team_id_);
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+      return;
+    }
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
-  getActivePlayer()->follow(m->follow);
+  r_->getActionHandler()->process(m->follow);
 }
 
 void STeam::msgBlockPush(const MsgBlockPush* m)
 {
   if (state_ != GS_PUSH)
     {
+      r_->sendIllegal(MSG_BLOCKPUSH, m->client_id, ERR_WRONGCONTEXT);
+      return;
+    }
+  if (m->square_chosen < 0 || nb_choices_ <= m->square_chosen)
+    {
+      LOG2("Invalid push choice.");
       r_->sendIllegal(MSG_BLOCKPUSH, m->client_id);
       return;
     }
+  r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
-  current_pusher_->blockPush(m);
+  r_->getActionHandler()->process(false, m->square_chosen);
 }
-
-
 
 void STeam::resetTurn()
 {
   active_player_id_ = -1;
-  concerned_player_ = NULL;
   current_pusher_ = NULL;
   blitz_done_ = false;
   pass_done_ = false;
   reroll_used_ = false;
-  turnover_ = false;
   for (int i = 0; i < MAX_PLAYER; i++)
     if (player_[i] != NULL)
       player_[i]->resetTurn();
@@ -154,35 +169,19 @@ void STeam::prepareKickoff()
       player_[i]->prepareKickoff();  
 }
 
-void STeam::turnover(enum eTurnOverMotive motive)
-{
-  if (! turnover_)
-    {
-      turnover_ = true;
-      MsgTurnOver pkt(team_id_);
-      pkt.motive = motive;
-      r_->sendPacket(pkt);
-    }
-}
-
-bool STeam::isTurnover()
-{
-  return turnover_;
-}
-
 SPlayer* STeam::getActivePlayer()
 {
   return player_[active_player_id_];
 }
 
-void STeam::setConcernedPlayer(SPlayer* p)
-{
-  concerned_player_ = p;
-}
-
 void STeam::setPusher(SPlayer* p)
 {
   current_pusher_ = p;
+}
+
+void STeam::setNbChoices(int nb)
+{
+  nb_choices_ = nb;
 }
 
 bool STeam::canDeclareAction(const MsgDeclare* pkt)
@@ -194,7 +193,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
        && pkt->action != DCL_BLITZ && pkt->action != DCL_PASS)
     {
       LOG4("Must declare an existing action");
-      r_->sendIllegal(pkt->token, pkt->client_id);
+      r_->sendIllegal(pkt->token, pkt->client_id, ERR_UNREADABLE);
       return false;
     }
 
@@ -203,7 +202,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
     {
       LOG4("Cannot declare action: not team turn");
       LOG4("%1, %2",r_->getCurrentTeamId(), r_->getState());
-      r_->sendIllegal(pkt->token, pkt->client_id);
+      r_->sendIllegal(pkt->token, pkt->client_id, ERR_WRONGCONTEXT);
       return false;
     }
 
@@ -218,11 +217,11 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
       active_player_id_ = -1;
     }
 
-  // Check if the player has allready played this turn.
+  // Check if the player has already played this turn.
   if (p->hasPlayed())
     {
       LOG4("Cannot declare action: this player already does something this turn");
-      r_->sendIllegal(pkt->token, pkt->client_id);
+      r_->sendIllegal(pkt->token, pkt->client_id, ERR_HASPLAYED);
       return false;
     }
 
@@ -230,7 +229,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
   if (p->getAction() != DCL_NONE)
     {
       LOG4("Cannot declare action: this player is performing an action");
-      r_->sendIllegal(pkt->token, pkt->client_id);
+      r_->sendIllegal(pkt->token, pkt->client_id, ERR_ISPLAYING);
       return false;
     }
 
@@ -244,7 +243,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
       if (blitz_done_)
         {
           LOG4("Cannot do more than one blitz in a single turn.");
-          r_->sendIllegal(pkt->token, p->getId());
+          r_->sendIllegal(pkt->token, p->getId(), ERR_SINGLEACTIONUSED);
           return false;
         }
       blitz_done_ = true;
@@ -254,7 +253,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
       if (pass_done_)
         {
           LOG4("Cannot do more than one pass in a single turn.");
-          r_->sendIllegal(pkt->token, p->getId());
+          r_->sendIllegal(pkt->token, p->getId(), ERR_SINGLEACTIONUSED);
           return false;
         }
       pass_done_ = true;
@@ -271,10 +270,9 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
     {
       LOG4("Cannot do action: not team turn");
       LOG4("%1, %2",r_->getCurrentTeamId(), r_->getState());
-      r_->sendIllegal(pkt->token, pkt->client_id);
+      r_->sendIllegal(pkt->token, pkt->client_id, ERR_WRONGCONTEXT);
       return false;
     }
-
   // Check if it is the current player
   if (p != player_[active_player_id_])
     {
@@ -282,7 +280,6 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }
-
   // If he is stunned or out of the field, he can't do it
   if (pkt->token == MSG_STANDUP && p->getStatus() != STA_PRONE)
     {
@@ -296,20 +293,18 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }
-
   // Check the action declared is fit to the action
-  if ((p->getAction() == DCL_MOVE &&
-        (pkt->token == MSG_PASS ||pkt->token == MSG_BLOCK))
-        ||(p->getAction() == DCL_BLOCK &&
-          (pkt->token == MSG_PASS ||pkt->token == MSG_MOVE))
-        ||(p->getAction() == DCL_BLITZ &&  pkt->token == MSG_PASS)
-        ||(p->getAction() == DCL_PASS  &&  pkt->token == MSG_BLOCK))
+  if ((p->getAction() == DCL_MOVE
+        && (pkt->token == MSG_PASS || pkt->token == MSG_BLOCK))
+      || (p->getAction() == DCL_BLOCK
+        && (pkt->token == MSG_PASS || pkt->token == MSG_MOVE))
+      || (p->getAction() == DCL_BLITZ && pkt->token == MSG_PASS)
+      || (p->getAction() == DCL_PASS && pkt->token == MSG_BLOCK))
     {
       LOG4("Cannot do action: declare action does not fit");
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }
-    
   // Cannot try to stand up more than once
   if (pkt->token == MSG_STANDUP)
     {
@@ -320,6 +315,5 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
           return false;
         }
     }
-
   return true;
 }

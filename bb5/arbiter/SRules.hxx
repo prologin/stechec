@@ -16,8 +16,14 @@
 
 inline void SRules::sendIllegal(int token, int from) const
 {
+  sendIllegal(token, from, ERR_UNASSIGNED);
+}
+
+inline void SRules::sendIllegal(int token, int from, enum eError error) const
+{
   MsgIllegal pkt(from);
   pkt.was_token = token;
+  pkt.error = error;
   sendPacket(pkt);
 }
 
@@ -42,6 +48,16 @@ inline int SRules::getCurrentOpponentTeamId() const
   return (id + 1) % 2;
 }
 
+inline int SRules::getOpponentTeamId(int team_id) const
+{
+  return (team_id == 0) ? 1 : 0;
+}
+
+inline int SRules::getOpponentTeamId(STeam* team) const
+{
+  return getOpponentTeamId(team->getTeamId());
+}
+
 inline STeam* SRules::getCurrentTeam()
 {
   return getTeam(getCurrentTeamId());
@@ -50,6 +66,16 @@ inline STeam* SRules::getCurrentTeam()
 inline STeam* SRules::getCurrentOpponentTeam()
 {
   return getTeam(getCurrentOpponentTeamId());
+}
+
+inline STeam* SRules::getOpponentTeam(int team_id)
+{
+  return getTeam(getOpponentTeamId(team_id));
+}
+
+inline STeam* SRules::getOpponentTeam(STeam* team)
+{
+  return getTeam(getOpponentTeamId(team));
 }
 
 inline SField* SRules::getField()
@@ -72,4 +98,9 @@ inline STeam* SRules::getTeam(int team_id)
 inline Dice* SRules::getDice()
 {
   return dice_;
+}
+
+inline SActionHandler* SRules::getActionHandler()
+{
+  return action_handler_;
 }
