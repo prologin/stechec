@@ -17,11 +17,29 @@ void	ServerResolver::ApplyResolver(CommandListRef cmdList[])
 {
 
   // Gere les messages speciaux a part.
+  Competences   (cmdList[COMPETENCE]);
   moveLeucocyte (cmdList[MOVE_LEUCO]);
   Phagocytose   (cmdList[PHAGOCYTE]);
   Messages      (cmdList[TRANSMISSION]);
-  Competences   (cmdList[COMPETENCE]);
   Antibody      (cmdList[DROP_ANTIBODY]);
+}
+
+bool	ServerResolver::GonnaBeBlocked(int y, int x, CommandListRef& cmdList)
+{
+  CommandListRef::iterator it;
+  int found = -1;
+  if (g_->TestLeucocyte (y, x))
+    return false;
+    for (it = cmdList.begin(); it != cmdList.end() && found == -1; ++it)
+      {
+	if (g_->players[(*it)->client_id].row == y &&
+	    g_->players[(*it)->client_id].col == x
+	    && !GonnaBeBlocked((*it)->arg[0], (*it)->arg[1], cmdList))
+	    && g_->TestCell((*it)->arg[0], (*it)->arg[1])
+	    && g_->TestVirus((*it)->arg[0], (*it)->arg[1]))
+	  return false;
+      }
+  return true;
 }
 
 void	ServerResolver::moveLeucocyte(CommandListRef& cmdList)
@@ -41,11 +59,13 @@ void	ServerResolver::moveLeucocyte(CommandListRef& cmdList)
       int y = elt->arg[0];
       int x = elt->arg[1];
 
-      if (g_->TestVirus(y, x)// FIXME TEST LEUCOCYTE
+      if (g_->TestVirus(y, x) && g_->TestCell(y, x)// FIXME TEST LEUCOCYTE
 	  )
 	{
 	  validate (validated, cmdList, i);
 	  if (!validated[i])
+	    continue;
+	  if (GonnaBeBlocked (y, x, cmdList))
 	    continue;
 	  g_->players[id].row = y;
 	  g_->players[id].col = x;

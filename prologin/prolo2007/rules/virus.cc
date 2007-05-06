@@ -111,7 +111,7 @@ void Virus::PlayTurn()
      }
      while (nrow < 0 || nrow >= _g->map_size.row ||
 	    ncol < 0 || ncol >= _g->map_size.col ||
-	    cell[n] == 2 /* Cellule infectée */ );
+	    cell[n] == 2 /* Cellule infectée */  || !_g->TestLeucocyte(nrow, ncol));
      row = nrow;
      col = ncol;
   }

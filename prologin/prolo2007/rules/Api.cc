@@ -265,7 +265,7 @@ int Api::definit_competence(int rapidite, int anticorps, int messages, int visio
   g_->players[g_->getUid()].competences[MESSAGES_NB] = messages;
   g_->players[g_->getUid()].competences[VISION] = vision;
   Position dep = Position(0, 0);
-  //  c_->UpdateFogOfWar(g_->getUid(), dep, g_->players[g_->getUid()], false);
+  c_->UpdateFogOfWar(g_->getUid(), dep, g_->players[g_->getUid()], false);
   c_->SetCompetence(true);
 
   return SUCCESS;

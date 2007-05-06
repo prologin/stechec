@@ -14,8 +14,6 @@ public:
     nb_(nb % MAX_NUTRIENT),
     g_(g)
   {
-    LOG1("Setting %1 for nutriment r %2 c %3",
-	 nb_, row, col);
   }
   void	add (int n) {nb_ += n % MAX_NUTRIENT;}
   int	eat (int n);
