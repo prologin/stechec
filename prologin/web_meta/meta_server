@@ -26,6 +26,12 @@ sub meta_init($)
 {
 	my ($cfg) = @_;
 
+    # check if goinfre is readable
+    if (! (-w $$cfg{'connection'}{'contest_path'})) {
+        print "[meta] '$$cfg{'connection'}{'contest_path'}' is not writeable. aborting.\n";
+        exit 1;
+    }
+
     $m{'main_ip'} = $$cfg{'internal'}{'main_host'} || "localhost";
     $m{'main_port'} = $$cfg{'internal'}{'main_port'} || 3917;
     $m{'heartbeat_period'} = $$cfg{'internal'}{'heartbeat_period'};
