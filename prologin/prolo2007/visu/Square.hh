@@ -68,7 +68,7 @@ public:
   virtual void update()
   {
     assert(api_ != NULL);
-#if 0
+
     // Switch from hidden to visible
     if (api_->visible(game_pos_.x, game_pos_.y) == 0 && !black_surf_.isShown())
       {
@@ -82,7 +82,6 @@ public:
         black_surf_.hide();
         show();
       }
-    #endif
     Surface::update();
   }
 

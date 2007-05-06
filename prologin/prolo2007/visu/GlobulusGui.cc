@@ -290,7 +290,7 @@ void GlobulusGui::refreshInfoBox()
 {
   std::ostringstream os;
 
-  int date = api_->current_beat();
+  int date = api_->battement_courant();
   os << "Beat: " << date;
   txt_beat_.setText(os.str());
   os.rdbuf()->str("");
@@ -431,6 +431,8 @@ int GlobulusGui::run()
 		bacterias_[x][y].load(bacteria[(pop * (nb_bacteria - 1)) / 30]);
 		bacterias_[x][y].show();
 	      }
+
+	    map_[x][y].update();
 	  }
 
       // Process any incoming messages. Block at most 50 ms.
