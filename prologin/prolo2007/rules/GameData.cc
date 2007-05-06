@@ -448,7 +448,7 @@ void GameData::deleteCells ()
 #define SCORE_CELL_INFECTED		15
 #define SCORE_CELL_NOT_INFECTED		20
 #define SCORE_BACTERIA			1
-#define SCORE_VIRUS			20
+#define SCORE_VIRUS			5
 
   // How to compute the score
 int	GameData::calculScore ()
