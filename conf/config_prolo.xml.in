@@ -10,7 +10,7 @@
   </game>
 
   <client>
-    <rules>outatime</rules>
+    <rules>globulus</rules>
     <connect val="network" host="localhost" port="25150"
              game_uid="40" connect_on_startup="true" />
   </client>
@@ -23,10 +23,10 @@
   </client>
 
   <client id="2">
-    <champion>outatime_sdlvisu</champion>
+    <champion>globulus_sdlvisu</champion>
     <mode replay="false" file="match.log" spectator="true" />
     <limit memory="0" time="500" time_reserve="2500" />
-    <debug valgrind="false" gdb="false" verbose="5" printloc="true" />
+    <debug valgrind="false" gdb="false" verbose="1" printloc="true" />
   </client>
 
   <server>

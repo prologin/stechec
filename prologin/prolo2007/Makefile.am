@@ -8,4 +8,4 @@ if HAVE_SDL
   SUBDIRS += visu
 endif
 
-SUBDIRS += subject
+#SUBDIRS += subject
