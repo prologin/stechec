@@ -92,6 +92,11 @@ define get_jclass
   $(1)-jheaders := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.h))
   cleanfiles := $$($(1)-jclass) $$($(1)-jheaders) $$(cleanfiles)
 
+  ifneq ($$(src),)
+    $(1)-ldflags := $$($(1)-ldflags) -lgcj
+  endif
+
+
   $$($(1)-jheaders): $$($(1)-jclass)
   $$($(1)-objs): $$($(1)-jheaders)
 endef
