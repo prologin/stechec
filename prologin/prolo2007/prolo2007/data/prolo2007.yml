@@ -1,0 +1,456 @@
+conf:
+  package_name: prolo2007
+  client_rule_lib: globulus
+  server_rule_lib: globulus
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: \subsection{Constantes}
+  - doc_extra: \subsubsection{Les codes d'erreur}
+  -
+    cst_name: BAD_ARGUMENT
+    cst_val: -4
+    cst_comment: Un des arguments passe a la fonction est incorrect.
+  -
+    cst_name: INVALID_COMMAND
+    cst_val: -3
+    cst_comment: Vous ne pouvez pas appeler cette commande maintenant.
+  -
+    cst_name: NO_UNIT
+    cst_val: -2
+    cst_comment: L'unite demande n'existe pas (ou plus).
+  -
+    cst_name: UNKNOWN
+    cst_val: -1
+    cst_comment: Le resultat ne peut pas etre connu.
+  -
+    cst_name: SUCCESS
+    cst_val: 0
+    cst_comment: La commande s'est correctement effectuee.
+
+
+  - doc_extra: \subsubsection{Les valeurs maximum}
+  -
+    cst_name: MAX_TURN
+    cst_val: 500
+    cst_comment: Nombre maximum de tours.
+  -
+    cst_name: MAX_MAP_SIZE
+    cst_val: 40
+    cst_comment: Taille maximum de la carte en largeur/hauteur.
+  -
+    cst_name: MAX_TEAM
+    cst_val: 6
+    cst_comment: Nombre maximal d'equipes en jeu.
+  -
+    cst_name: MAX_WHITE_CELL
+    cst_val: 5
+    cst_comment: Nombre maximal de leucocyte par equipe.
+  -
+    cst_name: MAX_BACTERY
+    cst_val: 20
+    cst_comment: Nombre maximal de bacteries sur une case.
+  -
+    cst_name: MAX_NUTRIENT
+    cst_val: 50
+    cst_comment: Nombre maximal de nutriments sur une case.
+  -
+    cst_name: MAX_SKILL
+    cst_val: 12
+    cst_comment: Nombre maximum de points de competence d'un leucocyte.
+
+
+  - doc_extra: \subsubsection{L'evolution au cours du temps}
+  -
+    cst_name: NEW_NUTRIENT
+    cst_val: 10
+    cst_comment: Quantite de nutriments apportes par le sang à chaque tour.
+  -
+    cst_name: CELL_NUTRIENT
+    cst_val: 10
+    cst_comment: Quantite de nutriments qu'une cellule peut consommer par tour.
+  -
+    cst_name: CELL_MITOSIS_MATERIAL
+    cst_val: 50
+    cst_comment: Quantite de nutriments dont une cellule a besoin pour faire une mitose.
+  -
+    cst_name: VIRUS_MATERIAL
+    cst_val: 50
+    cst_comment: Quantite de nutriments dont une cellule a besoin pour fabriquer un virus.
+  -
+    cst_name: BACTERY_NUTRIENT
+    cst_val: 10
+    cst_comment: Quantite de nutriments qu'une bactérie peut consommer par tour.
+  -
+    cst_name: VIRUS_PRODUCTION_DURATION
+    cst_val: 10
+    cst_comment: Nombre de tours nécessaires a une cellule pour produire un virus.
+  -
+    cst_name: MITOSIS_DURATION
+    cst_val: 50
+    cst_comment: Nombre de tours nécessaires a une cellule pour se diviser.
+  -
+    cst_name: INFECTION_DURATION
+    cst_val: 10
+    cst_comment: Nombre de tours nécessaires a un virus pour transformer une cellule.
+  -
+    cst_name: PHAGOCYTOSIS_DURATION
+    cst_val: 10
+    cst_comment: Nombre de tours nécessaires a un leucocyte pour digerer un virus.
+
+
+  - doc_extra: \subsubsection{Les types de tissu}
+  -
+    cst_name: VESSEL
+    cst_val: 0
+    cst_comment: Réseau sanguin.
+  -
+    cst_name: FLESH
+    cst_val: 1
+    cst_comment: Tissu cellulaire.
+  -
+    cst_name: WHITE_CELL
+    cst_val: 2
+    cst_comment: Un leucocyte se trouve a cet endroit.
+  -
+    cst_name: CELL
+    cst_val: 3
+    cst_comment: Une cellule se trouve a cet endroit.
+  -
+    cst_name: BACTERIA
+    cst_val: 4
+    cst_comment: Une cellule se trouve a cet endroit.
+  -
+    cst_name: VIRUS
+    cst_val: 5
+    cst_comment: Un virus se trouve a cet endroit.
+
+
+  - doc_extra: \subsubsection{L'état de santé des cellules}
+  -
+    cst_name: CELL_STATE_HEALTHY
+    cst_val: 0
+    cst_comment: La cellule est saine.
+  -
+    cst_name: CELL_STATE_INFECTED
+    cst_val: 1
+    cst_comment: La cellule est infectée par un virus.
+  -
+    cst_name: CELL_STATE_PRODUCTING_VIRII
+    cst_val: 2
+    cst_comment: La cellule est morte.
+
+  -
+    cst_name: CELL_STATE_DEAD
+    cst_val: 3
+    cst_comment: La cellule est morte.
+
+
+  - doc_extra: \subsubsection{L'état des leucocytes}
+  -
+    cst_name: STATE_NORMAL
+    cst_val: 0
+    cst_comment: Le globule blanc est disponible.
+  -
+    cst_name: STATE_PHAGOCYTOSING
+    cst_val: 1
+    cst_comment: Le leucocyte est en train de phagocyter.
+  -
+    cst_name: STATE_DEAD
+    cst_val: 3
+    cst_comment: Le leucocyte est mort.
+
+
+  - doc_extra: \subsubsection{Les valeurs retournées par meilleure_direction}
+  -
+    cst_name: DEC_Y
+    cst_val: 0
+    cst_comment: Deplacement vers le haut.
+  -
+    cst_name: DEC_X
+    cst_val: 1
+    cst_comment: Deplacement vers la gauche.
+  -
+    cst_name: INC_Y
+    cst_val: 2
+    cst_comment: Deplacement vers le bas.
+  -
+    cst_name: INC_X
+    cst_val: 3
+    cst_comment: Deplacement vers la droite.
+
+
+function:
+  - doc_extra: |
+     \subsection{Fonctions d'information}
+     Toutes les fonctions peuvent renvoyer les constantes
+     \textbf{BAD_ARGUMENT} ou \textbf{NO_UNIT} quand au moins un des
+     arguments est incorrect (même si cela n'est pas précisé pour chaque
+     fonction). Par exemple, cela se produit si vous appelez
+     la fonction \texttt{regarde} avec \texttt{x=13} et \texttt{y=5142}.
+     \subsubsection{Informations sur le monde}
+  -
+    fct_name: equipes
+    fct_summary: Nombre d'equipes presentes sur le terrain.
+    fct_ret_type: int
+  -
+    fct_name: taille_equipe
+    fct_summary: Nombre de leucocytes dans l'equipe.
+    fct_ret_type: int
+    fct_arg:
+      - [team_number, int, Numero de l'equipe]
+  -
+    fct_name: mon_equipe
+    fct_summary: Identifiant de votre equipe.
+    fct_ret_type: int
+  -
+    fct_name: mon_identifiant
+    fct_summary: Identifiant de votre unite
+    fct_ret_type: int
+  -
+    fct_name: taille_corps_x
+    fct_ret_type: int
+    fct_summary: Taille du monde en largeur.
+    fct_ret_comment: Un entier contenant la taille du monde en largeur.
+    fct_notice: Retourne toujours MAX_MAP_SIZE lors des matchs officiels.
+  -
+    fct_name: taille_corps_y
+    fct_ret_type: int
+    fct_summary: Taille du monde en hauteur.
+    fct_ret_comment: Un entier contenant la taille du monde en hauteur.
+    fct_notice: Retourne toujours MAX_MAP_SIZE lors des matchs officiels.
+  -
+    fct_name: regarde
+    fct_summary: |
+      Recupere le type de terrain a la position demandee. Si aucun de vos
+      joueurs ne peut voir la case en question (brouillard de guerre), la
+      fonction ne renverra que VESSEL ou FLESH. Si vous pouvez la voir,
+      alors la valeur de retour sera plus precise.
+    fct_ret_type: int
+    fct_ret_comment: Retourne une des constantes 'types de terrain'.
+    fct_arg:
+      - [x, int, Coordonnee en x de la case demandee.]
+      - [y, int, Coordonnee en y de la case demandee.]
+  -
+    fct_name: bacteries_presentes
+    fct_summary: |
+	Dit si des bacteries sont presentes sur la case specifiee.
+    fct_ret_type: int
+    fct_ret_comment: Retourne 1 si oui, 0 sinon.
+    fct_arg:
+      - [x, int, Coordonnee en x de la case demandee.]
+      - [y, int, Coordonnee en y de la case demandee.]
+  -
+    fct_name: visible
+    fct_summary: |
+      Regarde si une case du terrain se trouve dans le champ de vision de vos
+      joueurs.
+    fct_ret_type: int
+    fct_ret_comment: Retourne 1 si la case est visible, 0 sinon.
+    fct_arg:
+      - [x, int, Coordonnee en x de la case demandee.]
+      - [y, int, Coordonnee en y de la case demandee.]
+
+  - doc_extra: \subsubsection{Informations sur le tour}
+  -
+    fct_name: score
+    fct_summary: Recupere le score d'une equipe.
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, Un identifiant d'équipe.]
+  -
+    fct_name: current_beat
+    fct_summary: Date actuelle.
+    fct_ret_type: int
+  - doc_extra: |
+      Attention, les fonctions permettant de connaître le temps restant ont
+      été codées par un chat, ce qui signifie donc que vous êtes face à un
+      paradoxe~! Le fait d'appeler une fonction pour savoir si vous avez
+      perdu du temps vous fait perdre du temps, c'est inévitable. Donc un
+      conseil~: évitez d'appeler cette fonction trop souvent.
+  -
+    fct_name: time_remaining
+    fct_summary: Temps restant pour ce tour.
+    fct_notice: L'unite de temps est la milliseconde.
+    fct_ret_type: int
+  -
+    fct_name: extra_time_remaining
+    fct_summary: Temps additionnel restant pour la partie.
+    fct_notice: L'unite de temps est la milliseconde.
+    fct_ret_type: int
+
+
+  - doc_extra: \subsubsection{Informations sur les joueurs}
+  -
+    fct_name: leucocyte_visible
+    fct_summary: Le leucocyte est-il visible ?
+    fct_ret_type: int
+    fct_ret_comment: Retourne 1 si le leucocyte est visible, 0 sinon.
+    fct_arg:
+      - [id, int, Un identifiant de leucocyte.]
+  -
+    fct_name: identifiant_leucocyte
+    fct_summary: |
+      Permet de savoir l'identifiant d'un leucocyte sur une case.
+    fct_ret_type: int
+    fct_ret_comment: Retourne l'identifiant du leucocyte s'il est visible, UNKNOWN sinon.
+    fct_arg:
+      - [x, int, Coordonnee en x de la case demandee.]
+      - [y, int, Coordonnee en y de la case demandee.]
+  -
+    fct_name: equipe
+    fct_summary: Recupere l'identifiant d'equipe auquel appartient un leucocyte.
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, Un identifiant de leucocyte.]
+  -
+    fct_name: position_leucocyte_x
+    fct_summary: Position d'un leucocyte en largeur.
+    fct_ret_comment: UNKNOWN si le leucocyte n'est pas visible.
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, Un identifiant de leucocyte.]
+  -
+    fct_name: position_leucocyte_y
+    fct_summary: Position d'un leucocyte en hauteur.
+    fct_ret_comment: UNKNOWN si le joueur n'est pas visible.
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, Un identifiant de leucocyte.]
+  -
+    fct_name: etat_leucocyte
+    fct_summary: Recupere l'etat d'un leucocyte.
+    fct_ret_comment: UNKNOWN si le leucocyte n'est pas visible.
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, Un identifiant de leucocyte.]
+  -
+    fct_name: etat_cellule
+    fct_summary: Recupere l'etat d'une cellule.
+    fct_ret_comment: UNKNOWN si la cellule n'est pas visible.
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, Un identifiant de leucocyte.]
+
+  - doc_extra: |
+     \subsection{Informations sur l'infection}
+     Toutes les fonctions renvoient un entier correspondant au succès ou à
+     l'échec de la commande.
+  -
+    fct_name: connait_type
+    fct_summary: |
+      Sert a se renseigner si le joueur connait deja un type de signature d'un virus.
+    fct_ret_comment: |
+      SUCCESS si le x, y désigne une zone infectee et que le type est connu.
+      UNKNOWN si le x, y désigne une zone infectee et que le type est inconnu.
+      Sinon, retourne BAD_ARGUMENT
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, Coordonnee x a atteindre.]
+      - [y, int, Coordonnee y a atteindre.]
+
+  - doc_extra: |
+     \subsection{Competence de leucocytes}
+     Toutes les fonctions renvoient un entier correspondant au succès ou à
+     l'échec de la commande.
+  -
+    fct_name: defini_competence
+    fct_summary: |
+      Defini les competence d'un leucocyte
+    fct_ret_comment: |
+      SUCCESS si les arguments sont corrects (somme des competence < MAX_SKILL)
+      Sinon, retourne BAD_ARGUMENT
+    fct_ret_type: int
+    fct_arg:
+      - [rapidite, int, Rapidite de phagocytose du leucocyte.]
+      - [anticorps, int, Nombre d'anticorps lache]
+      - [messages, int, Nombre de messages qu'il peut envoyer par tour]
+      - [vision, int, Champ de vision du leucocyte]
+
+
+
+  - doc_extra: |
+     \subsection{Fonctions de commande}
+     Toutes les fonctions renvoient un entier correspondant au succès ou à
+     l'échec de la commande.
+  -
+    fct_name: deplace_leucocyte
+    fct_summary: |
+      Deplace un de ses leucocyte \emph{vers} la position indiquee. Il ne se deplace que
+      d'une seule case par tour.
+    fct_ret_comment: |
+      SUCCESS si le joueur pourra se deplacer a la fin du tour (et il le fera),
+      ou INVALID_COMMAND ou BAD_ARGUMENT en cas d'impossibilité.
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, Coordonnee x a atteindre.]
+      - [y, int, Coordonnee y a atteindre.]
+
+  -
+    fct_name: phagocyte
+    fct_summary: |
+      Phagocytose de l'entite qui se trouve aux coordonnees indiques.
+      S'il s'agit d'un virus dont le type n'est pas encore connu,
+      l'appel a cette fonction immobilisera plus longtemps le leucocyte
+      que si le type est connu (apprentissage de la signature).
+    fct_ret_comment: |
+      SUCCESS si le leucocyte reussi a phagocyter
+      BAD_ARGUMENT ou INVALID_COMMAND sinon
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, Coordonnee x de l'entite.]
+      - [y, int, Coordonnee y de l'entite.]
+
+  -
+    fct_name: emet_anticorps
+    fct_summary: |
+      Le leucocyte emet des anticorps autour de lui et sur sa case
+    fct_ret_comment: |
+      SUCCESS si le leucocyte reussi a lacher des anticorps
+      BAD_ARGUMENT ou INVALID_COMMAND sinon.
+    fct_ret_type: int
+
+  -
+    fct_name: transmettre_message
+    fct_summary: |
+      Le leucocyte transmet un message.
+    fct_ret_comment: |
+      SUCCESS si la transmission reussit
+      BAD_ARGUMENT ou INVALID_COMMAND sinon.
+    fct_ret_type: int
+    fct_arg:
+      - [message_arg1, int, partie 1 du message a transmettre (Attention, message doit ête positif ou nul).]
+      - [message_arg2, int, partie 2 du message a transmettre (Attention, message doit ête positif ou nul).]
+      - [message_arg3, int, partie 3 du message a transmettre (Attention, message doit ête positif ou nul).]
+      - [message_arg4, int, partie 4 du message a transmettre (Attention, message doit ête positif ou nul).]
+
+  -
+    fct_name: recevoir_prochain_message
+    fct_summary: |
+      Le leucocyte recoit l'identifiant prochain message qu'on lui a envoye.
+    fct_ret_comment: |
+      L'identifiant du message envoye si un message est disponible,
+      BAD_ARGUMENT ou INVALID_COMMAND sinon.
+    fct_ret_type: int
+
+  -
+    fct_name: corps_message
+    fct_summary: |
+      Permet de connaitre le corps du message (le message reel en fait)
+    fct_ret_comment: |
+      Le message,
+      BAD_ARGUMENT ou INVALID_COMMAND sinon.
+    fct_ret_type: int
+    fct_arg:
+      - [message_id, int, Identifiant du message.]
+      - [argument_id, int, Numero de la partie de message a recuperer]
+
+user_function:
+  - doc_extra: |-
+     \subsection{Ce qu'il faut faire}
+     Chacun est libre de mener la stratégie qui lui semble la plus
+     adaptée, et a entière liberté sur la façon de l'implémenter.
+     Toutefois il est demandé d'écrire deux fonctions en particulier :
+     une fonction qui sera appelée au début de la partie, et une autre
+     qui sera appelée à chaque tour.

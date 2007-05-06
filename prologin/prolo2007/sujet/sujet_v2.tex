@@ -1,0 +1,156 @@
+%LaTeX Document
+
+%\documentclass[a4paper,twoside,12pt]{book}
+\documentclass[a4paper,twoside,12pt]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{a4}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{palatino}
+\usepackage{subfigure}
+\usepackage{verbatim,fancyvrb}
+\renewcommand\ttdefault{cmtt}
+
+%\NoAutoSpaceBeforeFDP
+\geometry{bindingoffset=5mm,hmarginratio=1:1,heightrounded,headheight=15pt}
+
+\makeindex
+
+\begin{document}
+\pagestyle{empty}
+\sloppy
+
+%\lhead[\textsl{Prologin 2005}]{\nouppercase \leftmark}
+%\rhead[Sujet de la finale]{}
+\lhead[\thepage]{\nouppercase \leftmark}
+\rhead[\textsl{Prologin 2007} --- Sujet de la finale]{\thepage}
+\cfoot{}
+
+% Couverture =========================================================
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=\linewidth]{logo}\\
+\vspace{4cm}
+\Huge
+\textbf{Il \'etait une fois la vie...}\\
+\vspace{2cm}
+\normalsize
+Sujet de la finale du Concours National d'Informatique\\
+DATE\\
+\end{center}
+\end{titlepage}
+
+% Sommaire ===========================================================
+\cleardoublepage
+\tableofcontents
+
+% Corps ==============================================================
+\cleardoublepage
+\setcounter{page}{1}
+\pagestyle{fancy}
+\parskip=6pt plus 3pt
+
+\section{Il \'etait une fois\ldots} %-----------------------------------
+
+ \subsection{\ldots{} la vie}
+
+TODO: Intro.
+
+  \subsection{Le champ de bataille}
+
+  \subsection{Globule blanc}
+
+    \subsubsection{Description}
+
+    FIXME: Mettre une image de globule blanc version Il était une fois la vie.
+
+    Le globule blanc\footnote{leucocyte de son petit nom} est l'unité maîtresse
+    des défenses immunitaires. Vous allez donc vous retrouver, Général malgré
+    vous, à la tête d'une unité de ces valeureux soldats prêt à tout donner,
+    même leur vie, pour protéger les cellules. Nous n'insisterons jamais assez
+    sur ce dernier point : votre raison d'être est de protéger les cellules.
+
+    FIXME: Paragraphe sur le QG des GB.
+
+    FIXME: Nombre de points à partager.
+
+    Lorsque vous déclenchez le processus de genèse d'un globule blanc, vous
+    pouvez faire varier sa composition afin d'influer sur ses performances, et
+    donc lui attribuer un rôle spécifique au sein de votre unité. Ajoutez des
+    protéines et votre globule blanc sera à même de lancer plus d'anticorps,
+    plus de lipides et c'est sa vitesse de phagocytose qui s'accroît, plus
+    d'oxygène lui permettra de communiquer plus abondamment avec ses compagnons
+    d'armes et plus de fer lui permettra de voir sa capacité de détection
+    des intrus à longue distance s'accroître.
+
+    Attention cependant à ne pas le surcharger de composants, vous risqueriez de
+    vous retrouver avec un globule dégénéré qui serait totalement inefficace !
+
+    Pour résumer, vous avez <FIXME>N</FIXME> points de compétences à répartir
+    parmi les quatre caractéristiques suivantes :
+
+    \begin{itemize}
+      \item Nombre d'anticorps lâchés
+      \item Vitesse de phagocytose
+      \item Nombre de messages à envoyer
+      \item Champ de vision
+    \end{itemize}
+
+    \subsubsection{Les anticorps \ldots}
+
+    FIXME: Image anticorps.
+
+    Les anticorps sont non pas de sortes de petits robots mais des protéines
+    que votre globule blanc peut libérer en plus ou moins grande quantité et
+    qui vont attaquer les virus et bactéries. Quand vous décidez de libérer
+    vos anticorps, ils sont tout d'abord tous sur votre case et puis tour
+    après tour vont se répandre autour du vous, essentiellement vers le bas
+    dans le sens de l'écoulement du sang.
+
+      \subsubsection*{\ldots vs les virus}
+
+      Pour que vos anticorps soient efficaces contre un type de virus il faut
+      \textbf{absolument} que le globule blanc qui les libère ait déjà tué au
+      moins un virus de ce type par phagocytose.
+
+      Si les anticorps sont efficaces contre le virus rencontré ils vont se
+      fixer sur lui pour le tuer. Chaque anticorps qui se fixe sur un virus
+      pénètre à l'intérieur de ce dernier avant de se dissoudre en une toxine
+      mortelle pour le virus. Un anticorps ne suffit pas pour tuer un virus et
+      suivant la résistance de ce dernier il en faudra plus ou moins. Si la
+      quantité d'anticorps qui se sont fixés sur le virus n'est pas suffisante
+      pour le tuer, il survivra à l'attaque mais en ressortira notablement
+      affaibli.
+
+      \subsubsection*{\ldots vs les bactéries}
+
+      Lorsque des anticorps arrivent sur une case où des bactéries sont
+      présentes ils attaquent la colonie. Chaque anticorps va attaquer une
+      bactérie, fusionner avec elle et la tuer. Ceci implique qu'un anticorps
+      ne peut tuer qu'une bactérie et puis disparaît.
+
+    \subsubsection{La phagocytose}
+
+    FIXME: Image d'un GB qui bouffe un truc.
+
+    La phagocytose est un autre moyen que vos globules blanc ont de repousser
+    l'invasion. Métaphoriquement, ils vont \emph{manger} le virus ou la
+    bactérie cible. En fait il va l'entourer de lipided et l'intégrer à son
+    propre organisme. Il est important de noter qu'une fois qu'un globule
+    blanc à consommé un virus d'un certain type il est capable de produire des
+    anticorps pour lutter contre ce type de virus.
+      
+    \subsubsection{Les messages}
+
+    lol
+
+    \subsubsection{Le champ de vision}
+
+    lol
+
+\end{document}
