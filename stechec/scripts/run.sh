@@ -56,7 +56,6 @@ abort()
 # parse xml file, with our shiny awk parser
 #
 output=`awk -f "${xml_parser_path}xmlparser.awk" "$1"`
-awk -f ${xml_parser_path}xmlparser.awk $1 > awk
 [ $? -ne 0 ] && abort "Cannot parse $1."
 # then go back to ugly sed scripts
 clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT/id=([0-9]+).*$!\1!p' | grep -v 0 | uniq`
