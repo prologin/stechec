@@ -220,7 +220,7 @@ void	GameData::PlayTurn ()
       {
 	if (terrain_type[x][y] == VESSEL)	// on ne rajoute de
 	  // nutiments que dans les vaiseaux
-	  nutriments[x][y]->add(this->rand ());
+	  nutriments[x][y]->add(NEW_NUTRIENT);
 	nutriments[x][y]->spread ();
       }
 
@@ -389,7 +389,7 @@ void	GameData::init ()
     for (int y = 0; y < map_size.col; y++)
       {
 	delete nutriments[x][y];
-	nutriments[x][y] = new Nutriments(x, y, this->rand (), this);
+	nutriments[x][y] = new Nutriments(x, y, terrain_type[x][y] == VESSEL ? NEW_NUTRIENT : 0, this);
       }
   for (int i = 0; i < max_new_seeds; ++i)
     {

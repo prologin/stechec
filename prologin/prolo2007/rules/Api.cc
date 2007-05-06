@@ -98,7 +98,7 @@ int Api::regarde(int x, int y)
     if (g_->players[i].getX () == x && g_->players[i].getY() == y)
       return WHITE_CELL;
   for (i = 0; i < g_->_virus.size(); ++i)
-    if (g_->_virus[i]->getX() == x && g_->_virus[i]->getY() == y)
+    if (g_->_virus[i]->col == x && g_->_virus[i]->row == y)
       return VIRUS;
   for (it = g_->_cells.begin(); it != g_->_cells.end (); ++it)
     if ((*it)->col == x && (*it)->row == y)

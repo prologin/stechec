@@ -27,7 +27,7 @@ void	Leucocyte::addAntibody ()
 
   LOG4("Dropping %1 antibodies", nb);
   antibodies[row][col] += nb;
-  // spread should be donne in PlayTurn
+  // spread should be done in PlayTurn
 }
 
 void	Leucocyte::PlayTurn ()

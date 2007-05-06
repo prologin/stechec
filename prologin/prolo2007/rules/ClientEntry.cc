@@ -73,14 +73,13 @@ int        ClientEntry::beforeNewTurn()
 */
 int        ClientEntry::afterNewTurn()
 {
-StechecPkt com;
+  StechecPkt com;
+  while (fetchCommand(&com))
+    differ_->ApplyDiff(&com);
 
-while (fetchCommand(&com))
-  differ_->ApplyDiff(&com);
-
-g_->PlayTurn ();
-g_->player_turn++;
-return 0;
+  g_->PlayTurn ();
+  g_->player_turn++;
+  return 0;
 }
 
 /*!

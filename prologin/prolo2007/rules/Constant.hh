@@ -23,7 +23,7 @@
 
 # define SUCCESS                   0
 
-# define MAX_TURN                  500
+# define MAX_TURN                  750
 
 # define MAX_MAP_SIZE              40
 

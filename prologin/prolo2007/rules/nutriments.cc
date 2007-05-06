@@ -4,6 +4,8 @@
 
 int Nutriments::eat (int n)
 {
+  if (nb_ < 0)
+    nb_ = 0;
   if (n > nb_)
     n = nb_;
   nb_ -= n;

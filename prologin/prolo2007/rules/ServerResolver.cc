@@ -59,7 +59,7 @@ void	ServerResolver::moveLeucocyte(CommandListRef& cmdList)
       int y = elt->arg[0];
       int x = elt->arg[1];
 
-      if (g_->TestVirus(y, x) && g_->TestCell(y, x)// FIXME TEST LEUCOCYTE
+      if (g_->TestVirus(y, x)// FIXME TEST LEUCOCYTE
 	  )
 	{
 	  validate (validated, cmdList, i);

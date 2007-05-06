@@ -15,7 +15,7 @@ public:
     g_(g)
   {
   }
-  void	add (int n) {nb_ += n % MAX_NUTRIENT;}
+  void	add (int n) {nb_ += n;}
   int	eat (int n);
   void	spread ();
   int	material () {return nb_;}

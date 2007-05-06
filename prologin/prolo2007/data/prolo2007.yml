@@ -33,7 +33,7 @@ constant:
   - doc_extra: \subsubsection{Les valeurs maximum}
   -
     cst_name: MAX_TURN
-    cst_val: 500
+    cst_val: 750
     cst_comment: Nombre maximum de tours.
   -
     cst_name: MAX_MAP_SIZE
