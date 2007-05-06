@@ -251,6 +251,8 @@ int Api::definit_competence(int rapidite, int anticorps, int messages, int visio
 {
   if (c_->GetCompetence())
     return INVALID_COMMAND;
+  if (rapidite < 0 || anticorps < 0 || messages < 0 || vision < 0)
+    return BAD_ARGUMENT;
   if (rapidite + anticorps + messages + vision > MAX_SKILL)
     return BAD_ARGUMENT;
 
