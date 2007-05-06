@@ -107,7 +107,7 @@ void	Leucocyte::PlayTurn ()
 	if (g_->bacterias[y][x] == 0)
 	  continue;
 	n = g_->bacterias[y][x]->kill (antibodies[y][x]);
-	g_->bacterias_killed_by_[get_id ()] += n;
+	//	g_->bacterias_killed_by_[get_id ()] += n;
 	if (g_->bacterias[y][x]->getPopulation () <= 0 && n)
 	    g_->bacterias[y][x]->killedBy (get_id ());
 	antibodies[y][x] -= (antibodies[y][x] < n) ?

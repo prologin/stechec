@@ -249,7 +249,7 @@ void	GameData::PlayTurn ()
 	  {
 	    if (bacterias[y][x]->getKilledBy () >= 0)
 	      {
-		//		bacterias_killed_by_[bacterias[y][x]->getKilledBy ()] += 10;
+		bacterias_killed_by_[bacterias[y][x]->getKilledBy ()] += 1;
 		LOG3("Bacterias died because of %1", bacterias[y][x]->getKilledBy ());
 	      }
 	    delete bacterias[y][x];
@@ -469,10 +469,10 @@ int	GameData::calculScore ()
       if (this->players[i].getState () == STATE_DEAD)
 	tab[i] -= 50;
       tab[i] += this->virus_killed_by_[i] * SCORE_VIRUS;
-      LOG3("Score of %1 after virus: %2", i, tab[i]);
-      total += tab[i];
+      //      LOG3("Score of %1 after virus: %2", i, tab[i]);
       LOG3("Score of %1 : %2", i, tab[i]);
       tab[i] = std::max(tab[i], 0);
+      total += tab[i];
     }
   for (int i = 0; i < this->getNbTeam (); ++i)
     {
@@ -483,7 +483,7 @@ int	GameData::calculScore ()
 //      players[i].score_ = tab[i]; // removed by LLB
 	players[i].score_ = 0; // added by LLB
       else
-	players[i].score_ = tab[i] / total;  // added by LLB
+	players[i].score_ = n * tab[i] / total;  // added by LLB
     }
   // How to compute the score
 }
