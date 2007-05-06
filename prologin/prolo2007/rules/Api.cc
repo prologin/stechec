@@ -55,7 +55,6 @@ int Api::taille_equipe(int team_id)
 
 int Api::mon_equipe()
 {
-  LOG3("player_id: %1, team_id: %2", g_->getUid(), g_->getTeamId());
   return g_->getTeamId();
 }
 
@@ -427,8 +426,8 @@ int Api::getVirus(int id, int *x, int *y, int *type)
     {
       if (g_->_virus[i]->get_id () == id)
 	{
-	  *x = g_->_virus[i]->getX ();
-	  *y = g_->_virus[i]->getY ();
+	  *x = g_->_virus[i]->getX();
+	  *y = g_->_virus[i]->getY();
 	  *type = g_->_virus[i]->Maladie ();
 	  return 0;
 	}

@@ -104,7 +104,7 @@ GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   map_x_ = api_->taille_corps_x();
   map_y_ = api_->taille_corps_y();
 
-  LOG2("Map size %1 %2\n", map_x_, map_y_);
+  LOG4("Map size %1 %2\n", map_x_, map_y_);
 
   // Initialize SDL window and the main scrollable surface.
   win_.init(xml);

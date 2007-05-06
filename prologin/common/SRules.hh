@@ -75,6 +75,7 @@ private:
   void msgChampionError(const MsgChampionError* m);
 
   int                    wait_nb_;			///< Number of ready player.
+  bool                   wait_ok_;
   int                    wait_tab_[MAX_PLAYER];		///< Uid list of ready player.
   CoachErrorCustom*      coach_error_[MAX_PLAYER];	///< Array of received player error.
   int                    coach_killed_nb_;        ///< Number of coach killed.

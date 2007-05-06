@@ -59,14 +59,14 @@ void	Leucocyte::PlayTurn ()
     return;
   // antibody attack
   LOG3("Antibody map, player :%1", get_id ());
-  for (int y = 0; y < g_->map_size.row; ++y)
-    {
-      for (int x = 0; x < g_->map_size.col; ++x)
-	{
-	  std::cout << antibodies[y][x] << "|";
-	}
-      std::cout << std::endl;
-    }
+//   for (int y = 0; y < g_->map_size.row; ++y)
+//     {
+//       for (int x = 0; x < g_->map_size.col; ++x)
+// 	{
+// 	  std::cout << antibodies[y][x] << "|";
+// 	}
+//       std::cout << std::endl;
+//     }
   LOG4("Leucocyte %1 antibodies", get_id ());
   for (int y = 0; y < g_->map_size.row; ++y)
     for (int x = 0; x < g_->map_size.col; ++x)

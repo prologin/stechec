@@ -282,7 +282,7 @@ int         ServerEntry::beforeNewTurn()
 
 int         ServerEntry::afterNewTurn()
 {
-  displayMap();
+//   displayMap();
   g_->PlayTurn ();
   g_->player_turn++;
   return 0;

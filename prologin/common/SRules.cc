@@ -17,6 +17,7 @@
 SRules::SRules(StechecGameData* data, StechecServer* server,
                StechecServerResolver* resolver, StechecServerEntry* serverep)
   : wait_nb_(0),
+    wait_ok_(false),
     coach_killed_nb_(0),
     league_tab_size_(0),
     data_(data),
@@ -27,10 +28,10 @@ SRules::SRules(StechecGameData* data, StechecServer* server,
   for (int i = 0; i < MAX_PLAYER; i++)
     coach_error_[i] = NULL;
   
-  HANDLE_WITH(STECHEC_PKT, SRules, this, msgStechecPkt, GS_AFTERTURN);
+  HANDLE_WITH(STECHEC_PKT, SRules, this, msgStechecPkt, GS_PLAYTURN);
   HANDLE_WITH(MSG_INIT_GAME, SRules, this, msgInitGame, GS_INITGAME);
   HANDLE_WITH(MSG_BEFORE_TURN, SRules, this, msgBeforeTurn, GS_BEFORETURN);
-  HANDLE_WITH(MSG_AFTER_TURN, SRules, this, msgAfterTurn, GS_AFTERTURN);
+  HANDLE_WITH(MSG_AFTER_TURN, SRules, this, msgAfterTurn, GS_PLAYTURN);
   HANDLE_WITH(MSG_CHAMPION_ERROR, SRules, this, msgChampionError, 0);
 
   setState(GS_BEFOREGAME);
@@ -80,7 +81,6 @@ void SRules::addPlayer(int client_id, int league_id)
 	ERR("too much team (max %1)", MAX_TEAM);
     }
 
-  LOG1("set team_id %1 -> %2", i, league_id);
   data_->team_[client_id] = i;
   MsgListTeam pkt(client_id);
   pkt.team_id = i;
@@ -171,29 +171,47 @@ void SRules::serverStartup()
 // Called periodically, to handle things such as timer.
 void SRules::serverProcess()
 {
-  if (getState() == GS_PLAYTURN
-      && (!(getViewerState() & VS_HAVEVIEWER)
-          || getViewerState() & VS_READY))
+  // end of turn, and everybody's ready.
+  if (getState() == GS_PLAYTURN && wait_ok_ &&
+      (!(getViewerState() & VS_HAVEVIEWER) || getViewerState() & VS_READY))
     {
       setViewerState(getViewerState() & ~VS_READY);
+      wait_ok_ = false;
 
-      // Go to the next turn.
-     data_->current_turn_++;
-      LOG2("================== Turn %1 ==================",
-	   data_->getCurrentTurn());
-      
-      int r = server_entry_->beforeNewTurn();
-      if (!afterHook(r, "beforeNewTurn"))
+      resolver_->ApplyResolverPriv(command_list_);
+      command_list_.clear();
+  
+      int r = server_entry_->afterNewTurn();
+      if (!afterHook(r, "afterNewTurn"))
         return;
-      
-      sendPacket(MsgBeforeTurn());
-      setState(GS_AFTERTURN);
+
+      if (server_entry_->isMatchFinished())
+        {
+          // end of match
+          int r = server_entry_->afterGame();
+          afterHook(r, "afterGame");
+          sendPacket(MsgAfterGame());
+          setState(GS_END);
+        }
+      else
+        {
+          sendPacket(MsgAfterTurn());
+          setState(GS_BEFORETURN);
+
+          // Go to the next turn.
+          data_->current_turn_++;
+          LOG2("================== Turn %1 ==================",
+               data_->getCurrentTurn());
+
+          int r = server_entry_->beforeNewTurn();
+          if (!afterHook(r, "beforeNewTurn"))
+            return;
+        }
     }
 }
 
 bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
 {
-  LOG2("coach killed: %1 %2", coach_id, coach_error_[coach_id]);
   coach_killed_nb_++;
   if (coach_error_[coach_id] != NULL)
     {
@@ -242,9 +260,10 @@ bool SRules::waitAllClient(int client_id)
       }
 
   wait_tab_[wait_nb_++] = client_id;
-  if (wait_nb_ >= getTeamNumber() - coach_killed_nb_)
+  if (wait_nb_ >= getCoachNumber() - coach_killed_nb_)
     {
       wait_nb_ = 0;
+      wait_ok_ = true;
       return true;
     }
   return false;
@@ -274,11 +293,10 @@ void SRules::msgBeforeTurn(const MsgBeforeTurn* m)
 {
   if (!waitAllClient(m->client_id))
     return;
-  setState(GS_PLAYTURN);
 
-  // Maybe we can begin next turn now, without waiting this function to be
-  // automatically called.
-  serverProcess();
+  sendPacket(MsgBeforeTurn());
+  setState(GS_PLAYTURN);
+  wait_ok_ = false;
 }
 
 void SRules::msgAfterTurn(const MsgAfterTurn* m)
@@ -286,24 +304,6 @@ void SRules::msgAfterTurn(const MsgAfterTurn* m)
   if (!waitAllClient(m->client_id))
     return;
 
-  resolver_->ApplyResolverPriv(command_list_);
-  command_list_.clear();
-  
-  int r = server_entry_->afterNewTurn();
-  if (!afterHook(r, "afterNewTurn"))
-    return;
-
-  if (server_entry_->isMatchFinished())
-    {
-      int r = server_entry_->afterGame();
-      afterHook(r, "afterGame");
-      sendPacket(MsgAfterGame());
-      setState(GS_END);
-      return;
-    }
-
-  sendPacket(MsgAfterTurn());
-  setState(GS_BEFORETURN);
 }
 
 void SRules::msgChampionError(const MsgChampionError* m)
