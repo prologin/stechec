@@ -459,6 +459,7 @@ int	GameData::calculScore ()
   int ids[MAX_PLAYER];
   int nb_id;
   int id_leuco_to_team[MAX_PLAYER];
+  //associe a chaque leucocyte sa team
   std::fill(id_leuco_to_team, id_leuco_to_team+MAX_PLAYER, -1);
   for (int t=0 ; t < this->getNbTeam() ; ++t) {
     this->getAllIdFromTeamId(t, ids, &nb_id);
@@ -488,6 +489,7 @@ int	GameData::calculScore ()
       tab[i] += this->virus_killed_by_[i] * SCORE_VIRUS;
       LOG3("Score of %1 : %2", i, tab[i]);
       players[i].score_ = tab[i];
+      assert(id_leuco_to_team[i] != -1);
       P[id_leuco_to_team[i]] += players[i].score_;
     }
   int total=0;

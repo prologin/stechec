@@ -319,6 +319,7 @@ void		ServerEntry::calculScores()
 
 int        ServerEntry::getScore(int uid)
 {
+  //fonction utilisee par l'interface web (et apres somme par cette interface par team)
   calculScores ();
   return g_->players[uid].score_;
 }
