@@ -99,7 +99,6 @@ void	Leucocyte::PlayTurn ()
   for (int y = g_->map_size.row - 1; y >= 0 ; --y)
     for (int x = g_->map_size.col -1; x >= 0 ; --x)
       {
-	int n = antibodies[y][x] * 0.1;
 	for (int i = 0; i < 4; ++i)
 	  {
 	    int n_col = x;
@@ -110,12 +109,12 @@ void	Leucocyte::PlayTurn ()
 	    if (n_row < 0 || n_row == g_->map_size.row ||
 		n_col < 0 || n_col == g_->map_size.col)
 	      continue;
-	    antibodies[n_row][n_col] += 0.37 * antibodies[y][x];
+	    antibodies[n_row][n_col] += 0.25 * antibodies[y][x];
 
 	    //  	    if (antibodies[n_row][n_col] && antibodies[y][x])
 	    //  	      antibodies[n_row][n_col] = 1;
 	  }
-	antibodies[y][x] = n;
+	antibodies[y][x] = 0;
       }
   LOG3("Leucocyte %1 antibodies after spread and attack", get_id ());
   for (int y = 0; y < g_->map_size.row; ++y)
