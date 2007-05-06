@@ -15,7 +15,7 @@
 
 # include "Contest.hh"
 # include "GameData.hh"
-#include "leucocyte.hh"
+# include "leucocyte.hh"
 
 class Server : public StechecServer
 {
@@ -23,10 +23,8 @@ class Server : public StechecServer
       Server(GameData *g) : StechecServer(g) {}
       virtual ~Server() {}
 
-
       void	changeState(Leucocyte& l, int state);
-      void	addLeucocyte(int team, int uid,
-			     int x, int y, int real);
+      void	addLeucocyte(int team, int uid, int x, int y);
 };
 
 #endif // !SERVER_HH_

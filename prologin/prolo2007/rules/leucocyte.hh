@@ -1,8 +1,9 @@
 
 #ifndef LEUCOCYTE_HH_
 # define LEUCOCYTE_HH_
-#include "Contest.hh"
-#include "Object.hh"
+
+# include "Contest.hh"
+# include "Object.hh"
 
 enum Competence
   {
@@ -42,10 +43,33 @@ public:
   int	competences[LAST_COMPETENCE];
 
   void	addAntibody ();
+
+  void  Phagocyte(int y, int x, Virus&);
+
+  void  Phagocyte(int y, int x, Cellule&);
+
+  void  Phagocyte(int y, int x, Leucocyte&);
+
+  void	Phagocyte ()
+  {
+    state_ = STATE_PHAGOCYTOSING;
+    phagocytose_turn_ = PHAGOCYTOSIS_DURATION;
+  }
+
+  virtual void		StopActions ();
+
   virtual void	PlayTurn ();
 
   unsigned int antibodies[MAX_MAP_SIZE][MAX_MAP_SIZE];
-
+  std::vector<int>	known_types;
+  int			knows_type (int type)
+  {
+    for (std::vector<int>::iterator it = known_types.begin ();
+	 it != known_types.end (); ++it)
+      if (*it == type)
+	return 1;
+    return 0;
+  }
 private:
   int	r_uid_;
   int	score_;
@@ -53,6 +77,10 @@ private:
   int	nb_sent_messages_; // to be reinitialized each turn
   int	max_messages_sendable_;
   int	last_message_;
+  int	phagocytose_turn_;
+  Virus* v_;
+  Cellule* c_;
+  Leucocyte* l_;
   GameData* g_;
   //fixme
 };

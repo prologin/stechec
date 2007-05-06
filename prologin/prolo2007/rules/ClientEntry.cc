@@ -14,9 +14,9 @@
 #include "ClientEntry.hh"
 
 ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client):
-   StechecClientEntry(game, diff, client)
+  StechecClientEntry(game, diff, client)
 {
-   c_->InitData();
+  c_->InitData();
 }
 
 /*!
@@ -27,13 +27,13 @@ ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client):
 */
 int        ClientEntry::beforeGame()
 {
-   StechecPkt com;
-   c_->InitData();
-   while (fetchCommand(&com))
-      differ_->ApplyDiff(&com);
-   g_->InitMap();
-   g_->init ();
-   return 0;
+  StechecPkt com;
+  c_->InitData();
+  while (fetchCommand(&com))
+    differ_->ApplyDiff(&com);
+  g_->InitMap();
+  g_->init ();
+  return 0;
 }
 
 /*!
@@ -44,8 +44,8 @@ int        ClientEntry::beforeGame()
 
 int        ClientEntry::initGame()
 {
-   c_->SetCompetence (true);
-   return 0;
+  c_->SetCompetence (true);
+  return 0;
 }
 
 /*!
@@ -56,12 +56,15 @@ int        ClientEntry::initGame()
 int        ClientEntry::beforeNewTurn()
 {
   LOG1("Random is now : %1", g_->rand ());
-   for (int i = 0; i < g_->getNbPlayer (); ++i)
-   {
-      g_->players[i].action = false;
+  for (int i = 0; i < g_->getNbPlayer (); ++i)
+    {
+      if (g_->players[i].getState () == STATE_NORMAL)
+	g_->players[i].action = false;
+      else
+	g_->players[i].action = true;
       g_->players[i].ResetSentMessages ();
-   }
-   return 0;
+    }
+  return 0;
 }
 
 /*!
@@ -70,14 +73,14 @@ int        ClientEntry::beforeNewTurn()
 */
 int        ClientEntry::afterNewTurn()
 {
-   StechecPkt com;
+StechecPkt com;
 
-   while (fetchCommand(&com))
-      differ_->ApplyDiff(&com);
+while (fetchCommand(&com))
+  differ_->ApplyDiff(&com);
 
-   g_->PlayTurn ();
-   g_->player_turn++;
-   return 0;
+g_->PlayTurn ();
+g_->player_turn++;
+return 0;
 }
 
 /*!
@@ -86,8 +89,9 @@ int        ClientEntry::afterNewTurn()
 */
 int        ClientEntry::afterGame()
 {
-   // ok quand fog ok c_->FreeData();
-   g_->FreeData();
+  // ok quand fog ok c_->FreeData();
+  g_->end ();
+  g_->FreeData();
 
-   return 0;
+  return 0;
 }

@@ -14,6 +14,9 @@ public:
     nb_(nb % 5)
   {}
   virtual void PlayTurn ();
+  virtual void		StopActions (){}
+  int	kill (int nb);
+  int	getPopulation () {return nb_;}
 private:
   void	eat ();
   void	spread (); // Only in the vessels

@@ -21,54 +21,46 @@
   if (x >= g_->map_size.col || y >= g_->map_size.row || y < 0 || x < 0) \
     return BAD_ARGUMENT;
 
-#define NB_TEAM(A) \
-((A) / MAX_WHITE_CELL)
-
-#define TEAM_FROM_ID(A) \
-((A) / MAX_WHITE_CELL)
-
-# define ID_EXISTS(id) \
-  if (id < 0 || id >= g_->getNbPlayer()) \
+# define CHECK_PLAYER(id) \
+  if ((id) < 0 || (id) >= g_->getNbPlayer()) \
     return BAD_ARGUMENT;
 
-# define TEAM_EXISTS(id) \
-  (id >= 0 && id < NB_TEAM(g_->getNbPlayer()))
+# define CHECK_TEAM(id)						\
+  if ((id) < 0 || !g_->getAllIdFromTeamId(id, NULL, NULL))	\
+    return BAD_ARGUMENT;
 
-# define FOG(x, y)	\
-(g_->GetWrapUid() >= 0 && c_->player_fog[y][x] == 0)
+# define FOG(x, y)						\
+  (g_->getUid() < UID_VIEWER_BASE && c_->player_fog[y][x] == 0)
 
-# define IF_FOG(x, y) \
-  if (FOG(x, y)) \
+# define CHECK_FOG(x, y)				\
+  if (FOG(x, y))				\
     return UNKNOWN;
 
 #define ALREADY_ACT(id) \
-(g_->players[(id)].action)
+  (g_->players[(id)].action)
 
 #define SET_ACT() \
-g_->players[g_->GetWrapUid ()].action = true;
+  g_->players[g_->getUid()].action = true;
 
-#define TRY_ACT() \
-  if (g_->players[g_->GetWrapUid ()].getState () != STATE_NORMAL || ALREADY_ACT(g_->GetWrapUid ())) \
-{  LOG2("Forbidden action (bad id or it has already acted this turn)");   return INVALID_COMMAND;}
+#define CHECK_DEAD() \
+  if (g_->players[g_->getUid()].getState () == STATE_DEAD)\
+    return INVALID_COMMAND;
+
+#define TRY_ACT()								\
+  do {										\
+    if (g_->players[g_->getUid()].getState () != STATE_NORMAL ||		\
+        ALREADY_ACT(g_->getUid()))						\
+        {									\
+	  LOG2("Forbidden action (bad id or it has already acted this turn)");	\
+	  return INVALID_COMMAND;						\
+	}									\
+  } while (0)
+
+
 /*!
 ** Method of this call are called by the candidat, throught 'interface.cc'
 **
-** You can:void          sleep(t_id id)
-{
-i_thread    thid;
-o_wait      *wait;
-
-thread_current(&thid);
-if (set_get(waits, id, (void**)&wait) != ERROR_NONE)
-{
-  wait = malloc(sizeof (o_wait));
-  wait->id = id;
-  set_add(waits, wait);
-  set_reserve(pipe, SET_OPT_NONE, sizeof (o_wait), &wait->queue);
-}
- set_push(wait->queue, &thid);
- thread_state(thid, SCHED_STATE_STOP);
-}
+** You can:
 **  - access to the GameData class: g_
 **  - send message to the server: void SendToServer(struct s_com&)
   */
@@ -86,6 +78,7 @@ protected:
 
 public:
   int equipes();
+  int nombre_leucocyte ();
   int taille_equipe(int team_number);
   int mon_equipe();
   int mon_identifiant();
@@ -95,9 +88,7 @@ public:
   int visible(int x, int y);
   int visible_depuis(int from_x, int from_y, int to_x, int to_y);
   int score(int id);
-  int current_beat();
-  int time_remaining();
-  int extra_time_remaining();
+  int battement_courant();
   int leucocyte_visible(int id);
   int bacteries_presentes (int x, int y);
   int identifiant_leucocyte(int x, int y);
@@ -107,7 +98,7 @@ public:
   int etat_cellule(int x, int y);
   int etat_leucocyte(int id);
   int connait_type(int x, int y);
-  int defini_competence(int rapidite, int anticorps, int messages, int vision);
+  int definit_competence(int rapidite, int anticorps, int messages, int vision);
   int deplace_leucocyte(int x, int y);
   int phagocyte(int x, int y);
   int emet_anticorps();
@@ -120,7 +111,7 @@ public:
   int terrainAt(int x, int y);
   int getLeucocyte(int team, int id, int *x, int *y);
   int getVirus(int id, int *x, int *y, int *type);
-  int getBacteria(int id, int *x, int *y);
+  int getBacteria(int x, int y);
   int getCell(int id, int *x, int *y, int *state);
   int getFood(int x, int y);
   int getAntibody(int x, int y);

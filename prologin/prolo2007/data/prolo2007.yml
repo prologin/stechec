@@ -38,22 +38,14 @@ constant:
   -
     cst_name: MAX_MAP_SIZE
     cst_val: 40
-    cst_comment: Taille maximum de la carte en largeur/hauteur.
-  -
-    cst_name: MAX_TEAM
-    cst_val: 6
-    cst_comment: Nombre maximal d'equipes en jeu.
-  -
-    cst_name: MAX_WHITE_CELL
-    cst_val: 5
-    cst_comment: Nombre maximal de leucocyte par equipe.
+    cst_comment: Taille maximum de la carte en largeur-hauteur.
   -
     cst_name: MAX_BACTERY
-    cst_val: 20
+    cst_val: 30
     cst_comment: Nombre maximal de bacteries sur une case.
   -
     cst_name: MAX_NUTRIENT
-    cst_val: 50
+    cst_val: 17
     cst_comment: Nombre maximal de nutriments sur une case.
   -
     cst_name: MAX_SKILL
@@ -76,7 +68,7 @@ constant:
     cst_comment: Quantite de nutriments dont une cellule a besoin pour faire une mitose.
   -
     cst_name: VIRUS_MATERIAL
-    cst_val: 50
+    cst_val: 15
     cst_comment: Quantite de nutriments dont une cellule a besoin pour fabriquer un virus.
   -
     cst_name: BACTERY_NUTRIENT
@@ -85,6 +77,10 @@ constant:
   -
     cst_name: VIRUS_PRODUCTION_DURATION
     cst_val: 10
+    cst_comment: Nombre de tours nécessaires a une cellule pour produire un virus.
+  -
+    cst_name: VIRUS_LIFE
+    cst_val: 50
     cst_comment: Nombre de tours nécessaires a une cellule pour produire un virus.
   -
     cst_name: MITOSIS_DURATION
@@ -96,7 +92,7 @@ constant:
     cst_comment: Nombre de tours nécessaires a un virus pour transformer une cellule.
   -
     cst_name: PHAGOCYTOSIS_DURATION
-    cst_val: 10
+    cst_val: 30
     cst_comment: Nombre de tours nécessaires a un leucocyte pour digerer un virus.
 
 
@@ -137,13 +133,16 @@ constant:
     cst_val: 1
     cst_comment: La cellule est infectée par un virus.
   -
-    cst_name: CELL_STATE_PRODUCTING_VIRII
+    cst_name: CELL_STATE_BEING_INFECTED
     cst_val: 2
-    cst_comment: La cellule est morte.
-
+    cst_comment: La cellule est entrain d'etre infectee.
+  -
+    cst_name: CELL_STATE_BEING_PHAGOCYTED
+    cst_val: 3
+    cst_comment: La cellule est entrain d'etre phagocytee.
   -
     cst_name: CELL_STATE_DEAD
-    cst_val: 3
+    cst_val: 4
     cst_comment: La cellule est morte.
 
 
@@ -156,6 +155,10 @@ constant:
     cst_name: STATE_PHAGOCYTOSING
     cst_val: 1
     cst_comment: Le leucocyte est en train de phagocyter.
+  -
+    cst_name: STATE_BEING_PHAGOCYTED
+    cst_val: 2
+    cst_comment: Le leucocyte est en train d'etre phagocyte.
   -
     cst_name: STATE_DEAD
     cst_val: 3
@@ -193,6 +196,10 @@ function:
   -
     fct_name: equipes
     fct_summary: Nombre d'equipes presentes sur le terrain.
+    fct_ret_type: int
+  -
+    fct_name: nombre_leucocyte
+    fct_summary: Nombre de leucocytes presents sur la map qu debut du jeu.
     fct_ret_type: int
   -
     fct_name: taille_equipe
@@ -235,7 +242,7 @@ function:
   -
     fct_name: bacteries_presentes
     fct_summary: |
-	Dit si des bacteries sont presentes sur la case specifiee.
+      Dit si des bacteries sont presentes sur la case specifiee.
     fct_ret_type: int
     fct_ret_comment: Retourne 1 si oui, 0 sinon.
     fct_arg:
@@ -260,7 +267,7 @@ function:
     fct_arg:
       - [id, int, Un identifiant d'équipe.]
   -
-    fct_name: current_beat
+    fct_name: battement_courant
     fct_summary: Date actuelle.
     fct_ret_type: int
   - doc_extra: |
@@ -269,17 +276,6 @@ function:
       paradoxe~! Le fait d'appeler une fonction pour savoir si vous avez
       perdu du temps vous fait perdre du temps, c'est inévitable. Donc un
       conseil~: évitez d'appeler cette fonction trop souvent.
-  -
-    fct_name: time_remaining
-    fct_summary: Temps restant pour ce tour.
-    fct_notice: L'unite de temps est la milliseconde.
-    fct_ret_type: int
-  -
-    fct_name: extra_time_remaining
-    fct_summary: Temps additionnel restant pour la partie.
-    fct_notice: L'unite de temps est la milliseconde.
-    fct_ret_type: int
-
 
   - doc_extra: \subsubsection{Informations sur les joueurs}
   -
@@ -331,7 +327,8 @@ function:
     fct_ret_comment: UNKNOWN si la cellule n'est pas visible.
     fct_ret_type: int
     fct_arg:
-      - [id, int, Un identifiant de leucocyte.]
+      - [x, int, Position x de la cellule]
+      - [y, int, Position y de la cellule]
 
   - doc_extra: |
      \subsection{Informations sur l'infection}
@@ -355,9 +352,9 @@ function:
      Toutes les fonctions renvoient un entier correspondant au succès ou à
      l'échec de la commande.
   -
-    fct_name: defini_competence
+    fct_name: definit_competence
     fct_summary: |
-      Defini les competence d'un leucocyte
+      Definit les competence d'un leucocyte
     fct_ret_comment: |
       SUCCESS si les arguments sont corrects (somme des competence < MAX_SKILL)
       Sinon, retourne BAD_ARGUMENT

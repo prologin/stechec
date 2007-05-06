@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2007 Prologin
 */
 
 #include "GameData.hh"
@@ -46,7 +46,10 @@ void	Client::change_fog(unsigned player_id,
 
    for (int i = pos.row; i < stp.row; ++i)
       for (int j = pos.col; j < stp.col; ++j)
-	 if (abs(ref.row - i) + abs(ref.col - j) <=
+	 if ( abs(ref.row - i) + abs(ref.col - j)
+	     // (2 * std::max(abs(ref.row - i) , abs(ref.col - j)) +
+// 	     std::max(abs(ref.row - i) , abs(ref.col - j)))
+	     <=
 	     g_->players[player_id].competences[VISION])
 	 {
 	    player_fog[i][j] += sens;

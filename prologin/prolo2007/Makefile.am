@@ -5,6 +5,7 @@ SUBDIRS =					\
 	rules
 
 if HAVE_SDL
-SUBDIRS += visu
+  SUBDIRS += visu
 endif
 
+SUBDIRS += subject

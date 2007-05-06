@@ -15,120 +15,45 @@
 
 void	ServerResolver::ApplyResolver(CommandListRef cmdList[])
 {
-  CommandListRef::iterator it;
 
-  char	msg[MAX_TEAM * MAX_WHITE_CELL] = { 0 };
-  int	nb = 0;
-
-  // Qui a envoye un message ?
-  for (int i = 0; i < LAST_MSG; ++i)
-    // Pour la phagocytose, autre type de resolution de conflits
-    if (i != PHAGOCYTE && i != TRANSMISSION && i != COMPETENCE)
-      for (it = cmdList[i].begin(); it != cmdList[i].end(); ++it)
-	{
-	  LOG1("*********** Message nb %1 *********", i);
-	  if (msg[(*it)->arg[0]] == 0)
-	    {
-	      LOG1("*********** id %1 *********", (*it)->arg[0]);
-	      nb++;
-	      msg[(*it)->arg[0]] = 1;
-	    }
-	}
-  // Renversement du tableau :
-  //  id 0 1 2 3    ==>   nb 1 2
-  // msg 0 1 0 1          id 1 3
-
-  std::vector<char>	leuco;
-  for (int i = 0; i < MAX_TEAM * MAX_WHITE_CELL; ++i)
-    if (msg[i] == 1)
-      leuco.push_back(i);
-
-  // Choix aleatoire de qui va faire ses actions
-  for (int i = nb; i > 0; --i)
-    {
-      int it = rand() % i;
-      makeActions(leuco[it], cmdList);
-      int tmp;
-      std::vector<char>::iterator j;
-      for (j = leuco.begin(), tmp = 0;
-	   tmp < it && j != leuco.end(); j++, tmp++)
-	;
-      leuco.erase(j);
-    }
-
-  // Gestion de la phagocytose
-  Phagocytose(cmdList[PHAGOCYTE]);
-  // Gestion de la transimission
-  Messages(cmdList[TRANSMISSION]);
-  // Gestion de la competence
-  Competences(cmdList[COMPETENCE]);
-  // Gestion des anticorps
-  Antibody (cmdList[DROP_ANTIBODY]);
+  // Gere les messages speciaux a part.
+  moveLeucocyte (cmdList[MOVE_LEUCO]);
+  Phagocytose   (cmdList[PHAGOCYTE]);
+  Messages      (cmdList[TRANSMISSION]);
+  Competences   (cmdList[COMPETENCE]);
+  Antibody      (cmdList[DROP_ANTIBODY]);
 }
 
-void	ServerResolver::makeActions(int id, CommandListRef cmdList[])
+void	ServerResolver::moveLeucocyte(CommandListRef& cmdList)
 {
   CommandListRef::iterator it;
+  StechecPkt* elt;
+  bool  *validated = new bool[cmdList.size ()];
 
-  for (int i = 0; i < LAST_MSG; ++i)
-    for (it = cmdList[i].begin(); it != cmdList[i].end(); ++it)
-      if ((*it)->arg[0] == id)
-	{
-	  switch (i)
-	    {
-	    case MOVE_LEUCO:
-	      {
-		moveLeucocyte(*it);
-		break;
-	      }
-	    }
-	}
-}
+  for (int i = 0; i < cmdList.size (); ++i)
+    validated[i] = true;
 
-
-void	ServerResolver::moveLeucocyte(const StechecPkt* elt)
-{
-  // void	ServerResolver::moveLeucocyte(CommandListRef& cmdList)
-  // {
-  //   **************** OLD ******************
-  //   const	StechecPkt* elt;
-  //   int	id, y, x;
-  //   char	resolv[MAX_MAP_SIZE][MAX_MAP_SIZE][MAX_TEAM * MAX_WHITE_CELL] = { 0 };
-  //   char	leuco_mov[MAX_TEAM * MAX_WHITE_CELL] = { 0 };
-
-  //   for (CommandListRef::iterator it = cmdList.begin();
-  //        it != cmdList.end(); ++it)
-  //     {
-  //       elt = *it;
-  //       id = elt->arg[0];
-  //       y = elt->arg[1];
-  //       x = elt->arg[2];
-  //       // Verification virus : si il y a un virus, bouge pas
-  //       if (g_->terrain_type[y][x] != VIRUS)
-  // 	resolv[y][x][id]++;
-  //       else
-  // 	resolv[g_->players[id].row][g_->players[id].col][id]++;
-  //       leuco_mov[id]++;
-  //     }
-  //   // Ajout de ceux qui ont pas demande a bouger
-  //   for (int i = 0; i < MAX_TEAM * MAX_WHITE_CELL; ++i)
-  //     if (leuco_mov[i] == 0)
-  //       resolv[g_->players[i].row][g_->players[i].col][i]++;
-
-  int id = elt->arg[0];
-  int y = elt->arg[1];
-  int x = elt->arg[2];
-
-
-  if (g_->TestVirus(y, x)// FIXME TEST LEUCOCYTE
-      )
+  int i = 0;
+  for (it = cmdList.begin(); it != cmdList.end(); ++it, ++i)
     {
-      g_->players[id].row = y;
-      g_->players[id].col = x;
-      //      g_->terrain_type[y][x] = WHITE_CELL;
-      LOG1("Accept MOVE: Get arg x: %1, y:%2, id: %3", x, y, id);
-      // Si mouvement valide, on envoit ca a tout le monde
-      SendToAll(*elt);
+      elt = *it;
+      int id = elt->client_id;
+      int y = elt->arg[0];
+      int x = elt->arg[1];
+
+      if (g_->TestVirus(y, x)// FIXME TEST LEUCOCYTE
+	  )
+	{
+	  validate (validated, cmdList, i);
+	  if (!validated[i])
+	    continue;
+	  g_->players[id].row = y;
+	  g_->players[id].col = x;
+	  //      g_->terrain_type[y][x] = WHITE_CELL;
+	  LOG3("Accept MOVE: Get arg x: %1, y:%2, id: %3", x, y, id);
+	  // Si mouvement valide, on envoit ca a tout le monde
+	  SendToAll(*elt);
+	}
     }
 }
 
@@ -140,33 +65,107 @@ void	ServerResolver::Antibody (CommandListRef& cmdList)
   for (it = cmdList.begin(); it != cmdList.end(); ++it)
     {
       elt = *it;
-      Leucocyte cur = g_->players[elt->arg[0]];
-      cur.addAntibody ();
+      Leucocyte* cur = &g_->players[elt->client_id];
+      LOG3("Leucocyte %1 drops antibodies", elt->client_id);
+      cur->addAntibody();
       SendToAll(*elt);
+      for (int y = 0; y < g_->map_size.row; ++y)
+	{
+	  for (int x = 0; x < g_->map_size.col; ++x)
+	    std::cout << g_->players[elt->client_id].antibodies[y][x] << "|";
+	  std::cout << std::endl;
+	}
     }
 }
 
 void	ServerResolver::Competences(CommandListRef& cmdList)
 {
   CommandListRef::iterator it;
-  StechecPkt* elt;
   for (it = cmdList.begin(); it != cmdList.end(); ++it)
     {
-      elt = *it;
-      g_->players[elt->arg[0]].competences[PHAGO_SPEED] =
-	elt->arg[1];
-      g_->players[elt->arg[0]].competences[ANTIBODY_NB] =
-	elt->arg[2];
-      g_->players[elt->arg[0]].competences[MESSAGES_NB] =
-	elt->arg[3];
-      g_->players[elt->arg[0]].competences[VISION] =
-	elt->arg[4];
+      StechecPkt* elt = *it;
+
+      g_->players[elt->client_id].competences[PHAGO_SPEED] = elt->arg[0];
+      g_->players[elt->client_id].competences[ANTIBODY_NB] = elt->arg[1];
+      g_->players[elt->client_id].competences[MESSAGES_NB] = elt->arg[2];
+      g_->players[elt->client_id].competences[VISION] = elt->arg[3];
+      SendToAll(*elt);
+    }
+}
+
+void	ServerResolver::validatePh (bool*  validated,
+				  CommandListRef& cmdList, int index)
+{
+  int x = g_->players[cmdList[index]->client_id].col;
+  int y = g_->players[cmdList[index]->client_id].row;
+  int tox = cmdList[index]->arg[1];
+  int toy = cmdList[index]->arg[0];
+  for (int i = 0; i < cmdList.size (); ++i)
+    {
+      if (i != index)
+	{
+	  if (cmdList[i]->arg[0] == y &&
+	      cmdList[i]->arg[1] == x &&
+	      tox == g_->players[cmdList[i]->client_id].col &&
+	      toy == g_->players[cmdList[i]->client_id].row)
+	    {
+	      validated[i] = false;
+	      validated[index] = false;
+	      LOG3("Action %1 %2 cancelled...", i, index);
+    }
+	}
+    }
+}
+
+void	ServerResolver::validate (bool*  validated,
+				  CommandListRef& cmdList, int index)
+{
+  int x = cmdList[index]->arg[1];
+  int y = cmdList[index]->arg[0];
+
+  for (int i = 0; i < cmdList.size (); ++i)
+    {
+      LOG3("Validating %1 with %2 : [%3,%4]<>[%5,%6]", i, index,
+	   y, x, cmdList[i]->arg[0],cmdList[i]->arg[1]);
+      if (i != index)
+	{
+	  if (cmdList[i]->arg[0] == y &&
+	      cmdList[i]->arg[1] == x)
+	    {
+	      validated[i] = false;
+	      validated[index] = false;
+	      LOG3("Action %1 %2 cancelled...", i, index);
+	    }
+	}
     }
 }
 
 void	ServerResolver::Phagocytose(CommandListRef& cmdList)
 {
+  CommandListRef::iterator it;
+  bool  *validated = new bool[cmdList.size ()];
 
+  for (int i = 0; i < cmdList.size (); ++i)
+    validated[i] = true;
+
+  int i = 0;
+  for (it = cmdList.begin(); it != cmdList.end(); ++it, ++i)
+    {
+      StechecPkt* elt = *it;
+      LOG1("Phagocytose requested by %1 to [%2,%3]",
+	  elt->client_id, elt->arg[0], elt->arg[1]);
+      if (validated[i])
+	{
+	  validatePh (validated, cmdList, i);
+	  if (!validated[i])
+	    continue;
+	  LOG1("Phagocytose accepted by %1 to [%2,%3]",
+	       elt->client_id, elt->arg[0], elt->arg[1]);
+	  g_->Phagocytose (elt->client_id, elt->arg[0], elt->arg[1]);
+	  SendToAll(**it);
+	}
+    }
+  delete[] validated;
 }
 
 void	ServerResolver::Messages(CommandListRef& cmdList)
@@ -175,7 +174,7 @@ void	ServerResolver::Messages(CommandListRef& cmdList)
 
   for (it = cmdList.begin(); it != cmdList.end(); ++it)
     {
-      LOG1("Send Message ...");
+      LOG3("Send Message ...");
       SendToAll(**it);
     }
 }

@@ -1,35 +1,28 @@
-
 #include <iostream>
+#include "GameData.hh"
 #include "virus.hh"
 
 static unsigned int id_virus = 0;
 
-Virus::Virus(int row, int col, int maladie) :
-  Position(row, col), _maladie(maladie), _hote(0), _etat_infection(0),
-  _proteines(42), // FIXME: les protéïnes dépendent de la maladie
-  _direction(rand() % 4),
-  _id(id_virus++)
-{}
+Virus::Virus(int row, int col, int maladie, GameData *g) :
+   Object(row, col),
+   _maladie(maladie),
+   _hote(0),
+   _etat_infection(0),
+   life_(VIRUS_LIFE),
+   _g(g)
+{
+   this->set_id(id_virus++);
+}
 
+Virus::~Virus()
+{
+}
 
 // Type de virus
 int Virus::Maladie() const
 {
   return _maladie;
-}
-
-
-// Protéines de fixation disponibles
-int Virus::Proteines() const
-{
-  return _proteines;
-}
-
-
-// Neutralisation de protéines de fixation par des anticorps
-int Virus::FixeProteines(int anticorps)
-{
-  return std::min(anticorps, _proteines);
 }
 
 
@@ -40,66 +33,86 @@ bool Virus::DeplacementPossible(int x, int y)
 // 	  (true || true)); // FIXME: absence de cellule en (x, y) OU (_x, _y)
 }
 
-// La méthode à appeler à chaque tour
-void Virus::ActionTour()
+void Virus::StopActions()
 {
+  _etat_infection = -1;
+  _hote->setSante (_hote->keep_);
+  _hote = 0;
+}
 
-  // Si le virus n'a plus de protéine de fixation libre, il est neutralisé
-  if (0 == _proteines)
+// La méthode à appeler à chaque tour
+void Virus::PlayTurn()
+{
+  // if (life_ < VIRUS_LIFE)
+  //life_ += _g->nutriments[row][col]->eat (2);
+  if (_etat_infection == INFECTION_DURATION)
   {
-    return;
+     _hote->Infect();
+     _hote->setInfection (_maladie);
+     LOG1("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row,
+	  _hote->col);
+     _hote = 0;
+     _etat_infection = 0;
+     life_ = 0;
+     return;
+  }
+  if (_etat_infection > 0)
+  {
+     _etat_infection++;
+     return;
   }
 
-  // FIXME: comportement du virus
-  //
-  //  * Le virus infecte une cellule quand il en trouve une non
-  //    infectée. Il ne doit pas pouvoir se ballader de cellule en
-  //    cellule : s'il est sur une cellule et qu'il se déplace, il
-  //    doit revenir sur une case vide, ou alors il ne bouge pas.
-  //
-  //  * Est-ce qu'il voit des cellules de loin (cinq cases) ou
-  //    est-ce qu'il les rencontre par hasard ?
-
-  // Le virus est-il libre
-//   if (0 == _hote)
-//   {
-//     // Si le virus rencontre une cellule, il l'infecte
-//     Cellule * cellule = 0; // FIXME: cellule en (x, y) ou rien
-//     if (cellule != 0 && CELL_STATE_HEALTHY == cellule->Sante())
-//     {
-//       _hote = cellule;
-//       _hote->Infecte();
-//     }
-//     else
-//     {
-//       // Sinon il vadrouille dans une direction arbitraire, différente
-//       // de la direction précédente
-//       int direction = rand() % 3;
-//       if (direction >= _direction)
-//       {
-// 	++direction;
-//       }
-//       _direction = direction % 4;
-//       Deplace(X() + 2 * (_direction % 2) - 1, Y() + 2 * (_direction / 2) - 1);
-//     }
-//   }
-//   else
-//   {
-//     // L'infection est-elle finie ?
-//     if (CELL_STATE_INFECTED == _hote->Sante())
-//     {
-//       if (_etat_infection >= INFECTION_DURATION)
-//       {
-// 	// Oui : on transforme la cellule en usine à virii
-// 	_hote->InfectionFinie();
-//       }
-//       else
-//       {
-// 	// Non : l'infection continue
-// 	++_etat_infection;
-//       }
-//     }
-//     // Si l'infection est finie, le virus reste bloqué dans cet état
-//     // (dans la réalité il a fusionné avec la cellule hôte).
-//   }
+  int cell[4] = { 0 };
+  int nb = 0;
+  for (int i = 0; i < 4; ++i)
+  {
+     int nrow = row + ((i == DEC_Y) ? -1 : ((i == INC_Y) ? 1 : 0));
+     int ncol = col + ((i == DEC_X) ? -1 : ((i == INC_X) ? 1 : 0));
+     if (nrow >= 0 && nrow < _g->map_size.row &&
+	ncol >= 0 && ncol < _g->map_size.col)
+	for (std::vector<Cellule*>::iterator it =
+		_g->_cells.begin();
+	     it != _g->_cells.end(); ++it)
+	   if ((*it)->row == nrow && (*it)->col == ncol
+	       && (*it)->Sante () != CELL_STATE_BEING_PHAGOCYTED)
+	      if (!((*it)->Infectee()) && ++nb)
+		 cell[i] = 1;
+	      else
+		 cell[i] = 2;
+  }
+  LOG1("::::: %1 ::::::", nb);
+  if (nb != 0) // Pas de cellules saine dans les parages
+  {
+     int n;
+     do
+	n = _g->rand() % 4;
+     while (cell[n] != 1);
+     int nrow = row + ((n == DEC_Y) ? -1 : ((n == INC_Y) ? 1 : 0));
+     int ncol = col + ((n == DEC_X) ? -1 : ((n == INC_X) ? 1 : 0));
+     for (std::vector<Cellule*>::iterator it =
+	     _g->_cells.begin();
+	  it != _g->_cells.end(); ++it)
+	if ((*it)->row == nrow && (*it)->col == ncol)
+	  {
+	    _hote = (*it);
+	    _hote->setSante(CELL_STATE_BEING_INFECTED);
+	  }
+     _etat_infection = 1;
+  }
+  else
+  {
+     // Move aleatoire
+     int nrow, ncol, n;
+     do
+     {
+	n = _g->rand() % 4;
+	nrow = row + ((n == DEC_Y) ? -1 : ((n == INC_Y) ? 1 : 0));
+	ncol = col + ((n == DEC_X) ? -1 : ((n == INC_X) ? 1 : 0));
+     }
+     while (nrow < 0 || nrow >= _g->map_size.row ||
+	    ncol < 0 || ncol >= _g->map_size.col ||
+	    cell[n] == 2 /* Cellule infectée */ );
+     row = nrow;
+     col = ncol;
+  }
 }

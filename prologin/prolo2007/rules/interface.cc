@@ -22,6 +22,11 @@ int equipes()
   return api->equipes();
 }
 
+int nombre_leucocyte ()
+{
+  return api->nombre_leucocyte();
+}
+
 int taille_equipe(int team_number)
 {
   return api->taille_equipe(team_number);
@@ -68,19 +73,9 @@ int score(int id)
   return api->score(id);
 }
 
-int current_beat()
+int battement_courant()
 {
-  return api->current_beat();
-}
-
-int time_remaining()
-{
-  return api->time_remaining();
-}
-
-int extra_time_remaining()
-{
-  return api->extra_time_remaining();
+  return api->battement_courant();
 }
 
 int leucocyte_visible(int id)
@@ -123,9 +118,9 @@ int connait_type(int x, int y)
   return api->connait_type(x, y);
 }
 
-int defini_competence(int rapidite, int anticorps, int messages, int vision)
+int definit_competence(int rapidite, int anticorps, int messages, int vision)
 {
-  return api->defini_competence(rapidite, anticorps, messages, vision);
+  return api->definit_competence(rapidite, anticorps, messages, vision);
 }
 
 int deplace_leucocyte(int x, int y)

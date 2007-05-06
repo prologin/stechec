@@ -114,7 +114,7 @@ int        ServerEntry::LoadMap(const std::string& map_file)
 	  return 1;
 	}
       LOG3("virus %1 %2 %3 : %4", tmp_y, tmp_x, tmp_mal, g_->_virus.size ());
-      g_->_virus.push_back(new Virus(tmp_y, tmp_x, tmp_mal));
+      g_->_virus.push_back(new Virus(tmp_y, tmp_x, tmp_mal, g_));
     }
 
   /* malloc, cAllocing the map... */
@@ -173,15 +173,15 @@ int        ServerEntry::LoadMap(const std::string& map_file)
 
 bool	ServerEntry::displayCell(int i, int j)
 {
-   for (std::vector<Cellule*>::iterator it =
-	   g_->_cells.begin ();
-	it != g_->_cells.end (); ++it)
-      if ((*it)->col == j && (*it)->row == i)
+  for (std::vector<Cellule*>::iterator it =
+	 g_->_cells.begin ();
+       it != g_->_cells.end (); ++it)
+    if ((*it)->col == j && (*it)->row == i)
       {
-	 std::cout << "C";
-	 return true;
+	std::cout << "C";
+	return true;
       }
-   return false;
+  return false;
 }
 
 void	ServerEntry::displayMap()
@@ -195,9 +195,21 @@ void	ServerEntry::displayMap()
     {
       for (j = 0; j < g_->map_size.col; j++)
 	{
-	  if (g_->terrain_type[i][j] == VESSEL)
+	  int type = -1;
+ 	  std::vector<Virus*>::iterator it;
+ 	  for (it = g_->_virus.begin(); it != g_->_virus.end(); ++it)
+ 	    if ((*it)->col == j && (*it)->row == i)
+ 	      {
+ 		type = (*it)->Maladie();
+ 		break;
+ 	      }
+	  if (type != -1)
+	    std::cout << type;
+	  else if (g_->bacterias[i][j])
+	    std::cout << "B";
+	  else if (g_->terrain_type[i][j] == VESSEL)
 	    std::cout << "V";
-	  if (!displayCell(i, j) && g_->terrain_type[i][j] == FLESH)
+	  else if (!displayCell(i, j) && g_->terrain_type[i][j] == FLESH)
 	    std::cout << "F";
 	}
       std::cout << std::endl;
@@ -224,6 +236,9 @@ int		ServerEntry::beforeGame()
   //  displayMap();
   //  pathCalculation();
 
+  LOG1("No players connected %1", g_->getNbPlayer ());
+  LOG1("No team connected %1", g_->getNbTeam ());
+
   int seed = time(0);
   CheckMap ();
   SendToAll(INIT_DATA, -1, 5, g_->max_date, g_->map_size.row, g_->map_size.col, g_->max_new_seeds, seed);
@@ -237,24 +252,18 @@ int		ServerEntry::beforeGame()
   g_->init ();
 
   // Positionning Virus
-  for (int i = 0; i < g_->_virus.size(); ++i)
+  for (unsigned i = 0; i < g_->_virus.size(); ++i)
     SendToAll(NEW_VIRUS, -1, 3, g_->_virus[i]->row, g_->_virus[i]->col,
 	      g_->_virus[i]->Maladie());
 
-  // positionning cells
-  for (int i = 0; i < g_->_cells.size (); ++i)
+  for (unsigned i = 0; i < g_->_cells.size (); ++i)
     SendToAll(NEW_CELL, -1, 3, g_->_cells[i]->row, g_->_cells[i]->col);
 
-  // Add Leucocyte
-  for (int i = 0; i < MAX_TEAM * MAX_WHITE_CELL; ++i)
+  // Add Leucocytes
+  for (int i = 0; i < g_->getNbPlayer(); ++i)
     {
-      if (g_->players[i].get_id () != -42)
-	{
-	  LOG1("Send leucocyte nb %1 equipe %2 (real: %3)",
-	       i / MAX_WHITE_CELL, i, g_->players[i].GetRealUid ());
-	  s_->addLeucocyte(i / MAX_WHITE_CELL, i, g_->players[i].col, g_->players[i].row,
-			   g_->players[i].GetRealUid ());
-	}
+      LOG3("Send leucocyte id %1, equipe %2", i, g_->getTeamId(i));
+      s_->addLeucocyte(g_->getTeamId(i), i, g_->players[i].col, g_->players[i].row);
     }
   return 0;
 }
@@ -266,7 +275,7 @@ int         ServerEntry::initGame()
 
 int         ServerEntry::beforeNewTurn()
 {
-  LOG1("Random is now : %1", g_->rand ());
+  LOG1("Random is now : %1", g_->rand());
   return 0;
 }
 
@@ -281,13 +290,17 @@ int         ServerEntry::afterNewTurn()
 
 int         ServerEntry::afterGame()
 {
+  g_->end ();
   return 0;
 }
 
 bool        ServerEntry::isMatchFinished()
 {
   if (g_->player_turn >= g_->max_date)
-    LOG1("Match finished");
+    {
+      LOG1("Match finished");
+      calculScores ();
+    }
   else
     LOG1("Max date : %1 and turn : %2", g_->max_date, g_->player_turn);
   return g_->player_turn >= g_->max_date;
@@ -295,19 +308,48 @@ bool        ServerEntry::isMatchFinished()
 
 static int	*tab_score = NULL;
 
-void		ServerEntry::calculScore()
+#define SCORE_CELL_INFECTED		15
+#define SCORE_CELL_NOT_INFECTED		20
+#define SCORE_BACTERIA			1
+#define SCORE_VIRUS			5
+
+
+void		ServerEntry::calculScores()
 {
+  for (int i = 0; i < g_->getNbTeam (); ++i)
+    tab[i] = 0;
+  int nb_ids;
+  int ids[MAX_PLAYER * MAX_TEAM];
+  int n = 0;
+  int total = 0;
+  for (int i = 0; i < g_->_cells.size (); ++i)
+    if (!g_->_cells[i]->Infectee ())
+      ++n;
+  for (int i = 0; i < g_->getNbTeam (); ++i)
+    {
+      g_->getAllIdFromTeamId(i, ids, &nb_ids);
+      for(int j = 0; j < nb_ids; ++j)
+	{
+	  tab[ids[j]] += g_->cellules_killed_by_[ids[j]] * SCORE_CELL_INFECTED;
+	  tab[ids[j]] -= g_->good_cellules_killed_by_[ids[j]] * SCORE_CELL_NOT_INFECTED;
+	  tab[ids[j]] += g_->bacterias_killed_by_[ids[j]] * SCORE_BACTERIA;
+	  if (g_->players[ids[j]].getState () == STATE_DEAD)
+	    tab[ids[j]] -= 50;
+	  tab[ids[j]] += g_->virus_killed_by_[ids[j]] * SCORE_VIRUS;
+	  total += tab[ids[j]];
+	}
+
+    }
+  for (int i = 0; i < g_->getNbTeam (); ++i)
+    {
+      if (total)
+	tab[i] *= n / total;
+    }
   // How to compute the score
 }
 
 int        ServerEntry::getScore(int uid)
 {
-  if (tab_score == NULL)
-    {
-      tab_score = new int[6]();
-      for (int i = 0; i < 6; ++i)
-	tab_score[i] = -1;
-      calculScore();
-    }
-  return 0;
+  calculScores ();
+  return tab[uid];
 }

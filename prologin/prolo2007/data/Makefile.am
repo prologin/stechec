@@ -11,31 +11,46 @@ dist_prolo2007data_DATA =		\
 dist_prolo2007font_DATA =		\
 	font/Vera.ttf
 
-dist_prolo2007graphics_DATA =		\
-	graphics/antibody_1.png		\
-	graphics/antibody_2.png		\
-	graphics/antibody_3.png		\
-	graphics/antibody_4.png		\
-	graphics/antibody_5.png		\
-	graphics/antibody_6.png		\
-	graphics/antibody_7.png		\
-	graphics/antibody_8.png		\
-	graphics/antibody_9.png		\
-	graphics/bacteria_1.png		\
-	graphics/cell.png		\
-	graphics/flesh_1.png		\
-	graphics/food_1.png		\
-	graphics/food_2.png		\
-	graphics/food_3.png		\
-	graphics/food_4.png		\
-	graphics/food_5.png		\
-	graphics/food_6.png		\
-	graphics/food_7.png		\
-	graphics/food_8.png		\
-	graphics/food_9.png		\
-	graphics/player_t1.png		\
-	graphics/vessel_1.png		\
-	graphics/virus_1.png
+dist_prolo2007graphics_DATA =			\
+	graphics/player_t1.png			\
+	graphics/player_t2.png			\
+	graphics/player_t3.png			\
+	graphics/player_t4.png			\
+	graphics/virus_0.png			\
+	graphics/virus_1.png			\
+	graphics/virus_2.png			\
+	graphics/virus_3.png			\
+	graphics/virus_4.png			\
+	graphics/bacteria_1.png			\
+	graphics/bacteria_2.png			\
+	graphics/bacteria_3.png			\
+	graphics/cell2.png			\
+	graphics/cell.png			\
+	graphics/cell2_infected.png		\
+	graphics/cell_infected.png		\
+	graphics/full_blood2.png		\
+	graphics/1left_top_corner.png		\
+	graphics/2top_center.png		\
+	graphics/3right_top_corner.png		\
+	graphics/4left_center.png		\
+	graphics/5center.png			\
+	graphics/6right_center.png		\
+	graphics/7left_bottom_corner.png	\
+	graphics/8bottom_center.png		\
+	graphics/9right_bottom_corner.png	\
+	graphics/left_vertical_line.png		\
+	graphics/right_vertical_line.png	\
+	graphics/line_bottom.png		\
+	graphics/line_top.png			\
+	graphics/double_line.png		\
+	graphics/double_vertical_line.png	\
+	graphics/full_blood.png			\
+	graphics/nutriment.png			\
+	graphics/nutriment2.png			\
+	graphics/nutriment3.png			\
+	graphics/anticorps.png			\
+	graphics/anticorps2.png			\
+	graphics/anticorps3.png
 
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`

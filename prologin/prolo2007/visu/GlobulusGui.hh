@@ -28,9 +28,8 @@
 # include "TextSurface.hh"
 
 // FIXME: remove this
-#define MAX_CELL 1000
-#define MAX_VIRUS 1000
-#define MAX_BACTERIA 1000
+#define MAX_CELL (MAX_MAP_SIZE * MAX_MAP_SIZE)
+#define MAX_VIRUS (MAX_MAP_SIZE * MAX_MAP_SIZE)
 
 class GlobulusGui : public GlobulusEvent
 {
@@ -46,16 +45,6 @@ private:
   ** Events from rules.
   */
   virtual void endOfTurn() {}
-  virtual void moveLeucocyte(int team_id, int unit_id, const Position& to);
-  virtual void newLeucocyte(int team_id, int unit_id, const Position& at);
-  virtual void moveVirus(int virus_id, const Position& to);
-  virtual void newVirus(int virus_id, const Position& at, int type);
-  virtual void dieVirus(int virus_id);
-  virtual void newBacteria(int bacteria_id, const Position& at);
-  virtual void dieBacteria(int bacteria_id);
-  virtual void newCell(int cell_id, const Position& at);
-  virtual void caseUpdate(int x, int y, int food, int antibody);
-  virtual void cellUpdate(int cell_id, int type);
 
   Api*          api_;
   ClientCx*     ccx_;
@@ -75,10 +64,11 @@ private:
 
   Square        map_[MAX_MAP_SIZE][MAX_MAP_SIZE];
   Sprite        food_[MAX_MAP_SIZE][MAX_MAP_SIZE];
-  Sprite        units_[MAX_TEAM][MAX_WHITE_CELL];
+  Sprite        antibody_[MAX_MAP_SIZE][MAX_MAP_SIZE];
+  Sprite        units_[MAX_TEAM][MAX_PLAYER];
   Sprite        cells_[MAX_CELL];
   Sprite        virus_[MAX_VIRUS];
-  Sprite        bacterias_[MAX_BACTERIA];
+  Sprite        bacterias_[MAX_MAP_SIZE][MAX_MAP_SIZE];
 
   TextSurface   txt_beat_;
   TextSurface   txt_score_[MAX_TEAM];

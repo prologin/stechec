@@ -23,11 +23,12 @@ protected:
   // Custom events
   virtual void moveLeucocyte(int team_id, int unit_id, const Position& to);
   virtual void newLeucocyte(int team_id, int unit_id, const Position& at);
+  virtual void dieLeucocyte(int team_id, int unit_id);
   virtual void moveVirus(int virus_id, const Position& to);
   virtual void newVirus(int virus_id, const Position& at, int type);
   virtual void dieVirus(int virus_id);
-  virtual void newBacteria(int bacteria_id, const Position& at);
-  virtual void dieBacteria(int bacteria_id);
+  virtual void newBacteria(const Position& at);
+  virtual void dieBacteria(const Position& at);
   virtual void newCell(int cell_id, const Position& at);
   virtual void caseUpdate(int x, int y, int food, int antibody);
   virtual void cellUpdate(int cell_id, int type);
@@ -62,11 +63,12 @@ inline void GlobulusEvent::evStechecPkt(const StechecPkt& pkt)
 
 inline void GlobulusEvent::moveLeucocyte(int team_id, int unit_id, const Position& to) {}
 inline void GlobulusEvent::newLeucocyte(int team_id, int unit_id, const Position& at) {}
+inline void GlobulusEvent::dieLeucocyte(int team_id, int unit_id) {}
 inline void GlobulusEvent::moveVirus(int virus_id, const Position& to) {}
 inline void GlobulusEvent::newVirus(int virus_id, const Position& at, int type) {}
 inline void GlobulusEvent::dieVirus(int virus_id) {}
-inline void GlobulusEvent::newBacteria(int bacteria_id, const Position& at) {}
-inline void GlobulusEvent::dieBacteria(int bacteria_id) {}
+inline void GlobulusEvent::newBacteria(const Position& at) {}
+inline void GlobulusEvent::dieBacteria(const Position& at) {}
 inline void GlobulusEvent::newCell(int cell_id, const Position& at) {}
 inline void GlobulusEvent::caseUpdate(int x, int y, int food, int antibody) {}
 inline void GlobulusEvent::cellUpdate(int cell_id, int type) {}

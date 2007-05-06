@@ -40,8 +40,8 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
       }
     case NEW_VIRUS:
       {
-	LOG1("New virus detected");
-	g_->_virus.push_back(new Virus(com->arg[0], com->arg[1], com->arg[2]));
+	LOG1("New virus detected : %1 %2 %3", com->arg[0], com->arg[1], com->arg[2]);
+	g_->_virus.push_back(new Virus(com->arg[0], com->arg[1], com->arg[2], g_));
 	break;
       }
     case NEW_CELL:
@@ -53,58 +53,76 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
       }
     case MOVE_LEUCO:
       {
-	Leucocyte& l = g_->players[com->arg[0]];
-	int		row = com->arg[1];
-	int		col = com->arg[2];
-	Position	dep = Position(l.row, l.col);
-	Position	arr = Position(row, col);
-	if (g_->GetWrapUid () == com->arg[0])
-	  c_->UpdateFogOfWar(com->arg[0], dep, arr, true);
+	int player_id = com->client_id;
+	int row = com->arg[0];
+	int col = com->arg[1];
+	Leucocyte& l = g_->players[player_id];
+
+	Position dep = Position(l.row, l.col);
+	Position arr = Position(row, col);
+	LOG3("Changing fow of : %1", g_->getUid ());
+	if (g_->getUid () == player_id)
+	  c_->UpdateFogOfWar(player_id, dep, arr, true);
 	l.row = row;
 	l.col = col;
-	LOG1("Differ: move Leucocyte %1 from: %2 to : %3", com->arg[0],dep, arr);
+	LOG3("Differ: move Leucocyte %1 from: %2 to : %3", player_id, dep, arr);
 	break;
       }
+
     case NEW_LEUCO:
       {
-	Position	dep = Position(0, 0);
-	// position is row col...
-	Position	arr = Position(com->arg[3], com->arg[2]);
+	int player_id = com->client_id;
+	int team_id = com->arg[0];
 
+	LOG3("NEW_LEUCO: team: %1, uid: %2, x: %3, y: %4",
+	     team_id, player_id, com->arg[1], com->arg[2]);
 
-	g_->players[com->arg[1]].set_id (com->arg[1]);
-	g_->players[com->arg[1]].set_player (com->arg[0]);
-	g_->players[com->arg[1]].col = com->arg[2];
-	g_->players[com->arg[1]].row = com->arg[3];
-	g_->players[com->arg[1]].setGameData (g_);
-	if (com->arg[4] >= 0)
-	  g_->players[com->arg[1]].SetRealUid (com->arg[4]);
-	LOG1("Received NEW LEUCOCYTE : team : %1, uid : %2, x : %3, y : %4. RealUid : %5, Getuid : %6",
-	     com->arg[0], com->arg[1], com->arg[2], com->arg[3], com->arg[4], g_->getUid());
-	if (g_->getUid () == com->arg[4])
+	g_->players[player_id].set_id(player_id);
+	g_->players[player_id].set_player(team_id);
+	g_->players[player_id].col = com->arg[1];
+	g_->players[player_id].row = com->arg[2];
+	//	g_->players[player_id].setGameData (g_);
+
+	// If this is _my_ leuco
+	if (g_->getUid() == player_id)
 	  {
-	    LOG1("This is me :)))");
-	    c_->UpdateFogOfWar(com->arg[1], dep, arr, false);
+	    Position dep = Position(0, 0);
+	    Position arr = Position(com->arg[2], com->arg[1]); // [row, col]
+	    LOG4("This is me :))) -> update fog of war");
+	    c_->UpdateFogOfWar(player_id, dep, arr, false);
 	  }
-	if (com->arg[4] >= 0)
-	  g_->uidWrapper[com->arg[4]] = com->arg[1];
-	else
-	  g_->uidWrapper[com->arg[4]] = com->arg[4];
 	break;
       }
+
     case TRANSMISSION:
       {
 	g_->AddMessage(com->arg[0], com->arg[1], com->arg[2], com->arg[3]);
 	break;
       }
+
     case DROP_ANTIBODY:
       {
-	g_->players[com->arg[0]].addAntibody ();
+	g_->players[com->client_id].addAntibody();
+	LOG3("Dropping antibody.. %1", com->client_id);
+	break;
+      }
+    case COMPETENCE:
+      {
+	g_->players[com->client_id].competences[PHAGO_SPEED] = com->arg[0];
+	g_->players[com->client_id].competences[ANTIBODY_NB] = com->arg[1];
+	g_->players[com->client_id].competences[MESSAGES_NB] = com->arg[2];
+	g_->players[com->client_id].competences[VISION] = com->arg[3];
+	break;
+      }
+    case PHAGOCYTE:
+      {
+	LOG1("Phagocytose requested by %1 to [%2, %3]", com->client_id, com->arg[0], com->arg[1]);
+	g_->Phagocytose (com->client_id, com->arg[0], com->arg[1]);
 	break;
       }
     default :
       {
-	LOG1("Unexpected message arrives... id : %1", com->type);
+	//	LOG1("Unexpected message arrives... id : %1", com->type);
       }
     }
 }

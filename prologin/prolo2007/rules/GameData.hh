@@ -28,18 +28,17 @@
 /*!
 ** This class is meant to contain all data, accessible from
 ** everywhere.
-**
 */
-
 class GameData: public StechecGameData
 {
 public:
 
   GameData();
 
-  void	init ();
+  void	init();
+  void	end();
 
-  unsigned int	rand ();
+  unsigned int	rand();
   void		srand(int s) {next_ = s;}
 
   struct Position	map_size;
@@ -47,44 +46,49 @@ public:
   int			max_date;
 
   uint8_t		terrain_type[MAX_MAP_SIZE][MAX_MAP_SIZE];
-  //      uint8_t		terrain_graphic[MAX_MAP_SIZE][MAX_MAP_SIZE];
-  Leucocyte		players[MAX_TEAM * MAX_WHITE_CELL];
-  int			teams_[MAX_TEAM];
+  // uint8_t		terrain_graphic[MAX_MAP_SIZE][MAX_MAP_SIZE];
+  Leucocyte		players[MAX_TEAM * MAX_PLAYER];
+
   Nutriments		*nutriments[MAX_MAP_SIZE][MAX_MAP_SIZE];
   Bacterias		*bacterias[MAX_MAP_SIZE][MAX_MAP_SIZE];
 
   Leucocyte		*p;
-  std::vector<Cellule*>	_cells2;
+
   std::vector<Cellule*>	_cells;
-  std::vector<int>	known_types;
-  //      Std::vector<Virus*>	_never_use_this;
+
   std::vector<Virus*>	_virus;
 
   int			max_new_seeds; //nombre de nouveau foyer de bacterie max par tour
 
 
   void			turnAction();
-  virtual void		AddPlayer(int team, int uid);
 
   void			InitMap();
   void			FreeData();
-  int			GetWrapUid ();
 
-  void			PlayTurn (); /// used to factorize code for server and client Entry
+  void			PlayTurn(); /// used to factorize code for server and client Entry
 
-  /** Mitose Section **/
+  void			deleteCells ();
+
+    /** Mitose Section **/
   bool TestAround(int row, int col, int *dest_row, int *dest_col);
 
-  bool TestVirus (int row, int col);
+  bool TestVirus(int row, int col);
 
-  bool TestLeucocyte (int row, int col);
+  bool TestLeucocyte(int row, int col);
 
-  bool TestCell (int row, int col);
+  bool TestCell(int row, int col);
+
+  void	Phagocytose(int id, int y, int x);
+
+  bool	PhagocyteVirus(int id, int y, int x, bool t = true);
+  bool	PhagocyteCell(int id, int y, int x, bool t = true);
+  bool	PhagocyteLeucocyte(int id, int y, int x, bool t = true);
 
   /** Messages Section **/
-  int	GetNextMessage (int id);
-  int	MessageExists (int msg_id) {return msg_id < messages_.size ();}
-  int	GetMessage (int msg_id, int arg_id) {return messages_[msg_id][arg_id];}
+  int	GetNextMessage(int id);
+  int	MessageExists(int msg_id) {return msg_id < (int)messages_.size(); }
+  int	GetMessage(int msg_id, int arg_id) {return messages_[msg_id][arg_id];}
   void	AddMessage(int a, int b, int c, int d)
   {
     int	*t = new int[4];
@@ -94,13 +98,17 @@ public:
     t[3] = d;
     messages_.push_back(t);
   }
-  int	knows_type (int type);
-  std::map<int, int>	uidWrapper;
-
+  int	knows_type (int type, int id);
+  int   cellules_killed_;
+  int   bacterias_killed_;
+  int   virus_killed_;
+  std::vector<int> cellules_killed_by_;
+  std::vector<int> good_cellules_killed_by_;
+  std::vector<int> bacterias_killed_by_;
+  std::vector<int> virus_killed_by_;
 private:
   unsigned int		next_;
-  std::vector<int*>		messages_;
-  std::vector<char>		known_signatures_;
+  std::vector<int*>	messages_;
 };
 
 #endif // !GAMEDATA_HH_

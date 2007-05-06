@@ -35,7 +35,7 @@ public:
 
   // Recupere le score
   virtual int	getScore(int uid);
-  void		calculScore();
+  void		calculScores();
 private:
   int		ParseOptions();
   int		LoadMap(const std::string& map_file);
@@ -45,6 +45,7 @@ private:
   void		CheckMap ();
 
   std::string	mapFile;
+  int		tab[MAX_TEAM];
 
 };
 

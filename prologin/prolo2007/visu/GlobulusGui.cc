@@ -19,82 +19,70 @@
 
 const SDL_Color white_color = { 255, 255, 255, SDL_ALPHA_OPAQUE };
 
-static const char* players[] = {
+static const char* players[] = {		// OK
   "/prolo2007/graphics/player_t1.png",
   "/prolo2007/graphics/player_t2.png",
   "/prolo2007/graphics/player_t3.png",
   "/prolo2007/graphics/player_t4.png",
-  "/prolo2007/graphics/player_t5.png",
-  "/prolo2007/graphics/player_t6.png"
 };
 static const int nb_player = sizeof(players) / sizeof(char*);
 
-static const char* virus[] = {
+static const char* virus[] = {		// OK
+  "/prolo2007/graphics/virus_0.png",
   "/prolo2007/graphics/virus_1.png",
-#if 0
   "/prolo2007/graphics/virus_2.png",
   "/prolo2007/graphics/virus_3.png",
   "/prolo2007/graphics/virus_4.png",
-  "/prolo2007/graphics/virus_5.png",
-  "/prolo2007/graphics/virus_6.png",
-  "/prolo2007/graphics/virus_7.png",
-  "/prolo2007/graphics/virus_8.png",
-  "/prolo2007/graphics/virus_9.png"
-#endif
 };
 static const int nb_virus = sizeof(virus) / sizeof(char*);
 
-static const char* bacteria[] = {
+static const char* bacteria[] = {	// OK
   "/prolo2007/graphics/bacteria_1.png",
   "/prolo2007/graphics/bacteria_2.png",
   "/prolo2007/graphics/bacteria_3.png"
 };
 static const int nb_bacteria = sizeof(bacteria) / sizeof(char*);
 
-#define CELL_SANE	0
-#define CELL_INFECTED	1
-
-static const char* cell[] = {
+static const char* cell[] = {		// OK
   "/prolo2007/graphics/cell.png",
   "/prolo2007/graphics/cell_infected.png",
+  "/prolo2007/graphics/cell2.png",
+  "/prolo2007/graphics/cell2_infected.png",
 };
 static const int nb_cell = sizeof(cell) / sizeof(char*);
 
-static const char* flesh[] = {
-  "/prolo2007/graphics/flesh_1.png",
-  "/prolo2007/graphics/flesh_2.png",
+static const char* flesh[] = {		// OK
+  "/prolo2007/graphics/full_blood2.png",
+  "/prolo2007/graphics/1left_top_corner.png",
+  "/prolo2007/graphics/2top_center.png",
+  "/prolo2007/graphics/3right_top_corner.png",
+  "/prolo2007/graphics/4left_center.png",
+  "/prolo2007/graphics/5center.png",
+  "/prolo2007/graphics/6right_center.png",
+  "/prolo2007/graphics/7left_bottom_corner.png",
+  "/prolo2007/graphics/8bottom_center.png",
+  "/prolo2007/graphics/9right_bottom_corner.png",
+  "/prolo2007/graphics/left_vertical_line.png",
+  "/prolo2007/graphics/right_vertical_line.png",
+  "/prolo2007/graphics/line_bottom.png",
+  "/prolo2007/graphics/line_top.png",
+  "/prolo2007/graphics/double_line.png",
+  "/prolo2007/graphics/double_vertical_line.png"
 };
 static const int nb_flesh = sizeof(flesh) / sizeof(char*);
 
-static const char* vessel[] = {
-  "/prolo2007/graphics/vessel_1.png",
-  "/prolo2007/graphics/vessel_2.png",
+static const char* vessel[] = {		// OK
+  "/prolo2007/graphics/full_blood.png",
 };
 static const int nb_vessel = sizeof(vessel) / sizeof(char*);
 
 static const char* food[] = {
-  "/prolo2007/graphics/food_1.png",
-  "/prolo2007/graphics/food_2.png",
-  "/prolo2007/graphics/food_3.png",
-  "/prolo2007/graphics/food_4.png",
-  "/prolo2007/graphics/food_5.png",
-  "/prolo2007/graphics/food_6.png",
-  "/prolo2007/graphics/food_7.png",
-  "/prolo2007/graphics/food_8.png",
-  "/prolo2007/graphics/food_9.png"
+
 };
 static const int nb_food = sizeof(food) / sizeof(char*);
 
 static const char* antibody[] = {
-  "/prolo2007/graphics/antybody_1.png",
-  "/prolo2007/graphics/antybody_2.png",
-  "/prolo2007/graphics/antybody_3.png",
-  "/prolo2007/graphics/antybody_4.png",
-  "/prolo2007/graphics/antybody_5.png",
-  "/prolo2007/graphics/antybody_6.png",
-  "/prolo2007/graphics/antybody_7.png",
-  "/prolo2007/graphics/antybody_8.png",
-  "/prolo2007/graphics/antybody_9.png",
+
 };
 static const int nb_antibody = sizeof(antibody) / sizeof(char*);
 
@@ -107,7 +95,7 @@ static const int nb_antibody = sizeof(antibody) / sizeof(char*);
 GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   : api_(api),
     ccx_(ccx),
-    case_size_(128) // .png are 128x128
+    case_size_(64) // .png are 128x128
 {
   map_x_ = api_->taille_corps_x();
   map_y_ = api_->taille_corps_y();
@@ -156,10 +144,21 @@ void GlobulusGui::init()
         food_[x][y].setZ(3);
 	food_[x][y].hide();
 	vscreen_->addChild(&food_[x][y]);
+
+        antibody_[x][y].setPos(Point(x * case_size_, y * case_size_));
+        antibody_[x][y].setZ(3);
+	antibody_[x][y].hide();
+	vscreen_->addChild(&antibody_[x][y]);
+
+	bacterias_[x][y].setPos(Point(x * case_size_, y * case_size_));
+        bacterias_[x][y].setZ(3);
+	bacterias_[x][y].hide();
+	vscreen_->addChild(&bacterias_[x][y]);
       }
 
+  /* FIXME: a revoir, mettre MAX_PLAYER ici est une mauvaise idee */
   for (int team_id = 0; team_id < api_->equipes(); team_id++)
-    for (int unit_id = 0; unit_id < MAX_WHITE_CELL; unit_id++)
+    for (int unit_id = 0; unit_id < MAX_PLAYER; unit_id++)
       {
         Sprite& o = units_[team_id][unit_id];
 
@@ -185,25 +184,74 @@ void GlobulusGui::init()
         o.hide();
         vscreen_->addChild(&o);
     }
-  for (int i = 0; i < MAX_BACTERIA; i++)
-    {
-        Sprite& o = bacterias_[i];
-
-        o.setZ(4);
-        o.hide();
-        vscreen_->addChild(&o);
-    }
 }
 
 // Set the surface for all map square.
 void GlobulusGui::initMapSquare(int x, int y)
 {
   Square& sq = map_[x][y];
+  int id = 0;
+  int around[3][3];
+  memset(around, 1, sizeof(around));
 
   switch (api_->terrainAt(x, y))
     {
       case FLESH:
-	sq.load(flesh[0]);
+
+
+	if (x > 0 && y > 0 && api_->terrainAt(x - 1, y - 1) != FLESH)
+	  around[0][0] = 0;
+	if (x > 0 && api_->terrainAt(x - 1, y) != FLESH)
+	  around[0][1] = 0;
+	if (x > 0 && y < map_y_ - 1 && api_->terrainAt(x - 1, y + 1) != FLESH)
+	  around[0][2] = 0;
+	if (x < map_x_ - 1  && y > 0 && api_->terrainAt(x + 1, y - 1) != FLESH)
+	  around[2][0] = 0;
+	if (x < map_x_ - 1 && api_->terrainAt(x + 1, y) != FLESH)
+	  around[2][1] = 0;
+	if (x < map_x_ - 1 && y < map_y_ - 1 && api_->terrainAt(x + 1, y + 1) != FLESH)
+	  around[2][2] = 0;
+	if (y > 0 && api_->terrainAt(x, y - 1) != FLESH)
+	  around[1][0] = 0;
+	if (y < map_y_ - 1 && api_->terrainAt(x, y + 1) != FLESH)
+	  around[1][2] = 0;
+
+	if (around[0][1] == 0)
+	  id = 10;
+	if (around[2][1] == 0)
+	  id = 11;
+	if (around[1][2] == 0)
+	  id = 12;
+	if (around[1][0] == 0)
+	  id = 13;
+
+	if (around[1][0] == 0 && around[1][2] == 0)
+	  id = 14;
+	if (around[0][1] == 0 && around[2][1] == 0)
+	  id = 15;
+
+	if (around[1][2] == 0 && around[2][1] == 0)
+	  id = 1;
+	if (around[1][2] == 0 && around[0][1] == 0)
+	  id = 3;
+	if (around[1][0] == 0 && around[2][1] == 0)
+	  id = 7;
+	if (around[0][1] == 0 && around[1][0] == 0)
+	  id = 9;
+
+	if (around[0][1] == 0 && around[1][2] == 0&& around[2][1] == 0)
+	  id = 2;
+	if (around[1][0] == 0 && around[1][2] == 0&& around[2][1] == 0)
+	  id = 4;
+	if (around[1][2] == 0 && around[0][1] == 0 && around[1][0] == 0)
+	  id = 6;
+	if (around[0][1] == 0 && around[1][0] == 0&& around[2][1] == 0)
+	  id = 8;
+
+	if (around[0][1] == 0 && around[1][0] == 0&& around[2][1] == 0 && around[1][2] == 0)
+	  id = 5;
+
+	sq.load(flesh[id]);
 	break;
       case VESSEL:
 	sq.load(vessel[0]);
@@ -256,88 +304,6 @@ void GlobulusGui::refreshInfoBox()
     }
 }
 
-// EVENT-BASE refresh
-
-void GlobulusGui::moveLeucocyte(int team_id, int unit_id, const Position& to)
-{
-  LOG2("moveLeucocyte %1 %2 %3 %4\n", team_id, unit_id, to.row, to.col);
-  units_[team_id][unit_id].move(Point(to) * case_size_, 20.);
-}
-
-void GlobulusGui::newLeucocyte(int team_id, int unit_id, const Position& at)
-{
-  LOG2("newLeucocyte %1 %2 %3 %4\n", team_id, unit_id, at.row, at.col);
-  units_[team_id][unit_id].setPos(Point(at) * case_size_);
-  units_[team_id][unit_id].show();
-}
-
-void GlobulusGui::moveVirus(int virus_id, const Position& to)
-{
-  LOG2("moveVirus %1 %2 %3\n", virus_id, to.row, to.col);
-  virus_[virus_id].move(Point(to) * case_size_, 20.);
-}
-
-void GlobulusGui::newVirus(int virus_id, const Position& at, int type)
-{
-  LOG2("newVirus %1 %2 %3 %4\n", virus_id, at.row, at.col, type);
-  virus_[virus_id].load(virus[type]);
-  virus_[virus_id].setPos(Point(at) * case_size_);
-  virus_[virus_id].show();
-}
-
-void GlobulusGui::dieVirus(int virus_id)
-{
-  LOG2("dieVirus %1\n", virus_id);
-  virus_[virus_id].hide();
-}
-
-void GlobulusGui::newBacteria(int bacteria_id, const Position& at)
-{
-  LOG2("newBacteria %1 %2 %3\n", bacteria_id, at.row, at.col);
-  bacterias_[bacteria_id].load(bacteria[rand() % nb_bacteria]);
-  bacterias_[bacteria_id].setPos(Point(at) * case_size_);
-  bacterias_[bacteria_id].show();
-}
-
-void GlobulusGui::dieBacteria(int bacteria_id)
-{
-  LOG2("dieBacteria %1\n", bacteria_id);
-  bacterias_[bacteria_id].hide();
-}
-
-void GlobulusGui::newCell(int cell_id, const Position& at)
-{
-  LOG2("newCell %1 %2 %3\n", cell_id, at.row, at.col);
-  cells_[cell_id].load(cell[CELL_SANE]);
-  cells_[cell_id].setPos(Point(at) * case_size_);
-  cells_[cell_id].show();
-}
-
-void GlobulusGui::caseUpdate(int x, int y, int food, int antibody)
-{
-  LOG2("caseUpdate %1 %2 %3 %4\n", x, y, food, antibody);
-  // FIXME
-}
-
-void GlobulusGui::cellUpdate(int cell_id, int type)
-{
-  LOG2("cellUpdate %1 %2\n", cell_id, type);
-  switch (type)
-    {
-      case STATE_DEAD:
-	cells_[cell_id].hide();
-	break;
-      case CELL_STATE_PRODUCTING_VIRII:
-	cells_[cell_id].load(cell[CELL_INFECTED]);
-	break;
-      case STATE_NORMAL:
-	cells_[cell_id].load(cell[CELL_SANE]);
-	break;
-      default:
-	break;
-    }
-}
-
 int GlobulusGui::run()
 {
   Input& input = win_.getInput();
@@ -384,9 +350,8 @@ int GlobulusGui::run()
 
       // POLLING CODE
       // FIXME: try to transform it into event-based
-#if 1
       for (int team_id = 0; team_id < api_->equipes(); team_id++)
-	for (int unit_id = 0; unit_id < MAX_WHITE_CELL; unit_id++)
+	for (int unit_id = 0; unit_id < MAX_PLAYER; unit_id++)
 	  {
 	    Sprite& o = units_[team_id][unit_id];
 	    int x, y;
@@ -395,9 +360,7 @@ int GlobulusGui::run()
 	      o.hide();
 	    else
 	      {
-		LOG2("Found leucocyte %1 %2 at %3 %4\n", team_id, unit_id,
-		     x, y);
-		o.move(Point(x, y) * case_size_, 100.);
+		o.move(Point(x, y) * case_size_, 15.);
 		o.show();
 	      }
 	  }
@@ -410,8 +373,9 @@ int GlobulusGui::run()
 	    o.hide();
 	  else
 	    {
-	      o.load(virus[type % nb_virus]);
-	      o.move(Point(x, y) * case_size_, 100.);
+	      if (!o.isShown ())
+		o.load(virus[type % nb_virus]);
+	      o.move(Point(x, y) * case_size_, 15.);
 	      o.show();
 	    }
 	}
@@ -424,55 +388,50 @@ int GlobulusGui::run()
 	    o.hide();
 	  else
 	    {
-	      o.load(cell[sane ? CELL_SANE : CELL_INFECTED]);
-	      o.move(Point(x, y) * case_size_, 100.);
+	      if (!o.isShown ())
+		o.load(cell[sane ? 0 : 1]); // FIXME: rand to cell2
+	      o.setPos(Point(x, y) * case_size_);
 	      o.show();
 	    }
 	}
-      for (int i = 0; i < MAX_BACTERIA; i++)
-	{
-	  Sprite& o = bacterias_[i];
-	  int x, y;
-
-	  if (api_->getBacteria(i, &x, &y))
-	    o.hide();
-	  else
-	    {
-	      o.load(bacteria[rand() % nb_bacteria]);
-	      o.move(Point(x, y) * case_size_, 100.);
-	      o.show();
-	    }
-	}
-#if 0
-      for (int x = 0; x < map_x_; x++) // FIXME: segfault
+      for (int x = 0; x < map_x_; x++)
 	for (int y = 0; y < map_y_; y++)
 	  {
-	    LOG2("Map size %1/%2 %3/%4\n", x,map_x_, y,map_y_);
-	    int amount = (api_->getFood(x, y) * 100) / NUTRIMENT_MODULO;
+	    int amount = (api_->getFood(x, y) * 100) / MAX_NUTRIENT;
 
+
+#if 0 // FIXME
 	    if (amount < 11)
 	      food_[x][y].hide();
 	    else
 	      {
-	       	food_[x][y].load(food[/*(amount - 1) / 10*/ 0]); // FIXME
+	       	food_[x][y].load(food[(amount - 1) / 11]);
 		food_[x][y].show();
 	      }
-	  }
-      for (int x = 0; x < map_x_; x++)
-	for (int y = 0; y < map_y_; y++)
-	  {
-	    int amount = (api_->getAntibody(x, y) * 100) / 1; // FIXME
+
+	    amount = api_->getAntibody(x, y);
+	    if (amount > 100)
+	      amount = 100;
 
 	    if (amount < 11)
 	      antibody_[x][y].hide();
 	    else
 	      {
-	       	antibody_[x][y].load(antibody[(amount - 1) / 10]);
-		andibody_[x][y].show();
+	       	antibody_[x][y].load(antibody[(amount - 1) / 11]);
+		antibody_[x][y].show();
+	      }
+#endif
+	    int pop;
+
+	    if ((pop = api_->getBacteria(x, y)) == -1)
+	      bacterias_[x][y].hide();
+	    else
+	      {
+
+		bacterias_[x][y].load(bacteria[(pop * (nb_bacteria - 1)) / 30]);
+		bacterias_[x][y].show();
 	      }
 	  }
-#endif
-#endif
 
       // Process any incoming messages. Block at most 50 ms.
       while (ccx_->process(true))

@@ -28,11 +28,15 @@ public:
 private:
   void		makeActions(int id, CommandListRef cmdList[]);
   //  void		moveLeucocyte(CommandListRef& cmdList);
-  void		moveLeucocyte(const StechecPkt* elt);
+  void		moveLeucocyte(CommandListRef& cmdList);
   void		Phagocytose(CommandListRef& cmdList);
   void		Competences(CommandListRef& cmdList);
   void		Messages(CommandListRef& cmdList);
   void		Antibody(CommandListRef& cmdList);
+  void		validate (bool*  validate,
+			  CommandListRef& cmdList, int index);
+  void		validatePh (bool*  validate,
+			  CommandListRef& cmdList, int index);
 };
 
 #endif // !SERVERRESOLVER_HH_

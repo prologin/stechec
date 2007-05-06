@@ -15,8 +15,9 @@
 #include "GameData.hh"
 #include "ServerEntry.hh"
 
-void Server::addLeucocyte (int team, int uid,
-			   int x, int y, int real)
+void Server::addLeucocyte(int team_id, int uid, int x, int y)
 {
-   SendToAll(NEW_LEUCO, -1, 5, team, uid, x, y, real);
+  g_->players[uid].set_id (uid);
+  g_->players[uid].set_player (team_id);
+  SendToAll(NEW_LEUCO, uid, 3, team_id, x, y);
 }

@@ -50,12 +50,11 @@ void	Nutriments::spread ()
 	{
 	  n_row += (i == DEC_Y) ? -1 : ((i == INC_Y) ? 1 : 0);
 	  n_col += (i == DEC_X) ? -1 : ((i == INC_X) ? 1 : 0);
-	  //	  LOG1("Spreading <: box [%1, %2] => [%3, %4] : %5", row, col, n_row, n_col, (int)(nb_ * ratio));
 	  if (i == INC_Y) // circulation du sang vers le "bas"
-	    g_->nutriments[n_row][n_col]->add((int)(nb_ * ratio * 4));
+	    g_->nutriments[n_row][n_col]->add((int)(nb_ * (nb_frees + 1.0)));
 	  else
-	    g_->nutriments[n_row][n_col]->add((int)(nb_ * ratio));
+	    g_->nutriments[n_row][n_col]->add((int)(nb_ * (nb_frees + 1.0)));
 	}
     }
-  nb_ *= SPREADING_RATIO;
+  nb_ *= 1.0 / (nb_frees + 1.0);
 }
