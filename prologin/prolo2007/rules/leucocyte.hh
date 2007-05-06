@@ -70,9 +70,9 @@ public:
 	return SUCCESS;
     return UNKNOWN;
   }
+  int	score_;
 private:
   int	r_uid_;
-  int	score_;
   int	state_;
   int	nb_sent_messages_; // to be reinitialized each turn
   int	max_messages_sendable_;

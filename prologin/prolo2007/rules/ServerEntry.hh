@@ -45,7 +45,6 @@ private:
   void		CheckMap ();
 
   std::string	mapFile;
-  int		tab[MAX_TEAM];
 
 };
 

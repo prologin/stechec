@@ -69,6 +69,7 @@ public:
   void			PlayTurn(); /// used to factorize code for server and client Entry
 
   void			deleteCells ();
+  int			calculScore ();
 
     /** Mitose Section **/
   bool TestAround(int row, int col, int *dest_row, int *dest_col);
@@ -106,6 +107,7 @@ public:
   std::vector<int> good_cellules_killed_by_;
   std::vector<int> bacterias_killed_by_;
   std::vector<int> virus_killed_by_;
+  int		tab[MAX_TEAM];
 private:
   unsigned int		next_;
   std::vector<int*>	messages_;

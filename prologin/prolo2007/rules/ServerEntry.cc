@@ -308,48 +308,14 @@ bool        ServerEntry::isMatchFinished()
 
 static int	*tab_score = NULL;
 
-#define SCORE_CELL_INFECTED		15
-#define SCORE_CELL_NOT_INFECTED		20
-#define SCORE_BACTERIA			1
-#define SCORE_VIRUS			5
-
 
 void		ServerEntry::calculScores()
 {
-  for (int i = 0; i < g_->getNbTeam (); ++i)
-    tab[i] = 0;
-  int nb_ids;
-  int ids[MAX_PLAYER * MAX_TEAM];
-  int n = 0;
-  int total = 0;
-  for (int i = 0; i < g_->_cells.size (); ++i)
-    if (!g_->_cells[i]->Infectee ())
-      ++n;
-  for (int i = 0; i < g_->getNbTeam (); ++i)
-    {
-      g_->getAllIdFromTeamId(i, ids, &nb_ids);
-      for(int j = 0; j < nb_ids; ++j)
-	{
-	  tab[ids[j]] += g_->cellules_killed_by_[ids[j]] * SCORE_CELL_INFECTED;
-	  tab[ids[j]] -= g_->good_cellules_killed_by_[ids[j]] * SCORE_CELL_NOT_INFECTED;
-	  tab[ids[j]] += g_->bacterias_killed_by_[ids[j]] * SCORE_BACTERIA;
-	  if (g_->players[ids[j]].getState () == STATE_DEAD)
-	    tab[ids[j]] -= 50;
-	  tab[ids[j]] += g_->virus_killed_by_[ids[j]] * SCORE_VIRUS;
-	  total += tab[ids[j]];
-	}
-
-    }
-  for (int i = 0; i < g_->getNbTeam (); ++i)
-    {
-      if (total)
-	tab[i] *= n / total;
-    }
-  // How to compute the score
+  g_->calculScore ();
 }
 
 int        ServerEntry::getScore(int uid)
 {
-  calculScores ();
-  return tab[uid];
+  //  calculScores ();
+  return g_->tab[uid];
 }

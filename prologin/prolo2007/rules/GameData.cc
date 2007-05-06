@@ -435,6 +435,51 @@ void GameData::deleteCells ()
     }
 }
 
+#define SCORE_CELL_INFECTED		15
+#define SCORE_CELL_NOT_INFECTED		20
+#define SCORE_BACTERIA			1
+#define SCORE_VIRUS			5
+
+int	GameData::calculScore ()
+{
+  for (int i = 0; i < this->getNbTeam (); ++i)
+    {
+      tab[i] = 0;
+      players[i].score_ = 0;
+    }
+  int nb_ids;
+  int ids[MAX_PLAYER * MAX_TEAM];
+  int n = 0;
+  int total = 0;
+  for (int i = 0; i < this->_cells.size (); ++i)
+    if (!this->_cells[i]->Infectee ())
+      ++n;
+  for (int i = 0; i < this->getNbTeam (); ++i)
+    {
+      this->getAllIdFromTeamId(i, ids, &nb_ids);
+      for(int j = 0; j < nb_ids; ++j)
+	{
+	  tab[ids[j]] += this->cellules_killed_by_[ids[j]] * SCORE_CELL_INFECTED;
+	  tab[ids[j]] -= this->good_cellules_killed_by_[ids[j]] * SCORE_CELL_NOT_INFECTED;
+	  tab[ids[j]] += this->bacterias_killed_by_[ids[j]] * SCORE_BACTERIA;
+	  if (this->players[ids[j]].getState () == STATE_DEAD)
+	    tab[ids[j]] -= 50;
+	  tab[ids[j]] += this->virus_killed_by_[ids[j]] * SCORE_VIRUS;
+	  total += tab[ids[j]];
+	}
+      tab[i] = std::max(tab[i], 0);
+    }
+  for (int i = 0; i < this->getNbTeam (); ++i)
+    {
+      if (total)
+	tab[i] *= n / total;
+      else
+	tab[i] = 0;
+      players[i].score_ = tab[i];
+    }
+  // How to compute the score
+}
+
 
 /*!
 ** @brief Module description
