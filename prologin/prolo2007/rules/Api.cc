@@ -464,12 +464,18 @@ int Api::getFood(int x, int y)
   return g_->nutriments[y][x]->material ();
 }
 
-int Api::getAntibody(int x, int y)
+int Api::getAntibody(int player_id, int x, int y)
 {
   TEST_POS (x, y);
   int nb = 0;
-  for (int i = 0; i < g_->getNbPlayer (); ++i)
-    if (g_->players[i].getState () != STATE_DEAD)
-      nb += g_->players[i].antibodies[y][x];
+  if (player_id == -1)
+    {
+      for (int i = 0; i < g_->getNbPlayer (); ++i)
+	if (g_->players[i].getState () != STATE_DEAD)
+	  nb += g_->players[i].antibodies[y][x];
+    }
+  else
+    if (g_->players[player_id].getState () != STATE_DEAD)
+      nb = g_->players[player_id].antibodies[y][x];
   return nb;
 }

@@ -115,7 +115,7 @@ public:
   int getBacteria(int x, int y);
   int getCell(int id, int *x, int *y, int *state);
   int getFood(int x, int y);
-  int getAntibody(int x, int y);
+  int getAntibody(int player_id, int x, int y);
 };
 
 

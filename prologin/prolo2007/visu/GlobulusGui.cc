@@ -433,7 +433,7 @@ int GlobulusGui::run()
 		food_[x][y].show();
 	      }
 
-	    amount = api_->getAntibody(x, y);
+	    amount = api_->getAntibody(current_team_, x, y);
 
 	    if (amount < 10 || nvis)
 	      antibody_[x][y].hide();
@@ -442,7 +442,7 @@ int GlobulusGui::run()
 		if (amount < 85)
 		  antibody_[x][y].load(antibody[0]);
 		else
-		  if (amount < 130)
+		  if (amount < 180)
 		    antibody_[x][y].load(antibody[1]);
 		  else
 		    antibody_[x][y].load(antibody[2]);

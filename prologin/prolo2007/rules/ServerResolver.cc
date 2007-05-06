@@ -34,7 +34,7 @@ bool	ServerResolver::GonnaBeBlocked(int y, int x, CommandListRef& cmdList)
       {
 	if (g_->players[(*it)->client_id].row == y &&
 	    g_->players[(*it)->client_id].col == x
-	    && !GonnaBeBlocked((*it)->arg[0], (*it)->arg[1], cmdList))
+	    && !GonnaBeBlocked((*it)->arg[0], (*it)->arg[1], cmdList)
 	    && g_->TestCell((*it)->arg[0], (*it)->arg[1])
 	    && g_->TestVirus((*it)->arg[0], (*it)->arg[1]))
 	  return false;
