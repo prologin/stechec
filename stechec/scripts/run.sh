@@ -56,6 +56,7 @@ abort()
 # parse xml file, with our shiny awk parser
 #
 output=`awk -f "${xml_parser_path}xmlparser.awk" "$1"`
+awk -f ${xml_parser_path}xmlparser.awk $1 > awk
 [ $? -ne 0 ] && abort "Cannot parse $1."
 # then go back to ugly sed scripts
 clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT/id=([0-9]+).*$!\1!p' | grep -v 0 | uniq`
@@ -95,7 +96,17 @@ pid_server=$!
 # spawn clients
 #
 for id in $clients; do
-for i in `seq 1 $NB_INSTANCE`; do
+
+SPECTATOR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/MODE/spectator=(true|false)$,\1,p; t q; b n; :q q }"`
+
+if [ x$SPECTATOR = x"true" ]; then
+    LOOP=1
+else
+    LOOP=$NB_INSTANCE
+fi
+
+
+for i in `seq 1 $LOOP`; do
     echo "======== launch client id $id ($i)"  1>&2
     case $USE_VALGRIND in
 	*x${id}x*) VALGRIND=valgrind ;;

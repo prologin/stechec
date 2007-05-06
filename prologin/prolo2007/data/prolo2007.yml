@@ -346,6 +346,18 @@ function:
     fct_arg:
       - [x, int, Coordonnee x a atteindre.]
       - [y, int, Coordonnee y a atteindre.]
+  -
+    fct_name: virus_type
+    fct_summary: |
+      Renvoit le type du virus sur la case x,y
+    fct_ret_comment: |
+      SUCCESS si le x, y désigne une zone infectee et que le type est connu.
+      UNKNOWN si le x, y désigne une zone infectee et que le type est inconnu.
+      Sinon, retourne BAD_ARGUMENT
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, Coordonnee x a atteindre.]
+      - [y, int, Coordonnee y a atteindre.]
 
   - doc_extra: |
      \subsection{Competence de leucocytes}
