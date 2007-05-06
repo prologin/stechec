@@ -452,7 +452,7 @@ void GameData::deleteCells ()
 
 int	GameData::calculScore ()
 {
-  for (int i = 0; i < this->getNbTeam (); ++i)
+  for (int i = 0; i < this->getNbPlayer (); ++i)
     {
       tab[i] = 0;
       players[i].score_ = 0;
