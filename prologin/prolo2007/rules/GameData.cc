@@ -249,7 +249,7 @@ void	GameData::PlayTurn ()
 	  {
 	    if (bacterias[y][x]->getKilledBy () >= 0)
 	      {
-		bacterias_killed_by_[bacterias[y][x]->getKilledBy ()] += 10;
+		//		bacterias_killed_by_[bacterias[y][x]->getKilledBy ()] += 10;
 		LOG3("Bacterias died because of %1", bacterias[y][x]->getKilledBy ());
 	      }
 	    delete bacterias[y][x];
