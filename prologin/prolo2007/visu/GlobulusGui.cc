@@ -114,6 +114,12 @@ GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
                                           Point(map_x_ * case_size_, map_y_ * case_size_));
   win_.getScreen().addChild(vscreen_);
 
+  // Init surface behind text
+  back_txt_ = Surface("prolo2007/graphics/background_text.png");
+  back_txt_.setPos(580, 5);
+  back_txt_.setZ(-1);
+  win_.getScreen().addChild(&back_txt_);
+  
   // Initialize labels on the right-top.
   txt_beat_ = TextSurface("Vera.ttf", 12, 200, 22);
   txt_beat_.setPos(590, 10);
@@ -124,7 +130,7 @@ GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   for (int i = 0; i < api_->equipes(); i++)
     {
       txt_score_[i] = TextSurface("Vera.ttf", 12, 200, 22);
-      txt_score_[i].setPos(590, 54 + i * 22);
+      txt_score_[i].setPos(590, 34 + i * 22);
       txt_score_[i].setZ(8);
       txt_score_[i].setTextColor(white_color);
       win_.getScreen().addChild(&txt_score_[i]);

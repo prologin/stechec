@@ -71,6 +71,7 @@ private:
   Sprite        virus_[MAX_VIRUS];
   Sprite        bacterias_[MAX_MAP_SIZE][MAX_MAP_SIZE];
 
+  Surface       back_txt_;
   TextSurface   txt_beat_;
   TextSurface   txt_score_[MAX_TEAM];
 };
