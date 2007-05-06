@@ -226,7 +226,6 @@ void	ServerEntry::CheckMap ()
 	nb_possible++;
   if (nb_possible < g_->max_new_seeds)
     g_->max_new_seeds = nb_possible;
-  getchar ();
 }
 
 int		ServerEntry::beforeGame()
