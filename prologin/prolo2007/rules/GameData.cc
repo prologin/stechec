@@ -462,8 +462,8 @@ int	GameData::calculScore ()
     {
       tab[i] += this->cellules_killed_by_[i] * SCORE_CELL_INFECTED;
       LOG3("Score of %1 after cells : %2", i, tab[i]);
-      tab[i] -= this->good_cellules_killed_by_[i] * SCORE_CELL_NOT_INFECTED;
-      LOG3("Score of %1 after helthy cells: %2", i, tab[i]);
+      //      tab[i] -= this->good_cellules_killed_by_[i] * SCORE_CELL_NOT_INFECTED; // removed by LLB
+      //      LOG3("Score of %1 after helthy cells: %2", i, tab[i]);
       tab[i] += this->bacterias_killed_by_[i] * SCORE_BACTERIA;
       LOG3("Score of %1 after bacteria: %2", i, tab[i]);
       if (this->players[i].getState () == STATE_DEAD)
@@ -479,8 +479,11 @@ int	GameData::calculScore ()
       if (!total)
 // 	tab[i] *= n / total;
 //       else
-	tab[i] = 0;
-      players[i].score_ = tab[i];
+//	tab[i] = 0;    // removed by LLB
+//      players[i].score_ = tab[i]; // removed by LLB
+	players[i].score_ = 0; // added by LLB
+      else
+	players[i].score_ = tab[i] / total;  // added by LLB
     }
   // How to compute the score
 }
