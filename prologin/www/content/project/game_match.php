@@ -267,7 +267,7 @@ function disp_champion_competition($id_game)
               array("nickname", "Concepteur", "text", ACL_ALL, 0, array("center")),
               array("id", "Numero", "text", ACL_ALL, 0, array("center")),
               array("name", "Nom", "text", ACL_ALL, 0, array("center")),
-              array("score", "Score", "text", ACL_ALL, 0, array("center")),
+//              array("score", "Score", "text", ACL_ALL, 0, array("center")),
               array("comment", "Commentaire", "text", ACL_ALL, 0, array("center")),
           );
   
@@ -275,7 +275,8 @@ function disp_champion_competition($id_game)
   // Les miens
   style_title("Tous mes champions");
 
-  $query = db_query("SELECT user.nickname, champion.*, SUM(competiteur.score) AS score".
+  //$query = db_query("SELECT user.nickname, champion.*, SUM(competiteur.score) AS score".
+  $query = db_query("SELECT user.nickname, champion.* ".
                     " FROM champion, game, user, competiteur ".
                     " WHERE game.id=$id_game".
                     " AND champion.id_game=game.id".
@@ -292,7 +293,8 @@ function disp_champion_competition($id_game)
   // Les autres
   style_title("Tous les champions contre moi");
 
-  $query = db_query("SELECT user.nickname, champion.*, SUM(competiteur.score) AS score".
+  //$query = db_query("SELECT user.nickname, champion.*, SUM(competiteur.score) AS score".
+  $query = db_query("SELECT user.nickname, champion.* ".
                     " FROM champion, game, user, competiteur ".
                     " WHERE game.id=$id_game".
                     " AND champion.id_game=game.id".

@@ -56,7 +56,7 @@
 
     <td>
 <!--      <input type='submit' name="register" value="Creer un compte" > -->
-	<a href="register-index.php">S'enregistrer</a>
+<!--	<a href="register-index.php">S'enregistrer</a> -->
     </td>
     </tr>
 

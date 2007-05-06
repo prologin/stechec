@@ -134,26 +134,31 @@ function add_group_match($id_game)
       return ;
 
     // Creer un match
-    //    print "Create a new match (opt = ".$args[0]["opt"].").</br>";
-    db_query ("INSERT INTO matchs (id_game, id_createur, opt_match, type, is_competition, date)".
-     " VALUES ($id_game, ".$user["id"].",\"".$args[0]["opt"]."\", 3, 1, NOW())");
+    // print "Create a new match (opt = ".$args[0]["opt"].").</br>";
+    db_query ("INSERT INTO matchs (id_game, id_createur, opt_match, type, is_competition, nb_champion_instance, date)".
+     " VALUES ($id_game, ".$user["id"].",\"".$args[0]["opt"]."\", 3, 1, 5, NOW())");
     $total_match++;
 
-    // Get id of new matchs
+    // Get id of new match
     $id_match = db_insert_id();
 
     // Choose number of champion in match
     $nb_champ = rand($args[0]["min"], min($args[0]["max"], count($champ_data)));
 
     // Trouver les champions
+    $nb_instance = 5;
+    $id_team = 10;
     shuffle($champ_data);
     for ($id_champ = $find_champ = 0; $find_champ < $nb_champ; ++$find_champ)
     {
       // Create a competiteur
-    //  print "+- Champion num ".$champ_data[$id_champ]["id"]."</br>";
-     db_query ("INSERT INTO competiteur (id_champion, id_match)".
-     	" VALUES (".$champ_data[$id_champ]["id"].", $id_match)");
-     
+      //print "+- Champion num ".$champ_data[$id_champ]["id"]."</br>";
+      for ($i = 0; $i < 5; $i++) {
+     	db_query ("INSERT INTO competiteur (id_champion, id_match, id_team)".
+     		  " VALUES (".$champ_data[$id_champ]["id"].", $id_match, $id_team)");
+      }
+      $id_team++;
+
       $champ_data[$id_champ]["use"]++;
       if ($champ_data[$id_champ]["use"] >= $nb_matchs)
 	{

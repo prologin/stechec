@@ -152,7 +152,8 @@ function disp_champion_candidat($id_game, $id_candidat)
 
   style_title("Mes champions");
 
-  $query = db_query("SELECT champion.*, SUM(competiteur.score) AS score".
+  //$query = db_query("SELECT champion.*, SUM(competiteur.score) AS score".
+  $query = db_query("SELECT champion.* ".
                     " FROM champion, competiteur".
                     " WHERE champion.id_candidat = $id_candidat".
                     " AND champion.id_game = $id_game".
