@@ -117,15 +117,15 @@ int Api::visible(int x, int y)
 
 int Api::score(int team_id)
 {
-  int ids[MAX_PLAYER / MAX_TEAM];
+  int ids[MAX_PLAYER];
   int nb_id;
   int res = 0;
 
   CHECK_TEAM(team_id);
   g_->getAllIdFromTeamId(team_id, ids, &nb_id);
-  for (int i = 0; i < nb_id; i++)
+  for (int i = 0; i < nb_id; i++) 
     res += g_->players[ids[i]].getScore();
-  return res;
+  return res / 100;
 }
 
 int Api::battement_courant()

@@ -15,6 +15,7 @@
 
 # include <list>
 # include <map>
+# include <algorithm>
 # include "Contest.hh"
 # include "Constant.hh"
 

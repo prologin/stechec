@@ -319,6 +319,6 @@ void		ServerEntry::calculScores()
 
 int        ServerEntry::getScore(int uid)
 {
-  //  calculScores ();
-  return g_->tab[uid];
+  calculScores ();
+  return g_->players[uid].score_;
 }

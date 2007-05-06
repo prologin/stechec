@@ -453,16 +453,30 @@ void GameData::deleteCells ()
   // How to compute the score
 int	GameData::calculScore ()
 {
+  std::vector<int>P(this->getNbTeam());
+  std::fill(P.begin(), P.end(), 0);
+
+  int ids[MAX_PLAYER];
+  int nb_id;
+  int id_leuco_to_team[MAX_PLAYER];
+  std::fill(id_leuco_to_team, id_leuco_to_team+MAX_PLAYER, -1);
+  for (int t=0 ; t < this->getNbTeam() ; ++t) {
+    this->getAllIdFromTeamId(t, ids, &nb_id);
+    for (int j=0 ; j < nb_id ; j++) {
+      id_leuco_to_team[ids[j]] = t;
+    }
+  }
   for (int i = 0; i < this->getNbPlayer (); ++i)
     {
       tab[i] = 0;
       players[i].score_ = 0;
     }
   int n = 0;
-  int total = 0;
+  //nombre de cellules saines
   for (int i = 0; i < this->_cells.size (); ++i)
     if (!this->_cells[i]->Infectee ())
       ++n;
+
   for (int i = 0; i < this->getNbPlayer (); ++i)
     {
       tab[i] += this->cellules_killed_by_[i] * SCORE_CELL_INFECTED;
@@ -473,16 +487,31 @@ int	GameData::calculScore ()
 	tab[i] -= 50;
       tab[i] += this->virus_killed_by_[i] * SCORE_VIRUS;
       LOG3("Score of %1 : %2", i, tab[i]);
-      tab[i] = std::max(tab[i], 0);
-      total += tab[i];
+      players[i].score_ = tab[i];
+      P[id_leuco_to_team[i]] += players[i].score_;
     }
-  for (int i = 0; i < this->getNbPlayer (); ++i)
-    {
-      if (!total)
-	players[i].score_ = 0;
-      else
-	players[i].score_ = n * tab[i] / total;
-    }
+  int total=0;
+  for (int t=0 ; t < this->getNbTeam() ; ++t) {
+    if (P[t] < 0)
+      for(int i=0 ; i < this->getNbPlayer() ; ++i)
+	if(id_leuco_to_team[i] == t)
+	  players[i].score_ = 0;
+    P[t] = std::max(P[t], 0);
+    total += P[t];
+  }
+
+  for (int i=0 ; i < this->getNbPlayer() ; ++i) {
+    players[i].score_ *= 100 * n;
+    players[i].score_ /= total;
+  }
+
+//   for (int i = 0; i < this->getNbPlayer (); ++i)
+//     {
+//       if (!total)
+// 	players[i].score_ = 0;
+//       else
+// 	players[i].score_ = n * tab[i] / total;
+//     }
 }
 
 
