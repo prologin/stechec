@@ -97,6 +97,8 @@ void        CRules::msgInitGame(const MsgInitGame* m)
   // We _must_ have our uid at this time.
   assert(getCoachId() >= 0);
 
+  timer_.setAllowedTime(m->time_per_turn);
+
   // Change our game state.
   setState(GS_INITGAME);
   LOG2("-- CRules: change state: GS_INITGAME");
@@ -187,6 +189,7 @@ void        CRules::msgGiveBall(const MsgGiveBall* m)
 void        CRules::msgPlayTurn(const MsgNewTurn* m)
 {
   cur_turn_ = m->cur_turn;
+  timer_.restart();
 
   // Who will play.
   setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);

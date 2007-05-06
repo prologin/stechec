@@ -131,13 +131,13 @@ void MenuLight::loadResources()
   join_port_.setPos(270, 330);
   screen_->addChild(&join_port_);
 
-  host_ = InputTextSurface("Vera.ttf", 100);
-  host_.setText("localhost");
+  host_ = InputTextSurface("Vera.ttf", 120);
+  host_.setText(cfg_.getAttr<std::string>("client", "connect", "host"));
   host_.setPos(330, 300);
   screen_->addChild(&host_);
 
-  port_ = InputTextSurface("Vera.ttf", 50);
-  port_.setText("5169");
+  port_ = InputTextSurface("Vera.ttf", 70);
+  port_.setText(cfg_.getAttr<std::string>("client", "connect", "port"));
   port_.setPos(330, 330);
   screen_->addChild(&port_);
 }
@@ -220,8 +220,9 @@ int MenuLight::showMenu()
       if (create_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
 	{
 	  LOG1("Create game...");
-	  // FIXME: play with the xml to sets options
-
+	  cfg_.setAttr<std::string>("client", "connect", "host", "localhost");
+	  
+	  // FIXME: fork a server
 	  unloadResources();
 	  return 0;
 	}
@@ -230,8 +231,6 @@ int MenuLight::showMenu()
       if (join_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
 	{
 	  LOG1("Join game...");
-	  // FIXME: play with the xml to sets options
-
 	  unloadResources();
 	  return 0;
 	}
@@ -241,14 +240,14 @@ int MenuLight::showMenu()
 	host_.acquireInput("host");
       if (host_.isAcquireFinished())
 	{
-	  LOG1("host text changed to '%1'", host_.getText());
+	  cfg_.setAttr<std::string>("client", "connect", "host", host_.getText());
 	  host_.resetAcquire();
 	}
       if (port_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
 	port_.acquireInput("port");
       if (port_.isAcquireFinished())
 	{
-	  LOG1("port text changed to '%1'", port_.getText());
+	  cfg_.setAttr<std::string>("client", "connect", "port", port_.getText());
 	  port_.resetAcquire();
 	}
     }

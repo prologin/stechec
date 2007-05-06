@@ -216,7 +216,9 @@ extern const char *bb5_token_str[RULES_TOKEN_LAST];
 /*
 ** Messages (Packet) used to control game status.
 */
-DECLARE_EMPTY_PACKET(MSG_INITGAME, MsgInitGame);
+DECLARE_PACKET(MSG_INITGAME, MsgInitGame)
+  int time_per_turn;
+END_PACKET
 DECLARE_PACKET(MSG_INITHALF, MsgInitHalf)
   int cur_half;
 END_PACKET

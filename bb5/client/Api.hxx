@@ -412,6 +412,17 @@ inline int Api::movePossible(const Point& to)
                                  selected_player_).empty() ? 0 : 1;
 }
 
+inline int Api::remainingTime() const
+{
+  int state = rules_->getState();
+  int tr;
+
+  if (state != GS_COACH1 && state != GS_COACH2)
+    return -1;
+  tr = rules_->timer_.getTimeRemaining();
+  return tr < 0 ? 0 : tr;
+}
+
 
 inline const char* Api::gameStateString() const
 {

@@ -144,6 +144,10 @@ public:
   //! @return 1 if this move is possible, 0 else.
   int                   movePossible(const Point& to);
 
+  //! @brief Get the remaining time, for the turn.
+  //! @return The remaining time, in second.
+  int			remainingTime() const;
+  
   //! @brief Get the current weather.
   //! @note FIXME: currently disabled.
   const Weather*        getWeather() const;

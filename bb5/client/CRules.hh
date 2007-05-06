@@ -88,6 +88,7 @@ private:
 
   const xml::XMLConfig& cfg_;
   Api*                  api_;
+  Timer			timer_;
 
   int       cur_turn_;
   int       cur_half_;

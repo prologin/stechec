@@ -42,7 +42,6 @@ Panel::Panel(Game& g)
 
   wheel_.setPos(113, 506);
   wheel_.splitNbFrame(13, 1);
-  wheel_.anim(100);
   addChild(&wheel_);
 
   player_picture_.setPos(45, 150);
@@ -140,7 +139,7 @@ void Panel::displayPlayerInfo(int team_id, int player_id)
 
   position_.setText(p->getPositionName());
   position_.show();
-  
+
   os << p->getMa();
   ma_.setText(os.str());
   ma_.show();
@@ -212,7 +211,19 @@ void Panel::update()
 	r = 1;
       digit_reroll_[i].setFrame(r);
     }
-  
+
+  // Update time remaining and wheel
+  int tr = api->remainingTime();
+  if (tr >= 0) {
+    digit_time_[0].setFrame(tr / 60 % 10 + 1);
+    digit_time_[1].setFrame(tr / 10 % 6 + 1);
+    digit_time_[2].setFrame(tr % 10 + 1);
+    wheel_.anim(100);
+  } else {
+    wheel_.stopAnim();
+  }
+
+
   VirtualSurface::update();
 }
 
