@@ -1,6 +1,0 @@
-* Une unite = un processus
-
-Pour  ce  faire,  dans  le   xml  avec  lequel  on  lance  stechec  et
-stechec_server, il suffit de mettre un client pour une unite. Ensuite,
-du cote  API et serveur, on  dira que les  clients numerotes de 1  a 5
-sont l'equipe 1 (simple modulo 5).
