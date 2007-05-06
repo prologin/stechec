@@ -1,0 +1,76 @@
+# Position are row vol (y, x)
+10 40 40 50
+10 10
+20 10
+30 10
+10 20
+15 20
+25 20
+30 20
+10 30
+20 30
+30 30
+23
+5 5 1
+15 5 2
+25 5 3
+5 15 4
+10 15 5
+15 15 6
+20 15 1
+25 15 2
+5 25 3
+15 25 4
+25 25 5
+15 15 6
+25 15 1
+35 15 2
+15 25 3
+25 25 4
+30 25 5
+30 15 6
+35 25 1
+15 35 2
+25 35 3
+35 35 4
+30 30 5
+fvvvvvvfffffffvvvvfffvvvvvvfffffffvvvvff
+ffvvvvffffCffvvvvfffffvvvvffffCffvvvvfff
+ffffvvvfffffvvvvffffffffvvvfffffvvvvffff
+fffvvvvvvffvvvvffffffffvvvvvvffvvvvfffff
+fCffffvvvvvvvvfffffffCffffvvvvvvvvffffff
+fffffffvvvvvfffffffffffffffvvvvvffffffff
+ffffffvvvvfffffffvvfffffffvvvvfffffffvvf
+fffffvvvvvvvvvvvvvfffffffvvvvvvvvvvvvvff
+ffffvvvffvvvvvvvvfffffffvvvffvvvvvvvvfff
+fffvvvvvfffffvvvfffffffvvvvvfffffvvvffff
+ffvvvvvffCffvvffffffffvvvvvffCffvvffffff
+fffvvvvfffffvvvffffffffvvvvfffffvvvfffff
+ffffvvvvfffvvvffffffffffvvvvfffvvvffffff
+fffvvvffffvvvvffCffffffvvvffffvvvvffCfff
+ffvvvfCfffvvvfffffffffvvvfCfffvvvfffffff
+fvvvfffffvvvvvvffffffvvvfffffvvvvvvfffff
+fvvvvfffvvvvfffffffffvvvvfffvvvvffffffff
+ffvvvvfvvvffffffffffffvvvvfvvvffffffffff
+fCfvvvvvvvvvvfffCffffCfvvvvvvvvvvfffCfff
+fffffvvvvvvvvvvffffffffffvvvvvvvvvvfffff
+fvvvvvvfffffffvvvvfffvvvvvvfffffffvvvvff
+ffvvvvffffCffvvvvfffffvvvvffffCffvvvvfff
+ffffvvvfffffvvvvffffffffvvvfffffvvvvffff
+fffvvvvvvffvvvvffffffffvvvvvvffvvvvfffff
+fCffffvvvvvvvvfffffffCffffvvvvvvvvffffff
+fffffffvvvvvfffffffffffffffvvvvvffffffff
+ffffffvvvvfffffffvvfffffffvvvvfffffffvvf
+fffffvvvvvvvvvvvvvfffffffvvvvvvvvvvvvvff
+ffffvvvffvvvvvvvvfffffffvvvffvvvvvvvvfff
+fffvvvvvfffffvvvfffffffvvvvvfffffvvvffff
+ffvvvvvffCffvvffffffffvvvvvffCffvvffffff
+fffvvvvfffffvvvffffffffvvvvfffffvvvfffff
+ffffvvvvfffvvvffffffffffvvvvfffvvvffffff
+fffvvvffffvvvvffCffffffvvvffffvvvvffCfff
+ffvvvfCfffvvvfffffffffvvvfCfffvvvfffffff
+fvvvfffffvvvvvvffffffvvvfffffvvvvvvfffff
+fvvvvfffvvvvfffffffffvvvvfffvvvvffffffff
+ffvvvvfvvvffffffffffffvvvvfvvvffffffffff
+fCfvvvvvvvvvvfffCffffCfvvvvvvvvvvfffCfff
+fffffvvvvvvvvvvffffffffffvvvvvvvvvvfffff

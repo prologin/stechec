@@ -1,0 +1,35 @@
+# Position are row vol (y, x)
+6 20 20 16
+3 3
+3 18
+18 3
+18 18
+10 5
+5 10
+6
+1 1 1
+10 10 2
+5 5 5
+15 15 3
+17 3 4
+3 18 5
+fvvvvvvfffffffvvvvff
+ffvvvvffffCffvvvvfff
+ffffvvvfffffvvvvffff
+fffvvvvvvffvvvvfffff
+fCffffvvvvvvvvffffff
+fffffffvvvvvffffffff
+ffffffvvvvfffffffvvf
+fffffvvvvvvvvvvvvvff
+ffffvvvffvvvvvvvvfff
+fffvvvvvfffffvvvffff
+ffvvvvvffCffvvffffff
+fffvvvvfffffvvvfffff
+ffffvvvvfffvvvffffff
+fffvvvffffvvvvffCfff
+ffvvvfCfffvvvfffffff
+fvvvfffffvvvvvvfffff
+fvvvvfffvvvvffffffff
+ffvvvvfvvvffffffffff
+fCfvvvvvvvvvvfffCfff
+fffffvvvvvvvvvvfffff
