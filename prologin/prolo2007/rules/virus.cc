@@ -70,7 +70,7 @@ void Virus::PlayTurn()
      int nrow = row + ((i == DEC_Y) ? -1 : ((i == INC_Y) ? 1 : 0));
      int ncol = col + ((i == DEC_X) ? -1 : ((i == INC_X) ? 1 : 0));
      if (nrow >= 0 && nrow < _g->map_size.row &&
-	ncol >= 0 && ncol < _g->map_size.col)
+	 ncol >= 0 && ncol < _g->map_size.col)
 	for (std::vector<Cellule*>::iterator it =
 		_g->_cells.begin();
 	     it != _g->_cells.end(); ++it)
@@ -104,15 +104,25 @@ void Virus::PlayTurn()
   {
      // Move aleatoire
      int nrow, ncol, n;
+     int tab[4] = {0};
+     int nb = 0;
      do
      {
+       if (nb == 4)
+	 return;
 	n = _g->rand() % 4;
 	nrow = row + ((n == DEC_Y) ? -1 : ((n == INC_Y) ? 1 : 0));
 	ncol = col + ((n == DEC_X) ? -1 : ((n == INC_X) ? 1 : 0));
+	if (tab[n] == 0)
+	  {
+	    tab[n] = 1;
+	    nb++;
+	  }
      }
      while (nrow < 0 || nrow >= _g->map_size.row ||
 	    ncol < 0 || ncol >= _g->map_size.col ||
-	    cell[n] == 2 /* Cellule infectée */  || !_g->TestLeucocyte(nrow, ncol));
+	    cell[n] == 2 /* Cellule infectée */  || !_g->TestLeucocyte(nrow, ncol)
+	    || !_g->TestVirus (nrow, ncol));
      row = nrow;
      col = ncol;
   }
