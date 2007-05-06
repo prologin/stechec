@@ -17,11 +17,6 @@ Leucocyte::Leucocyte() :
 {
   for (int i = 0; i < LAST_COMPETENCE; ++i)
     competences[i] = 0;
-  known_types.push_back(0);
-  known_types.push_back(1);
-  known_types.push_back(2);
-  known_types.push_back(3);
-  known_types.push_back(4);
 }
 
 # define MULT_ANTIBODY 5
@@ -30,14 +25,8 @@ void	Leucocyte::addAntibody ()
 {
   int	nb = competences[ANTIBODY_NB] * MULT_ANTIBODY;
 
-  LOG3("Dropping %1 antibodies", nb);
+  LOG4("Dropping %1 antibodies", nb);
   antibodies[row][col] += nb;
-  for (int y = 0; y < g_->map_size.row; ++y)
-    {
-      for (int x = 0; x < g_->map_size.col; ++x)
-	std::cout << antibodies[y][x] << "|";
-      std::cout << std::endl;
-    }
   // spread should be donne in PlayTurn
 }
 
@@ -46,14 +35,7 @@ void	Leucocyte::PlayTurn ()
   if (state_ == STATE_DEAD)
     return;
   // antibody attack
-  LOG3("Leucocyte %1 antibodies", get_id ());
-  for (int y = 0; y < g_->map_size.row; ++y)
-    {
-      for (int x = 0; x < g_->map_size.col; ++x)
-	std::cout << antibodies[y][x] << "|";
-      std::cout << std::endl;
-    }
-
+  LOG4("Leucocyte %1 antibodies", get_id ());
   for (int y = 0; y < g_->map_size.row; ++y)
     for (int x = 0; x < g_->map_size.col; ++x)
       {
@@ -69,7 +51,8 @@ void	Leucocyte::PlayTurn ()
 		knows_type((*cell)->Maladie ()))
 	      {
 		n = (*cell)->kill (antibodies[y][x]);
-		antibodies[y][x] -= n;
+		antibodies[y][x] -= (antibodies[y][x] < n) ?
+		  antibodies[y][x] : n;
 		if ((*cell)->getLife() <=0)
 		  (*cell)->killedBy (get_id ());
 	      }
@@ -82,7 +65,8 @@ void	Leucocyte::PlayTurn ()
 	      knows_type((*it)->Maladie ()))
 	    {
 	      n = (*it)->kill (antibodies[y][x]);
-	      antibodies[y][x] -= n;
+	      antibodies[y][x] -= (antibodies[y][x] < n) ?
+		antibodies[y][x] : n;
 	      if ((*it)->getLife() <=0)
 		(*it)->killedBy (get_id ());
 	    }
@@ -93,7 +77,8 @@ void	Leucocyte::PlayTurn ()
 	g_->bacterias_killed_by_[get_id ()] += n;
 	if (g_->bacterias[y][x]->getPopulation () <= 0)
 	  g_->bacterias[y][x]->killedBy (get_id ());
-	antibodies[y][x] -= n;
+	antibodies[y][x] -= (antibodies[y][x] < n) ?
+	  antibodies[y][x] : n;
       }
   // spread
   for (int y = g_->map_size.row - 1; y >= 0 ; --y)
@@ -109,20 +94,13 @@ void	Leucocyte::PlayTurn ()
 	    if (n_row < 0 || n_row == g_->map_size.row ||
 		n_col < 0 || n_col == g_->map_size.col)
 	      continue;
-	    antibodies[n_row][n_col] += 0.25 * antibodies[y][x];
+	    antibodies[n_row][n_col] += 0.38 * antibodies[y][x];
 
 	    //  	    if (antibodies[n_row][n_col] && antibodies[y][x])
 	    //  	      antibodies[n_row][n_col] = 1;
 	  }
 	antibodies[y][x] = 0;
       }
-  LOG3("Leucocyte %1 antibodies after spread and attack", get_id ());
-  for (int y = 0; y < g_->map_size.row; ++y)
-    {
-      for (int x = 0; x < g_->map_size.col; ++x)
-	std::cout << antibodies[y][x] << "|";
-      std::cout << std::endl;
-    }
   if (state_ == STATE_PHAGOCYTOSING)
     {
       LOG3("Phagocytose turn %1: %2", get_id (), phagocytose_turn_);

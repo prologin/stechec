@@ -89,12 +89,6 @@ void	ServerResolver::Antibody (CommandListRef& cmdList)
       LOG3("Leucocyte %1 drops antibodies", elt->client_id);
       cur->addAntibody();
       SendToAll(*elt);
-      for (int y = 0; y < g_->map_size.row; ++y)
-	{
-	  for (int x = 0; x < g_->map_size.col; ++x)
-	    std::cout << g_->players[elt->client_id].antibodies[y][x] << "|";
-	  std::cout << std::endl;
-	}
     }
 }
 

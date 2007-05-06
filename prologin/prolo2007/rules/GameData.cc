@@ -116,17 +116,17 @@ bool GameData::TestAround(int row, int col, int *dest_row, int *dest_col)
 
       if (terrain_type[n_row][n_col] != FLESH)
 	{
-	  LOG3("Echec Terrain");
+	  LOG4("Echec Terrain");
 	  continue;
 	}
       if (!TestVirus (n_row, n_col))
 	{
-	  LOG3("Echec virus");
+	  LOG4("Echec virus");
 	  continue;
 	}
       if (!TestCell (n_row, n_col))
 	{
-	  LOG3("Echec cellule");
+	  LOG4("Echec cellule");
 	  continue;
 	}
 
@@ -224,14 +224,14 @@ void	GameData::PlayTurn ()
 	nutriments[x][y]->spread ();
       }
 
-  LOG1("Nutriments map");
-  for (int x = 0; x < map_size.row; x++)
-    {
-      for (int y = 0; y < map_size.col; y++)
-	std::cout << nutriments[x][y]->material () << "|";
-      std::cout << std::endl;
-    }
-  LOG1("END Nutriments map");
+//   LOG1("Nutriments map");
+//   for (int x = 0; x < map_size.row; x++)
+//     {
+//       for (int y = 0; y < map_size.col; y++)
+// 	std::cerr << nutriments[x][y]->material () << "|";
+//       std::cerr << std::endl;
+//     }
+//   LOG1("END Nutriments map");
   /*
    * Les cellules & bactéries "mangent"
    * (prélèvent des nutriments sur leurs cases)
@@ -252,7 +252,7 @@ void	GameData::PlayTurn ()
 	    delete bacterias[y][x];
 	    bacterias[y][x] = 0;
 	    bacterias_killed_++;
-	    LOG3("Bacteria [%1, %2] died", y, x);
+	    LOG4("Bacteria [%1, %2] died", y, x);
 	  }
 	else
 	  bacterias[y][x]->PlayTurn ();
@@ -263,7 +263,7 @@ void	GameData::PlayTurn ()
   std::vector<Cellule*>::iterator i = _cells.begin();
   while (j < n)
     {
-      LOG1("Cellule r: %1, c :%2",
+      LOG4("Cellule r: %1, c :%2",
 	   _cells[j]->row, _cells[j]->col);
       if (_cells[j]->Sante() != CELL_STATE_DEAD &&
 	  _cells[j]->Sante() != CELL_STATE_BEING_PHAGOCYTED)
@@ -287,14 +287,14 @@ void	GameData::PlayTurn ()
 	  virus_killed_by_[tmp->getKilledBy ()]++;
 	delete tmp;
 	virus_killed_++;
-	LOG3("A virus died");
+	LOG4("A virus died");
       }
     else
       it++;
   for (it = _virus.begin();
        it != _virus.end(); ++it)
     {
-      LOG3("Virus %1, [%2, %3]", (*it)->Maladie()
+      LOG4("Virus %1, [%2, %3]", (*it)->Maladie()
 	   ,(*it)->row, (*it)->col);
       (*it)->PlayTurn();
     }
@@ -401,7 +401,7 @@ void	GameData::init ()
 	  this->terrain_type[r][c] == VESSEL)
 	{
 	  this->bacterias[r][c] = new Bacterias(r, c, 1, this);
-	  LOG1("New bacteria seed [%1, %2]", r, c);
+	  LOG4("New bacteria seed [%1, %2]", r, c);
 	}
       else
 	--i;
