@@ -505,13 +505,6 @@ int	GameData::calculScore ()
     players[i].score_ /= total;
   }
 
-//   for (int i = 0; i < this->getNbPlayer (); ++i)
-//     {
-//       if (!total)
-// 	players[i].score_ = 0;
-//       else
-// 	players[i].score_ = n * tab[i] / total;
-//     }
 }
 
 
