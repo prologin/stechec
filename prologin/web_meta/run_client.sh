@@ -46,7 +46,7 @@ ip_server=$9
 
 time_limit=200
 reserve_time=2000
-memory_limit=15000
+memory_limit=20000
 
 # load config and transfert methods.
 source "`dirname $0`/meta_cx.sh"
@@ -79,7 +79,7 @@ champion_library=`echo $real_lib | sed s/\.so$//`
 # Hack for java !
 #
 nm $real_lib | grep -q "_Jv_AttachCurrentThread"
-[ "$?" -eq 0 ] && memory_limit=50000
+[ "$?" -eq 0 ] && memory_limit=70000
 
 #
 # Create client configuration file.
