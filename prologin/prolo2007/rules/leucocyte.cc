@@ -48,7 +48,7 @@ void	Leucocyte::PlayTurn ()
 	  {
 	    if ((*cell)->col == x && (*cell)->row == y &&
 		(*cell)->Sante () == CELL_STATE_INFECTED &&
-		knows_type((*cell)->Maladie ()))
+		knows_type((*cell)->Maladie ()) == SUCCESS)
 	      {
 		n = (*cell)->kill (antibodies[y][x]);
 		antibodies[y][x] -= (antibodies[y][x] < n) ?
@@ -62,7 +62,7 @@ void	Leucocyte::PlayTurn ()
 	for (it = g_->_virus.begin();
 	     it != g_->_virus.end(); ++it)
 	  if ((*it)->col == x && (*it)->row == y &&
-	      knows_type((*it)->Maladie ()))
+	      knows_type((*it)->Maladie ()) == SUCCESS)
 	    {
 	      n = (*it)->kill (antibodies[y][x]);
 	      antibodies[y][x] -= (antibodies[y][x] < n) ?
