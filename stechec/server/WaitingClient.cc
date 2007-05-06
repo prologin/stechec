@@ -63,6 +63,7 @@ bool WaitingClient::recvReady()
   }
 
   // No matter what, remove this waiting client from list.
+  cx_ = NULL;
   return true;
 }
 
@@ -97,6 +98,7 @@ bool TcpCxListener::recvReady()
     LOG2("Network error on connection (from %1): %2", *client_cx, e.what());
     delete client_cx;
   }
+  LOG4("New connection accepted.");
   return false;
 }
 

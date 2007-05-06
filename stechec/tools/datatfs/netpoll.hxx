@@ -89,10 +89,16 @@ void NetPoll<T>::poll()
       {
 	// This client is removed from the list.
 	delete elt_list_[i];
+
+        // KLUDGE: elt may be added, refetch list size
+        elt_size = elt_list_.size();
+
 	elt_list_[i] = elt_list_[elt_size - 1];
-	elt_list_.erase(elt_list_.end() - 1);
+	elt_list_.erase(--elt_list_.end());
 	pifi_[i] = pifi_[elt_size - 1];
-	i--;
 	elt_size--;
+
+        // KLUDGE: safer to return now.
+        break;
       }
 }
