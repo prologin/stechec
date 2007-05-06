@@ -8,6 +8,8 @@ dist_prolo2007data_DATA =			\
 	prolo2007.yml				\
 	simple.map				\
 	arena10.map				\
+	alea2.map				\
+	alea3.map				\
 	arena.map				\
 	arme_contre_armee.map			\
 	barriere_virus.map			\
