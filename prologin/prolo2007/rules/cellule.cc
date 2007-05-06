@@ -4,6 +4,7 @@
 
 static unsigned int id_cell = 0;
 
+
 Cellule::Cellule(int row, int col, int matiere, GameData *g) :
   Object(row, col), _sante(CELL_STATE_HEALTHY), _matiere(matiere),
   _etat_production_virus(0), _etat_mitose(0), g_(g), maladie_ (-1),

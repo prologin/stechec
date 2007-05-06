@@ -13,7 +13,8 @@ Leucocyte::Leucocyte() :
   phagocytose_turn_(PHAGOCYTOSIS_DURATION),
   v_(0),
   c_(0),
-  l_(0)
+  l_(0),
+  g_(0)
 {
   for (int i = 0; i < LAST_COMPETENCE; ++i)
     competences[i] = 0;
@@ -60,17 +61,22 @@ void	Leucocyte::PlayTurn ()
   // antibody attack
   LOG3("Antibody map, player :%1", get_id ());
 
-  std::stringstream s;
-  s << std::endl;
-  for (int y = 0; y < g_->map_size.row; ++y)
-    {
-      for (int x = 0; x < g_->map_size.col; ++x)
-	{
-	  s << antibodies[y][x] << "|";
-	}
-      s << std::endl;
-    }
-  LOG2(s.str().c_str());
+//   std::stringstream s;
+//   s << std::endl;
+//   LOG3("g_->map_size :%1", g_->map_size.row);
+//   assert(g_->map_size.row <= MAX_MAP_SIZE);
+//   assert(g_->map_size.col <= MAX_MAP_SIZE);
+//   for (int y = 0; y < g_->map_size.row; ++y)
+//     {
+//       LOG1("antibody[%1] = %2", y, antibodies+y);
+//       for (int x = 0; x < g_->map_size.col; ++x)
+// 	{
+// 	  LOG1("antibodies[%1][%2] = %3", y, x, antibodies[y]+x);
+// 	  s << antibodies[y][x] << "|";
+// 	}
+//       s << std::endl;
+//     }
+//   LOG2(s.str().c_str());
   LOG4("Leucocyte %1 antibodies", get_id ());
   for (int y = 0; y < g_->map_size.row; ++y)
     for (int x = 0; x < g_->map_size.col; ++x)
