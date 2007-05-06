@@ -19,12 +19,13 @@
 
 class Server : public StechecServer
 {
-   public:
-      Server(GameData *g) : StechecServer(g) {}
-      virtual ~Server() {}
+public:
+  Server(GameData *g) : StechecServer(g) {}
+  virtual ~Server() {}
 
-      void	changeState(Leucocyte& l, int state);
-      void	addLeucocyte(int team, int uid, int x, int y);
+  void	changeState(Leucocyte& l, int state);
+  void	addLeucocyte(int team, int uid, int x, int y);
+  void	sendScore ();
 };
 
 #endif // !SERVER_HH_

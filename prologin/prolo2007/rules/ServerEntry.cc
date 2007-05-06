@@ -284,7 +284,9 @@ int         ServerEntry::afterNewTurn()
 {
 //   displayMap();
   g_->PlayTurn ();
-  g_->player_turn++;
+  g_->calculScore ();
+  s_->sendScore ();
+//   g_->player_turn++;
   return 0;
 }
 
@@ -297,14 +299,14 @@ int         ServerEntry::afterGame()
 
 bool        ServerEntry::isMatchFinished()
 {
-  if (g_->player_turn >= g_->max_date)
+  if (g_->getCurrentTurn () >= g_->max_date)
     {
       LOG1("Match finished");
       calculScores ();
     }
   else
     LOG1("Max date : %1 and turn : %2", g_->max_date, g_->player_turn);
-  return g_->player_turn >= g_->max_date;
+  return g_->getCurrentTurn () >= g_->max_date;
 }
 
 static int	*tab_score = NULL;

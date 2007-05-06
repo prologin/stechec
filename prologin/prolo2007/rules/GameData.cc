@@ -63,8 +63,12 @@ int	GameData::GetNextMessage(int id)
 unsigned int	GameData::rand()
 {
   // Debian original random
+  unsigned int res;
+
   next_ = next_ * 1103515245 + 12345;
-  return (next_ >> 16) & 32767;
+  res = (next_ >> 16) & 32767;
+  //  LOG3("TOCTOC Random %1", res);
+  return res;
 }
 
 bool GameData::TestVirus (int row, int col)

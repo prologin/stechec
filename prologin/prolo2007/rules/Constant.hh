@@ -119,6 +119,7 @@ enum e_com_type {
   BACT_DIE,
   CASE_UPDATE,
   CELL_UPDATE,
+  SCORE,
   LAST_MSG
 };
 

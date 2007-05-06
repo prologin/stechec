@@ -126,6 +126,11 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	g_->Phagocytose (com->client_id, com->arg[0], com->arg[1]);
 	break;
       }
+    case SCORE:
+      {
+	g_->players[com->client_id].score_ = com->arg[0];
+	break;
+      }
     default :
       {
 	//	LOG1("Unexpected message arrives... id : %1", com->type);
