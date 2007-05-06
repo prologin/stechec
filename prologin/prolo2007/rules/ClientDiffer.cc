@@ -114,7 +114,8 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	g_->players[com->client_id].competences[VISION] = com->arg[3];
 	Position dep = Position(0, 0);
 	if (com->client_id == g_->getUid ())
-	  c_->UpdateFogOfWar(com->client_id, dep, g_->players[com->client_id], true);
+	  c_->UpdateFogOfWar(com->client_id, g_->players[com->client_id],
+			     g_->players[com->client_id], true);
 	else
 	  c_->UpdateFogOfWar(com->client_id, dep, g_->players[com->client_id], false);
 	break;
