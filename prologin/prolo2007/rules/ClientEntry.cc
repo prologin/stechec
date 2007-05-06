@@ -78,6 +78,8 @@ int        ClientEntry::afterNewTurn()
     differ_->ApplyDiff(&com);
 
   g_->PlayTurn ();
+  srand(time(NULL) + (g_->getUid() * 1000) % 107);
+  srandom(time(NULL) + (g_->getUid() * 1000) % 107);
   g_->player_turn++;
   return 0;
 }
