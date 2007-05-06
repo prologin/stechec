@@ -448,7 +448,7 @@ void GameData::deleteCells ()
 #define SCORE_CELL_INFECTED		15
 #define SCORE_CELL_NOT_INFECTED		20
 #define SCORE_BACTERIA			1
-#define SCORE_VIRUS			5
+#define SCORE_VIRUS			20
 
   // How to compute the score
 int	GameData::calculScore ()
@@ -478,6 +478,7 @@ int	GameData::calculScore ()
     if (!this->_cells[i]->Infectee ())
       ++n;
 
+  //calcul des Pi :
   for (int i = 0; i < this->getNbPlayer (); ++i)
     {
       tab[i] += this->cellules_killed_by_[i] * SCORE_CELL_INFECTED;
@@ -492,6 +493,8 @@ int	GameData::calculScore ()
       assert(id_leuco_to_team[i] != -1);
       P[id_leuco_to_team[i]] += players[i].score_;
     }
+
+  //mise a zero des scores negatifs pour chaque team, et calcul de la somme des Pi
   int total=0;
   for (int t=0 ; t < this->getNbTeam() ; ++t) {
     if (P[t] < 0)
@@ -502,6 +505,8 @@ int	GameData::calculScore ()
     total += P[t];
   }
 
+  //calcul des scores par player, de telle maniere que la somme donne le score de la team
+  //attention, tous les scores sont mutliples par 100 pour ne pas avoir des erreurs d'arrondis critiques
   for (int i=0 ; i < this->getNbPlayer() ; ++i) {
     if (total == 0) {
       players[i].score_ = 0;

@@ -26,7 +26,7 @@ void	Bacterias::spread ()
 {
   if (nb_ < MAX_BACTERY)
     {
-      nb_ *= 2;
+      nb_ += 5 ;  // was *= 2, ajout kjus
       return;
     }
   for (int i = 0; i < 4; ++i)
@@ -40,9 +40,11 @@ void	Bacterias::spread ()
       if ((g_->getCurrentTurn () % 2) && g_->terrain_type[n_row][n_col] == VESSEL &&
 	  g_->bacterias[n_row][n_col] == 0)
 	{
-	  g_->bacterias[n_row][n_col] = new Bacterias(n_row, n_col, nb_ * 0.5, g_);
-	  LOG1("New bateria seed [%1, %2]", n_row, n_col);
-	  nb_ *= 0.5;
+	  if (rand() % 5 == 0) { // ajout kjus
+	    g_->bacterias[n_row][n_col] = new Bacterias(n_row, n_col, nb_ * 0.5, g_);
+	    LOG1("New bateria seed [%1, %2]", n_row, n_col);
+	    nb_ *= 0.5;
+	  }
 	  return;
 	}
     }
