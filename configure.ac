@@ -265,12 +265,14 @@ AC_CONFIG_FILES([
 fi
 
 # Uncomment these lines to build prolo2007
-#if test x$BUILD_prolo2007 != x; then
-#AC_CONFIG_FILES([
-#  prologin/prolo2007/Makefile
-#  prologin/prolo2007/rules/Makefile
-#  prologin/prolo2007/data/Makefile
-#])
+if test x$BUILD_prolo2007 != x; then
+AC_CONFIG_FILES([
+  prologin/prolo2007/Makefile
+  prologin/prolo2007/rules/Makefile
+  prologin/prolo2007/visu/Makefile
+  prologin/prolo2007/subject/Makefile
+  prologin/prolo2007/data/Makefile
+])
 #fi
 
 
