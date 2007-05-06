@@ -41,7 +41,8 @@ competiteur_id=$6
 team_id=$7
 game_id=$8
 port=$9
-ip_server=$10
+shift
+ip_server=$9
 
 time_limit=200
 reserve_time=2000
