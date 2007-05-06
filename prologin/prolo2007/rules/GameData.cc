@@ -450,6 +450,7 @@ void GameData::deleteCells ()
 #define SCORE_BACTERIA			1
 #define SCORE_VIRUS			5
 
+  // How to compute the score
 int	GameData::calculScore ()
 {
   for (int i = 0; i < this->getNbPlayer (); ++i)
@@ -466,14 +467,11 @@ int	GameData::calculScore ()
     {
       tab[i] += this->cellules_killed_by_[i] * SCORE_CELL_INFECTED;
       LOG3("Score of %1 after cells : %2", i, tab[i]);
-      //      tab[i] -= this->good_cellules_killed_by_[i] * SCORE_CELL_NOT_INFECTED; // removed by LLB
-      //      LOG3("Score of %1 after helthy cells: %2", i, tab[i]);
       tab[i] += this->bacterias_killed_by_[i] * SCORE_BACTERIA;
       LOG3("Score of %1 after bacteria: %2", i, tab[i]);
       if (this->players[i].getState () == STATE_DEAD)
 	tab[i] -= 50;
       tab[i] += this->virus_killed_by_[i] * SCORE_VIRUS;
-      //      LOG3("Score of %1 after virus: %2", i, tab[i]);
       LOG3("Score of %1 : %2", i, tab[i]);
       tab[i] = std::max(tab[i], 0);
       total += tab[i];
@@ -481,15 +479,10 @@ int	GameData::calculScore ()
   for (int i = 0; i < this->getNbPlayer (); ++i)
     {
       if (!total)
-// 	tab[i] *= n / total;
-//       else
-//	tab[i] = 0;    // removed by LLB
-//      players[i].score_ = tab[i]; // removed by LLB
-	players[i].score_ = 0; // added by LLB
+	players[i].score_ = 0;
       else
-	players[i].score_ = n * tab[i] / total;  // added by LLB
+	players[i].score_ = n * tab[i] / total;
     }
-  // How to compute the score
 }
 
 
