@@ -9,7 +9,7 @@ place end
 wait
 # Kick-off.
 # Ball is scattered on player 10, who fails to catch it.
-# Ball finally rebounds to 8 6.
+# Ball finally rebounds to 6 8.
 cheat 1 1 1 1
 kickoff 10 8
 

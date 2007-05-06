@@ -377,7 +377,10 @@ void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_ty
        << required << "]." << endl;
 
   if (api_->getTeamId() == team_id && reroll)
-    cout << "You can use a 'reroll' or 'accept' this result." << endl;
+    {
+      cout << "You can use a 'reroll' or 'accept' this result." << endl;
+      input_.stopWaiting();
+    }
 }
 
 void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id, 

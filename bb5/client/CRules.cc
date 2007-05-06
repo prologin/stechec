@@ -154,30 +154,24 @@ void        CRules::msgDrawKicker(const MsgDrawKicker* m)
 
 void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 {
-  if (m->client_id != getCoachId())
+  if (m->place_team)
     {
-      // Inform UI that other team is concerned.
-      onEvent(m);
-    }
-  else if (m->place_team)
-    {
-      assert(getState() != GS_INITKICKOFF);
-      setState(GS_INITKICKOFF);
-      api_->selectTeam(US);
-
-      // Our team has to enter the field
-      // FIXME: Automatically use default placement, for now.
-      our_team_->placeTeam(1);
-      // Inform UI that he has to place players.
-      onEvent(m);
+      if (m->client_id == getCoachId())
+        {
+          assert(getState() != GS_INITKICKOFF);
+          setState(GS_INITKICKOFF);
+          api_->selectTeam(US);
+          // Our team has to enter the field
+          // FIXME: Automatically use default placement, for now.
+          our_team_->placeTeam(1);
+        }
     }
   else
     {
       assert(getState() == GS_INITKICKOFF);
       setState(GS_KICKOFF);
-      // Inform UI that he has to place the ball
-      onEvent(m);
     }
+  onEvent(m);
 }
 
 void        CRules::msgGiveBall(const MsgGiveBall* m)

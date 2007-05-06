@@ -93,11 +93,11 @@ MY_TESTS =					\
 	move_dodge				\
 	pass					\
 	pass2					\
-	pickup
+	pickup					\
+	pickup_fail
 
 # Tests expected to fail (show bugs that should be corrected)
 MY_XTESTS =					\
 	crowd1					\
-	crowd2					\
-	pickup_fail
+	crowd2
 
