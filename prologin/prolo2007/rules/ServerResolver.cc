@@ -24,21 +24,23 @@ void	ServerResolver::ApplyResolver(CommandListRef cmdList[])
   Antibody      (cmdList[DROP_ANTIBODY]);
 }
 
-bool	ServerResolver::GonnaBeBlocked(int y, int x, CommandListRef& cmdList)
+bool	ServerResolver::GonnaBeBlocked(int id, int y, int x, CommandListRef& cmdList)
 {
   CommandListRef::iterator it;
   int found = -1;
   if (g_->TestLeucocyte (y, x))
     return false;
-    for (it = cmdList.begin(); it != cmdList.end() && found == -1; ++it)
-      {
-	if (g_->players[(*it)->client_id].row == y &&
-	    g_->players[(*it)->client_id].col == x
-	    && !GonnaBeBlocked((*it)->arg[0], (*it)->arg[1], cmdList)
-	    && g_->TestCell((*it)->arg[0], (*it)->arg[1])
-	    && g_->TestVirus((*it)->arg[0], (*it)->arg[1]))
-	  return false;
-      }
+  for (it = cmdList.begin(); it != cmdList.end() && found == -1; ++it)
+    {
+      if (g_->players[(*it)->client_id].row == y &&
+	  g_->players[(*it)->client_id].col == x &&
+	  g_->players[id].row == (*it)->arg[0] &&
+	  g_->players[id].col == (*it)->arg[1] &&
+	  // 	  && !GonnaBeBlocked((*it)->arg[0], (*it)->arg[1], cmdList)
+	  g_->TestCell((*it)->arg[0], (*it)->arg[1]) &&
+	  g_->TestVirus((*it)->arg[0], (*it)->arg[1]))
+	return false;
+    }
   return true;
 }
 
@@ -65,7 +67,7 @@ void	ServerResolver::moveLeucocyte(CommandListRef& cmdList)
 	  validate (validated, cmdList, i);
 	  if (!validated[i])
 	    continue;
-	  if (GonnaBeBlocked (y, x, cmdList))
+	  if (GonnaBeBlocked (id, y, x, cmdList))
 	    continue;
 	  g_->players[id].row = y;
 	  g_->players[id].col = x;

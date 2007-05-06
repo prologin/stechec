@@ -33,7 +33,7 @@ private:
   void		Competences(CommandListRef& cmdList);
   void		Messages(CommandListRef& cmdList);
   void		Antibody(CommandListRef& cmdList);
-  bool		GonnaBeBlocked (int y, int x, CommandListRef& cmdList);
+  bool		GonnaBeBlocked (int id, int y, int x, CommandListRef& cmdList);
   void		validate (bool*  validate,
 			  CommandListRef& cmdList, int index);
   void		validatePh (bool*  validate,
