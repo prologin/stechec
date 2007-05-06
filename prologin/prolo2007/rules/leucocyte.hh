@@ -67,8 +67,8 @@ public:
     for (std::vector<int>::iterator it = known_types.begin ();
 	 it != known_types.end (); ++it)
       if (*it == type)
-	return 1;
-    return 0;
+	return SUCCESS;
+    return UNKNOWN;
   }
 private:
   int	r_uid_;
