@@ -9,12 +9,26 @@ use IO::Select;
 use FileHandle;
 use Getopt::Std;
 use Data::Dumper;
+use POSIX 'setsid';
 
 # globals
 my %m = ();         # meta config
 my @proc = ();      # list of launched processus (matchs)
 my $msock = undef;  # socket to main_server
 my $read_set;
+
+sub daemonize 
+{
+    print "daemonizing... see you!\n";
+    chdir '/'               or die "Can't chdir to /: $!";
+    open STDIN, '/dev/null' or die "Can't read /dev/null: $!";
+    open STDOUT, '>/dev/null'
+        or die "Can't write to /dev/null: $!";
+    defined(my $pid = fork) or die "Can't fork: $!";
+    exit if $pid;
+    setsid                  or die "Can't start a new session: $!";
+    open STDERR, '>&STDOUT' or die "Can't dup stdout: $!";
+}       
 
 
 ##########################################################################
@@ -252,11 +266,12 @@ sub process_read($)
 
 # read command line args
 my %opts = ();
-getopts("vhc:d:", \%opts);
+getopts("vhc:d", \%opts);
 if (defined($opts{h}) || defined($opts{v})) {
 	print "meta.pl -[hvc]\n";
 	print "options:\n";
 	print "  -h          show this help\n";
+	print "  -d          daemonize\n";
 	print "  -v          show version\n";
 	print "  -c <conf>   use this configuration file [stechec.yml]\n";
 	exit 0;
@@ -265,6 +280,9 @@ if (defined($opts{h}) || defined($opts{v})) {
 # read conf
 $opts{'c'} ||= "stechec.yml";
 my ($cfg) = YAML::LoadFile($opts{c});
+
+# daemonize
+daemonize if $opts{'d'};
 
 # init
 my $sigset = POSIX::SigSet->new(SIGCHLD);
