@@ -37,7 +37,7 @@ void	Bacterias::spread ()
       n_col += (i == DEC_X) ? -1 : ((i == INC_X) ? 1 : 0);
       if (n_row < 0 || n_col < 0 || n_col == g_->map_size.col || n_row == g_->map_size.row)
 	continue;
-      if ((g_->rand () % 2) && g_->terrain_type[n_row][n_col] == VESSEL &&
+      if ((g_->getCurrentTurn () % 2) && g_->terrain_type[n_row][n_col] == VESSEL &&
 	  g_->bacterias[n_row][n_col] == 0)
 	{
 	  g_->bacterias[n_row][n_col] = new Bacterias(n_row, n_col, nb_ * 0.5, g_);

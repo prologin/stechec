@@ -295,7 +295,7 @@ void	GameData::PlayTurn ()
 	    virus_killed_by_[tmp->getKilledBy ()]++;
 	    LOG3("Found a virus killed by %1", tmp->getKilledBy ());
 	  }
-	delete tmp;
+	//	delete tmp;
 	virus_killed_++;
 	LOG4("A virus died");
       }
