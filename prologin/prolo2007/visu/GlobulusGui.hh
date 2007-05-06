@@ -54,6 +54,7 @@ private:
   int           map_x_;
   int           map_y_;
   int           case_size_;
+  int		current_team_;
 
   void          init();
   void          initMapSquare(int x, int y);

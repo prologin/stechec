@@ -52,7 +52,7 @@ void	Client::change_fog(unsigned player_id,
 	     <=
 	     g_->players[player_id].competences[VISION])
 	 {
-	    player_fog[i][j] += sens;
+	    player_fog[player_id][i][j] += sens;
 	    //	    LOG1("FOG : x : %1, y : %2, fog : %3",
 	    // j, i, player_fog[i][j]);
 	 }
@@ -71,5 +71,5 @@ void		Client::UpdateFogOfWar(unsigned player_id, struct Position& from,
 
 void		Client::ResetFogOfWar ()
 {
-   memset(player_fog, 0, sizeof (uint16_t) *  MAX_MAP_SIZE * MAX_MAP_SIZE);
+   memset(player_fog, 0, sizeof (uint16_t) *  MAX_MAP_SIZE * MAX_MAP_SIZE * MAX_PLAYER * MAX_TEAM);
 }

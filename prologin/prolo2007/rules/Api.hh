@@ -30,7 +30,7 @@
     return BAD_ARGUMENT;
 
 # define FOG(x, y)						\
-  (g_->getUid() < UID_VIEWER_BASE && c_->player_fog[y][x] == 0)
+  (g_->getUid() > -1 && g_->getUid() < UID_VIEWER_BASE && c_->player_fog[g_->getUid ()][y][x] == 0)
 
 # define CHECK_FOG(x, y)				\
   if (FOG(x, y))				\

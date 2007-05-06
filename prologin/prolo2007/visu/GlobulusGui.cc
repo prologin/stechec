@@ -23,7 +23,7 @@ static const char* players[] = {		// OK
   "/prolo2007/graphics/player_t1.png",
   "/prolo2007/graphics/player_t2.png",
   "/prolo2007/graphics/player_t3.png",
-  "/prolo2007/graphics/player_t4.png",
+  "/prolo2007/graphics/player_t4.png"
 };
 static const int nb_player = sizeof(players) / sizeof(char*);
 
@@ -32,7 +32,7 @@ static const char* virus[] = {		// OK
   "/prolo2007/graphics/virus_1.png",
   "/prolo2007/graphics/virus_2.png",
   "/prolo2007/graphics/virus_3.png",
-  "/prolo2007/graphics/virus_4.png",
+  "/prolo2007/graphics/virus_4.png"
 };
 static const int nb_virus = sizeof(virus) / sizeof(char*);
 
@@ -47,7 +47,7 @@ static const char* cell[] = {		// OK
   "/prolo2007/graphics/cell.png",
   "/prolo2007/graphics/cell_infected.png",
   "/prolo2007/graphics/cell2.png",
-  "/prolo2007/graphics/cell2_infected.png",
+  "/prolo2007/graphics/cell2_infected.png"
 };
 static const int nb_cell = sizeof(cell) / sizeof(char*);
 
@@ -72,17 +72,21 @@ static const char* flesh[] = {		// OK
 static const int nb_flesh = sizeof(flesh) / sizeof(char*);
 
 static const char* vessel[] = {		// OK
-  "/prolo2007/graphics/full_blood.png",
+  "/prolo2007/graphics/full_blood.png"
 };
 static const int nb_vessel = sizeof(vessel) / sizeof(char*);
 
-static const char* food[] = {
-
+static const char* food[] = {		// OK
+  "/prolo2007/graphics/nutriment.png",
+  "/prolo2007/graphics/nutriment2.png",
+  "/prolo2007/graphics/nutriment3.png"
 };
 static const int nb_food = sizeof(food) / sizeof(char*);
 
-static const char* antibody[] = {
-
+static const char* antibody[] = {		// OK
+  "/prolo2007/graphics/anticorps.png",
+  "/prolo2007/graphics/anticorps2.png",
+  "/prolo2007/graphics/anticorps3.png"
 };
 static const int nb_antibody = sizeof(antibody) / sizeof(char*);
 
@@ -134,6 +138,8 @@ GlobulusGui::~GlobulusGui()
 
 void GlobulusGui::init()
 {
+  current_team_ = -1;
+
   // init background
   for (int x = 0; x < map_x_; x++)
     for (int y = 0; y < map_y_; y++)
@@ -325,10 +331,12 @@ int GlobulusGui::run()
         ccx_->setReady();
 
       // Zoom in-out
+#if 0
       if (input.key_pressed_[SDLK_MINUS] || input.key_pressed_[SDLK_m])
         setZoom(1);
       if (input.key_pressed_[SDLK_PLUS] || input.key_pressed_[SDLK_p])
         setZoom(-1);
+#endif
 
       // See a specific player view.
       for (int i = 1; i < 10; i++)
@@ -336,7 +344,11 @@ int GlobulusGui::run()
           {
             LOG2("Switch to team id `%1' view.", i -1);
             if (!api_->switchTeam(i - 1))
-              LOG2("Failed. No such team ?");
+	      {
+		LOG2("Failed. No such team ?");
+	      }
+	    else
+	      current_team_ = i - 1;
           }
 
       // See all the map
@@ -344,6 +356,7 @@ int GlobulusGui::run()
         {
           LOG2("Switch to super-user view");
           api_->switchTeam(-1);
+	  current_team_ = -1;
         }
 
       refreshInfoBox();
@@ -356,7 +369,7 @@ int GlobulusGui::run()
 	    Sprite& o = units_[team_id][unit_id];
 	    int x, y;
 
-	    if (api_->getLeucocyte(team_id, unit_id, &x, &y))
+	    if (api_->getLeucocyte(team_id, unit_id, &x, &y) || (api_->visible(x, y) == 0 && team_id != current_team_ && current_team_ != -1))
 	      o.hide();
 	    else
 	      {
@@ -369,13 +382,17 @@ int GlobulusGui::run()
 	  Sprite& o = virus_[i];
 	  int x, y, type;
 
-	  if (api_->getVirus(i, &x, &y, &type))
+	  if (api_->getVirus(i, &x, &y, &type) || (api_->visible(x, y) == 0 && current_team_ != -1))
 	    o.hide();
 	  else
 	    {
 	      if (!o.isShown ())
-		o.load(virus[type % nb_virus]);
-	      o.move(Point(x, y) * case_size_, 15.);
+		{
+		  o.load(virus[type % nb_virus]);
+		  o.setPos(Point(x, y) * case_size_);
+		}
+	      else
+		o.move(Point(x, y) * case_size_, 15.);
 	      o.show();
 	    }
 	}
@@ -384,7 +401,7 @@ int GlobulusGui::run()
 	  Sprite& o = cells_[i];
 	  int x, y, sane;
 
-	  if (api_->getCell(i, &x, &y, &sane))
+	  if (api_->getCell(i, &x, &y, &sane) || (api_->visible(x, y) == 0 && current_team_ != -1))
 	    o.hide();
 	  else
 	    {
@@ -395,45 +412,60 @@ int GlobulusGui::run()
 	    }
 	}
       for (int x = 0; x < map_x_; x++)
+	{
 	for (int y = 0; y < map_y_; y++)
 	  {
+	    int nvis = (api_->visible(x, y) == 0 && current_team_ != -1);
+
 	    int amount = (api_->getFood(x, y) * 100) / MAX_NUTRIENT;
 
-
-#if 0 // FIXME
-	    if (amount < 11)
+	    if (amount < 50 || nvis)
 	      food_[x][y].hide();
 	    else
 	      {
-	       	food_[x][y].load(food[(amount - 1) / 11]);
+		if (amount < 130)
+		  food_[x][y].load(food[0]);
+		else
+		  if (amount < 190)
+		    food_[x][y].load(food[1]);
+		  else
+		    food_[x][y].load(food[2]);
 		food_[x][y].show();
 	      }
 
 	    amount = api_->getAntibody(x, y);
-	    if (amount > 100)
-	      amount = 100;
 
-	    if (amount < 11)
+	    if (amount < 10 || nvis)
 	      antibody_[x][y].hide();
 	    else
 	      {
-	       	antibody_[x][y].load(antibody[(amount - 1) / 11]);
+		if (amount < 85)
+		  antibody_[x][y].load(antibody[0]);
+		else
+		  if (amount < 130)
+		    antibody_[x][y].load(antibody[1]);
+		  else
+		    antibody_[x][y].load(antibody[2]);
 		antibody_[x][y].show();
 	      }
-#endif
+
 	    int pop;
 
-	    if ((pop = api_->getBacteria(x, y)) == -1)
+	    if ((pop = api_->getBacteria(x, y)) == -1 || nvis)
 	      bacterias_[x][y].hide();
 	    else
 	      {
-
-		bacterias_[x][y].load(bacteria[(pop * (nb_bacteria - 1)) / 30]);
+		if (pop < 25)
+		  bacterias_[x][y].load(bacteria[0]);
+		else
+		  if (pop < 50)
+		    bacterias_[x][y].load(bacteria[1]);
+		  else
+		    bacterias_[x][y].load(bacteria[2]);
 		bacterias_[x][y].show();
 	      }
-
-	    map_[x][y].update();
 	  }
+	}
 
       // Process any incoming messages. Block at most 50 ms.
       while (ccx_->process(true))

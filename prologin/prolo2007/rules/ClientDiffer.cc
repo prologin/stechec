@@ -61,8 +61,8 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	Position dep = Position(l.row, l.col);
 	Position arr = Position(row, col);
 	LOG3("Changing fow of : %1", g_->getUid ());
-	if (g_->getUid () == player_id)
-	  c_->UpdateFogOfWar(player_id, dep, arr, true);
+	//	if (g_->getUid () == player_id)
+	c_->UpdateFogOfWar(player_id, dep, arr, true);
 	l.row = row;
 	l.col = col;
 	LOG3("Differ: move Leucocyte %1 from: %2 to : %3", player_id, dep, arr);
@@ -84,13 +84,13 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	//	g_->players[player_id].setGameData (g_);
 
 	// If this is _my_ leuco
-	if (g_->getUid() == player_id)
-	  {
-	    Position dep = Position(0, 0);
-	    Position arr = Position(com->arg[2], com->arg[1]); // [row, col]
-	    LOG4("This is me :))) -> update fog of war");
-	    c_->UpdateFogOfWar(player_id, dep, arr, false);
-	  }
+// 	if (g_->getUid() == player_id)
+// 	  {
+	Position dep = Position(0, 0);
+	Position arr = Position(com->arg[2], com->arg[1]); // [row, col]
+	LOG4("This is me :))) -> update fog of war");
+	c_->UpdateFogOfWar(player_id, dep, arr, false);
+	    //	  }
 	break;
       }
 
@@ -112,6 +112,8 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	g_->players[com->client_id].competences[ANTIBODY_NB] = com->arg[1];
 	g_->players[com->client_id].competences[MESSAGES_NB] = com->arg[2];
 	g_->players[com->client_id].competences[VISION] = com->arg[3];
+	Position dep = Position(0, 0);
+	c_->UpdateFogOfWar(com->client_id, dep, g_->players[com->client_id], false);
 	break;
       }
     case PHAGOCYTE:

@@ -22,7 +22,7 @@ class		Client : public StechecClient
       Client(GameData *g) : StechecClient(g), competence_(false) {}
       virtual ~Client() {}
 
-      uint16_t	player_fog[MAX_MAP_SIZE][MAX_MAP_SIZE];
+      uint16_t	player_fog[MAX_PLAYER * MAX_TEAM][MAX_MAP_SIZE][MAX_MAP_SIZE];
 
 
       void		InitData();

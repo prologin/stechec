@@ -25,7 +25,7 @@ Api::Api(GameData* gameData, Client* c) :
 
 int Api::equipes()
 {
-  LOG3("NB team: %1, NB player: %2", g_->getNbTeam(), g_->getNbPlayer());
+  //  LOG3("NB team: %1, NB player: %2", g_->getNbTeam(), g_->getNbPlayer());
   return g_->getNbTeam();
 }
 
