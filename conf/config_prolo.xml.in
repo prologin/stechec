@@ -11,7 +11,7 @@
 
   <client>
     <rules>globulus</rules>
-    <connect val="network" host="localhost" port="25150"
+    <connect val="network" host="127.0.0.1" port="25150"
              game_uid="40" connect_on_startup="true" />
   </client>
 
@@ -30,7 +30,7 @@
   </client>
 
   <server>
-    <rules>outatime</rules>
+    <rules>globulus</rules>
     <options persistent="false" start_game_timeout="30" />
     <listen port="25150" />
     <log enabled="false" file="match.log" />
