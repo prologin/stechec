@@ -559,9 +559,10 @@ sub result_server
     }
 
     # well done !
-    my $sth = $dbh->prepare("UPDATE competiteur SET score = ?, log = ? WHERE id = ?");
+    my $sth = $dbh->prepare("UPDATE competiteur SET score = score + ?, log = ? " .
+                            "WHERE id_match = ? AND id_team = ? LIMIT 1");
     foreach (@res) {
-        $sth->execute($$_{'score'}, $$_{'log'}, $$_{'id'});
+        $sth->execute($$_{'score'}, $$_{'log'}, $id_match, $$_{'id'});
     }
     match_finish($m, 3);
 }
