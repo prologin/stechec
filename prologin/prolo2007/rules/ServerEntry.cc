@@ -189,6 +189,7 @@ void	ServerEntry::displayMap()
   int		i;
   int		j;
 
+
   std::cout << "Map size : row : " << g_->map_size.row
 	    << " col : " << g_->map_size.col << std::endl;
   for (i = 0; i < g_->map_size.row; i++)
@@ -225,6 +226,7 @@ void	ServerEntry::CheckMap ()
 	nb_possible++;
   if (nb_possible < g_->max_new_seeds)
     g_->max_new_seeds = nb_possible;
+  getchar ();
 }
 
 int		ServerEntry::beforeGame()
@@ -281,8 +283,8 @@ int         ServerEntry::beforeNewTurn()
 
 int         ServerEntry::afterNewTurn()
 {
+  displayMap();
   g_->PlayTurn ();
-  //  displayMap();
   g_->player_turn++;
   return 0;
 }

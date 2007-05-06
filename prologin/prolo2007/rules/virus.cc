@@ -124,7 +124,6 @@ void Virus::PlayTurn()
 	    cell[n] == 2 /* Cellule infectée */  || !_g->TestLeucocyte(nrow, ncol)
 	    || !_g->TestVirus (nrow, ncol));
      LOG3("Virus decided to move to %1, %2", nrow, ncol);
-     getchar ();
      row = nrow;
      col = ncol;
   }

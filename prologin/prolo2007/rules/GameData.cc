@@ -248,7 +248,10 @@ void	GameData::PlayTurn ()
 	if (bacterias[y][x]->getPopulation () <= 0)
 	  {
 	    if (bacterias[y][x]->getKilledBy () >= 0)
-	      bacterias_killed_by_[bacterias[y][x]->getKilledBy ()] += 10;
+	      {
+		bacterias_killed_by_[bacterias[y][x]->getKilledBy ()] += 10;
+		LOG3("Bacterias died because of %1", bacterias[y][x]->getKilledBy ());
+	      }
 	    delete bacterias[y][x];
 	    bacterias[y][x] = 0;
 	    bacterias_killed_++;
@@ -284,7 +287,10 @@ void	GameData::PlayTurn ()
 	tmp = (*it);
 	it = _virus.erase (it);
 	if (tmp->getKilledBy () >= 0)
-	  virus_killed_by_[tmp->getKilledBy ()]++;
+	  {
+	    virus_killed_by_[tmp->getKilledBy ()]++;
+	    LOG3("Found a virus killed by %1", tmp->getKilledBy ());
+	  }
 	delete tmp;
 	virus_killed_++;
 	LOG4("A virus died");
@@ -470,9 +476,9 @@ int	GameData::calculScore ()
     }
   for (int i = 0; i < this->getNbTeam (); ++i)
     {
-      if (total)
-	tab[i] *= n / total;
-      else
+      if (!total)
+// 	tab[i] *= n / total;
+//       else
 	tab[i] = 0;
       players[i].score_ = tab[i];
     }

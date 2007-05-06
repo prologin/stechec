@@ -71,12 +71,13 @@ void	Leucocyte::PlayTurn ()
 		(*it)->killedBy (get_id ());
 	    }
 	// bacterias
+
 	if (g_->bacterias[y][x] == 0)
 	  continue;
 	n = g_->bacterias[y][x]->kill (antibodies[y][x]);
 	g_->bacterias_killed_by_[get_id ()] += n;
-	if (g_->bacterias[y][x]->getPopulation () <= 0)
-	  g_->bacterias[y][x]->killedBy (get_id ());
+	if (g_->bacterias[y][x]->getPopulation () <= 0 && n)
+	    g_->bacterias[y][x]->killedBy (get_id ());
 	antibodies[y][x] -= (antibodies[y][x] < n) ?
 	  antibodies[y][x] : n;
       }
@@ -114,11 +115,11 @@ void	Leucocyte::PlayTurn ()
 	    }
 	  else if (v_)
 	    {
-	      delete v_;
 	      known_types.push_back (v_->Maladie ());
-	      LOG3("I've learned : %1",v_->Maladie ());
-	      v_->killedBy(get_id ());
+	      LOG3("Me %1, I've learned : %2", get_id (),v_->Maladie ());
 	      v_ = 0;
+	      g_->virus_killed_by_[get_id ()]++;
+	      delete v_;
 	    }
 	  else if (c_)
 	    {

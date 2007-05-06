@@ -109,6 +109,7 @@ int Api::regarde(int x, int y)
 
 int Api::visible(int x, int y)
 {
+  CHECK_DEAD();
   TEST_POS(x, y);
   if (FOG(x, y))
     return 0;
