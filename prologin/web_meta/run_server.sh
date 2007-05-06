@@ -43,7 +43,7 @@ port=$6
 nb_player=$7
 # '--' -> $8
 
-shift 8
+shift 7
 
 # open temporary files for logs.
 tmp_dir=`mktemp -q -d /tmp/match_XXXXXX`
