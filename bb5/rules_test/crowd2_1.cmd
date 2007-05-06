@@ -13,6 +13,7 @@ wait
 cheat 6
 declare move 0
 move 0 13 0
+wait
 accept
 
 # Do nothing else.

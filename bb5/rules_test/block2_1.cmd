@@ -9,12 +9,14 @@ wait
 cheat 1 6 6
 declare move 2
 move 2 14 3
+wait
 reroll
 
 # Block with another player, to push someone.
 cheat 3
 declare block 3
 block 3 3
+accept
 block push 1
 
 # A bug happened here, server crashed or pushed a wrong player.

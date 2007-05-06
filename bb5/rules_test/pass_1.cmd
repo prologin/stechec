@@ -9,12 +9,14 @@ wait
 cheat 3
 declare pass 10
 move 10 7 7
+wait
 accept
 
 # Throw the ball to an empty square.
 # Fail first, causing a reroll.
 cheat 1 5 4
 pass 10 4 4
+wait
 reroll
 
 # Normally, there should be a turnover here, because the ball lands in an empty square.

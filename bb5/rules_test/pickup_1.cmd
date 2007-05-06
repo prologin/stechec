@@ -9,6 +9,7 @@ wait
 cheat 6
 declare move 10
 move 10 6 8
+wait
 accept
 move 10 9 9
 

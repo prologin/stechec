@@ -32,7 +32,9 @@ pass 10 12 4
 cheat 6 6
 declare move 2
 move 2 11 4
+wait
 accept
+wait
 accept
 move 2 6 0
 end

@@ -9,6 +9,7 @@ wait
 cheat 6
 declare move 10
 move 10 7 7
+wait
 accept
 move 10 9 9
 
@@ -45,7 +46,9 @@ declare pass 10
 move 10 12 13
 cheat 6 6
 pass 10 18 13
+wait
 accept
+wait
 accept
 
 # A bug happened here, causing a server crash.
