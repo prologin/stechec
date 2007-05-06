@@ -210,6 +210,7 @@ sub match_pool_init
 		$dbh->prepare(q{SELECT id, id_champion FROM competiteur
 							WHERE id_match = ?});
 	$mconf{'last_expire'} = time;
+    $mconf{'last_match_poll'} = time;
     $mconf{'nb_waiting'} = 0;
 
     # set all running matchs to waiting.
@@ -269,7 +270,6 @@ sub match_start($$)
 	# retrieve participating competitors id.
 	$mconf{'sth_get_participant'}->execute($id_match);
 	while (my $row = $mconf{'sth_get_participant'}->fetchrow_hashref) {
-		print "[match $id_match] add champion: $$row{'id_champion'}\n";
 		push @client, $$row{'id'};
 	}
 	$mconf{'sth_get_participant'}->finish;
@@ -350,6 +350,10 @@ sub match_start($$)
 
 sub match_pool_poll()
 {
+    # be mysql-load friendly.
+    return unless time > $mconf{'last_match_poll'} + 1;
+    $mconf{'last_match_poll'} = time;
+
 	$mconf{'sth_poll_match'}->execute;
     if ($mconf{'sth_poll_match'}->rows == 0) {
         $mconf{'sth_poll_match'}->finish;
