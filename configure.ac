@@ -273,7 +273,7 @@ AC_CONFIG_FILES([
   prologin/prolo2007/subject/Makefile
   prologin/prolo2007/data/Makefile
 ])
-#fi
+fi
 
 
 fi # !BUILD_prologin
