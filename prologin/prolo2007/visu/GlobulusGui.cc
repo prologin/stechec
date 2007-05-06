@@ -119,7 +119,7 @@ GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   back_txt_.setPos(580, 5);
   back_txt_.setZ(-1);
   win_.getScreen().addChild(&back_txt_);
-  
+
   // Initialize labels on the right-top.
   txt_beat_ = TextSurface("Vera.ttf", 12, 200, 22);
   txt_beat_.setPos(590, 10);
