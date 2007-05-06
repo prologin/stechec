@@ -38,6 +38,8 @@ function add_match()
   $nb_instance = 1;
   if (is_numeric($_POST["_form_match_instance"]))
     $nb_instance = $_POST["_form_match_instance"];
+  if ($nb_instance < 1 || $nb_instance > 10)
+    $nb_instance = 1;
   
   foreach ($champions as $champion)
   {
@@ -342,8 +344,8 @@ if (access_check(ACL_CANDIDAT))
 
 check_action($_entry);
 
-if (access_check(ACL_CANDIDAT))
-  disp_message();
+//if (access_check(ACL_CANDIDAT))
+//  disp_message();
 
 if (access_check(ACL_CANDIDAT))
   disp_match_candidat($_info_id, $user["id"]);
