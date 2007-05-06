@@ -228,6 +228,25 @@ int Api::connait_type(int x, int y)
   return g_->knows_type(type, g_->getUid ());
 }
 
+int Api::virus_type(int x, int y)
+{
+  int type = -1;
+
+  TEST_POS(x,y);
+  CHECK_FOG(x,y);
+
+  std::vector<Virus*>::iterator it;
+  for (it = g_->_virus.begin(); it != g_->_virus.end(); ++it)
+    if ((*it)->col == x && (*it)->row == y)
+      {
+	type = (*it)->Maladie();
+	break;
+      }
+  if (type < 0)
+    return NO_UNIT;
+  return type;
+}
+
 int Api::definit_competence(int rapidite, int anticorps, int messages, int vision)
 {
   if (c_->GetCompetence())
@@ -246,7 +265,7 @@ int Api::definit_competence(int rapidite, int anticorps, int messages, int visio
   g_->players[g_->getUid()].competences[MESSAGES_NB] = messages;
   g_->players[g_->getUid()].competences[VISION] = vision;
   Position dep = Position(0, 0);
-  c_->UpdateFogOfWar(g_->getUid(), dep, g_->players[g_->getUid()], false);
+  //  c_->UpdateFogOfWar(g_->getUid(), dep, g_->players[g_->getUid()], false);
   c_->SetCompetence(true);
 
   return SUCCESS;

@@ -98,6 +98,7 @@ public:
   int etat_cellule(int x, int y);
   int etat_leucocyte(int id);
   int connait_type(int x, int y);
+  int virus_type(int x, int y);
   int definit_competence(int rapidite, int anticorps, int messages, int vision);
   int deplace_leucocyte(int x, int y);
   int phagocyte(int x, int y);

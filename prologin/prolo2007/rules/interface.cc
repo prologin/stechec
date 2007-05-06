@@ -118,6 +118,11 @@ int connait_type(int x, int y)
   return api->connait_type(x, y);
 }
 
+int virus_type(int x, int y)
+{
+  return api->virus_type(x, y);
+}
+
 int definit_competence(int rapidite, int anticorps, int messages, int vision)
 {
   return api->definit_competence(rapidite, anticorps, messages, vision);
