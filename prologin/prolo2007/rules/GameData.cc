@@ -501,8 +501,12 @@ int	GameData::calculScore ()
   }
 
   for (int i=0 ; i < this->getNbPlayer() ; ++i) {
-    players[i].score_ *= 100 * n;
-    players[i].score_ /= total;
+    if (total == 0) {
+      players[i].score_ = 0;
+    } else {
+      players[i].score_ *= 100 * n;
+      players[i].score_ /= total;
+    }
   }
 
 }
