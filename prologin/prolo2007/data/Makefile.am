@@ -20,7 +20,10 @@ dist_prolo2007data_DATA =			\
 	simple.map				\
 	small.map				\
 	une_vraie_map.map			\
-	uniform.map
+	uniform.map				\
+	alban.map				\
+	alban2.map				\
+	deather.map
 
 dist_prolo2007font_DATA =		\
 	font/Vera.ttf
