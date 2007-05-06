@@ -12,6 +12,7 @@ dist_prolo2007font_DATA =		\
 	font/Vera.ttf
 
 dist_prolo2007graphics_DATA =			\
+	graphics/background_text.png		\
 	graphics/player_t1.png			\
 	graphics/player_t2.png			\
 	graphics/player_t3.png			\
