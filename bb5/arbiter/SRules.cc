@@ -91,7 +91,9 @@ void SRules::serverStartup()
 
   // Tell everybody that we are about to initialize the game.
   setState(GS_INITGAME);
-  sendPacket(MsgInitGame());
+  MsgInitGame pkt;
+  pkt.time_per_turn = 4 * 60;
+  sendPacket(pkt);
 }
 
 void SRules::serverProcess()

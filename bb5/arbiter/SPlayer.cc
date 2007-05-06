@@ -358,6 +358,7 @@ void SPlayer::resolveBlockDice(int chosen_dice)
       r_->turnover(TOM_KNOCKEDDOWN);
       break;
     case BBOTH_DOWN:
+    {
       bool atk_down = !hasSkill(SK_BLOCK); //FIXME: Ask coach for Block skill usage.
       bool def_down = !hasSkill(SK_BLOCK); //FIXME: Ask opponent coach for Block skill usage.
       if ((def_down && r_->getBall()->getOwner() == target_)
@@ -386,6 +387,7 @@ void SPlayer::resolveBlockDice(int chosen_dice)
           ah_->process();
         }
       break;
+    }
     case BPUSHED:
       target_knocked_ = false;
       pusher_ = NULL;
