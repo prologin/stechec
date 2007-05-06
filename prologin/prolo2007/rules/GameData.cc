@@ -474,7 +474,7 @@ int	GameData::calculScore ()
       tab[i] = std::max(tab[i], 0);
       total += tab[i];
     }
-  for (int i = 0; i < this->getNbTeam (); ++i)
+  for (int i = 0; i < this->getNbPlayer (); ++i)
     {
       if (!total)
 // 	tab[i] *= n / total;
