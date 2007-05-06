@@ -36,7 +36,8 @@ bool Virus::DeplacementPossible(int x, int y)
 void Virus::StopActions()
 {
   _etat_infection = -1;
-  _hote->setSante (_hote->keep_);
+  if (_hote)
+    _hote->setSante (_hote->keep_);
   _hote = 0;
 }
 
