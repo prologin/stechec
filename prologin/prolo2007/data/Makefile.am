@@ -4,9 +4,21 @@ prolo2007datadir = $(pkgdatadir)/prolo2007
 prolo2007fontdir = $(pkgdatadir)/prolo2007/font
 prolo2007graphicsdir = $(pkgdatadir)/prolo2007/graphics
 
-dist_prolo2007data_DATA =		\
-	prolo2007.yml			\
-	simple.map
+dist_prolo2007data_DATA =			\
+	prolo2007.yml				\
+	simple.map				\
+	arena10.map				\
+	arena.map				\
+	arme_contre_armee.map			\
+	barriere_virus.map			\
+	grosse.map				\
+	highscore.map				\
+	lalabig.map				\
+	lala.map				\
+	simple.map				\
+	small.map				\
+	une_vraie_map.map			\
+	uniform.map
 
 dist_prolo2007font_DATA =		\
 	font/Vera.ttf
