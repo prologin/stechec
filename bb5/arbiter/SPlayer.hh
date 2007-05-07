@@ -66,19 +66,23 @@ public:
   //! @brief Checks for armour value and eventually injury.
   void checkArmour(int av_mod, int inj_mod);
  
-  void chooseBlockDice(bool reroll);
+  void considerBlockDices(bool reroll);
   //! @brief Applies block dice result
   void resolveBlockDice(int chosen_dice);
 
-  void chooseBlockPush();
-  void setPushed(SPlayer* p);
+  void tryBlockPush(SPlayer* target);
   void setPusher(SPlayer* p);
   //! @brief Applies blockpush choice
   //! @brief Push next player if there is no other player behind.
   void resolveBlockPush(int chosen_square);
-  void bePushedInTheCrowd();
+  //! @brief Considers if player can follow or not, during a block action.
+  //! @param p Player to be pushed in an empty square or out of the field.
+  void considerBlockFollow();
   //! @brief Applies follow or not decision.
   void blockFollow(bool follow);
+  void finishBlockPush();
+  void finishBlockAction();
+  void bePushedInTheCrowd(const Position& pos);
 
   //! @brief Tries to catch the ball.
   void tryCatchBall(bool accurate_pass);
@@ -87,7 +91,7 @@ public:
   void tryDodge();
   void finishDodge(bool reroll, bool success);
   //! @brief Tries to move to an adjacent square.
-  void tryMove(Position aim);
+  void tryMove(Position& aim);
   //! @brief Tries to pick up the ball.
   void tryPickUp();
   void finishPickUp(bool reroll, bool success);
@@ -130,7 +134,6 @@ private:
   //! @return non-zero if action failed.
   void tryBlock();
   void rollBlock();
-  void finishBlockPush();
 
   Position push_choices_[3];
   int nb_push_choices_;
@@ -138,6 +141,7 @@ private:
   bool choose_block_;
   enum eBlockDiceFace result_[3];
   bool target_knocked_;
+  bool follow_;
 
   Position move_aim_; ///< Where the player'd like to go to.
   enum eRoll roll_attempted_;

@@ -52,7 +52,7 @@ public:
   void putDodgeRoll(SPlayer* p, bool success);
   void putMove(SPlayer* p, Position aim);
   void putPickUpRoll(SPlayer* p, bool success);
-  void putPushInTheCrowd(SPlayer* p);
+  void putPushResolution(SPlayer* p);
   void putStandUpRoll(SPlayer* p, bool success);
   void putThrowRoll(SPlayer* p, int success);
 
@@ -67,7 +67,7 @@ private:
     EA_BLOCKFOLLOW,   ///< Choose to follow or not after a block-push.
     EA_BLOCKPUSH,     ///< Choose where to push.
     EA_MOVE,          ///< Move a player.
-    EA_PUSHOFFFIELD,  ///< Push a player in the crowd.
+    EA_PUSH,          ///< Apply push decisions.
     EA_ROLL,          ///< Apply dice roll, or roll dice.
   };
   struct ElementaryAction {

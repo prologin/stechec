@@ -158,10 +158,10 @@ void SActionHandler::putPickUpRoll(SPlayer* p, bool success)
   put(ea);
 }
 
-void SActionHandler::putPushInTheCrowd(SPlayer* p)
+void SActionHandler::putPushResolution(SPlayer* p)
 {
   ElementaryAction ea;
-  ea.type = EA_PUSHOFFFIELD;
+  ea.type = EA_PUSH;
   ea.roll_type = R_NONE;
   ea.player = p;
   put(ea);
@@ -224,8 +224,8 @@ void SActionHandler::process(bool reroll, int choice)
         else
           ea.player->tryMove(ea.aim_position);
         break;
-      case EA_PUSHOFFFIELD:
-        ea.player->bePushedInTheCrowd();
+      case EA_PUSH:
+        ea.player->finishBlockPush();
         break;
       case EA_ROLL:
         switch (ea.roll_type)
@@ -234,7 +234,7 @@ void SActionHandler::process(bool reroll, int choice)
               ea.player->checkArmour(ea.modifier, ea.next_mod);
               break;
             case R_BLOCK:
-              ea.player->chooseBlockDice(reroll);
+              ea.player->considerBlockDices(reroll);
               break;
             case R_CATCH:
               ea.player->finishCatchBall(reroll, ea.success);

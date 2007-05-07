@@ -306,11 +306,11 @@ void SPlayer::rollBlock()
     }
   else
     {
-      chooseBlockDice(false);
+      considerBlockDices(false);
     }
 }
 
-void SPlayer::chooseBlockDice(bool reroll)
+void SPlayer::considerBlockDices(bool reroll)
 {
   if (reroll)
     {
@@ -391,24 +391,19 @@ void SPlayer::resolveBlockDice(int chosen_dice)
     case BPUSHED:
       target_knocked_ = false;
       pusher_ = NULL;
-      chooseBlockPush();
+      tryBlockPush(target_);
       break;
     case BDEFENDER_STUMBLE:
       target_knocked_ = !target_->hasSkill(SK_DODGE); //FIXME: Ask opponent coach for Dodge skill usage.
       pusher_ = NULL;
-      chooseBlockPush();
+      tryBlockPush(target_);
       break;
     case BDEFENDER_DOWN:
       target_knocked_ = true;
       pusher_ = NULL;
-      chooseBlockPush();
+      tryBlockPush(target_);
       break;
     }
-}
-
-void SPlayer::setPushed(SPlayer* p)
-{
-  target_ = p;
 }
 
 void SPlayer::setPusher(SPlayer* p)
@@ -416,31 +411,32 @@ void SPlayer::setPusher(SPlayer* p)
   pusher_ = p;
 }
 
-void SPlayer::chooseBlockPush()
+void SPlayer::tryBlockPush(SPlayer* target)
 {
   Position squares[3];
-  Position dt = target_->getPosition();
-  Position d = dt - getPosition();
-  move_aim_ = dt;
+  Position direction;
+  target_ = target;
+  move_aim_ = target_->getPosition();
+  direction = move_aim_ - pos_;
 
-  squares[1] = dt + d;
-  if (d.col == 0)
+  squares[1] = move_aim_ + direction;
+  if (direction.col == 0)
     {
-      squares[0] = dt + d + Position(0, -1);
-      squares[2] = dt + d + Position(0, 1);
+      squares[0] = squares[1] + Position(0, -1);
+      squares[2] = squares[1] + Position(0, 1);
     }
-  else if (d.row == 0)
+  else if (direction.row == 0)
     {
-      squares[0] = dt + d + Position(-1, 0);
-      squares[2] = dt + d + Position(1, 0);
+      squares[0] = squares[1] + Position(-1, 0);
+      squares[2] = squares[1] + Position(1, 0);
     }
   else
     {
-      squares[0] = dt + d + Position(-d.row, 0);
-      squares[2] = dt + d + Position(0, -d.col);
+      squares[0] = squares[1] + Position(-direction.row, 0);
+      squares[2] = squares[1] + Position(0, -direction.col);
     }
 
-  LOG3("Pusher pos: %1 Aimed pos: %2", pos_, target_->pos_);
+  LOG3("Pusher pos: %1 Aimed pos: %2", pos_, move_aim_);
   LOG3("Opposite squares: c1: %1 c2: %2 c3: %3", squares[0], squares[1], squares[2]);
 
   nb_push_choices_ = 0;
@@ -501,55 +497,63 @@ void SPlayer::resolveBlockPush(int chosen_square)
   LOG2("Player `%1' of team `%2' pushes player `%3' of team `%4' from %5 to %6.",
       id_, team_id_, target_->getId(), target_->getTeamId(), move_aim_, push_choices_[0]);
   if (other_target == NULL)
-    {
-      if ((r_->getBall()->getPosition() == push_choices_[0])
-          && (r_->getBall()->getOwner() != target_))
-        {
-          ah_->putBallBounce();
-        }
-      finishBlockPush();
-    }
+    r_->getCurrentTeam()->getActivePlayer()->considerBlockFollow();
   else
     {
       // Oh, another player to move.
       r_->getCurrentTeam()->setPusher(target_);
       r_->getCurrentTeam()->state_ = GS_PUSH;
-      target_->setPushed(other_target);
       target_->setPusher(this);
-      target_->chooseBlockPush();
+      target_->tryBlockPush(other_target);
     }
 }
 
-void SPlayer::finishBlockPush()
+void SPlayer::considerBlockFollow()
 {
-  //FIXME: "crowd?" rules tests fail here.
-  target_->setPosition(push_choices_[0], true);
-  if (!f_->intoField(push_choices_[0]))
-    ah_->putPushInTheCrowd(this);
-  else if (r_->getBall()->getOwner() == target_)
-    r_->getBall()->setPosition(push_choices_[0], true);
-  if (pusher_ != NULL)
-    pusher_->finishBlockPush();
-  else
-    {
-      t_->state_ = GS_FOLLOW;
-      r_->sendPacket(MsgFollow(team_id_));
-      ah_->putBlockFollowChoice(this);
-    }
-}
-
-void SPlayer::bePushedInTheCrowd()
-{
-  rollInjury(0);
-  if (status_ == STA_STUNNED)
-    setStatus(STA_RESERVE);
-  if (r_->getBall()->getOwner() == this)
-    r_->getBall()->throwIn();
+  t_->state_ = GS_FOLLOW;
+  r_->sendPacket(MsgFollow(team_id_));
+  ah_->putBlockFollowChoice(this);
 }
 
 void SPlayer::blockFollow(bool follow)
 {
-  if (follow)
+  follow_ = follow;
+  finishBlockPush();
+}
+
+void SPlayer::finishBlockPush()
+{
+  if (push_choices_[0] != target_->getPosition())
+    {
+      if (!f_->intoField(push_choices_[0]))
+        target_->bePushedInTheCrowd(push_choices_[0]);
+      else if (f_->getPlayer(push_choices_[0]) != NULL)
+        target_->finishBlockPush();
+      else
+        {
+          target_->setPosition(push_choices_[0], true);
+          if (r_->getBall()->getOwner() == target_)
+            r_->getBall()->setPosition(push_choices_[0], true);
+          else if (r_->getBall()->getPosition() == push_choices_[0])
+            ah_->putBallBounce();
+          if (pusher_ != NULL)
+            pusher_->finishBlockPush();
+          else
+            this->finishBlockPush();
+        }
+    }
+  else
+    {
+      if (pusher_ != NULL)
+        pusher_->finishBlockPush();
+      else
+        finishBlockAction();
+    }
+}
+
+void SPlayer::finishBlockAction()
+{
+  if (follow_)
     {
       setPosition(move_aim_, true);
       if (r_->getBall()->getOwner() == this)
@@ -558,14 +562,26 @@ void SPlayer::blockFollow(bool follow)
   if (target_knocked_)
     {
       if (r_->getBall()->getOwner() == target_)
-        {
-          ah_->putBallBounce();
-        }
+        ah_->putBallBounce();
       ah_->putArmourRoll(target_, 0, 0);
       pm_->sendMsgKnocked(target_);
       target_->setStatus(STA_PRONE);
     }
   ah_->process();
+}
+
+void SPlayer::bePushedInTheCrowd(const Position& pos)
+{
+  ah_->putPushResolution(pusher_);
+  f_->setPlayer(pos_, NULL);
+  pos_ = pos;
+  rollInjury(0);
+  if (status_ == STA_STUNNED)
+    setStatus(STA_RESERVE);
+  if (r_->getBall()->getOwner() == this)
+    r_->getBall()->throwIn();
+  else
+    ah_->process();
 }
 
 /*
@@ -715,7 +731,7 @@ void SPlayer::finishDodge(bool reroll, bool success)
 ** Move action.
 */
 
-void SPlayer::tryMove(Position aim)
+void SPlayer::tryMove(Position& aim)
 {
   int nb_tackles_pos = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
   move_aim_ = aim;
