@@ -120,6 +120,18 @@ kickoff_basic:
     input: kickoff_basic_2.cmd
     ref: kickoff_basic_2.ref
 
+kickoff_scatter_endzone:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: kickoff_scatter_endzone_1.cmd
+    ref: kickoff_scatter_endzone_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: kickoff_scatter_endzone_2.cmd
+    ref: kickoff_scatter_endzone_2.ref
+
 kickoff_scatter_scrimmage:
   client_1:
     team: team.xml

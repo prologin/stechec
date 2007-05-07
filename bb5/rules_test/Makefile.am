@@ -48,6 +48,10 @@ EXTRA_DIST +=					\
 	kickoff_basic_1.ref			\
 	kickoff_basic_2.cmd			\
 	kickoff_basic_2.ref			\
+	kickoff_scatter_endzone_1.cmd		\
+	kickoff_scatter_endzone_1.ref		\
+	kickoff_scatter_endzone_2.cmd		\
+	kickoff_scatter_endzone_2.ref		\
 	kickoff_scatter_scrimmage_1.cmd		\
 	kickoff_scatter_scrimmage_1.ref		\
 	kickoff_scatter_scrimmage_2.cmd		\
@@ -88,6 +92,7 @@ MY_TESTS =					\
 	blockfollow2				\
 	crash					\
 	kickoff_basic				\
+	kickoff_scatter_endzone			\
 	kickoff_scatter_scrimmage		\
 	move_basic				\
 	move_dodge				\

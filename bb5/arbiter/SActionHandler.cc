@@ -192,9 +192,13 @@ void SActionHandler::process(bool reroll, int choice)
   ElementaryAction ea;
   if (eal_.empty())
     {
-      if (r_->isTurnover() || r_->getState() == GS_KICKOFF)
+      if (r_->isTurnover())
         {
           r_->nextTurn();
+        }
+      else if (r_->getState() == GS_KICKOFF)
+        {
+          r_->finishKickoff();
         }
       return;
     }

@@ -513,6 +513,7 @@ void SPlayer::resolveBlockPush(int chosen_square)
     {
       // Oh, another player to move.
       r_->getCurrentTeam()->setPusher(target_);
+      r_->getCurrentTeam()->state_ = GS_PUSH;
       target_->setPushed(other_target);
       target_->setPusher(this);
       target_->chooseBlockPush();
@@ -829,8 +830,10 @@ void SPlayer::tryStandUp()
     }
   else
     {
+      LOG5("Player `%1' of team `%2' stands up.");
       ma_remain_ = ma_ - 3;
       setStatus(STA_STANDING);
+      pm_->sendStatus(STA_STANDING, this);
       ah_->process();
     }
 }
@@ -970,18 +973,19 @@ void SPlayer::msgBlock(const MsgBlock* m)
 {
   if (!t_->canDoAction(m, this))
     return;
-  target_ = r_->getOpponentTeam(team_id_)->getPlayer(m->opponent_id);
-  if (target_ == NULL
-      || target_->getTeamId() == getTeamId()
+  SPlayer* target = r_->getOpponentTeam(team_id_)->getPlayer(m->opponent_id);
+  if (target == NULL
+      || target->getTeamId() == getTeamId()
       || status_ != STA_STANDING
-      || target_->status_ != STA_STANDING
-      || !pos_.isNear(target_->getPosition()))
+      || target->status_ != STA_STANDING
+      || !pos_.isNear(target->getPosition()))
     {
       LOG3("Cannot block player '%1` at %2 (status: %3).", m->opponent_id,
-          target_->getPosition(), target_->status_);
+          target->getPosition(), target->status_);
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
+  target_ = target;
   tryBlock();
 }
 
