@@ -23,7 +23,7 @@ int main()
 {
   Log l(1);
 
-  XMLConfig cfg;
+  XMLConfig cfg("", "");
   cfg.parse(std::string(getenv("srcdir")) + "/config.xml");
 
   assert(cfg.getAttr<int>("server", "debug", "verbose") == 2);
