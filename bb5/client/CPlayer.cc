@@ -286,6 +286,7 @@ void CPlayer::msgPlayerStatus(const MsgPlayerStatus* m)
     case STA_KO:
     case STA_INJURED:
       r_->getField()->setPlayer(pos_, NULL);
+      setPosition(Position(-1, -1));
       break;      
     case STA_UNASSIGNED:
       WARN("Can't set player in 'unassigned' state");

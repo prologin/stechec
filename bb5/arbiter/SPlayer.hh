@@ -82,7 +82,7 @@ public:
   void blockFollow(bool follow);
   void finishBlockPush();
   void finishBlockAction();
-  void bePushedInTheCrowd(const Position& pos);
+  void bePushedInTheCrowd();
 
   //! @brief Tries to catch the ball.
   void tryCatchBall(bool accurate_pass);

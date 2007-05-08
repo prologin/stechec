@@ -97,43 +97,50 @@ void SPlayer::setPosition(const Position& pos, bool advertise_client)
 
 void SPlayer::setStatus(enum eStatus new_status)
 {
-
-  if (status_ != new_status)
+  if (status_ == new_status)
     {
-      pm_->sendStatus(new_status, this);
+      WARN("Don't assign twice the same status to player %1 of team %2.", id_, team_id_);
+      return;
     }
-
+  pm_->sendStatus(new_status, this);
   switch (new_status)
     {
     case STA_RESERVE:
+      if (status_ == STA_PRONE || status_ == STA_STANDING || STA_STUNNED)
+        {
+          f_->setPlayer(pos_, NULL);
+          pos_ = Position(-1, -1);
+        }
       status_ = STA_RESERVE;
       break;
-    
     case STA_STANDING:
-      // ok... play again :p
       status_ = STA_STANDING;
       break;
-      
     case STA_PRONE:
       status_ = STA_PRONE;
       break;
-      
     case STA_STUNNED:
       status_ = STA_STUNNED;
       break;
-
     case STA_KO:
+      if (status_ == STA_PRONE || status_ == STA_STANDING || STA_STUNNED)
+        {
+          f_->setPlayer(pos_, NULL);
+          pos_ = Position(-1, -1);
+        }
       status_ = STA_KO;
       break;
-      
     case STA_INJURED:
+      if (status_ == STA_PRONE || status_ == STA_STANDING || STA_STUNNED)
+        {
+          f_->setPlayer(pos_, NULL);
+          pos_ = Position(-1, -1);
+        }
       status_ = STA_INJURED;
       break;
-      
     case STA_UNASSIGNED:
       WARN("Can't set player in 'unassigned' state");
       break;
-
     default:
       LOG3("You can't set this state from outside...");
       break;
@@ -155,7 +162,6 @@ void SPlayer::prepareKickoff()
     case STA_STANDING:
     case STA_PRONE:
     case STA_STUNNED:
-      f_->setPlayer(pos_, NULL);
       setStatus(STA_RESERVE);
       break;
 
@@ -217,15 +223,9 @@ void SPlayer::rollInjury(int modifier)
   if (injury <= 7)
     setStatus(STA_STUNNED);
   else if (injury <= 9) 
-    {
-      setStatus(STA_KO);
-      f_->setPlayer(pos_, NULL);
-    }
+    setStatus(STA_KO);
   else 
-    {
-      setStatus(rollCasualty());
-      f_->setPlayer(pos_, NULL);
-    }
+    setStatus(rollCasualty());
 }
 
 enum eStatus SPlayer::rollCasualty()
@@ -523,10 +523,11 @@ void SPlayer::blockFollow(bool follow)
 
 void SPlayer::finishBlockPush()
 {
-  if (push_choices_[0] != target_->getPosition())
+  if ((push_choices_[0] != target_->getPosition())
+      && f_->intoField(target_->getPosition()))
     {
       if (!f_->intoField(push_choices_[0]))
-        target_->bePushedInTheCrowd(push_choices_[0]);
+        target_->bePushedInTheCrowd();
       else if (f_->getPlayer(push_choices_[0]) != NULL)
         target_->finishBlockPush();
       else
@@ -570,11 +571,9 @@ void SPlayer::finishBlockAction()
   ah_->process();
 }
 
-void SPlayer::bePushedInTheCrowd(const Position& pos)
+void SPlayer::bePushedInTheCrowd()
 {
   ah_->putPushResolution(pusher_);
-  f_->setPlayer(pos_, NULL);
-  pos_ = pos;
   rollInjury(0);
   if (status_ == STA_STUNNED)
     setStatus(STA_RESERVE);
@@ -849,7 +848,6 @@ void SPlayer::tryStandUp()
       LOG5("Player `%1' of team `%2' stands up.");
       ma_remain_ = ma_ - 3;
       setStatus(STA_STANDING);
-      pm_->sendStatus(STA_STANDING, this);
       ah_->process();
     }
 }
@@ -1085,6 +1083,8 @@ void SPlayer::msgPass(const MsgPass* m)
 
 void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
 {
+  Position new_pos;
+  SPlayer* out_goer;
   if (t_->state_ != GS_INITKICKOFF)
     {
       WARN("Bad team state (%1).", t_->state_);
@@ -1097,8 +1097,13 @@ void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
       r_->sendIllegal(m->token, m->client_id, ERR_CANNOTENTERINPLAY);
       return;
     }
-  const Position new_pos(m->row, m->col);
-  SPlayer* out_goer = f_->getPlayer(new_pos);
+  new_pos = Position(m->row, m->col);
+  if (status_ == STA_STANDING && pos_ == new_pos)
+    {
+      WARN("Player %1 of team %2 is already standing at %3.", id_, team_id_, pos_);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
   // Places player in the reserve if placement is out of the field, or in the wrong field side.
   if (!f_->intoField(new_pos)
       || t_->getTeamId() == 0 && new_pos.row >= ROWS / 2
@@ -1106,25 +1111,15 @@ void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
     {
       // Does nothing if the player is already in the reserve.
       if (status_ != STA_RESERVE)
-        {
-          f_->setPlayer(pos_, NULL);
-          setStatus(STA_RESERVE);
-        }
+        setStatus(STA_RESERVE);
     }
-  // Does nothing if the player is already standing at this place.
-  else if (! (status_ == STA_STANDING && pos_ == new_pos))
+  else
     {
+      out_goer = f_->getPlayer(new_pos);
       if (out_goer != NULL)
-        {
-          f_->setPlayer(new_pos,NULL);
-          out_goer->setStatus(STA_RESERVE);
-        }
-      if (status_ == STA_RESERVE)
-        {
-          setStatus(STA_STANDING);
-        }
-      // Note: SPlayer::setPosition(new_pos, true) doesn't advertise the client
-      // in case of the player was already at this position and in the reserve.
+        out_goer->setStatus(STA_RESERVE);
+      if (status_ != STA_STANDING)
+        setStatus(STA_STANDING);
       setPosition(new_pos, false);
       r_->sendPacket(*m);
     }
