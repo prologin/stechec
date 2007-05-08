@@ -37,23 +37,20 @@ Depends:
   g++ (>= 3.3)
   ruby (>= 1.8.2)
   libtk-ruby (>= 1.8.2)
-  libmysqlclient15-dev
   libxerces27-dev
   libsdl1.2-dev
-  libsdlimage1.2-dev
-  libsdlttf2.0-dev
-  libqt3-mt-dev
-  libqt3-headers
+  libsdl-image1.2-dev
+  libsdl-ttf2.0-dev
 
 Suggests:
 
+  ocaml (>= 3.08.3)
+  fp-compiler (>= 1.9.6)
+  gcj (>= 3.3)
+  libgcj7-dev
   tetex-bin
   help2man
   doxygen
-  ocaml (>= 3.08.3)
-  fp-compiler (>= 1.9.6)
-  gcj (= 3.3)
-  libgcj5-dev
 
 
 ======================
@@ -79,11 +76,7 @@ l'emplacement où vous avez installé stechec.
 Flags de configuration utiles, pour ./configure:
 
 --prefix	: chemin du répertoire d'installation
-
 --enable-debug  : compile en -ggdb3 et sans -O2, pour débugger
---with-qt       : spécifie le répertoire de qt (défaut debian: /usr/share/qt3)
---without-qt    : désactive la compilation des sources qt
---without-mysql : désactive la compilation du meta et main serveur
 
 
 ======================
@@ -130,14 +123,14 @@ $ run $HOME/stechec/conf/prolo2005.xml
 Pour lancer le serveur et le(s) client(s) séparément (utile pour
 débugger):
 
-$ tbt_server $HOME/stechec/conf/prolo2005.xml
+$ stechec_server $HOME/stechec/conf/prolo2005.xml
 (dans une autre console:)
-$ tbt 1 $HOME/stechec/conf/prolo2005.xml
+$ stechec 1 $HOME/stechec/conf/prolo2005.xml
 (dans une troisieme console:)
-$ tbt 2 $HOME/stechec/conf/prolo2005.xml
+$ stechec 2 $HOME/stechec/conf/prolo2005.xml
 (etc...)
 
-Le numéro après 'tbt' indique la section 'client_' du fichier .xml à
+Le numéro après 'stechec' indique la section 'client_' du fichier .xml à
 prendre en compte.
 
 
@@ -176,4 +169,4 @@ You should have received a copy of the GNU General Public License
 along with the Stechec project; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-Copyright (C) 2005, 2006 Prologin
+Copyright (C) 2005, 2006, 2007 Prologin
