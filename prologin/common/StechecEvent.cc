@@ -67,3 +67,9 @@ void EventProcess::dispatch(const MsgBeforeTurn&) const
 {
   assert(false);
 }
+
+template <>
+void EventProcess::dispatch(const MsgListTeam&) const
+{
+  assert(false);
+}
