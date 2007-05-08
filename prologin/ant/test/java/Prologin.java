@@ -40,7 +40,7 @@ public class Prologin extends Interface
     /*!
     ** Fonction appele a chaque tour
     */
-    public void new_turn()
+    public void play_turn()
     {
 	int i;
 

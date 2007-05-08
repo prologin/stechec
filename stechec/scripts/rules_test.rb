@@ -156,7 +156,7 @@ class RuleTest
     <champion>#{c['champion']}</champion> 
     <team>#{c['team']}</team>
     <mode replay="false" spectator="false" />
-    <limit memory="10000" time="500" time_reserve="2500" />
+    <limit memory="0" time="0" time_reserve="0" />
     <debug valgrind="false" verbose="3" printloc="false" />
     #{redir}
   </client>

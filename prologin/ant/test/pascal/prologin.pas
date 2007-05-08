@@ -40,7 +40,7 @@ end;
 {
   Fonction appele a chaque tour
 }
-procedure new_turn(); cdecl; export;
+procedure play_turn(); cdecl; export;
 var
    i, x, y : integer;
 begin
@@ -119,7 +119,7 @@ end;
 
 exports
   init_game,
-  new_turn;
+  play_turn;
 
 begin
 
