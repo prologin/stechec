@@ -202,7 +202,8 @@ void SRules::turnover(enum eTurnOverMotive motive)
       pkt.motive = motive;
       sendPacket(pkt);
     }
-  action_handler_->process();
+  if (turnover_ != TOM_TIMEEXCEEDED)
+    action_handler_->process();
 }
 
 bool SRules::isTurnover()
