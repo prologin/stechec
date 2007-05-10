@@ -1,0 +1,1257 @@
+\section{Les outils informatiques}
+
+%
+% Ce fichier a été généré avec gen/make_tex.rtex
+% Ne faites pas l'autiste, ne le modifiez pas directement !
+%
+
+\subsection{Constantes}\subsubsection{Les codes d'erreur}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & BAD\_ARGUMENT \\
+\textbf{Valeur:} & -4 \\
+\textbf{Description:} & Un des arguments passé a la fonction est incorrect. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & INVALID\_COMMAND \\
+\textbf{Valeur:} & -3 \\
+\textbf{Description:} & Vous ne pouvez pas appeler cette commande maintenant. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & NO\_UNIT \\
+\textbf{Valeur:} & -2 \\
+\textbf{Description:} & L'unité demandée n'existe pas (ou plus). \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & UNKNOWN \\
+\textbf{Valeur:} & -1 \\
+\textbf{Description:} & Le résultat ne peut pas être connu. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & SUCCESS \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & La commande s'est correctement effectuée. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+\subsubsection{Les valeurs maximum}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAX\_TURN \\
+\textbf{Valeur:} & 500 \\
+\textbf{Description:} & Nombre maximum de tours. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAX\_MAP\_SIZE \\
+\textbf{Valeur:} & 40 \\
+\textbf{Description:} & Taille maximum de la carte en largeur-hauteur. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAX\_BACTERY \\
+\textbf{Valeur:} & 30 \\
+\textbf{Description:} & Nombre maximal de bactéries sur une case. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAX\_NUTRIENT \\
+\textbf{Valeur:} & 17 \\
+\textbf{Description:} & Nombre maximal de nutriments sur une case. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAX\_SKILL \\
+\textbf{Valeur:} & 12 \\
+\textbf{Description:} & Nombre maximum de points de compétence d'un leucocyte. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+\subsubsection{L'evolution au cours du temps}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & NEW\_NUTRIENT \\
+\textbf{Valeur:} & 10 \\
+\textbf{Description:} & Quantité de nutriments apportés par le sang à chaque tour. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL\_NUTRIENT \\
+\textbf{Valeur:} & 10 \\
+\textbf{Description:} & Quantité de nutriments qu'une cellule peut consommer par tour. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL\_MITOSIS\_MATERIAL \\
+\textbf{Valeur:} & 50 \\
+\textbf{Description:} & Quantité de nutriments dont une cellule a besoin pour faire une mitose. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & VIRUS\_MATERIAL \\
+\textbf{Valeur:} & 15 \\
+\textbf{Description:} & Quantité de nutriments dont une cellule a besoin pour fabriquer un virus. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & BACTERY\_NUTRIENT \\
+\textbf{Valeur:} & 10 \\
+\textbf{Description:} & Quantité de nutriments qu'une bactérie peut consommer par tour. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & VIRUS\_PRODUCTION\_DURATION \\
+\textbf{Valeur:} & 10 \\
+\textbf{Description:} & Nombre de tours nécessaires a une cellule pour produire un virus. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & VIRUS\_LIFE \\
+\textbf{Valeur:} & 50 \\
+\textbf{Description:} & Nombre de points de vie d'un virus lors de sa création \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MITOSIS\_DURATION \\
+\textbf{Valeur:} & 50 \\
+\textbf{Description:} & Nombre de tours nécessaires a une cellule pour se diviser. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & INFECTION\_DURATION \\
+\textbf{Valeur:} & 10 \\
+\textbf{Description:} & Nombre de tours nécessaires a un virus pour transformer une cellule. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & PHAGOCYTOSIS\_DURATION \\
+\textbf{Valeur:} & 30 \\
+\textbf{Description:} & Nombre de tours nécessaires à un leucocyte pour digérer un virus. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+\subsubsection{Les types de tissu}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & VESSEL \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & Réseau sanguin. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & FLESH \\
+\textbf{Valeur:} & 1 \\
+\textbf{Description:} & Tissu cellulaire. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & WHITE\_CELL \\
+\textbf{Valeur:} & 2 \\
+\textbf{Description:} & Un leucocyte se trouve a cet endroit. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & Une cellule se trouve a cet endroit. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & BACTERIA \\
+\textbf{Valeur:} & 4 \\
+\textbf{Description:} & Une bactérie se trouve a cet endroit. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & VIRUS \\
+\textbf{Valeur:} & 5 \\
+\textbf{Description:} & Un virus se trouve a cet endroit. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+\subsubsection{L'état de santé des cellules}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL\_STATE\_HEALTHY \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & La cellule est saine. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL\_STATE\_INFECTED \\
+\textbf{Valeur:} & 1 \\
+\textbf{Description:} & La cellule est infectée par un virus. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL\_STATE\_BEING\_INFECTED \\
+\textbf{Valeur:} & 2 \\
+\textbf{Description:} & La cellule est en train d'être infectée. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL\_STATE\_BEING\_PHAGOCYTED \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & La cellule est en train d'etre phagocytée. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CELL\_STATE\_DEAD \\
+\textbf{Valeur:} & 4 \\
+\textbf{Description:} & La cellule est morte. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+\subsubsection{L'état des leucocytes}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & STATE\_NORMAL \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & Le leucocyte est disponible. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & STATE\_PHAGOCYTOSING \\
+\textbf{Valeur:} & 1 \\
+\textbf{Description:} & Le leucocyte est en train de phagocyter. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & STATE\_BEING\_PHAGOCYTED \\
+\textbf{Valeur:} & 2 \\
+\textbf{Description:} & Le leucocyte est en train d'être phagocyté. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & STATE\_DEAD \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & Le leucocyte est mort. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+\subsubsection{Les valeurs retournées par meilleure\_direction}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & DEC\_Y \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & Déplacement vers le haut. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & DEC\_X \\
+\textbf{Valeur:} & 1 \\
+\textbf{Description:} & Déplacement vers la gauche. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & INC\_Y \\
+\textbf{Valeur:} & 2 \\
+\textbf{Description:} & Déplacement vers le bas. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & INC\_X \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & Déplacement vers la droite. \\
+\end{tabular}
+\vspace{0.2cm} \\
+
+
+
+\subsection{Fonctions d'information}
+Toutes les fonctions peuvent renvoyer les constantes
+\textbf{BAD\_ARGUMENT} ou \textbf{NO\_UNIT} quand au moins un des
+arguments est incorrect (même si cela n'est pas précisé pour chaque
+fonction). Par exemple, cela se produit si vous appelez
+la fonction \texttt{regarde} avec \texttt{x=-1} et \texttt{y=5142}.
+\subsubsection{Informations sur le monde}
+
+\begin{minipage}{\linewidth}
+\functitle{equipes}
+
+\begin{lst-c++}
+int equipes()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Nombre d'équipes présentes sur le terrain. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{nombre\_leucocyte}
+
+\begin{lst-c++}
+int nombre_leucocyte()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Nombre de leucocytes présents sur la map au début du jeu. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{taille\_equipe}
+
+\begin{lst-c++}
+int taille_equipe(int numero_equipe)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Nombre de leucocytes dans l'équipe. \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{numero\_equipe}~: & Numéro de l'équipe \\
+
+
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{mon\_equipe}
+
+\begin{lst-c++}
+int mon_equipe()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Identifiant de votre equipe. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{mon\_identifiant}
+
+\begin{lst-c++}
+int mon_identifiant()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Identifiant de votre unité \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{taille\_corps\_x}
+
+\begin{lst-c++}
+int taille_corps_x()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Taille du monde en largeur. \\
+
+
+
+
+Retour~: & Un entier contenant la taille du monde en largeur. \\
+
+
+
+Remarques~: & Retourne toujours MAX\_MAP\_SIZE lors des matchs officiels. \\
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{taille\_corps\_y}
+
+\begin{lst-c++}
+int taille_corps_y()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Taille du monde en hauteur. \\
+
+
+
+
+Retour~: & Un entier contenant la taille du monde en hauteur. \\
+
+
+
+Remarques~: & Retourne toujours MAX\_MAP\_SIZE lors des matchs officiels. \\
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{regarde}
+
+\begin{lst-c++}
+int regarde(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Recupère le type de terrain à la position demandée. Si aucun de vos
+joueurs ne peut voir la case en question (brouillard de guerre), la
+fonction ne renverra que VESSEL ou FLESH. Si vous pouvez la voir,
+alors la valeur de retour sera plus précise.
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnée en x de la case demandée. \\
+
+
+
+        \textsl{y}~: & Coordonnée en y de la case demandée. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & Retourne une des constantes 'types de terrain'. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{bacteries\_presentes}
+
+\begin{lst-c++}
+int bacteries_presentes(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Dit si des bactéries sont présentes sur la case specifiée.
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnée en x de la case demandée. \\
+
+
+
+        \textsl{y}~: & Coordonnée en y de la case demandée. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & Retourne 1 si oui, 0 sinon. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{visible}
+
+\begin{lst-c++}
+int visible(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Regarde si une case du terrain se trouve dans le champ de vision de vos
+joueurs.
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnée en x de la case demandée. \\
+
+
+
+        \textsl{y}~: & Coordonnée en y de la case demandée. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & Retourne 1 si la case est visible, 0 sinon. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+\subsubsection{Informations sur le tour}
+\begin{minipage}{\linewidth}
+\functitle{score}
+
+\begin{lst-c++}
+int score(int id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Recupère le score d'une équipe. \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{id}~: & Un identifiant d'équipe. \\
+
+
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{battement\_courant}
+
+\begin{lst-c++}
+int battement_courant()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Date actuelle. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\subsubsection{Informations sur les joueurs}
+\begin{minipage}{\linewidth}
+\functitle{leucocyte\_visible}
+
+\begin{lst-c++}
+int leucocyte_visible(int id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Le leucocyte est-il visible ? \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{id}~: & Un identifiant de leucocyte. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & Retourne 1 si le leucocyte est visible, 0 sinon. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{identifiant\_leucocyte}
+
+\begin{lst-c++}
+int identifiant_leucocyte(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Permet de savoir l'identifiant d'un leucocyte sur une case.
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnée en x de la case demandée. \\
+
+
+
+        \textsl{y}~: & Coordonnée en y de la case demandée. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & Retourne l'identifiant du leucocyte s'il est visible, UNKNOWN sinon. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{equipe}
+
+\begin{lst-c++}
+int equipe(int id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Récupère l'identifiant d'équipe auquel appartient un leucocyte. \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{id}~: & Un identifiant de leucocyte. \\
+
+
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{position\_leucocyte\_x}
+
+\begin{lst-c++}
+int position_leucocyte_x(int id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Position d'un leucocyte en largeur. \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{id}~: & Un identifiant de leucocyte. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & UNKNOWN si le leucocyte n'est pas visible. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{position\_leucocyte\_y}
+
+\begin{lst-c++}
+int position_leucocyte_y(int id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Position d'un leucocyte en hauteur. \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{id}~: & Un identifiant de leucocyte. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & UNKNOWN si le joueur n'est pas visible. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{etat\_leucocyte}
+
+\begin{lst-c++}
+int etat_leucocyte(int id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Recupere l'état d'un leucocyte. \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{id}~: & Un identifiant de leucocyte. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & UNKNOWN si le leucocyte n'est pas visible. \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{etat\_cellule}
+
+\begin{lst-c++}
+int etat_cellule(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Recupere l'état d'une cellule. \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnée x de la cellule. \\
+
+        \textsl{y}~: & Coordonnée y de la cellule. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & UNKNOWN si la cellule n'est pas visible.
+NO\_UNIT s'il n'y a pas de cellule sur la case.\\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+\subsection{Informations sur l'infection}
+Toutes les fonctions renvoient un entier correspondant au succès ou à
+l'échec de la commande.
+
+\begin{minipage}{\linewidth}
+\functitle{connait\_type}
+
+\begin{lst-c++}
+int connait_type(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Sert à se renseigner si le joueur connait deja un type de signature d'un virus.
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnée x à atteindre. \\
+
+
+
+        \textsl{y}~: & Coordonnée y à atteindre. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & SUCCESS si le x, y désigne une zone infectée et que le type est connu.
+UNKNOWN si le x, y désigne une zone infectée et que le type est inconnu.
+Sinon, retourne BAD\_ARGUMENT
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+\subsection{Compétences des leucocytes}
+Toutes les fonctions renvoient un entier correspondant au succès ou à
+l'échec de la commande.
+
+\begin{minipage}{\linewidth}
+\functitle{definit\_competence}
+
+\begin{lst-c++}
+int definit_competence(int rapidite, int anticorps,
+                       int messages, int vision)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Sert à définir les compétences d'un leucocyte
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{rapidite}~: & Rapidité de phagocytose du leucocyte. \\
+
+
+
+        \textsl{anticorps}~: & Nombre d'anticorps laché \\
+
+
+
+        \textsl{messages}~: & Nombre de messages qu'il peut envoyer par tour \\
+
+
+
+        \textsl{vision}~: & Champ de vision du leucocyte \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & SUCCESS si les arguments sont corrects (somme des compétence < MAX\_SKILL)
+Sinon, retourne BAD\_ARGUMENT
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+\subsection{Fonctions de commande}
+Toutes les fonctions renvoient un entier correspondant au succès ou à
+l'échec de la commande.
+
+\begin{minipage}{\linewidth}
+\functitle{deplace\_leucocyte}
+
+\begin{lst-c++}
+int deplace_leucocyte(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Deplace un de ses leucocyte \emph{vers} la position indiquee. Il ne se deplace que
+d'une seule case par tour.
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnee x à atteindre. \\
+
+
+
+        \textsl{y}~: & Coordonnee y à atteindre. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & SUCCESS si le joueur peut se déplacer à la fin du tour (et il le fera),
+ou INVALID\_COMMAND ou BAD\_ARGUMENT en cas d'impossibilité.
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{phagocyte}
+
+\begin{lst-c++}
+int phagocyte(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Phagocytose de l'entité qui se trouve aux coordonnées indiquées.
+S'il s'agit d'un virus dont le type n'est pas encore connu,
+l'appel à cette fonction immobilisera plus longtemps le leucocyte
+que si le type est connu (apprentissage de la signature).
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{x}~: & Coordonnée x de l'entité. \\
+
+
+
+        \textsl{y}~: & Coordonnée y de l'entité. \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & SUCCESS si le leucocyte réussi à phagocyter
+BAD\_ARGUMENT ou INVALID\_COMMAND sinon
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{emet\_anticorps}
+
+\begin{lst-c++}
+int emet_anticorps()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Le leucocyte émet des anticorps autour de lui et sur sa case
+ \\
+
+
+
+
+Retour~: & SUCCESS si le leucocyte réussi à lacher des anticorps
+BAD\_ARGUMENT ou INVALID\_COMMAND sinon.
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{transmettre\_message}
+
+\begin{lst-c++}
+int transmettre_message(int message_arg1, int message_arg2,
+                        int message_arg3, int message_arg4)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Le leucocyte transmet un message.
+ \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+        Attention~: & chaque argument du message doit être positif ou nul\\
+
+        \textsl{message\_arg1}~: & partie 1 du message à transmettre\\
+
+        \textsl{message\_arg2}~: & partie 2 du message à transmettre\\
+
+        \textsl{message\_arg3}~: & partie 3 du message à transmettre\\
+
+        \textsl{message\_arg4}~: & partie 4 du message à transmettre\\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & SUCCESS si la transmission réussit
+BAD\_ARGUMENT ou INVALID\_COMMAND sinon.
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{recevoir\_prochain\_message}
+
+\begin{lst-c++}
+int recevoir_prochain_message()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Le leucocyte recoit l'identifiant prochain message qu'on lui a envoyé.
+ \\
+
+
+
+
+Retour~: & L'identifiant du message envoyé si un message est disponible,
+BAD\_ARGUMENT ou INVALID\_COMMAND sinon.
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{corps\_message}
+
+\begin{lst-c++}
+int corps_message(int message_id, int argument_id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Permet de récupérer le corps d'un message  \\
+
+
+Paramètres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+
+
+
+        \textsl{message\_id}~: & Identifiant du message. \\
+
+
+
+        \textsl{argument\_id}~: & Numéro de la partie de message à récupérer \\
+
+
+  \end{tabular} \\
+
+
+
+Retour~: & Le message,
+BAD\_ARGUMENT ou INVALID\_COMMAND sinon.
+ \\
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+

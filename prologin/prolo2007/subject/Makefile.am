@@ -13,6 +13,12 @@ YAML		= $(srcdir)/../data/prolo2007.yml
 
 include $(top_srcdir)/build-aux/subject.mk
 
-EXTRA_DIST	+= logo_prologin2007.png
+EXTRA_DIST	+= 	logo_prologin2007.png	\
+			bacteria.png		\
+			cell.png		\
+			leuco.png		\
+			mitose.png		\
+			virus.png		\
+			api_modified.tex
 
 install:

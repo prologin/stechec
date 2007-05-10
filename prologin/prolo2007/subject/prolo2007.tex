@@ -54,236 +54,623 @@ Sujet de la finale du Concours National d'Informatique\\
 \pagestyle{fancy}
 \parskip=6pt plus 3pt
 
-\section{Il \'etait une fois\ldots} %-----------------------------------
+\section{Introduction} %-----------------------------------
 
-\subsection{\ldots{} la vie}
+  \subsection{Prélude}
 
-TODO: intro
+  Chaque année, afin  que chacun puisse montrer fièrement  à ses parents
+  et  amis  à  quoi  ressemble  le  prestigieux  concours  auquel  ils
+  participent «~Tiens regarde, c'est moi  juste là, à côté de la machine
+  à  barbe   à  papa~!~»,  nous  proposons  une   vidéo  de  l'évènement
+  peu\footnote{Bon parfois tout est  relatif. ;-)} de temps après. C'est
+  pour cela  que vous verrez se  ballader avec une caméra  des gens très
+  intéressés par ce que vous faites et qui, bizarrement, ne taperont pas
+  une ligne  de code.  Ne soyez donc  pas inquiets,  ce ne sont  pas des
+  espions envoyés par d'autres candidats.\\
 
-\subsection{Super-globule est arriv\'e}
+   % ajouter ici d'autres méta-informations
+   % (i.e. ce qui n'a rien à voir avec le sujet)
 
-Le  centre  de contr\^ole  du  corps humain  \`a  le  plaisir de  vous
-annoncer l'ouverture du concours hebdomadaire Super-globule. A l'issue
-d'\'epreuves plus difficiles les unes que les autres, le globule blanc
-le  plus d\'evou\'e,  performant,  et acharn\'e  au  travail se  verra
-decern\'e le  titre de Super-globule,  et pourra ainsi  pr\'etendre au
-tr\`es convoit\'e  poste de  chef de la  s\'ecurit\'e du  corps humain
-pour une dur\'ee d'une semaine.
+  \subsubsection{Introduction}
 
-Le  concours dispose  de r\`egles  simples  : pendant  36 heures,  des
-\'equipes  de globules  blancs devront  d\'emontrer leur  talents dans
-diff\'erents endroits du corps humain en prot\'egeant les cellules des
-attaques virales et bact\'eriologiques.  Plus une \'equipe d\'efend de
-cellules, plus elle  gagne de points. Mais chaque  cellule perdue fera
-reculer de mani\`ere catastrophique le score de l'\'equipe cens\'ee la
-prot\'eger. \`A la fin de  ces \'epreuves, c'est le chef de l'\'equipe
-qui aura \'et\'e  la plus performante et qui  aura prot\'eg\'e le plus
-de cellules qui recevra le titre de Super-globule.
+  Cette année, ce  sont les quinze ans de  Prologin. Déjà. Quinze années
+  de gloire et  de prospérité, quinze sujets parmi  lesquels se trouvent
+  des  cubes  vivants,  des  citrons  reproducteurs,  des  entrepreneurs
+  immobiliers sur une planète extra-terrestre, et même votre propre rôle
+  dans le  futur (ou le passé ?  je ne sais plus  très bien)\ldots Bref~!
+  Alors forcément pour un tel anniversaire, nous voulons faire quelque
+  chose de bien, quelque chose qui marque les esprits.\\
 
-Mais  ce n'est  pas simple  de devenir  Super-globule,  n'importe quel
-globule  quelconque  n'a  pas  toutes les  qualit\'es  requises.  Tout
-d'abord, il  vous faudra avoir  l'esprit strat\'egique, et  former une
-\'equipe. La  r\'ecompense pour chaque membre  de l'\'equipe gagnante,
-\'etant une journ\'ee sabbatique  en compagnie de globules rouges tous
-plus  charmants  les  uns  que   les  autres,  attire  elle  aussi  la
-convoitise.  Vous  aurez donc  l'embarras  du  choix  pour former  vos
-\'equipes. Parmi  les caract\'eristiques  de chaque globule  blanc, on
-compte : la vitesse, la robustesse et la force d'attaque.
+  Nous avons eu l'idée de tirer parti de la vidéo de la finale pour
+  faire de l'audience, de l'audimat, pour faire de vous des stars et
+  être remarqués par tous les grands producteurs. Pour cela, rien de
+  tel que de l'action, du sexe, de l'humour, du suspens, et de
+  l'émotion\footnote{Notez qu'en ne gardant que les deux premiers, ça
+  donne un résultat parfaitement moisi mais financièrement très
+  rentable.}. Malheureusement, ici nous faisons de l'informatique, et
+  il faut bien reconnaître que l'action y est tout de même
+  relativement discrète\footnote{Mais heureusement en dehors de
+  l'informatique, il y a justement de l'action pendant une finale
+  Prologin~!}, le sexe limité à de la drague sur IRC (or vous êtes
+  désormais coupés du monde), et l'humour d'informaticien passe quant
+  à lui assez mal malheureusement~: ``Ta mère const typée en
+  string~!'' \textsl{Rires enregistrés}.\\
 
-La deuxi\`eme qualit\'e dont  doit \^etre pourvu Super-globule est une
-technique de  combat incomparable. Des virus  et bact\'eries attaquent
-sans cesse le  corps humain. Chaque \'equipe de  globules blancs devra
-prot\'eger un  maximum de cellules  de ces attaques. Un  globule blanc
-touche une cellule pour lui indiquer qu'il la prot\`ege.
-% Transition
-Chaque  virus ou  bact\'erie neutralis\'ee  par un  quelconque globule
-blanc rapportera des munitions \`a l'\'equipe qui prot\`ege la cellule
-qui \'etait vis\'ee par l'attaque.
+  Enfin les deux derniers éléments sont difficile à faire communiquer.
+  Forcément, on imagine la difficulté que peut représenter pour un
+  metteur en scène le défi de faire ressortir de façon palpable toute la
+  tension liée à une compilation de code template en C++~: cinq minutes
+  de silence devant un écran qui ne dit rien, et tout à coup mille
+  lignes d'erreur, ou juste rien, voire un timide ``Compilation
+  terminée''. De même il semble peu aisé de faire comprendre au
+  spectateur le plaisir carnassier d'avoir trouvé l'origine d'une erreur
+  de segmentation, et la traque l'ayant précédée, à coups d'affichages
+  de pile en exécutant du code pas à pas, n'est quant à elle pas simple
+  à rendre captivante non plus~: ``Ce pointeur nul, j'en fais une
+  affaire personnelle~!''. Alors les rares réalisateurs qui s'aventurent
+  sur le terrain ont recours à des procédés douteux, comme par exemple
+  représenter l'administrateur système comme un délinquant se déplaçant
+  dans ses salles serveur en skateboard et codant des virus avec des
+  interfaces en 3D.\\
 
-Enfin, il va de soi  que Super-globule doit \^etre dot\'e d'un courage
-sans limites  et doit  \^etre pr\^et \`a  se sacrifier  pour n'importe
-laquelle des cellules du corps humain.
+  Pourtant il existe des domaines auxquels les gens ne comprennent
+  absolument rien non plus et qui connaissent néanmoins de gros succès
+  populaires. Prenez par exemple la médecine~: tournez une hypothétique
+  série télévisée dans laquelle les héros seraient de brillants médecins
+  d'un hôpital de Chicago et lanceraient des ``Je veux
+  NFS\footnote{Numération formule sanguine, aussi appelé
+  \emph{hémogramme}, ou \emph{examen hématologique complet}, ou plus
+  simplement \emph{hémato}~: vous l'avez déjà entendu n'est ce pas~?},
+  iono\footnote{Ionogramme~: concentration sanguine des différents
+  ions.}~!'' et autres ``Il bradycardise\footnote{La bradycardie se
+  caractérise par un rythme cardiaque trop bas par rapport à la
+  normale.}~!'' comme on crie des attaques dans un manga, et vous faites
+  de vos acteurs des stars que l'on s'arrache.\\
 
-\subsection{10 000 milliards de cellules, et moi et moi et moi}
+  Devant ce constat, il faut se rendre à l'évidence~: faisons de
+  la médecine, et c'est le succès assuré~!
 
-Le corps humain  est un organisme vaste o\`u  chaque partie remplit un
-r\^ole   bien   particulier  mais   indispensable.   Le  concours   de
-Super-globule  prendra place dans  diff\'erents organes,  ayant chacun
-leurs particularit\'es.
+  \subsubsection{De l'infiniment grand à l'infiniment petit}
 
-Les  muscles  sont  des   tissus  form\'es  de  cellules  contractiles
-appel\'ees \emph{myocyte}.  Les muscles sont  moder\'ements sujets aux
-attaques et leur concentration en cellules est assez \'elev\'ee.
+  Vous avez  probablement déjà vu cette vidéo  stupéfiante dans laquelle
+  la  caméra, partant  d'un couple  allongé dans  l'herbe dans  un parc,
+  s'éloigne à vitesse exponentielle, laissant voir la ville, le pays, la
+  planète, le système solaire puis  la galaxie, pour arriver aux confins
+  de l'univers~?   La caméra revient ensuite, puis  commence à descendre
+  au niveau de la main, puis à la taille de l'insecte, de la cellule, de
+  la molécule et enfin de l'atome.   C'est à l'échelle de la cellule que
+  nous allons nous placer et observer les interactions.\\
 
-Le coeur  est l'organe creux  musculaire qui assure la  circulation du
-sang dans  tout le reste du  corps. Il est donc  tr\`es difficile pour
-les  globules  blancs  d'assurer  leur  travail,  car  ce  muscle  est
-syst\'ematiquement  en  contraction   (cela  provoque  des  mouvements
-ind\'esirables).
+  Depuis que l'homme est Homme --- et que la femme aussi est Homme ---
+  son  corps est le  champ d'une  bataille qui  figure parmi  les plus
+  dantesques\footnote{Il vous  faudra lire toute  l'\oe{}uvre de Dante
+  pour  comprendre  la  comparaison.   Et  encore\ldots}  qui  soient.
+  Savez-vous par exemple de  quoi est fait votre système immunitaire~?
+  Savez  vous ce que  sont un  virus, une  bactérie, un  anticorps, un
+  globule blanc ou tout simplement  une cellule~? Avez-vous idée de ce
+  qu'il se passe  à cette échelle lors d'une  infection~? En ce moment
+  même vous êtes la victime  d'une attaque d'organismes sans pitié, ni
+  morale.   Les hasards de  l'évolution ont  rendu ce  processus vital
+  invisible à  nos sens et incontrôlable  consciemment (ou contrôlable
+  inconsciemment~?).  Rien ne vous  garantit alors que vous n'êtes pas
+  sur  le  point  de   commettre  une  grave  erreur  stratégique  aux
+  conséquences  aussi imprévisibles que  dangereuses\ldots{ }Et  si nous
+  vous donnions la possibilité de contrôler votre système immunitaire,
+  pensez vous être  capable de faire mieux que  des milliards d'années
+  d'évolution~?\\
 
-Les  poumons sont  tapiss\'es de  cellules. Et  ils sont  aussi tr\`es
-sujets aux aggressions exterieures, alors restez sur vos gardes !
+  L'année dernière, de nombreux candidats  se sont amusés à voyager dans
+  le temps. On aurait pu croire que  tout en serait resté là et que cela
+  n'aurait pas  causé de conséquences  particulières (outre l'apparition
+  de quelques millionaires).  Hélas ! C'était sous-estimer l'imagination
+  de Dieu et la perversité des  coïncidences.  Au cours de la finale, un
+  candidat  a été  porté disparu,  probablement  suite à  une erreur  de
+  calcul.   On s'était seulement  dit qu'un  pourcent de  perte, c'était
+  négligeable. D'autant plus qu'il était mal classé\footnote{Gniark.}.\\
 
-L'intestin gr\^ele  est l'organe le plus cons\'equent  du corps humain
-(entre 5  et 7 m\`etres), o\`u  la concentration en  cellules de types
-vari\'es est tr\'es  \'elev\'ee. Gare aux aliments qui  y circulent et
-qui pourraient vous d\'evier en cas de collision.
+  Ce matin\footnote{Qui a cru que le sujet et le serveur étaient faits
+  à l'avance~?}, alors que nous tout était fin prêt pour la finale, un
+  événement  pour  le moins  inattendu  se  produisit.   Dans une  des
+  salle-machines, un éclair aveugla un instant les élèves.  La seconde
+  d'après, notre candidat  perdu se tenait là, au  milieu de la salle,
+  avec son tee-shirt Prologin 2006,  l'air béat. Une fois remis de ses
+  émotions, il  nous fit savoir  qu'il était porteur d'un  message. Le
+  monde  futur l'avait  envoyé pour  essayer  de changer  le cours  de
+  l'histoire et  tenter de sauver l'humanité.  Il  raconta son périple
+  en 2049  et évoqua de  nombreuses choses, pour la  plupart confuses.
+  D'après  lui, le  monde serait  ravagé par  un virus  qui menacerait
+  notre  existence.   Bref, un  scénario  classique  pour  un film  de
+  science fiction,  en quelque sorte. Sauf qu'il  avait l'air sérieux.
+  Il continua  de parler, décrivant  le virus qui serait  une nouvelle
+  espèce   particulièrement  virulente   contre   lesquels  tous   les
+  chercheurs  se  sont   révélés  impuissants.   Leur  dernier  espoir
+  résidait  dans  cette machine  qu'il  tenait  entre  les mains.   Il
+  s'agissait d'un \emph{Contrôleur Immunitaire à Interface Neuronale}.
+  En le branchant sur un  individu on serait capable de contrôler tout
+  son système immunitaire.
 
-Le  cerveau est  l'organe qui  contr\^ole le  syst\`eme nerveux.  On y
-compte aussi  beaucoup de cellules.  La perte malencontreuse  d'une de
-ses cellules pourrait bien provoquer des messages nerveux violents, et
-totalement destabiliser les globules blancs protecteurs.
+  Le temps leur  a manqué pour développer le  programme de contrôle et
+  c'était ce qui justifiait sa  venue ici.  Une injection d'un isotope
+  radioactif dans son organisme  lui permet de résister à l'aspiration
+  temporelle, mais cela  ne va pas durer longtemps.   Il estime que le
+  temps restant  est d'environ 36  heures.  36 heures pour  sauver une
+  dizaine  de  milliards   de  personnes.   Concrètement,  vous  devez
+  programmer le comportement de globules blancs, pour qu'ils résistent
+  plus efficacement aux attaques de virus.\\
 
-\subsection{Le quartier g\'en\'eral des globules}
+  Pour résumer,  votre mission, que  vous acceptez, consiste  à sauver
+  l'humanité.\\
 
-Votre quartier  g\'en\'eral (Q.G.)  est  le lieu de d\'epart  pour vos
-globules blancs. Vous aurez un  nombre fixe de globules \`a prendre en
-main et  \`a diriger. Ce nombre  ne pourra pas  augmenter, mais pourra
-facilement baisser (infections, attaques).
-
-Avant de commencer son difficile travail, chaque globule doit subir un
-entra\^inement  express.  Etant  donn\'e  le peu  de  temps dont  vous
-disposez  lorsque vous  avez besoin  d'int\'egrer un  nouveau globule,
-cette phase se r\'esume \`a une sorte de dopage (oui, c'est autoris\'e
-!)   \`a l'oxyg\`ene,  aux prote\"ines  et aux  lipides.  Lorsque vous
-engagez un nouvel  \'equipier, vous aurez donc une  quantit\'e fixe de
-points  \`a disposiiton  pour lui  acheter et  lui offrir  de  quoi se
-doper.  Il vous  faudra r\'epartir  ces points  de la  meilleure facon
-possible, libre \`a vous ensuite de lui apporter plus d'oxyg\`ene pour
-qu'il se d\'eplace plus vite, plus de prote\"ines pour qu'il soit plus
-r\'esistant aux  attaques et enfin  plus de lipides pour  qu'il puisse
-attaquer. En effet, on ne vous l'a pas dit : les lipides sont id\'eaux
-pour noyer les  virus et bact\'eries dans le  gras. Utilis\'es sur les
-globules concurrents,  ils les feront patauger sur  place de mani\`ere
-ridicule en leur faisant perdre tout efficacit\'e !
-
-Mais prenez  soin de votre  Q.G. Une \'equipe adverse  pourrait tr\`es
-bien  l'attaquer  et ainsi  emp\'echer  temporairement votre  \'equipe
-d'engager de nouveaux globules !
-
-\subsection{Donner sa vie pour les autres}
-
-On vous l'a d\'ej\`a dit, mais  on n'h\'esitera pas \`a vous le redire
-:  votre  mission est  de  prot\'eger les  cellules  du  corps, et  ce
-quelqu'en soit le prix ! Car  si les virus attaquent les cellules, ils
-peuvent aussi attaquer les globules blancs et les tuer.
-
-% Transition bizarre: les virus tuent globule --> proteger cellule
-
-Votre   mission  est   donc  simple   :  prot\'eger   un   maximum  de
-cellules. Pour que  cela vous rapporte des points,  vous devez d'abord
-choisir les cellules que vous allez  d\'efendre. Il n'y a rien de plus
-simple : il  vous suffit de toucher une cellule  pour lui indiquer que
-vous \^etes  son garde  du corps\ldots{} Bien  entendu, si  un globule
-d'une \'equipe adverse touche \`a son tour cette m\^eme cellule, alors
-il  lui indique  que  c'est  d\'esormais cette  \'equipe  l\`a qui  la
-prot\`ege.
-
-Par la  suite, il y a  deux cas de figure.  Le pire :  une cellule que
-vous  d\'efendez est  infect\'ee est  meurt. Dans  ce cas  l\`a, votre
-score   sera   rabaiss\'e    d'un   nombre   non   n'\'egligeable   de
-points. L'autre cas est bien s\^ur que vos cellules survivent. Dans ce
-dernier, chaque fois que vous  \'eliminerez un virus ou une bact\'erie
-sur le  point d'attaquer  une des cellules  que vous  prot\'egez, vous
-gagnerez des points.
-
-
-\subsection{Allo oui, j'\'ecoute !}
-
-La  t\^ache vous  semble ardue  et pleine  de strat\'egies.  Pour vous
-aider \`a coordonner vos unit\'es, vous aurez le besoin de communiquer
-entre  unit\'es.  Les  buts de  ces communications  sont  multiples et
-vari\'es:
-
-\begin{itemize}
-\item Coordonner  les actions  des unit\'es afin  de se  r\'epartir le
-travail (en gain de cellules ou bien m\^eme en attaque).
-\item Se communiquer les \'etats de sant\'e.
-\item Et bien d'autres possibilit\'es.
-\end{itemize}
-
-Pour ce  faire, vous disposerez  d'une fonction de base,  qui enverras
-aux  coll\`egues des messages  sous la  forme d'entiers,  ayant chacun
-leur signification.  Nous vous proposons un d\'ebut de liste pour vous
-donner des  id\'ees de messages, cependant vous  pourrez inventer tous
-les messages que vous d\'esirerez.
-
-% A finir
-
-\subsection{Les attaques virales et bact\'eriologiques}
-
-Comme vous l'avez sans doute  compris, il existe deux types d'attaques
-: les bact\'eries, qui sont assez faibles et qui se d\'eplacent tr\`es
-vite,  et les  virus,  qui sont  plus  violents. Chacun  de ces  corps
-d\'ecide  lors de  son arriv\'ee  dans  le corps  d'une cellule  cible
-al\'eatoire, et va ainsi se diriger et aller attaquer cette cellule.
-
-Lorsqu'une cellule  est infect\'ee par  une bact\'erie, elle  meurt au
-bout  d'un  certain temps,  sauf  si  un  globule vient  d\'eloger  la
-bact\'erie. Si par contre la cellule est touch\'ee par un virus, alors
-cette derni\`ere meurt bien plus  rapidement et se transforme alors en
-un deuxi\`eme virus !
-
-La fr\'equence  d'apparition de ces ennemis est  r\'eguli\`ere et vaut
-FREQVIRUS.  Le nombre de  virus qui appara\^it lors de ces
-attaques, est d\'ependant  du nombre de cellules encore  en jeu, ainsi
-que de la difficult\'e de la charge.
-
-Autant les  bact\'eries sont inoffensives envers  les globules blancs,
-autant  les virus vous  sont mortels  (dans les  m\^eme circonstances,
-vous  vous transformez alors  en virus  vous m\^eme)\ldots{}  Gare \`a
-vous.
-
-Vous  voyez  donc que  cela  ne rigole  pas  :  vous \^etes  oblig\'es
-d'utiliser    la    force    contre    ces    menaces    virales    et
-bact\'eriologiques. Pour  cela, vous  avez deux possibilit\'es  : vous
-jeter sur  un corps hostile et  l'\'etouffer avec des  lipides ou bien
-lui jeter \`a distance des lipides.
-
-\subsection{Super-globule\ldots{} par tous les moyens !}
-
-Tout  les  coups  sont  permis  dans  la bataille  pour  le  titre  de
-Super-globule.  Y  compris mettre  les  b\^atons  dans  les roues  des
-globules blancs des \'equipes adverses !
-
-Votre objectif  principal est cependant bien plus  important : inutile
-d'esp\'erer  avoir  des  points  en  ne  vous  affrontant  qu'\`a  vos
-adversaires et  pas au virus  et bact\'eries. Pour cela,  les r\`egles
-sont strictes : attaquer un globule blanc ne rapporte aucun points.
-
-Vous avez  la possibilit\'e de ralentir les  \'equipes concurrentes en
-les  attaquant avec  des lipides  :  chaque globule  touch\'e par  ces
-mati\`eres  se verra  fortement ralenti  et fera  m\^eme  du sur-place
-pendant quelques instants.
-
-Autre  coup bas  :  attaquer le  Q.G.   d'une autre  \'equipe afin  de
-l'emp\^echer d'augmenter des effectifs en globules blancs.
-
-\subsection{Calcul des points d'une \'equipe}
-
-Le calcul des points est tr\`es simple.
-
-La seule chose qui vous rapporte des points, c'est de tuer un virus ou
-une bact\'erie.  Cependant attention ! Les points  sont revers\'es \`a
-l'\'equipe   qui  prot\'ege   la   cellule  cibl\'ee   par  le   corps
-hostile. Comprenez par  l\`a que si un virus a  pour cible une cellule
-et que  vous n'avez pas touch\'e  cette cellule pour  lui indiquer que
-vous la prot\'egez, alors aucun point ne vous sera donn\'e.
-
-La  deuxi\`eme  chose  qui  affecte  votre score  est  la  mort  d'une
-cellule. Si vous avez touch\'e  une cellule pour lui indiquer que vous
-la defendez  et que  cette derni\`ere est  amen\'ee \`a  mourir, alors
-vous perdrez des points.
-
-\section{Les actions possibles} %-------------------------------------
-
-TODO
-
-
+  Rien que ça.
 
 \newpage
-\section{Outils informatiques} %--------------------------------------
+\section{Général malgré vous}
 
+  Résumons  donc la  situation.  Vous  venez d'être  parachuté Général
+  d'une  armée sensée sauvée  le monde  --- non  pas l'actuel  mais le
+  futur --- et tout ça  en contrôlant votre propre système immunitaire
+  à  travers  un   CIIN\footnote{Contrôleur  Immunitaire  à  Interface
+  Neuronale}. Ah,  j'oubliais presque que  vous n'avez pas le  droit à
+  l'erreur,  que  ce  n'est ni  un  exercice,  ni  une blague  et  que
+  l'Histoire se souviendra  de vous soit comme le  plus grand héros de
+  tous les  temps, soit comme  le pire loser  que la terre  ait porté.
+  Heureusement qu'il y a de la barbe à papa à volonté~!
+
+  \subsection{Votre objectif}
+
+  Votre objectif premier est la protection des cellules. Vous devez y voir
+  l'aboutissement de toute votre vie et de votre courte mais intense carrière.\\
+
+  Vous vous en doutez certainement, vous ne serez pas seul à revendiquer
+  la défense indéfectible de ces jeunes et innocentes cellules aux rondeurs
+  alléchantes. Un autre Général sera avec vous pour faire face à la menace.
+  C'est là que le jeu se complique. En effet, vos objectifs sont communs~:
+  repousser l'invasion et protéger les cellules, mais en même temps vous
+  voulez d'abord pour votre paroisse~! Concrètement, votre but est de
+  maximiser votre score en nombre de points.\\
+
+  Grâce à la capacité de communication des globules blancs qui vous sera
+  présentée plus tard dans ce document, vous serez
+  à même de communiquer pour élaborer vos stratégies. Mais attention, si vous
+  avez tout intérêt à vous allier dans un premier temps sous peine de vous voir
+  tous les deux submergés, gare au renversement d'alliance une fois la menace
+  extérieure écartée. Voici comment sera calculé votre score à la fin de
+  chaque partie~:\\
+
+  \par S1 = n * P1 / (P1 + P2)
+  \par S2 = n * P2 / (P1 + P2)
+
+  \newpage
+  Avec \textbf{n} représentant le nombre de cellules sauvées à la fin
+  de la partie. \textbf{P1} et \textbf{P2} sont respectivement les
+  scores en points obtenus par les deux généraux au cours de la partie
+  avec~:
+
+  \begin{itemize}
+    \item détruire une bactérie : + 1 point
+    \item détruire un virus : + 5 points
+    \item perdre un globule blanc : - 50 points
+    \item détruire une cellule infectée : + 15 points
+  \end{itemize}
+
+  Ces formules sont très importantes. Il faut surtout remarquer que
+  votre score final est proportionnel au nombre de cellules
+  sauvées. Ceci est donc votre objectif principal, et la coopération
+  sera indispensable. Remarquez aussi que vous partagez ce score avec
+  l'autre joueur~: celui qui aura été le plus actif aura le plus de
+  points. Certains personnages opportunistes pourraient vouloir
+  fausser compagnie pour avoir une plus grosse part, mais c'est une
+  stratégie risquée. Gageons que la communication et l'élaboration de
+  techniques communes vont être les points clés de la victoire. Nous
+  vous encourageons vivement à dialoguer entre vous pour harmoniser
+  les communications afin d'être le plus performant possible.
+
+  \subsection{Le terrain}
+
+  C'est donc au plus profond de vous-même que vous allez passer les prochaines
+  36 heures de votre vie. Que ce soit dans les tissus musculaires, hautement
+  instables, dans le torrent sanguin des artères ou dans les poumons rempli
+  de gaz plus toxiques les uns que les autres\footnote{Chienne de vie~!},
+  vous allez devoir faire front, résister et protéger ces milliards de
+  cellules qui comptent sur vous~!
+
+  Le terrain  donc, est composé  de tissus organiques. S'il  en existe
+  une  myriades de variétés,  cela ne  vous affectera  pas. Ce  qui va
+  compter par  contre, est  la densité de  cellules à  protéger. Alors
+  qu'en  certains endroits  elles seront  clairsemées, en  d'autres il
+  vous  faudra faire  preuve  d'une grande  tactique  pour toutes  les
+  protéger efficacement.  Nous allons également  considérer que durant
+  ces 36  heures vous allez  réussir à rester en  vie\footnote{Ça fait
+  beaucoup  de paperasse  sinon} et donc, où que  vous vous  trouviez,
+  vous serez toujours  soumis à un flux sanguin  continu. Suivant l'endroit
+  il  pourra varier  d'intensité  mais par  contre,  il sera  toujours
+  orienté du haut vers le bas.
+
+  \subsection{Les nutriments}
+
+    Ils sont la base essentielle de la vie et de sa reproduction. Complément
+    de l'oxygène, ils permettent aux cellules --- et aux bactéries --- de se
+    reproduire. Ils sont véhiculés par le sang, et suivent en toute logique le
+    flux sanguin. Lorsques des nutriments arrivent au contact d'une cellule ou
+    d'une bactérie, ils sont consommés. Une fois une quantité suffisante
+    ingurgitée, le miracle de la vie s'opère\footnote{Pour ceux qui ne sont
+    pas encore au courant, ça n'a rien avoir avec les choux et les
+    cigognes}.
+
+  \subsection{Les cellules}
+
+  \begin{center}
+    \includegraphics{cell}
+  \end{center}
+
+    \subsubsection{Réalité biologique}
+
+    La cellule est un petit organisme complexe, composé entre autres d'un
+    noyau avec son brin d'ADN et d'une membrane cytoplasmique la
+    protégeant de l'extérieur. Au sein d'un organisme complexe tel que le
+    corps humain, c'est le rôle du sang d'apporter aux cellules les
+    éléments dont elle à besoin, à savoir oxygène et nutriments. Sans
+    cela, la cellule meurt, tout simplement. Enfin la cellule se reproduit
+    en se divisant en deux, au cours d'un opération relativement longue~:
+    la mitose.\\
+
+    Les cellules sont l'élément principal du monde dans lequel nous nous
+    plaçons. Indifférentes à vos actions, mais néanmoins fortement
+    dépendantes de celles-ci, elles se contentent de vivre et de se
+    reproduire. Il vous appartient donc de veiller à ce qu'elles soient en
+    sécurité. Une cellule privée de nutriments mourra, une cellule
+    infectée produira des virus et donnera naissance à une cellule
+    infectée si elle se divise.
+
+    \subsubsection{La mitose}
+
+    \begin{center}
+      \includegraphics{mitose}
+    \end{center}
+
+    Pendant que vous êtes aux prises avec virus et bactéries, le corps, lui,
+    continue à vivre. En particulier, les cellules autour de vous continuent
+    d'assurer du mieux qu'elles peuvent leur tâche et vont notamment se
+    multiplier. Cette mitose cellulaire aura lieu dès que la cellule aura
+    suffisament de nutriments à disposition, c'est à dire
+    CELL\_MITOSIS\_MATERIAL. De plus, ce processus prend un certain temps à
+    s'effectuer à savoir MITOSIS\_DURATION.
+
+    Faites cependant très attention, lorsqu'une cellule est infectée par une
+    virus, elle continuera de se reproduire dans l'organisme.
+
+    \subsubsection{L'infection}
+
+    Si vous échouez lamentablement dans votre rôle de protection des cellules,
+    vous allez vous retrouver avec des cellules infectées. Une cellule
+    infectée voit son ADN profondément modifié et se détourne donc de son rôle
+    premier au sein de l'organisme. Pire, elle va se mettre à son tour à
+    produire des virus. Ajoutez à ça le fait qu'elle continue à se reproduire
+    en donnant naissance à de nouvelles cellules infectées et vous obtenez un
+    scénario catastrophe. Vous imaginerez sans peine le caractère
+    exponentiellement incontrôlable d'une telle infection généralisée. Mais
+    ça, c'est seulement si vous échouez lamentablement. Rassurez-moi, ça
+    n'arrivera pas, n'est-ce pas~?
+
+    \subsubsection*{La mort}
+
+    Les cellules peuvent mourir soit de mort naturelle, soit de mort
+    naturellement provoquée.
+
+    Tout d'abord, si elle vient à manquer de nutriments. Par exemple, si une
+    colonie de bactéries se développe juste au-dessus d'elle, il est fort
+    probable qu'elle ne reçoive plus le moindre nutriment. Ce sera donc la
+    mort assurée. De manière plus pragmatique, si une cellule n'a pas
+    CELL\_NUTRIENT au début d'un tour, elle meurt. Notez qu'une cellule peut
+    stocker des nutriments sans nécessairement les consommer tout de suite.
+
+    Ensuite,  si jamais un  virus, organisme  totalement idiot,  a été
+    plus  malin que  vous\footnote{Paye  ton sauveur  du monde\ldots}  et
+    qu'il a infecté  une cellule, vous avez encore  une chance d'éviter
+    une  débandade  complète. Vos leucocytes\footnote{Non, ce  n'est pas un
+    Pokemon, c'est  expliqué dans  la suite} sont capables de détecter et
+    détruire les cellules infectées par phagocytage\footnote{Non non,
+    n'insistez  pas, ce n'est pas un Pokemon,  j'ai dit~!}, et si le virus était
+    déjà fiché par vos services\footnote{Vous comprendrez plus tard dans le
+    sujet.} un bon laché massif d'anticorps\footnote{Là je pense que vous avez
+    compris avec les Pokemons\ldots} saura venir à bout des récalcitrants.
+
+    \subsubsection*{La protection}
+
+    Vous n'êtes pas le propriétaire ou le gardien de certaines cellules en
+    particulier. Chaque fois qu'une cellule est perdue, les deux équipes en
+    sont pénalisés. C'est pour ça qu'il est primordial pour vous de
+    développer au maximum des stratégies basées sur la communication et
+    l'entraide afin de développer le système immunitaire le plus performant
+    qui soit.
+
+  \subsection{Les leucocytes ou globules blancs}
+
+  \begin{center}
+    \includegraphics{leuco}
+  \end{center}
+
+    \subsubsection{Réalité biologique}
+
+    Les leucocytes sont ce que l'on appelle couramment les globules
+    blancs. Fabriqués par la moelle osseuse, ce sont des éléments
+    complexes de la taille d'un globule rouge. Ils passent leur temps à se
+    ballader partout dans le corps, avec pour rôle d'assurer la défense du
+    corps. Ils produisent des anticorps, vérifient la santé des cellules
+    et détectent les cellules infectées, identifient les corps étrangers
+    (bactéries, virus), et enfin font le ménage. En phagocytant un corps
+    étranger, c'est à dire en le digérant, ils peuvent déterminer les
+    anticorps à fabriquer pour lutter contre l'espèce concernée.\\
+
+    Il existe plusieurs types de leucocytes, avec chacun son rôle, mais
+    dans le sujet nous ne faisons cependant pas cette distinction. D'autre
+    part, en cas d'infection, le corps réagit en augmentant le nombre de
+    leucocytes (ce qui fait une bonne excuse aux médecins pour demander
+    des NFS\footnote{Numération Formule Sanguine~! Vous ne suivez pas~?},
+    puisque leur nombre permet donc de savoir s'il y a une infection),
+    mais puisque nous sommes dans une fiction, avec des leucocytes du
+    futur qui plus est, leur nombre sera constant ici.\\
+
+    Le globule blanc est donc l'unité que vous contrôlez. Vous devez
+    préalablement choisir quelles sont les compétences des individus de
+    votre système. Ensuite votre globule peut se déplacer, inspecter les
+    cellules, phagocyter un corps étranger, et ainsi identifier sa
+    signature, détruire une cellule, et enfin produire des anticorps
+    contre les menaces que vous connaissez.
+
+    \subsubsection{Le miracle de la vie}
+
+    Lorsque vous déclenchez le processus de genèse d'un globule blanc, vous
+    pouvez faire varier sa composition afin d'influer sur ses performances et
+    donc lui attribuer un rôle spécifique au sein de votre unité. Ajoutez des
+    protéines et votre globule blanc sera à même de lancer plus d'anticorps,
+    plus de lipides et c'est sa vitesse de phagocytose qui s'accroît, plus
+    d'oxygène lui permettra de communiquer plus abondamment avec ses compagnons
+    d'armes et plus de fer lui permettra de voir sa capacité de vision
+    s'accroître.
+
+    Attention cependant à ne pas le surcharger de composants, vous risqueriez de
+    vous retrouver avec un globule dégénéré qui serait totalement inefficace !
+
+    Pour résumer, vous avez MAX\_SKILL points de compétences à
+    répartir\footnote{Conseil: Ne favorisez pas complétement une des compétences
+    au détriment des autres. Une compétence nulle serait hautement pénalisant.}
+    parmi les quatre caractéristiques suivantes :
+
+    \begin{itemize}
+      \item Nombre d'anticorps lachés;
+      \item Vitesse de phagocytose;
+      \item Communication;
+      \item Vision.
+    \end{itemize}
+
+    \subsubsection{La phagocytose}
+
+    La  phagocytose est  l'attaque  de base  de  vos globules  blancs.
+    Métaphoriquement, ils  vont \emph{manger}  l'organisme cible. Cet
+    organisme peut être un virus, une cellule infectée ou un autre globule
+    blanc\ldots\footnote{Ces '\ldots' sont lourds de sens.} Une phagocytose  n'est pas
+    immédiate,  elle prend  un  certain nombre  de tours,  inversement
+    proportionnel à  la quantité de  points de compétences que  vous y
+    aurez  mis.  Outre  l'avantage  notable  qu'a  la  phagocytose  de
+    supprimer l'unité visée, lorsqu'elle est utilisée contre un virus,
+    elle permet également à votre globule blanc d'apprendre à produire
+    des anticorps pour détruire ce type de virus. C'est d'ailleurs une
+    condition \emph{sine qua none} pour que votre globule blanc puisse
+    attaquer un virus à l'aide de ses anticorps. Notez que l'effet est
+    rétroactif. Si  vous lachez des  anticorps et que  seulement après
+    vous détruisez  un virus par  phagocytose, les anticorps  que vous
+    avez  lachés  seront capable  de  tuer  ce  type de  virus.  Notez
+    également que c'est seulement une fois la phagocytose terminée que
+    les anticorps deviennent efficaces.
+
+    Lorsqu'une unité est vicitime d'un phagocytage, elle cesse complètement
+    toute activité en cours et ne peut plus qu'émettre des messages. Dans le
+    cas où deux globules blancs essaient de se phagocyter en même temps, il
+    ne se passe rien.
+
+    \subsubsection{Les anticorps\ldots}
+
+    Les anticorps sont de petites protéines en forme de Y, qui sont
+    produites par les leucocytes, et qui ont la propriété de pouvoir se
+    fixer sur certaines toxines. En se fixant sur les molécules de
+    fixation d'un virus par exemple, ils l'empêchent lui de se fixer sur
+    une cellule, le neutralisant de facto.
+
+    À chaque tour, un globule blanc peut libérer un nombre d'anticorps
+    proportionnel à la quantité de protéines que vous aurez utilisé lors
+    de sa genèse. Une fois lachés, les anticorps vont se répandre dans
+    l'organisme autour de votre globule, majoritairement vers le bas,
+    qui est le sens d'écoulement du sang. La durée de vie de vos anticorps
+    n'est pas illimitée. Même s'ils ne rencontrent aucun corps étranger à
+    combattre ils vont être éliminés petit à petit. Chaque tour verra un
+    certain pourcentage des anticorps présents dans le sang disparaître.
+
+      \subsubsection*{\ldots vs les virus}
+
+      Pour que vos anticorps soient efficaces contre un type de virus il faut
+      \textbf{absolument} que le globule blanc qui les libère ait déjà tué au
+      moins un virus de ce type par phagocytose.
+
+      Si les anticorps sont efficaces contre le virus rencontré ils vont se
+      fixer sur lui pour le tuer. Un anticorps ne suffit pas pour neutraliser
+      un virus et suivant la résistance de ce dernier il en faudra plus ou moins.
+      Si la quantité d'anticorps qui se sont fixés sur le virus n'est pas suffisante
+      pour le tuer, il survivra à l'attaque mais en ressortira notablement
+      affaibli.
+
+      Si par contre l'anticorps ne connaît pas le type du virus il ne va pas le
+      considérer comme un corps étranger et passer à côter sans s'en soucier.
+
+      \subsubsection*{\ldots vs les bactéries}
+
+      Lorsque des anticorps croisent le chemin de bactéries lors de leur
+      dérive dans le flux sanguin,ils vont massivmeent se fixer sur la colonie.
+      Chaque anticorps va se fixer sur une bactérie et la neutraliser. S'il n'y
+      a pas assez d'anticorps pour neutraliser toute la colonie celle-ci
+      reprendra son développement amputée des bactéries que vous aurez
+      neutralisées.
+
+    \subsubsection{Communication}
+
+    Les messages sont  un élement vital de votre  stratégie. En effet,
+    vous serez beaucoup plus efficace si vos unités communiquent entre
+    elles\footnote{Attention  : contrairement aux  années précédentes,
+    vos unités sont exécutées  dans des processus distincts. Cela veut
+    dire qu'elles  ne peuvent  pas partager de  données, même  si vous
+    utilisez des  variables globales.}, se  partagent des informations
+    et élaborent des stratégies.
+
+    Un  message est  composé  de 4  entiers\footnote{Chaque entier est
+    stocké  sur  16 bits  non  signés,  c'est-à-dire  que les  valeurs
+    utilisables sont  comprises entre 0  et 65535} dont  vous disposez
+    comme vous le souhaitez.
+
+    À chaque tour chacun de  vos globules blancs pourra envoyer autant
+    de  messages   qu'il  a  de   points  dans  cette   compétence  en
+    communication.   Lorsqu'un  message est  envoyé,  tous les  autres
+    globules blancs  le reçoivent. Tous, peu importe  leur position et
+    peu  importe leur  équipe. Pour  comprendre le  principe, imaginez
+    juste que votre globule blanc crie. À chaque tour, vous pouvez (et
+    devriez) lire les messages que  vous avez reçus (un message envoyé
+    n'est reçu qu'au tour suivant).
+
+    La faculté  de communiquer et d'élaborer  des stratégies complexes
+    est votre avantage principal sur les virus et bactéries, dépourvus
+    de cette  faculté. Réfléchissez bien à cette  capacité, c'est elle
+    qui fera la différence et qui vous permettra de gagner.
+
+    N'oubliez pas  que l'autre équipe reçoit aussi  vos messages. Vous
+    pouvez savoir ce  que l'autre dit, mais ce n'est  pas sûr que vous
+    compreniez le contenu~! Pour  vous aider, nous vous fournissons un
+    modèle. Nous  vous conseillons fortement  de vous en  servir, cela
+    vous permettra de vous faire comprendre par l'autre équipe.
+
+    \begin{itemize}
+      \item 1er entier : identifiant de l'émetteur
+      \item 2e entier : type de message (voir tableau)
+      \item 3e entier : premier argument
+      \item 4e entier : deuxième argument
+    \end{itemize}
+
+     \begin{tabular}{|c|p{0.5\linewidth}|p{0.4\linewidth}|p{0.3\linewidth}}
+     \hline
+     valeur    & signification                     & arguments\\
+     \hline
+     0         & je suis ici                       & ma position (x, y)\\
+     \hline
+     1         & je vais là                        & ma future position\\
+     \hline
+     2         & il y a un virus                   & sa position\\
+     \hline
+     3         & il y a une cellule infectée       & sa position\\
+     \hline
+     4         & À l'aide ! J'ai besoin d'aide ici & ma position\\
+     \hline
+     \end{tabular}
+
+     Nous vous conseillons  d'utiliser prioritairement ces messages. Si
+     vous  suivez  le tableau,  le  troisième  entier  correspond à  la
+     position en x, et le  quatrième en y. Pour élaborer des stratégies
+     plus complexes, n'hésitez surtout  pas à imaginer les vôtres. Plus
+     vous réussissez  à communiquer avec  l'autre joueur, et  plus vous
+     développez un esprit d'équipe, mieux vous réussirez. Il n'est donc
+     pas idiot  de discuter avec les  autres candidats et  de se mettre
+     d'accord sur d'autres messages à utiliser.
+
+     \subsubsection{Vision}
+
+     La dernière compétence sur laquelle vous pouvez influer est la capacité de
+     vision de vos globules blanc. Le globule blanc verra sa vision
+     s'accroître proportionnellement à la quantité de points de compétences
+     que vous lui aurez attribué dans ce domaine. En effet, le nombre que vous
+     attribuez pour cette compétence correspond à la distance de Manhattan
+     jusqu'à laquelle pourra voir le leucocyte.
+     (Rappel: Distance de Manhattan, soit A et B deux points, la distance entre
+     ces deux points est $d = | x_A - x_B | + | y_A - y_B |$).
+
+     \subsubsection{FIXME~: Comment meurt un leucocyte ?}
+
+     Perdre un de vos globules blancs est sans doute ce qui peut vous arriver de
+     pire. Non seulement cela va vous coûter de nombreux points, mais cela va
+     surtout très gravement vous handicaper pour la suite de la partie. La
+     seule manière d'en perdre un est qu'il soit victime d'un phagocytage
+     sauvage. Pensez à vérifier vos 6 heures~!
+
+  \subsection{Virus}
+
+  \begin{center}
+    \includegraphics{virus}
+  \end{center}
+
+    \subsubsection{Réalité biologique}
+
+    Les virus sont des corps, généralement de petite taille, étant
+    incapables de se reproduire par eux mêmes, et utilisant des cellules
+    hôtes pour cela. Pour simplifier, l'infection d'une cellule par un
+    virus se passe de la façon suivante~: le virus se fixe à la cellule
+    hôte, fait fusionner son gène avec celui de la cellule, la
+    transformant ainsi en petite fabrique à virus. La cellule se met alors
+    à produire des virus au détriment de sa propre membrane
+    cytoplasmique.
+
+    Les virus sont capables de se déplacer et vont chercher des cellules à
+    infecter afin de pouvoir se reproduire. Dès lors qu'un virus infecte
+    une cellule, celle-ci est perdue, et si vous ne faites rien, elle
+    commencera bientôt sa besogne. Les virus peuvent être phagocytés ou
+    neutralisés par des anticorps à la condition que vous les ayez
+    identifiés. Vos anticorps seront inefficaces sur un virus inconnu.
+
+    \subsubsection{Caractéristiques}
+
+    Un virus est un adversaire redoutable. Dans un premier temps insensible à vos
+    anticorps tant que vous ne vous n'aurez pas réussi à en attraper un au corps à
+    corps, ils n'auront de cesse de chercher à infecter une cellule afin de
+    pouvoir se multiplier encore et encore.
+
+    Les virus ne sont pas liés par un esprit de groupe comme vous l'êtes, et en
+    ça sont vulnérables. Ceci fait que chaque virus se déplacera pour trouver une
+    cellule non-infectée pour l'infecter. Une fois que le virus a
+    pénétré la cellule, celui-ci n'en ressortira plus mais la cellule infectée se
+    mettra à produire des virus du même type.
+
+  \subsection{Bactérie}
+
+  \begin{center}
+    \includegraphics{bacteria}
+  \end{center}
+
+    \subsubsection{Réalité biologique}
+
+    Les bactéries sont des organismes unicellulaires de tailles et
+    capacités très variées. Lorsque les conditions sont optimales, le
+    nombres d'individus d'une colonie de bactéries peut doubler toutes les
+    vingt minutes. Aussi une colonie à tendance à avoir une croissance
+    exponentielle au début, puis linéaire lorsque les plus vieilles
+    meurent, et enfin décroissante lorsque les ressources sont épuisées.
+    Au sein du corps humain elles sont dix fois plus nombreuses que les
+    cellules.
+
+    Vous devez vous méfier des bactéries~: elles parasitent le corps et
+    consomment les nutriments au détriment des cellules. Laissez-les se
+    reproduire et elles coloniseront l'organisme jusqu'à l'épuisement des
+    ressources apportées par le sang.
+
+    \subsubsection{Caractéristiques}
+
+    Les bactéries n'ont pas de capacités offensives directes mais n'en sont pas
+    moins mortelles pour l'organisme et en particulier les cellules. De par
+    leur croissance exponentielle, elles vont tendre à consommer de plus en
+    plus de nutriments, n'en laissant plus aux cellules. En particulier si une
+    colonie de bactéries se trouve au-dessus d'une cellule, il y a de très
+    fortes chances que cette dernière périsse très rapidement. De la même
+    manière qu'une infection généralisée peut devenir incontrôlable, laisser
+    une colonie de bactéries croître librement c'est sonner le glas de toutes
+    les cellules. Les anticorps seront votre maître atout contre ce type
+    d'invasion. Les lachers massivement au-dessus d'une colonie s'avèrent être
+    une stratégie fort efficace.
+
+\newpage
 
 \input{api}
 
@@ -291,8 +678,8 @@ TODO
 \newpage
 \section{Et que le meilleur gagne} %----------------------------------
 
-Il vous reste dÃ©sormais 36h pour Ãªtre le plus performant, mais c'est
-pour la bonne cause !
+Il vous reste désormais 36h pour être le plus performant et c'est pour
+la bonne cause ! Donnez tout !
 
 \end{document}
 
