@@ -47,9 +47,9 @@ void	Leucocyte::addAntibody ()
 	      nn_col < 0 || nn_col == g_->map_size.col ||
 	      (nn_row == row && nn_col == col))
 	    continue;
-	  antibodies[nn_row][nn_col] += 0.25 * nb;
+	  antibodies[nn_row][nn_col] += (unsigned)(0.25 * nb);
 	}
-      antibodies[n_row][n_col] += 0.5 * nb;
+      antibodies[n_row][n_col] += (unsigned)(0.5 * nb);
     }
 // spread should be done in PlayTurn
 }

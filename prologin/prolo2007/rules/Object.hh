@@ -30,8 +30,8 @@ public:
   int			getKilledBy () {return killed_by_;}
 
 private:
-  unsigned		id_;		/* Object's identifier */
-  unsigned		player_id_;	/* Player's identifier */
+  int			id_;		/* Object's identifier */
+  int			player_id_;	/* Player's identifier */
   int			killed_by_;
 };
 

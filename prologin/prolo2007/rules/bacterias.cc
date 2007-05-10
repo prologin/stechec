@@ -41,9 +41,10 @@ void	Bacterias::spread ()
 	  g_->bacterias[n_row][n_col] == 0)
 	{
 	  if (rand() % 5 == 0) { // ajout kjus
-	    g_->bacterias[n_row][n_col] = new Bacterias(n_row, n_col, nb_ * 0.5, g_);
+	    g_->bacterias[n_row][n_col] = new Bacterias(n_row, n_col,
+							(int)(nb_ * 0.5), g_);
 	    LOG1("New bateria seed [%1, %2]", n_row, n_col);
-	    nb_ *= 0.5;
+	    nb_ = (int)(nb_ * 0.5);
 	  }
 	  return;
 	}

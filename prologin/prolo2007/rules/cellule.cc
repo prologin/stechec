@@ -172,7 +172,7 @@ void	Cellule::PlayTurn ()
   // la cellule utilise ses nutriments pour survivre
   LOG1("I ate : %1 I'm happy", eated);
   // la cellule consomme plus de nutriment si infectee
-  _matiere -= CELL_NUTRIENT * (Sante () == CELL_STATE_INFECTED ? 1.5 : 1);
+  _matiere -= CELL_NUTRIENT * (int)(Sante () == CELL_STATE_INFECTED ? 1.5 : 1);
 
   if (_sante == CELL_STATE_INFECTED)
     {

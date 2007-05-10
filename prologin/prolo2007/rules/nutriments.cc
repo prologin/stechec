@@ -58,5 +58,5 @@ void	Nutriments::spread ()
 	    g_->nutriments[n_row][n_col]->add((int)(nb_ * (nb_frees + 1.0)));
 	}
     }
-  nb_ *= 1.0 / (nb_frees + 1.0);
+  nb_ *= (int)(1.0 / (nb_frees + 1.0));
 }
