@@ -1,9 +1,10 @@
 usr/bin/generator
 usr/bin/run
-usr/bin/tbt
-usr/bin/tbt_server
+usr/bin/stechec
+usr/bin/stechec_server
 usr/bin/tkrun
 usr/etc
 usr/lib/stechec
 usr/share/stechec/files
-usr/share/stechec/default_conf.xml
+usr/share/stechec/config.dtd
+usr/share/stechec/config_prolo.xml

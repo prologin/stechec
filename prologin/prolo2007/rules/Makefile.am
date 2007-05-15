@@ -5,8 +5,6 @@ lib_LTLIBRARIES = globulus.la
 globulus_la_SOURCES =			\
 	Api.cc				\
 	Api.hh				\
-	cellule.cc			\
-	cellule.hh			\
 	Client.cc			\
 	Client.hh			\
 	ClientEntry.cc			\
@@ -14,22 +12,26 @@ globulus_la_SOURCES =			\
 	ClientDiffer.cc			\
 	ClientDiffer.hh			\
 	Constant.hh			\
+	Event.hh			\
 	GameData.cc			\
 	GameData.hh			\
-	leucocyte.cc			\
-	leucocyte.hh			\
 	Server.hh			\
 	Server.cc			\
 	ServerResolver.cc		\
 	ServerResolver.hh		\
 	ServerEntry.cc			\
 	ServerEntry.hh			\
-	virus.cc			\
-	virus.hh			\
-	nutriments.cc			\
-	nutriments.hh			\
+	Object.hh			\
 	bacterias.cc			\
 	bacterias.hh			\
+	cellule.cc			\
+	cellule.hh			\
+	nutriments.cc			\
+	nutriments.hh			\
+	leucocyte.cc			\
+	leucocyte.hh			\
+	virus.cc			\
+	virus.hh			\
 	load_rules.cc			\
 	interface.cc
 

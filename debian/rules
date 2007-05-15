@@ -26,7 +26,7 @@ config.status: configure
           --prefix=/usr					\
           --mandir=\$${prefix}/share/man		\
           --infodir=\$${prefix}/share/info		\
-	  --with-modules=ant,prolo2005,prolo2006	\
+	  --with-modules=ant,prolo2005,prolo2006,prolo2007	\
           CFLAGS="$(CFLAGS)"
 
 #Architecture

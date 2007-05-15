@@ -32,6 +32,12 @@ Depends: ${shlibs:Depends}
 Description: OutATime - Prologin 2006 rules
  Rules for the Prologin 2006 final contest.
 
+Package: stechec-prolo2007
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Globulus - Prologin 2007 rules
+ Rules for the Prologin 2007 final contest.
+
 Package: stechec-ant
 Architecture: any
 Depends: ${shlibs:Depends}

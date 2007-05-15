@@ -27,7 +27,7 @@ dist_bash_SCRIPTS =				\
 	run_client.sh				\
 	run_server.sh
 
-bin_SCRIPTS =					\
+dist_bin_SCRIPTS =				\
 	meta_server				\
 	main_server
 

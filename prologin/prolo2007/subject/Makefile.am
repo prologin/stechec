@@ -20,5 +20,3 @@ EXTRA_DIST	+= 	logo_prologin2007.png	\
 			mitose.png		\
 			virus.png		\
 			api_modified.tex
-
-install:
