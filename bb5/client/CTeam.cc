@@ -97,7 +97,6 @@ void CTeam::loadPlayerConfig(xml::XMLTeam& xml_team, int player_id)
   r_->sendPacket(pkt);
 }
 
-
 // Send the content of formation.xml to the server. On half inits.
 void CTeam::placeTeam(int formation_id)
 {
@@ -132,7 +131,6 @@ int CTeam::declareAction(CPlayer* p, enum eDeclaredAction action)
   return p->declareAction(action);
 }
 
-
 void CTeam::msgTeamInfo(const MsgTeamInfo* m)
 {
   team_name_ = packetToString(m->team_name);
@@ -149,10 +147,12 @@ void CTeam::msgPlayerCreate(const MsgPlayerCreate* m)
 
 void CTeam::msgReroll(const MsgReroll* m)
 {
-  r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+  if (r_->getState() == GS_REROLL)
+    r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
   if (m->reroll)
     {
       reroll_used_ = true;
       reroll_remain_ = reroll_remain_ - 1;
     }
+  r_->onEvent(m);
 }

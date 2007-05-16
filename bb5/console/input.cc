@@ -64,6 +64,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"giveBall", &Input::cmdGiveBall, "<id>|give the ball to the player'id'"},
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
   {"reroll", &Input::cmdReroll, "reroll the dice(s)"},
+  {"skill", &Input::cmdSkill, "<s>|use the skill <s>"},
   {"accept", &Input::cmdAccept, "accept result of the dice(s)"},
   {"end", &Input::cmdEnd, "end turn"},
   {"declare", &Input::cmdDeclare, "<subcmd>|print some informations ('help declare')"},
@@ -259,6 +260,21 @@ void Input::cmdKickOff(const string& cmd, const string& args)
 void Input::cmdReroll(const string&, const string&)
 {
   api_->doReroll(true);
+}
+
+void Input::cmdSkill(const string& cmd, const string&)
+{
+  enum eSkill skill = SK_NONE;
+  bool matches = false;
+  while (skill != SK_SUREHANDS && !matches)
+    {
+      skill = (enum eSkill)(skill + 1);
+      matches = (cmd == Player::stringify(skill));
+    }
+  if (matches)
+    api_->doUseSkill(skill);
+  else
+    cout << "Unknown skill parameter `" << cmd << "'." << endl;
 }
 
 void Input::cmdAccept(const string&, const string&)

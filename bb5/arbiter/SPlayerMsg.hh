@@ -40,7 +40,7 @@ public:
   void sendMsgKnocked(SPlayer* p);
   void sendMsgKO(int dice, SPlayer* p);
   void sendPosition(SPlayer* p);
-  void sendRoll(enum eRoll type, int result, int modifier, int required, int reroll, SPlayer* p);
+  void sendRoll(enum eRoll type, int result, int modifier, int required, int reroll, enum eSkill skill, SPlayer* p);
   void sendStatus(enum eStatus status, SPlayer* p);
 
 private:

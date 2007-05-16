@@ -87,7 +87,7 @@ void SPlayerMsg::sendPosition(SPlayer* p)
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int required, int reroll, SPlayer* p)
+void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int required, int reroll, enum eSkill skill, SPlayer* p)
 {
   MsgResult msg(p->getTeamId());
   msg.player_id = p->getId();
@@ -96,6 +96,7 @@ void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int require
   msg.modifier = modifier;
   msg.required = required;
   msg.reroll = reroll;
+  msg.skill = skill;
   r_->sendPacket(msg);
 }
 

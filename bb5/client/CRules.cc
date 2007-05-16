@@ -232,7 +232,7 @@ void        CRules::msgCustomEvent(const CustomEvent* m)
 
 void CRules::msgResult(const MsgResult* m)
 {
-  if (m->client_id == getCoachId() && m->reroll)
+  if (m->client_id == getCoachId() && (m->reroll || (m->skill != SK_NONE)))
     {
       setState(GS_REROLL);
       LOG2("-- CRules: change state: GS_REROLL");

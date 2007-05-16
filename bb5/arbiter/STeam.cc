@@ -101,7 +101,7 @@ void STeam::msgBlockDice(const MsgBlockDice* m)
   if (m->dice < 0 || nb_choices_ <= m->dice)
     {
       LOG2("The choice number %1 is out of range [0,%2[.",
-          m->dice, r_->getActionHandler()->getPlayer()->nb_block_dice_);
+          m->dice, nb_choices_);
       r_->sendIllegal(m->token, m->client_id, ERR_UNREADABLE);
       return;
     }

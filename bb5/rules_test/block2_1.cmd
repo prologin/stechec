@@ -11,6 +11,7 @@ declare move 2
 move 2 14 3
 wait
 reroll
+accept
 
 # Block with another player, to push someone.
 cheat 3

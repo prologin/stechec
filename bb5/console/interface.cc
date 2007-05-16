@@ -368,17 +368,23 @@ void CmdLineInterface::evBlockPush(const Position& pos, int nb_choice, const Pos
     cout << "  'push " << i << " : " << choices[i] << endl;
 }
 
-void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_type, 
-                                int result, int modifier, int required, bool reroll)
+void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_type, int result,
+                                int modifier, int required, bool reroll, enum eSkill skill)
 {
   cout << "Player `" << player_id << "' tried an action : `"
        << Dice::stringify(action_type)
        << "' : roll [" << result << "] + ["<< modifier << "], required : ["
        << required << "]." << endl;
 
-  if (api_->getTeamId() == team_id && reroll)
+  if (api_->getTeamId() == team_id && (reroll || (skill == SK_NONE)))
     {
-      cout << "You can use a 'reroll' or 'accept' this result." << endl;
+      api_->selectSkilledPlayer(player_id);
+      cout << "You can"
+        << ((reroll) ? " use a team 'reroll' or" : "")
+        << ((skill == SK_NONE) ? " use the 'skill " : "")
+        << ((skill == SK_NONE) ? Player::stringify(skill) : "")
+        << ((skill == SK_NONE) ? "' or" : "")
+        << " 'accept' this result." << endl;
       input_.stopWaiting();
     }
 }

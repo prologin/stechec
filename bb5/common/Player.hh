@@ -115,6 +115,7 @@ DECLARE_PACKET(MSG_RESULT, MsgResult)
   int player_id;
   int roll_type;   // enum eRoll
   int reroll;      // can reroll (else the action fails)
+  int skill;       // enum eSkill //FIXME: extra rules may imply up to three skills for a roll.
   int result;
   int modifier;
   int required;

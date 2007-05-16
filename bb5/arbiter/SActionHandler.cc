@@ -213,7 +213,7 @@ void SActionHandler::process(bool reroll, int choice)
         ea.player->resolveBlockDice(choice);
         break;
       case EA_BLOCKFOLLOW:
-        ea.player->blockFollow(reroll);
+        ea.player->finishBlockFollow(reroll);
         break;
       case EA_BLOCKPUSH:
         ea.player->resolveBlockPush(choice);

@@ -160,7 +160,6 @@ inline int Api::doGiveBall(int p)
   return SUCCESS;
 }
 
-
 inline int Api::doReroll(bool reroll)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
@@ -177,6 +176,31 @@ inline int Api::doReroll(bool reroll)
 
   MsgReroll msg(rules_->our_team_->getTeamId());
   msg.reroll = reroll;
+  rules_->sendPacket(msg);
+  return SUCCESS;
+}
+
+inline int Api::doUseSkill(enum eSkill skill)
+{
+  //FIXME: Complete assertions and tests.
+  // assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  assert(skilled_player_ != NULL);
+
+  if (skill != SK_NONE && !skilled_player_->hasSkill(skill))
+    {
+      LOG2("Player %1 of team %2 doesn't have the skill %3.", skilled_player_->getId(),
+          skilled_player_->getTeamId(), skilled_player_->stringify(skill));
+      return INVALID_ACTION;
+    }
+  if (rules_->getState() != GS_REROLL && rules_->getState() != GS_BLOCK)
+    {
+      LOG2("Cannot use the skill %1 or not now.", skilled_player_->stringify(skill));
+      return INVALID_ACTION;
+    }
+
+  MsgSkill msg(rules_->our_team_->getTeamId());
+  msg.player_id = skilled_player_->getId();
+  msg.skill = skill;
   rules_->sendPacket(msg);
   return SUCCESS;
 }
@@ -350,6 +374,12 @@ inline int Api::selectPlayer(int player_id)
   CHECK_TEAM;
   selected_player_ = selected_team_->getPlayer(player_id);
   return selected_player_ == NULL ? BAD_PLAYER : SUCCESS;
+}
+
+inline int Api::selectSkilledPlayer(int player_id)
+{
+  skilled_player_ = rules_->our_team_->getPlayer(player_id);
+  return skilled_player_ == NULL ? BAD_PLAYER : SUCCESS;
 }
 
 inline int Api::actionPossibleNumber() const

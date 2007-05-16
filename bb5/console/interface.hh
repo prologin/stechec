@@ -56,7 +56,7 @@ private:
   virtual void          evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerKnocked(int team_id, int player_id);
   virtual void          evResult(int team_id, int player_id, enum eRoll action_type, int result, 
-                                 int modifier, int required, bool reroll);
+                                 int modifier, int required, bool reroll, enum eSkill skill);
   virtual void          evBlockResult(int team_id, int player_id, int opponent_id, 
                                       int nb_dice, enum eBlockDiceFace result[3],
                                       int choose, bool reroll);

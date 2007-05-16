@@ -32,6 +32,7 @@ CPlayerMsg::CPlayerMsg(CRules *r)
   r_->HANDLE_WITH(MSG_PLAYERKNOCKED, CPlayerMsg, this, msgPlayerKnocked, 0);
   r_->HANDLE_WITH(MSG_PLAYERSTATUS, CPlayerMsg, this, msgPlayerStatus, 0);
   r_->HANDLE_WITH(MSG_PLAYERKO, CPlayerMsg, this, msgPlayerKO, 0);
+  r_->HANDLE_WITH(MSG_SKILL, CPlayerMsg, this, msgSkill, 0);
 }
 
 CPlayerMsg::~CPlayerMsg()
@@ -123,3 +124,17 @@ void CPlayerMsg::msgPlayerKO(const MsgPlayerKO* m)
   if (p != NULL)
     p->msgPlayerKO(m);
 }
+
+void CPlayerMsg::msgSkill(const MsgSkill* m)
+{
+  if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2 &&
+      r_->getState() != GS_REROLL)
+    {
+      WARN("bad game state (%1)", r_->getState());
+      return;
+    }
+  CPlayer* p = getPlayer(m->token, m->client_id, m->player_id);
+  if (p != NULL)
+    p->msgSkill(m);
+}
+

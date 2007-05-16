@@ -88,6 +88,11 @@ public:
   //! @attention It is reset when selectTeam is called.
   int                   selectPlayer(int player_id);
   
+  //! @brief Select player to use a skill with.
+  //!   Further call to Api::doUseSkill(enum eSkill) will concern this player.
+  //! @param player_id Player identifier, in the range [0, MAX_PLAYER - 1].
+  int                   selectSkilledPlayer(int player_id);
+  
   //! @brief Get the player id at the specified position.
   //! @param pos A position on the field.
   //! @return A player id, or -1 if there is nobody at this position.
@@ -206,6 +211,11 @@ public:
   //!   @c false to accept the result.
   int           doReroll(bool reroll);
 
+  //! @brief Use a skill of the selected player.
+  //! @param skill The skill the player will use.
+  //!   @c SK_NONE to not use any of the skills asked.
+  int           doUseSkill(enum eSkill skill);
+
   //! @brief Declare an action for the selected player.
   //! @param action Action to declare.
   int           doDeclare(enum eDeclaredAction action);
@@ -259,6 +269,7 @@ public:
 private:
   CTeam*                selected_team_;
   CPlayer*              selected_player_;
+  CPlayer*              skilled_player_;
   const PosList*        player_path_;
 };
 

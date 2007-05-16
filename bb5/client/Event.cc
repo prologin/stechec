@@ -140,7 +140,7 @@ template <>
 void EventProcess::dispatch(const MsgResult& pkt) const
 {
   ev_->evResult(pkt.client_id, pkt.player_id, (enum eRoll)pkt.roll_type,
-                  pkt.result, pkt.modifier, pkt.required, pkt.reroll);
+                  pkt.result, pkt.modifier, pkt.required, pkt.reroll, (enum eSkill)pkt.skill);
 }
 
 template <>
@@ -152,6 +152,18 @@ void EventProcess::dispatch(const MsgBlockResult& pkt) const
 
   ev_->evBlockResult(pkt.client_id, pkt.player_id, pkt.opponent_id, pkt.nb_dice,
       results, pkt.strongest_team_id, pkt.reroll);
+}
+
+template <>
+void EventProcess::dispatch(const MsgReroll& pkt) const
+{
+  ev_->evReroll(pkt.client_id, pkt.reroll);
+}
+
+template <>
+void EventProcess::dispatch(const MsgSkill& pkt) const
+{
+  ev_->evSkill(pkt.client_id, pkt.player_id, (enum eSkill) pkt.skill);
 }
 
 template <>
@@ -190,12 +202,6 @@ void EventProcess::dispatch<MsgInitGame>(MsgInitGame const&) const
 
 template <>
 void EventProcess::dispatch<MsgBlockDice>(MsgBlockDice const&) const
-{
-  assert(false);
-}
-
-template <>
-void EventProcess::dispatch<MsgReroll>(MsgReroll const&) const
 {
   assert(false);
 }

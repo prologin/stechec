@@ -43,46 +43,52 @@ public:
   //! @brief Checks some things, if this player could be valid.
   bool acceptPlayerCreation();
 
-  bool canUseSkillReroll() const;
-  bool canUseAnyReroll() const;
   //! @brief Checks if the player scores a touchdown,
   //!   and eventually declares the touchdown.
   bool checkAndDeclareTouchdown();
 
   //! @brief Sets player position.
-  //! @note Use this function instead of setting pos_ directly, so
-  //!   the field can be updated too.
+  //! @note Use this function instead of setting pos_ directly,
+  //!   so the field can be updated too.
   //! @param pos Where to move.
   //! @param advertise_client Whether or not send a MSG_PLAYERPOS to clients.
   void setPosition(const Position& pos, bool advertise_client = true);
-
-  //! @brief Sets new player status.
+  //! @brief Sets player status and sends a MSG_STATUS to clients.
+  //! @note Use this function instead of setting pos_ directly,
+  //!   so the field can be updated too.
+  //! @param new_status New status, it has to be different from the current one.
   void setStatus(enum eStatus new_status);
   //! @brief Sets status to prone if he has to.
+  //! @note Call this function at the end of his team turn.
   void setProne();
   //! @brief Goes in the reserve if he can.
   void prepareKickoff();
 
   //! @brief Checks for armour value and eventually injury.
   void checkArmour(int av_mod, int inj_mod);
- 
-  void considerBlockDices(bool reroll);
-  //! @brief Applies block dice result
-  void resolveBlockDice(int chosen_dice);
-
-  void tryBlockPush(SPlayer* target);
-  void setPusher(SPlayer* p);
-  //! @brief Applies blockpush choice
-  //! @brief Push next player if there is no other player behind.
-  void resolveBlockPush(int chosen_square);
-  //! @brief Considers if player can follow or not, during a block action.
-  //! @param p Player to be pushed in an empty square or out of the field.
-  void considerBlockFollow();
-  //! @brief Applies follow or not decision.
-  void blockFollow(bool follow);
-  void finishBlockPush();
-  void finishBlockAction();
+  //! @brief Rolls for injury and sets player status.
   void bePushedInTheCrowd();
+ 
+  //! @brief Rerolls the block dices if needed, otherwise gives the
+  //!   choice (if any) to a coach for which block dice to apply.
+  void considerBlockDices(bool reroll);
+  //! @brief Applies block dice roll result.
+  void resolveBlockDice(int chosen_dice);
+  //! @brief Sets pusher of this player.
+  void setPusher(SPlayer* p);
+  //! @brief Tries to push the targetted player to a square. Eventually
+  //!   gives a coach his choice of which square to push the player to.
+  void tryBlockPush(SPlayer* target);
+  //! @brief Selects chosen square to push the targetted player.
+  void resolveBlockPush(int chosen_square);
+  //! @brief Eventually gives the coach his choice to follow or not after a block push.
+  void considerBlockFollow();
+  //! @brief Registers follow decision and moves to pushes application.
+  void finishBlockFollow(bool follow);
+  //! @brief Applies pushes decisions, beginning by the last pushed player.
+  void finishBlockPush();
+  //! @brief Applies follow decision, eventually knocks down the defender.
+  void finishBlockAction();
 
   //! @brief Tries to catch the ball.
   void tryCatchBall(bool accurate_pass);
@@ -102,7 +108,7 @@ public:
   void tryThrow();
   void finishThrow(bool reroll, int success);
 
-  // Message handlers.
+  // Message handlers called by SPlayerMsg.
   void msgPlayerPos(const MsgPlayerPos* m);
   void msgDeclare(const MsgDeclare* m);
   void msgMove(const MsgMove* m);
@@ -111,18 +117,36 @@ public:
   void msgPass(const MsgPass* m);
   void msgSkill(const MsgSkill* m);
 
-  int nb_block_dice_;
-
 private:
+
+  //! @brief Checks if a team reroll or a skill reroll
+  //!   is available, according to the roll attempted.
+  void setRerollAvailability();
+  //! @brief Sets the list of usable skills,
+  //!   according to the roll attempted.
+  void setUsableSkills();
+  void setSkillAvailability(enum eSkill skill);
+  //! @brief Checks if the given skill can be used now.
+  bool canUseSkill(enum eSkill skill) const;
+  //! @brief Gets one of the usable skills if any.
+  //FIXME: This will have to be deleted for extra rules,
+  // because up to three skills could be usable for the same roll.
+  enum eSkill getUsableSkill() const;
+
+  //! @brief Rolls a six-sided dice, compares the result to
+  //!   player's agility, and sends MSG_RESULT to clients.
+  bool rollAgility(enum eRoll roll_type, int modifier);
+  bool rollAgility();
 
   //! @brief Rolls for injury.
   void rollInjury(int modifier);
   //! @brief Rolls for casualty.
   enum eStatus rollCasualty();
 
-  //! @brief Rolls and compares to player's agility.
-  bool rollAgility(enum eRoll roll_type, int modifier);
-  bool rollAgility();
+  //! @brief Tries to block the targetted player.
+  void tryBlock();
+  //! @brief Rolls block dices, according to modifiers.
+  void rollBlock();
 
   void rollCatchBall();
   void rollDodge();
@@ -130,11 +154,7 @@ private:
   void rollStandUp();
   void rollThrow();
 
-  //! @brief Block a player.
-  //! @return non-zero if action failed.
-  void tryBlock();
-  void rollBlock();
-
+  int nb_block_dices_;
   Position push_choices_[3];
   int nb_push_choices_;
   int strongest_team_id_;
@@ -145,7 +165,7 @@ private:
 
   Position move_aim_; ///< Where the player'd like to go to.
   enum eRoll roll_attempted_;
-  enum eSkill skill_concerned_; ///< Skill related to action attempted.
+  SkillList usable_skills_; ///< Skills which can be used.
   bool reroll_enabled_;
   int modifier_; ///< Roll modifier.
   Position throw_aim_;

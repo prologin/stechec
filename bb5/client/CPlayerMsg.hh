@@ -42,6 +42,7 @@ private:
   void msgPlayerKnocked(const MsgPlayerKnocked* m);
   void msgPlayerStatus(const MsgPlayerStatus* m);
   void msgPlayerKO(const MsgPlayerKO* m);
+  void msgSkill(const MsgSkill* m);
 
   CRules* r_;
   CPlayer* p_[2][MAX_PLAYER];

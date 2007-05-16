@@ -57,17 +57,6 @@ bool SPlayer::checkAndDeclareTouchdown()
   return false;
 }
 
-bool SPlayer::canUseSkillReroll() const
-{
-  return false; //FIXME: waiting for skills implementation.
-  return hasSkill(skill_concerned_) && !hasUsedSkill(skill_concerned_);
-}
-
-bool SPlayer::canUseAnyReroll() const
-{
-  return canUseSkillReroll() || t_->canUseReroll();
-}
-
 /*
 ** Position.
 */
@@ -178,6 +167,66 @@ void SPlayer::prepareKickoff()
 }
 
 /*
+** Skills.
+*/
+
+void SPlayer::setRerollAvailability()
+{
+  setUsableSkills();
+  reroll_enabled_ = t_->canUseReroll() || !usable_skills_.empty();
+}
+
+void SPlayer::setUsableSkills()
+{
+  usable_skills_.clear();
+  switch (roll_attempted_)
+    {
+      case R_ARMOUR:
+        break;
+      case R_BLOCK:
+        break;
+      case R_CATCH:
+        setSkillAvailability(SK_CATCH);
+        break;
+      case R_DODGE:
+        setSkillAvailability(SK_DODGE);
+        break;
+      case R_INJURY:
+        break;
+      case R_PICKUP:
+        setSkillAvailability(SK_SUREHANDS);
+        break;
+      case R_STANDUP:
+        break;
+      case R_THROW:
+        setSkillAvailability(SK_PASS);
+        break;
+      default:
+        WARN("Unknown roll type `%1'.", Dice::stringify(roll_attempted_));
+        break;
+    }
+}
+
+void SPlayer::setSkillAvailability(enum eSkill skill)
+{
+  if (hasSkill(skill) && !hasUsedSkill(skill))
+    usable_skills_.push_back(skill);
+}
+
+inline bool SPlayer::canUseSkill(enum eSkill skill) const
+{
+  return std::find(usable_skills_.begin(), usable_skills_.end(), skill) != usable_skills_.end();
+}
+
+enum eSkill SPlayer::getUsableSkill() const
+{
+  if (usable_skills_.empty())
+    return SK_NONE;
+  else
+    return usable_skills_.back();
+}
+
+/*
 ** Agility roll.
 */
 
@@ -195,7 +244,8 @@ bool SPlayer::rollAgility(enum eRoll roll_type, int modifier)
       team_id_, id_,
       d_->stringify(roll_type), success?"succeds":"_fails_",
       dice_result, dice_modified, required, ag_ );
-  pm_->sendRoll(roll_type, dice_result, modifier, required, reroll_enabled_, this);
+  pm_->sendRoll(roll_type, dice_result, modifier, required,
+      t_->canUseReroll(), getUsableSkill(), this);
   return success;
 }
 
@@ -214,6 +264,18 @@ void SPlayer::checkArmour(int av_mod, int inj_mod)
   if (result + av_mod > av_)
     rollInjury(inj_mod);
   ah_->process();
+}
+
+void SPlayer::bePushedInTheCrowd()
+{
+  ah_->putPushResolution(pusher_);
+  rollInjury(0);
+  if (status_ == STA_STUNNED)
+    setStatus(STA_RESERVE);
+  if (r_->getBall()->getOwner() == this)
+    r_->getBall()->throwIn();
+  else
+    ah_->process();
 }
 
 void SPlayer::rollInjury(int modifier)
@@ -257,13 +319,13 @@ void SPlayer::tryBlock()
   int mod_st_df = target_->getSt();
 
   if (mod_st_atk > 2 * mod_st_df || mod_st_df > 2 * mod_st_atk)
-    nb_block_dice_ = 3;
+    nb_block_dices_ = 3;
   else if (mod_st_atk != mod_st_df)
-    nb_block_dice_ = 2;
+    nb_block_dices_ = 2;
   else
-    nb_block_dice_ = 1;
+    nb_block_dices_ = 1;
 
-  if (nb_block_dice_ == 1)
+  if (nb_block_dices_ == 1)
     strongest_team_id_ = -1;
   else if (mod_st_atk < mod_st_df)
     strongest_team_id_ = r_->getCurrentOpponentTeamId();
@@ -273,8 +335,7 @@ void SPlayer::tryBlock()
   choose_block_ = strongest_team_id_ != r_->getCurrentOpponentTeamId();
 
   roll_attempted_ = R_BLOCK;
-  skill_concerned_ = SK_BLOCK;
-  reroll_enabled_ = canUseAnyReroll();
+  setRerollAvailability();
 
   rollBlock();
 }
@@ -286,9 +347,9 @@ void SPlayer::rollBlock()
   msg.opponent_id = target_->getId();
   msg.reroll = reroll_enabled_;
   msg.strongest_team_id = strongest_team_id_;
-  msg.nb_dice = nb_block_dice_;
+  msg.nb_dice = nb_block_dices_;
 
-  for (int i = 0; i < nb_block_dice_; ++i)
+  for (int i = 0; i < nb_block_dices_; ++i)
     {
       result_[i] = (enum eBlockDiceFace) d_->roll("block", DBLOCK);
       LOG5("[t%1,p%2] Rolled block dice: %3",
@@ -314,31 +375,24 @@ void SPlayer::considerBlockDices(bool reroll)
 {
   if (reroll)
     {
-      if (!hasUsedSkill(skill_concerned_))
-        {
-          useSkill(skill_concerned_);
-        }
-      else
-        {
-          t_->useReroll();
-        }
       reroll_enabled_ = false;
+      usable_skills_.clear();
       rollBlock();
     }
-  else if (nb_block_dice_ == 1)
+  else if (nb_block_dices_ == 1)
     {
       resolveBlockDice(0);
     }
   else if (strongest_team_id_ == team_id_)
     {
       t_->state_ = GS_BLOCK;
-      t_->setNbChoices(nb_block_dice_);
+      t_->setNbChoices(nb_block_dices_);
       ah_->putBlockDiceChoice(this);
     }
   else
     {
       r_->getTeam(target_->getTeamId())->state_ = GS_BLOCK;
-      r_->getTeam(target_->getTeamId())->setNbChoices(nb_block_dice_);
+      r_->getTeam(target_->getTeamId())->setNbChoices(nb_block_dices_);
       ah_->putBlockDiceChoice(target_);
     }
 }
@@ -515,7 +569,7 @@ void SPlayer::considerBlockFollow()
   ah_->putBlockFollowChoice(this);
 }
 
-void SPlayer::blockFollow(bool follow)
+void SPlayer::finishBlockFollow(bool follow)
 {
   follow_ = follow;
   finishBlockPush();
@@ -571,18 +625,6 @@ void SPlayer::finishBlockAction()
   ah_->process();
 }
 
-void SPlayer::bePushedInTheCrowd()
-{
-  ah_->putPushResolution(pusher_);
-  rollInjury(0);
-  if (status_ == STA_STUNNED)
-    setStatus(STA_RESERVE);
-  if (r_->getBall()->getOwner() == this)
-    r_->getBall()->throwIn();
-  else
-    ah_->process();
-}
-
 /*
 ** Catch ball action.
 */
@@ -592,8 +634,7 @@ void SPlayer::tryCatchBall(bool accurate_pass)
   int nb_tackles = f_->getNbTackleZone(r_->getOpponentTeamId(team_id_), pos_);
   modifier_ = (accurate_pass?1:0) - nb_tackles;
   roll_attempted_ = R_CATCH;
-  skill_concerned_ = SK_CATCH;
-  reroll_enabled_ = canUseAnyReroll();
+  setRerollAvailability();
   rollCatchBall();
 }
 
@@ -615,15 +656,8 @@ void SPlayer::finishCatchBall(bool reroll, bool success)
 {
   if (reroll)
     {
-      if (!hasUsedSkill(skill_concerned_))
-        {
-          useSkill(skill_concerned_);
-        }
-      else
-        {
-          t_->useReroll();
-        }
       reroll_enabled_ = false;
+      usable_skills_.clear();
       rollCatchBall();
     }
   else if (success)
@@ -658,8 +692,7 @@ void SPlayer::tryDodge()
   int nb_tackles = f_->getNbTackleZone(r_->getOpponentTeamId(team_id_), pos_);
   modifier_ = 1 - nb_tackles;
   roll_attempted_ = R_DODGE;
-  skill_concerned_ = SK_DODGE;
-  reroll_enabled_ = canUseAnyReroll();
+  setRerollAvailability();
   rollDodge();
 }
 
@@ -681,15 +714,8 @@ void SPlayer::finishDodge(bool reroll, bool success)
 {
   if (reroll)
     {
-      if (!hasUsedSkill(skill_concerned_))
-        {
-          useSkill(skill_concerned_);
-        }
-      else
-        {
-          t_->useReroll();
-        }
       reroll_enabled_ = false;
+      usable_skills_.clear();
       rollDodge();
     }
   else if (success)
@@ -771,8 +797,7 @@ void SPlayer::tryPickUp()
   int nb_tackles = f_->getNbTackleZone(r_->getOpponentTeamId(team_id_), pos_);
   modifier_ = 1 - nb_tackles;
   roll_attempted_ = R_PICKUP;
-  skill_concerned_ = SK_SUREHANDS;
-  reroll_enabled_ = canUseAnyReroll();
+  setRerollAvailability();
   rollPickUp();
 }
 
@@ -794,15 +819,8 @@ void SPlayer::finishPickUp(bool reroll, bool success)
 {
   if (reroll)
     {
-      if (!hasUsedSkill(skill_concerned_))
-        {
-          useSkill(skill_concerned_);
-        }
-      else
-        {
-          t_->useReroll();
-        }
       reroll_enabled_ = false;
+      usable_skills_.clear();
       rollPickUp();
     }
   else if (success)
@@ -839,8 +857,7 @@ void SPlayer::tryStandUp()
     {
       ma_remain_ = 0;
       roll_attempted_ = R_STANDUP;
-      skill_concerned_ = SK_NONE;
-      reroll_enabled_ = canUseAnyReroll();
+      setRerollAvailability();
       rollStandUp();
     }
   else
@@ -861,7 +878,8 @@ void SPlayer::rollStandUp()
       team_id_, id_,
       d_->stringify(roll_attempted_), success?"succeds":"_fails_",
       dice_result, required, ag_ );
-  pm_->sendRoll(roll_attempted_,dice_result, 0, required, reroll_enabled_, this);
+  pm_->sendRoll(roll_attempted_,dice_result, 0, required,
+      t_->canUseReroll(), getUsableSkill(), this);
   if (reroll_enabled_)
     {
       t_->state_ = GS_REROLL;
@@ -877,15 +895,8 @@ void SPlayer::finishStandUp(bool reroll, bool success)
 {
   if (reroll)
     {
-      if (!hasUsedSkill(skill_concerned_))
-        {
-          useSkill(skill_concerned_);
-        }
-      else
-        {
-          t_->useReroll();
-        }
       reroll_enabled_ = false;
+      usable_skills_.clear();
       rollStandUp();
     }
   else if (success)
@@ -919,8 +930,7 @@ void SPlayer::tryThrow()
 
   modifier_ = dist_modifier - nb_tackles;
   roll_attempted_ = R_THROW;
-  skill_concerned_ = SK_PASS;
-  reroll_enabled_ = canUseAnyReroll();
+  setRerollAvailability();
   ma_remain_ = 0;
   has_played_ = true;
   rollThrow();
@@ -945,15 +955,8 @@ void SPlayer::finishThrow(bool reroll, int success)
   SBall* b = r_->getBall();
   if (reroll)
     {
-      if (!hasUsedSkill(skill_concerned_))
-        {
-          useSkill(skill_concerned_);
-        }
-      else
-        {
-          t_->useReroll();
-        }
       reroll_enabled_ = false;
+      usable_skills_.clear();
       rollThrow();
     }
   else
@@ -1128,43 +1131,69 @@ void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
 void SPlayer::msgSkill(const MsgSkill* m)
 {
   enum eSkill skill = (enum eSkill) m->skill;
-  if (!t_->canDoAction(m, this))
-    return;
-  if (!hasSkill(skill))
+  if (ah_->getPlayer() != this)
+    {
+      LOG2("Player `%1' of team `%2' doesn't have the choice to use a skill.", id_, team_id_);
+      r_->sendIllegal(m->token, m->client_id);
+    }
+  else if (!hasSkill(skill))
     {
       LOG2("Player `%1' of team `%2' doesn't have the skill `%3'.",
           id_, team_id_, stringify(skill));
       r_->sendIllegal(m->token, m->client_id);
     }
-  else if (hasUsedSkill(skill))
+  else if (!canUseSkill(skill))
     {
-      LOG2("Player `%1' of team `%2' has already used the skill `%3'.",
+      LOG2("Player `%1' of team `%2' can not use the skill `%3' now.",
           id_, team_id_, stringify(skill));
       r_->sendIllegal(m->token, m->client_id);
     }
-  else if (ah_->getPlayer() != this)
+  else if (t_->state_ == GS_REROLL)
     {
-      LOG2("Player `%1' of team `%2' doesn't have to use a skill now.", id_, team_id_);
-      r_->sendIllegal(m->token, m->client_id);
+      if (hasUsedSkill(skill))
+        {
+          LOG2("Player `%1' of team `%2' has already used the skill `%3'.",
+            id_, team_id_, stringify(skill));
+          r_->sendIllegal(m->token, m->client_id);
+        }
+      else if (((ah_->getRollType() == R_CATCH) && (skill == SK_CATCH))
+          || ((ah_->getRollType() == R_DODGE) && (skill == SK_DODGE))
+          || ((ah_->getRollType() == R_PICKUP) && (skill == SK_SUREHANDS))
+          || ((ah_->getRollType() == R_THROW) && (skill == SK_PASS)))
+        {
+          LOG4("Player `%1' of team `%2' uses the skill `%3' to reroll `%4'.",
+            id_, team_id_, stringify(skill), ah_->getRollType());
+          r_->sendPacket(*m);
+          t_->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+          useSkill(skill);
+          ah_->process(true);
+        }
+      else
+        {
+          LOG2("Player `%1' of team `%2' can not reroll `%3' using the skill `%4'.",
+              id_, team_id_, ah_->getRollType(), stringify(skill));
+          r_->sendIllegal(m->token, m->client_id);
+        }
     }
-  else if ((t_->state_ == GS_REROLL)
-      && (((ah_->getRollType() == R_CATCH) && (skill == SK_CATCH))
-        || ((ah_->getRollType() == R_DODGE) && (skill == SK_DODGE))
-        || ((ah_->getRollType() == R_PICKUP) && (skill == SK_SUREHANDS))
-        || ((ah_->getRollType() == R_THROW) && (skill == SK_PASS))))
+  else if (t_->state_ == GS_BLOCK) //FIXME: to do.
     {
-      useSkill(skill);
-      ah_->process(true);
-    }
-  else if ((t_->state_ == GS_BLOCK) //FIXME: to do.
-      && ((/*(ah_->getFoo() == bar) &&*/ (skill == SK_BLOCK))
-        || (/*(ah_->getFoo() == bar) &&*/ (skill == SK_DODGE))))
-    {
-      ah_->process(/*skill*/);
+      if ((/*(ah_->getFoo() == bar) &&*/ (skill == SK_BLOCK))
+          || (/*(ah_->getFoo() == bar) &&*/ (skill == SK_DODGE)))
+        {
+          LOG2("Block and dodge skills are still not implemented.");
+          r_->sendIllegal(m->token, m->client_id);
+          //ah_->process(/*skill*/);
+        }
+      else
+        {
+          LOG2("Player `%1' of team `%2' can not use the skill `%3' during a block action.",
+              id_, team_id_, stringify(skill));
+          r_->sendIllegal(m->token, m->client_id);
+        }
     }
   else
     {
-      LOG2("Player `%1' of team `%2' can not use skill `%3' now.",
+      WARN("Player `%1' of team `%2' can not use the skill `%3' now.",
           id_, team_id_, stringify(skill));
       r_->sendIllegal(m->token, m->client_id);
     }

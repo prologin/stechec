@@ -303,3 +303,13 @@ void CPlayer::msgPlayerKO(const MsgPlayerKO* m)
 {
   r_->onEvent(m);
 }
+
+void CPlayer::msgSkill(const MsgSkill* m)
+{
+  enum eSkill skill = (enum eSkill) m->skill;
+  if (r_->getState() == GS_REROLL)
+    r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+  useSkill(skill);
+  r_->onEvent(m);
+}
+

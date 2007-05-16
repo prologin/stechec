@@ -54,6 +54,7 @@ public:
   void setPusher(SPlayer* p);
   void setNbChoices(int nb);
 
+  // Message handlers called by STeamMsg.
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
   void msgReroll(const MsgReroll* m);

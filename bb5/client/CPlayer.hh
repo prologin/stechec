@@ -64,6 +64,7 @@ public:
   void msgPlayerKnocked(const MsgPlayerKnocked* m);
   void msgPlayerStatus(const MsgPlayerStatus* m);
   void msgPlayerKO(const MsgPlayerKO* m);
+  void msgSkill(const MsgSkill* m);
 
 private:
   CRules* r_;
