@@ -100,6 +100,7 @@ void SRules::serverProcess()
 {
   if (timer_.isTimeElapsed())
     {
+      timer_.stop();
       turnover(TOM_TIMEEXCEEDED);
     }
 }
