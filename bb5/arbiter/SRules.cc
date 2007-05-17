@@ -129,6 +129,9 @@ void SRules::initHalf()
   cur_turn_ = 0;
   cur_half_++;
 
+  if (checkGameEnd())
+    return;
+
   // After 3 halfs, match is decided by a penalty shoot-out.
   if (cur_half_ > 3) 
     {
@@ -139,10 +142,13 @@ void SRules::initHalf()
           coach0 = dice_->roll("3th half coach0") + team_[0]->getRemainingReroll();
           coach1 = dice_->roll("3th half coach1") + team_[1]->getRemainingReroll();
         }
+      team_[(coach0 > coach1) ? 0 : 1]->incrementScore();
+      MsgTouchdooown msgt((coach0 > coach1) ? 0 : 1);
+      msgt.player_id = -1;
+      sendPacket(msgt);
+      checkGameEnd();
+      return;
     }
-
-  if (checkGameEnd())
-    return;
 
   // Coaches recover their Rerolls, except in overtime
   if (cur_half_ != 3) 
