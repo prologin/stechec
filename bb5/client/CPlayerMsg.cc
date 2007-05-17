@@ -128,7 +128,7 @@ void CPlayerMsg::msgPlayerKO(const MsgPlayerKO* m)
 void CPlayerMsg::msgSkill(const MsgSkill* m)
 {
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2 &&
-      r_->getState() != GS_REROLL)
+      r_->getState() != GS_REROLL && r_->getState() != GS_SKILL)
     {
       WARN("bad game state (%1)", r_->getState());
       return;

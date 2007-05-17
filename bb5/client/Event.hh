@@ -46,7 +46,7 @@ public:
                              int nb_dice, enum eBlockDiceFace result[3],
                              int strongest_team_id, bool reroll);
   virtual void evReroll(int team_id, bool reroll);
-  virtual void evSkill(int team_id, int player_id, enum eSkill skill);
+  virtual void evSkill(int team_id, int player_id, enum eSkill skill, int choice);
   virtual void evHalf(int half);
   virtual void evDrawKicker(int team_id);
   virtual void evKickOff(int team_id, bool place_team);
@@ -71,7 +71,7 @@ inline void Event::evNewTurn(int, int, int) {}
 inline void Event::evResult(int, int, enum eRoll, int, int, int, bool, enum eSkill) {}
 inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[], int, bool) {}
 inline void Event::evReroll(int, bool) {}
-inline void Event::evSkill(int, int, enum eSkill) {}
+inline void Event::evSkill(int, int, enum eSkill, int) {}
 inline void Event::evHalf(int) {}
 inline void Event::evDrawKicker(int) {}
 inline void Event::evKickOff(int, bool) {}

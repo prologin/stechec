@@ -163,7 +163,7 @@ void EventProcess::dispatch(const MsgReroll& pkt) const
 template <>
 void EventProcess::dispatch(const MsgSkill& pkt) const
 {
-  ev_->evSkill(pkt.client_id, pkt.player_id, (enum eSkill) pkt.skill);
+  ev_->evSkill(pkt.client_id, pkt.player_id, (enum eSkill) pkt.skill, pkt.choice);
 }
 
 template <>

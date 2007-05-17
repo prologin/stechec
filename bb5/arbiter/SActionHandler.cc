@@ -82,6 +82,33 @@ void SActionHandler::putBallBounce()
   put(ea);
 }
 
+void SActionHandler::putBlockBothDownDefender(SPlayer* p)
+{
+  ElementaryAction ea;
+  ea.type = EA_BLOCKBDD;
+  ea.roll_type = R_NONE;
+  ea.player = p;
+  put(ea);
+}
+
+void SActionHandler::putBlockBothDownAttacker(SPlayer* p)
+{
+  ElementaryAction ea;
+  ea.type = EA_BLOCKBDA;
+  ea.roll_type = R_NONE;
+  ea.player = p;
+  put(ea);
+}
+
+void SActionHandler::putBlockDefenderStumble(SPlayer* p)
+{
+  ElementaryAction ea;
+  ea.type = EA_BLOCKSTUMBLE;
+  ea.roll_type = R_NONE;
+  ea.player = p;
+  put(ea);
+}
+
 void SActionHandler::putBlockDiceChoice(SPlayer* p)
 {
   ElementaryAction ea;
@@ -209,6 +236,12 @@ void SActionHandler::process(bool reroll, int choice)
       case EA_BALL:
         r_->getBall()->bounce();
         break;
+      case EA_BLOCKBDA:
+        ea.player->resolveBlockBothDownAttacker(reroll);
+        break;
+      case EA_BLOCKBDD:
+        ea.player->resolveBlockBothDownDefender(reroll);
+        break;
       case EA_BLOCKDICE:
         ea.player->resolveBlockDice(choice);
         break;
@@ -217,6 +250,9 @@ void SActionHandler::process(bool reroll, int choice)
         break;
       case EA_BLOCKPUSH:
         ea.player->resolveBlockPush(choice);
+        break;
+      case EA_BLOCKSTUMBLE:
+        ea.player->resolveBlockDefenderStumble(reroll);
         break;
       case EA_MOVE:
         if (r_->isTurnover())

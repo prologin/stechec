@@ -100,6 +100,15 @@ void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int require
   r_->sendPacket(msg);
 }
 
+void SPlayerMsg::sendSkillQuestion(enum eSkill skill, SPlayer* p)
+{
+  MsgSkill msg(p->getTeamId());
+  msg.player_id = p->getId();
+  msg.skill = skill;
+  msg.choice = -1;
+  r_->sendPacket(msg);
+}
+
 void SPlayerMsg::sendStatus(enum eStatus status, SPlayer* p)
 {
   MsgPlayerStatus pkt(p->getTeamId());

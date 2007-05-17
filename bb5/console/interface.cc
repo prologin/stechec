@@ -419,3 +419,31 @@ void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id
   if (team_id != api_->getTeamId() && choose == api_->getTeamId() && !reroll)
     cout << " You must choose a 'dice <n>'" << endl;
 }
+
+void CmdLineInterface::evSkill(int team_id, int player_id, enum eSkill skill, int choice)
+{
+  if (team_id != api_->getTeamId())
+    cout << "Opponent ";
+  cout << "Player `" << player_id << "' ";
+  if (choice == -1)
+    cout << "can use ";
+  else if (choice == 0)
+    cout << "doesn't use ";
+  else
+    cout << "uses ";
+  cout << "the skill `" << Player::stringify(skill) << "'." << endl;
+
+  if (choice == -1)
+    if (team_id != api_->getTeamId())
+      cout << "Wait for opponent skill decision." << endl;
+    else
+      {
+        api_->selectSkilledPlayer(player_id);
+        cout << "You must choose to either use or ignore this skill ('help skill')." << endl;
+        input_.stopWaiting();
+      }
+  else if ((team_id != api_->getTeamId()) && our_turn_ &&
+      ((skill == SK_BLOCK) || (skill == SK_CATCH) || (skill == SK_DODGE)))
+    input_.stopWaiting();
+}
+

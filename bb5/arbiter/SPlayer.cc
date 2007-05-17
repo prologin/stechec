@@ -207,6 +207,13 @@ void SPlayer::setUsableSkills()
     }
 }
 
+void SPlayer::setUsableSkill(enum eSkill skill)
+{
+  usable_skills_.clear();
+  if (skill != SK_NONE)
+    usable_skills_.push_back(skill);
+}
+
 void SPlayer::setSkillAvailability(enum eSkill skill)
 {
   if (hasSkill(skill) && !hasUsedSkill(skill))
@@ -376,7 +383,6 @@ void SPlayer::considerBlockDices(bool reroll)
   if (reroll)
     {
       reroll_enabled_ = false;
-      usable_skills_.clear();
       rollBlock();
     }
   else if (nb_block_dices_ == 1)
@@ -412,52 +418,91 @@ void SPlayer::resolveBlockDice(int chosen_dice)
       r_->turnover(TOM_KNOCKEDDOWN);
       break;
     case BBOTH_DOWN:
-    {
-      bool atk_down = !hasSkill(SK_BLOCK); //FIXME: Ask coach for Block skill usage.
-      bool def_down = !hasSkill(SK_BLOCK); //FIXME: Ask opponent coach for Block skill usage.
-      if ((def_down && r_->getBall()->getOwner() == target_)
-          || (atk_down && r_->getBall()->getOwner() == this))
+      if (target_->hasSkill(SK_BLOCK))
         {
-          ah_->putBallBounce();
-        }
-      if (def_down) ah_->putArmourRoll(target_, 0, 0);
-      if (atk_down) ah_->putArmourRoll(this, 0, 0);
-      if (atk_down)
-        {
-          pm_->sendMsgKnocked(this);
-          setStatus(STA_PRONE);
-        }
-      if (def_down)
-        {
-          pm_->sendMsgKnocked(target_);
-          target_->setStatus(STA_PRONE);
-        }
-      if (atk_down)
-        {
-          r_->turnover(TOM_KNOCKEDDOWN);
+          target_->setUsableSkill(SK_BLOCK);
+          pm_->sendSkillQuestion(SK_BLOCK, target_);
+          t_->state_ = GS_SKILL;
+          ah_->putBlockBothDownDefender(this);
         }
       else
-        {
-          ah_->process();
-        }
+        resolveBlockBothDownDefender(false);
       break;
-    }
     case BPUSHED:
-      target_knocked_ = false;
       pusher_ = NULL;
+      target_knocked_ = false;
       tryBlockPush(target_);
       break;
     case BDEFENDER_STUMBLE:
-      target_knocked_ = !target_->hasSkill(SK_DODGE); //FIXME: Ask opponent coach for Dodge skill usage.
       pusher_ = NULL;
-      tryBlockPush(target_);
+      if (target_->hasSkill(SK_DODGE))
+        {
+          target_->setUsableSkill(SK_DODGE);
+          pm_->sendSkillQuestion(SK_DODGE, target_);
+          t_->state_ = GS_SKILL;
+          ah_->putBlockDefenderStumble(this);
+        }
+      else
+        resolveBlockDefenderStumble(false);
       break;
     case BDEFENDER_DOWN:
-      target_knocked_ = true;
       pusher_ = NULL;
+      target_knocked_ = true;
       tryBlockPush(target_);
       break;
     }
+}
+
+void SPlayer::resolveBlockBothDownDefender(bool block)
+{
+  target_->setUsableSkill(SK_NONE);
+  target_knocked_ = !block;
+  if (hasSkill(SK_BLOCK))
+    {
+      setUsableSkill(SK_BLOCK);
+      pm_->sendSkillQuestion(SK_BLOCK, this);
+      t_->state_ = GS_SKILL;
+      ah_->putBlockBothDownAttacker(this);
+    }
+  else
+    resolveBlockBothDownAttacker(false);
+}
+
+void SPlayer::resolveBlockBothDownAttacker(bool block)
+{
+  setUsableSkill(SK_NONE);
+  if ((target_knocked_ && r_->getBall()->getOwner() == target_)
+      || ((!block) && r_->getBall()->getOwner() == this))
+    {
+      ah_->putBallBounce();
+    }
+  if (target_knocked_) ah_->putArmourRoll(target_, 0, 0);
+  if (!block) ah_->putArmourRoll(this, 0, 0);
+  if (!block)
+    {
+      pm_->sendMsgKnocked(this);
+      setStatus(STA_PRONE);
+    }
+  if (target_knocked_)
+    {
+      pm_->sendMsgKnocked(target_);
+      target_->setStatus(STA_PRONE);
+    }
+  if (!block)
+    {
+      r_->turnover(TOM_KNOCKEDDOWN);
+    }
+  else
+    {
+      ah_->process();
+    }
+}
+
+void SPlayer::resolveBlockDefenderStumble(bool dodge)
+{
+  target_->setUsableSkill(SK_NONE);
+  target_knocked_ = !dodge;
+  tryBlockPush(target_);
 }
 
 void SPlayer::setPusher(SPlayer* p)
@@ -654,10 +699,10 @@ void SPlayer::rollCatchBall()
 
 void SPlayer::finishCatchBall(bool reroll, bool success)
 {
+  usable_skills_.clear();
   if (reroll)
     {
       reroll_enabled_ = false;
-      usable_skills_.clear();
       rollCatchBall();
     }
   else if (success)
@@ -712,10 +757,10 @@ void SPlayer::rollDodge()
 
 void SPlayer::finishDodge(bool reroll, bool success)
 {
+  usable_skills_.clear();
   if (reroll)
     {
       reroll_enabled_ = false;
-      usable_skills_.clear();
       rollDodge();
     }
   else if (success)
@@ -817,10 +862,10 @@ void SPlayer::rollPickUp()
 
 void SPlayer::finishPickUp(bool reroll, bool success)
 {
+  usable_skills_.clear();
   if (reroll)
     {
       reroll_enabled_ = false;
-      usable_skills_.clear();
       rollPickUp();
     }
   else if (success)
@@ -893,10 +938,10 @@ void SPlayer::rollStandUp()
 
 void SPlayer::finishStandUp(bool reroll, bool success)
 {
+  usable_skills_.clear();
   if (reroll)
     {
       reroll_enabled_ = false;
-      usable_skills_.clear();
       rollStandUp();
     }
   else if (success)
@@ -953,10 +998,10 @@ void SPlayer::rollThrow()
 void SPlayer::finishThrow(bool reroll, int success)
 {
   SBall* b = r_->getBall();
+  usable_skills_.clear();
   if (reroll)
     {
       reroll_enabled_ = false;
-      usable_skills_.clear();
       rollThrow();
     }
   else
@@ -1131,12 +1176,7 @@ void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
 void SPlayer::msgSkill(const MsgSkill* m)
 {
   enum eSkill skill = (enum eSkill) m->skill;
-  if (ah_->getPlayer() != this)
-    {
-      LOG2("Player `%1' of team `%2' doesn't have the choice to use a skill.", id_, team_id_);
-      r_->sendIllegal(m->token, m->client_id);
-    }
-  else if (!hasSkill(skill))
+  if (!hasSkill(skill))
     {
       LOG2("Player `%1' of team `%2' doesn't have the skill `%3'.",
           id_, team_id_, stringify(skill));
@@ -1150,16 +1190,7 @@ void SPlayer::msgSkill(const MsgSkill* m)
     }
   else if (t_->state_ == GS_REROLL)
     {
-      if (hasUsedSkill(skill))
-        {
-          LOG2("Player `%1' of team `%2' has already used the skill `%3'.",
-            id_, team_id_, stringify(skill));
-          r_->sendIllegal(m->token, m->client_id);
-        }
-      else if (((ah_->getRollType() == R_CATCH) && (skill == SK_CATCH))
-          || ((ah_->getRollType() == R_DODGE) && (skill == SK_DODGE))
-          || ((ah_->getRollType() == R_PICKUP) && (skill == SK_SUREHANDS))
-          || ((ah_->getRollType() == R_THROW) && (skill == SK_PASS)))
+      if (m->choice == 1)
         {
           LOG4("Player `%1' of team `%2' uses the skill `%3' to reroll `%4'.",
             id_, team_id_, stringify(skill), ah_->getRollType());
@@ -1170,26 +1201,20 @@ void SPlayer::msgSkill(const MsgSkill* m)
         }
       else
         {
-          LOG2("Player `%1' of team `%2' can not reroll `%3' using the skill `%4'.",
-              id_, team_id_, ah_->getRollType(), stringify(skill));
-          r_->sendIllegal(m->token, m->client_id);
+          LOG4("Player `%1' of team `%2' doesn't use the skill `%3' to reroll `%4'.",
+            id_, team_id_, stringify(skill), ah_->getRollType());
+          r_->sendPacket(*m);
+          t_->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+          ah_->process(false);
         }
     }
-  else if (t_->state_ == GS_BLOCK) //FIXME: to do.
+  else if (r_->getCurrentTeam()->state_ == GS_SKILL)
     {
-      if ((/*(ah_->getFoo() == bar) &&*/ (skill == SK_BLOCK))
-          || (/*(ah_->getFoo() == bar) &&*/ (skill == SK_DODGE)))
-        {
-          LOG2("Block and dodge skills are still not implemented.");
-          r_->sendIllegal(m->token, m->client_id);
-          //ah_->process(/*skill*/);
-        }
-      else
-        {
-          LOG2("Player `%1' of team `%2' can not use the skill `%3' during a block action.",
-              id_, team_id_, stringify(skill));
-          r_->sendIllegal(m->token, m->client_id);
-        }
+      LOG4("Player `%1' of team `%2' chooses to%3 use the skill `%4'.",
+          id_, team_id_, ((m->choice == 1) ? "" : " NOT"), Player::stringify(skill));
+      r_->sendPacket(*m);
+      r_->getCurrentTeam()->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+      ah_->process(m->choice == 1);
     }
   else
     {

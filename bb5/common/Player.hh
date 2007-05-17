@@ -141,6 +141,10 @@ END_PACKET
 DECLARE_PACKET(MSG_SKILL, MsgSkill)
   int player_id;
   int skill;  // enum eSkill
+  int choice;
+    // -1 is used by the server to give the coach his choice of using the given skill,
+    // 0 is used by both the server and the client to not use the given skill,
+    // 1 is used by both the server and the client to use the given skill.
 END_PACKET
 
 

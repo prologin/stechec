@@ -44,6 +44,9 @@ public:
   //! @brief Adds an elementary action to the stack.
   void putArmourRoll(SPlayer* p, int av_mod = 0, int inj_mod = 0);
   void putBallBounce();
+  void putBlockBothDownDefender(SPlayer* p);
+  void putBlockBothDownAttacker(SPlayer* p);
+  void putBlockDefenderStumble(SPlayer* p);
   void putBlockDiceChoice(SPlayer* p);
   void putBlockFollowChoice(SPlayer* p);
   void putBlockPushChoice(SPlayer* p);
@@ -63,9 +66,12 @@ private:
 
   enum eElementaryAction {
     EA_BALL,          ///< Bounce the ball.
+    EA_BLOCKBDD,      ///< Choose to either use or ignore Block skill for the defender.
+    EA_BLOCKBDA,      ///< Choose to either use or ignore Block skill for the attacker.
     EA_BLOCKDICE,     ///< Choose a block dice.
     EA_BLOCKFOLLOW,   ///< Choose to follow or not after a block-push.
     EA_BLOCKPUSH,     ///< Choose where to push.
+    EA_BLOCKSTUMBLE,  ///< Choose to either use or ignore Dodge skill during a block.
     EA_MOVE,          ///< Move a player.
     EA_PUSH,          ///< Apply push decisions.
     EA_ROLL,          ///< Apply dice roll, or roll dice.

@@ -66,6 +66,7 @@ public:
   static InputSubCommand choose_cmd_[];
   static InputSubCommand place_cmd_[];
   static InputSubCommand block_cmd_[];
+  static InputSubCommand skill_cmd_[];
   static InputSubCommand declare_cmd_[];
 
 private:
@@ -121,6 +122,12 @@ private:
   void cmdBlockStay(const std::string& args);
   void cmdBlockFollow(const std::string& args);
   void cmdBlockPush(const std::string& args);
+
+  // Skill commands
+  void cmdUseSkill(const std::string& args);
+  void cmdIgnoreSkill(const std::string& args);
+  // Skill subroutine
+  void applyCmdSkill(bool useIt, const std::string& args);
 
   // Declare commands
   void cmdDeclareMove(const std::string& args);

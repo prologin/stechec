@@ -308,8 +308,15 @@ void CPlayer::msgSkill(const MsgSkill* m)
 {
   enum eSkill skill = (enum eSkill) m->skill;
   if (r_->getState() == GS_REROLL)
+    {
+      r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+      if (m->choice == 1)
+        useSkill(skill);
+    }
+  else if (r_->getState() == GS_SKILL)
     r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
-  useSkill(skill);
+  else if ((m->choice == -1) && (m->client_id == r_->getOurTeamId()))
+    r_->setState(GS_SKILL);
   r_->onEvent(m);
 }
 

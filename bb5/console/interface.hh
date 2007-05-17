@@ -62,6 +62,7 @@ private:
                                       int choose, bool reroll);
   virtual void          evFollow();
   virtual void          evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
+  virtual void          evSkill(int team_id, int player_id, enum eSkill skill, int choice);
 
   xml::XMLConfig*       cfg_;
   Api*                  api_;

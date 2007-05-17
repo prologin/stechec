@@ -39,7 +39,8 @@
 inline Api::Api(CRules* rules)
   : BaseApi<CRules>(rules),
     selected_team_(NULL),
-    selected_player_(NULL)
+    selected_player_(NULL),
+    skilled_player_(NULL)
 {
 }
 
@@ -180,27 +181,33 @@ inline int Api::doReroll(bool reroll)
   return SUCCESS;
 }
 
-inline int Api::doUseSkill(enum eSkill skill)
+inline int Api::doUseSkill(enum eSkill skill, bool useIt)
 {
-  //FIXME: Complete assertions and tests.
-  // assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  assert(skilled_player_ != NULL);
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
 
-  if (skill != SK_NONE && !skilled_player_->hasSkill(skill))
+  if (skilled_player_ == NULL)
+    return BAD_PLAYER;
+  if (!skilled_player_->hasSkill(skill))
     {
       LOG2("Player %1 of team %2 doesn't have the skill %3.", skilled_player_->getId(),
-          skilled_player_->getTeamId(), skilled_player_->stringify(skill));
+          skilled_player_->getTeamId(), Player::stringify(skill));
       return INVALID_ACTION;
     }
-  if (rules_->getState() != GS_REROLL && rules_->getState() != GS_BLOCK)
+  if (rules_->getState() != GS_REROLL && rules_->getState() != GS_SKILL)
     {
-      LOG2("Cannot use the skill %1 or not now.", skilled_player_->stringify(skill));
+      LOG2("Cannot use the skill %1 or not now.", Player::stringify(skill));
+      return INVALID_ACTION;
+    }
+  if (rules_->getState() == GS_REROLL && !useIt)
+    {
+      LOG2("Use Api::doReroll(false) in order to accept a roll result.");
       return INVALID_ACTION;
     }
 
   MsgSkill msg(rules_->our_team_->getTeamId());
   msg.player_id = skilled_player_->getId();
   msg.skill = skill;
+  msg.choice = (useIt ? 1 : 0 );
   rules_->sendPacket(msg);
   return SUCCESS;
 }

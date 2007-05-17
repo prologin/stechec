@@ -36,6 +36,30 @@ block:
     input: block_2.cmd
     ref: block_2.ref
 
+block_bothdown:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: block_bothdown_1.cmd
+    ref: block_bothdown_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: block_bothdown_2.cmd
+    ref: block_bothdown_2.ref
+
+block_stumble:
+  client_1:
+    team: team.xml
+    formation: formation.xml
+    input: block_stumble_1.cmd
+    ref: block_stumble_1.ref
+  client_2:
+    team: team.xml
+    formation: formation.xml
+    input: block_stumble_2.cmd
+    ref: block_stumble_2.ref
+
 block2:
   client_1:
     team: team.xml

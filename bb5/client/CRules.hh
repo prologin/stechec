@@ -60,8 +60,11 @@ public:
   virtual void serialize(std::ostream& os) const;
   virtual void unserialize(std::istream& is);
 
-  //! @brief Get the api.
+  //! @brief Gets the api.
   virtual Api* getApi();
+
+  //! @brief Gets our team id.
+  int getOurTeamId() const;
 
 private:
 

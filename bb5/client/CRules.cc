@@ -75,6 +75,11 @@ Api*    CRules::getApi()
   return api_;
 }
 
+int         CRules::getOurTeamId() const
+{
+  return our_team_->getTeamId();
+}
+
 const char* CRules::tokenToString(unsigned token) const
 {
   if (token >= sizeof (bb5_token_str) / sizeof (const char *))

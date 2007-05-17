@@ -64,6 +64,9 @@ public:
   //! @brief Goes in the reserve if he can.
   void prepareKickoff();
 
+  //! @brief Sets the given skill as the only usable skill.
+  void setUsableSkill(enum eSkill skill);
+
   //! @brief Checks for armour value and eventually injury.
   void checkArmour(int av_mod, int inj_mod);
   //! @brief Rolls for injury and sets player status.
@@ -74,6 +77,12 @@ public:
   void considerBlockDices(bool reroll);
   //! @brief Applies block dice roll result.
   void resolveBlockDice(int chosen_dice);
+  //! @brief Applies BBOTH_DOWN block dice roll result.
+  void resolveBlockBothDownDefender(bool block);
+  //! @brief Applies BBOTH_DOWN block dice roll result.
+  void resolveBlockBothDownAttacker(bool block);
+  //! @brief Applies BDEFENDER_STUMBLE block dice roll result.
+  void resolveBlockDefenderStumble(bool dodge);
   //! @brief Sets pusher of this player.
   void setPusher(SPlayer* p);
   //! @brief Tries to push the targetted player to a square. Eventually

@@ -19,6 +19,14 @@ EXTRA_DIST +=					\
 	block_1.ref				\
 	block_2.cmd				\
 	block_2.ref				\
+	block_bothdown_1.cmd			\
+	block_bothdown_1.ref			\
+	block_bothdown_2.cmd			\
+	block_bothdown_2.ref			\
+	block_stumble_1.cmd			\
+	block_stumble_1.ref			\
+	block_stumble_2.cmd			\
+	block_stumble_2.ref			\
 	block2_1.cmd				\
 	block2_1.ref				\
 	block2_2.cmd				\
@@ -87,6 +95,8 @@ MY_TESTS =					\
 	basic					\
 	blitz1					\
 	block					\
+	block_bothdown				\
+	block_stumble				\
 	block2					\
 	blockfollow1				\
 	blockfollow2				\

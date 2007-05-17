@@ -64,7 +64,7 @@ Input::InputCommand Input::main_cmd_[] = {
   {"giveBall", &Input::cmdGiveBall, "<id>|give the ball to the player'id'"},
   {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
   {"reroll", &Input::cmdReroll, "reroll the dice(s)"},
-  {"skill", &Input::cmdSkill, "<s>|use the skill <s>"},
+  {"skill", &Input::cmdSkill, "<subcmd>|choose to use or ignore a skill ('help skill')"},
   {"accept", &Input::cmdAccept, "accept result of the dice(s)"},
   {"end", &Input::cmdEnd, "end turn"},
   {"declare", &Input::cmdDeclare, "<subcmd>|print some informations ('help declare')"},
@@ -112,6 +112,12 @@ Input::InputSubCommand Input::block_cmd_[] = {
   {"stay", &Input::cmdBlockStay, "stay after a block."},
   {"push", &Input::cmdBlockPush, "<n>|choose the square to push the player in."},
   {"", &Input::cmdBlockBlock, "<id> <d_id>|block with player 'id' player 'd_id'"},
+  {NULL, NULL, NULL}
+};
+
+Input::InputSubCommand Input::skill_cmd_[] = {
+  {"use", &Input::cmdUseSkill, "<s>|use the skill <s>"},
+  {"ignore", &Input::cmdIgnoreSkill, "<s>|ignore the skill <s>"},
   {NULL, NULL, NULL}
 };
 
@@ -185,6 +191,13 @@ void Input::cmdHelp(const string& cmd, const string&)
             return;
           cmd_name = block_cmd_[i].name;
           cmd_doc = block_cmd_[i].doc;
+        }
+      else if (cmd == "skill")
+        {
+          if (skill_cmd_[i].name == NULL)
+            return;
+          cmd_name = skill_cmd_[i].name;
+          cmd_doc = skill_cmd_[i].doc;
         }
       else if (cmd == "declare")
         {
@@ -262,19 +275,39 @@ void Input::cmdReroll(const string&, const string&)
   api_->doReroll(true);
 }
 
-void Input::cmdSkill(const string& cmd, const string&)
+void Input::cmdSkill(const string& cmd, const string& args)
+{
+  if (cmd == "use")
+    applyCmdSkill(true, args);
+  else if (cmd == "ignore")
+    applyCmdSkill(false, args);
+  else
+    cout << "Wrong skill command usage ('help skill')." << endl;
+}
+
+void Input::cmdUseSkill(const string& args)
+{
+  applyCmdSkill(true, args);
+}
+
+void Input::cmdIgnoreSkill(const string& args)
+{
+  applyCmdSkill(false, args);
+}
+
+void Input::applyCmdSkill(bool useIt, const string& args)
 {
   enum eSkill skill = SK_NONE;
   bool matches = false;
   while (skill != SK_SUREHANDS && !matches)
     {
       skill = (enum eSkill)(skill + 1);
-      matches = (cmd == Player::stringify(skill));
+      matches = (args == Player::stringify(skill));
     }
   if (matches)
-    api_->doUseSkill(skill);
+    api_->doUseSkill(skill, useIt);
   else
-    cout << "Unknown skill parameter `" << cmd << "'." << endl;
+    cout << "Unknown skill `" << args << "'." << endl;
 }
 
 void Input::cmdAccept(const string&, const string&)
@@ -841,6 +874,24 @@ char* cmd_generator_block(const char* text, int state)
   return NULL;
 }
 
+// Get next matching word in 'skill' command
+char* cmd_generator_skill(const char* text, int state)
+{
+  static int list_index;
+  static int len;
+  const char* name;
+
+  if (state == 0)
+    {
+      list_index = 0;
+      len = strlen(text);
+    }
+  while ((name = input_inst->skill_cmd_[list_index++].name) != NULL)
+    if (strncmp(name, text, len) == 0)
+      return strdup(name);
+  return NULL;
+}
+
 // Get next matching word in 'declare' command
 char* cmd_generator_declare(const char* text, int state)
 {
@@ -902,6 +953,8 @@ char** cmd_completion(const char* text, int start, int)
     matches = rl_completion_matches(text, cmd_generator_place);
   else if (strncmp(rl_line_buffer, "block", 5) == 0)
     matches = rl_completion_matches(text, cmd_generator_block);
+  else if (strncmp(rl_line_buffer, "skill", 2) == 0)
+    matches = rl_completion_matches(text, cmd_generator_skill);
   else if (strncmp(rl_line_buffer, "declare", 4) == 0)
     matches = rl_completion_matches(text, cmd_generator_declare);
   else if (strncmp(rl_line_buffer, "help", 4) == 0)
