@@ -25,8 +25,8 @@ public:
   STeamMsg(SRules *r);
   ~STeamMsg();
 
-  void setTeam(int team_id, STeam* p);
-  
+  void setTeam(int team_id, STeam* t);
+
 private:
   STeam* getTeam(int token, int team_id);
 

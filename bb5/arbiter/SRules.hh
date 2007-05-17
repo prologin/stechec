@@ -93,11 +93,13 @@ public:
 
   //! @brief Announce a turnover.
   void turnover(enum eTurnOverMotive motive);
-  //! @brief Return true if a turnover has been announced.
-  bool isTurnover();
+  //! @brief Gets the motive of the turnover, or TOM_NONE.
+  enum eTurnOverMotive getTurnoverMotive();
 
-  //! @brief Adapt score and launch the kickoff
-  void touchdown();
+  //! @brief Keeps the scoring player in mind and annonces a turnover.
+  void touchdooown(SPlayer* p);
+  //! @brief Launches kick-off, if needed, after a touchdooown.
+  void afterTouchdooown();
 
   virtual void serialize(std::ostream& os) const;
   virtual void unserialize(std::istream& is);
@@ -114,7 +116,7 @@ private:
   //! @brief Called before a kickoff.
   void initKickoff();
   
-  void checkGameEnd();
+  bool checkGameEnd();
 
   void msgInitGame(const MsgInitGame* m);
   void msgDrawKicker(const MsgDrawKicker* m);
@@ -126,6 +128,7 @@ private:
 
   Timer     timer_;
 
+  //! @brief Current turn number, in the range of [1, NB_TURNS], or 0 (half-time kick-off).
   int       cur_turn_;
   int       cur_half_;
   enum eTurnOverMotive turnover_;
@@ -142,6 +145,7 @@ private:
   int       coach_begin_;
   //! @brief Coach who receives the ball.
   int       coach_receiver_;
+  int       scoring_team_;
 };
 
 # include "SRules.hxx"

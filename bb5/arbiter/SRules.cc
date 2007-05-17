@@ -21,6 +21,9 @@
 #include "SPlayerMsg.hh"
 #include "xml/xml_config.hh"
 
+//FIXME: 3 is for tests, must be 8.
+int NB_TURNS = 3;
+
 SRules::SRules()
   : cur_turn_(0),
     cur_half_(0),
@@ -31,6 +34,7 @@ SRules::SRules()
 {
   team_[0] = NULL;
   team_[1] = NULL;
+  scoring_team_ = -1;
   timer_.setAllowedTime(60 * 4); // 4min per turn.
 
   dice_ = new Dice(this);
@@ -105,7 +109,7 @@ void SRules::serverProcess()
     }
 }
 
-void SRules::checkGameEnd()
+bool SRules::checkGameEnd()
 {
   // Game ends if scores differ after 2 or 3 halfs.
   if (cur_half_ > 2 && team_[0]->getScore() != team_[1]->getScore())
@@ -115,7 +119,9 @@ void SRules::checkGameEnd()
       setState(GS_END);
       MsgEndGame pkt;
       sendPacket(pkt);
+      return true;
     }
+  return false;
 }
 
 void SRules::initHalf()
@@ -135,7 +141,8 @@ void SRules::initHalf()
         }
     }
 
-  checkGameEnd();
+  if (checkGameEnd())
+    return;
 
   // Coaches recover their Rerolls, except in overtime
   if (cur_half_ != 3) 
@@ -198,7 +205,8 @@ void SRules::turnover(enum eTurnOverMotive motive)
 {
   if ((turnover_ == TOM_NONE) || (motive == TOM_TIMEEXCEEDED) || (motive == TOM_TOUCHDOOOWN))
     {
-      turnover_ = motive;
+      if (turnover_ != TOM_TOUCHDOOOWN || motive != TOM_TIMEEXCEEDED)
+        turnover_ = motive;
       MsgTurnOver pkt(getCurrentTeamId());
       pkt.motive = motive;
       sendPacket(pkt);
@@ -207,38 +215,49 @@ void SRules::turnover(enum eTurnOverMotive motive)
     action_handler_->process();
 }
 
-bool SRules::isTurnover()
+enum eTurnOverMotive SRules::getTurnoverMotive()
 {
-  return (turnover_ != TOM_NONE);
+  return turnover_;
 }
 
-
-void SRules::touchdown()
+void SRules::touchdooown(SPlayer* p)
 {
-  // For the moment, only the case of touchdowns score during the good turn
-  LOG3("TOUCHDOWN!!!!!!!");
-  // FIXME: update scores...
+  scoring_team_ = p->getTeamId();
+  turnover(TOM_TOUCHDOOOWN);
+}
 
+void SRules::afterTouchdooown()
+{
   // Let enough time to the scoring coach to cheer his team and place the ball.
   timer_.stop();
 
-  checkGameEnd();
+  // Check for a touchdooown scored during the turn of the opponent team.
+  if (getState() == GS_COACH1 && scoring_team_ == 1
+      || getState() == GS_COACH2 && scoring_team_ == 0)
+    {
+      if (getState() == GS_COACH1 && coach_begin_ == 1
+          || getState() == GS_COACH2 && coach_begin_ == 0)
+        cur_turn_++;
+      // Switch playing team
+      setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
+      LOG3("Skip turn `%1' of team `%2', because its scored during opponent turn.",
+          cur_turn_, scoring_team_);
+    }
 
   // Check it is not the last turn of the half
-  // FIXME: 3 is for tests. must be 8.
-  if (cur_turn_ == 3
+  if (cur_turn_ == NB_TURNS
       && (getState() == GS_COACH1 && coach_begin_ == 1
         || getState() == GS_COACH2 && coach_begin_ == 0))
     {
       initHalf();
+      return;
     }
-  else
-    {
-      coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
-      initKickoff();
-    }
-}
+  if (checkGameEnd())
+    return;
 
+  coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
+  initKickoff();
+}
 
 /*
 ** Handle messages received from the client
@@ -379,12 +398,12 @@ void SRules::nextTurn()
     LOG2("=== Next team plays turn `%1`", cur_turn_);
 
   // Finished ? Go on the next half ? 
-  // FIXME: 3 is for tests. must be 8.
-  if (cur_turn_ > 3)
+  if (cur_turn_ > NB_TURNS)
     {
       initHalf();
       return;
     }
+
   // Switch playing team
   setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
 

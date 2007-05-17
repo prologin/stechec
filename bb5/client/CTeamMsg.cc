@@ -26,6 +26,7 @@ CTeamMsg::CTeamMsg(CRules *r)
   r_->HANDLE_WITH(MSG_TEAMINFO, CTeamMsg, this, msgTeamInfo, GS_INITGAME);
   r_->HANDLE_WITH(MSG_PLAYERCREATE, CTeamMsg, this, msgPlayerCreate, GS_INITGAME);
   r_->HANDLE_WITH(MSG_REROLL, CTeamMsg, this, msgReroll, GS_REROLL);
+  r_->HANDLE_WITH(MSG_TOUCHDOOOWN, CTeamMsg, this, msgTouchdooown, 0);
 }
 
 CTeamMsg::~CTeamMsg()
@@ -68,4 +69,11 @@ void CTeamMsg::msgReroll(const MsgReroll* m)
   CTeam *t = getTeam(m->token, m->client_id);
   if (t != NULL)
     t->msgReroll(m);
+}
+
+void CTeamMsg::msgTouchdooown(const MsgTouchdooown* m)
+{
+  CTeam *t = getTeam(m->token, m->client_id);
+  if (t != NULL)
+    t->msgTouchdooown(m);
 }

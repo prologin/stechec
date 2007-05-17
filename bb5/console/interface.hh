@@ -51,6 +51,7 @@ private:
   virtual void          evGiveBall(int team_id);
   virtual void          evMoveTurnMarker();
   virtual void          evTurnOver(enum eTurnOverMotive motive);
+  virtual void          evTouchdooown(int team_id, int player_id);
   virtual void          evChat(const std::string& msg);
   virtual void          evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerMove(int team_id, int player_id, const Point& pos);

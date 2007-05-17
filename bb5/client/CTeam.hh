@@ -54,6 +54,7 @@ public:
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
   void msgReroll(const MsgReroll* m);
+  void msgTouchdooown(const MsgTouchdooown* m);
 
 private:
   CRules* r_;

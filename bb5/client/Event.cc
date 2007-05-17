@@ -73,6 +73,12 @@ void EventProcess::dispatch(const MsgTurnOver& pkt) const
 }
 
 template <>
+void EventProcess::dispatch(const MsgTouchdooown& pkt) const
+{
+  ev_->evTouchdooown(pkt.client_id, pkt.player_id);
+}
+
+template <>
 void EventProcess::dispatch(const MsgChat& pkt) const
 {
   ev_->evChat(packetToString(pkt.msg));

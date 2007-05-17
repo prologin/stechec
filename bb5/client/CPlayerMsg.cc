@@ -137,4 +137,3 @@ void CPlayerMsg::msgSkill(const MsgSkill* m)
   if (p != NULL)
     p->msgSkill(m);
 }
-

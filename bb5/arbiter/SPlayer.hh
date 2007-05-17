@@ -43,9 +43,9 @@ public:
   //! @brief Checks some things, if this player could be valid.
   bool acceptPlayerCreation();
 
-  //! @brief Checks if the player scores a touchdown,
-  //!   and eventually declares the touchdown.
-  bool checkAndDeclareTouchdown();
+  //! @brief Checks if the player scores a touchdooown,
+  //!   and eventually declares the touchdooown.
+  bool checkAndDeclareTouchdooown();
 
   //! @brief Sets player position.
   //! @note Use this function instead of setting pos_ directly,

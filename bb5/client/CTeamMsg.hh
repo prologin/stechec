@@ -42,6 +42,7 @@ private:
   void msgTeamInfo(const MsgTeamInfo* m);
   void msgPlayerCreate(const MsgPlayerCreate* m);
   void msgReroll(const MsgReroll* m);
+  void msgTouchdooown(const MsgTouchdooown* m);
 
   CRules* r_;
   CTeam* t_[2];

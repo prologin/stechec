@@ -319,4 +319,3 @@ void CPlayer::msgSkill(const MsgSkill* m)
     r_->setState(GS_SKILL);
   r_->onEvent(m);
 }
-

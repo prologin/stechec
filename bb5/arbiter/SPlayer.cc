@@ -44,13 +44,16 @@ bool SPlayer::acceptPlayerCreation()
   return true;
 }
 
-bool SPlayer::checkAndDeclareTouchdown() 
+bool SPlayer::checkAndDeclareTouchdooown() 
 {
   if (r_->getBall()->getOwner() == this)
     {
       if (pos_.row == ((ROWS - 1) * (1 - team_id_)))
         {
-          r_->touchdown();
+          LOG3("Player `%1' of team `%2' scores a TOUCHDOOOWN at %3!", id_, team_id_, pos_);
+          pm_->sendTouchdooown(this);
+          t_->incrementScore();
+          r_->touchdooown(this);
           return true;
         }
     }
@@ -709,7 +712,7 @@ void SPlayer::finishCatchBall(bool reroll, bool success)
     {
       LOG5("[t%1,p%2] succeeds to catch the ball.", team_id_, id_);
       r_->getBall()->setOwner(this);
-      if (!checkAndDeclareTouchdown())
+      if (!checkAndDeclareTouchdooown())
         {
           if (team_id_ == r_->getCurrentOpponentTeamId())
             {
@@ -771,7 +774,7 @@ void SPlayer::finishDodge(bool reroll, bool success)
         {
           tryPickUp();
         }
-      else if (!checkAndDeclareTouchdown())
+      else if (!checkAndDeclareTouchdooown())
         {
           ah_->process();
         }
@@ -827,7 +830,7 @@ void SPlayer::tryMove(Position& aim)
     {
       tryPickUp();
     }
-  else if (!checkAndDeclareTouchdown())
+  else if (!checkAndDeclareTouchdooown())
     {
       ah_->process();
     }
@@ -872,7 +875,7 @@ void SPlayer::finishPickUp(bool reroll, bool success)
     {
       LOG5("[t%1,p%2] succeds to pick up the ball.", team_id_, id_);
       r_->getBall()->setOwner(this); //FIXME: possibly breaks client compatibility.
-      if (!checkAndDeclareTouchdown())
+      if (!checkAndDeclareTouchdooown())
         {
           ah_->process();
         }

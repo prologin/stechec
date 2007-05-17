@@ -117,6 +117,12 @@ void SPlayerMsg::sendStatus(enum eStatus status, SPlayer* p)
   r_->sendPacket(pkt);
 }
 
+void SPlayerMsg::sendTouchdooown(SPlayer* p)
+{
+  MsgTouchdooown msg(p->getTeamId());
+  msg.player_id = p->getId();
+  r_->sendPacket(msg);
+}
 
 /*
 ** Messages receivers.

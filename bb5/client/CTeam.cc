@@ -156,3 +156,9 @@ void CTeam::msgReroll(const MsgReroll* m)
     }
   r_->onEvent(m);
 }
+
+void CTeam::msgTouchdooown(const MsgTouchdooown* m)
+{
+  incrementScore();
+  r_->onEvent(m);
+}

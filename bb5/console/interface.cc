@@ -324,6 +324,12 @@ void CmdLineInterface::evTurnOver(enum eTurnOverMotive motive)
     }
 }
 
+void CmdLineInterface::evTouchdooown(int team_id, int player_id)
+{
+  cout << "Player `" << player_id << "' of team `"
+       << team_id << "' scores a touchdooown!" << endl;
+}
+
 void CmdLineInterface::evChat(const std::string& msg)
 {
   cout << "<CHAT> " << msg << endl;

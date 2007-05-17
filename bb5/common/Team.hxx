@@ -140,3 +140,9 @@ inline bool Team<T>::isPlacementValid() const
 
   return (on_field == 11 || reserve == 0);
 }
+
+template <typename T>
+inline void Team<T>::incrementScore()
+{
+  score_++;
+}

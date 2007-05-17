@@ -24,11 +24,17 @@
 
 # include "PacketHandler.hh"
 
+DECLARE_PACKET(MSG_REROLL, MsgReroll)
+  bool reroll;
+END_PACKET
 //FIXME: 'race' info is missing.
 DECLARE_PACKET(MSG_TEAMINFO, MsgTeamInfo)
   int team_name[8];
   int coach_name[8];
   int reroll;
+END_PACKET
+DECLARE_PACKET(MSG_TOUCHDOOOWN, MsgTouchdooown)
+  int player_id;
 END_PACKET
 
 
@@ -61,6 +67,8 @@ public:
   void initReroll();
   void resetTurn();
   bool isPlacementValid() const;
+
+  void incrementScore();
   
 protected:
   int team_id_;   ///< Team id (0 or 1).

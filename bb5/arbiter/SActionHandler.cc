@@ -219,14 +219,12 @@ void SActionHandler::process(bool reroll, int choice)
   ElementaryAction ea;
   if (eal_.empty())
     {
-      if (r_->isTurnover())
-        {
-          r_->nextTurn();
-        }
+      if (r_->getTurnoverMotive() == TOM_TOUCHDOOOWN)
+        r_->afterTouchdooown();
+      else if (r_->getTurnoverMotive() != TOM_NONE)
+        r_->nextTurn();
       else if (r_->getState() == GS_KICKOFF)
-        {
-          r_->finishKickoff();
-        }
+        r_->finishKickoff();
       return;
     }
   ea = eal_.back();
@@ -255,7 +253,7 @@ void SActionHandler::process(bool reroll, int choice)
         ea.player->resolveBlockDefenderStumble(reroll);
         break;
       case EA_MOVE:
-        if (r_->isTurnover())
+        if (r_->getTurnoverMotive() != TOM_NONE)
           process();
         else
           ea.player->tryMove(ea.aim_position);

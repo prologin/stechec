@@ -43,6 +43,7 @@ public:
   void sendRoll(enum eRoll type, int result, int modifier, int required, int reroll, enum eSkill skill, SPlayer* p);
   void sendSkillQuestion(enum eSkill skill, SPlayer* p);
   void sendStatus(enum eStatus status, SPlayer* p);
+  void sendTouchdooown(SPlayer* p);
 
 private:
   SPlayer* getPlayer(int token, int team_id, int player_id);
