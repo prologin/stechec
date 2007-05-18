@@ -341,19 +341,19 @@ void CmdLineInterface::evChat(const std::string& msg)
 
 void CmdLineInterface::evPlayerStatus(int team_id, int player_id, enum eStatus status)
 {
-  cerr << "Player `" << player_id << "' of team `"
+  cout << "Player `" << player_id << "' of team `"
        << team_id << "' is now marked as `" << Player::stringify(status) << "'." << endl;
 }
 
 void CmdLineInterface::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
-  cerr << "Player `" << player_id << "' of team `"
+  cout << "Player `" << player_id << "' of team `"
        << team_id << "' has moved to `" << pos << "'." << endl;
 }
 
 void CmdLineInterface::evPlayerMove(int team_id, int player_id, const Point& pos)
 {
-  cerr << "Player `" << player_id << "' of team `"
+  cout << "Player `" << player_id << "' of team `"
     << team_id << "' has moved to `" << pos << "'." << endl;
 }
 
