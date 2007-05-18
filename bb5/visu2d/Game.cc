@@ -167,9 +167,10 @@ void Game::unselectAllPlayer()
 ** Events
 */
 
-void Game::evIllegal(int token)
+void Game::evIllegal(int team_id, int token)
 {
-  LOG4("An illegal token was received (%1).", bb5_token_str[token]);
+  LOG4("An illegal action (token: %1) has tried by the coach `%2'.",
+      bb5_token_str[token], team_id);
 }
 
 void Game::evNewTurn(int team_id, int cur_half, int cur_turn)

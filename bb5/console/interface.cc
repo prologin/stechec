@@ -94,16 +94,16 @@ void CmdLineInterface::printGlobal()
        << "  - current game state: " << api_->gameStateString() << "\n"
     //       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
     //       << "' (" << api_->getWeather()->getWeather() << ")\n"
-       << "  - ball position: " << api_->ball() << "\n"
+       << "  - ball position: " << Position(api_->ball()) << "\n"
        << "  - our team  : '" << t->getTeamName() << "', coached by '"
        << t->getCoachName() << "' (" << t->getNbPlayer()
-       << " players)\n";
+       << " players), scored " << t->getScore() << " point(s).\n";
 
   api_->selectTeam(THEM);
   t = api_->getTeam();
   cout << "  - other team: '" << t->getTeamName() << "', coached by '"
        << t->getCoachName() << "' (" << t->getNbPlayer()
-       << " players)" << endl;
+       << " players), scored " << t->getScore() << " point(s)." << endl;
 }
 
 // Print the field, in ascii art.
@@ -228,9 +228,10 @@ void CmdLineInterface::printPlayer(int player_id, int team_id)
 // Events (virtual methods called from Event).
 //
 
-void CmdLineInterface::evIllegal(int was_token)
+void CmdLineInterface::evIllegal(int team_id, int was_token)
 {
-  cout << "An illegal action was tried (token: " << bb5_token_str[was_token] << "). Bouh." << endl;
+  cout << "An illegal action (token: " << bb5_token_str[was_token]
+    << ") was tried by the coach `" << team_id << "'. Bouh." << endl;
 }
 
 void CmdLineInterface::evInitGame()
@@ -326,8 +327,11 @@ void CmdLineInterface::evTurnOver(enum eTurnOverMotive motive)
 
 void CmdLineInterface::evTouchdooown(int team_id, int player_id)
 {
-  cout << "Player `" << player_id << "' of team `"
-       << team_id << "' scores a touchdooown!" << endl;
+  if (player_id == -1)
+    cout << "Team `" << team_id << "' scores a penalty shoot-out." << endl;
+  else
+    cout << "Player `" << player_id << "' of team `"
+      << team_id << "' scores a touchdooown!" << endl;
 }
 
 void CmdLineInterface::evChat(const std::string& msg)
@@ -335,20 +339,28 @@ void CmdLineInterface::evChat(const std::string& msg)
   cout << "<CHAT> " << msg << endl;
 }
 
+void CmdLineInterface::evPlayerStatus(int team_id, int player_id, enum eStatus status)
+{
+  cerr << "Player `" << player_id << "' of team `"
+       << team_id << "' is now marked as `" << Player::stringify(status) << "'." << endl;
+}
+
 void CmdLineInterface::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
   cerr << "Player `" << player_id << "' of team `"
-       << team_id << "' has moved to `" << pos << "'" << endl;
+       << team_id << "' has moved to `" << pos << "'." << endl;
 }
 
-void CmdLineInterface::evPlayerMove(int, int player_id, const Point& pos)
+void CmdLineInterface::evPlayerMove(int team_id, int player_id, const Point& pos)
 {
-  cerr << "Player `" << player_id << "' has moved to `" << pos << "'" << endl;
+  cerr << "Player `" << player_id << "' of team `"
+    << team_id << "' has moved to `" << pos << "'." << endl;
 }
 
-void CmdLineInterface::evPlayerKnocked(int, int player_id)
+void CmdLineInterface::evPlayerKnocked(int team_id, int player_id)
 {
-  cout << "Player `" << player_id << "' has been knocked down." << endl;
+  cout << "Player `" << player_id << "' of team `"
+    << team_id << "' has been knocked down." << endl;
 }
 
 void CmdLineInterface::evGiveBall(int team_id)
@@ -382,14 +394,14 @@ void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_ty
        << "' : roll [" << result << "] + ["<< modifier << "], required : ["
        << required << "]." << endl;
 
-  if (api_->getTeamId() == team_id && (reroll || (skill == SK_NONE)))
+  if (api_->getTeamId() == team_id && (reroll || (skill != SK_NONE)))
     {
       api_->selectSkilledPlayer(player_id);
       cout << "You can"
         << ((reroll) ? " use a team 'reroll' or" : "")
-        << ((skill == SK_NONE) ? " use the 'skill " : "")
-        << ((skill == SK_NONE) ? Player::stringify(skill) : "")
-        << ((skill == SK_NONE) ? "' or" : "")
+        << ((skill != SK_NONE) ? " use the 'skill " : "")
+        << ((skill != SK_NONE) ? Player::stringify(skill) : "")
+        << ((skill != SK_NONE) ? "' or" : "")
         << " 'accept' this result." << endl;
       input_.stopWaiting();
     }

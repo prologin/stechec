@@ -43,7 +43,7 @@ private:
   bool                checkInput();
 
   // All callbacks.
-  virtual void          evIllegal(int was_token);
+  virtual void          evIllegal(int team_id, int was_token);
   virtual void          evInitGame();
   virtual void          evDrawKicker(int team_id);
   virtual void          evNewTurn(int player_id, int cur_half, int cur_turn);
@@ -53,6 +53,7 @@ private:
   virtual void          evTurnOver(enum eTurnOverMotive motive);
   virtual void          evTouchdooown(int team_id, int player_id);
   virtual void          evChat(const std::string& msg);
+  virtual void          evPlayerStatus(int team_id, int player_id, enum eStatus status);
   virtual void          evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerKnocked(int team_id, int player_id);

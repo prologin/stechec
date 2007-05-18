@@ -261,6 +261,7 @@ void SRules::afterTouchdooown()
   if (checkGameEnd())
     return;
 
+  turnover_ = TOM_NONE;
   coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
   initKickoff();
 }

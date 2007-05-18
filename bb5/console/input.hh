@@ -85,7 +85,6 @@ private:
   void cmdSkill(const std::string& cmd, const std::string& args);
   void cmdAccept(const std::string& cmd, const std::string& args);
   void cmdGiveBall(const std::string& cmd, const std::string& args);
-  void cmdDice(const std::string& cmd, const std::string& args);
   void cmdCheat(const std::string& cmd, const std::string& args);
   void cmdWait(const std::string& cmd, const std::string& args);
 
@@ -119,6 +118,7 @@ private:
 
   // Block commands
   void cmdBlockBlock(const std::string& args);
+  void cmdBlockDice(const std::string& args);
   void cmdBlockStay(const std::string& args);
   void cmdBlockFollow(const std::string& args);
   void cmdBlockPush(const std::string& args);

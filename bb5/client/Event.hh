@@ -36,7 +36,7 @@ public:
   Event() {}
   virtual ~Event() {}
 
-  virtual void evIllegal(int was_token);
+  virtual void evIllegal(int team_id, int was_token);
   virtual void evInitGame() {}
   virtual void evNewTurn(int team_id, int cur_half, int cur_turn);
   virtual void evEndGame() {}
@@ -67,7 +67,7 @@ public:
   virtual void evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
 };
 
-inline void Event::evIllegal(int) {}
+inline void Event::evIllegal(int, int) {}
 inline void Event::evNewTurn(int, int, int) {}
 inline void Event::evResult(int, int, enum eRoll, int, int, int, bool, enum eSkill) {}
 inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[], int, bool) {}

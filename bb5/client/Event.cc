@@ -33,7 +33,7 @@ void EventProcess::dispatch(const CustomEvent& ie) const
 template <>
 void EventProcess::dispatch(const MsgIllegal& m) const
 {
-  ev_->evIllegal(m.was_token);
+  ev_->evIllegal(m.client_id, m.was_token);
 }
 
 template <>

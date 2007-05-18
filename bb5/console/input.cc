@@ -54,78 +54,78 @@ char* cmd_completion_foo(const char*, int);
 //
 
 Input::InputCommand Input::main_cmd_[] = {
-  {"quit", &Input::cmdQuit, "exit the game, CU"},
-  {"help", &Input::cmdHelp, "print this help"},
-  {"print", &Input::cmdPrint, "<subcmd>|print some informations ('help print')"},
-  {"say", &Input::cmdSay, "<s>|chat with others"},
-  {"choose", &Input::cmdChoose, "<subcmd>|choose to kick off or receive ('help choose')"},
-  {"place", &Input::cmdPlace, "<subcmd>|set up team placement ('help place')"},
-  {"kickoff", &Input::cmdKickOff, "<r> <c>|place the ball on <r, c>"},
-  {"giveBall", &Input::cmdGiveBall, "<id>|give the ball to the player'id'"},
-  {"illegal", &Input::cmdIllegal, "ask for an illegal procedure"},
-  {"reroll", &Input::cmdReroll, "reroll the dice(s)"},
-  {"skill", &Input::cmdSkill, "<subcmd>|choose to use or ignore a skill ('help skill')"},
-  {"accept", &Input::cmdAccept, "accept result of the dice(s)"},
-  {"end", &Input::cmdEnd, "end turn"},
-  {"declare", &Input::cmdDeclare, "<subcmd>|print some informations ('help declare')"},
-  {"move", &Input::cmdMove, "<subcmd>|move something ('help move')"},
-  {"standup", &Input::cmdStandUp, "<id>|stand up the player'id'"},
-  {"block", &Input::cmdBlock, "<subcmd>|block action ('help block')"},
-  {"pass", &Input::cmdPass, "<p> <r> <c>|pass the ball with player 'id' at specified position"},
-  {"dice", &Input::cmdDice, "<n>|choose the dice number <n> for the block."},
-  {"cheat", &Input::cmdCheat, "<n> <n> <...>|force next dice rolls to give these results (cheat)."},
-  {"wait", &Input::cmdWait, "do not process input until it's your turn."},
+  {"quit", &Input::cmdQuit, "Exit the game, CU."},
+  {"help", &Input::cmdHelp, "Print this help."},
+  {"print", &Input::cmdPrint, "<subcmd>|Print some informations. ('help print')"},
+  {"say", &Input::cmdSay, "<s>|Chat with others."},
+  {"choose", &Input::cmdChoose, "<subcmd>|Choose to kick off or receive. ('help choose')"},
+  {"place", &Input::cmdPlace, "<subcmd>|Set up team placement. ('help place')"},
+  {"kickoff", &Input::cmdKickOff, "<r> <c>|Kick off the ball to [<r> <c>]."},
+  {"giveBall", &Input::cmdGiveBall, "<p>|Give the ball to the player <p>."},
+  {"illegal", &Input::cmdIllegal, "Ask for an illegal procedure, absolutely useless."},
+  {"reroll", &Input::cmdReroll, "Reroll the dice(s) using a team reroll."},
+  {"skill", &Input::cmdSkill, "<subcmd>|Skill usage. ('help skill')"},
+  {"accept", &Input::cmdAccept, "Accept result of the dice(s)."},
+  {"end", &Input::cmdEnd, "End turn."},
+  {"declare", &Input::cmdDeclare, "<subcmd>|Declare an action. ('help declare')"},
+  {"move", &Input::cmdMove, "<subcmd>|Move something. ('help move')"},
+  {"standup", &Input::cmdStandUp, "<p>|Stand up the player <p>."},
+  {"block", &Input::cmdBlock, "<subcmd>|Block action. ('help block')"},
+  {"pass", &Input::cmdPass, "<p> <r> <c>|Pass the ball from player <p> to [<r> <c>]."},
+  {"cheat", &Input::cmdCheat, "<n> <...>|Force next dice rolls to give these results (cheat)."},
+  {"wait", &Input::cmdWait, "Do not process input until it's your turn."},
   {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::print_cmd_[] = {
-  {"global", &Input::cmdPrintGlobal, "print game globals"},
-  {"field", &Input::cmdPrintField, "print field in ascii art"},
-  {"players", &Input::cmdPrintPlayers, "print player list"},
-  {"us", &Input::cmdPrintUs, "<n>|print info for our team player <n>"},
-  {"them", &Input::cmdPrintThem, "<n>|print info for other team player <n>"},
-  {"", &Input::cmdPrintString, "<s>|simply display the string <s>"},
+  {"global", &Input::cmdPrintGlobal, "Print game globals."},
+  {"field", &Input::cmdPrintField, "Print field in ascii art."},
+  {"players", &Input::cmdPrintPlayers, "Print players list."},
+  {"us", &Input::cmdPrintUs, "<p>|Print info for our team player <p>."},
+  {"them", &Input::cmdPrintThem, "<p>|Print info for other team player <p>."},
+  {"", &Input::cmdPrintString, "<s>|Simply display the string <s>."},
   {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::move_cmd_[] = {
-  {"turnmarker", &Input::cmdMoveTurnMarker, "move the turn marker"},
-  {"", &Input::cmdMovePlayer, "<p> <r> <c>|move player <p> to <r,c>"},
+  {"turnmarker", &Input::cmdMoveTurnMarker, "Move the turn marker, absolutely useless."},
+  {"", &Input::cmdMovePlayer, "<p> <r> <c>|Move player <p> to [<r> <c>]."},
   {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::choose_cmd_[] = {
-  {"kickoff", &Input::cmdChooseKickoff, "Choose to kick off first"},
-  {"receive", &Input::cmdChooseReceive, "Choose to receive first"},
+  {"kickoff", &Input::cmdChooseKickoff, "Choose to kick off the ball first."},
+  {"receive", &Input::cmdChooseReceive, "Choose to receive the ball first."},
   {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::place_cmd_[] = {
-  {"", &Input::cmdPlaceField, "<p> <r> <c>|Place the player <p> at <r,c>."},
+  {"", &Input::cmdPlaceField, "<p> <r> <c>|Place the player <p> at [<r> <c>]."},
   {"reserve", &Input::cmdPlaceReserve, "<p>|Place the player <p> in the reserve."},
   {"end", &Input::cmdEndPlacement, "End team placement."},
   {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::block_cmd_[] = {
-  {"follow", &Input::cmdBlockFollow, "follow after a block."},
-  {"stay", &Input::cmdBlockStay, "stay after a block."},
-  {"push", &Input::cmdBlockPush, "<n>|choose the square to push the player in."},
-  {"", &Input::cmdBlockBlock, "<id> <d_id>|block with player 'id' player 'd_id'"},
+  {"", &Input::cmdBlockBlock, "<att> <def>|Block <def> with player <att>."},
+  {"dice", &Input::cmdBlockDice, "<n>|Choose a block dice."},
+  {"follow", &Input::cmdBlockFollow, "Follow after a block."},
+  {"stay", &Input::cmdBlockStay, "Stay after a block."},
+  {"push", &Input::cmdBlockPush, "<n>|Choose a square to push the player in."},
   {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::skill_cmd_[] = {
-  {"use", &Input::cmdUseSkill, "<s>|use the skill <s>"},
-  {"ignore", &Input::cmdIgnoreSkill, "<s>|ignore the skill <s>"},
+  {"use", &Input::cmdUseSkill, "<s>|Use the skill <s>."},
+  {"ignore", &Input::cmdIgnoreSkill, "<s>|Ignore the skill <s>."},
   {NULL, NULL, NULL}
 };
 
 Input::InputSubCommand Input::declare_cmd_[] = {
-  {"move", &Input::cmdDeclareMove, "<p>|declare a move action for player <p>"},
-  {"block", &Input::cmdDeclareBlock, "<p>|declare a block action for player <p>"},
-  {"blitz", &Input::cmdDeclareBlitz, "<p>|declare a blitz action for player <p>"},
-  {"pass", &Input::cmdDeclarePass, "<p>|declare a pass action for player <p>"},
+  {"move", &Input::cmdDeclareMove, "<p>|Declare a move action for player <p>."},
+  {"block", &Input::cmdDeclareBlock, "<p>|Declare a block action for player <p>."},
+  {"blitz", &Input::cmdDeclareBlitz, "<p>|Declare a blitz action for player <p>."},
+  {"pass", &Input::cmdDeclarePass, "<p>|Declare a pass action for player <p>."},
   {NULL, NULL, NULL}
 };
 
@@ -147,11 +147,21 @@ void Input::cmdHelp(const string& cmd, const string&)
 
   // Print head
   if (cmd == "print")
-    cout << "Command list for 'print':\n";
+    cout << "Commands list for 'print':\n";
+  else if (cmd == "choose")
+    cout << "Commands list for 'choose':\n";
+  else if (cmd == "place")
+    cout << "Commands list for 'place':\n";
+  else if (cmd == "choose")
+    cout << "Commands list for 'skill':\n";
+  else if (cmd == "declare")
+    cout << "Commands list for 'declare':\n";
   else if (cmd == "move")
-    cout << "Command list for 'move':\n";
+    cout << "Commands list for 'move':\n";
+  else if (cmd == "block")
+    cout << "Commands list for 'block':\n";
   else
-    cout << "Quick command list:\n";
+    cout << "Quick commands list:\n";
   cout << setiosflags(ios::left);
   
   for (int i = 0; ; i++)
@@ -377,14 +387,6 @@ void Input::cmdEnd(const string&, const string&)
   api_->doEndTurn();
 }
 
-void Input::cmdDice(const string& cmd, const string& args)
-{
-  istringstream is(cmd + " " + args);
-  int n = -1;
-  is >> n;
-  api_->doChooseBlockDice(n);
-}
-
 void Input::cmdGiveBall(const string& cmd, const string& args)
 {
   istringstream is(cmd + " " + args);
@@ -531,6 +533,14 @@ void Input::cmdBlockBlock(const string& args)
   is >> p_did;
   api_->selectPlayer(p_id);
   api_->doBlockPlayer(p_did);
+}
+
+void Input::cmdBlockDice(const string& args)
+{
+  istringstream is(args);
+  int n = -1;
+  is >> n;
+  api_->doChooseBlockDice(n);
 }
 
 void Input::cmdBlockFollow(const std::string&)
