@@ -1,5 +1,5 @@
   - you are coach '0'
   - current game state: GS_COACH1
-  - ball position: [x:5 y:3]
-  - our team  : 'Amazon', coached by 'coach' (11 players)
-  - other team: 'Amazon', coached by 'coach' (11 players)
+  - ball position: [row/y:3 col/x:5]
+  - our team  : 'Amazon', coached by 'coach' (11 players), scored 0 point(s).
+  - other team: 'Amazon', coached by 'coach' (11 players), scored 0 point(s).
