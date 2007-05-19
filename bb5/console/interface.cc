@@ -162,7 +162,7 @@ void CmdLineInterface::printField()
             if (api_->ball() == pos)
               cout << " @ ";
             else
-              cout << " · ";
+              cout << " . ";
 
           // Keep at least one space as separator.
           if (player_id < 10)
