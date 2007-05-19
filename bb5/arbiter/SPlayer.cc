@@ -323,7 +323,10 @@ void SPlayer::tryBlock()
   if (getAction() == DCL_BLOCK)
     setHasPlayed();
   else
-    ma_remain_ = ma_remain_ - 1;
+    {
+      has_blocked_ = true;
+      ma_remain_ = ma_remain_ - 1;
+    }
   
   int mod_st_atk = getSt();
   int mod_st_df = target_->getSt();
@@ -980,7 +983,7 @@ void SPlayer::tryThrow()
   roll_attempted_ = R_THROW;
   setRerollAvailability();
   ma_remain_ = 0;
-  has_played_ = true;
+  setHasPlayed();
   rollThrow();
 }
 
@@ -1038,6 +1041,20 @@ void SPlayer::msgBlock(const MsgBlock* m)
 {
   if (!t_->canDoAction(m, this))
     return;
+  if (has_blocked_)
+    {
+      LOG3("Player `%1' of team `%2' cannot block twice in the same turn.",
+          id_, team_id_);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
+  if (ma_remain_ < 1)
+    {
+      LOG3("Player `%1' of team `%2' doesn't have enough movement remaining to block.",
+          id_, team_id_);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
   SPlayer* target = r_->getOpponentTeam(team_id_)->getPlayer(m->opponent_id);
   if (target == NULL
       || target->getTeamId() == getTeamId()
@@ -1066,6 +1083,12 @@ void SPlayer::msgMove(const MsgMove* m)
 {
   if (!t_->canDoAction(m, this))
     {
+      return;
+    }
+  if (status_ != STA_STANDING)
+    {
+      LOG4("Cannot do action: player must stand up");
+      r_->sendIllegal(m->token, m->client_id);
       return;
     }
   // Checks that the player has enough ma remaining
@@ -1231,6 +1254,20 @@ void SPlayer::msgStandUp(const MsgStandUp* m)
 {
   if (!t_->canDoAction(m, this))
     return;
+  if (status_ != STA_PRONE)
+    {
+      LOG2("Player `%1' of team `%2' must be prone (not `%3') to stand up.",
+          id_, team_id_, status_);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
+  if (ma_remain_ != ma_)
+    {
+      LOG2("Player `%1' of team `%2' cannot try to stand up more than once.",
+          id_, team_id_);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
   tryStandUp();
 }
 

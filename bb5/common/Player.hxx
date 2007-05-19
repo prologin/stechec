@@ -102,7 +102,7 @@ inline void Player::setHasPlayed()
 {
   has_played_ = true;
 }
-
+ 	
 inline enum eDeclaredAction Player::getAction() const
 {
   return action_;

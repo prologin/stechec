@@ -232,6 +232,7 @@ protected:
   int av_;
 
   int ma_remain_;
+  bool has_blocked_;
   bool has_played_;
   enum eDeclaredAction action_;
   bool will_prone_;

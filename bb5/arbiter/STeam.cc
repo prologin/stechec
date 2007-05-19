@@ -265,39 +265,20 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
 
 bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
 {
-  // Check if it's the team turn.
+  // Checks if it's the team turn.
   if (r_->getCurrentTeamId() != pkt->client_id)
     {
-      LOG4("Cannot do action: not team turn");
-      LOG4("%1, %2",r_->getCurrentTeamId(), r_->getState());
+      LOG4("Player `%1' of team `%2' cannot do action `%3': not team turn",
+          p->getId(), pkt->client_id, pkt->token);
+      LOG4("Active team `%1'. Game state: `%2'",r_->getCurrentTeamId(), r_->getState());
       r_->sendIllegal(pkt->token, pkt->client_id, ERR_WRONGCONTEXT);
       return false;
     }
-  // Check if it is the current player
-  if (p != player_[active_player_id_])
-    {
-      LOG4("Cannot do action: an other player is performing an action");
-      r_->sendIllegal(pkt->token, pkt->client_id);
-      return false;
-    }
-  // If he is stunned or out of the field, he can't do it
-  if (pkt->token == MSG_STANDUP && p->getStatus() != STA_PRONE)
-    {
-      LOG4("Cannot do action: player must be prone to stand up");
-      r_->sendIllegal(pkt->token, pkt->client_id);
-      return false;
-    }
-  if (pkt->token != MSG_STANDUP && p->getStatus() != STA_STANDING)
-    {
-      LOG4("Cannot do action: player must stand up");
-      r_->sendIllegal(pkt->token, pkt->client_id);
-      return false;
-    }
-  // Check the action declared is fit to the action
+  // Checks the action declared is fit to the action
   if ((p->getAction() == DCL_MOVE
         && (pkt->token == MSG_PASS || pkt->token == MSG_BLOCK))
       || (p->getAction() == DCL_BLOCK
-        && (pkt->token == MSG_PASS || pkt->token == MSG_MOVE))
+        && (pkt->token == MSG_PASS || pkt->token == MSG_MOVE || pkt->token == MSG_STANDUP))
       || (p->getAction() == DCL_BLITZ && pkt->token == MSG_PASS)
       || (p->getAction() == DCL_PASS && pkt->token == MSG_BLOCK))
     {
@@ -305,15 +286,27 @@ bool STeam::canDoAction(const Packet* pkt, SPlayer* p)
       r_->sendIllegal(pkt->token, pkt->client_id);
       return false;
     }
-  // Cannot try to stand up more than once
-  if (pkt->token == MSG_STANDUP)
+  // Checks if it is the current player
+  if (p != player_[active_player_id_])
     {
-      if (p->getMaRemain() != p->getMa())
-        {
-          LOG4("Cannot try to stand up more than once.");
-          r_->sendIllegal(pkt->token, p->getId());
-          return false;
-        }
+      LOG4("Player `%1' of team `%2' cannot do action `%3': Player `%4' is still performing an action.", p->getId(), pkt->client_id, pkt->token, active_player_id_);
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
+  // Checks that there is no pending arbitrage
+  if (!r_->getActionHandler()->isEmpty())
+    {
+      LOG4("Player `%1' of team `%2' cannot do action `%3', his previous one is not finished.",
+          p->getId(), pkt->client_id, pkt->token, active_player_id_);
+      r_->sendIllegal(pkt->token, pkt->client_id);
+      return false;
+    }
+  // Checks that the player has not already played.
+  if (p->hasPlayed())
+    {
+      LOG4("Cannot declare action: this player already does something this turn");
+      r_->sendIllegal(pkt->token, pkt->client_id, ERR_HASPLAYED);
+      return false;
     }
   return true;
 }
