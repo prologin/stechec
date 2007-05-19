@@ -23,6 +23,7 @@ inline Player::Player(const MsgPlayerCreate* m)
     ag_(m->ag),
     av_(m->av),
     ma_remain_(-1),
+    has_blocked_(false),
     has_played_(false),
     action_(DCL_NONE),
     will_prone_(false)
