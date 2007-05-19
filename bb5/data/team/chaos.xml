@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> <!-- -*-SGML-*- -->
+
+<team bb_version="5" race="Chaos" emblem="amazon.png"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="file:///home/kapouik/tbt/local/share/stechec/bb5/schema/team.xsd">
+
+  <formation>default.xml</formation>
+  <name>The night before nightmare</name>
+  <coach>The Dead</coach>
+  <rating>100</rating>
+  <treasury>0</treasury>
+  <reroll>2</reroll>
+  <rerollcost>40000</rerollcost>
+  <fanfactor>7</fanfactor>
+  <assistant>0</assistant>
+  <cheerleader>0</cheerleader>
+  <apothecary>1</apothecary>
+  
+  <players>
+
+    <!-- Blitzer 3*90 = 270 -->
+    <player name="Warrior01" number="1" position="Blitzer" display="amazon_b.png">
+      <positionid>4</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Block</skill>
+      <skill>Dodge</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Mary-Jean" number="2" position="Blitzer" display="amazon_b.png">
+      <positionid>4</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Block</skill>
+      <skill>Dodge</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Mary-Carol" number="3" position="Blitzer" display="amazon_b.png">
+      <positionid>4</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Block</skill>
+      <skill>Dodge</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+<!-- Thrower 2*70 = 140 -->
+    <player name="Jacinthe" number="4" position="Thrower" display="amazon_t.png">
+      <positionid>4</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Tulip" number="5" position="Thrower" display="amazon_t.png">
+      <positionid>4</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+<!-- Catcher 2*70 = 140 -->
+    <player name="Purple" number="6" position="Catcher" display="amazon_c.png">
+      <positionid>4</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Magenta" number="7" position="Catcher" display="amazon_c.png">
+      <positionid>4</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+<!-- Linewomen 5*50 = 250 -->
+    <player name="Anna" number="7" position="Linewoman" display="amazon_l.png">
+      <positionid>4</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <skill>Dodge</skill>
+      <skill>Block</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Martina" number="8" position="Linewoman" display="amazon_l.png">
+      <positionid>4</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Dodge</skill>
+      <skill>Block</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Serena" number="9" position="Linewoman" display="amazon_l.png">
+      <positionid>4</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Dodge</skill>
+      <skill>Block</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Jelena" number="10" position="Linewoman" display="amazon_l.png">
+      <positionid>4</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Dodge</skill>
+      <skill>Block</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Iva" number="11" position="Linewoman" display="amazon_l.png">
+      <positionid>4</positionid>
+      <ma>5</ma>
+      <st>5</st>
+      <ag>2</ag>
+      <av>8</av>
+      <cost>150000</cost>
+      <skill>Dodge</skill>
+      <skill>Block</skill>
+      <skill>Pass</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+   </player>
+
+  </players>
+</team>
