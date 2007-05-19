@@ -60,6 +60,7 @@ void SPlayerMsg::sendMsgBlockPush(int nb_choice, Position choices[], SPlayer* ta
       pkt.choice[i].row = choices[i].row;
       pkt.choice[i].col = choices[i].col;
     }
+  r_->waitForCurrentOpponentChoice(pkt.client_id);
   r_->sendPacket(pkt);
 }
 
@@ -97,6 +98,8 @@ void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int require
   msg.required = required;
   msg.reroll = reroll;
   msg.skill = skill;
+  if (reroll || (skill != SK_NONE))
+    r_->waitForCurrentOpponentChoice(msg.client_id);
   r_->sendPacket(msg);
 }
 
@@ -106,6 +109,7 @@ void SPlayerMsg::sendSkillQuestion(enum eSkill skill, SPlayer* p)
   msg.player_id = p->getId();
   msg.skill = skill;
   msg.choice = -1;
+  r_->waitForCurrentOpponentChoice(msg.client_id);
   r_->sendPacket(msg);
 }
 

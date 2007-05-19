@@ -22,7 +22,9 @@
 #include "xml/xml_config.hh"
 
 //FIXME: 3 is for tests, must be 8.
-int NB_TURNS = 3;
+#define NB_TURNS 8
+// 4 min. per turn.
+#define TIME_PER_TURN (4 * 60)
 
 SRules::SRules()
   : cur_turn_(0),
@@ -35,7 +37,8 @@ SRules::SRules()
   team_[0] = NULL;
   team_[1] = NULL;
   scoring_team_ = -1;
-  timer_.setAllowedTime(60 * 4); // 4min per turn.
+  timer_.setAllowedTime(TIME_PER_TURN);
+  turn_timer_paused_ = false;
 
   dice_ = new Dice(this);
   team_msg_ = new STeamMsg(this);
@@ -96,7 +99,7 @@ void SRules::serverStartup()
   // Tell everybody that we are about to initialize the game.
   setState(GS_INITGAME);
   MsgInitGame pkt;
-  pkt.time_per_turn = 4 * 60;
+  pkt.time_per_turn = TIME_PER_TURN;
   sendPacket(pkt);
 }
 
@@ -106,6 +109,26 @@ void SRules::serverProcess()
     {
       timer_.stop();
       turnover(TOM_TIMEEXCEEDED);
+    }
+}
+
+void SRules::waitForCurrentOpponentChoice(int team_id)
+{
+  if ((!turn_timer_paused_) && (team_id == getCurrentOpponentTeamId()))
+    {
+      LOG2("Suspends turn timer, waiting for coach `%1' reply.", team_id);
+      timer_.pause();
+      turn_timer_paused_ = true;
+    }
+}
+
+void SRules::checkForCurrentOpponentChoice(int team_id)
+{
+  if (turn_timer_paused_ && (team_id == getCurrentOpponentTeamId()))
+    {
+      LOG2("Restarts turn timer, since coach `%1' replied.", team_id);
+      timer_.restart();
+      turn_timer_paused_ = false;
     }
 }
 

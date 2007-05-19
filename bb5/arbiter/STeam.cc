@@ -80,6 +80,7 @@ void STeam::msgReroll(const MsgReroll* m)
   else
     {
       LOG2("Coach %1 %2.", team_id_, m->reroll?"uses a team reroll":"accepts the roll result");
+      r_->checkForCurrentOpponentChoice(m->client_id);
       r_->sendPacket(*m);
       state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
       if (m->reroll)
@@ -120,6 +121,7 @@ void STeam::msgFollow(const MsgFollow* m)
       r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
+  r_->checkForCurrentOpponentChoice(m->client_id);
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
   r_->getActionHandler()->process(m->follow);
@@ -138,6 +140,7 @@ void STeam::msgBlockPush(const MsgBlockPush* m)
       r_->sendIllegal(MSG_BLOCKPUSH, m->client_id);
       return;
     }
+  r_->checkForCurrentOpponentChoice(m->client_id);
   r_->sendPacket(*m);
   state_ = team_id_ == 0 ? GS_COACH1 : GS_COACH2;
   r_->getActionHandler()->process(false, m->square_chosen);

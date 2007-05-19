@@ -372,6 +372,7 @@ void SPlayer::rollBlock()
     }
 
   r_->sendPacket(msg);
+  r_->waitForCurrentOpponentChoice(strongest_team_id_);
 
   if (reroll_enabled_)
     {
@@ -616,6 +617,7 @@ void SPlayer::resolveBlockPush(int chosen_square)
 void SPlayer::considerBlockFollow()
 {
   t_->state_ = GS_FOLLOW;
+  r_->waitForCurrentOpponentChoice(team_id_);
   r_->sendPacket(MsgFollow(team_id_));
   ah_->putBlockFollowChoice(this);
 }
@@ -1220,6 +1222,7 @@ void SPlayer::msgSkill(const MsgSkill* m)
         {
           LOG4("Player `%1' of team `%2' uses the skill `%3' to reroll `%4'.",
             id_, team_id_, stringify(skill), ah_->getRollType());
+          r_->checkForCurrentOpponentChoice(m->client_id);
           r_->sendPacket(*m);
           t_->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
           useSkill(skill);
@@ -1229,6 +1232,7 @@ void SPlayer::msgSkill(const MsgSkill* m)
         {
           LOG4("Player `%1' of team `%2' doesn't use the skill `%3' to reroll `%4'.",
             id_, team_id_, stringify(skill), ah_->getRollType());
+          r_->checkForCurrentOpponentChoice(m->client_id);
           r_->sendPacket(*m);
           t_->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
           ah_->process(false);
@@ -1238,6 +1242,7 @@ void SPlayer::msgSkill(const MsgSkill* m)
     {
       LOG4("Player `%1' of team `%2' chooses to%3 use the skill `%4'.",
           id_, team_id_, ((m->choice == 1) ? "" : " NOT"), Player::stringify(skill));
+      r_->checkForCurrentOpponentChoice(m->client_id);
       r_->sendPacket(*m);
       r_->getCurrentTeam()->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
       ah_->process(m->choice == 1);

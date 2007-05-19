@@ -85,6 +85,11 @@ public:
   //! go on next turn.
   virtual void serverProcess();
 
+  //! @brief Pauses turn timer, if waiting for the current opponent coach..
+  void waitForCurrentOpponentChoice(int team_id);
+  //! @brief Restarts turn timer, if answering coach is the current opponent.
+  void checkForCurrentOpponentChoice(int team_id);
+
   //! @brief The ball is in game, receiving team can play
   void finishKickoff();
 
@@ -127,6 +132,7 @@ private:
   void msgIllegalProcedure(const MsgIllegalProc* m);
 
   Timer     timer_;
+  int turn_timer_paused_;
 
   //! @brief Current turn number, in the range of [1, NB_TURNS], or 0 (half-time kick-off).
   int       cur_turn_;
