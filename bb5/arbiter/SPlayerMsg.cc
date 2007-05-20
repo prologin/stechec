@@ -50,7 +50,9 @@ void SPlayerMsg::setPlayer(int team_id, int player_id, SPlayer* p)
 ** Messages senders.
 */
 
-void SPlayerMsg::sendMsgBlockPush(int nb_choice, Position choices[], SPlayer* target) {
+inline void SPlayerMsg::sendMsgBlockPush(int nb_choice,
+    const Position choices[], const SPlayer* target) const
+{
   MsgBlockPush pkt(r_->getCurrentTeamId());
   pkt.target_row = target->getPosition().row;
   pkt.target_col = target->getPosition().col;
@@ -64,14 +66,14 @@ void SPlayerMsg::sendMsgBlockPush(int nb_choice, Position choices[], SPlayer* ta
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsg::sendMsgKnocked(SPlayer* p)
+inline void SPlayerMsg::sendMsgKnocked(const SPlayer* p) const
 {
   MsgPlayerKnocked pkt(p->getTeamId());
   pkt.player_id = p->getId();
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsg::sendMsgKO(int dice, SPlayer* p)
+inline void SPlayerMsg::sendMsgKO(int dice, const SPlayer* p) const
 {
   MsgPlayerKO msg;
   msg.player_id = p->getId();
@@ -79,7 +81,7 @@ void SPlayerMsg::sendMsgKO(int dice, SPlayer* p)
   r_->sendPacket(msg);
 }      
 
-void SPlayerMsg::sendPosition(SPlayer* p)
+inline void SPlayerMsg::sendPosition(const SPlayer* p) const
 {
   MsgPlayerPos pkt(p->getTeamId());
   pkt.player_id = p->getId();
@@ -88,7 +90,23 @@ void SPlayerMsg::sendPosition(SPlayer* p)
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int required, int reroll, enum eSkill skill, SPlayer* p)
+inline void SPlayerMsg::sendBlockResult(bool can_reroll, int strongest_team_id, int nb_dices,
+    const enum eBlockDiceFace results[], const SPlayer* defender, const SPlayer* attacker) const
+{
+  MsgBlockResult msg(attacker->getTeamId());
+  msg.player_id = attacker->getId();
+  msg.opponent_id = defender->getId();
+  msg.reroll = can_reroll;
+  msg.strongest_team_id = strongest_team_id;
+  msg.nb_dice = nb_dices;
+  for (int i = 0; i < nb_dices; ++i)
+    msg.results[i] = results[i];
+  r_->waitForCurrentOpponentChoice(strongest_team_id);
+  r_->sendPacket(msg);
+}
+
+inline void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier,
+    int required, int reroll, enum eSkill skill, const SPlayer* p) const
 {
   MsgResult msg(p->getTeamId());
   msg.player_id = p->getId();
@@ -103,7 +121,7 @@ void SPlayerMsg::sendRoll(enum eRoll type, int result, int modifier, int require
   r_->sendPacket(msg);
 }
 
-void SPlayerMsg::sendSkillQuestion(enum eSkill skill, SPlayer* p)
+inline void SPlayerMsg::sendSkillQuestion(enum eSkill skill, const SPlayer* p) const
 {
   MsgSkill msg(p->getTeamId());
   msg.player_id = p->getId();
@@ -113,7 +131,7 @@ void SPlayerMsg::sendSkillQuestion(enum eSkill skill, SPlayer* p)
   r_->sendPacket(msg);
 }
 
-void SPlayerMsg::sendStatus(enum eStatus status, SPlayer* p)
+inline void SPlayerMsg::sendStatus(enum eStatus status, const SPlayer* p) const
 {
   MsgPlayerStatus pkt(p->getTeamId());
   pkt.player_id = p->getId();
@@ -121,7 +139,7 @@ void SPlayerMsg::sendStatus(enum eStatus status, SPlayer* p)
   r_->sendPacket(pkt);
 }
 
-void SPlayerMsg::sendTouchdooown(SPlayer* p)
+inline void SPlayerMsg::sendTouchdooown(const SPlayer* p) const
 {
   MsgTouchdooown msg(p->getTeamId());
   msg.player_id = p->getId();

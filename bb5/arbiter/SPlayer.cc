@@ -345,8 +345,6 @@ void SPlayer::tryBlock()
   else
     strongest_team_id_ = team_id_;
 
-  choose_block_ = strongest_team_id_ != r_->getCurrentOpponentTeamId();
-
   roll_attempted_ = R_BLOCK;
   setRerollAvailability();
 
@@ -355,25 +353,14 @@ void SPlayer::tryBlock()
 
 void SPlayer::rollBlock()
 {
-  MsgBlockResult msg(team_id_);
-  msg.player_id = id_;
-  msg.opponent_id = target_->getId();
-  msg.reroll = reroll_enabled_;
-  msg.strongest_team_id = strongest_team_id_;
-  msg.nb_dice = nb_block_dices_;
-
   for (int i = 0; i < nb_block_dices_; ++i)
     {
-      result_[i] = (enum eBlockDiceFace) d_->roll("block", DBLOCK);
+      block_results_[i] = (enum eBlockDiceFace) d_->roll("block", DBLOCK);
       LOG5("[t%1,p%2] Rolled block dice: %3",
-         team_id_, id_,
-         Dice::stringify(result_[i]));
-      msg.results[i] = result_[i];
+         team_id_, id_, Dice::stringify(block_results_[i]));
     }
-
-  r_->sendPacket(msg);
-  r_->waitForCurrentOpponentChoice(strongest_team_id_);
-
+  pm_->sendBlockResult(reroll_enabled_, strongest_team_id_,
+      nb_block_dices_, block_results_, target_, this);
   if (reroll_enabled_)
     {
       t_->state_ = GS_REROLL;
@@ -412,7 +399,7 @@ void SPlayer::considerBlockDices(bool reroll)
 
 void SPlayer::resolveBlockDice(int chosen_dice)
 {
-  switch (result_[chosen_dice])
+  switch (block_results_[chosen_dice])
     {
     case BATTACKER_DOWN:
       if (r_->getBall()->getOwner() == this)

@@ -115,36 +115,44 @@ DECLARE_PACKET(MSG_RESULT, MsgResult)
   int player_id;
   int roll_type;   // enum eRoll
   int reroll;      // can reroll (else the action fails)
-  int skill;       // enum eSkill //FIXME: extra rules may imply up to three skills for a roll.
+  //! FIXME: Extra rules will imply up to three skills usable for a single dice roll.
+  int skill;       // enum eSkill
   int result;
   int modifier;
   int required;
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
-  int player_id;
-  int opponent_id;
-  int reroll;             // 'strongest_team_id' can reroll.
-  int strongest_team_id;  // team id that have the strongest player, can choose which dice to use, reroll.
-  int nb_dice;
-  int results[3];
+  int player_id;          ///< Attacker id.
+  int opponent_id;        ///< Defender id.
+  bool reroll;            ///< Attacker's coach can reroll.
+  int strongest_team_id;  ///< Team id of the strongest player, can choose which dice to use.
+  int nb_dice;            ///< Number of block dices rolled.
+  int results[3];         ///< Results of block dices rolls.
 END_PACKET
 
 DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)
-  int dice;
+  int dice; ///< Chosen block dice index.
 END_PACKET
 
 DECLARE_PACKET(MSG_FOLLOW, MsgFollow)
+/*! @brief Whether or not follow after a block.
+ *  @c Server gives the coach his choice to follow or not.
+ *  @c 0 Player doesn't follow his victim.
+ *  @c 1 Player follows his victim.
+ */
   int follow;
 END_PACKET
 
 DECLARE_PACKET(MSG_SKILL, MsgSkill)
-  int player_id;
-  int skill;  // enum eSkill
+  int player_id; ///< Skilled player.
+  int skill;  ///< An enum eSkill value.
+  /*! @brief Whether or not use the skill.
+   *  @c -1 Server gives the coach his choice of using or not the skill.
+   *  @c 0 Player player_id doesn't use the skill.
+   *  @c 1 Player player_id uses the skill.
+   */
   int choice;
-    // -1 is used by the server to give the coach his choice of using the given skill,
-    // 0 is used by both the server and the client to not use the given skill,
-    // 1 is used by both the server and the client to use the given skill.
 END_PACKET
 
 

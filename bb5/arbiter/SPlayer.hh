@@ -167,8 +167,7 @@ private:
   Position push_choices_[3];
   int nb_push_choices_;
   int strongest_team_id_;
-  bool choose_block_;
-  enum eBlockDiceFace result_[3];
+  enum eBlockDiceFace block_results_[3];
   bool target_knocked_;
   bool follow_;
 
