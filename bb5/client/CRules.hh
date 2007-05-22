@@ -63,8 +63,8 @@ public:
   //! @brief Gets the api.
   virtual Api* getApi();
 
-  //! @brief Gets our team id.
-  int getOurTeamId() const;
+  void switchToTeamState(int state);
+  void restoreGameState();
 
 private:
 
@@ -79,6 +79,7 @@ private:
   void msgGiveBall(const MsgGiveBall* m);
   void msgPlayTurn(const MsgNewTurn* m);
   void msgEndGame(const MsgEndGame* m);
+  void msgTimer(const MsgTimer* m);
   void msgTurnOver(const MsgTurnOver* m);
   void msgChatMessage(const MsgChat* m);
   void msgMoveTurnMarker(const MsgMoveTurnMarker* m);
@@ -93,6 +94,7 @@ private:
   Api*                  api_;
   Timer			timer_;
 
+  int       saved_game_state_;
   int       cur_turn_;
   int       cur_half_;
   Weather*  weather_;

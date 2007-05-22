@@ -63,4 +63,6 @@ private:
   SPlayer* p_[2][MAX_PLAYER];
 };
 
+#include "SPlayerMsg.hxx"
+
 #endif /* !SPLAYERMSG_HH_ */

@@ -407,17 +407,20 @@ void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_ty
     }
 }
 
-void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id, 
-                                     int nb_dice, enum eBlockDiceFace result[3],
-                                     int choose, bool reroll)
+void CmdLineInterface::evBlock(int team_id, int player_id, int opponent_id) 
 {
   if (team_id != api_->getTeamId())
     cout << "Opponent ";
 
-  cout << "Player `" << player_id << "' tried to block " << "player `" 
+  cout << "Player `" << player_id << "' tries to block " << "player `" 
        << opponent_id << "'" << endl;
+}
 
-  cout << "Result : ";
+void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id, 
+                                     int nb_dice, enum eBlockDiceFace result[3],
+                                     int choose, bool reroll)
+{
+  cout << "Block result : ";
   for (int i = 0; i < nb_dice; i++)
     {
       cout << i << "- " << Dice::stringify(result[i]);
@@ -427,15 +430,15 @@ void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id
   cout << endl;
 
   if (team_id == api_->getTeamId() && choose == api_->getTeamId() && reroll)
-    cout << " You can use a 'reroll' or choose a 'dice <n>'" << endl;
+    cout << " You can use a 'reroll' or choose a 'block dice <n>'." << endl;
   if (team_id == api_->getTeamId() && choose == api_->getTeamId() && !reroll)
-    cout << " You must choose a 'dice <n>'" << endl;
+    cout << " You must choose a 'block dice <n>'." << endl;
   if (team_id == api_->getTeamId() && choose != api_->getTeamId() && reroll)
-    cout << " You can use a 'reroll' or 'accept' this result." << endl;
+    cout << " You can use a 'reroll' or 'accept' this block result." << endl;
   if (team_id != api_->getTeamId() && choose == api_->getTeamId() && reroll)
     cout << " Wait for opponent reroll decision" << endl;
   if (team_id != api_->getTeamId() && choose == api_->getTeamId() && !reroll)
-    cout << " You must choose a 'dice <n>'" << endl;
+    cout << " You must choose a 'block dice <n>'." << endl;
 }
 
 void CmdLineInterface::evSkill(int team_id, int player_id, enum eSkill skill, int choice)

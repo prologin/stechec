@@ -42,6 +42,7 @@ public:
   virtual void evEndGame() {}
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, int result,
                         int modifier, int required, bool reroll, enum eSkill skill);
+  virtual void evBlock(int team_id, int player_id, int opponent_player_id);
   virtual void evBlockResult(int team_id, int player_id, int opponent_player_id,
                              int nb_dice, enum eBlockDiceFace result[3],
                              int strongest_team_id, bool reroll);
@@ -70,6 +71,7 @@ public:
 inline void Event::evIllegal(int, int) {}
 inline void Event::evNewTurn(int, int, int) {}
 inline void Event::evResult(int, int, enum eRoll, int, int, int, bool, enum eSkill) {}
+inline void Event::evBlock(int, int, int) {}
 inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[], int, bool) {}
 inline void Event::evReroll(int, bool) {}
 inline void Event::evSkill(int, int, enum eSkill, int) {}

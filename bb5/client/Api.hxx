@@ -219,17 +219,26 @@ inline int Api::doDeclare(enum eDeclaredAction action)
   CHECK_PLAYER;
 
   if (action == DCL_NONE)
-    return INVALID_ACTION;
+    {
+      LOG2("You can't declare an empty action.");
+      return INVALID_ACTION;
+    }
   return rules_->our_team_->declareAction(selected_player_, action);
 }
 
 inline int Api::doChooseBlockDice(int n)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
-  if (rules_->getState() != GS_BLOCK)
+  if (rules_->getState() != GS_BLOCK && rules_->getState() != GS_REROLL)
     {
       LOG2("You do not have the choice...");
       return INVALID_ACTION;
+    }
+  if (rules_->getState() == GS_REROLL)
+    {
+      MsgReroll msgr;
+      msgr.reroll = false;
+      rules_->sendPacket(msgr);
     }
   MsgBlockDice msg(rules_->our_team_->getTeamId());
   msg.dice = n;

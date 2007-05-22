@@ -39,6 +39,7 @@ private:
   void msgDeclareAction(const MsgDeclare* m);
   void msgPlayerPos(const MsgPlayerPos* m);
   void msgPlayerMove(const MsgMove* m);
+  void msgBlock(const MsgBlock* m);
   void msgPlayerKnocked(const MsgPlayerKnocked* m);
   void msgPlayerStatus(const MsgPlayerStatus* m);
   void msgPlayerKO(const MsgPlayerKO* m);

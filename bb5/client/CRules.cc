@@ -36,6 +36,7 @@ CRules::CRules(const xml::XMLConfig& cfg)
   HANDLE_WITH(MSG_GIVEBALL, CRules, this, msgGiveBall, 0);
   HANDLE_WITH(MSG_NEWTURN, CRules, this, msgPlayTurn, 0);
   HANDLE_WITH(MSG_ENDGAME, CRules, this, msgEndGame, 0);
+  HANDLE_WITH(MSG_TIMER, CRules, this, msgTimer, 0);
   HANDLE_WITH(MSG_TURNOVER, CRules, this, msgTurnOver, 0);
   HANDLE_WITH(MSG_ILLEGAL, CRules, this, msgIllegal, 0);
   HANDLE_WITH(MSG_CHAT, CRules, this, msgChatMessage, 0);
@@ -75,9 +76,15 @@ Api*    CRules::getApi()
   return api_;
 }
 
-int         CRules::getOurTeamId() const
+void        CRules::switchToTeamState(int state)
 {
-  return our_team_->getTeamId();
+  saved_game_state_ = getState();
+  setState(state);
+}
+
+void        CRules::restoreGameState()
+{
+  setState(saved_game_state_);
 }
 
 const char* CRules::tokenToString(unsigned token) const
@@ -214,6 +221,14 @@ void        CRules::msgEndGame(const MsgEndGame* m)
   onEvent(m);
 }
 
+void        CRules::msgTimer(const MsgTimer* m)
+{
+  if (m->pause)
+    timer_.pause();
+  else
+    timer_.start();
+}
+
 void        CRules::msgTurnOver(const MsgTurnOver* m)
 {
   onEvent(m);
@@ -239,48 +254,56 @@ void CRules::msgResult(const MsgResult* m)
 {
   if (m->client_id == getCoachId() && (m->reroll || (m->skill != SK_NONE)))
     {
-      setState(GS_REROLL);
+      switchToTeamState(GS_REROLL);
       LOG2("-- CRules: change state: GS_REROLL");
     }
   onEvent(m);
 }
 
-
 void CRules::msgBlockResult(const MsgBlockResult* m)
 {
+  if (getState() == GS_REROLL)
+    {
+      restoreGameState();
+      if (m->strongest_team_id == getCoachId())
+        switchToTeamState(GS_BLOCK);
+      return;
+    }
   if (m->client_id == getCoachId())
     {
-      if (getState() != GS_REROLL)
-        our_team_->getPlayer(m->player_id)->subMa(1);
-      if (m->strongest_team_id == getCoachId())
-        setState(GS_BLOCK);
-      else if (m->reroll)
-        setState(GS_REROLL);
+      if (!m->reroll)
+        {
+          our_team_->getPlayer(m->player_id)->subMa(1);
+          if (m->strongest_team_id == getCoachId())
+            switchToTeamState(GS_BLOCK);
+        }
+      else
+        switchToTeamState(GS_REROLL);
     }
-  else
+  else if (!m->reroll)
     {
-      if (getState() != GS_REROLL)
-        other_team_->getPlayer(m->player_id)->subMa(1);
-      if (m->strongest_team_id == getCoachId() && !m->reroll)
-        setState(GS_BLOCK);
+      other_team_->getPlayer(m->player_id)->subMa(1);
+      if (m->strongest_team_id == getCoachId())
+        switchToTeamState(GS_BLOCK);
     }
   onEvent(m);
 }
 
 void CRules::msgBlockDice(const MsgBlockDice* m)
 {
-  setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+  if (getState() == GS_BLOCK || getState() == GS_REROLL)
+    restoreGameState();
 }
 
 void CRules::msgBlockPush(const MsgBlockPush* m)
 {
   if (getState() == GS_PUSH)
     {
-      setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+      restoreGameState();
     }
   else if (m->client_id == getCoachId())
     {
-      setState(GS_PUSH);
+      switchToTeamState(GS_PUSH);
       onEvent(m);
     }
 }
@@ -289,11 +312,13 @@ void CRules::msgFollow(const MsgFollow* m)
 {
   if (getState() == GS_FOLLOW)
     {
-      setState(m->client_id == 0 ? GS_COACH1 : GS_COACH2);
+      restoreGameState();
     }
   else if (m->client_id == getCoachId())
     {
-      setState(GS_FOLLOW);
+      if (getState() == GS_PUSH)
+        restoreGameState();
+      switchToTeamState(GS_FOLLOW);
       onEvent(m);
     }
 }

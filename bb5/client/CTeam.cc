@@ -148,7 +148,7 @@ void CTeam::msgPlayerCreate(const MsgPlayerCreate* m)
 void CTeam::msgReroll(const MsgReroll* m)
 {
   if (r_->getState() == GS_REROLL)
-    r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+    r_->restoreGameState();
   if (m->reroll)
     {
       reroll_used_ = true;

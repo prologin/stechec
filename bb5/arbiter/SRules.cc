@@ -119,6 +119,10 @@ void SRules::waitForCurrentOpponentChoice(int team_id)
       LOG2("Suspends turn timer, waiting for coach `%1' reply.", team_id);
       timer_.pause();
       turn_timer_paused_ = true;
+      MsgTimer msg(team_id);
+      msg.time_remaining = timer_.getTimeRemaining();
+      msg.pause = turn_timer_paused_;
+      sendPacket(msg);
     }
 }
 
@@ -126,9 +130,13 @@ void SRules::checkForCurrentOpponentChoice(int team_id)
 {
   if (turn_timer_paused_ && (team_id == getCurrentOpponentTeamId()))
     {
-      LOG2("Restarts turn timer, since coach `%1' replied.", team_id);
-      timer_.restart();
+      LOG2("Resumes turn timer, since coach `%1' replied.", team_id);
+      timer_.start();
       turn_timer_paused_ = false;
+      MsgTimer msg(team_id);
+      msg.time_remaining = timer_.getTimeRemaining();
+      msg.pause = turn_timer_paused_;
+      sendPacket(msg);
     }
 }
 

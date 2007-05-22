@@ -320,13 +320,11 @@ enum eStatus SPlayer::rollCasualty()
 
 void SPlayer::tryBlock()
 {
+  ma_remain_ = ma_remain_ - 1;
   if (getAction() == DCL_BLOCK)
     setHasPlayed();
   else
-    {
-      has_blocked_ = true;
-      ma_remain_ = ma_remain_ - 1;
-    }
+    has_blocked_ = true;
   
   int mod_st_atk = getSt();
   int mod_st_df = target_->getSt();
@@ -374,9 +372,9 @@ void SPlayer::rollBlock()
 
 void SPlayer::considerBlockDices(bool reroll)
 {
+  reroll_enabled_ = false;
   if (reroll)
     {
-      reroll_enabled_ = false;
       rollBlock();
     }
   else if (nb_block_dices_ == 1)
@@ -387,12 +385,16 @@ void SPlayer::considerBlockDices(bool reroll)
     {
       t_->state_ = GS_BLOCK;
       t_->setNbChoices(nb_block_dices_);
+      pm_->sendBlockResult(reroll_enabled_, strongest_team_id_,
+          nb_block_dices_, block_results_, target_, this);
       ah_->putBlockDiceChoice(this);
     }
   else
     {
       r_->getTeam(target_->getTeamId())->state_ = GS_BLOCK;
       r_->getTeam(target_->getTeamId())->setNbChoices(nb_block_dices_);
+      pm_->sendBlockResult(reroll_enabled_, strongest_team_id_,
+          nb_block_dices_, block_results_, target_, this);
       ah_->putBlockDiceChoice(target_);
     }
 }
@@ -1057,6 +1059,7 @@ void SPlayer::msgBlock(const MsgBlock* m)
       return;
     }
   target_ = target;
+  r_->sendPacket(*m);
   tryBlock();
 }
 

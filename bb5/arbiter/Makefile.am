@@ -7,10 +7,12 @@ bb5_arbiter_la_SOURCES =			\
 	STeam.hh				\
 	STeamMsg.cc				\
 	STeamMsg.hh				\
+	STeamMsg.hxx				\
 	SPlayer.hh				\
 	SPlayer.cc				\
 	SPlayerMsg.cc				\
 	SPlayerMsg.hh				\
+	SPlayerMsg.hxx				\
 	SActionHandler.cc			\
 	SActionHandler.hh			\
 	SRules.cc				\

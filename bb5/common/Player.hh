@@ -64,7 +64,7 @@ DECLARE_PACKET(MSG_BLOCKPUSH, MsgBlockPush)
   int square_chosen;
 END_PACKET
 
-DECLARE_PACKET(MSG_MULTIBLOCK, Act_MultiBlock)
+DECLARE_PACKET(MSG_MULTIBLOCK, MsgMultiBlock)
   int player_id;
   int first_opponent_id;
   int second_opponent_id;

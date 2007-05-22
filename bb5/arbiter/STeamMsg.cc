@@ -40,18 +40,9 @@ void STeamMsg::setTeam(int team_id, STeam* t)
   t_[team_id] = t;
 }
 
-
-STeam* STeamMsg::getTeam(int token, int team_id)
-{
-  if (team_id < 0 || team_id > 1 || t_[team_id] == NULL)
-    {
-      WARN("invalid coach id `%1' (token: `%2')",
-          team_id, r_->stringifyToken(token));
-      r_->sendIllegal(token, team_id);
-      return NULL;
-    }
-  return t_[team_id];
-}
+/*
+** Messages receivers.
+*/
 
 void STeamMsg::msgTeamInfo(const MsgTeamInfo* m)
 {

@@ -150,6 +150,12 @@ void EventProcess::dispatch(const MsgResult& pkt) const
 }
 
 template <>
+void EventProcess::dispatch(const MsgBlock& pkt) const
+{
+  ev_->evBlock(pkt.client_id, pkt.player_id, pkt.opponent_id);
+}
+
+template <>
 void EventProcess::dispatch(const MsgBlockResult& pkt) const
 {
   enum eBlockDiceFace results[3];
@@ -226,6 +232,12 @@ void EventProcess::dispatch<MsgCheatDice>(MsgCheatDice const&) const
 
 template <>
 void EventProcess::dispatch<MsgWeather>(MsgWeather const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgTimer>(MsgTimer const&) const
 {
   assert(false);
 }

@@ -261,6 +261,11 @@ void CPlayer::msgPlayerMove(const MsgMove* m)
   subMa(m->nb_move);
   r_->onEvent(m);
 }
+void CPlayer::msgBlock(const MsgBlock* m)
+{
+  subMa(1);
+  r_->onEvent(m);
+}
 
 void CPlayer::msgPlayerKnocked(const MsgPlayerKnocked* m)
 {
@@ -309,13 +314,17 @@ void CPlayer::msgSkill(const MsgSkill* m)
   enum eSkill skill = (enum eSkill) m->skill;
   if (r_->getState() == GS_REROLL)
     {
-      r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
+      r_->restoreGameState();
       if (m->choice == 1)
         useSkill(skill);
     }
   else if (r_->getState() == GS_SKILL)
-    r_->setState(team_id_ == 0 ? GS_COACH1 : GS_COACH2);
-  else if ((m->choice == -1) && (m->client_id == r_->getOurTeamId()))
-    r_->setState(GS_SKILL);
+    r_->restoreGameState(); //FIXME: NAWAK
+  else if (m->choice == -1)
+    {
+      if (m->client_id == r_->getCoachId())
+        r_->switchToTeamState(GS_SKILL);
+      //FIXME: Pause timer if needed.
+    }
   r_->onEvent(m);
 }

@@ -41,4 +41,6 @@ private:
   STeam* t_[2];
 };
 
+#include "STeamMsg.hxx"
+
 #endif /* !STEAMMSG_HH_ */
