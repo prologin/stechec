@@ -264,9 +264,9 @@ void VisuPlayer::update()
   // Update player status sprite
   if (p_->getStatus() != last_player_status_)
     {
-      last_player_status_ = p_->getStatus();
-      LOG4("Switch status for player %1 to %2.", p_->getId(), last_player_status_);
-      switch (last_player_status_)
+      LOG4("Switch status for player %1 from %2 to %3.",
+          p_->getId(), last_player_status_, p_->getStatus());
+      switch (p_->getStatus())
 	{
 	case STA_PRONE:
 	  status_.setFrame(1);
@@ -295,6 +295,7 @@ void VisuPlayer::update()
 	  status_.hide();
 	  break;
 	}
+      last_player_status_ = p_->getStatus();
     }
 
   // Some action to do ?

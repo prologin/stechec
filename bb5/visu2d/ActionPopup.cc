@@ -151,7 +151,9 @@ void ActionPopup::update()
   if ((g_.isStateSet(stWaitPlay) || g_.isStateSet(stPopupShow))
       && input.button_pressed_[3])
     {
-      setPos(input.mouse_);
+      //FIXME: popup must be fully visible.
+      //setPos(input.mouse_);
+      setPos(0,0);
       show();
     }
 

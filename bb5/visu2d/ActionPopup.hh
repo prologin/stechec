@@ -22,6 +22,7 @@
 
 BEGIN_NS(sdlvisu);
 
+//! @brief Silly enumeration, linked to pictures index. @see data/general/actions_off.jpg
 enum eAction {
   eActNone = -1,
   eActMove,
@@ -40,6 +41,10 @@ enum eAction {
 
 class VisuPlayer;
 class Game;
+
+/*!
+** @brief Action Popup, used for both declaration and action.
+*/
 
 class ActionPopup : public VirtualSurface
 {

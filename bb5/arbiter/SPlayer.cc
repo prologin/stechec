@@ -255,7 +255,7 @@ bool SPlayer::rollAgility(enum eRoll roll_type, int modifier)
       d_->stringify(roll_type), success?"succeds":"_fails_",
       dice_result, dice_modified, required, ag_ );
   pm_->sendRoll(roll_type, dice_result, modifier, required,
-      t_->canUseReroll(), getUsableSkill(), this);
+      (reroll_enabled_?t_->canUseReroll():false), getUsableSkill(), this);
   return success;
 }
 
@@ -921,7 +921,7 @@ void SPlayer::rollStandUp()
       d_->stringify(roll_attempted_), success?"succeds":"_fails_",
       dice_result, required, ag_ );
   pm_->sendRoll(roll_attempted_,dice_result, 0, required,
-      t_->canUseReroll(), getUsableSkill(), this);
+      (reroll_enabled_?t_->canUseReroll():false), getUsableSkill(), this);
   if (reroll_enabled_)
     {
       t_->state_ = GS_REROLL;

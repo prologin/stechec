@@ -381,15 +381,33 @@ void Game::evGiveBall(int team_id)
 }
 
 void Game::evResult(int team_id, int player_id, enum eRoll action_type, int result, 
-                    int modifier, int required, bool reroll)
+                    int modifier, int required, bool reroll, enum eSkill skill)
 {
   LOG4("Player `%1' tried an action : `%2' : roll [%3] + [%4], required : [%5].",
        player_id, Dice::stringify(action_type), result, modifier, required);
 
-  if (api_->getTeamId() == team_id && reroll)
+  if (api_->getTeamId() == team_id)
     {
-      LOG4(" -> You can use a 'reroll' or 'accept' this result.");
-      game_dlg_->push(eDlgActReroll);
+      if (result + modifier >= required)
+        {
+          //FIXME: Give the choice to reroll successful dice roll.
+          api_->doReroll(false);
+        }
+      else if (skill != SK_NONE)
+        {
+          if (reroll)
+            LOG4(" -> You can use a 'reroll' or a 'skill' or 'accept' this result.");
+          else
+            LOG4(" -> You can use a 'skill' or 'accept' this result.");
+          //FIXME: Give the choices.
+          api_->selectSkilledPlayer(player_id);
+          api_->doUseSkill(skill, true);
+        }
+      else if (reroll)
+        {
+          LOG4(" -> You can use a 'reroll' or 'accept' this result.");
+          game_dlg_->push(eDlgActReroll);
+        }
     }
 }
 
@@ -426,6 +444,16 @@ void Game::evBlockResult(int team_id, int player_id, int opponent_player_id,
     {
       // Wait other decision, but show results.
       game_dlg_->setText("Wait for opponent to choose dice");
+    }
+}
+
+void Game::evSkill(int team_id, int player_id, enum eSkill skill, int choice)
+{
+  if (choice == -1 && team_id == api_->getTeamId())
+    {
+      //FIXME: Give the choice.
+      api_->selectSkilledPlayer(player_id);
+      api_->doUseSkill(skill, true);
     }
 }
 

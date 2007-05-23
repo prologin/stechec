@@ -114,10 +114,11 @@ private:
   virtual void evBallPos(const Point& pos);
   virtual void evGiveBall(int team_id);
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, int result, 
-                        int modifier, int required, bool reroll);
+                        int modifier, int required, bool reroll, enum eSkill skill);
   virtual void evBlockResult(int team_id, int player_id, int opponent_player_id, 
                              int nb_dice, enum eBlockDiceFace result[3],
                              int strongest_team_id, bool reroll);
+  virtual void evSkill(int team_id, int player_id, enum eSkill skill, int choice);
   virtual void evFollow();
   virtual void evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
 

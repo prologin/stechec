@@ -84,6 +84,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
       return;
     }
 
+  sendPosition();
   p = r_->getField()->getPlayer(pos_);
   if (p != NULL && p->getStatus() == STA_STANDING)
     {
