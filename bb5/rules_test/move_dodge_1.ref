@@ -1,7 +1,7 @@
 Player '1' (team 0) - Mary-Jean
   position      : [row/y:10 col/x:1]
   carateristics :  ma: 6 | st: 3 | ag: 3 | av: 7
-  skills        : SK_BLOCK | SK_DODGE
+  skills        : Block | Dodge
   ma_remain     : 4
   has_played    : no
   status : Standing

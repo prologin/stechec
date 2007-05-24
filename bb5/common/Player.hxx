@@ -25,7 +25,7 @@ inline Player::Player(const MsgPlayerCreate* m)
     ma_remain_(-1),
     has_blocked_(false),
     has_played_(false),
-    action_(DCL_NONE),
+    action_(DCL_UNASSIGNED),
     will_prone_(false)
 {
   name_ = packetToString(m->name);
@@ -136,11 +136,17 @@ inline void Player::useSkill(enum eSkill skill)
 
 inline void Player::resetTurn()
 {
-  action_ = DCL_NONE;
+  action_ = DCL_UNASSIGNED;
   has_played_ = false;
   ma_remain_ = ma_;
   used_skill_list_.clear();
   will_prone_ = (status_ == STA_STUNNED);
+}
+
+inline bool Player::isNearAnOpponent(bool standing) const
+{
+  //FIXME : to do
+  return (standing == standing);
 }
 
 // Todo: status, status string
@@ -150,7 +156,7 @@ inline const char* Player::stringify(enum eStatus status)
   switch (status)
     {
     case STA_UNASSIGNED:
-      return "Unassigned (!!!)";
+      return "No status";
     case STA_RESERVE:
       return "Reserve";
     case STA_STANDING:
@@ -166,15 +172,15 @@ inline const char* Player::stringify(enum eStatus status)
     case STA_SENTOFF:
       return "Sent Off";
     }
-  return "sta_kikoolol";
+  return "Undefined status";
 }
 
 inline const char* Player::stringify(enum eDeclaredAction action)
 {
   switch (action)
     {
-    case DCL_NONE:
-      return "None";
+    case DCL_UNASSIGNED:
+      return "No declared action";
     case DCL_MOVE:
       return "Move";
     case DCL_BLOCK:
@@ -184,27 +190,27 @@ inline const char* Player::stringify(enum eDeclaredAction action)
     case DCL_PASS:
       return "Pass";
     }
-  return "dcl_kikoolol";
+  return "Undefined action";
 }
 
 inline const char* Player::stringify(enum eSkill skill)
 {
   switch (skill)
     {
-    case SK_NONE:
-      return "SK_NONE";
+    case SK_UNASSIGNED:
+      return "No skill";
     case SK_BLOCK:
-      return "SK_BLOCK";
+      return "Block";
     case SK_CATCH:
-      return "SK_CATCH";
+      return "Catch";
     case SK_DODGE:
-      return "SK_DODGE";
+      return "Dodge";
     case SK_PASS:
-      return "SK_PASS";
+      return "Pass";
     case SK_SUREHANDS:
-      return "SK_SUREHANDS";
+      return "Sure Hands";
     }
-  return "sk_kikoolol";
+  return "Undefined skill";
 }
 
 

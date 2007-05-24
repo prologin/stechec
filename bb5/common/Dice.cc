@@ -128,8 +128,8 @@ const char* Dice::stringify(enum eRoll roll)
 {
   switch (roll)
     {
-    case R_NONE:
-      return "R_NONE";
+    case R_UNASSIGNED:
+      return "R_UNASSIGNED";
     case R_DODGE:
       return "R_DODGE";
     case R_STANDUP:

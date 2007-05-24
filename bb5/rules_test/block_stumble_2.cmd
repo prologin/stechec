@@ -14,7 +14,7 @@ kickoff 9 9
 
 wait
 # Choose to ignore the Dodge skill.
-skill ignore SK_DODGE
+skill ignore Dodge
 
 wait
 # Turn 1.

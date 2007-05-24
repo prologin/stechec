@@ -49,7 +49,7 @@ enum eRoll SActionHandler::getRollType() const
 {
   if (eal_.empty())
     {
-      return R_NONE;
+      return R_UNASSIGNED;
     }
   else
     {
@@ -77,7 +77,7 @@ void SActionHandler::putBallBounce()
 {
   ElementaryAction ea;
   ea.type = EA_BALL;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = NULL;
   put(ea);
 }
@@ -86,7 +86,7 @@ void SActionHandler::putBlockBothDownDefender(SPlayer* p)
 {
   ElementaryAction ea;
   ea.type = EA_BLOCKBDD;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   put(ea);
 }
@@ -95,7 +95,7 @@ void SActionHandler::putBlockBothDownAttacker(SPlayer* p)
 {
   ElementaryAction ea;
   ea.type = EA_BLOCKBDA;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   put(ea);
 }
@@ -104,7 +104,7 @@ void SActionHandler::putBlockDefenderStumble(SPlayer* p)
 {
   ElementaryAction ea;
   ea.type = EA_BLOCKSTUMBLE;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   put(ea);
 }
@@ -113,7 +113,7 @@ void SActionHandler::putBlockDiceChoice(SPlayer* p)
 {
   ElementaryAction ea;
   ea.type = EA_BLOCKDICE;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   put(ea);
 }
@@ -122,7 +122,7 @@ void SActionHandler::putBlockFollowChoice(SPlayer* p)
 {
   ElementaryAction ea;
   ea.type = EA_BLOCKFOLLOW;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   put(ea);
 }
@@ -131,7 +131,7 @@ void SActionHandler::putBlockPushChoice(SPlayer* p)
 {
   ElementaryAction ea;
   ea.type = EA_BLOCKPUSH;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   put(ea);
 }
@@ -169,7 +169,7 @@ void SActionHandler::putMove(SPlayer* p, Position aim)
 {
   ElementaryAction ea;
   ea.type = EA_MOVE;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   ea.aim_position = aim;
   put(ea);
@@ -189,7 +189,7 @@ void SActionHandler::putPushResolution(SPlayer* p)
 {
   ElementaryAction ea;
   ea.type = EA_PUSH;
-  ea.roll_type = R_NONE;
+  ea.roll_type = R_UNASSIGNED;
   ea.player = p;
   put(ea);
 }
@@ -221,7 +221,7 @@ void SActionHandler::process(bool reroll, int choice)
     {
       if (r_->getTurnoverMotive() == TOM_TOUCHDOOOWN)
         r_->afterTouchdooown();
-      else if (r_->getTurnoverMotive() != TOM_NONE)
+      else if (r_->getTurnoverMotive() != TOM_UNASSIGNED)
         r_->nextTurn();
       else if (r_->getState() == GS_KICKOFF)
         r_->finishKickoff();
@@ -253,7 +253,7 @@ void SActionHandler::process(bool reroll, int choice)
         ea.player->resolveBlockDefenderStumble(reroll);
         break;
       case EA_MOVE:
-        if (r_->getTurnoverMotive() != TOM_NONE)
+        if (r_->getTurnoverMotive() != TOM_UNASSIGNED)
           process();
         else
           ea.player->tryMove(ea.aim_position);

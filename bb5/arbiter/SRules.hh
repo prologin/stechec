@@ -98,7 +98,7 @@ public:
 
   //! @brief Announce a turnover.
   void turnover(enum eTurnOverMotive motive);
-  //! @brief Gets the motive of the turnover, or TOM_NONE.
+  //! @brief Gets the motive of the turnover, or TOM_UNASSIGNED.
   enum eTurnOverMotive getTurnoverMotive();
 
   //! @brief Keeps the scoring player in mind and annonces a turnover.

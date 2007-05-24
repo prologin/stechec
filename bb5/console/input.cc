@@ -307,7 +307,7 @@ void Input::cmdIgnoreSkill(const string& args)
 
 void Input::applyCmdSkill(bool useIt, const string& args)
 {
-  enum eSkill skill = SK_NONE;
+  enum eSkill skill = SK_UNASSIGNED;
   bool matches = false;
   while (skill != SK_SUREHANDS && !matches)
     {
@@ -649,6 +649,7 @@ void Input::wantExit()
 
 void Input::stopWaiting()
 {
+  cerr << "Client " << api_->getTeamId() << " stops waiting." << endl;
   wait_--;
 }
 

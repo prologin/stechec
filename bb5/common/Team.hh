@@ -65,6 +65,10 @@ public:
   bool canUseReroll() const;
   void useReroll();
   void initReroll();
+
+  bool hasDoneBlitz() const;
+  bool hasDonePass() const;
+
   void resetTurn();
   bool isPlacementValid() const;
 

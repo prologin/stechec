@@ -42,6 +42,8 @@ inline Api::Api(CRules* rules)
     selected_player_(NULL),
     skilled_player_(NULL)
 {
+  for (int i = 0; i < DCL_LAST; i++)
+    possible_declarations_[i] = false;
 }
 
 inline Api::~Api()
@@ -84,9 +86,15 @@ inline int Api::doChooseKickoff(bool kickoff)
 
 inline int Api::doPlacePlayer(const Point& pos)
 {
-  assert(rules_->getState() == GS_INITKICKOFF);
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   CHECK_TEAM;
   CHECK_PLAYER;
+
+  if (rules_->getState() != GS_INITKICKOFF)
+    {
+      LOG2("It's not the right moment to end placement. (%1)", gameStateString());
+      return INVALID_ACTION;
+    }
 
   Position player_pos(pos);
   MsgPlayerPos pkt;
@@ -100,7 +108,13 @@ inline int Api::doPlacePlayer(const Point& pos)
 
 inline int Api::doEndPlacement()
 {
-  assert(rules_->getState() == GS_INITKICKOFF);
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+
+  if (rules_->getState() != GS_INITKICKOFF)
+    {
+      LOG2("It's not the right moment to end placement. (%1)", gameStateString());
+      return INVALID_ACTION;
+    }
 
   MsgInitKickoff pkt;
   pkt.place_team = 1;
@@ -111,7 +125,13 @@ inline int Api::doEndPlacement()
 
 inline int Api::doPlaceBall(const Point& pos)
 {
-  assert(rules_->getState() == GS_KICKOFF);
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+
+  if (rules_->getState() != GS_KICKOFF)
+    {
+      LOG2("This is not the right moment to kick-off the ball. (%1)", gameStateString());
+      return INVALID_ACTION;
+    }
 
   Position bpos(pos);
   if (!rules_->field_->intoField(bpos))
@@ -218,7 +238,7 @@ inline int Api::doDeclare(enum eDeclaredAction action)
   CHECK_TEAM;
   CHECK_PLAYER;
 
-  if (action == DCL_NONE)
+  if (action == DCL_UNASSIGNED)
     {
       LOG2("You can't declare an empty action.");
       return INVALID_ACTION;
@@ -396,6 +416,59 @@ inline int Api::selectSkilledPlayer(int player_id)
 {
   skilled_player_ = rules_->our_team_->getPlayer(player_id);
   return skilled_player_ == NULL ? BAD_PLAYER : SUCCESS;
+}
+
+inline int Api::declarationPossibleNumber()
+{
+  CHECK_TEAM;
+  CHECK_PLAYER;
+
+  if (selected_player_->hasPlayed())
+    return 0;
+  if (selected_player_->getAction() != DCL_UNASSIGNED)
+    return 0;
+  if (selected_player_->getStatus() != STA_STANDING
+      && selected_player_->getStatus() != STA_PRONE)
+    return 0;
+
+  int number = DCL_LAST;
+  for (int i = 0; i < DCL_LAST; i++)
+    possible_declarations_[i] = true;
+
+  if (selected_player_->getStatus() == STA_PRONE
+      || !selected_player_->isNearAnOpponent(true))
+    {
+      number --;
+      possible_declarations_[DCL_BLOCK] = false;
+    }
+  if (selected_team_->hasDoneBlitz())
+    {
+      number --;
+      possible_declarations_[DCL_BLITZ] = false;
+    }
+  if (selected_team_->hasDonePass())
+    {
+      number --;
+      possible_declarations_[DCL_PASS] = false;
+    }
+  return number;
+}
+
+inline int Api::declarationPossible(int index) const
+{
+  if (index < 0 || DCL_LAST <= index)
+    return BAD_ARGUMENT;
+
+  int declared_action = -1;
+  while (index >= 0)
+    {
+      declared_action ++;
+      if (declared_action >= DCL_LAST)
+        return BAD_ARGUMENT;
+      else if (possible_declarations_[declared_action])
+        index --;
+    }
+  return declared_action;
 }
 
 inline int Api::actionPossibleNumber() const

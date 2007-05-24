@@ -121,6 +121,18 @@ inline void Team<T>::initReroll()
 }
 
 template <typename T>
+inline bool Team<T>::hasDoneBlitz() const
+{
+  return blitz_done_;
+}
+
+template <typename T>
+inline bool Team<T>::hasDonePass() const
+{
+  return pass_done_;
+}
+
+template <typename T>
 inline bool Team<T>::isPlacementValid() const
 {
   int reserve = 0;

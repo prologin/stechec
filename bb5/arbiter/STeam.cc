@@ -215,7 +215,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
       player_[active_player_id_]->setHasPlayed();
       MsgDeclare m(pkt->client_id);
       m.player_id = active_player_id_;
-      m.action = DCL_NONE;
+      m.action = DCL_UNASSIGNED;
       r_->sendPacket(m);
       active_player_id_ = -1;
     }
@@ -229,7 +229,7 @@ bool STeam::canDeclareAction(const MsgDeclare* pkt)
     }
 
   // Check if the player is not performing an other action.
-  if (p->getAction() != DCL_NONE)
+  if (p->getAction() != DCL_UNASSIGNED)
     {
       LOG4("Cannot declare action: this player is performing an action");
       r_->sendIllegal(pkt->token, pkt->client_id, ERR_ISPLAYING);

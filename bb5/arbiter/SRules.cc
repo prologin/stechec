@@ -21,7 +21,7 @@
 #include "SPlayerMsg.hh"
 #include "xml/xml_config.hh"
 
-//FIXME: 3 is for tests, must be 8.
+// 8 turns per turn.
 #define NB_TURNS 8
 // 4 min. per turn.
 #define TIME_PER_TURN (4 * 60)
@@ -29,7 +29,7 @@
 SRules::SRules()
   : cur_turn_(0),
     cur_half_(0),
-    turnover_(TOM_NONE),
+    turnover_(TOM_UNASSIGNED),
     weather_(NULL),
     ball_(NULL),
     field_(NULL)
@@ -240,7 +240,7 @@ void SRules::initKickoff()
 
 void SRules::turnover(enum eTurnOverMotive motive)
 {
-  if ((turnover_ == TOM_NONE) || (motive == TOM_TIMEEXCEEDED) || (motive == TOM_TOUCHDOOOWN))
+  if ((turnover_ == TOM_UNASSIGNED) || (motive == TOM_TIMEEXCEEDED) || (motive == TOM_TOUCHDOOOWN))
     {
       if (turnover_ != TOM_TOUCHDOOOWN || motive != TOM_TIMEEXCEEDED)
         turnover_ = motive;
@@ -292,7 +292,7 @@ void SRules::afterTouchdooown()
   if (checkGameEnd())
     return;
 
-  turnover_ = TOM_NONE;
+  turnover_ = TOM_UNASSIGNED;
   coach_receiver_ = getState() == GS_COACH1 ? 1 : 0;
   initKickoff();
 }
@@ -445,7 +445,7 @@ void SRules::nextTurn()
   // Switch playing team
   setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
 
-  turnover_ = TOM_NONE;
+  turnover_ = TOM_UNASSIGNED;
   ball_->resetTurn();
   if (getState() == GS_COACH1)
     {

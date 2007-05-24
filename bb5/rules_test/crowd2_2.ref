@@ -1,7 +1,7 @@
 Player '0' (team 0) - Mary-Ann
   position      : out of the field
   carateristics : ma: 6 | st: 3 | ag: 3 | av: 7
-  skills        : SK_BLOCK | SK_DODGE
+  skills        : Block | Dodge
   ma_remain     : 5
   has_played    : no
   status        : Reserve

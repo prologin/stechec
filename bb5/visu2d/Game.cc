@@ -393,7 +393,7 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
           //FIXME: Give the choice to reroll successful dice roll.
           api_->doReroll(false);
         }
-      else if (skill != SK_NONE)
+      else if (skill != SK_UNASSIGNED)
         {
           if (reroll)
             LOG4(" -> You can use a 'reroll' or a 'skill' or 'accept' this result.");

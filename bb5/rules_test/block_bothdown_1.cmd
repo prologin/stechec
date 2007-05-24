@@ -12,7 +12,7 @@ cheat 6 6 6 6 1
 declare block 2
 block 2 3
 accept
-skill use SK_BLOCK
+skill use Block
 
 # Blocked player should be injured and out of the field.
 print BEGIN DIFF

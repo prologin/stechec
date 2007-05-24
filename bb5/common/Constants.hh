@@ -119,7 +119,9 @@ enum eStatus {
   STA_STUNNED,    ///< Player is stunned in the field.
   STA_KO,         ///< Player is KO'd.
   STA_INJURED,    ///< Player is injured or dead.
-  STA_SENTOFF     ///< Player is ejected for a foul.
+  STA_SENTOFF,    ///< Player is ejected for a foul.
+
+  STA_LAST = STA_SENTOFF
 
   // skill/trait related... for futur usage
   //STA_ROOTED,
@@ -132,20 +134,26 @@ enum eStatus {
 //! @note You can get a stringified version into the
 //!   class Player.
 enum eDeclaredAction {
-  DCL_NONE = 0,
+  DCL_UNASSIGNED = 0,
+
   DCL_MOVE,     ///< Move (stand up, move).
   DCL_BLOCK,    ///< Block (block only).
   DCL_BLITZ,    ///< Blitz (stand up, move, block), only one per turn.
   DCL_PASS,     ///< Pass (stand up, move, throw), only one per turn.
-  DCL_HANDOFF,  ///< Hand-off, only one per turn.
-  DCL_FOUL      ///< Foul, only one per turn.
+
+  DCL_LAST = DCL_PASS
+
+  // extra rules actions:
+  //DCL_HANDOFF,  ///< Hand-off, only one per turn.
+  //DCL_FOUL,    ///< Foul, only one per turn.
 };
 
 //! @brief Type of dice Roll
 //! @note You can get a stringified version into the
 //!   class Dice.
 enum eRoll {
-  R_NONE = 0,
+  R_UNASSIGNED = 0,
+
   R_ARMOUR,   ///< Two D6 rolls added and compared to armour value.
   R_BLOCK,    ///< One, two or three block dices rolls.
   R_CATCH,    ///< A D6 roll compared to agility with catching modifiers.
@@ -153,26 +161,32 @@ enum eRoll {
   R_INJURY,   ///< Two D6 rolls added and compared to injury table.
   R_PICKUP,   ///< A D6 roll compared to agility with pick-up modifiers.
   R_STANDUP,  ///< A D6 roll which succeeds with results 4, 5 and 6.
-  R_THROW     ///< A D6 roll compared to agility with passing modifiers.
+  R_THROW,    ///< A D6 roll compared to agility with passing modifiers.
+
+  R_LAST = R_THROW
 };
 
 //! @brief List of player skills.
 //! @note You can get a stringified version into the
 //!   class Player.
 enum eSkill {
-  SK_NONE = 0,
+  SK_UNASSIGNED = 0,
+
   SK_BLOCK,         ///< Block, usable with "both down" block result.
   SK_CATCH,         ///< Catch, usable to reroll a catching roll.
   SK_DODGE,         ///< Dodge, usable to reroll a dodging roll,
                     ///< and usable with "defender stumbles" block result.
   SK_PASS,          ///< Pass, usable with throwing roll.
-  SK_SUREHANDS      ///< Sure Hands, usable to reroll a picking up roll.
+  SK_SUREHANDS,     ///< Sure Hands, usable to reroll a picking up roll.
+
+  SK_LAST = SK_SUREHANDS
 };
 
 //! @brief Motive for turnover.
 //! @note FIXME: propose a stringified version.
 enum eTurnOverMotive {
-  TOM_NONE = 0,
+  TOM_UNASSIGNED = 0,
+
   TOM_KNOCKEDDOWN,    ///< A player of the active team is Knocked Down.
   TOM_LOSTBALL,       ///< @brief A ball passed, or hand-off, by a player of the active team
                       ///< is not caught by any member of the active team before the ball
@@ -183,14 +197,16 @@ enum eTurnOverMotive {
   TOM_FUMBLEDPASS,    ///< A player of the active team fumbles his pass attempt.
   TOM_THROWNTMFAILED, ///< @brief A player of the active team with the ball is thrown or is
                       ///< attempted to be thrown by a team mate and fails to land successfully.
-  TOM_EJECTEDFORAFOUL ///< A player of the active team is ejected by the referee for a foul.
+  TOM_EJECTEDFORAFOUL,///< A player of the active team is ejected by the referee for a foul.
+
+  TOM_LAST = TOM_EJECTEDFORAFOUL
 };
 
 //! @brief List of possible errors, for use in MsgIllegal.
 //! @note FIXME: propose a stringified version.
 enum eError {
-  ERR_NONE = 0,
-  ERR_UNASSIGNED,
+  ERR_UNASSIGNED = 0,
+
   ERR_UNREADABLE,               ///< A parameter is wrong or out of range.
   ERR_WRONGCONTEXT,             ///< The request is not allowed in the current context.
   ERR_ALREADYEXISTS,            ///< The player already exists.
@@ -210,6 +226,8 @@ enum eError {
   ERR_NOTENOUGHMOVEMENT,        ///< The player doesn't have enough movement remaining.
   ERR_NOTADJACENTSQUARE,        ///< The target is not in an adjacent square.
   ERR_NOTEMPTYSQUARE,           ///< The aimed square is not empty.
+
+  ERR_LAST = ERR_NOTEMPTYSQUARE
 };
 
 

@@ -54,7 +54,7 @@ int CPlayer::declareAction(enum eDeclaredAction action)
       return INVALID_ACTION;
     }
     
-  if (action_ != DCL_NONE)
+  if (action_ != DCL_UNASSIGNED)
     {
       LOG2("This player is performing an action.");
       return INVALID_ACTION;
@@ -91,7 +91,7 @@ int CPlayer::move(const Position& to)
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == DCL_NONE)
+  if (action_ == DCL_UNASSIGNED)
     {
       LOG2("Player must declare an action before moving");
       return INVALID_ACTION;
@@ -132,7 +132,7 @@ int CPlayer::standUp()
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == DCL_NONE)
+  if (action_ == DCL_UNASSIGNED)
     {
       LOG2("Player must declare an action before standing up");
       return INVALID_ACTION;
@@ -162,7 +162,7 @@ int CPlayer::block(CPlayer* opponent)
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == DCL_NONE)
+  if (action_ == DCL_UNASSIGNED)
     {
       LOG2("Player must declare an action before blocking");
       return INVALID_ACTION;
@@ -192,7 +192,7 @@ int CPlayer::pass(const Position& to)
       LOG2("Player has already played this turn");
       return INVALID_ACTION;
     }
-  if (action_ == DCL_NONE)
+  if (action_ == DCL_UNASSIGNED)
     {
       LOG2("Player must declare an action before throwing");
       return INVALID_ACTION;
@@ -230,7 +230,7 @@ const std::string& CPlayer::getPlayerPicture() const
 void CPlayer::msgDeclareAction(const MsgDeclare* m)
 {
   // End of action
-  if (m->action == DCL_NONE)
+  if (m->action == DCL_UNASSIGNED)
     {
       has_played_ = true;
       r_->onEvent(m);

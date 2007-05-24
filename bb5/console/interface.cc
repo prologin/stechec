@@ -394,14 +394,14 @@ void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_ty
        << "' : roll [" << result << "] + ["<< modifier << "], required : ["
        << required << "]." << endl;
 
-  if (api_->getTeamId() == team_id && (reroll || (skill != SK_NONE)))
+  if (api_->getTeamId() == team_id && (reroll || (skill != SK_UNASSIGNED)))
     {
       api_->selectSkilledPlayer(player_id);
       cout << "You can"
         << ((reroll) ? " use a team 'reroll' or" : "")
-        << ((skill != SK_NONE) ? " use the 'skill " : "")
-        << ((skill != SK_NONE) ? Player::stringify(skill) : "")
-        << ((skill != SK_NONE) ? "' or" : "")
+        << ((skill != SK_UNASSIGNED) ? " use the 'skill " : "")
+        << ((skill != SK_UNASSIGNED) ? Player::stringify(skill) : "")
+        << ((skill != SK_UNASSIGNED) ? "' or" : "")
         << " 'accept' this result." << endl;
       input_.stopWaiting();
     }

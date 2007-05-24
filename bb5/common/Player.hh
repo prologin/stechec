@@ -192,33 +192,32 @@ public:
 
   //! @brief Check if the player has performed an action this turn.
   bool hasPlayed() const;
-
   //! @brief Set the 'has played this turn' marker.
   void setHasPlayed();
 
   //! @brief Return the action of this player.
   enum eDeclaredAction getAction() const;
-
   //! @brief Set the action.
   void setAction(enum eDeclaredAction action);
 
   //! @brief Check if this player has this skill.
   //! @param skill Skill to check for.
   bool hasSkill(enum eSkill skill) const;
-
   //! @brief Get the list of skills.
   //! @note Don't use this method in rules, you should better use @c hasSkill.
   const SkillList& getSkillList() const;
-
   //! @brief Check if this player has used this skill.
   //! @param skill Skill to check for.
   bool hasUsedSkill(enum eSkill skill) const;
-
   //! @brief Mark the skill as used for this turn.
   void useSkill(enum eSkill skill);
 
   //! @brief Called on new turn.
   void resetTurn();
+
+  //! @brief Checks if there is an opponent in an adjacent square.
+  //! @param standing Whether the opponent must be standing or down.
+  bool isNearAnOpponent(bool standing) const;
 
   static const char* stringify(enum eStatus status);
   static const char* stringify(enum eDeclaredAction action);

@@ -213,7 +213,7 @@ void SPlayer::setUsableSkills()
 void SPlayer::setUsableSkill(enum eSkill skill)
 {
   usable_skills_.clear();
-  if (skill != SK_NONE)
+  if (skill != SK_UNASSIGNED)
     usable_skills_.push_back(skill);
 }
 
@@ -231,7 +231,7 @@ inline bool SPlayer::canUseSkill(enum eSkill skill) const
 enum eSkill SPlayer::getUsableSkill() const
 {
   if (usable_skills_.empty())
-    return SK_NONE;
+    return SK_UNASSIGNED;
   else
     return usable_skills_.back();
 }
@@ -451,7 +451,7 @@ void SPlayer::resolveBlockDice(int chosen_dice)
 
 void SPlayer::resolveBlockBothDownDefender(bool block)
 {
-  target_->setUsableSkill(SK_NONE);
+  target_->setUsableSkill(SK_UNASSIGNED);
   target_knocked_ = !block;
   if (hasSkill(SK_BLOCK))
     {
@@ -466,7 +466,7 @@ void SPlayer::resolveBlockBothDownDefender(bool block)
 
 void SPlayer::resolveBlockBothDownAttacker(bool block)
 {
-  setUsableSkill(SK_NONE);
+  setUsableSkill(SK_UNASSIGNED);
   if ((target_knocked_ && r_->getBall()->getOwner() == target_)
       || ((!block) && r_->getBall()->getOwner() == this))
     {
@@ -496,7 +496,7 @@ void SPlayer::resolveBlockBothDownAttacker(bool block)
 
 void SPlayer::resolveBlockDefenderStumble(bool dodge)
 {
-  target_->setUsableSkill(SK_NONE);
+  target_->setUsableSkill(SK_UNASSIGNED);
   target_knocked_ = !dodge;
   tryBlockPush(target_);
 }
