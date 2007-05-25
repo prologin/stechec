@@ -209,6 +209,7 @@ AC_CONFIG_FILES([
   bb5/data/Makefile
   bb5/data/default_config.xml
   bb5/data/team/amazon.xml
+  bb5/data/team/chaos.xml
   bb5/data/formation/default.xml
   bb5/teamroster2/Makefile
   bb5/visu2d/Makefile

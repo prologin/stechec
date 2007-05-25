@@ -63,9 +63,9 @@ const int SUCCESS          = 0;   ///< Success. @see Api
 
 //! @brief Tokens used for the game.
 //! @see Packet.
-//! @note Keep this list below MAX_TOKEN (256), otherwise you'll run into trouble.
+//! @note Keep this list below BASE_TOKEN_START (248), otherwise you'll run into trouble.
 enum {
-  MSG_CHAT,           ///< Coach chat message.
+  MSG_CHAT = 0,       ///< Coach chat message.
   MSG_ILLEGAL,        ///< Client's message has been refused.
   MSG_INITGAME,       ///< Coaches must declare their team and players.
   MSG_INITHALF,       ///< Beginning of a half-time.
@@ -103,7 +103,8 @@ enum {
   MSG_BLOCKPUSH,      ///< Player pushes a player after a block. @see bb5/common/Player.hh
   MSG_MULTIBLOCK,     ///< Player blocks two players in the same time. @see bb5/common/Player.hh
   MSG_PASS,           ///< Player throws the ball. @see bb5/common/Player.hh
-  RULES_TOKEN_LAST,
+
+  RULES_TOKEN_LAST
 };
 
 //! @brief Player status.
@@ -130,7 +131,7 @@ enum eStatus {
   //STA_GAZE
 };
 
-//! @brief Player actions.
+//! @brief Player declared actions.
 //! @note You can get a stringified version into the
 //!   class Player.
 enum eDeclaredAction {
@@ -146,6 +147,27 @@ enum eDeclaredAction {
   // extra rules actions:
   //DCL_HANDOFF,  ///< Hand-off, only one per turn.
   //DCL_FOUL,    ///< Foul, only one per turn.
+};
+
+//! @brief Player simple actions.
+enum eRealAction {
+  ACT_UNASSIGNED = 0,
+
+  ACT_BLOCK,      ///< Block an adjacent player.
+  ACT_MOVE,       ///< Move to a square.
+  ACT_STANDUP,    ///< Stand up if prone.
+  ACT_THROW,      ///< Throw the ball to a square.
+
+  ACT_LAST = ACT_THROW
+
+  // extra rules actions:
+  //ACT_AGGRESS,
+  //ACT_GATHER,
+  //ACT_GOFORIT,
+  //ACT_HANDOFF,
+  //ACT_LEAP,
+  //ACT_THROWTM,
+  //ACT_TRANSMIT,
 };
 
 //! @brief Type of dice Roll

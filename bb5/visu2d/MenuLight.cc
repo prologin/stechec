@@ -195,61 +195,61 @@ int MenuLight::showMenu()
   while (true)
     {
       if (win_.processOneFrame())
-	return 1;
+        return 1;
 
       // Quit. Return negative value.
       if (bg_hi_.getRect().inside(inp.mouse_))
-	bg_hi_.show();
+        bg_hi_.show();
       else
-	bg_hi_.hide();
+        bg_hi_.hide();
       if (win_.getInput().key_pressed_[SDLK_q] ||
-	  bg_hi_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
-	return -1;
+          bg_hi_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
+        return -1;
 
       // Highlights
       if (join_.getRect().inside(inp.mouse_))
-	join_.setBgColor(darkcyan_color);
+        join_.setBgColor(darkcyan_color);
       else
-	join_.setBgColor(aquamarine_color);
+        join_.setBgColor(aquamarine_color);
       if (create_.getRect().inside(inp.mouse_))
-	create_.setBgColor(darkcyan_color);
+        create_.setBgColor(darkcyan_color);
       else
-	create_.setBgColor(aquamarine_color);
+        create_.setBgColor(aquamarine_color);
       
       // Create game
       if (create_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
-	{
-	  LOG1("Create game...");
-	  cfg_.setAttr<std::string>("client", "connect", "host", "localhost");
-	  
-	  // FIXME: fork a server
-	  unloadResources();
-	  return 0;
-	}
+        {
+          LOG1("Create game...");
+          cfg_.setAttr<std::string>("client", "connect", "host", "localhost");
+
+          // FIXME: fork a server
+          unloadResources();
+          return 0;
+        }
 
       // Join game
       if (join_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
-	{
-	  LOG1("Join game...");
-	  unloadResources();
-	  return 0;
-	}
+        {
+          LOG1("Join game...");
+          unloadResources();
+          return 0;
+        }
 
       // Inputboxes
       if (host_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
-	host_.acquireInput("host");
+        host_.acquireInput("host");
       if (host_.isAcquireFinished())
-	{
-	  cfg_.setAttr<std::string>("client", "connect", "host", host_.getText());
-	  host_.resetAcquire();
-	}
+        {
+          cfg_.setAttr<std::string>("client", "connect", "host", host_.getText());
+          host_.resetAcquire();
+        }
       if (port_.getRect().inside(inp.mouse_) && inp.button_pressed_[1])
-	port_.acquireInput("port");
+        port_.acquireInput("port");
       if (port_.isAcquireFinished())
-	{
-	  cfg_.setAttr<std::string>("client", "connect", "port", port_.getText());
-	  port_.resetAcquire();
-	}
+        {
+          cfg_.setAttr<std::string>("client", "connect", "port", port_.getText());
+          port_.resetAcquire();
+        }
     }
 
   // Should never go here.
@@ -273,7 +273,7 @@ int MenuLight::onPlay(bool)
 void MenuLight::showVersion()
 {
   std::cout << "TowBowlTactics client v" PACKAGE_VERSION << "\n"
-	    << "Copyright (C) 2006 TBT Team.\n";
+            << "Copyright (C) 2006 TBT Team.\n";
 }
 
 /********************************************************************/

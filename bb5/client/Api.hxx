@@ -44,6 +44,8 @@ inline Api::Api(CRules* rules)
 {
   for (int i = 0; i < DCL_LAST; i++)
     possible_declarations_[i] = false;
+  for (int i = 0; i < ACT_LAST; i++)
+    possible_actions_[i] = false;
 }
 
 inline Api::~Api()
@@ -459,7 +461,7 @@ inline int Api::declarationPossible(int index) const
   if (index < 0 || DCL_LAST <= index)
     return BAD_ARGUMENT;
 
-  int declared_action = -1;
+  int declared_action = DCL_UNASSIGNED;
   while (index >= 0)
     {
       declared_action ++;
@@ -471,20 +473,75 @@ inline int Api::declarationPossible(int index) const
   return declared_action;
 }
 
-inline int Api::actionPossibleNumber() const
+inline int Api::actionPossibleNumber()
 {
   CHECK_TEAM;
   CHECK_PLAYER;
-  // FIXME: todo
+
+  if (selected_player_->hasPlayed())
+    return 0;
+  if (selected_player_->getAction() != DCL_UNASSIGNED)
+    return 0;
+  if (selected_player_->getStatus() != STA_STANDING
+      && selected_player_->getStatus() != STA_PRONE)
+    return 0;
+
+  int number = 0;
+  for (int i = 0; i < ACT_LAST; i++)
+    possible_actions_[i] = false;
+
+  if (selected_player_->getStatus() == STA_PRONE)
+    {
+      if (selected_player_->getAction() != DCL_BLOCK
+        /* FIXME for extra rules: Check also if the
+         * player didn't already tried to stand up. */)
+        {
+          number ++;
+          possible_actions_[ACT_STANDUP] = true;
+        }
+      return number;
+    }
+  
+  if (selected_player_->getAction() != DCL_BLOCK
+      && selected_player_->isNearAnEmptySquare())
+    {
+      number ++;
+      possible_actions_[ACT_MOVE] = true;
+    }
+  if ((selected_player_->getAction() == DCL_BLOCK
+        || selected_player_->getAction() == DCL_BLITZ)
+      && selected_player_->isNearAnOpponent(true)
+      /* FIXME: Check also if the player
+       * didn't already do a block.*/)
+    {
+      number ++;
+      possible_actions_[ACT_BLOCK] = true;
+    }
+  if (selected_player_->getAction() == DCL_PASS
+      /* FIXME: Check also if the player owns the ball,
+       * and if he didn't already tried a throw. */)
+    {
+      number ++;
+      possible_actions_[ACT_THROW] = true;
+    }
   return 0;
 }
 
 inline int Api::actionPossible(int index) const
 {
-  CHECK_TEAM;
-  CHECK_PLAYER;
-  // FIXME: todo
-  return index = 0;
+  if (index < 0 || ACT_LAST <= index)
+    return BAD_ARGUMENT;
+
+  int action = -1;
+  while (index >= 0)
+    {
+      action ++;
+      if (action >= ACT_LAST)
+        return BAD_ARGUMENT;
+      else if (possible_actions_[action])
+        index --;
+    }
+  return action;
 }
 
 inline int Api::moveLength(const Point& to)

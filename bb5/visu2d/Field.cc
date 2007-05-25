@@ -125,10 +125,10 @@ void VisuField::setBallPos(const Point& pos)
   else
     {
       if (g_.isStateSet(stWaitKoffBall))
-	{
-	  cross_red_.setPos(squareToField(pos, Point(4, 4)));
-	  cross_red_.show();
-	}
+        {
+          cross_red_.setPos(squareToField(pos, Point(4, 4)));
+          cross_red_.show();
+        }
       ball_.move(squareToField(pos, Point(3, 3)), 35.);
     }
 }
@@ -170,40 +170,40 @@ void VisuField::drawTicks()
   for (i = 0; i <= COLS; i++)
     {
       for (j = 0; j <= ROWS; j++)
-	{
-	  r.w = 1;
-	  r.h = 1;
-	  r.x = i * square_size + margin_size;
-	  r.y = j * square_size + margin_size;
-	  SDL_FillRect(surf, &r, 0xFF00);
-	  if (i > 0)
-	    { 
-	     r.x = i * square_size + margin_size - 2;
-	     r.w = 2;
-	     SDL_FillRect(surf, &r, 0xFF00);
-	    }
-	  if (i < COLS)
-	    { 
-	      r.x = i * square_size + margin_size + 1;
-	      r.w = 2;
-	      SDL_FillRect(surf, &r, 0xFF00);
-	    }
+        {
+          r.w = 1;
+          r.h = 1;
+          r.x = i * square_size + margin_size;
+          r.y = j * square_size + margin_size;
+          SDL_FillRect(surf, &r, 0xFF00);
+          if (i > 0)
+            { 
+             r.x = i * square_size + margin_size - 2;
+             r.w = 2;
+             SDL_FillRect(surf, &r, 0xFF00);
+            }
+          if (i < COLS)
+            { 
+              r.x = i * square_size + margin_size + 1;
+              r.w = 2;
+              SDL_FillRect(surf, &r, 0xFF00);
+            }
       
-	  r.x = i * square_size + margin_size;
-	  r.w = 1;
-	  if (j > 0)
-	    { 
-	      r.y = j * square_size + margin_size - 2;
-	      r.h = 2;
-	      SDL_FillRect(surf, &r, 0xFF00);
-	    }
-	  if (j < ROWS)
-	    { 
-	      r.y = j * square_size + margin_size + 1;
-	      r.h = 2;
-	      SDL_FillRect(surf, &r, 0xFF00);
-	    }
-	}
+          r.x = i * square_size + margin_size;
+          r.w = 1;
+          if (j > 0)
+            { 
+              r.y = j * square_size + margin_size - 2;
+              r.h = 2;
+              SDL_FillRect(surf, &r, 0xFF00);
+            }
+          if (j < ROWS)
+            { 
+              r.y = j * square_size + margin_size + 1;
+              r.h = 2;
+              SDL_FillRect(surf, &r, 0xFF00);
+            }
+        }
     }
 }
 
@@ -219,29 +219,29 @@ void VisuField::update()
       ball_.show();
 
       if (mouseInsideField())
-	{
-	  if (square.y < ROWS / 2 && g_.getApi()->myTeamId() == 0
-	      || square.y >= ROWS / 2 && g_.getApi()->myTeamId() == 1)
-	    setMarker(square, 1);
-	  else
-	    setMarker(square, 0);
-	    
-	  if (inp.button_pressed_[1])
-	    {
-	      LOG(4, "Try to place the ball at " << square);
-	      if (!g_.getApi()->doPlaceBall(square))
-		{
-		  ball_.setPos(squareToField(square, Point(10, 10)));
-		  g_.unsetState(stDoKoffBall);
-		  g_.setState(stWaitKoffBall);
-		  cross_black_.setPos(squareToField(square, Point(4, 4)));
-		  cross_black_.show();
-		  removeMarker();
-		}
-	    }
-	}
+        {
+          if (square.y < ROWS / 2 && g_.getApi()->myTeamId() == 0
+              || square.y >= ROWS / 2 && g_.getApi()->myTeamId() == 1)
+            setMarker(square, 1);
+          else
+            setMarker(square, 0);
+          
+          if (inp.button_pressed_[1])
+            {
+              LOG(4, "Try to place the ball at " << square);
+              if (!g_.getApi()->doPlaceBall(square))
+                {
+                  ball_.setPos(squareToField(square, Point(10, 10)));
+                  g_.unsetState(stDoKoffBall);
+                  g_.setState(stWaitKoffBall);
+                  cross_black_.setPos(squareToField(square, Point(4, 4)));
+                  cross_black_.show();
+                  removeMarker();
+                }
+            }
+        }
       else
-	removeMarker();
+        removeMarker();
     }
 
   // Handle kickoff of ball - give the ball to one of our player.
@@ -252,27 +252,27 @@ void VisuField::update()
       ball_.show();
 
       const CPlayer* p = g_.getApi()->getPlayer(square);
-      if (p != NULL)
-	{
-	  setMarker(square, 0);
-	  if (inp.button_pressed_[1])
-	    {
-	      LOG4("Try to give the ball to %1 at %2", p->getId(), square);
-	      if (!g_.getApi()->doGiveBall(p->getId()))
-		{
-		  ball_.setPos(squareToField(square, Point(10, 10)));
-		  g_.unsetState(stDoKoffGiveBall);
-		  g_.setState(stWaitKoffBall);
-		  removeMarker();
-		}
-	    }
-	}
+      if (p != NULL && p->getTeamId() == g_.getApi()->myTeamId())
+        {
+          setMarker(square, 0);
+          if (inp.button_pressed_[1])
+            {
+              LOG4("Try to give the ball to %1 at %2", p->getId(), square);
+              if (!g_.getApi()->doGiveBall(p->getId()))
+                {
+                  ball_.setPos(squareToField(square, Point(10, 10)));
+                  g_.unsetState(stDoKoffGiveBall);
+                  g_.setState(stWaitKoffBall);
+                  removeMarker();
+                }
+            }
+        }
       else if (mouseInsideField() &&
-	       (square.y < ROWS / 2 && g_.getApi()->myTeamId() == 0
-		|| square.y >= ROWS / 2 && g_.getApi()->myTeamId() == 1))
-	setMarker(square, 1);
+          (square.y < ROWS / 2 && g_.getApi()->myTeamId() == 0
+           || square.y >= ROWS / 2 && g_.getApi()->myTeamId() == 1))
+        setMarker(square, 1);
       else
-	removeMarker();
+        removeMarker();
     }
   
   VirtualScrollableSurface::update();

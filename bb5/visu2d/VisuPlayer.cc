@@ -36,7 +36,7 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
     circle_selected_("image/general/circle_select.png"),
     player_num_("image/general/player_num.png"),
     status_("image/general/status.png"),
-    target_action_(eActNone)
+    target_action_(ACT_UNASSIGNED)
 {
   VisuField& field = game_.getField();
 
@@ -139,108 +139,106 @@ void VisuPlayer::drawPath()
   prev_dst_ = to;
 }
 
-// Called when the coach click on the popup menu
-void VisuPlayer::selectAction(enum eAction item)
+// Called when the coach click on the declarations popup menu
+void VisuPlayer::selectDeclaration(enum eDeclaredAction dcl)
 {
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
 
-  LOG2("Select action for action %1", item);
+  LOG2("Select declaration: %1.", dcl);
   game_.setState(stDoAction);
   
   // Depending on action:
   //  - require another popup menu to display
   //  - declare the action to the api and waits that coach select target
   //  - do this action immediately (try to stand up, in case we were prone)
-  switch (item)
-    {
-      case eActGetUp:
-  	if (!is_second_action_)
-  	  api_->doDeclare(DCL_MOVE);
-	target_action_ = eActGetUp;
-	break;
-    case eActBlitz:
-      api_->doDeclare(DCL_BLITZ);
-      api_->doStandUpPlayer();
-      act_popup_->prepareActionMenu(eActBlitz);
+  switch (dcl)
+  {
+    case DCL_MOVE:
+      api_->doDeclare(DCL_MOVE);
+      if (p_->getStatus() == STA_PRONE)
+        api_->doStandUpPlayer();
+      target_action_ = ACT_MOVE;
+      break;
+
+    case DCL_BLITZ:
+      api_->doDeclare(DCL_BLOCK);
+      if (p_->getStatus() == STA_PRONE)
+        api_->doStandUpPlayer();
+      act_popup_->prepareActionMenu(DCL_BLITZ);
       circle_selected_.setFrame(2);
       game_.unsetState(stDoAction);
       is_second_action_ = true;
       break;
 
-    case eActPass:
-      if (!is_second_action_)
-	{
-	  api_->doDeclare(DCL_PASS);
-	  api_->doStandUpPlayer();
-	  act_popup_->prepareActionMenu(eActPass);
-	  circle_selected_.setFrame(2);
-	  game_.unsetState(stDoAction);
-	  is_second_action_ = true;
-	}
-      else
-	{
-	  target_action_ = eActPass;
-	}
-      break;
-
-    case eActMove:
-      if (!is_second_action_)
-	{
-	  api_->doDeclare(DCL_MOVE);
-	  api_->doStandUpPlayer();
-	}
-      target_action_ = eActMove;
-      break;
-
-    case eActBlock:
+    case DCL_BLOCK:
       api_->doDeclare(DCL_BLOCK);
-      api_->doStandUpPlayer();
-      target_action_ = eActBlock;
+      target_action_ = ACT_BLOCK;
       break;
 
-    case eActAggress:
-      target_action_ = eActAggress;
+    case DCL_PASS:
+      api_->doDeclare(DCL_PASS);
+      if (p_->getStatus() == STA_PRONE)
+        api_->doStandUpPlayer();
+      act_popup_->prepareActionMenu(DCL_PASS);
+      circle_selected_.setFrame(2);
+      game_.unsetState(stDoAction);
+      is_second_action_ = true;
       break;
 
     default:
-      LOG2("Invalid action selection: %1", item);
+      LOG2("Invalid declaration selection: %1.", dcl);
       game_.unsetState(stDoAction);
       break;
     }
 }
 
-void VisuPlayer::targetAction(enum eAction item)
+// Called when the coach click on the actions popup menu
+void VisuPlayer::selectAction(enum eRealAction act)
+{
+  api_->selectTeam(p_->getTeamId());
+  api_->selectPlayer(p_->getId());
+
+  LOG2("Select action: %1.", act);
+  game_.setState(stDoAction);
+  
+  switch (act)
+  {
+    case ACT_THROW:
+    case ACT_MOVE:
+    case ACT_BLOCK:
+      target_action_ = act;
+      break;
+    default:
+      LOG2("Invalid action selection: %1.", act);
+      game_.unsetState(stDoAction);
+      break;
+    }
+}
+
+void VisuPlayer::targetAction(enum eRealAction act)
 {
   VisuField& field = game_.getField();
   Point to(field.mouseToSquare());
 
-  switch (item)
-    {
-      case eActGetUp:
-	LOG2("STANDUP - send to api.");
-	api_->doStandUpPlayer();
-	break;
-    case eActMove:
+  switch (act)
+  {
+    case ACT_MOVE:
       LOG2("MOVE to %1 - send to api.", to);
       api_->doMovePlayer(to);
       break;
-    case eActBlock:
+    case ACT_BLOCK:
       LOG2("BLOCK to %1 - send to api", to);
       api_->doBlockPlayer(api_->playerId(to));
       break;
-    case eActPass:
+    case ACT_THROW:
       LOG2("THROW to %1 - send to api", to);
       api_->doPassPlayer(to);
       break;
-    case eActAggress:
-      LOG2("AGGRESS to %1 - not implemented yet", to);
-      actionFinished();
-      break;
     default:
-      LOG2("not implemented yet...");
+      LOG2("Action (%1) not implemented yet...", act);
       break;
-    }
+  }
 }
 
 void VisuPlayer::setPos(const Point& pos)
@@ -267,54 +265,54 @@ void VisuPlayer::update()
       LOG4("Switch status for player %1 from %2 to %3.",
           p_->getId(), last_player_status_, p_->getStatus());
       switch (p_->getStatus())
-	{
-	case STA_PRONE:
-	  status_.setFrame(1);
-	  status_.show();
-	  break;
-	case STA_STUNNED:
-	  status_.setFrame(2);
-	  status_.show();
-	  break;
-	case STA_KO:
-	  status_.setFrame(3);
-	  status_.show();
-	  break;
-	case STA_INJURED:
-	  status_.setFrame(4);
-	  status_.show();
-	  break;
-	case STA_SENTOFF:
-	  status_.setFrame(5);
-	  status_.show();
-	  break;
-	case STA_STANDING:
-	  //FIXME: check for ball.
-	case STA_RESERVE:
-	default:
-	  status_.hide();
-	  break;
-	}
+      {
+        case STA_PRONE:
+          status_.setFrame(1);
+          status_.show();
+          break;
+        case STA_STUNNED:
+          status_.setFrame(2);
+          status_.show();
+          break;
+        case STA_KO:
+          status_.setFrame(3);
+          status_.show();
+          break;
+        case STA_INJURED:
+          status_.setFrame(4);
+          status_.show();
+          break;
+        case STA_SENTOFF:
+          status_.setFrame(5);
+          status_.show();
+          break;
+        case STA_STANDING:
+          //FIXME: check for ball.
+        case STA_RESERVE:
+        default:
+          status_.hide();
+          break;
+      }
       last_player_status_ = p_->getStatus();
     }
 
   // Some action to do ?
-  if (target_action_ != eActNone && game_.isStateSet(stDoAction))
+  if (target_action_ != ACT_UNASSIGNED && game_.isStateSet(stDoAction))
     {
       if (field.mouseInsideField())
-	{
-	  if (target_action_ != eActMove)
-	    field.setMarker(field.mouseToSquare(), 0);
-	  if (inp.button_pressed_[1])
-	    {
-	      targetAction(target_action_);
-	      target_action_ = eActNone;
-	      game_.unsetState(stDoAction);
-	      field.removeMarker();
-	    }
-	}
+        {
+          if (target_action_ != ACT_MOVE)
+            field.setMarker(field.mouseToSquare(), 0);
+          if (inp.button_pressed_[1])
+            {
+              targetAction(target_action_);
+              target_action_ = ACT_UNASSIGNED;
+              game_.unsetState(stDoAction);
+              field.removeMarker();
+            }
+        }
       else
-	field.removeMarker();
+        field.removeMarker();
     }
 
   // Update focus.
@@ -324,7 +322,7 @@ void VisuPlayer::update()
   if (!has_focus_ && now_focus)
     {
       if (p_->getTeamId() == api_->myTeamId())
-	circle_.anim(200);
+        circle_.anim(200);
       game_.getPanel().displayPlayerInfo(p_->getTeamId(), p_->getId());
     }
 
@@ -332,7 +330,7 @@ void VisuPlayer::update()
   if (has_focus_ && !now_focus)
     {
       if (p_->getTeamId() == api_->myTeamId())
-	circle_.stopAnim();
+        circle_.stopAnim();
     }
 
   // Click on player (of _my_ team, on my turn). Select him.
@@ -342,15 +340,18 @@ void VisuPlayer::update()
       && (inp.button_pressed_[1] || inp.button_pressed_[3]))
     {
       game_.unselectAllPlayer();
-      act_popup_->prepareDeclareMenu(this, p_->getStatus());
+      if (p_->getAction() == DCL_UNASSIGNED)
+        act_popup_->prepareDeclareMenu(this);
+      else
+        act_popup_->prepareActionMenu(p_->getAction());
       circle_selected_.show();
       is_selected_ = true;
       // Left button will show it now
       if (inp.button_pressed_[3])
-	{
-	  act_popup_->setPos(inp.mouse_);
-	  act_popup_->show();
-	}
+        {
+          act_popup_->setPos(inp.mouse_);
+          act_popup_->show();
+        }
     }
 
   // Player has finished its action
@@ -358,7 +359,7 @@ void VisuPlayer::update()
     actionFinished();
   
   // Draw path
-  if (game_.isStateSet(stDoAction) && (target_action_ == eActMove || target_action_ == eActGetUp))
+  if (game_.isStateSet(stDoAction) && target_action_ == ACT_MOVE)
     drawPath();
   else
     path_.clear();

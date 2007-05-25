@@ -417,7 +417,7 @@ void Game::evBlockResult(int team_id, int player_id, int opponent_player_id,
 {
   player_id = opponent_player_id;
 
-  LOG2("Game::evBlockResult: team_id: %1, opponent_id: %2 strongest: %3 can_reoll %4 nb_dice %5",
+  LOG2("Game::evBlockResult: team_id: %1, opp_id: %2 strongest: %3, reroll: %4, nb_dices: %5.",
        team_id, opponent_player_id, strongest_team_id, can_reroll, nb_dice);
 
   // show the dices.

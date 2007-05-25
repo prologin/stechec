@@ -54,19 +54,19 @@ private:
   // Player information
   bool          showing_player_info_;
   Surface       player_picture_;
-  TextSurface	name_;
+  TextSurface   name_;
   TextSurface   position_;
   TextSurface   ma_;
   TextSurface   st_;
   TextSurface   ag_;
   TextSurface   av_;
-  TextSurface	misc_;
+  TextSurface   misc_;
   TextSurface   skills_;
-  Sprite	digit_score_[2];
-  Sprite	digit_reroll_[2];
-  Sprite	digit_time_[3];
+  Sprite        digit_score_[2];
+  Sprite        digit_reroll_[2];
+  Sprite        digit_time_[3];
 
-  Surface	turn_[2];
+  Surface       turn_[2];
 };
 
 END_NS(sdlvisu);

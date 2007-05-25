@@ -124,7 +124,7 @@ public:
   //! @brief Get the number of possible action for the selected player.
   //! @fixme NOT IMPLEMENTED
   //! @return The number of possible action
-  int                   actionPossibleNumber() const;
+  int                   actionPossibleNumber();
 
   //! @brief Get a possible action for the selected player.
   //! @param index Action index, in the range [0 - actionPossibleNumber() - 1].
@@ -282,6 +282,7 @@ private:
   CPlayer*              skilled_player_;
   const PosList*        player_path_;
   bool                  possible_declarations_[DCL_LAST];
+  bool                  possible_actions_[ACT_LAST];
 };
 
 # include "Api.hxx"

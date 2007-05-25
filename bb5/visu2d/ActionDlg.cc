@@ -86,15 +86,15 @@ void ActionDlg::Callback::clicked(int btn_index)
       break;
     case eDlgActBlockDice:
       if (btn_index == parent_->reroll_index_)
-	{
-	  LOG4("want reroll!!!!");
-	  api->doReroll(true);
-	}
+        {
+          LOG4("want reroll!!!!");
+          api->doReroll(true);
+        }
       else if (parent_->block_choice_)
-	{
-	  LOG4("choose dice %1", btn_index + 1);
-	  api->doChooseBlockDice(btn_index + 1);
-	}
+        {
+          LOG4("choose dice %1", btn_index + 1);
+          api->doChooseBlockDice(btn_index + 1);
+        }
       break;
     }
 }

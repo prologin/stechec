@@ -48,9 +48,13 @@ public:
   //! @brief Called at each end turn. Reset some variables.
   void finishedTurn();
   
+  //! @brief A declaration was selected by the popup menu or an other source.
+  //! @param declaration Declaration selected.
+  void selectDeclaration(enum eDeclaredAction declaration);
+
   //! @brief An action was selected by the popup menu or an other source.
-  //! @param item Action selected.
-  void selectAction(enum eAction item);
+  //! @param action Action selected.
+  void selectAction(enum eRealAction action);
 
   virtual void setPos(const Point& pos);
   virtual void update();
@@ -58,35 +62,35 @@ public:
 private:
 
   //! @brief Really do an action, after coach has chosen his target.
-  void targetAction(enum eAction item);
+  void targetAction(enum eRealAction act);
 
   //! @brief To call when this player has finished its action.
   void actionFinished();
-    
+
   void drawPath();
   
-  Api*          api_;
-  Game&         game_;
-  ActionPopup*  act_popup_;
-  const CPlayer* p_;
+  Api*            api_;
+  Game&           game_;
+  ActionPopup*    act_popup_;
+  const CPlayer*  p_;
 
   bool          has_focus_;
   bool          is_selected_;
-  bool		is_second_action_;
-  bool		has_played_;
-  enum eStatus	last_player_status_;
+  bool          is_second_action_;
+  bool          has_played_;
+  enum eStatus  last_player_status_;
   
-  Sprite        circle_;
-  Sprite        circle_selected_;
-  Sprite        player_num_;
-  Sprite	status_;
+  Sprite    circle_;
+  Sprite    circle_selected_;
+  Sprite    player_num_;
+  Sprite    status_;
 
-  eAction	target_action_;
+  enum eRealAction      target_action_;
 
   // for pathway.
-  Sprite	move_sprite_;
-  std::vector<Sprite> path_;
-  Point		prev_dst_;
+  Sprite                move_sprite_;
+  std::vector<Sprite>   path_;
+  Point                 prev_dst_;
 };
 
 END_NS(sdlvisu);

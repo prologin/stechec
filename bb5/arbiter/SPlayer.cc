@@ -252,7 +252,7 @@ bool SPlayer::rollAgility(enum eRoll roll_type, int modifier)
   bool success = dice_result != 1 && (dice_result == 6 || dice_modified >= required);
   LOG6( "[t%1,p%2] Roll %3 %4, dice: %5, with modifiers: %6, required: %7, ag: %8.",
       team_id_, id_,
-      d_->stringify(roll_type), success?"succeds":"_fails_",
+      d_->stringify(roll_type), success?"succeeds":"_fails_",
       dice_result, dice_modified, required, ag_ );
   pm_->sendRoll(roll_type, dice_result, modifier, required,
       (reroll_enabled_?t_->canUseReroll():false), getUsableSkill(), this);
@@ -867,7 +867,7 @@ void SPlayer::finishPickUp(bool reroll, bool success)
     }
   else if (success)
     {
-      LOG5("[t%1,p%2] succeds to pick up the ball.", team_id_, id_);
+      LOG5("[t%1,p%2] succeeds to pick up the ball.", team_id_, id_);
       r_->getBall()->setOwner(this); //FIXME: possibly breaks client compatibility.
       if (!checkAndDeclareTouchdooown())
         {
@@ -918,7 +918,7 @@ void SPlayer::rollStandUp()
   bool success = (dice_result >= required);
   LOG6( "[t%1,p%2] Roll %3 %4, dice: %5, required: %7.",
       team_id_, id_,
-      d_->stringify(roll_attempted_), success?"succeds":"_fails_",
+      d_->stringify(roll_attempted_), success?"succeeds":"_fails_",
       dice_result, required, ag_ );
   pm_->sendRoll(roll_attempted_,dice_result, 0, required,
       (reroll_enabled_?t_->canUseReroll():false), getUsableSkill(), this);
@@ -943,7 +943,7 @@ void SPlayer::finishStandUp(bool reroll, bool success)
     }
   else if (success)
     {
-      LOG5("[t%1,p%2] succeds to stand up.", team_id_, id_);
+      LOG5("[t%1,p%2] succeeds to stand up.", team_id_, id_);
       setStatus(STA_STANDING);
     }
   else

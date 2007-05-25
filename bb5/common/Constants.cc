@@ -54,5 +54,5 @@ const char *bb5_token_str[RULES_TOKEN_LAST] = {
   "MSG_BLOCK",
   "MSG_BLOCKPUSH",
   "MSG_MULTIBLOCK",
-  "MSG_PASS",
+  "MSG_PASS"
 };

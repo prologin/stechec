@@ -63,13 +63,13 @@ private:
   
   Surface       bg_;
   Sprite        ball_;
-  Sprite	cross_black_;
-  Sprite	cross_red_;
+  Sprite        cross_black_;
+  Sprite        cross_red_;
 
-  bool	        draw_ticks_;
+  bool          draw_ticks_;
 
-  Surface	red_highlight_;
-  Surface	blue_highlight_;
+  Surface       red_highlight_;
+  Surface       blue_highlight_;
 };
 
 END_NS(sdlvisu);

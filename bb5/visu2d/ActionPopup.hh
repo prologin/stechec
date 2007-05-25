@@ -20,23 +20,39 @@
 # include "VirtualSurface.hh"
 # include "Sprite.hh"
 
+class Api;
+
 BEGIN_NS(sdlvisu);
 
-//! @brief Silly enumeration, linked to pictures index. @see data/general/actions_off.jpg
-enum eAction {
-  eActNone = -1,
-  eActMove,
-  eActMovePlus,
-  eActBlock,
-  eActGather,
-  eActPass,
-  eActAggress,
-  eActBlitz,
-  eActRollOver,
-  eActGetUp,
-  eActTransmit,
-  eActThrowTm,
-  eActLeap
+#define POPUP_ITEM_HEIGHT 40
+#define POPUP_ITEM_WIDTH 120
+
+//! @see data/general/declarations_on.jpg
+enum eDeclarationsImageIndex {
+  DCLII_MOVE = 0,
+  DCLII_BLITZ,
+  DCLII_BLOCK,
+  DCLII_PASS,
+
+  DCLII_NB
+};
+
+//! @see data/general/actions_on.jpg
+enum eActionsImageIndex {
+  ACTII_MOVE = 0,
+  ACTII_GOFORIT,
+  ACTII_BLOCK,
+  ACTII_GATHER,
+  ACTII_THROW,
+  ACTII_AGGRESS,
+  ACTII_BLITZ,
+  ACTII_ROLLOVER,
+  ACTII_STANDUP,
+  ACTII_TRANSMIT,
+  ACTII_THROWTM,
+  ACTII_LEAP,
+
+  ACTII_NB
 };
 
 class VisuPlayer;
@@ -52,8 +68,8 @@ public:
   ActionPopup(Game& g);
   virtual ~ActionPopup();
 
-  void prepareDeclareMenu(VisuPlayer* vp, enum eStatus player_status);
-  void prepareActionMenu(eAction decl_act);
+  void prepareDeclareMenu(VisuPlayer* vp);
+  void prepareActionMenu(enum eDeclaredAction dcl);
 
   virtual void show();
   virtual void hide();
@@ -61,13 +77,17 @@ public:
   virtual void update();
 
 private:
-  Game&                 g_;
+  Api*      api_;
+  Game&     game_;
 
-  VisuPlayer*           vp_;
-  Sprite                sprite_[12];
-  Sprite                sprite_on_[12];
-  enum eAction		display_act_[16];
-  int			display_act_nb_;
+  VisuPlayer*   vp_;
+  Sprite    act_sprite_[ACTII_NB];    ///< Action normal sprites.
+  Sprite    act_sprite_on_[ACTII_NB]; ///< Action sprites under mouse pointer.
+  Sprite    dcl_sprite_[DCLII_NB];    ///< Declaration normal sprites.
+  Sprite    dcl_sprite_on_[DCLII_NB]; ///< Declaration sprites under mouse pointer.
+  int     displayed_items_[DCLII_NB + ACTII_NB]; ///< Displayed menu items.
+  int     displayed_items_nb_;  ///< Menu length.
+  bool    isDeclarationsMenu;   ///< Whether the menu displays declarations or actions.
 };
 
 END_NS(sdlvisu);

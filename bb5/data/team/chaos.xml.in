@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> <!-- -*-SGML-*- -->
+
+<team bb_version="5" race="Chaos" emblem="chaos.png"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="file://@prefix@/share/@PACKAGE@/bb5/schema/team.xsd">
+
+  <formation>default.xml</formation>
+  <name>The Amazons' Slayers</name>
+  <coach>Kapouik</coach>
+  <rating>100</rating>
+  <treasury>0</treasury>
+  <reroll>2</reroll>
+  <rerollcost>60000</rerollcost>
+  <fanfactor>6</fanfactor>
+  <assistant>0</assistant>
+  <cheerleader>0</cheerleader>
+  <apothecary>0</apothecary>
+  
+  <players>
+
+    <!-- Chaos Warriors 4*100 = 400 -->
+    <player name="Cogsha Iocog" number="1" position="Chaos Warrior" display="chaos_w.png">
+      <positionid>0</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Akhlly Daowhhdemmi" number="2" position="Chaos Warrior" display="chaos_w.png">
+      <positionid>0</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Ihablssthul Ablisw" number="3" position="Chaos Warrior" display="chaos_w.png">
+      <positionid>0</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Tlrhn Ncheanerdh" number="4" position="Chaos Warrior" display="chaos_w.png">
+      <positionid>0</positionid>
+      <ma>5</ma>
+      <st>4</st>
+      <ag>3</ag>
+      <av>9</av>
+      <cost>100000</cost>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <!-- Beastmen 7*60 = 410 -->
+    <player name="Aduuuhle" number="5" position="Beastman" display="chaos_b.png">
+      <positionid>1</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Horns</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Mmoeoicc" number="6" position="Beastman" display="chaos_b.png">
+      <positionid>1</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Horns</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Flaodedul" number="7" position="Beastman" display="chaos_b.png">
+      <positionid>1</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Horns</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Aethcog" number="8" position="Beastman" display="chaos_b.png">
+      <positionid>1</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Horns</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Sszowg" number="9" position="Beastman" display="chaos_b.png">
+      <positionid>1</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Horns</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Qduaodaar" number="10" position="Beastman" display="chaos_b.png">
+      <positionid>1</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Horns</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+    <player name="Lldeoaiiil" number="11" position="Beastman" display="chaos_b.png">
+      <positionid>1</positionid>
+      <ma>6</ma>
+      <st>3</st>
+      <ag>3</ag>
+      <av>8</av>
+      <cost>60000</cost>
+      <skill>Horns</skill>
+      <com>0</com>
+      <int>0</int>
+      <td>0</td>
+      <cas>0</cas>
+      <mpv>0</mpv>
+      <spp>0</spp>
+    </player>
+
+  </players>
+</team>

@@ -39,8 +39,8 @@ DialogBox::DialogBox(Game& game)
 }
 
 DialogBox::DialogBox(Game& game,
-		     enum eDlgBoxButton style,
-		     enum eDlgBoxIcon icon)
+        enum eDlgBoxButton style,
+        enum eDlgBoxIcon icon)
   : game_(game),
     handler_(NULL),
     text_("Vera.ttf", 16, 135, 90),
@@ -97,47 +97,47 @@ void DialogBox::setStyle(enum eDlgBoxButton style, enum eDlgBoxIcon icon)
     {
     case eDlgBoxYesNo:
       {
-	bg_.load("image/dialog/dialog_yesno.png");
-	  
-	btn = new Surface("image/dialog/yes.jpg");
-	btn->setZ(6);
-	btn->setPos(63, 135);
-	btn->hide();
-	addChild(btn);
-	button_.push_back(btn);
+        bg_.load("image/dialog/dialog_yesno.png");
+        
+        btn = new Surface("image/dialog/yes.jpg");
+        btn->setZ(6);
+        btn->setPos(60, 135);
+        btn->hide();
+        addChild(btn);
+        button_.push_back(btn);
 
-	btn = new Surface("image/dialog/no.jpg");
-	btn->setZ(6);
-	btn->setPos(125, 135);
-	btn->hide();
-	addChild(btn);
-	button_.push_back(btn);
+        btn = new Surface("image/dialog/no.jpg");
+        btn->setZ(6);
+        btn->setPos(130, 135);
+        btn->hide();
+        addChild(btn);
+        button_.push_back(btn);
       }
       break;
 
     case eDlgBoxOk:
       {
-	bg_.load("image/dialog/dialog_info.png");
+        bg_.load("image/dialog/dialog_info.png");
 
-	btn = new Surface("image/dialog/close.jpg");
-	btn->setZ(6);
-	btn->setPos(65, 136);
-	btn->hide();
-	addChild(btn);
-	button_.push_back(btn);
+        btn = new Surface("image/dialog/close.jpg");
+        btn->setZ(6);
+        btn->setPos(62, 136);
+        btn->hide();
+        addChild(btn);
+        button_.push_back(btn);
       }
       break;
 
     case eDlgBoxBlock:
       {
-	bg_.load("image/dialog/dialog_block.png");
+        bg_.load("image/dialog/dialog_block.png");
 
-	// Button will be added separately with addBlockButton();
-	// We don't show icon here, and move text on the bottom.
-	always_display_button_ = true;
-	icon_.disable();
-	text_.setPos(20, 113);
-	text_.setSize(Point(350, 50));
+        // Button will be added separately with addBlockButton();
+        // We don't show icon here, and move text on the bottom.
+        always_display_button_ = true;
+        icon_.disable();
+        text_.setPos(20, 113);
+        text_.setSize(Point(350, 50));
       }
       break;
     }
@@ -227,18 +227,18 @@ void DialogBox::update()
     {
       Surface *btn = *it;
       if (btn->getScreenRect().inside(inp.mouse_))
-	{
-	  btn->show();
-	  if (inp.button_pressed_[1])
-	    {
-	      if (handler_ != NULL)
-		handler_->clicked(index);
-	      disable();
-	      return;
-	    }
-	}
+        {
+          btn->show();
+          if (inp.button_pressed_[1])
+            {
+              if (handler_ != NULL)
+                handler_->clicked(index);
+              disable();
+              return;
+            }
+        }
       else if (!always_display_button_)
-	btn->hide();
+        btn->hide();
     }
 
   VirtualSurface::update();

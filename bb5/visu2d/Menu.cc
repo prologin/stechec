@@ -170,7 +170,7 @@ void Menu::addWidget(Widget* wt, const uint x, const uint y)
                                    screen->format->Bmask,
                                    screen->format->Amask);
 
-    SDL_Rect r = {get_wx(), get_wy(), w, h};   //relative to window
+    SDL_Rect r = {get_wx(), get_wy(), w, h};  //relative to window
     SDL_BlitSurface(screen, &r, old_screen, NULL);
   }
 }
@@ -184,7 +184,7 @@ void Menu::deleteWidget(const ushort indice)
     delete(*b);
     list_widget.erase(list_widget.begin() + indice);
 
-    SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
+    SDL_Rect r = {get_wx(), get_wy(), w, h};  //relative to window
         // replace background screen by save one
     SDL_BlitSurface(old_screen, NULL, screen, &r);
     h -= MENU_WIDGET_HEIGHT + pady;
@@ -224,19 +224,19 @@ void Menu::draw()
   }
   else
   {
-    SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
+    SDL_Rect r = {get_wx(), get_wy(), w, h};  //relative to window
         //sav background
     SDL_BlitSurface(screen, &r, old_screen, NULL);
         //draw background
     SDL_BlitSurface(screen, &r, widget, NULL);
         // box
     boxRGBA(widget, 0, 0, w, h, bgColor.r, bgColor.g, bgColor.b, MENU_ALPHA);
-    rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, MENU_ALPHA);	// w-1 and h-1 because x,y start in 0
+    rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, MENU_ALPHA); // w-1 and h-1 because x,y start in 0
 
         // add title
     if (title != "")
     {
-      SDL_Rect txtr = {0, 0, w, MENU_WIDGET_HEIGHT};	//relative to menu
+      SDL_Rect txtr = {0, 0, w, MENU_WIDGET_HEIGHT};  //relative to menu
       PrintStrings(widget, font, title, txtr, fgColor);
     }
 
@@ -263,18 +263,18 @@ void Menu::refresh()
   }
   else
   {
-    SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
+    SDL_Rect r = {get_wx(), get_wy(), w, h};  //relative to window
         // replace background screen by save one
     SDL_BlitSurface(old_screen, NULL, widget, NULL);
         // box
     boxRGBA(widget, 0, 0, w - 1, h - 1, bgColor.r, bgColor.g, bgColor.b,
             MENU_ALPHA);
-    rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, MENU_ALPHA);	// w-1 and h-1 because x,y start in 0        
+    rectangleRGBA(widget, 0, 0, w - 1, h - 1, 0, 0, 0, MENU_ALPHA); // w-1 and h-1 because x,y start in 0        
 
         // add title
     if (title != "")
     {
-      SDL_Rect txtr = {0, 0, w, MENU_WIDGET_HEIGHT};	//relative to menu
+      SDL_Rect txtr = {0, 0, w, MENU_WIDGET_HEIGHT};  //relative to menu
       PrintStrings(widget, font, title, txtr, fgColor);
     }
         // add box
@@ -294,7 +294,7 @@ void Menu::refresh()
 
 void Menu::erase()
 {
-  SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
+  SDL_Rect r = {get_wx(), get_wy(), w, h};  //relative to window
       // replace background screen by save one
   SDL_BlitSurface (old_screen, NULL, screen, &r);
   SDL_Flip(screen);

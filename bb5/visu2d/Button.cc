@@ -133,8 +133,8 @@ TextButton::~TextButton()
 
 void TextButton::drawmotion(SDL_Color textColor, SDL_Color bgColor)
 {
-  SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
-  SDL_Rect txtr = {0, 0, w, h};	//relative to button
+  SDL_Rect r = {get_wx(), get_wy(), w, h};  //relative to window
+  SDL_Rect txtr = {0, 0, w, h}; //relative to button
       // draw bg
   SDL_BlitSurface(old_screen, NULL, widget, NULL);
       // box
@@ -150,8 +150,8 @@ void TextButton::drawmotion(SDL_Color textColor, SDL_Color bgColor)
 
 void TextButton::draw()
 {
-  SDL_Rect r = {get_wx(), get_wy(), w, h};	//relative to window
-  SDL_Rect txtr = {0, 0, w, h};	//relative to button
+  SDL_Rect r = {get_wx(), get_wy(), w, h};  //relative to window
+  SDL_Rect txtr = {0, 0, w, h}; //relative to button
       // First save background
   SDL_BlitSurface(screen, &r, old_screen, NULL);
       // draw bg

@@ -39,11 +39,11 @@
 */
 class Menu: public Widget
 {
-  SDL_Color fgColor;		// foreground color
-  SDL_Color bgColor;		// background color
+  SDL_Color fgColor;            // foreground color
+  SDL_Color bgColor;            // background color
   TTF_Font *font;
   ushort padx, pady;
-  string title;		// title of the menu
+  string title;         // title of the menu
   vector <Widget*> list_widget;
 
     public:

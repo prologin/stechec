@@ -70,7 +70,8 @@ void MainLoop(void)
   bool quit = false;
   SDL_EnableUNICODE(1);
   while (SDL_WaitEvent(&event) && quit == false)
-  {				/* Loop until there are no events left on the queue */
+  {
+    /* Loop until there are no events left on the queue */
     switch(event.type)
     {
       case SDL_QUIT:
@@ -83,7 +84,7 @@ void MainLoop(void)
         Widget* focus = (Widget::get_focus()).get_focus();
         if(focus != NULL)
         {
-        	focus->keydown(keysym);
+          focus->keydown(keysym);
         }
         if(keysym->sym == SDLK_RETURN)
         {

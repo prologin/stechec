@@ -206,9 +206,9 @@ void Panel::update()
       const CTeam* t = api->getTeam();
       int r = 1;
       if (t != NULL)
-	r = api->getTeam()->getRemainingReroll() + 1;
+        r = api->getTeam()->getRemainingReroll() + 1;
       if (r < 1 || r >= 10)
-	r = 1;
+        r = 1;
       digit_reroll_[i].setFrame(r);
     }
 

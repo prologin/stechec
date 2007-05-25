@@ -14,6 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "Api.hh"
 #include "Input.hh"
 #include "Game.hh"
 #include "VisuPlayer.hh"
@@ -22,26 +23,44 @@
 BEGIN_NS(sdlvisu);
 
 ActionPopup::ActionPopup(Game& g)
-  : VirtualSurface("ActionPopup", 120, 40 * 12),
-    g_(g),
+  : VirtualSurface("ActionPopup", POPUP_ITEM_WIDTH,
+      POPUP_ITEM_HEIGHT * (DCLII_NB + ACTII_NB)),
+    api_(g.getApi()),
+    game_(g),
     vp_(NULL),
-    display_act_nb_(0)
+    displayed_items_nb_(0)
 {
-  for (int i = 0; i < 12; i++)
+  for (int i = 0; i < DCLII_NB; i++)
     {
-      sprite_[i].load("image/general/actions_on.jpg");
-      sprite_[i].splitNbFrame(1, 12);
-      sprite_[i].setFrame(i + 1);
-      sprite_[i].setZ(6);
-      sprite_[i].disable();
-      addChild(&sprite_[i]);
+      dcl_sprite_[i].load("image/general/declarations_on.jpg");
+      dcl_sprite_[i].splitNbFrame(1, DCLII_NB);
+      dcl_sprite_[i].setFrame(i + 1);
+      dcl_sprite_[i].setZ(6);
+      dcl_sprite_[i].disable();
+      addChild(&dcl_sprite_[i]);
 
-      sprite_on_[i].load("image/general/actions_up.jpg");
-      sprite_on_[i].splitNbFrame(1, 12);
-      sprite_on_[i].setFrame(i + 1);
-      sprite_on_[i].setZ(7);
-      sprite_on_[i].disable();
-      addChild(&sprite_on_[i]);
+      dcl_sprite_on_[i].load("image/general/declarations_up.jpg");
+      dcl_sprite_on_[i].splitNbFrame(1, DCLII_NB);
+      dcl_sprite_on_[i].setFrame(i + 1);
+      dcl_sprite_on_[i].setZ(7);
+      dcl_sprite_on_[i].disable();
+      addChild(&dcl_sprite_on_[i]);
+    }
+  for (int i = 0; i < ACTII_NB; i++)
+    {
+      act_sprite_[i].load("image/general/actions_on.jpg");
+      act_sprite_[i].splitNbFrame(1, ACTII_NB);
+      act_sprite_[i].setFrame(i + 1);
+      act_sprite_[i].setZ(6);
+      act_sprite_[i].disable();
+      addChild(&act_sprite_[i]);
+
+      act_sprite_on_[i].load("image/general/actions_up.jpg");
+      act_sprite_on_[i].splitNbFrame(1, ACTII_NB);
+      act_sprite_on_[i].setFrame(i + 1);
+      act_sprite_on_[i].setZ(7);
+      act_sprite_on_[i].disable();
+      addChild(&act_sprite_on_[i]);
     }
   hide();
 }
@@ -52,103 +71,109 @@ ActionPopup::~ActionPopup()
 
 void ActionPopup::show()
 {
-  g_.setState(stPopupShow);
+  game_.setState(stPopupShow);
   VirtualSurface::show();
 }
 
 void ActionPopup::hide()
 {
-  g_.unsetState(stPopupShow);
+  game_.unsetState(stPopupShow);
   VirtualSurface::hide();
 }
 
 // Called when a player is selected, ready to choose its action declaration.
-void ActionPopup::prepareDeclareMenu(VisuPlayer* vp, enum eStatus player_status)
+void ActionPopup::prepareDeclareMenu(VisuPlayer* vp)
 {
-  static enum eAction std_act[] = {eActMove, eActBlock, eActPass, eActBlitz};
-  static enum eAction get_up_act[] = {eActGetUp};
-  int i;
+  enum eDeclaredAction declaration;
 
-  for (i = 0; i < 12; i++)
-    sprite_[i].disable();
+  for (int i = 0; i < ACTII_NB; i++)
+    act_sprite_[i].disable();
+  for (int i = 0; i < DCLII_NB; i++)
+    dcl_sprite_[i].disable();
 
-  display_act_nb_ = 0;
-  if (player_status == STA_PRONE)
-    {
-      display_act_nb_ = sizeof (get_up_act) / sizeof (enum eAction);
-      for (int i = 0; i < display_act_nb_; i++)
-	display_act_[i] = get_up_act[i];
-    }
-  else if (player_status == STA_STUNNED)
-	  ;
-  else if (player_status == STA_STANDING)
-    {
-      display_act_nb_ = sizeof (std_act) / sizeof (enum eAction);
-      for (int i = 0; i < display_act_nb_; i++)
-	display_act_[i] = std_act[i];
-    }
-  else
-    return;
+  displayed_items_nb_ = api_->declarationPossibleNumber();
+  if (displayed_items_nb_ <= 0) return;
 
   vp_ = vp;
-  for (i = 0; i < display_act_nb_; i++)
+  isDeclarationsMenu = true;
+
+  for (int i = 0; i < displayed_items_nb_; i ++)
     {
-      LOG6("prepare decl menu: %1 - %2", display_act_[i], i);
-      sprite_[display_act_[i]].setPos(0, i * 40);
-      sprite_[display_act_[i]].enable();
-      sprite_on_[display_act_[i]].setPos(0, i * 40);
+      declaration = (enum eDeclaredAction) api_->declarationPossible(i);
+      if (declaration == DCL_MOVE)        displayed_items_[i] = DCLII_MOVE;
+      else if (declaration == DCL_BLITZ)  displayed_items_[i] = DCLII_BLITZ;
+      else if (declaration == DCL_BLOCK)  displayed_items_[i] = DCLII_BLOCK;
+      else                                displayed_items_[i] = DCLII_PASS;
+      LOG6("Prepare declarations menu: Item #%1: %2.", i, displayed_items_[i]);
+      dcl_sprite_[displayed_items_[i]].setPos(0, i * POPUP_ITEM_HEIGHT);
+      dcl_sprite_[displayed_items_[i]].enable();
+      dcl_sprite_on_[displayed_items_[i]].setPos(0, i * POPUP_ITEM_HEIGHT);
     }
-  setSize(Point(120, 40 * display_act_nb_));
+  setSize(Point(POPUP_ITEM_WIDTH, POPUP_ITEM_HEIGHT * displayed_items_nb_));
 }
 
 // Called after a declaration, show the revelant menu for all possible actions.
 // Can only be called after:
-//  - eActPass (move or pass)
-//  - eActBlitz (move or block)
-void ActionPopup::prepareActionMenu(enum eAction decl_act)
+//  - ACTII_THROW (move or pass)
+//  - ACTII_BLITZ (move or block)
+void ActionPopup::prepareActionMenu(enum eDeclaredAction dcl)
 {
-  for (int i = 0; i < 12; i++)
-    sprite_[i].disable();
+  for (int i = 0; i < ACTII_NB; i++)
+    act_sprite_[i].disable();
+  for (int i = 0; i < DCLII_NB; i++)
+    dcl_sprite_[i].disable();
 
-  display_act_nb_ = 0;
-  if (decl_act == eActPass)
+  displayed_items_nb_ = 0;
+  isDeclarationsMenu = false;
+
+  if (dcl == DCL_PASS)
     {
-      display_act_[0] = eActMove;
-      display_act_[1] = eActPass;
-      display_act_nb_ = 2;
+      displayed_items_[0] = ACTII_MOVE;
+      displayed_items_[1] = ACTII_THROW;
+      displayed_items_nb_ = 2;
     }
-  else if (decl_act == eActBlitz)
+  else if (dcl == DCL_BLITZ)
     {
-      display_act_[0] = eActMove;
-      display_act_[1] = eActBlock;
-      display_act_nb_ = 2;
+      displayed_items_[0] = ACTII_MOVE;
+      displayed_items_[1] = ACTII_BLOCK;
+      displayed_items_nb_ = 2;
+    }
+  else if (dcl == DCL_BLOCK) // Just a reminder.
+    {
+      displayed_items_[0] = ACTII_BLOCK;
+      displayed_items_nb_ = 1;
+    }
+  else if (dcl == DCL_MOVE) // Just a reminder.
+    {
+      displayed_items_[0] = ACTII_MOVE;
+      displayed_items_nb_ = 1;
     }
 
-  for (int i = 0; i < display_act_nb_; i++)
+  for (int i = 0; i < displayed_items_nb_; i++)
     {
-      LOG6("prepare action menu: %1 - %2", display_act_[i], i);
-      sprite_[display_act_[i]].setPos(0, i * 40);
-      sprite_[display_act_[i]].enable();
-      sprite_on_[display_act_[i]].setPos(0, i * 40);
+      LOG6("Prepare actions menu: Item #%1: %2.", i, displayed_items_[i]);
+      act_sprite_[displayed_items_[i]].setPos(0, i * POPUP_ITEM_HEIGHT);
+      act_sprite_[displayed_items_[i]].enable();
+      act_sprite_on_[displayed_items_[i]].setPos(0, i * POPUP_ITEM_HEIGHT);
     }
-  setSize(Point(120, 40 * display_act_nb_));
+  setSize(Point(POPUP_ITEM_WIDTH, POPUP_ITEM_HEIGHT * displayed_items_nb_));
 }
 
 void ActionPopup::update()
 {
-  Input& input(g_.getInput());
+  Input& input(game_.getInput());
   bool have_focus = getScreenRect().inside(input.mouse_);
-  int item = (input.mouse_.y - getRect().y) / 40;
+  int index = (input.mouse_.y - getRect().y) / POPUP_ITEM_HEIGHT;
 
-  // Really, nothing to do.
+  // If there isn't any player associated.
   if (vp_ == NULL)
     {
       VirtualSurface::update();
       return;
     }
   
-  // Show popup menu.
-  if ((g_.isStateSet(stWaitPlay) || g_.isStateSet(stPopupShow))
+  // If right-click.
+  if ((game_.isStateSet(stWaitPlay) || game_.isStateSet(stPopupShow))
       && input.button_pressed_[3])
     {
       //FIXME: popup must be fully visible.
@@ -157,42 +182,63 @@ void ActionPopup::update()
       show();
     }
 
-  // Hide popup menu.
-  if (!have_focus && g_.isStateSet(stPopupShow) && input.button_pressed_[1])
+  // If left-click outside of popup menu.
+  if (!have_focus && game_.isStateSet(stPopupShow) && input.button_pressed_[1])
     hide();
   
-  if (have_focus && g_.isStateSet(stPopupShow) &&
-	   input.button_pressed_[1])
+  // If left-click on popup menu.
+  if (have_focus && game_.isStateSet(stPopupShow) && input.button_pressed_[1])
     {
       // Sanity check. Must not happen.
-      if (item < 0 || item >= display_act_nb_)
-	{
-	  WARN("Selected item out of range (%1 - %2)!", item, display_act_nb_);
-	  hide();
-	  VirtualSurface::update();
-	  return;
-	}
-
-      // Click on popup menu. VisuPlayer will declare the action.
-      LOG2("Do an action! -> %1", item);
-      enum eAction act = display_act_[item];
-      vp_->selectAction(act);
-       
+      if (index < 0 || index >= displayed_items_nb_)
+        {
+          WARN("Selected item index (%1) is out of range (%2)!", index, displayed_items_nb_);
+          hide();
+          VirtualSurface::update();
+          return;
+        }
+      // VisuPlayer will declare/do the action.
+      if (isDeclarationsMenu)
+        {
+          enum eDeclaredAction declaration;
+          if (displayed_items_[index] == DCLII_MOVE)        declaration = DCL_MOVE;
+          else if (displayed_items_[index] == DCLII_BLOCK)  declaration = DCL_BLOCK;
+          else if (displayed_items_[index] == DCLII_BLITZ)  declaration = DCL_BLITZ;
+          else                                              declaration = DCL_PASS;
+          vp_->selectDeclaration(declaration);
+        }
+      else
+        {
+          enum eRealAction action;
+          if (displayed_items_[index] == ACTII_MOVE)        action = ACT_MOVE;
+          else if (displayed_items_[index] == ACTII_BLOCK)  action = ACT_BLOCK;
+          else                                              action = ACT_THROW;
+          vp_->selectAction(action);
+        }
       hide();
     }
 
-  // Highligh of menu
+  // Highlight of menu.
   if (have_focus)
     {
-      for (int i = 0; i < display_act_nb_; i++)
-	if (i == item)
-	  sprite_on_[display_act_[i]].enable();
-	else
-	  sprite_on_[display_act_[i]].disable();
+      for (int i = 0; i < displayed_items_nb_; i++)
+        if (i == index)
+          if (isDeclarationsMenu)
+            dcl_sprite_on_[displayed_items_[i]].enable();
+          else
+            act_sprite_on_[displayed_items_[i]].enable();
+        else
+          if (isDeclarationsMenu)
+            dcl_sprite_on_[displayed_items_[i]].disable();
+          else
+            act_sprite_on_[displayed_items_[i]].disable();
     }
   else
-    for (int i = 0; i < display_act_nb_; i++)
-      sprite_on_[display_act_[i]].disable();
+    for (int i = 0; i < displayed_items_nb_; i++)
+      if (isDeclarationsMenu)
+        dcl_sprite_on_[displayed_items_[i]].disable();
+      else
+        act_sprite_on_[displayed_items_[i]].disable();
 
   VirtualSurface::update();
 }

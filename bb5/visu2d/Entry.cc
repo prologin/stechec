@@ -103,32 +103,33 @@ void Entry::refresh()
   // draw text
   if(txt->size() > 0)
   {
-		SDL_Surface *glyph_cache[txt->size()];
+    SDL_Surface *glyph_cache[txt->size()];
     const int height = TTF_FontHeight(font);
     const int ascent = TTF_FontAscent(font);
     const int descent = TTF_FontDescent(font);
     SDL_Rect rc; rc.x = 5;
 
-		for(int i = 0; i < txt->size(); i++)
-		{
-				const char c = (*txt)[i];
-				int width = 0, minx = 0, maxy = 0;
-				TTF_GlyphMetrics(font, c, &minx, NULL, NULL, &maxy, &width);
-				rc.x += minx;
-				rc.y = height - maxy;
+    for(int i = 0; i < txt->size(); i++)
+      {
+        const char c = (*txt)[i];
+        int width = 0, minx = 0, maxy = 0;
+        TTF_GlyphMetrics(font, c, &minx, NULL, NULL, &maxy, &width);
+        rc.x += minx;
+        rc.y = height - maxy;
 
-				if(i != index)
-				{
-					glyph_cache[i] = TTF_RenderGlyph_Solid(font, c, fgColor);
-				}
-				else
-				{
-					boxRGBA(widget, rc.x, -descent, rc.x + width - minx, height - descent, fgColor.r, fgColor.g, fgColor.b, ENTRY_ALPHA);
-					glyph_cache[i] = TTF_RenderGlyph_Shaded(font, c, bgColor, fgColor);
-				}
-				SDL_BlitSurface(glyph_cache[i], NULL, widget, &rc);
-				rc.x += width - minx;
-		}
+        if(i != index)
+          {
+            glyph_cache[i] = TTF_RenderGlyph_Solid(font, c, fgColor);
+          }
+        else
+          {
+            boxRGBA(widget, rc.x, -descent, rc.x + width - minx, height - descent,
+                fgColor.r, fgColor.g, fgColor.b, ENTRY_ALPHA);
+            glyph_cache[i] = TTF_RenderGlyph_Shaded(font, c, bgColor, fgColor);
+          }
+        SDL_BlitSurface(glyph_cache[i], NULL, widget, &rc);
+        rc.x += width - minx;
+      }
   }
       // Then flip entry
   SDL_BlitSurface(widget, NULL, screen, &r);
@@ -151,9 +152,9 @@ void Entry::losefocus()
     // Keyboard
 void Entry::keydown(const SDL_keysym* keysym)
 {
-	if(keysym->unicode<127 and keysym->unicode>=32)
-  {
-  	// ASCII character
+  if(keysym->unicode<127 and keysym->unicode>=32)
+    {
+      // ASCII character
     add_char(keysym->unicode & 0x7F);
     set_index(++index);
     refresh();   
@@ -164,7 +165,7 @@ void Entry::keydown(const SDL_keysym* keysym)
     {
       case SDLK_DELETE:
       {
-      	delete_char();
+        delete_char();
         refresh();
         break;
       }

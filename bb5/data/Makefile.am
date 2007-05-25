@@ -9,6 +9,7 @@ nobase_dist_bb5data_DATA =			\
 	bb5.yml					\
 	default_config.xml			\
 	team/amazon.xml				\
+	team/chaos.xml				\
 	formation/default.xml			\
 	schema/team.xsd				\
 	schema/formation.dtd
