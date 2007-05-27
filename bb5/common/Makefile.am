@@ -7,6 +7,7 @@ libbb5_common_la_SOURCES =			\
 	Constants.cc				\
 	Constants.hh				\
 	Ball.hh					\
+	Ball.hxx				\
 	Dice.cc					\
 	Dice.hh					\
 	Field.hh				\

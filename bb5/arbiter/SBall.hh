@@ -30,7 +30,7 @@ class SPlayer;
 ** You will have only one instance of this class at runtime,
 ** handled by SRules class.
 */
-class SBall : public Ball
+class SBall : public Ball<SPlayer>
 {
 public:
   SBall(SRules* r);
@@ -45,11 +45,6 @@ public:
   //! @note Use it before a kickoff.
   void removeFromField();
 
-  //! @brief Returns the ball's owner, NULL if nobody.
-  SPlayer* getOwner() const;
-  //! @brief Sets the ball owner.
-  void setOwner(SPlayer* p);
-
   //! @brief Bounces the ball around.
   void bounce(int nb = 1);
   //! @brief Scatters the ball in a random direction.
@@ -62,7 +57,8 @@ public:
   bool hasBeenThrown();
 
   void resetTurn();
-  void sendPosition(); //FIXME: should be private?
+
+  void sendPosition();
 
 private:
   //! @brief Makes land the ball on the field.
@@ -76,7 +72,6 @@ private:
   void touchback();
   
   SRules* r_;
-  SPlayer* owner_; ///< Ball's owner, or NULL if nobody.
   bool thrown_;
 
 };

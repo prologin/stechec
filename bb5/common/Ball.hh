@@ -24,7 +24,8 @@
 
 # include "PacketHandler.hh"
 
-//! @brief Server -> Client. Send the position of the ball.
+//! @brief Server <-> Client. Send the position of the ball.
+//! @note Client -> Server, used only during a kick-off.
 DECLARE_PACKET(MSG_BALLPOS, MsgBallPos)
   int row;
   int col;
@@ -56,6 +57,7 @@ enum eScatterDirection {
 ** @brief Represents the Blood Bowl Ball.
 ** @ingroup rules
 */
+template <typename T>
 class Ball
 {
 public:
@@ -67,27 +69,16 @@ public:
   //! @brief Set the ball position.
   void  setPosition(const Position& pt);
 
+  //! @brief Returns the ball's owner, NULL if nobody.
+  T* getOwner() const;
+  //! @brief Sets the ball owner.
+  void setOwner(T* player);
+
 protected:
   Position pos_; ///< The ball position on the field.
+  T* owner_; ///< Ball's owner, or NULL if nobody.
 };
 
-
-inline Ball::Ball()
-{
-}
-
-inline Ball::~Ball()
-{
-}
-
-inline void Ball::setPosition(const Position& pt)
-{
-  pos_ = pt;
-}
-
-inline const Position& Ball::getPosition() const
-{
-  return pos_;
-}
+# include "Ball.hxx"
 
 #endif // !_BALL_HH_

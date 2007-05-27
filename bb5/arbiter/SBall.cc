@@ -20,22 +20,10 @@
 
 SBall::SBall(SRules* r)
   : r_(r),
-    owner_(NULL),
     thrown_(false)
 {
-  pos_ = Position(-1,-1);
   r_->HANDLE_WITH(MSG_BALLPOS, SBall, this, msgPlaceBall, GS_KICKOFF);
   r_->HANDLE_WITH(MSG_GIVEBALL, SBall, this, msgGiveBall, GS_TOUCHBACK);
-}
-
-SPlayer* SBall::getOwner() const
-{
-  return owner_;
-}
-
-void SBall::setOwner(SPlayer* p)
-{
-  owner_ = p;
 }
 
 void SBall::setPosition(const Position& pos, bool advertise_client)

@@ -21,7 +21,7 @@
 
 class CRules;
 
-class CBall : public Ball
+class CBall : public Ball<CPlayer>
 {
 public:
   CBall(CRules* rules);
