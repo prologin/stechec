@@ -93,7 +93,7 @@ public:
   //! @note Function @c update() and @c render() will not be called
   //!   for this widget.
   virtual void  disable();
-  //! @brif Whether it is enabled or not.
+  //! @brief Whether it is enabled or not.
   bool		isEnabled() const;
   
   //! @brief Show this surface on the screen.

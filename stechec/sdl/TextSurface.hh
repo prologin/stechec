@@ -66,7 +66,7 @@ public:
   std::string getText() const;
 
   //! @brief Auto-wrap text, add new lines when text go beyond surface width.
-  //! @param enable Enable or disable it (default: enabled).
+  //! @param enabled Enable or disable it (default: enabled).
   void setAutoWrap(bool enabled);
 
   //! @brief Get Auto-wrapping current setting.

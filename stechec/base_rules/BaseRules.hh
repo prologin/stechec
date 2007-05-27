@@ -27,8 +27,9 @@
 # define UID_COACH_BASE		0        ///< Base uid for coachs
 # define UID_VIEWER_BASE	100      ///< Base uid for viewers
 
-//! @brief Maximum number of different packets, and base for specials one.
+//! @brief Maximum number of different packets.
 const unsigned MAX_TOKEN	= 256;
+//! @brief Base number for specials packets.
 const unsigned BASE_TOKEN_START = MAX_TOKEN - 8;
 
 // Some very common game state.
@@ -39,24 +40,36 @@ const int GS_END		= 0xFFFF; ///< End of game, nothing to do anymore.
 const unsigned VS_HAVEVIEWER	= 0x0800; ///< If there is at least one viewer.
 const unsigned VS_READY		= 0x2000; ///< All viewers are ready.
 
-// Synchronization packet. Sent (if rules wish) when an incoming packet
-// is done (processing finished).
-const unsigned MSG_SYNC		= BASE_TOKEN_START;
+const unsigned MSG_SYNC		= BASE_TOKEN_START; ///< @see MsgSync.
+/*!
+** @struct MsgSync
+** @brief Synchronization packet.
+** Sent (if rules wish) when an incoming packet is done (processing finished).
+** Server -> Client.
+*/
 DECLARE_EMPTY_PACKET(MSG_SYNC, MsgSync);
 
 // Custom events.
 const unsigned CUSTOM_EVENT	= BASE_TOKEN_START + 1;
 
-// The packet used by the server to give an uid for the client.
-const unsigned CLIENT_UID	= BASE_TOKEN_START + 2;
+const unsigned CLIENT_UID	= BASE_TOKEN_START + 2; ///< @see ClientUid.
+/*!
+** @struct ClientUid
+** @brief Give an uid for the client.
+** Server -> Client.
+*/
 DECLARE_PACKET(CLIENT_UID, ClientUid);
   int league_id;
   int nb_coach;
   int nb_team;
 END_PACKET
 
-// Packet sent by the server to say that game is now finished.
-const unsigned GAME_FINISHED	= BASE_TOKEN_START + 3;
+const unsigned GAME_FINISHED	= BASE_TOKEN_START + 3; ///< @see GameFinished.
+/*!
+** @struct GameFinished
+** @brief Game is now finished.
+** Server -> Client.
+*/
 DECLARE_EMPTY_PACKET(GAME_FINISHED, GameFinished);
 
 const unsigned BASE_TOKEN_LAST	= BASE_TOKEN_START + 4;

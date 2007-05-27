@@ -24,18 +24,35 @@
 
 # include "PacketHandler.hh"
 
+/*!
+** @struct MsgReroll
+** @brief Team reroll use, or result acceptation.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_REROLL, MsgReroll)
-  bool reroll;
-END_PACKET
-//FIXME: 'race' info is missing.
+  bool reroll; ///< Whether use a team reroll or accept the result.
+END_PACKET;
+
+/*!
+** @struct MsgTeamInfo
+** @brief Create a Team, at the very beginning of the game.
+** Client <-> Server.
+** FIXME: 'race' info is missing. (note: many others too...)
+*/
 DECLARE_PACKET(MSG_TEAMINFO, MsgTeamInfo)
   int team_name[8];
   int coach_name[8];
   int reroll;
-END_PACKET
+END_PACKET;
+
+/*!
+** @struct MsgTouchdooown
+** @brief Touchdooown!
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_TOUCHDOOOWN, MsgTouchdooown)
-  int player_id;
-END_PACKET
+  int player_id;  ///< Scoring Player id.
+END_PACKET;
 
 
 /*!

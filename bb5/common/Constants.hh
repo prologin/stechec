@@ -25,7 +25,6 @@
 /*!
 ** @defgroup rules Blood Bowl rules manager (according to LRB5).
 */
-//@{
 
 # include "BaseRules.hh"
 
@@ -257,47 +256,125 @@ enum eError {
 //! @note Keep it synchronized with all MSG_ enum below.
 extern const char *bb5_token_str[RULES_TOKEN_LAST];
 
-//@}
 
 /*
 ** Messages (Packet) used to control game status.
 */
+
+/*!
+** @struct MsgInitGame
+** @brief Both coaches and arbiter are ready.
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_INITGAME, MsgInitGame)
-  int time_per_turn;
-END_PACKET
+  int time_per_turn;  ///< Seconds allowed per team's turn.
+END_PACKET;
+
+/*!
+** @struct MsgInitHalf
+** @brief A new half-time begins.
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_INITHALF, MsgInitHalf)
-  int cur_half;
-END_PACKET
+  int cur_half; ///< Current half-time.
+END_PACKET;
+
+/*!
+** @struct MsgDrawKicker
+** @brief Drawn coach chooses to either kick or receive the ball.
+** Server <-> Client.
+*/
 DECLARE_PACKET(MSG_DRAWKICKER, MsgDrawKicker);
-  bool kickoff;
-END_PACKET
+  bool kickoff; ///< Whether kick off or receive the ball.
+END_PACKET;
+
+/*!
+** @struct MsgInitKickoff
+** @brief Teams and ball placement during a kick-off.
+** Server <-> Client.
+*/
 DECLARE_PACKET(MSG_INITKICKOFF, MsgInitKickoff);
   int place_team; ///< Place team or kick-off the ball.
-END_PACKET
+END_PACKET;
+
+/*!
+** @struct MsgNewTurn
+** @brief A new turn begins.
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_NEWTURN, MsgNewTurn)
-  int cur_half;
-  int cur_turn;
-END_PACKET
-DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn)
+  int cur_half; ///< Current half-time.
+  int cur_turn; ///< Current turn.
+END_PACKET;
+
+/*!
+** @struct MsgEndTurn
+** @brief The turn ends.
+** Client <-> Server.
+*/
+DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn);
+
+/*!
+** @struct MsgEndGame
+** @brief Game ends, according to the rules.
+** Server -> Client.
+*/
 DECLARE_EMPTY_PACKET(MSG_ENDGAME, MsgEndGame);
+
+/*!
+** @struct MsgTimer
+** @brief Timer Synchronization.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_TIMER, MsgTimer)
-  bool pause;
-  int time_remaining;
-END_PACKET
+  bool pause;         ///< Timer paused.
+  int time_remaining; ///< Time remaining.
+END_PACKET;
+
+/*!
+** @struct MsgTurnOver
+** @brief A turnover happens.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_TURNOVER, MsgTurnOver)
-  int motive; // enum eTurnOverMotive
-END_PACKET
+  int motive; ///< @see #eTurnOverMotive.
+END_PACKET;
+
+/*!
+** @struct MsgMoveTurnMarker
+** @brief Coach moves his turn marker.
+** Client <-> Server.
+** @attention FIXME: NOT IMPLEMENTED.
+*/
 DECLARE_EMPTY_PACKET(MSG_MOVETURNMARKER, MsgMoveTurnMarker);
+
+/*!
+** @struct MsgIllegalProc
+** @brief Coach asks for an illegal procedure.
+** Client <-> Server.
+** @attention FIXME: NOT IMPLEMENTED.
+*/
 DECLARE_EMPTY_PACKET(MSG_ILLEGALPROC, MsgIllegalProc);
 
+/*!
+** @struct MsgChat
+** @brief Coaches have better to play rather than use this...
+** Client <-> Server.
+** FIXME: Handle different charsets.
+*/
 DECLARE_PACKET(MSG_CHAT, MsgChat)
-  int msg[32];
-END_PACKET
+  int msg[32];  ///< One line message.
+END_PACKET;
 
+/*!
+** @struct MsgIllegal
+** @brief A client sent an illegal request.
+** Server -> Client.
+*/
 // A coach tried something forbidden.
 DECLARE_PACKET(MSG_ILLEGAL, MsgIllegal)
-  int was_token;
-  int error;
-END_PACKET
+  int was_token;  ///< Refused request token.
+  int error;      ///< Refusal justification.
+END_PACKET;
 
 #endif /* !CONSTANTS_HH_ */

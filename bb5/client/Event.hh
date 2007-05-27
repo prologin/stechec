@@ -72,7 +72,7 @@ inline void Event::evIllegal(int, int) {}
 inline void Event::evNewTurn(int, int, int) {}
 inline void Event::evResult(int, int, enum eRoll, int, int, int, bool, enum eSkill) {}
 inline void Event::evBlock(int, int, int) {}
-inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[], int, bool) {}
+inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[3], int, bool) {}
 inline void Event::evReroll(int, bool) {}
 inline void Event::evSkill(int, int, enum eSkill, int) {}
 inline void Event::evHalf(int) {}

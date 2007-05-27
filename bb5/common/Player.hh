@@ -30,29 +30,54 @@
 const int MAX_MOVE = 16;
 const int MAX_SKILL = 16;
 
+/*!
+** @struct MsgDeclare
+** @brief Declare a Player action.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_DECLARE, MsgDeclare)
-  int player_id;
-  int action;
-END_PACKET
+  int player_id; ///< Player beginning an action.
+  int action;    ///< Declared action. @see #eDeclaredAction.
+END_PACKET;
 
+/*!
+** @struct MsgMove
+** @brief A Player moves of one or several squares.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_MOVE, MsgMove)
-  int player_id;
-  int nb_move;
+  int player_id; ///< Moving Player.
+  int nb_move;   ///< Length of the move.
   struct {
     int row;
     int col;
   } moves[MAX_MOVE];
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgStandUp
+** @brief A Player stands up.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_STANDUP, MsgStandUp)
-  int player_id;
-END_PACKET
+  int player_id; ///< Player being prone.
+END_PACKET;
 
+/*!
+** @struct MsgBlock
+** @brief Player blocks an opponent.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_BLOCK, MsgBlock)
-  int player_id;
-  int opponent_id;
-END_PACKET
+  int player_id;    ///< Attacker.
+  int opponent_id;  ///< Defender.
+END_PACKET;
 
+/*!
+** @struct MsgBlockPush
+** @brief A Player pushes another Player, due to a block.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_BLOCKPUSH, MsgBlockPush)
   int target_row;
   int target_col;
@@ -62,98 +87,156 @@ DECLARE_PACKET(MSG_BLOCKPUSH, MsgBlockPush)
     int col;
   } choice[3];
   int square_chosen;
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgMultiBlock
+** @brief FIXME: NOT IMPLEMENTED. For extra rules.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_MULTIBLOCK, MsgMultiBlock)
   int player_id;
   int first_opponent_id;
   int second_opponent_id;
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgPass
+** @brief A Player throws the ball.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_PASS, MsgPass)
   int player_id;
   int dest_row;
   int dest_col;
-END_PACKET
+END_PACKET;
 
-// Packet sent only once at the beginning (to create player)
+/*!
+** @struct MsgPlayerCreate
+** @brief Create a Player at the very beginning of the game.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_PLAYERCREATE, MsgPlayerCreate)
   int player_id;
   int ma;
   int st;
   int ag;
   int av;
-  int skill[MAX_SKILL];
+  int skill[MAX_SKILL]; ///< @see #eSkill.
   int skill_nb;
   int name[8];
   int position_name[8]; ///< Player position name (lineman, ...).
   int player_position;	///< Graphic info.
   int player_img[8];	///< Graphic info.
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgPlayerPos
+** @brief Player Position changed.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_PLAYERPOS, MsgPlayerPos)
-  int player_id;
+  int player_id;  ///< Player id.
   int row;
   int col;
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgPlayerKnocked
+** @brief A Player is knocked down to the ground.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_PLAYERKNOCKED, MsgPlayerKnocked);
-  int player_id;
-END_PACKET
+  int player_id;  ///< Knocked Player id.
+END_PACKET;
 
+/*!
+** @struct MsgPlayerStatus
+** @brief Player status changed.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_PLAYERSTATUS, MsgPlayerStatus);
-  int player_id;
-  int status;
-END_PACKET
+  int player_id;  ///< Player id.
+  int status;     ///< New status. @see #eStatus.
+END_PACKET;
 
+/*!
+** @struct MsgPlayerKO
+** @brief A KO'd Player tries to wakes up, during a break time.
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_PLAYERKO, MsgPlayerKO);
-  int player_id;
-  int dice;
-END_PACKET
+  int player_id;  ///< KO'd player trying to wake up.
+  int dice;       ///< Dice result.
+END_PACKET;
 
+/*!
+** @struct MsgResult
+** @brief Dice roll result associated to a Player, often agility roll.
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_RESULT, MsgResult)
-  int player_id;
-  int roll_type;   // enum eRoll
-  int reroll;      // can reroll (else the action fails)
+  int player_id;  ///< Player concerned by the roll.
+  int roll_type;  ///< Roll type. @see #eRoll.
+  int reroll;     ///< Whether the coach can use a team reroll or not.
   //! FIXME: Extra rules will imply up to three skills usable for a single dice roll.
-  int skill;       // enum eSkill
-  int result;
-  int modifier;
-  int required;
-END_PACKET
+  int skill;      ///< Usable skill. @see #eSkill.
+  int result;     ///< Roll raw result.
+  int modifier;   ///< Sum of modifiers.
+  int required;   ///< Result required.
+END_PACKET;
 
+/*!
+** @struct MsgBlockResult
+** @brief Block dices roll result.
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
   int player_id;          ///< Attacker id.
   int opponent_id;        ///< Defender id.
   bool reroll;            ///< Attacker's coach can reroll.
-  int strongest_team_id;  ///< Team id of the strongest player, can choose which dice to use.
+  int strongest_team_id;  ///< Team id of the strongest Player, can choose which dice to use.
   int nb_dice;            ///< Number of block dices rolled.
   int results[3];         ///< Results of block dices rolls.
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgBlockDice
+** @brief Coach chooses a block dice roll result.
+** Client -> Server.
+*/
 DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)
   int dice; ///< Chosen block dice index.
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgFollow
+** @brief Attacker follows the defender after having pushed him.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_FOLLOW, MsgFollow)
-/*! @brief Whether or not follow after a block.
- *  @c Server gives the coach his choice to follow or not.
- *  @c 0 Player doesn't follow his victim.
- *  @c 1 Player follows his victim.
- */
+  //! Whether or not follow after a block.
+  //!   @c -1 Server gives the coach his choice to follow or not.
+  //!   @c 0 Player doesn't follow his victim.
+  //!   @c 1 Player follows his victim.
   int follow;
-END_PACKET
+END_PACKET;
 
+/*!
+** @struct MsgSkill
+** @brief A player use one of his skill.
+** Client <-> Server.
+*/
 DECLARE_PACKET(MSG_SKILL, MsgSkill)
   int player_id; ///< Skilled player.
-  int skill;  ///< An enum eSkill value.
-  /*! @brief Whether or not use the skill.
-   *  @c -1 Server gives the coach his choice of using or not the skill.
-   *  @c 0 Player player_id doesn't use the skill.
-   *  @c 1 Player player_id uses the skill.
-   */
+  int skill;  ///< Skill concerned. @see #eSkill.
+              ///< FIXME: Several skills may be used at the same time, in extra rules.
+  //! Whether or not use the skill.
+  //!   @c -1 Server gives the coach his choice of using or not the skill.
+  //!   @c 0 Player player_id doesn't use the skill.
+  //!   @c 1 Player player_id uses the skill.
   int choice;
-END_PACKET
+END_PACKET;
 
 
 /*!

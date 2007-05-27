@@ -17,23 +17,24 @@
 #ifndef _DICE_HH_
 # define _DICE_HH_
 
+/*!
+** @file bb5/common/Dice.hh
+** @ingroup rules
+*/
+
 # include "PacketHandler.hh"
 # include "Constants.hh"
 
 /*!
-** @file dice.hh
-** @ingroup rules
+** @struct MsgCheatDice
+** @brief Load the next Dice roll result.
+** Client -> Server, used for rules tests.
 */
-
 DECLARE_PACKET(MSG_CHEATDICE, MsgCheatDice)
-  int next_result;
-END_PACKET
+  int next_result; ///< Loaded dice roll result.
+END_PACKET;
 
 class BaseRules;
-
-
-//! @ingroup rules
-//@{
 
 //! @brief Some Dice number of face.
 enum eDiceFaceNumber {
@@ -96,7 +97,5 @@ private:
   
   std::deque<int> cheat_dice_;
 };
-
-//@}
 
 #endif // !_DICE_HH_

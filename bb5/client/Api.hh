@@ -122,13 +122,13 @@ public:
   int                   declarationPossible(int index) const;
 
   //! @brief Get the number of possible action for the selected player.
-  //! @fixme NOT IMPLEMENTED
+  //! @attention FIXME: NOT IMPLEMENTED
   //! @return The number of possible action
   int                   actionPossibleNumber();
 
   //! @brief Get a possible action for the selected player.
   //! @param index Action index, in the range [0 - actionPossibleNumber() - 1].
-  //! @fixme NOT IMPLEMENTED
+  //! @attention FIXME: NOT IMPLEMENTED
   //! @return Action that this player may perform.
   int                   actionPossible(int index) const;
 
@@ -222,8 +222,9 @@ public:
   int           doReroll(bool reroll);
 
   //! @brief Use a skill of the selected player.
-  //! @param skill The skill the player will use.
+  //! @param skill The skill the player will use or not...
   //!   @c SK_UNASSIGNED to not use any of the skills asked.
+  //! @param useIt Whether or not use the skill.
   int           doUseSkill(enum eSkill skill, bool useIt);
 
   //! @brief Declare an action for the selected player.

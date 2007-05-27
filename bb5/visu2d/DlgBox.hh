@@ -38,7 +38,8 @@ enum eDlgBoxButton {
 
 class Game;
 
-/*
+/*!
+** @class DialogBoxCb
 ** @brief Base class for DialogBox button handler.
 */
 class DialogBoxCb
@@ -51,6 +52,7 @@ public:
 };
 
 /*!
+** @class DialogBox
 ** @brief Victor reimplementation of dialog box.
 **
 ** Sorry poltuiu I can't reuse your... my system is too different :)

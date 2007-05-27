@@ -28,7 +28,7 @@
 //! @brief Server -> Client. Send the current weather, once in the game.
 DECLARE_PACKET(MSG_WEATHER, MsgWeather)
   int weather;
-END_PACKET
+END_PACKET;
 
 
 /*!

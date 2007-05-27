@@ -16,6 +16,7 @@
 
 #ifndef WIDGET_H
 #  define WIDGET_H
+
 #include "Global.hh"
 #include "Focus.hh"
 
@@ -48,7 +49,7 @@ public:
 /*! Constructor
  *
  * @param screen is the SDL_Surface in which the widget will be printed
- * @father is the widget father
+ * @param father is the widget father
  */
   Widget(SDL_Surface* screen, Widget* father = NULL);
   
@@ -57,7 +58,7 @@ public:
  * @param w is the width of the widget
  * @param h is the height of the widget 
  * @param screen is the SDL_Surface in which the widget will be printed
- * @father is the widget father
+ * @param father is the widget father
  */
   Widget(const uint w, const uint h, SDL_Surface* screen, Widget* father = NULL);
   
@@ -68,7 +69,7 @@ public:
  * @param w is the width of the widget
  * @param h is the height of the widget 
  * @param screen is the SDL_Surface in which the widget will be printed
- * @father is the widget father
+ * @param father is the widget father
  */
   Widget(const uint x, const uint y, const uint w, const uint h, SDL_Surface* screen, Widget* father=NULL);
 
@@ -116,7 +117,7 @@ public:
   virtual ushort mousebuttondown(const uint mousex, const uint mousey);
 
 //keyboard methods
-  /*! @briefvirtual method to do something when a key of the keyboard is pressed
+  /*! @brief virtual method to do something when a key of the keyboard is pressed
    * 
    * @note method for textuals widgets
    * @param keysym is the key pressed in Keysym structure

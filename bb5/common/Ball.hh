@@ -18,23 +18,31 @@
 # define _BALL_HH_
 
 /*!
-** @file common/Ball.hh
+** @file bb5/common/Ball.hh
 ** @ingroup rules
 */
 
 # include "PacketHandler.hh"
 
-//! @brief Server <-> Client. Send the position of the ball.
-//! @note Client -> Server, used only during a kick-off.
+/*!
+** @struct MsgBallPos
+** @brief Ball Position.
+** Client -> Server, only during a kick-off.
+** Server -> Client, at any time of the game.
+*/
 DECLARE_PACKET(MSG_BALLPOS, MsgBallPos)
   int row;
   int col;
 END_PACKET
 
-//! @brief Client -> Server. Send the owner of the ball.
+/*!
+** @struct MsgGiveBall
+** @brief Give the Ball to a Player.
+** Client -> Server, after a touchback.
+*/
 DECLARE_PACKET(MSG_GIVEBALL, MsgGiveBall)
-  int player_id;
-END_PACKET
+  int player_id; ///< Player of receiving team who gets the ball back.
+END_PACKET;
 
 //! @brief Scatter template.
 //! @note It is slightly different from BB's template.
