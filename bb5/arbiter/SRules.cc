@@ -211,6 +211,7 @@ void SRules::initHalf()
       coach_begin_ = dice_->roll("choosing team",  D2) % 2;
 
       MsgDrawKicker msgdk(coach_begin_);
+      msgdk.kickoff = -1;
       sendPacket(msgdk);
     }
 }
@@ -330,10 +331,14 @@ void SRules::msgDrawKicker(const MsgDrawKicker* m)
           sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
           return;
         }
-      coach_begin_ = m->kickoff ? (coach_begin_ + 1) % 2 : coach_begin_;
+      coach_begin_ = (m->kickoff == 1) ? (coach_begin_ + 1) % 2 : coach_begin_;
     }
 
   LOG3("Coach %1 plays first (receiving team).", coach_begin_);
+
+  MsgDrawKicker new_msg((coach_begin_ + 1) % 2);
+  new_msg.kickoff = 1;
+  sendPacket(new_msg);
 
   coach_receiver_ = coach_begin_;
 

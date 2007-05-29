@@ -81,7 +81,7 @@ inline int Api::doChooseKickoff(bool kickoff)
     }
 
   MsgDrawKicker pkt;
-  pkt.kickoff = kickoff;
+  pkt.kickoff = (kickoff ? 1 : 0);
   rules_->sendPacket(pkt);
   return SUCCESS;
 }

@@ -45,7 +45,7 @@ private:
   // All callbacks.
   virtual void          evIllegal(int team_id, int was_token);
   virtual void          evInitGame();
-  virtual void          evDrawKicker(int team_id);
+  virtual void          evDrawKicker(int team_id, bool is_a_question);
   virtual void          evNewTurn(int player_id, int cur_half, int cur_turn);
   virtual void          evKickOff(int team_id, bool place_team);
   virtual void          evGiveBall(int team_id);

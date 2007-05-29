@@ -285,7 +285,11 @@ END_PACKET;
 ** Server <-> Client.
 */
 DECLARE_PACKET(MSG_DRAWKICKER, MsgDrawKicker);
-  bool kickoff; ///< Whether kick off or receive the ball.
+  //! Whether kick off or receive the ball.
+  //!   @c -1 Server gives the coach his choice.
+  //!   @c 0 Team will receive the ball.
+  //!   @c 1 Team will kick off the ball.
+  int kickoff;
 END_PACKET;
 
 /*!

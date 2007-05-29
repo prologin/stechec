@@ -153,10 +153,9 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
 
 void        CRules::msgDrawKicker(const MsgDrawKicker* m)
 {
-  assert(getState() != GS_DRAWKICKER);
-
-  if (m->client_id == getCoachId())
+  if (m->client_id == getCoachId() && m->kickoff == -1)
     {
+      assert(getState() != GS_DRAWKICKER);
       setState(GS_DRAWKICKER);
       LOG2("-- CRules: change state: GS_DRAWKICKER");
     }

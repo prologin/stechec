@@ -49,7 +49,7 @@ public:
   virtual void evReroll(int team_id, bool reroll);
   virtual void evSkill(int team_id, int player_id, enum eSkill skill, int choice);
   virtual void evHalf(int half);
-  virtual void evDrawKicker(int team_id);
+  virtual void evDrawKicker(int team_id, bool is_a_question);
   virtual void evKickOff(int team_id, bool place_team);
   virtual void evGiveBall(int team_id);
   virtual void evMoveTurnMarker() {}
@@ -76,7 +76,7 @@ inline void Event::evBlockResult(int, int, int, int, enum eBlockDiceFace[3], int
 inline void Event::evReroll(int, bool) {}
 inline void Event::evSkill(int, int, enum eSkill, int) {}
 inline void Event::evHalf(int) {}
-inline void Event::evDrawKicker(int) {}
+inline void Event::evDrawKicker(int, bool) {}
 inline void Event::evKickOff(int, bool) {}
 inline void Event::evGiveBall(int) {}
 inline void Event::evTurnOver(enum eTurnOverMotive) {}

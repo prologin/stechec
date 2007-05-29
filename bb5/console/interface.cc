@@ -241,15 +241,20 @@ void CmdLineInterface::evInitGame()
     api_->doCheatDice(1);
 }
 
-void CmdLineInterface::evDrawKicker(int team_id)
+void CmdLineInterface::evDrawKicker(int team_id, bool is_a_question)
 {
-  if (team_id == api_->myTeamId())
-    {
-      cout << "Arbiter is asking us to choose to either kick or receive the ball. (use 'choose kickoff|receive')" << endl;
-      input_.stopWaiting();
-    }
+  if (is_a_question)
+    if (team_id == api_->myTeamId())
+      {
+        cout << "Arbiter is asking us to choose to either kick or receive the ball."
+          << " (use 'choose kickoff|receive')" << endl;
+        input_.stopWaiting();
+      }
+    else
+      cout << "Wait that the other team chooses to either kick or receive the ball." << endl;
   else
-    cout << "Wait that the other team chooses to either kick or receive the ball." << endl;  
+    cout << ((team_id == api_->myTeamId()) ? "Our" : "Other" )
+      << " team will kick off the ball." << endl; 
 }
 
 void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
