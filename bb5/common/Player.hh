@@ -277,6 +277,10 @@ public:
   bool hasPlayed() const;
   //! @brief Set the 'has played this turn' marker.
   void setHasPlayed();
+  //! @brief Check if the player has performed a block during a blitz action.
+  bool hasBlocked() const;
+  //! @brief Set the 'has blocked during this blitz action' marker.
+  void setHasBlocked();
 
   //! @brief Return the action of this player.
   enum eDeclaredAction getAction() const;
@@ -306,6 +310,7 @@ public:
 
   static const char* stringify(enum eStatus status);
   static const char* stringify(enum eDeclaredAction action);
+  static const char* stringify(enum eRealAction action);
   static const char* stringify(enum eSkill skill);
 
   friend std::ostream& operator<< (std::ostream& os, const Player& p);

@@ -239,9 +239,9 @@ void CPlayer::msgDeclareAction(const MsgDeclare* m)
     }
   
   // Beginning of the action
-  action_ = (enum eDeclaredAction)m->action;
-  r_->onEvent(m);
   LOG2("player %1 begins a %2 action", id_, stringify(action_));
+  action_ = (enum eDeclaredAction)(m->action);
+  r_->onEvent(m);
 }
 
 void CPlayer::msgPlayerPos(const MsgPlayerPos* m)
@@ -261,9 +261,11 @@ void CPlayer::msgPlayerMove(const MsgMove* m)
   subMa(m->nb_move);
   r_->onEvent(m);
 }
+
 void CPlayer::msgBlock(const MsgBlock* m)
 {
   subMa(1);
+  setHasBlocked();
   r_->onEvent(m);
 }
 

@@ -268,20 +268,13 @@ void CRules::msgBlockResult(const MsgBlockResult* m)
         switchToTeamState(GS_BLOCK);
       return;
     }
-  if (m->client_id == getCoachId())
+  if (m->reroll)
     {
-      if (!m->reroll)
-        {
-          our_team_->getPlayer(m->player_id)->subMa(1);
-          if (m->strongest_team_id == getCoachId())
-            switchToTeamState(GS_BLOCK);
-        }
-      else
+      if (m->client_id == getCoachId())
         switchToTeamState(GS_REROLL);
     }
-  else if (!m->reroll)
+  else
     {
-      other_team_->getPlayer(m->player_id)->subMa(1);
       if (m->strongest_team_id == getCoachId())
         switchToTeamState(GS_BLOCK);
     }

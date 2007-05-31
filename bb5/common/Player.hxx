@@ -104,6 +104,16 @@ inline void Player::setHasPlayed()
   has_played_ = true;
 }
  	
+inline bool Player::hasBlocked() const
+{
+  return has_blocked_;
+}
+ 	
+inline void Player::setHasBlocked()
+{
+  has_blocked_ = true;
+}
+ 	
 inline enum eDeclaredAction Player::getAction() const
 {
   return action_;
@@ -137,6 +147,7 @@ inline void Player::useSkill(enum eSkill skill)
 inline void Player::resetTurn()
 {
   action_ = DCL_UNASSIGNED;
+  has_blocked_ = false;
   has_played_ = false;
   ma_remain_ = ma_;
   used_skill_list_.clear();
@@ -196,7 +207,25 @@ inline const char* Player::stringify(enum eDeclaredAction action)
     case DCL_PASS:
       return "Pass";
     }
-  return "Undefined action";
+  return "Undefined declared action";
+}
+
+inline const char* Player::stringify(enum eRealAction action)
+{
+  switch (action)
+    {
+    case ACT_UNASSIGNED:
+      return "No real action";
+    case ACT_BLOCK:
+      return "Block";
+    case ACT_MOVE:
+      return "Move";
+    case ACT_STANDUP:
+      return "Stand-up";
+    case ACT_THROW:
+      return "Throw";
+    }
+  return "Undefined real action";
 }
 
 inline const char* Player::stringify(enum eSkill skill)

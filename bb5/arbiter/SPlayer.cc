@@ -324,7 +324,7 @@ void SPlayer::tryBlock()
   if (getAction() == DCL_BLOCK)
     setHasPlayed();
   else
-    has_blocked_ = true;
+    setHasBlocked();
   
   int mod_st_atk = getSt();
   int mod_st_df = target_->getSt();

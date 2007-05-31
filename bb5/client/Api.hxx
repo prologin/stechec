@@ -492,9 +492,7 @@ inline int Api::actionPossibleNumber()
 
   if (selected_player_->getStatus() == STA_PRONE)
     {
-      if (selected_player_->getAction() != DCL_BLOCK
-        /* FIXME for extra rules: Check also if the
-         * player didn't already tried to stand up. */)
+      if (selected_player_->getAction() != DCL_BLOCK)
         {
           number ++;
           possible_actions_[ACT_STANDUP] = true;
@@ -511,15 +509,17 @@ inline int Api::actionPossibleNumber()
   if ((selected_player_->getAction() == DCL_BLOCK
         || selected_player_->getAction() == DCL_BLITZ)
       && selected_player_->isNearAnOpponent(true)
-      /* FIXME: Check also if the player
-       * didn't already do a block.*/)
+      && !(selected_player_->hasBlocked()))
     {
       number ++;
       possible_actions_[ACT_BLOCK] = true;
     }
   if (selected_player_->getAction() == DCL_PASS
       /* FIXME: Check also if the player owns the ball,
-       * and if he didn't already tried a throw. */)
+       * and if he didn't already tried a throw.
+       * The line below needs that ball owner is kept up-to-date.
+       && selected_player_ == rules_->ball_->getOwner()
+       */)
     {
       number ++;
       possible_actions_[ACT_THROW] = true;

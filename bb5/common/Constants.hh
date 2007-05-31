@@ -149,6 +149,7 @@ enum eDeclaredAction {
 };
 
 //! @brief Player simple actions.
+//! @note You can get a stringified version into the class Player.
 enum eRealAction {
   ACT_UNASSIGNED = 0,
 
