@@ -17,6 +17,9 @@
 #ifndef EXCEPTION_HH_
 # define EXCEPTION_HH_
 
+# include <string>
+# include <sstream>
+
 class Exception
 {
 public:

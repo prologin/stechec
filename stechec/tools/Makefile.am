@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-SUBDIRS = . xml_test
+SUBDIRS = . xml_test test
 
 pkglib_LTLIBRARIES = libtools.la
 
@@ -19,7 +19,7 @@ libtools_la_SOURCES +=				\
 	misc/Exception.hh			\
 	misc/ExceptionDefine.hh			\
 	misc/os_wrapper.hh			\
-	misc/os_wrapper.cc	\
+	misc/os_wrapper.cc			\
 	misc/compose.hpp
 
 libtools_la_SOURCES +=				\
@@ -27,18 +27,15 @@ libtools_la_SOURCES +=				\
 	logger/log.hh
 
 libtools_la_SOURCES +=				\
-	datatfs/cx.hh				\
-	datatfs/cx.hxx				\
-	datatfs/cx_recv_data.cc			\
-	datatfs/cx_send_data.cc			\
-	datatfs/direct.cc			\
-	datatfs/direct.hh			\
-	datatfs/tcp.cc				\
-	datatfs/tcp.hh				\
-	datatfs/file.cc				\
-	datatfs/file.hh				\
-	datatfs/netpoll.hh			\
-	datatfs/netpoll.hxx			\
+	datatfs/Cx.hh				\
+	datatfs/Cx.cc				\
+	datatfs/CxPool.hh			\
+	datatfs/CxPool.hxx			\
+	datatfs/TcpCx.hh			\
+	datatfs/TcpCx.cc			\
+	datatfs/Direct.hh			\
+	datatfs/Direct.cc			\
+	datatfs/FileCx.hh			\
 	datatfs/Packet.hh			\
 	datatfs/Packet.cc
 

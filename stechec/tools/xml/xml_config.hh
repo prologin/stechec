@@ -156,8 +156,25 @@ inline void XMLConfig::setData(const std::string& section_name,
 			       const std::string& node_name,
 			       const T& value)
 {
+  try {
+    // if the data exists in specific section, write it here.
+    switchToSection(section_name, true);
+    XML::getData<T>(node_name);
+    XML::setData<T>(node_name, value);
+  } catch (const XMLError&) {
+    // if the data exists in generic section, write it here.
+    try {
+      switchToSection(section_name, false);
+      XML::getData<T>(node_name);
+      XML::setData<T>(node_name, value);
+    } catch (const XMLError&) {
+      // was not present before. write it in specific section.
+      switchToSection(section_name, true);
+      XML::setData<T>(node_name, value);
+    }
+  }
+  
   switchToSection(section_name, true);
-  XML::setData<T>(node_name, value);
 }
 
 template <typename T>
@@ -166,8 +183,23 @@ inline void XMLConfig::setAttr(const std::string& section_name,
 			const std::string& attr_name,
 			const T& value)
 {
-  switchToSection(section_name, true);
-  XML::setAttr<T>(node_name, attr_name, value);
+  try {
+    // if the attribute exists in specific section, write it here.
+    switchToSection(section_name, true);
+    XML::getAttr<T>(node_name, attr_name);
+    XML::setAttr<T>(node_name, attr_name, value);
+  } catch (const XMLError&) {
+    // if the attribute exists in generic section, write it here.
+    try {
+      switchToSection(section_name, false);
+      XML::getAttr<T>(node_name, attr_name);
+      XML::setAttr<T>(node_name, attr_name, value);
+    } catch (const XMLError&) {
+      // was not present before. write it in specific section.
+      switchToSection(section_name, true);
+      XML::setAttr<T>(node_name, attr_name, value);
+    }
+  }
 }
 
 

@@ -57,6 +57,8 @@
 ** in headers.
 */
 
+#include <cassert>
+#include <iostream>
 #include "misc/compose.hpp"
 
 /*! @brief Application logger
