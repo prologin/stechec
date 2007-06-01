@@ -14,7 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "datatfs/cx.hh"
+#include "datatfs/Cx.hh"
 #include "BaseRules.hh"
 
 BaseRules::BaseRules()
@@ -67,6 +67,7 @@ void    BaseRules::handlePacket(const Packet* p)
   if (p->token >= MAX_TOKEN)
     {
       WARN("handlePacket: token not in allowed range: `%1'", p->token);
+      return;
     }
 
   if (pkt_hdl_[p->token].empty())

@@ -74,8 +74,8 @@ public:                                                         \
     : obj_(obj), f_(f) {}                                       \
   virtual void handle(const Packet* p)                          \
   {                                                             \
-    LOG5("PacketHandler gets message `"                         \
-         #Cst "' (client_id: %1)", p->client_id);               \
+    LOG5("<- `" #Cst "' (id: %1)",                              \
+         p->client_id);                                         \
     (obj_->*f_)(reinterpret_cast<const PClass*>(p));            \
   }                                                             \
   virtual int getCstValue() const { return Cst; }               \

@@ -7,11 +7,14 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #include <signal.h>
-#include "WaitingClient.hh"
+
+#include "tools.hh"
+#include "datatfs/TcpCx.hh"
+#include "Client.hh"
 #include "Server.hh"
 
 BEGIN_NS(server);
@@ -21,7 +24,7 @@ Server* Server::inst = NULL;
 
 Server::Server(const xml::XMLConfig& cfg)
   : cfg_(cfg),
-    wcl_poll_(waiting_clients_, 500),
+    cl_pool_(1500),
     server_shutdown_(0),
     server_shutdown_reset_(2)
 {
@@ -38,10 +41,6 @@ Server::Server(const xml::XMLConfig& cfg)
   act.sa_flags = 0;
   sigaction(SIGINT, &act, NULL);
 
-  // Load shared library to get the rules.
-  rules_.open(cfg.getData<std::string>("server", "rules"));
-  create_rules_fun_ = (create_rules_t)(rules_.getSymbol("load_server_rules"));
-  desc_ = (const struct RuleDescription*)(rules_.getSymbol("rules_description"));
 }
 
 Server::~Server()
@@ -50,13 +49,9 @@ Server::~Server()
   pthread_mutex_destroy(&lock_);
 }
 
-void Server::addClient(Cx* client_cx)
-{
-  waiting_clients_.push_back(new WaitingClient(client_cx, this));
-}
 
 // Ctl-C was pressed, shutdown it after all games were finished.
-void   Server::wantShutdown(int)
+void Server::wantShutdown(int)
 {
   if (inst->server_shutdown_ == 0 || inst->server_shutdown_reset_.isTimeElapsed())
     {
@@ -76,66 +71,16 @@ void   Server::wantShutdown(int)
     }
 }
 
-bool    Server::checkServerState(Cx* cx)
+
+
+bool Server::checkServerState(Cx* cx)
 {
   if (server_shutdown_)
     {
       LOG2("Connection from %1 has been rejected. Server is shutdowning.", *cx);
       CxDeny denial;
       stringToPacket(denial.reason, "Server is shutdowning", 64);
-      cx->send(&denial);
-      delete cx;
-      return false;
-    }
-  return true;
-}
-
-bool    Server::checkRemoteVersion(Cx* cx, const CxInit& pkt)
-{
-  if (pkt.binary_version != STECHEC_BINARY_VERSION)
-    {
-      std::ostringstream os;
-      os << "Binary version mismatch: server is `" << STECHEC_BINARY_VERSION;
-      os << "', client is `" << pkt.binary_version << "'";
-      LOG3("Connection from %1 has been rejected, reason:", *cx);
-      LOG3(" - %1", os.str());
-      CxDeny pkt_deny;
-      stringToPacket(pkt_deny.reason, os.str(), 64);
-      cx->send(&pkt_deny);
-      delete cx;
-      return false;
-    }
-  return true;
-}
-
-bool Server::checkRemoteModuleDesc(Cx* cx, const CxJoin& pkt, int game_uid)
-{
-  std::string client_rules_name = packetToString(pkt.rules_name);
-  if (client_rules_name != desc_->name)
-    {
-      std::ostringstream os;
-      os << "Rules mismatch: server's is `" << desc_->name << "'";
-      os << ", client is `" << client_rules_name << "'";
-      LOG3("Joining game %1 from %2 has been rejected, reason:", *cx);
-      LOG3(" - %1", os.str());
-      CxDeny pkt_deny;
-      stringToPacket(pkt_deny.reason, os.str(), 64);
-      cx->send(&pkt_deny);
-      delete cx;
-      return false;
-    }
-  if (pkt.rules_major != desc_->major || pkt.rules_minor != desc_->minor)
-    {
-      std::ostringstream os;
-      os << "Version mismatch: server's is `" << desc_->major << "."
-	 << desc_->minor << "'"
-	 << ", client is `" << pkt.rules_major << "." << pkt.rules_minor << "'";
-      LOG3("Joining game %1 from %2 has been rejected, reason:", *cx);
-      LOG3(" - %1", os.str());
-      CxDeny pkt_deny;
-      stringToPacket(pkt_deny.reason, os.str(), 64);
-      cx->send(&pkt_deny);
-      delete cx;
+      cx->send(denial);
       return false;
     }
   return true;
@@ -143,7 +88,7 @@ bool Server::checkRemoteModuleDesc(Cx* cx, const CxJoin& pkt, int game_uid)
 
 // Check if host is allowed on our system (ip in blacklist, etc...).
 // If it's bad, the connection is closed right now.
-bool    Server::checkRemoteTCP(TcpCx* cx, const Packet&)
+bool Server::checkRemoteTCP(TcpCx* cx)
 {
   bool  bad = false;
 
@@ -154,56 +99,222 @@ bool    Server::checkRemoteTCP(TcpCx* cx, const Packet&)
       LOG3("Connection from %1 has been rejected.", *cx);
       CxDeny denial;
       stringToPacket(denial.reason, "I don't like you.", 64);
-      cx->send(&denial);
-      delete cx;
+      cx->send(denial);
       return false;
     }
 
   LOG4("Connection from '%1` has been accepted.", *cx);
   Packet acpt(CX_ACCEPT);
-  cx->send(&acpt);
+  cx->send(acpt);
   return true;
 }
 
-// Send to the client the list of active games.
-void	Server::serveGameList(Cx* cx)
+bool Server::checkRemoteVersion(Cx* cx, const CxInit& pkt)
 {
+  if (pkt.binary_version != STECHEC_BINARY_VERSION)
+    {
+      std::ostringstream os;
+      os << "Binary version mismatch: server is `" << STECHEC_BINARY_VERSION;
+      os << "', client is `" << pkt.binary_version << "'";
+      LOG3("Connection from %1 has been rejected, reason:", *cx);
+      LOG3(" - %1", os.str());
+      CxDeny pkt_deny;
+      stringToPacket(pkt_deny.reason, os.str(), 64);
+      cx->send(pkt_deny);
+      return false;
+    }
+  return true;
+}
+
+
+
+// Send to the client the list of active games.
+bool Server::serveGameList(Client* cl, Packet*)
+{
+  if (!cl->init_pkt_received_)
+    {
+      LOG3("%1: init packet not received", *cl->cx_);
+      return false;
+    }
+
   // FIXME: send him the list of games currently hosted
   LOG5("A client is requesting the list of games.");
   Packet pkt_list(CX_LIST);
-  cx->send(&pkt_list);
+  cl->send(&pkt_list);
+  return true;
 }
 
-void	Server::serveJoinGame(Cx* cx, Packet* pkt)
+bool Server::serveJoinGame(Client* cl, Packet* pkt)
 {
   CxJoin* pkt_join = static_cast<CxJoin*>(pkt);
-  int game_uid = pkt_join->game_uid;
+  std::string client_rules_name = packetToString(pkt_join->rules_name);
 
-  if (!checkRemoteModuleDesc(cx, *pkt_join, game_uid))
-    return;
+  if (!cl->init_pkt_received_)
+    {
+      LOG3("%1: init packet not received", *cl->cx_);
+      return false;
+    }
 
-  GameIter it = games_.find(game_uid);
+  // Find corresponding rules, else load it
+  Rules *r;
+  RulesList::iterator rit = rules_.find(client_rules_name);
+  if (rit == rules_.end())
+    {
+      try {
+        r = new Rules;
+        r->lib_.open(packetToString(pkt_join->server_lib));
+        r->desc_ = (const struct RuleDescription*)
+          (r->lib_.getSymbol("rules_description"));
+        r->create_fun_ = (Rules::create_rules_t)
+          (r->lib_.getSymbol("load_server_rules"));
+      } catch (const LibraryError& e) {
+        LOG2("Can't load library: %1", e.what());
+        return false;
+      }
+      rules_.insert(std::make_pair(client_rules_name, r));
+    }
+  else
+    r = rit->second;
+
+  // Check client rules version against server rules version
+  if (pkt_join->rules_major != r->desc_->major ||
+      pkt_join->rules_minor != r->desc_->minor)
+    {
+      std::ostringstream os;
+      os << "Version mismatch: server's is `" << r->desc_->major << "."
+	 << r->desc_->minor << "'"
+	 << ", client is `" << pkt_join->rules_major << "."
+         << pkt_join->rules_minor << "'";
+      LOG3("Joining game %1 from %2 has been rejected, reason:", *cl->cx_);
+      LOG3(" - %1", os.str());
+      CxDeny pkt_deny;
+      stringToPacket(pkt_deny.reason, os.str(), 64);
+      cl->send(&pkt_deny);
+      return false;
+    }
+
+  
+  GameIter it = games_.find(pkt_join->game_uid);
   if (it == games_.end())
     {
+      // Check if we can create a game
       if (!is_persistent_ && !games_.empty())
 	{
 	  LOG3("Cannot create a new game. Server is not persistent.");
-	  delete cx;
-	  return;
+	  return false;
 	}
-      // This is a new game. Create and start it.
-      GameHosting* gh = new GameHosting(game_uid, cfg_,
-					create_rules_fun_(&cfg_));
-      it = games_.insert(std::make_pair(game_uid, gh)).first;
+
+      // This is a new game. Create and start it
+      GameHosting* gh = new GameHosting(pkt_join->game_uid, cfg_,
+                                        r->create_fun_(&cfg_));
+      it = games_.insert(std::make_pair(pkt_join->game_uid, gh)).first;
       pthread_t th;
       pthread_create(&th, NULL, &GameHosting::startThread, it->second);
       LOG5("Thread started.");
     }
-  it->second->addClient(cx,
-			pkt_join->client_extid,
-			pkt_join->is_coach ? true : false);
+
+  // Add this client to the {newly created|already existing} game
+  cl->game_joined_ = true;
+  cl->league_id_ = pkt_join->client_extid;
+  cl->is_coach_ = pkt_join->is_coach ? true : false;
+  cl_pool_.removeElt(cl->cx_);
+  cl_.erase(cl->cx_);
+  it->second->addClient(cl);
+  return true;
 }
 
+
+bool Server::serveInitPacket(Client* cl, Packet* pkt)
+{
+  const CxInit& init_pkt = static_cast<CxInit&>(*pkt);
+
+  if (cl->init_pkt_received_)
+    {
+      LOG3("%1: init packet already received", *cl->cx_);
+      return false;
+    }
+
+  if (checkRemoteVersion(cl->cx_, init_pkt))
+    {
+      cl->init_pkt_received_ = true;
+      return true;
+    }
+  return false;
+}
+
+void Server::receivePacket(Cx* cx)
+{
+  ClientList::iterator it;
+  Client* cl;
+  Packet* pkt;
+  bool ret;
+
+  if ((it = cl_.find(cx)) == cl_.end())
+    {
+      // BUG: each connection should map a cl_ entry.
+      ERR("BUG: cl_ out of sync");
+      cl_pool_.removeElt(cx);
+      delete cx;
+      return;
+    }
+  cl = it->second;
+
+  // Dispatch packet.
+  try {
+    pkt = cx->receive();
+    switch (pkt->token)
+      {
+      case CX_INIT:
+        ret = serveInitPacket(cl, pkt);
+        break;
+
+      case CX_JOIN:
+        ret = serveJoinGame(cl, pkt);
+        break;
+
+      case CX_QUERYLIST:
+        ret = serveGameList(cl, pkt);
+        break;
+
+      case CX_ABORT:
+	LOG4("Client %1 sent CX_ABORT, close its connection", *cx);
+	ret = false;
+        break;
+
+      default:
+	LOG2("Unknown message (%1) from waiting client '%2': kill it",
+             pkt->token, *cx);
+	ret = false;
+        break;
+      }
+
+  } catch (const NetError& e) {
+    LOG2("Connection error on waiting client (from %1): %2", *cx, e.what());
+    ret = false;
+  }
+
+  if (!ret)
+    {
+      cl_pool_.removeElt(cx);
+      cl_.erase(cx);
+      delete cl;
+    }
+}
+
+void Server::serveNewConnection(TcpCx* cxl)
+{
+  TcpCx* cx;
+
+  LOG4("New connection detected, handling it.");
+  cx = cxl->accept();
+
+  if (checkServerState(cx) &&
+      checkRemoteTCP(cx))
+    {
+      cl_pool_.addElt(cx);
+      cl_.insert(std::make_pair(cx, new Client(cx)));
+    }
+}
 
 // Check for games that are finished, to join thread and
 // free memory.
@@ -235,27 +346,54 @@ bool    Server::cleanFinishedGame()
 void        Server::run()
 {
   TcpCx		listen_socket;
-  TcpCxListener listener(&listen_socket, this);
   Timer		wait_timeout(0);
+  int           port;
 
   is_persistent_ = cfg_.getAttr<bool>("server", "options", "persistent");
   if (!is_persistent_)
     wait_timeout.setAllowedTime(cfg_.getAttr<int>("server", "options", "wait_timeout"));
-
-  LOG2("Listening on port %1", cfg_.getAttr<int>("server", "listen", "port"));
   if (wait_timeout.getAllowedTime() > 0)
     {
-      LOG2("Will wait for `%1' second that a game begin before exiting",
+      LOG3("Will wait for `%1' second that a game begin before exiting",
 	   wait_timeout.getAllowedTime());
       wait_timeout.start();
     }
-  listen_socket.listenAt(cfg_.getAttr<int>("server", "listen", "port"));
-  waiting_clients_.reserve(1024); // should be max cx;
-  waiting_clients_.push_back(&listener);
 
-  while (!server_shutdown_ || !games_.empty() || waiting_clients_.size() > 1)
+  port = cfg_.getAttr<int>("server", "listen", "port");
+  LOG2("Listening on port %1", port);
+  listen_socket.listen(port);
+
+  cl_pool_.addElt(&listen_socket);
+
+  while (!server_shutdown_ || !games_.empty() || cl_pool_.size() > 1)
     {
-      wcl_poll_.poll();
+      CxPool<Cx>::ConstEltIter it;
+      const CxPool<Cx>::EltList& ready_list(cl_pool_.poll());
+
+      for (it = ready_list.begin(); it != ready_list.end(); ++it)
+        {
+          Cx* cx = it->second;
+          Client* cl;
+
+          switch (it->first)
+            {
+            case E_FD_CONNECTION_PENDING:
+              serveNewConnection(&listen_socket);
+              break;
+
+            case E_FD_CONNECTION_CLOSED:
+              cl_pool_.removeElt(cx);
+              cl = cl_[cx];
+              cl_.erase(cx);
+              delete cl;
+              break;
+
+            case E_FD_READ_READY:
+              receivePacket(cx);
+              break;
+            }
+        }
+
       if (cleanFinishedGame() && !is_persistent_)
         break;
       if (wait_timeout.isTimeElapsed() && games_.empty())

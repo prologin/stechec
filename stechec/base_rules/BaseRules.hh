@@ -64,15 +64,7 @@ DECLARE_PACKET(CLIENT_UID, ClientUid);
   int nb_team;
 END_PACKET
 
-const unsigned GAME_FINISHED	= BASE_TOKEN_START + 3; ///< @see GameFinished.
-/*!
-** @struct GameFinished
-** @brief Game is now finished.
-** Server -> Client.
-*/
-DECLARE_EMPTY_PACKET(GAME_FINISHED, GameFinished);
-
-const unsigned BASE_TOKEN_LAST	= BASE_TOKEN_START + 4;
+const unsigned BASE_TOKEN_LAST	= BASE_TOKEN_START + 3;
 
 /*!
 ** @brief Rule module description.
@@ -84,6 +76,7 @@ struct RuleDescription
 {
   const char* name;
   const char* description;
+  const char* server_lib;
   int major;
   int minor;
 };

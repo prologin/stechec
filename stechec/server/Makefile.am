@@ -8,10 +8,6 @@ stechec_server_SOURCES	=			\
 	GameHosting.hh				\
 	Server.hh				\
 	Server.cc				\
-	GameClient.cc				\
-	GameClient.hh				\
-	WaitingClient.cc			\
-	WaitingClient.hh			\
 	Main.cc
 
 stechec_server_CXXFLAGS =			\

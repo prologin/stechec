@@ -7,17 +7,19 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #ifndef SERVER_HH_
 # define SERVER_HH_
 
-# include "tools.hh"
-# include "datatfs/tcp.hh"
-# include "GameHosting.hh"
+# include <map>
+# include <string>
 
-BEGIN_NS(server);
+# include "tools.hh"
+# include "xml/xml_config.hh"
+# include "datatfs/CxPool.hh"
+# include "GameHosting.hh"
 
 /*!
 ** @file
@@ -29,7 +31,11 @@ BEGIN_NS(server);
 //! @brief Maximum number of coachs + spectators connected on server.
 # define MAX_CONNECTION        250
 
+class Cx;
+class TcpCx;
 class Client;
+
+BEGIN_NS(server);
 
 /*!
 ** @brief Control multiple game, receive new clients, handle
@@ -44,33 +50,46 @@ public:
   //! @brief Run the server, never ending function...
   void          run();
 
-  void          addClient(Cx* client_cx);
-  bool          checkServerState(Cx* cx);
-  bool		checkRemoteModuleDesc(Cx* cx, const CxJoin& pkt, int game_uid);
-  bool          checkRemoteVersion(Cx* cx, const CxInit& pkt);
-  bool          checkRemoteTCP(TcpCx* cx, const Packet& pkt);
-  void	        serveGameList(Cx* cx);
-  void	        serveJoinGame(Cx* cx, Packet* pkt);
 private:
   bool          cleanFinishedGame();
   static void   wantShutdown(int signal);
 
-  static Server                 *inst;
+  // These functions check client before accepting it. Return false if
+  // it should be discarded.
+  bool          checkServerState(Cx* cx);
+  bool          checkRemoteTCP(TcpCx* cx);
+  bool          checkRemoteVersion(Cx* cx, const CxInit& pkt);
 
-  const xml::XMLConfig&         cfg_;
+  bool	        serveGameList(Client* cl, Packet* pkt);
+  bool	        serveJoinGame(Client* cl, Packet* pkt);
+  bool          serveInitPacket(Client* cl, Packet* pkt);
+  void          receivePacket(Cx* cx);
+  void          serveNewConnection(TcpCx* cxl);
 
-  const struct RuleDescription* desc_;
-  Library                       rules_;
-  typedef BaseSRules*           (*create_rules_t)(const xml::XMLConfig*);
-  create_rules_t                create_rules_fun_;
+  static Server*                  inst;
 
+  const xml::XMLConfig&           cfg_;
+
+  // Rules loaded on server
+  struct Rules
+  {
+    typedef BaseSRules*           (*create_rules_t)(const xml::XMLConfig*);
+    const struct RuleDescription* desc_;
+    Library                       lib_;
+    create_rules_t                create_fun_;
+  };
+  typedef std::map<std::string, Rules*> RulesList;
+  RulesList                     rules_;
+
+  // Games running on the server
   typedef std::map<int, GameHosting*> GameList;
   typedef GameList::iterator    GameIter;
   GameList                      games_;
 
-  typedef std::vector<Client*>  WaitingList;
-  WaitingList                   waiting_clients_;
-  NetPoll<Client*>              wcl_poll_;
+  // Clients connected, waiting to enter on a game
+  typedef std::map<Cx*, Client*> ClientList;
+  ClientList                    cl_;
+  CxPool<Cx>                    cl_pool_;
 
   int                           server_shutdown_;
   Timer				server_shutdown_reset_;

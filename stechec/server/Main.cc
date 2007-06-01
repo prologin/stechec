@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #include "Server.hh"
@@ -23,7 +23,7 @@ static void parse_option(int argc, char** argv)
   if (argc >= 2 && (!strcmp(argv[1], "--version") || !strcmp(argv[1], "-v")))
     {
       std::cout << "TBT Server v" PACKAGE_VERSION << std::endl;
-      std::cout << "Copyright (C) 2006 The TBT Team." << std::endl;
+      std::cout << "Copyright (C) 2006, 2007 The TBT Team." << std::endl;
       exit(0);
     }
 }
@@ -49,9 +49,9 @@ static void set_opt(xml::XMLConfig& cfg, Log& log)
   log.setPrintLoc(cfg.getAttr<bool>("server", "server_debug", "printloc"));
 }
 
-int     main(int argc, char** argv)
+int main(int argc, char** argv)
 {
-  Log   main_log(5);
+  Log main_log(5);
   xml::XMLConfig cfg("", ""); // No default configuration file.
 
   parse_option(argc, argv);
@@ -69,8 +69,8 @@ int     main(int argc, char** argv)
     return 52;
   } catch (const LibraryError&) {
     return 53;
-  } catch (const FileIOError& e) {
-    ERR("IOError: %1", e);
+  } catch (...) {
+    ERR("Uncatched error");
     return 54;
   }
 

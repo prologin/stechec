@@ -47,9 +47,3 @@ void EventProcess::dispatch(const ClientUid&) const
 {
   assert(false);
 }
-
-template <>
-void EventProcess::dispatch(const GameFinished&) const
-{
-  assert(false);
-}

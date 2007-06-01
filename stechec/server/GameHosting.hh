@@ -7,22 +7,22 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #ifndef GAME_HOSTING_HH_
 # define GAME_HOSTING_HH_
 
 # include "tools.hh"
-# include "datatfs/netpoll.hh"
-# include "datatfs/file.hh"
+# include "datatfs/CxPool.hh"
+# include "datatfs/FileCx.hh"
 # include "xml/xml_config.hh"
 # include "BaseSRules.hh"
 # include "PacketSender.hh"
 
 BEGIN_NS(server);
 
-class GameClient;
+class Client;
 
 /*!
 ** @addtogroup server
@@ -54,11 +54,8 @@ public:
   ~GameHosting();
 
   //! @brief Add a client to this game.
-  //! @param cx The associated connection.
-  //! @param client_extid The client game id, used to identify the client outside
-  //!   the game (ie: league).
-  //! @param wanna_be_coach True if the client wants to be a coach.
-  void addClient(Cx* cx, int client_extid, bool wanna_be_coach);
+  //! @param cl Client data.
+  void addClient(Client* cl);
 
   //! @brief Get client current status.
   enum eGameState getState() const;
@@ -75,27 +72,29 @@ public:
   //! @param gh_inst A GameHosting instance, corresponding to the game.
   static void* startThread(void* gh_inst);
 
-  void clientDied(GameClient* cl);
-
-  void spectatorReadiness(GameClient* cl);
-  void servePlaying(GameClient* cl, Packet* pkt);
-
 private:
   void outputStatistics();
   void run(Log& log);
 
-  typedef std::vector<GameClient*>      GameClientList;
-  typedef GameClientList::iterator      GameClientIter;
-  typedef std::vector<ClientStatistic*>	ClientStatisticList;
+  void spectatorReadiness(Client* cl);
+  void servePlaying(Client* cl);
+  void killClient(Client *cl, const std::string& msg);
+  void waitCoaches();
+  void playGame();
+  
+  typedef std::vector<Client*>      ClientList;
+  typedef std::map<Cx*, Client*>    ClientMapList;
 
   const xml::XMLConfig& cfg_;             ///< Server configuration.
   FileCx                log_;             ///< File to log game to.
 
-  int                   game_uid_;        ///< Game uid.
+  CxPool<Cx>            cl_pool_;         ///< Facility to poll all clients at once.
+  ClientList            cl_;              ///< Active client list.
+  ClientMapList         cl_map_;          ///< Active client list (map version).
+  ClientList            coach_;           ///< Coach list (alive and died), for statistics.
+
   BaseSRules*           rules_;           ///< Server rules.
-  GameClientList        client_list_;     ///< List of active/dead clients.
-  NetPoll<GameClient*>  client_poll_;     ///< Facility to poll all clients/dead clients at once.
-  ClientStatisticList   stats_list_;      ///< Stats of coachs. To output statistics after they exited.
+  int                   game_uid_;        ///< Game uid.
   int                   nb_coach_;        ///< Number of coach connected.
   int                   nb_waited_coach_; ///< Number of waited coach, before starting game.
   int                   nb_team_;         ///< Number of playing teams.

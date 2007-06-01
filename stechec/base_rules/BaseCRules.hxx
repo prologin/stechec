@@ -1,4 +1,4 @@
-/*
+/* -*- c++ -*-
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 ** 
 ** Copyright (C) 2006, 2007 The TBT Team.
@@ -26,6 +26,7 @@ inline int      BaseCRules::getLeagueId() const
 
 inline bool	BaseCRules::isBusy() const
 {
+  return false; // XXXX
   return busy_count_ > 0;
 }
 

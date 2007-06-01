@@ -69,7 +69,6 @@ public:
 private:
   void		msgCatchSync(const MsgSync* m);
   void          msgCatchUid(const ClientUid* m);
-  void          msgCatchGameFinished(const GameFinished* m);
 
   int           coach_id_;
   int		league_id_;

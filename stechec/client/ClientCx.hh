@@ -7,13 +7,13 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #ifndef CLIENTCX_HH_
 # define CLIENTCX_HH_
 
-# include "datatfs/cx.hh"
+# include "tools.hh"
 # include "xml/xml_config.hh"
 # include "PacketSender.hh"
 # include "BaseCRules.hh"
@@ -23,6 +23,8 @@
 ** @defgroup client Generic client application.
 ** @{
 */
+
+class Cx;
 
 /*!
 ** @brief Handle connection with the server.

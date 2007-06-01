@@ -7,12 +7,13 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
-#include "datatfs/file.hh"
-#include "datatfs/direct.hh"
-#include "datatfs/tcp.hh"
+#include "tools.hh"
+#include "datatfs/FileCx.hh"
+#include "datatfs/Direct.hh"
+#include "datatfs/TcpCx.hh"
 #include "ClientCx.hh"
 
 ClientCx::ClientCx()
@@ -40,8 +41,9 @@ bool	ClientCx::join(xml::XMLConfig& cfg, const struct RuleDescription& desc)
   return join(game_uid, mode, desc);
 }
 
-bool    ClientCx::openLog(const std::string& filename)
+bool    ClientCx::openLog(const std::string& /* filename */)
 {
+#if 0
   FileCx* cx = new FileCx;
   try {
     cx->open(filename, CX_RO);
@@ -50,6 +52,7 @@ bool    ClientCx::openLog(const std::string& filename)
     return false;
   }
   cx_ = cx;
+#endif
   return true;
 }
 
@@ -62,7 +65,7 @@ void    ClientCx::disconnect(bool send_abort)
 	{
 	  LOG5("Send CX_ABORT to the server.");
 	  Packet pkt(CX_ABORT, team_id_);
-	  cx_->send(&pkt);
+	  cx_->send(Packet(CX_ABORT, team_id_));
 	}
 
       delete cx_;
@@ -106,8 +109,7 @@ void    ClientCx::setReady()
       return;
     }
   LOG5("Send `CX_READY' (from client_id: %1)", team_id_);
-  Packet pkt_ready(CX_READY, team_id_);
-  cx_->send(&pkt_ready);
+  cx_->send(Packet(CX_READY, team_id_));
 }
 
 
@@ -122,9 +124,9 @@ void ClientCx::sendPacket(const Packet& p)
   if (p.client_id >= UID_VIEWER_BASE)
     return;
 
-  LOG5("Send packet `%1` (to client_id %2)", rules_->stringifyToken(p.token), p.client_id);
+  LOG5("-> `%1` (id %2)", rules_->stringifyToken(p.token), p.client_id);
   assert(p.client_id >= UID_COACH_BASE);
-  cx_->send(&p);
+  cx_->send(p);
 }
 
 void ClientCx::gameFinished()
@@ -137,39 +139,34 @@ void ClientCx::gameFinished()
 // Connect to the server, in network mode.
 bool ClientCx::connect(const std::string& host, int port)
 {
-  int nb_retry = 6;
-
   if (cx_ != NULL)
     {
-      WARN("You are already connected! Disconnect first.");
+      WARN("You are already connected! Disconnect first");
       return false;
     }
 
   LOG3("Connecting to %1:%2", host, port);
   TcpCx* cx = new TcpCx;
-  while (nb_retry--)
-    try {
-      cx->connect(host.c_str(), port);
-      LOG2("Connected to %1", *cx);
-      break;
-    } catch (const NetError&) {
-      LOG2("Error - Retrying in 3 seconds.");
-      if (nb_retry > 0)
-        sleep(3);
-    }
-  if (!nb_retry)
+  cx->connect(host.c_str(), port);
+  if (!cx->poll(5000))
     {
-      ERR("Connection failed.");
+      ERR("Connection failed");
       delete cx;
       return false;
     }
 
-  // Send init packet. (the first one !)
+  // Send init packet. (the first one!)
   CxInit pkt_init;
   pkt_init.binary_version = STECHEC_BINARY_VERSION;
-  cx->send(&pkt_init);
+  cx->send(pkt_init);
 
   // Receive server answer.
+  if (!cx->poll(8000))
+    {
+      ERR("Can't receive init packet, aborting");
+      delete cx;
+      return false;
+    }
   Packet* p = cx->receive();
   if (p->token == CX_DENY)
     {
@@ -185,6 +182,8 @@ bool ClientCx::connect(const std::string& host, int port)
       delete cx;
       return false;
     }
+
+  // Well done!
   cx_ = cx;
   return true;
 }
@@ -194,12 +193,20 @@ bool ClientCx::join(int game_uid, bool wanna_be_viewer, const struct RuleDescrip
   LOG4("Join game `%1` as `%2`.", game_uid, (wanna_be_viewer ? "viewer" : "coach"));
   CxJoin pkt_join(CX_JOIN);
   stringToPacket(pkt_join.rules_name, desc.name, 32);
+  stringToPacket(pkt_join.server_lib, desc.server_lib, 64);
   pkt_join.rules_major = desc.major;
   pkt_join.rules_minor = desc.minor;
   pkt_join.is_coach = wanna_be_viewer ? 0 : 1;
   pkt_join.game_uid = game_uid;
   pkt_join.client_extid = client_gid_;
-  cx_->send(&pkt_join);
+  cx_->send(pkt_join);
+
+  // Receive response
+  if (!cx_->poll(8000))
+    {
+      ERR("Can't join game, server did not answer");
+      return false;
+    }
   Packet* p = cx_->receive();
   if (p->token == CX_DENY)
     {
@@ -208,8 +215,6 @@ bool ClientCx::join(int game_uid, bool wanna_be_viewer, const struct RuleDescrip
       ERR(" - %1", packetToString(pkt_deny.reason));
       return false;
     }
-  
-  
   LOG3("Connection sequence completed.");
   return p->token == CX_ACCEPT;
 }
@@ -224,7 +229,7 @@ void ClientCx::createDirectCx(int uid)
 bool ClientCx::syncArbiter()
 {
   Packet hello(CX_INIT, 1);
-  cx_->send(&hello);
+  cx_->send(hello);
   if (!cx_->poll(1000))
     return false;
   Packet* p = cx_->receive();

@@ -16,6 +16,7 @@
 #endif // !HAVE_SDL
 
 #include "tools.hh"
+#include "datatfs/Cx.hh"
 #include "start_arbiter.hh"
 #include "ChampionLoader.hh"
 #include "ClientApp.hh"
@@ -180,9 +181,6 @@ int ClientApp::runApp()
   } catch (const NetError& e) {
     ERR("Network: %1", e);
     return 50;
-  } catch (const FileIOError& e) {
-    ERR("File IO: %1", e);
-    return 51;
   } catch (const LibraryError&) {
     return 52;
   } catch (const xml::XMLError& e) {

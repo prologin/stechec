@@ -104,6 +104,8 @@ void Sprite::move(int to_x, int to_y, double velocity)
 
 void Sprite::anim(int delay, bool loop_forever)
 {
+  if (is_animing_)
+    return;
   if (nb_anim_width_ == 1 && nb_anim_height_ == 1)
     {
       WARN("No animation set, cannot animate sprite !");

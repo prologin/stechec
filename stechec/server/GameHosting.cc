@@ -7,11 +7,11 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #include "Server.hh"
-#include "GameClient.hh"
+#include "Client.hh"
 #include "GameHosting.hh"
 
 BEGIN_NS(server);
@@ -20,9 +20,9 @@ GameHosting::GameHosting(int game_uid,
                          const xml::XMLConfig& cfg,
                          BaseSRules* rules)
   : cfg_(cfg),
-    game_uid_(game_uid),
+    cl_pool_(500),
     rules_(rules),
-    client_poll_(client_list_, 500),
+    game_uid_(game_uid),
     nb_coach_(0),
     viewer_base_uid_(0),
     nb_viewer_(0),
@@ -30,7 +30,7 @@ GameHosting::GameHosting(int game_uid,
 {
   pthread_mutex_init(&lock_, NULL);
   pthread_mutex_lock(&lock_);
-  client_poll_.setLock(&lock_);
+  cl_pool_.setLock(&lock_);
 
   nb_team_ = cfg.getData<int>("game", "nb_team");
   int nb_per_team = cfg.getAttr<int>("game", "nb_team", "player_per_team");
@@ -42,6 +42,7 @@ GameHosting::GameHosting(int game_uid,
   LOG1("Creating a new game, uid '%1`. Wait for `%2' coachs and `%3' spectators.",
        game_uid, nb_waited_coach_, nb_waited_viewer_);
 
+#if 0
   if (cfg.getAttr<bool>("server", "log", "enabled"))
     {
       std::string filename = cfg.getAttr<std::string>("server", "log", "file");
@@ -51,9 +52,10 @@ GameHosting::GameHosting(int game_uid,
       pkt_id.client_id = UID_COACH_BASE;
       pkt_id.nb_team = nb_team_;
       pkt_id.nb_coach = nb_waited_coach_;
-      log_.send(&pkt_id);
+      log_.send(pkt_id);
       LOG4("Log game into file `%1`", filename);
     }
+#endif
 }
 
 GameHosting::~GameHosting()
@@ -62,7 +64,7 @@ GameHosting::~GameHosting()
   pthread_mutex_destroy(&lock_);
 
   // All clients _should_ have been disconnected.
-  assert(client_list_.empty());
+  assert(cl_map_.empty() && cl_.empty());
 }
 
 enum eGameState GameHosting::getState() const
@@ -77,31 +79,34 @@ pthread_t GameHosting::getThreadId() const
 
 void    GameHosting::sendPacket(const Packet& p)
 {
-  LOG5("Send packet `%1' (to client_id `%2')", rules_->stringifyToken(p.token), p.client_id);
-  log_.send(&p);
-  for_all(client_list_, GameClient::Send(p));
+  LOG5("-> `%1' (id: %2)", rules_->stringifyToken(p.token), p.client_id);
+
+  log_.send(p);
+  for_all(cl_, std::bind2nd(std::mem_fun(&Client::send), &p));
 }
 
 void    GameHosting::outputStatistics()
 {
-  ClientStatisticList::iterator it;
-  for (it = stats_list_.begin(); it != stats_list_.end(); ++it)
-    rules_->outputStat((*it)->id_, **it);
+  ClientList::iterator it;
+  for (it = coach_.begin(); it != coach_.end(); ++it)
+    rules_->outputStat((*it)->getId(), (*it)->st_);
 }
 
 // Called by Server, when a client wants to join a game.
-void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
+void    GameHosting::addClient(Client* cl)
 {
+  Cx* cx = cl->cx_;
   int uid = -1;
 
   pthread_mutex_lock(&lock_);
+
   if (state_ == eFinishing || state_ == eFinished || state_ == eCrashed)
     {
       pthread_mutex_unlock(&lock_);
       LOG3("Deny access for game '%1': it is already finished!", game_uid_);
       CxDeny denial;
       stringToPacket(denial.reason, "Game already finished", 64);
-      cx->send(&denial);
+      cx->send(denial);
       delete cx;
       return;
     }
@@ -114,27 +119,26 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
       LOG3("Deny coach access for game '%1': it is already started!", game_uid_);
       CxDeny denial;
       stringToPacket(denial.reason, "Game already started", 64);
-      cx->send(&denial);
+      cx->send(denial);
       delete cx;
       return;
     }
 
-  if (wanna_be_coach)
+  if (cl->isCoach())
     {
       if (nb_coach_ >= nb_waited_coach_)
 	{
+          pthread_mutex_unlock(&lock_);
 	  LOG3("Deny access for game '%1': too many coaches!", game_uid_);
 	  CxDeny denial;
 	  stringToPacket(denial.reason, "Too many coaches", 64);
-	  cx->send(&denial);
-	  delete cx;
-	  return;
+	  cx->send(denial);
+          delete cx;
+          return;
 	}
       uid = nb_coach_++ + UID_COACH_BASE;
       LOG4("Grant access for coach `%1' (league id: %2), game '%3'.", uid,
-      		client_extid, game_uid_);
-      if (nb_coach_ == nb_waited_coach_ && nb_viewer_ >= nb_waited_viewer_)
-        state_ = ePlaying;
+      		cl->league_id_, game_uid_);
     }
   else
     {
@@ -142,64 +146,54 @@ void    GameHosting::addClient(Cx* cx, int client_extid, bool wanna_be_coach)
       nb_viewer_++;
       rules_->setViewerState(rules_->getViewerState() | VS_HAVEVIEWER);
       LOG4("Grant access for spectator uid '%1', game '%2'.", uid, game_uid_);
-      if (nb_coach_ == nb_waited_coach_ && nb_viewer_ >= nb_waited_viewer_)
-        state_ = ePlaying;
     }
 
-  // Accepted.
-  GameClient* cl = new GameClient(this, cx, uid, client_extid, nb_team_, nb_waited_coach_);
-  client_list_.push_back(cl);
+  // Accepted
+  cl->id_ = uid;
+  cl->st_.ext_id_ = cl->league_id_;
+  cl_.push_back(cl);
+  cl_map_.insert(std::make_pair(cx, cl));
+  cl_pool_.addElt(cx);
 
   pthread_mutex_unlock(&lock_);
+
+  Packet acpt(CX_ACCEPT);
+  cx->send(acpt);
+
+  ClientUid pkt_id(CLIENT_UID);
+  pkt_id.client_id = cl->id_;
+  pkt_id.league_id = cl->league_id_;
+  pkt_id.nb_team = nb_team_;
+  pkt_id.nb_coach = nb_waited_coach_;
+  cx->send(pkt_id);
 }
 
-
-// Call it when a client is disconnected.
-// Call on state eWaiting or ePlaying
-void GameHosting::clientDied(GameClient* cl)
-{
-  if (cl->isCoach())
-    {
-      LOG5("Coach `%1' died.", cl->getId());
-      nb_coach_--;
-      if (state_ == ePlaying)
-	rules_->coachKilled(cl->getId(), cl->getClientStatistic().custom_);
-    }
-  else
-    {
-      if (!--nb_viewer_)
-	rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
-    }
-  if (nb_coach_ == 0 && nb_viewer_ == 0)
-    {
-      LOG4("Cancel game `%1', all clients has left!", game_uid_);
-      state_ = eFinishing;
-    }
-}
 
 // Handle CX_READY packet from spectators.
 // It is used to say that spectators are ready for the next turn.
-void GameHosting::spectatorReadiness(GameClient* cl)
+void GameHosting::spectatorReadiness(Client* cl)
 {
-  cl->setReady(true);
+  cl->is_ready_ = true;
 
   // Check if all spectators are ready.
-  GameClientIter it;
-  for (it = client_list_.begin(); it != client_list_.end(); ++it)
-    if (!(*it)->isCoach() && !(*it)->isReady())
+  ClientList::iterator it;
+  for (it = cl_.begin(); it != cl_.end(); ++it)
+    if ((*it)->isCoach() && !(*it)->is_ready_)
       break;
-  if (it == client_list_.end())
+  if (it == cl_.end())
     {
       LOG3("All viewers are ready.");
-      for (it = client_list_.begin(); it != client_list_.end(); ++it)
-	(*it)->setReady(false);
+      for (it = cl_.begin(); it != cl_.end(); ++it)
+	(*it)->is_ready_ = false;
       rules_->setViewerState(rules_->getViewerState() | VS_READY);
     }
 }
 
 // Process one packet for one client, in state ePlaying.
-void GameHosting::servePlaying(GameClient* cl, Packet* pkt)
+void GameHosting::servePlaying(Client* cl)
 {
+  Packet* pkt = cl->cx_->receive();
+
   if (pkt->token == CX_READY && !cl->isCoach())
     {
       spectatorReadiness(cl);
@@ -208,20 +202,186 @@ void GameHosting::servePlaying(GameClient* cl, Packet* pkt)
 
   if (cl->isCoach())
     {
+      MsgSync sync;
+      for_all(cl_, std::mem_fun(&Client::begin));
       rules_->handlePacket(pkt);
-      sendPacket(MsgSync(cl->getId()));
+      for_all(cl_, std::bind2nd(std::mem_fun(&Client::send), &sync));
+      for_all(cl_, std::mem_fun(&Client::commit));
     }
   else
     {
       LOG2("A viewer is trying to send illegal message, kill it.");
-      cl->kill("Viewers are not allowed to send messages");
+      killClient(cl, "Viewers are not allowed to send messages");
     }
+}
+
+// Called when a client is disconnected, or when we force a client
+// to disconnect.
+//
+// Either the socket was closed, or we want to kill the client.
+// In both case, remove the client from our lists (cl_pool_, cl_), and
+// close its connection.
+void GameHosting::killClient(Client* cl, const std::string& msg)
+{
+  Cx* cx = cl->cx_;
+
+  cl_pool_.removeElt(cx);
+  cl->setFailReason(msg, 1);
+  cl_map_.erase(cx);
+  cl_.erase(std::remove(cl_.begin(), cl_.end(), cl), cl_.end());
+
+  if (cl->isCoach())
+    {
+      LOG5("Coach `%1' died.", cl->getId());
+      nb_coach_--;
+      if (state_ == ePlaying)
+	if (!rules_->coachKilled(cl->getId(), cl->st_.custom_))
+          {
+            LOG4("Rules requested that game should stop (on killed coach)");
+            state_ = eFinishing;
+          }
+    }
+  else
+    {
+      if (!--nb_viewer_)
+	rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
+      delete cl;
+    }
+
+  if ((state_ == ePlaying || state_ == eWaiting) && nb_coach_ == 0)
+    {
+      LOG4("Cancel game `%1', all clients has left!", game_uid_);
+      state_ = eFinishing;
+    }
+
+  // Send error report to the client, if its socket is still alive.
+  CxError err;
+  stringToPacket(err.msg, msg, 64);
+  cx->send(err);
+  
+  delete cx;
+  cl->cx_ = NULL;
+  if (!cl->isCoach() || state_ == eWaiting)
+    delete cl;
+}
+
+void GameHosting::waitCoaches()
+{
+  int game_start_timeout = cfg_.getAttr<int>("server", "options", "start_game_timeout");
+  Timer start_timeout(game_start_timeout);
+  start_timeout.start();
+
+  while (state_ == eWaiting && !start_timeout.isTimeElapsed())
+    {
+      CxPool<Cx>::ConstEltIter it;
+      const CxPool<Cx>::EltList& ready_list = cl_pool_.poll();
+
+      for (it = ready_list.begin(); it != ready_list.end(); ++it)
+        {
+          Packet* pkt;
+          Cx* cx = it->second;
+          Client* cl = cl_map_[cx];
+
+          switch (it->first)
+            {
+            case E_FD_CONNECTION_CLOSED:
+              killClient(cl, "Connection closed on other side");
+              break;
+
+            case E_FD_READ_READY:
+              pkt = cx->receive();
+              if (pkt->token == CX_ABORT)
+                killClient(cl, "GameClient asked to abort game.");
+              else if (pkt->token == CX_READY && !cl->isCoach())
+                spectatorReadiness(cl);
+              else
+                killClient(cl, "Tried to send illegal message before game start.");
+              break;
+
+            default:
+              WARN("BUG()");
+            }
+        }
+      if (nb_coach_ == nb_waited_coach_ && nb_viewer_ >= nb_waited_viewer_)
+        state_ = ePlaying;
+    }
+
+  if (start_timeout.isTimeElapsed())
+    {
+      LOG3("Allowed time for starting game elapsed. Canceling game.");
+      state_ = eFinishing;
+      ClientList::iterator it;
+      for (it = cl_.begin(); it != cl_.end(); ++it)
+        delete *it;
+      cl_.clear();
+      cl_map_.clear();
+    }
+}
+
+void GameHosting::playGame()
+{
+  LOG5("Game starting... %1 connected", nb_coach_);
+  rules_->setSendPacketObject(this);
+
+  // Copy active coaches into coach list;
+  ClientList::iterator it;
+  for (it = cl_.begin(); it != cl_.end(); ++it)
+    if ((*it)->isCoach())
+      coach_.push_back(*it);
+
+  // Send to the rules the correspondance between league_id and id.
+  for (it = coach_.begin(); it != coach_.end(); ++it)
+    rules_->addPlayer((*it)->getId(), (*it)->getLeagueId());
+
+  rules_->serverStartup();
+  if (rules_->getState() == GS_END)
+    return;
+
+  while (rules_->getState() != GS_END && state_ == ePlaying)
+    {
+      // Maybe the server has something to do
+      // (called at least every 500ms).
+      rules_->serverProcess();
+      if (rules_->getState() == GS_END)
+        break;
+
+      // Get data from clients
+      CxPool<Cx>::ConstEltIter it;
+      const CxPool<Cx>::EltList& ready_list = cl_pool_.poll();
+
+      for (it = ready_list.begin(); it != ready_list.end(); ++it)
+        {
+          Cx* cx = it->second;
+          Client* cl = cl_map_[cx];
+
+          switch (it->first)
+            {
+            case E_FD_CONNECTION_CLOSED:
+              killClient(cl, "Connection closed on other side");
+              break;
+
+            case E_FD_READ_READY:
+              servePlaying(cl);
+              break;
+
+            default:
+              WARN("BUG()");
+            }
+        }
+#if 0
+      if (nb_coach_ != nb_waited_coach_)
+        {
+          // FIXME: it should be optional.
+          LOG3("A coach has disconnected. Canceling game.");
+          break;
+        }
+#endif
+    }
+  outputStatistics();
 }
 
 void GameHosting::run(Log& log)
 {
-  GameClientIter it;
-
   self_ = pthread_self();
 
   // Set logger options.
@@ -231,85 +391,27 @@ void GameHosting::run(Log& log)
   is << " " << game_uid_;
   log.setModuleSuffix(is.str().c_str());
 
-  int game_start_timeout = cfg_.getAttr<int>("server", "options", "start_game_timeout");
-  Timer start_timeout(game_start_timeout);
-  start_timeout.start();
-  state_ = eWaiting;
-
   // Wait for the coaches.
-  while (state_ == eWaiting && !start_timeout.isTimeElapsed())
-    client_poll_.poll();
-
-  // Fill stats_list.
-  if (state_ == ePlaying)
-    {
-      for (it = client_list_.begin(); it != client_list_.end(); ++it)
-	if ((*it)->isCoach())
-	  stats_list_.push_back(&(*it)->getClientStatistic());
-    }
-
-  if (start_timeout.isTimeElapsed())
-    {
-      LOG3("Allowed time for starting game elapsed. Canceling game.");
-      for_all(client_list_, std::bind2nd(std::mem_fun(&GameClient::kill),
-					 std::string("Not able to start game: timeout!")));
-    }
+  state_ = eWaiting;
+  waitCoaches();
 
   // Really play the game.
   if (state_ == ePlaying)
-    {
-      LOG5("Game starting... %1 connected", nb_coach_);
-      rules_->setSendPacketObject(this);
+    playGame();
 
-      // Send to the rules the correspondance between league_id and id.
-      for (it = client_list_.begin(); it != client_list_.end(); ++it)
-	if ((*it)->isCoach())
-	  rules_->addPlayer((*it)->getId(), (*it)->getLeagueId());
-
-      rules_->serverStartup();
-      if (rules_->getState() != GS_END)
-	{
-	  while (rules_->getState() != GS_END && state_ == ePlaying)
-	    {
-	      // Maybe the server has something to do
-	      // (called at least every 500ms).
-	      rules_->serverProcess();
-
-	      client_poll_.poll();
-	      if (nb_coach_ != nb_waited_coach_)
-		{
-		  // FIXME: it should be optional.
-		  LOG3("A coach has disconnected. Canceling game.");
-		  break;
-		}
-	    }
-	  outputStatistics();
-	}
-    }
-
-  if (state_ == ePlaying)
-   sendPacket(GameFinished());
+  // Clean game.
   state_ = eFinishing;
+  cl_pool_.flush();
+  for_all(cl_, Deleter());
+  cl_map_.clear();
+  cl_.clear();
 
-  // Wait 3 seconds that remaining clients quit, to let them time
-  // to process their last commands before trashing them (for make check).
-  if (!client_list_.empty())
-    {
-      Timer timeout(3);
-      timeout.start();
-      LOG4("Wait 3 seconds that `%1` clients still connected quit.", client_list_.size());
-      while (!client_list_.empty() && !timeout.isTimeElapsed())
-	client_poll_.poll();
-    }
-
-  for_all(client_list_, Deleter());
-  client_list_.clear();
-  for_all(stats_list_, Deleter());
+  // Ready to be reaped by Server.
   state_ = eFinished;
   pthread_mutex_unlock(&lock_);
 }
 
-void*        GameHosting::startThread(void* gh_inst)
+void* GameHosting::startThread(void* gh_inst)
 {
   Log log(4);
   GameHosting* inst = static_cast<GameHosting*>(gh_inst);
@@ -321,10 +423,15 @@ void*        GameHosting::startThread(void* gh_inst)
   } catch (const Exception& e) {
     ERR("Unhandled error: %1", e);
   }
+
+  // Clean game.
+  inst->state_ = eFinishing;
+  inst->cl_pool_.flush();
+  for_all(inst->cl_, Deleter());
+  inst->cl_.clear();
+  inst->cl_map_.clear();
+
   inst->state_ = eCrashed;
-  for_all(inst->client_list_, Deleter());
-  inst->client_list_.clear();
-  for_all(inst->stats_list_, Deleter());
   pthread_mutex_unlock(&inst->lock_);
   return NULL;
 }

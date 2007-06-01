@@ -23,7 +23,6 @@ BaseCRules::BaseCRules()
 {
   HANDLE_WITH(MSG_SYNC, BaseCRules, this, msgCatchSync, 0);
   HANDLE_WITH(CLIENT_UID, BaseCRules, this, msgCatchUid, GS_WAIT);
-  HANDLE_WITH(GAME_FINISHED, BaseCRules, this, msgCatchGameFinished, 0);
 }
 
 BaseCRules::~BaseCRules()
@@ -70,10 +69,4 @@ void    BaseCRules::msgCatchUid(const ClientUid* m)
 
   assert(packet_sender_ != NULL);
   packet_sender_->setTeamId(m->client_id);
-}
-
-void    BaseCRules::msgCatchGameFinished(const GameFinished*)
-{
-  setState(GS_END);
-  //packet_sender_->gameFinished();
 }
