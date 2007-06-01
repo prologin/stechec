@@ -63,7 +63,6 @@ enum {
   GS_ENDTURN,
   GS_AFTERTURN,
   GS_AFTERGAME,
-  GS_CLIENT_END,
 };
 
 // Kind of tokens used by the base rules of stechec.

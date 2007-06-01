@@ -190,6 +190,7 @@ AC_CONFIG_FILES([
   stechec/scripts/conf.rb
   stechec/server/Makefile
   stechec/tools/Makefile
+  stechec/tools/test/Makefile
   stechec/tools/xml_test/Makefile
   stechec/sdl/Makefile
   stechec/sdl/test/Makefile

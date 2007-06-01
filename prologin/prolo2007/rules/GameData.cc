@@ -525,6 +525,7 @@ int	GameData::calculScore ()
 extern "C" const struct RuleDescription rules_description = {
   "prolo2007",
   "Prologin 2007 final contest rules",
+  "globulus",
   1,
   0,
 };

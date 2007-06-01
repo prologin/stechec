@@ -130,6 +130,7 @@ const char* GameData::GetCommandString(int cst)
 extern "C" const struct RuleDescription rules_description = {
   "ant",
   "Prologin's world: ant",
+  "ant",
   1,
   0,
 };

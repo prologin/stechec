@@ -13,13 +13,8 @@
 
 test -f configure.ac || exit 1
 
-sed -i -r 's/^SUBDIRS.*+= doc.*//' Makefile.am
-sed -i -r 's/README.stechec//' Makefile.am
+sed -ir 's/^SUBDIRS.*+= doc.*//' Makefile.am
 rm README
 mv README.stechec README
 
-sed -i -r 's/modules="bb5"/modules="ant,prolo2005,prolo2006,prolo2007"/' configure.ac
-sed -i -r '/doc\/Makefile/ { d }; /doc\/doc.doxy/ { d }' configure.ac
-sed -i -r 's/.*Building with readline:.*//' configure.ac
-sed -i -r 's/.*Building with paragui:.*//' configure.ac
-sed -i -nre '/if test x.BUILD_bb5 != x; then/ { :n s/^fi$//; t q; n; b n; :q d }; p' configure.ac
+sed -ir 's/modules="bb5"/modules="ant,prolo2005,prolo2006,prolo2007"/' configure.ac

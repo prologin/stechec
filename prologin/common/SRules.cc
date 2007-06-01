@@ -12,7 +12,7 @@
 
 #include "Contest.hh"
 #include "SRules.hh"
-#include "GameClient.hh"
+#include "Client.hh"
 
 SRules::SRules(StechecGameData* data, StechecServer* server,
                StechecServerResolver* resolver, StechecServerEntry* serverep)
@@ -225,6 +225,10 @@ bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
       cec = new CoachErrorCustom;
       cec->fail_turn_ = data_->getCurrentTurn();
     }
+
+  // Could be the last client we waited for. Unlock us.
+  waitAllClient(coach_id);
+
   return true;
 }
 
@@ -287,6 +291,15 @@ void SRules::msgInitGame(const MsgInitGame* m)
 
   sendPacket(MsgInitGame());
   setState(GS_BEFORETURN);
+
+  // First turn
+  data_->current_turn_ = 1;
+  LOG2("================== Turn %1 ==================",
+       data_->getCurrentTurn());
+
+  r = server_entry_->beforeNewTurn();
+  if (!afterHook(r, "beforeNewTurn"))
+    return;
 }
 
 void SRules::msgBeforeTurn(const MsgBeforeTurn* m)

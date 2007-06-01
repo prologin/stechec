@@ -20,6 +20,7 @@
 extern "C" const struct RuleDescription rules_description = {
   "bb5",
   "Blood Bowl rules (LRB5)",
+  "bb5_arbiter",
   0,
   1,
 };

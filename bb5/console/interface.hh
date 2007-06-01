@@ -17,6 +17,7 @@
 #ifndef INTERFACE_HH_
 # define INTERFACE_HH_
 
+# include "tools.hh"
 # include "ClientCx.hh"
 # include "Api.hh"
 # include "Event.hh"

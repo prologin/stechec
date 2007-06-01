@@ -86,7 +86,7 @@ const char* CRules::tokenToString(unsigned token) const
 
 void CRules::msgStechecPkt(const StechecPkt* m)
 {
-  if (getState() == GS_END || getState() == GS_CLIENT_END)
+  if (getState() == GS_END)
     return;
   
   StechecPkt pkt(*m);
@@ -110,7 +110,7 @@ bool CRules::afterHook(int res, const char* hook_name)
       stringToPacket(pkt_err.reason, "Client hook error.", 64);
       sendPacket(pkt_err);
 
-      setState(GS_CLIENT_END);
+      setState(GS_END);
       return false;
     }
   client_entry_->flushPacketList();
@@ -204,7 +204,7 @@ void CRules::msgAfterTurn(const MsgAfterTurn*)
 // Be prepared to handle it correctly.
 void CRules::msgAfterGame(const MsgAfterGame*)
 {
-  if (getState() == GS_END || getState() == GS_CLIENT_END)
+  if (getState() == GS_END)
     return;
   
   if (getState() != GS_WAIT)
@@ -213,7 +213,7 @@ void CRules::msgAfterGame(const MsgAfterGame*)
       if (!afterHook(r, "afterGame"))
         return;
     }
-  setState(GS_CLIENT_END);
+  setState(GS_END);
 }
 
 

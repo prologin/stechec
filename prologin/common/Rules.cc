@@ -16,6 +16,7 @@
 
 const char *prologin_token_str[RULES_TOKEN_LAST] = {
   "STECHEC_PKT",
+  "MSG_LIST_TEAM",
   "MSG_BEFORE_GAME",
   "MSG_INIT_GAME",
   "MSG_BEFORE_TURN",

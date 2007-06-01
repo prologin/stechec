@@ -303,6 +303,7 @@ Casino::Casino()
 extern "C" const struct RuleDescription rules_description = {
   "prolo2006",
   "Prologin 2006 final contest rules",
+  "outatime",
   1,
   0,
 };
