@@ -39,69 +39,65 @@ void STeam::msgTeamInfo(const MsgTeamInfo* m)
 
 void STeam::msgPlayerCreate(const MsgPlayerCreate* m)
 {
-  // Create the player.
-  if (player_[m->player_id] == NULL)
-    {
-      player_[m->player_id] = new SPlayer(r_, m, this, pm_);
-      if (player_[m->player_id]->acceptPlayerCreation())
-        {
-          pm_->setPlayer(m->client_id, m->player_id, player_[m->player_id]);
-          r_->sendPacket(*m);
-        }
-      else
-        {
-          // FIXME: maybe we should be more radical if a player is
-          //        invalid, like stopping the game.
-          delete player_[m->player_id];
-          player_[m->player_id] = NULL;
-          LOG2("Team %1. Player %2 creation refused.", team_id_, m->player_id);
-          r_->sendIllegal(MSG_PLAYERCREATE, m->client_id);
-        }
-    }
-  else
+  if (player_[m->player_id] != NULL)
     {
       LOG2("Team %1. Player %2 already exists.", team_id_, m->player_id);
-      r_->sendIllegal(MSG_PLAYERCREATE, m->client_id, ERR_ALREADYEXISTS);
+      r_->sendIllegal(m->token, m->client_id, ERR_ALREADYEXISTS);
+      return;
     }
+
+  // Create the player.
+  player_[m->player_id] = new SPlayer(r_, m, this, pm_);
+  if (!(player_[m->player_id]->acceptPlayerCreation()))
+    {
+      // FIXME: maybe we should be more radical if a player is
+      //        invalid, like stopping the game.
+      delete player_[m->player_id];
+      player_[m->player_id] = NULL;
+      LOG2("Team %1. Player %2 creation refused.", team_id_, m->player_id);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
+
+  pm_->setPlayer(m->client_id, m->player_id, player_[m->player_id]);
+  r_->sendPacket(*m);
 }
 
 void STeam::msgReroll(const MsgReroll* m)
 {
   if (state_ != GS_REROLL)
     {
-      LOG2("Coach %1 has not to reroll or accept a roll now.");
+      LOG3("Coach %1 has not to reroll or accept a roll now.");
       r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+      return;
     }
-  else if (m->reroll && !canUseReroll())
+  if (m->reroll && !canUseReroll())
     {
-      LOG2("Coach %1 can not use team reroll for this turn.", team_id_);
+      LOG3("Coach %1 can not use team reroll for this turn.", team_id_);
       r_->sendIllegal(m->token, m->client_id);
+      return;
     }
-  else
-    {
-      LOG2("Coach %1 %2.", team_id_, m->reroll?"uses a team reroll":"accepts the roll result");
-      r_->checkForCurrentOpponentChoice(m->client_id);
-      r_->sendPacket(*m);
-      state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
-      if (m->reroll)
-        {
-          useReroll();
-        }
-      r_->getActionHandler()->process(m->reroll);
-    }
+
+  LOG5("Coach %1 %2.", team_id_, m->reroll?"uses a team reroll":"accepts the roll result");
+  r_->checkForCurrentOpponentChoice(m->client_id);
+  r_->sendPacket(*m);
+  state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
+  if (m->reroll)
+    useReroll();
+  r_->getActionHandler()->process(m->reroll);
 }
 
 void STeam::msgBlockDice(const MsgBlockDice* m)
 {
   if (state_ != GS_BLOCK)
     {
-      LOG2("Coach %1 doesn't have to choose a block dice now.", team_id_);
+      LOG3("Coach %1 doesn't have to choose a block dice now.", team_id_);
       r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
   if (m->dice < 0 || nb_choices_ <= m->dice)
     {
-      LOG2("The choice number %1 is out of range [0,%2[.",
+      LOG3("The choice #%1 is out of range [0,%2[.",
           m->dice, nb_choices_);
       r_->sendIllegal(m->token, m->client_id, ERR_UNREADABLE);
       return;
@@ -117,7 +113,7 @@ void STeam::msgFollow(const MsgFollow* m)
 {
   if (state_ != GS_FOLLOW)
     {
-      LOG2("Coach %1 doesn't have the choice to follow or not now.", team_id_);
+      LOG3("Coach %1 doesn't have the choice to follow or not now.", team_id_);
       r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
@@ -131,6 +127,8 @@ void STeam::msgBlockPush(const MsgBlockPush* m)
 {
   if (state_ != GS_PUSH)
     {
+      LOG3("Token `%1' from coach `%2' is not allowed in team state `%3'.",
+          m->token, m->client_id, state_);
       r_->sendIllegal(MSG_BLOCKPUSH, m->client_id, ERR_WRONGCONTEXT);
       return;
     }

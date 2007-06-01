@@ -277,7 +277,8 @@ void SActionHandler::process(bool reroll, int choice)
               ea.player->finishDodge(reroll, ea.success);
               break;
             case R_INJURY:
-              WARN("Injury roll should never be put off.");
+              //FIXME: Needed for 'Dirty Player' and 'Mighty Blow' skills in extra rules.
+              WARN("Injury roll elementary action not implemented.");
               break;
             case R_PICKUP:
               ea.player->finishPickUp(reroll, ea.success);
@@ -289,12 +290,12 @@ void SActionHandler::process(bool reroll, int choice)
               ea.player->finishThrow(reroll, ea.success);
               break;
             default:
-              WARN("Unknown roll (%1) for elementary action (%2).", ea.roll_type, ea.type);
+              WARN("Unknown roll type `%1' in elementary action.", ea.roll_type);
               break;
           }
         break;
       default:
-        WARN("Unknown elementary action (%1).", ea.type);
+        WARN("Unknown elementary action `%1'.", ea.type);
         return;
     }
 }

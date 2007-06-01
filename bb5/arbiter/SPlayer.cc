@@ -50,7 +50,7 @@ bool SPlayer::checkAndDeclareTouchdooown()
     {
       if (pos_.row == ((ROWS - 1) * (1 - team_id_)))
         {
-          LOG3("Player `%1' of team `%2' scores a TOUCHDOOOWN at %3!", id_, team_id_, pos_);
+          LOG5("Player `%1' of team `%2' scores a TOUCHDOOOWN at %3!", id_, team_id_, pos_);
           pm_->sendTouchdooown(this);
           t_->incrementScore();
           r_->touchdooown(this);
@@ -91,7 +91,7 @@ void SPlayer::setStatus(enum eStatus new_status)
 {
   if (status_ == new_status)
     {
-      WARN("Don't assign twice the same status to player %1 of team %2.", id_, team_id_);
+      WARN("Don't assign twice the same status to player `%1' of team `%2'.", id_, team_id_);
       return;
     }
   pm_->sendStatus(new_status, this);
@@ -131,10 +131,11 @@ void SPlayer::setStatus(enum eStatus new_status)
       status_ = STA_INJURED;
       break;
     case STA_UNASSIGNED:
-      WARN("Can't set player in 'unassigned' state");
+      WARN("Can't assign unassigned status to player `%1' of team `%2'.", id_, team_id_);
       break;
     default:
-      LOG3("You can't set this state from outside...");
+      WARN("Can't set unknown status `%1' to player `%2' of team `%3'.",
+          new_status, id_, team_id_);
       break;
     }
 }
@@ -205,7 +206,8 @@ void SPlayer::setUsableSkills()
         setSkillAvailability(SK_PASS);
         break;
       default:
-        WARN("Unknown roll type `%1'.", Dice::stringify(roll_attempted_));
+        WARN("Can't set usable skills for unknown roll type (%1).",
+            Dice::stringify(roll_attempted_));
         break;
     }
 }
@@ -246,14 +248,14 @@ enum eSkill SPlayer::getUsableSkill() const
 //  - else -> apply modifier and compare with agility.
 bool SPlayer::rollAgility(enum eRoll roll_type, int modifier)
 {
-  int dice_result = d_->roll(d_->stringify(roll_type));
+  int dice_result = d_->roll(roll_type);
   int dice_modified = dice_result + modifier;
   int required = 7 - std::min(ag_, 6);
   bool success = dice_result != 1 && (dice_result == 6 || dice_modified >= required);
-  LOG6( "[t%1,p%2] Roll %3 %4, dice: %5, with modifiers: %6, required: %7, ag: %8.",
-      team_id_, id_,
-      d_->stringify(roll_type), success?"succeeds":"_fails_",
-      dice_result, dice_modified, required, ag_ );
+  LOG6("Player `%1' of team `%2' %3 `%4'.", id_, team_id_,
+      success?"succeeds":"_fails_", Dice::stringify(roll_type));
+  LOG6("Dice result: `%1', with modifiers: `%2', required: `%3', ag: `%4'.",
+      dice_result, dice_modified, required, ag_);
   pm_->sendRoll(roll_type, dice_result, modifier, required,
       (reroll_enabled_?t_->canUseReroll():false), getUsableSkill(), this);
   return success;
@@ -270,7 +272,7 @@ bool SPlayer::rollAgility()
 
 void SPlayer::checkArmour(int av_mod, int inj_mod)
 {
-  int result = d_->roll("check armour", D6, 2);
+  int result = d_->roll(R_ARMOUR, D6, 2);
   if (result + av_mod > av_)
     rollInjury(inj_mod);
   ah_->process();
@@ -290,8 +292,9 @@ void SPlayer::bePushedInTheCrowd()
 
 void SPlayer::rollInjury(int modifier)
 {
-  int injury = d_->roll("injury", D6, 2) + modifier;
-  LOG6("[t%1,p%2] Armour passed, injury : %3.", team_id_, id_, injury);
+  int injury = d_->roll(R_INJURY, D6, 2) + modifier;
+  LOG5("Player `%1' of team `%2' is injured: `%3' (on Injury table).",
+      id_, team_id_, injury);
   if (injury <= 7)
     setStatus(STA_STUNNED);
   else if (injury <= 9) 
@@ -302,16 +305,11 @@ void SPlayer::rollInjury(int modifier)
 
 enum eStatus SPlayer::rollCasualty()
 {
-  switch (d_->roll("casualty"))
-    {
-    case 1:
-    case 2:
-    case 3: 
-    case 4:
-    case 5: 
-    case 6: return STA_INJURED;
-    }
-  return STA_UNASSIGNED;
+  int result = (10 * d_->roll("casualty ten")) + d_->roll("casualty one", D8);
+  LOG5("Player `%1' of team `%2' suffers a casualty: `%3' (on Casualty table).",
+      id_, team_id_, result);
+  //FIXME: Casualty table details are needed for extra rules.
+  return STA_INJURED;
 }
 
 /*
@@ -351,11 +349,12 @@ void SPlayer::tryBlock()
 
 void SPlayer::rollBlock()
 {
+  LOG5("Player `%1' of team `%2' tries to block player `%3' of team `%4': %5 dices to roll.",
+      id_, team_id_, target_->getId(), target_->getTeamId());
   for (int i = 0; i < nb_block_dices_; ++i)
     {
-      block_results_[i] = (enum eBlockDiceFace) d_->roll("block", DBLOCK);
-      LOG5("[t%1,p%2] Rolled block dice: %3",
-         team_id_, id_, Dice::stringify(block_results_[i]));
+      block_results_[i] = (enum eBlockDiceFace) d_->roll(R_BLOCK, DBLOCK);
+      LOG5("Block dice #%1 result: `%2'.", i, Dice::stringify(block_results_[i]));
     }
   pm_->sendBlockResult(reroll_enabled_, strongest_team_id_,
       nb_block_dices_, block_results_, target_, this);
@@ -531,8 +530,9 @@ void SPlayer::tryBlockPush(SPlayer* target)
       squares[2] = squares[1] + Position(0, -direction.col);
     }
 
-  LOG3("Pusher pos: %1 Aimed pos: %2", pos_, move_aim_);
-  LOG3("Opposite squares: c1: %1 c2: %2 c3: %3", squares[0], squares[1], squares[2]);
+  LOG5("Player `%1' of team `%2' at %3 must push player `%4' of team `%5' from %6.",
+      id_, team_id_, pos_, target_->getId(), target_->getTeamId(), move_aim_);
+  LOG5("Opposite squares: c1: %1 c2: %2 c3: %3.", squares[0], squares[1], squares[2]);
 
   nb_push_choices_ = 0;
 
@@ -565,9 +565,9 @@ void SPlayer::tryBlockPush(SPlayer* target)
       }
     }
 
-  LOG3("Final number of choices: %1", nb_push_choices_);
+  LOG5("Final number of choices: `%1'.", nb_push_choices_);
   for (int i = 0; i < nb_push_choices_; i++)
-    LOG3("Choice #%1: %2", i, push_choices_[i]);
+    LOG5("Choice #%1: `%2'.", i, push_choices_[i]);
 
   target_->setPusher(this);
   r_->getCurrentTeam()->setPusher(this);
@@ -589,7 +589,7 @@ void SPlayer::resolveBlockPush(int chosen_square)
 {
   if (chosen_square != 0) push_choices_[0] = push_choices_[chosen_square];
   SPlayer* other_target = f_->getPlayer(push_choices_[0]);
-  LOG2("Player `%1' of team `%2' pushes player `%3' of team `%4' from %5 to %6.",
+  LOG5("Player `%1' of team `%2' pushes player `%3' of team `%4' from %5 to %6.",
       id_, team_id_, target_->getId(), target_->getTeamId(), move_aim_, push_choices_[0]);
   if (other_target == NULL)
     r_->getCurrentTeam()->getActivePlayer()->considerBlockFollow();
@@ -704,7 +704,7 @@ void SPlayer::finishCatchBall(bool reroll, bool success)
     }
   else if (success)
     {
-      LOG5("[t%1,p%2] succeeds to catch the ball.", team_id_, id_);
+      LOG5("Player `%1' of team `%2' succeeds to catch the ball.", id_, team_id_);
       r_->getBall()->setOwner(this);
       if (!checkAndDeclareTouchdooown())
         {
@@ -720,7 +720,7 @@ void SPlayer::finishCatchBall(bool reroll, bool success)
     }
   else
     {
-      LOG5("[t%1,p%2] fails to catch the ball.", team_id_, id_);
+      LOG5("Player `%1' of team `%2' _fails_ to catch the ball.", id_, team_id_);
       r_->getBall()->bounce();
     }
 }
@@ -762,7 +762,7 @@ void SPlayer::finishDodge(bool reroll, bool success)
     }
   else if (success)
     {
-      LOG5("[t%1,p%2] succeeds to dodge out to %3.", team_id_, id_, pos_);
+      LOG5("Player `%1' of team `%2' succeeds to dodge out to %3.", id_, team_id_, pos_);
       if (r_->getBall()->getPosition() == pos_
           && r_->getBall()->getOwner() != this)
         {
@@ -775,7 +775,7 @@ void SPlayer::finishDodge(bool reroll, bool success)
     }
   else
     {
-      LOG5("[t%1,p%2] fails to dodge out to %3.", team_id_, id_, pos_);
+      LOG5("Player `%1' of team `%2' _fails_ to dodge out to %3.", id_, team_id_, pos_);
       pm_->sendMsgKnocked(this); //FIXME: possibly breaks client compatibility.
       setStatus(STA_PRONE);
       if (r_->getBall()->getPosition() == pos_)
@@ -867,7 +867,7 @@ void SPlayer::finishPickUp(bool reroll, bool success)
     }
   else if (success)
     {
-      LOG5("[t%1,p%2] succeeds to pick up the ball.", team_id_, id_);
+      LOG5("Player `%1' of team `%2' succeeds to pick up the ball.", id_, team_id_);
       r_->getBall()->setOwner(this); //FIXME: possibly breaks client compatibility.
       if (!checkAndDeclareTouchdooown())
         {
@@ -876,7 +876,7 @@ void SPlayer::finishPickUp(bool reroll, bool success)
     }
   else
     {
-      LOG5("[t%1,p%2] fails to pick up the ball.", team_id_, id_);
+      LOG5("Player `%1' of team `%2' _fails_ to pick up the ball.", id_, team_id_);
       ah_->putBallBounce();
       if (team_id_ == r_->getCurrentTeamId())
         {
@@ -913,13 +913,13 @@ void SPlayer::tryStandUp()
 
 void SPlayer::rollStandUp()
 {
-  int dice_result = d_->roll(d_->stringify(roll_attempted_));
+  int dice_result = d_->roll(roll_attempted_);
   int required = 4;
   bool success = (dice_result >= required);
-  LOG6( "[t%1,p%2] Roll %3 %4, dice: %5, required: %7.",
-      team_id_, id_,
-      d_->stringify(roll_attempted_), success?"succeeds":"_fails_",
-      dice_result, required, ag_ );
+  LOG6("Player `%1' of team `%2' %3 `%4'.", id_, team_id_,
+      success?"succeeds":"_fails_", Dice::stringify(roll_attempted_));
+  LOG6("Dice result: `%1', required: `%3', ag: `%4'.",
+      dice_result, required, ag_);
   pm_->sendRoll(roll_attempted_,dice_result, 0, required,
       (reroll_enabled_?t_->canUseReroll():false), getUsableSkill(), this);
   if (reroll_enabled_)
@@ -943,12 +943,12 @@ void SPlayer::finishStandUp(bool reroll, bool success)
     }
   else if (success)
     {
-      LOG5("[t%1,p%2] succeeds to stand up.", team_id_, id_);
+      LOG5("Player `%1' of team `%2' succeeds to stand up.", id_, team_id_);
       setStatus(STA_STANDING);
     }
   else
     {
-      LOG5("[t%1,p%2] fails to stand up.", team_id_, id_);
+      LOG5("Player `%1' of team `%2' _fails_ to stand up.", id_, team_id_);
     }
   ah_->process();
 }
@@ -1034,7 +1034,7 @@ void SPlayer::msgBlock(const MsgBlock* m)
     return;
   if (has_blocked_)
     {
-      LOG3("Player `%1' of team `%2' cannot block twice in the same turn.",
+      LOG3("Player `%1' of team `%2' can not block twice in the same turn.",
           id_, team_id_);
       r_->sendIllegal(m->token, m->client_id);
       return;
@@ -1047,14 +1047,32 @@ void SPlayer::msgBlock(const MsgBlock* m)
       return;
     }
   SPlayer* target = r_->getOpponentTeam(team_id_)->getPlayer(m->opponent_id);
-  if (target == NULL
-      || target->getTeamId() == getTeamId()
-      || status_ != STA_STANDING
-      || target->status_ != STA_STANDING
-      || !pos_.isNear(target->getPosition()))
+  if (target == NULL)
     {
-      LOG3("Cannot block player '%1` at %2 (status: %3).", m->opponent_id,
-          target->getPosition(), target->status_);
+      LOG3("Player `%1' of team `%2' can not block non-existent player `%3'.",
+          id_, team_id_, m->opponent_id);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
+  if (status_ != STA_STANDING)
+    {
+      LOG3("Player `%1' of team `%2' must be standing to do a block (status: `%3').",
+          id_, team_id_, status_);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
+  if (target->status_ != STA_STANDING)
+    {
+      LOG3("Player `%1' of team `%2' can not block non-standing player `%3' (status: `%4').",
+          id_, team_id_, target->getId(), target->status_);
+      r_->sendIllegal(m->token, m->client_id);
+      return;
+    }
+  if (!pos_.isNear(target->getPosition()))
+    {
+      LOG3("Player `%1' of team `%2' at %3 can not block player `%4' at %5.",
+          id_, team_id_, Player::stringify(status_), pos_,
+          target_->getId(), target->getPosition());
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
@@ -1079,14 +1097,16 @@ void SPlayer::msgMove(const MsgMove* m)
     }
   if (status_ != STA_STANDING)
     {
-      LOG4("Cannot do action: player must stand up");
+      LOG3("Player `%1' of team `%2' must standing to do a move (status: `%3').",
+          id_, team_id_, status_);
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
   // Checks that the player has enough ma remaining
   if (ma_remain_ < m->nb_move)
     {
-      LOG4("Move: not enough movement remaining.");
+      LOG3("Player `%1' of team `%2' doesn't have enough movement remaining to do such move.",
+          id_, team_id_);
       r_->sendIllegal(m->token, m->client_id, ERR_NOTENOUGHMOVEMENT);
       return;
     }
@@ -1098,13 +1118,15 @@ void SPlayer::msgMove(const MsgMove* m)
       to = Position(m->moves[i].row, m->moves[i].col);
       if (!from.isNear(to))
         {
-          LOG4("Move: not an adjacent square.");
+          LOG3("Player `%1' of team `%2' can not move from %3 to %4 which are not adjacents.",
+              id_, team_id_, from, to);
           r_->sendIllegal(MSG_MOVE, m->client_id, ERR_NOTADJACENTSQUARE);
           return;
         }
       if (f_->getPlayer(to) != NULL)
         {
-          LOG4("Move: not an empty square.");
+          LOG3("Player `%1' of team `%2' can not move to non-empty square %3.",
+              id_, team_id_, to);
           r_->sendIllegal(MSG_MOVE, m->client_id, ERR_NOTEMPTYSQUARE);
           return;
         }
@@ -1126,21 +1148,23 @@ void SPlayer::msgPass(const MsgPass* m)
     }
   if (r_->getBall()->getOwner() != this)
     {
-      LOG2("Player [t%1,p%2] doesn't own the ball.", team_id_, id_);
+      LOG3("Player `%1' of team `%2' must own the ball to throw it.", id_, team_id_);
       r_->sendIllegal(MSG_PASS, m->client_id, ERR_DOESNTOWNTHEBALL);
       return;
     }
   throw_aim_ = Position (m->dest_row, m->dest_col);
   if (!f_->intoField(throw_aim_))
     {
-      LOG2("Player [t%1,p%2] can not willingly pass the ball to the crowd.", team_id_, id_);
+      LOG3("Player `%1' of team `%2' can not willingly pass the ball to the crowd at %3.",
+          id_, team_id_, throw_aim_);
       r_->sendIllegal(MSG_PASS,m->client_id, ERR_CANTPASSTOTHECROWD);
       return;
     }
   distance_ = pos_.distance(throw_aim_);
   if (distance_ >= 16.f)
     {
-      LOG2("Player [t%1,p%2] can not throw the ball that far away.", team_id_, id_);
+      LOG3("Player `%1' of team `%2' can not throw the ball as far as %3 (distance: `%4').",
+          id_, team_id_, throw_aim_, distance_);
       r_->sendIllegal(MSG_PASS, m->client_id, ERR_CANTPASSTHATFARAWAY);
       return;
     }
@@ -1153,20 +1177,22 @@ void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
   SPlayer* out_goer;
   if (t_->state_ != GS_INITKICKOFF)
     {
-      WARN("Bad team state (%1).", t_->state_);
+      LOG3("Player `%1' of team `%2' can not enter in play, while his team is in state `%3'.",
+          id_, team_id_, t_->state_);
       r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
   if (status_ != STA_RESERVE && status_ != STA_STANDING)
     {
-      WARN("Player [t%1,p%2] can not enter in play (%3).", team_id_, id_, stringify(status_));
+      LOG3("Player `%1' of team `%2' can not enter in play, due to his status `%3'.",
+          team_id_, id_, stringify(status_));
       r_->sendIllegal(m->token, m->client_id, ERR_CANNOTENTERINPLAY);
       return;
     }
   new_pos = Position(m->row, m->col);
   if (status_ == STA_STANDING && pos_ == new_pos)
     {
-      WARN("Player %1 of team %2 is already standing at %3.", id_, team_id_, pos_);
+      LOG3("Player `%1' of team `%2' is already standing at %3.", id_, team_id_, pos_);
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
@@ -1194,24 +1220,32 @@ void SPlayer::msgPlayerPos(const MsgPlayerPos* m)
 void SPlayer::msgSkill(const MsgSkill* m)
 {
   enum eSkill skill = (enum eSkill) m->skill;
+  if (t_->state_ != GS_REROLL && r_->getCurrentTeam()->state_ != GS_SKILL)
+    {
+      LOG3("Player `%1' of team `%2' can not use the skill `%3' now.",
+          id_, team_id_, stringify(skill));
+      r_->sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
+    }
   if (!hasSkill(skill))
     {
-      LOG2("Player `%1' of team `%2' doesn't have the skill `%3'.",
+      LOG3("Player `%1' of team `%2' doesn't have the skill `%3'.",
           id_, team_id_, stringify(skill));
       r_->sendIllegal(m->token, m->client_id);
+      return;
     }
-  else if (!canUseSkill(skill))
+  if (!canUseSkill(skill))
     {
-      LOG2("Player `%1' of team `%2' can not use the skill `%3' now.",
+      LOG3("Player `%1' of team `%2' is not allowed to use his skill `%3'.",
           id_, team_id_, stringify(skill));
       r_->sendIllegal(m->token, m->client_id);
+      return;
     }
-  else if (t_->state_ == GS_REROLL)
+  if (t_->state_ == GS_REROLL)
     {
       if (m->choice == 1)
         {
-          LOG4("Player `%1' of team `%2' uses the skill `%3' to reroll `%4'.",
-            id_, team_id_, stringify(skill), ah_->getRollType());
+          LOG5("Player `%1' of team `%2' uses the skill `%3' to reroll `%4'.",
+            id_, team_id_, stringify(skill), Dice::stringify(ah_->getRollType()));
           r_->checkForCurrentOpponentChoice(m->client_id);
           r_->sendPacket(*m);
           t_->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
@@ -1220,8 +1254,8 @@ void SPlayer::msgSkill(const MsgSkill* m)
         }
       else
         {
-          LOG4("Player `%1' of team `%2' doesn't use the skill `%3' to reroll `%4'.",
-            id_, team_id_, stringify(skill), ah_->getRollType());
+          LOG5("Player `%1' of team `%2' doesn't use the skill `%3' to reroll `%4'.",
+            id_, team_id_, stringify(skill), Dice::stringify(ah_->getRollType()));
           r_->checkForCurrentOpponentChoice(m->client_id);
           r_->sendPacket(*m);
           t_->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
@@ -1230,18 +1264,12 @@ void SPlayer::msgSkill(const MsgSkill* m)
     }
   else if (r_->getCurrentTeam()->state_ == GS_SKILL)
     {
-      LOG4("Player `%1' of team `%2' chooses to%3 use the skill `%4'.",
+      LOG5("Player `%1' of team `%2' chooses to%3 use the skill `%4'.",
           id_, team_id_, ((m->choice == 1) ? "" : " NOT"), Player::stringify(skill));
       r_->checkForCurrentOpponentChoice(m->client_id);
       r_->sendPacket(*m);
       r_->getCurrentTeam()->state_ = m->client_id == 0 ? GS_COACH1 : GS_COACH2;
       ah_->process(m->choice == 1);
-    }
-  else
-    {
-      WARN("Player `%1' of team `%2' can not use the skill `%3' now.",
-          id_, team_id_, stringify(skill));
-      r_->sendIllegal(m->token, m->client_id);
     }
 }
 
@@ -1251,14 +1279,14 @@ void SPlayer::msgStandUp(const MsgStandUp* m)
     return;
   if (status_ != STA_PRONE)
     {
-      LOG2("Player `%1' of team `%2' must be prone (not `%3') to stand up.",
+      LOG3("Player `%1' of team `%2' must be prone (not `%3') to stand up.",
           id_, team_id_, status_);
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
   if (ma_remain_ != ma_)
     {
-      LOG2("Player `%1' of team `%2' cannot try to stand up more than once.",
+      LOG3("Player `%1' of team `%2' cannot try to stand up more than once.",
           id_, team_id_);
       r_->sendIllegal(m->token, m->client_id);
       return;

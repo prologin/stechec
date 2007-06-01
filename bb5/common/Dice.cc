@@ -70,6 +70,11 @@ int Dice::roll(enum eDiceFaceNumber type, int nb_dice)
   return val;
 }
 
+int Dice::roll(enum eRoll bb_roll_type, enum eDiceFaceNumber type, int nb_dice)
+{
+  return roll(Dice::stringify(bb_roll_type), type, nb_dice);
+}
+
 int Dice::roll(const std::string& msg, enum eDiceFaceNumber type, int nb_dice)
 {
   int res = 0;

@@ -81,6 +81,7 @@ class Dice
   //! @note if type == DBLOCK, only one dice can be rolled.
   //! @note Predefined results are used, if any.
   int roll(const std::string& msg, enum eDiceFaceNumber type = D6, int nb_dice = 1);
+  int roll(enum eRoll bb_roll_type, enum eDiceFaceNumber type = D6, int nb_dice = 1);
 
   //! @brief Get a stringified version of enum eBlockDiceFace.
   static const char* stringify(enum eBlockDiceFace face);

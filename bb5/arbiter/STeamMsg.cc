@@ -66,7 +66,8 @@ void STeamMsg::msgReroll(const MsgReroll* m)
       && r_->getState() != GS_COACH2
       && r_->getState() != GS_KICKOFF)
     {
-      WARN("bad game state (%1)", r_->getState());
+      LOG3("Token `%1' is not allowed in game state `%2'.",
+          r_->stringifyToken(m->token), r_->getState());
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
@@ -81,7 +82,8 @@ void STeamMsg::msgBlockDice(const MsgBlockDice* m)
 
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
-      WARN("bad game state (%1)", r_->getState());
+      LOG3("Token `%1' is not allowed in game state `%2'.",
+          r_->stringifyToken(m->token), r_->getState());
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
@@ -96,7 +98,8 @@ void STeamMsg::msgFollow(const MsgFollow* m)
 
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
-      WARN("bad game state (%1)", r_->getState());
+      LOG3("Token `%1' is not allowed in game state `%2'.",
+          r_->stringifyToken(m->token), r_->getState());
       r_->sendIllegal(m->token, m->client_id);
       return;
     }
@@ -111,7 +114,8 @@ void STeamMsg::msgBlockPush(const MsgBlockPush* m)
 
   if (r_->getState() != GS_COACH1 && r_->getState() != GS_COACH2)
     {
-      WARN("bad game state (%1)", r_->getState());
+      LOG3("Token `%1' is not allowed in game state `%2'.",
+          r_->stringifyToken(m->token), r_->getState());
       r_->sendIllegal(m->token, m->client_id);
       return;
     }

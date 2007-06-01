@@ -48,7 +48,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
   // Checks that the request comes from the kicking team.
   if (r_->getCurrentOpponentTeamId() != m->client_id)
     {
-      LOG4("Team %1 is not allowed to kick off the ball.", m->client_id);
+      LOG3("Team `%1' is not allowed to kick off the ball.", m->client_id);
       r_->sendIllegal(MSG_BALLPOS, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
@@ -56,7 +56,8 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
   to = Position(m->row, m->col);
   if (invalidKickoffDestination(to))
     {
-      LOG4("Team %1 can't place the ball at %1, out of receiver's field.", m->client_id, pos_);
+      LOG3("Team `%1' can't place the ball at %2, out of receiver's field.",
+          m->client_id, pos_);
       r_->sendIllegal(MSG_BALLPOS, m->client_id, ERR_INVALIDBALLPLACEMENT);
       return;
     }
@@ -67,7 +68,8 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
   // Checks if the ball lands out of the field.
   if (invalidKickoffDestination(pos_))
     {
-      LOG4("Kick-off from team %1 is scattered out of receiver field: %2.", m->client_id, pos_);
+      LOG5("Kick-off from team `%1' is scattered out of receiver field, at %2.",
+          m->client_id, pos_);
       touchback();
       return;
     }
@@ -86,7 +88,7 @@ void SBall::msgPlaceBall(const MsgBallPos* m)
 
 void SBall::touchback()
 {
-  LOG5("Coach %1 is awarded a touchback.", r_->getCurrentTeamId());
+  LOG5("Coach `%1' is awarded a touchback.", r_->getCurrentTeamId());
   r_->setState(GS_TOUCHBACK);
   r_->sendPacket(MsgGiveBall(r_->getCurrentTeamId()));
 }
@@ -96,14 +98,15 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
   SPlayer* p;
   if (r_->getCurrentTeamId() != m->client_id)
     {
-      LOG4("Coach %1 is not allowed to give the ball.", m->client_id);
+      LOG3("Coach %1 is not allowed to give the ball.", m->client_id);
       r_->sendIllegal(MSG_GIVEBALL, m->client_id, ERR_WRONGCONTEXT);
       return;
     }
   p = r_->getTeam(m->client_id)->getPlayer(m->player_id);
   if (p->getStatus() != STA_STANDING)
     {
-      LOG4("Player `%1' can not carry the ball.", p->getId());
+      LOG3("Player `%1' of team `%2' can not carry the ball (status: `%3').",
+          p->getId(), p->getTeamId(), Player::stringify(p->getStatus()));
       r_->sendIllegal(MSG_GIVEBALL, m->client_id, ERR_CANNOTCARRYTHEBALL);
       return;
     }
@@ -128,7 +131,7 @@ void SBall::afterBounce(const Position& delta, int amplitude)
   SField* f = r_->getField();
   SPlayer* p;
   Position to(pos_ + (amplitude * delta));
-  LOG5("Ball bounces from %1 to %2", pos_, to);
+  LOG5("Ball bounces from %1 to %2.", pos_, to);
   if ((r_->getState() == GS_KICKOFF) && invalidKickoffDestination(to))
     {
       touchback();
@@ -214,7 +217,7 @@ void SBall::throwIn()
   owner_ = NULL;
   Position d(0, 0); // Direction of the throw.
   int reach = r_->getDice()->roll("ball throw in", D6, 2) - 1;
-  LOG5("Ball gets thrown by spectators from %1", pos_);
+  LOG5("Ball gets thrown by spectators from %1.", pos_);
 
   // Get the border we just crossed:
   if (pos_.col == 0)

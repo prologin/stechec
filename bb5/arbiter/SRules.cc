@@ -116,7 +116,7 @@ void SRules::waitForCurrentOpponentChoice(int team_id)
 {
   if ((!turn_timer_paused_) && (team_id == getCurrentOpponentTeamId()))
     {
-      LOG2("Suspends turn timer, waiting for coach `%1' reply.", team_id);
+      LOG4("Suspends turn timer, waiting for coach `%1' reply.", team_id);
       timer_.pause();
       turn_timer_paused_ = true;
       MsgTimer msg(team_id);
@@ -130,7 +130,7 @@ void SRules::checkForCurrentOpponentChoice(int team_id)
 {
   if (turn_timer_paused_ && (team_id == getCurrentOpponentTeamId()))
     {
-      LOG2("Resumes turn timer, since coach `%1' replied.", team_id);
+      LOG4("Resumes turn timer, since coach `%1' replied.", team_id);
       timer_.start();
       turn_timer_paused_ = false;
       MsgTimer msg(team_id);
@@ -193,7 +193,7 @@ void SRules::initHalf()
   pkt.cur_half = cur_half_;
   sendPacket(pkt);
 
-  LOG3("Initialize half %1.", cur_half_);
+  LOG4("Initialize half %1.", cur_half_);
 
   setState(GS_DRAWKICKER);
 
@@ -233,7 +233,7 @@ void SRules::initKickoff()
 
   // Say that we are about to initialize the kickoff.
   int kicking_id = getCurrentOpponentTeamId();
-  LOG3("Kicking team: %1", kicking_id);
+  LOG4("Kicking team: %1.", kicking_id);
   MsgInitKickoff pkt(kicking_id);
   pkt.place_team = 1;
   sendPacket(pkt);
@@ -278,7 +278,7 @@ void SRules::afterTouchdooown()
         cur_turn_++;
       // Switch playing team
       setState(getState() == GS_COACH1 ? GS_COACH2 : GS_COACH1);
-      LOG3("Skip turn `%1' of team `%2', because its scored during opponent turn.",
+      LOG4("Skip turn `%1' of team `%2', because its scored during opponent turn.",
           cur_turn_, scoring_team_);
     }
 
@@ -327,14 +327,14 @@ void SRules::msgDrawKicker(const MsgDrawKicker* m)
     {
       if (m->client_id != coach_begin_)
         {
-          LOG2("Coach %1 doesn't have the choice.", m->client_id);
+          LOG3("Coach %1 doesn't have the choice.", m->client_id);
           sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
           return;
         }
       coach_begin_ = (m->kickoff == 1) ? (coach_begin_ + 1) % 2 : coach_begin_;
     }
 
-  LOG3("Coach %1 plays first (receiving team).", coach_begin_);
+  LOG4("Coach %1 plays first (receiving team).", coach_begin_);
 
   MsgDrawKicker new_msg((coach_begin_ + 1) % 2);
   new_msg.kickoff = 1;
@@ -413,13 +413,13 @@ void SRules::msgPlayTurn(const MsgEndTurn* m)
   if ((getState() != GS_COACH1 && m->client_id == 0)
       || (getState() != GS_COACH2 && m->client_id == 1))
     {
-      LOG2("Coach `%1' is not allowed to end the turn of team `%2'.",
+      LOG3("Coach `%1' is not allowed to end the turn of team `%2'.",
           m->client_id, getCurrentTeamId());
       sendIllegal(m->token, m->client_id, ERR_WRONGCONTEXT);
     }
   else if (!action_handler_->isEmpty())
     {
-      LOG2("Coach `%1' can not end his turn, since there are actions pending.", m->client_id);
+      LOG3("Coach `%1' can not end his turn, since there are actions pending.", m->client_id);
       sendIllegal(m->token, m->client_id);
     }
   else
@@ -435,10 +435,10 @@ void SRules::nextTurn()
       || getState() == GS_COACH2 && coach_begin_ == 0)
     {
       cur_turn_++;
-      LOG2("=== Go on turn `%1`", cur_turn_);
+      LOG4("=== Go on turn `%1`", cur_turn_);
     }
   else
-    LOG2("=== Next team plays turn `%1`", cur_turn_);
+    LOG4("=== Next team plays turn `%1`", cur_turn_);
 
   // Finished ? Go on the next half ? 
   if (cur_turn_ > NB_TURNS)
