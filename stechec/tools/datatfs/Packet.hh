@@ -74,4 +74,4 @@ std::string   packetToString(const int* src);
 // !ingroup tools_net
 //! @}
 
-#endif /* !PAQUET_HH_ */
+#endif /* !PACKET_HH_ */
