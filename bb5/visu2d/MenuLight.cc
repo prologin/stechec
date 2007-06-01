@@ -79,12 +79,12 @@ MenuLight::~MenuLight()
 */
 int MenuLight::init()
 {
-  try {
+ // try {
     win_.init(&cfg_);
-  } catch (...) {
-    LOG1("Sorry, I'm unable to open up a window... You're out of luck :/");
-    return 1;
-  }
+  //} catch (...) {
+ //   LOG1("Sorry, I'm unable to open up a window... You're out of luck :/");
+ //   return 1;
+ // }
   return 0;
 }
 
@@ -181,7 +181,10 @@ int MenuLight::showMenu()
   if (!first)
     return -1;
   first = false;
-  
+
+  if (init())
+    return 1;
+
   // As a special case, if the option 'connect_on_startup' is on in the configuration
   // file, don't even jump in menu loop, 
   if (cfg_.getAttr<bool>("client", "connect", "connect_on_startup"))
@@ -283,7 +286,5 @@ int main(int argc, char** argv)
 {
   MenuLight m(argc, argv);
 
-  if (m.init())
-    return 1;
   return m.runApp();
 }

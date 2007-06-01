@@ -12,7 +12,8 @@
     <connect val="network" host="localhost" port="25151"
              game_uid="41" connect_on_startup="true" />
     <team>amazon.xml</team>
-  </client>
+    <screen res_x="800" res_y="600"/>
+ </client>
 
   <client id="1">
     <mode spectator="false" />

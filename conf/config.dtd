@@ -8,7 +8,7 @@
   <!ELEMENT max_turn (#PCDATA)>
   <!ELEMENT map (#PCDATA)>
 
-<!ELEMENT client (rules?, champion?, connect?, team?, mode?, limit?, debug?, redirection?)>
+<!ELEMENT client (rules?, champion?, connect?, team?, mode?, limit?, debug?, redirection?, screen?)>
   <!ATTLIST client id CDATA "0">
   <!ELEMENT rules (#PCDATA)>
   <!ELEMENT champion (#PCDATA)>
@@ -35,6 +35,9 @@
   <!ELEMENT redirection EMPTY>
     <!ATTLIST redirection stdin CDATA #IMPLIED>
     <!ATTLIST redirection stdout CDATA #IMPLIED>
+  <!ELEMENT screen EMPTY>
+    <!ATTLIST screen res_x CDATA "800">
+    <!ATTLIST screen res_y CDATA "600">
  
 
 <!ELEMENT server (rules?, options, listen, log, nb_spectator, debug, server_debug)>

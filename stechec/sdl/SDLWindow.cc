@@ -80,6 +80,9 @@ void SDLWindow::init(xml::XMLConfig* xml)
   xml_ = xml;
   // FIXME: get window size, fullscreen mode, ... from xml.
 
+  int res_x = xml_->getAttr<int>("client", "screen", "res_x");
+  int res_y = xml_->getAttr<int>("client", "screen", "res_y");
+
   if (!isInitialized())
     {
       if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -96,7 +99,7 @@ void SDLWindow::init(xml::XMLConfig* xml)
     }
   
   SDL_Surface* screen;
-  screen = SDL_SetVideoMode(800, 600, 0, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+  screen = SDL_SetVideoMode(res_x, res_y, 0, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
   if (screen == NULL)
     PRINT_AND_THROW(SDLError, "Unable to activate graphic mode");
   screen_ = VirtualSurface("Screen", screen);
