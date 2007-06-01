@@ -22,7 +22,7 @@
 BEGIN_NS(sdlvisu);
 
 VisuField::VisuField(Game& g)
-  : VirtualScrollableSurface("VVisuField", g.getInput(), Point(500, 600), Point(725, 1100)),
+  : VirtualScrollableSurface("VVisuField", g.getInput(), Point(500, 600), Point(723, 1054)),
     g_(g),
     bg_("image/general/playground_0.jpg"),
     ball_("image/general/ball.png"),
@@ -129,7 +129,7 @@ void VisuField::setBallPos(const Point& pos)
           cross_red_.setPos(squareToField(pos, Point(4, 4)));
           cross_red_.show();
         }
-      ball_.move(squareToField(pos, Point(3, 3)), 35.);
+      ball_.move(squareToField(pos, Point(3, 3)), 100.);
     }
 }
 

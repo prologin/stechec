@@ -87,9 +87,15 @@ void ActionPopup::prepareDeclareMenu(VisuPlayer* vp)
   enum eDeclaredAction declaration;
 
   for (int i = 0; i < ACTII_NB; i++)
-    act_sprite_[i].disable();
+    {
+      act_sprite_[i].disable();
+      act_sprite_on_[i].disable();
+    }
   for (int i = 0; i < DCLII_NB; i++)
-    dcl_sprite_[i].disable();
+    {
+      dcl_sprite_[i].disable();
+      dcl_sprite_on_[i].disable();
+    }
 
   displayed_items_nb_ = api_->declarationPossibleNumber();
   if (displayed_items_nb_ <= 0) return;
@@ -113,15 +119,18 @@ void ActionPopup::prepareDeclareMenu(VisuPlayer* vp)
 }
 
 // Called after a declaration, show the revelant menu for all possible actions.
-// Can only be called after:
-//  - ACTII_THROW (move or pass)
-//  - ACTII_BLITZ (move or block)
 void ActionPopup::prepareActionMenu(enum eDeclaredAction dcl)
 {
   for (int i = 0; i < ACTII_NB; i++)
-    act_sprite_[i].disable();
+    {
+      act_sprite_[i].disable();
+      act_sprite_on_[i].disable();
+    }
   for (int i = 0; i < DCLII_NB; i++)
-    dcl_sprite_[i].disable();
+    {
+      dcl_sprite_[i].disable();
+      dcl_sprite_on_[i].disable();
+    }
 
   displayed_items_nb_ = 0;
   isDeclarationsMenu = false;
@@ -159,11 +168,19 @@ void ActionPopup::prepareActionMenu(enum eDeclaredAction dcl)
   setSize(Point(POPUP_ITEM_WIDTH, POPUP_ITEM_HEIGHT * displayed_items_nb_));
 }
 
+void ActionPopup::dissociateFromPlayer()
+{
+  vp_ = NULL;
+}
+
 void ActionPopup::update()
 {
   Input& input(game_.getInput());
   bool have_focus = getScreenRect().inside(input.mouse_);
   int index = (input.mouse_.y - getRect().y) / POPUP_ITEM_HEIGHT;
+  Point max_pos = game_.getField().getRect().getPos()
+                + game_.getField().getScreenRect().getSize()
+                - getSize();
 
   // If there isn't any player associated.
   if (vp_ == NULL)
@@ -172,13 +189,11 @@ void ActionPopup::update()
       return;
     }
   
-  // If right-click.
+  // If right-click anywhere.
   if ((game_.isStateSet(stWaitPlay) || game_.isStateSet(stPopupShow))
       && input.button_pressed_[3])
     {
-      //FIXME: popup must be fully visible.
-      //setPos(input.mouse_);
-      setPos(0,0);
+      setPos(std::min(input.mouse_.x, max_pos.x), std::min(input.mouse_.y, max_pos.y));
       show();
     }
 
@@ -205,7 +220,7 @@ void ActionPopup::update()
           else if (displayed_items_[index] == DCLII_BLOCK)  declaration = DCL_BLOCK;
           else if (displayed_items_[index] == DCLII_BLITZ)  declaration = DCL_BLITZ;
           else                                              declaration = DCL_PASS;
-          vp_->selectDeclaration(declaration);
+          vp_->declareAction(declaration);
         }
       else
         {

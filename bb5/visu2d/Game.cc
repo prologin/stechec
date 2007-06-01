@@ -183,10 +183,11 @@ void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
   for (int j = 0; j < 16; j++)
     {
       if (player_[team_id][j] != NULL)
-        player_[team_id][j]->newTurn();
+        player_[team_id][j]->beginTurn();
       if (player_[other_team_id][j] != NULL)
-        player_[other_team_id][j]->finishedTurn();
+        player_[other_team_id][j]->finishTurn();
     }
+  action_popup_->dissociateFromPlayer();
   
   unsetState(stWaitKoffBall);
   if (team_id == api_->myTeamId())
@@ -238,9 +239,9 @@ void Game::evTurnOver(enum eTurnOverMotive motive)
         game_dlg_->setText("Turnover (Player fails to pick up the ball).");
         break;
       case TOM_TOUCHDOOOWN:
-        LOG2("TOUCHDOOOWN!");
+        LOG2("Turnover (TOUCHDOOOWN!).");
         game_dlg_->push(eDlgActInfo);
-        game_dlg_->setText("Touchdooown!");
+        game_dlg_->setText("Turnover (Touchdooown!).");
         break;
       case TOM_TIMEEXCEEDED:
         LOG2("Turnover (Time exceeded).");
@@ -269,6 +270,12 @@ void Game::evTurnOver(enum eTurnOverMotive motive)
         break;
     }
 }
+
+void Game::evTouchdooown(int team_id, int player_id)
+{
+  LOG2("Player `%1' of team `%2' scores a touchdooown!", player_id, team_id);
+}
+
 
 void Game::evPlayerKnocked(int, int player_id)
 {
@@ -350,6 +357,7 @@ void Game::evPlayerCreate(int team_id, int player_id)
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
   VisuPlayer* p = player_[team_id][player_id];
+  assert(p != NULL);
 
   p->setPos(field_->squareToField(pos));
 }
@@ -359,7 +367,15 @@ void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
   VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
-  p->move(field_->squareToField(pos), 35.);
+  p->move(field_->squareToField(pos), 100.);
+}
+
+void Game::evPlayerStatus(int team_id, int player_id, enum eStatus status)
+{
+  VisuPlayer* p = player_[team_id][player_id];
+  assert(p != NULL);
+
+  p->update();
 }
 
 void Game::evBallPos(const Point& pos)
@@ -391,7 +407,8 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
       if (result + modifier >= required)
         {
           //FIXME: Give the choice to reroll successful dice roll.
-          api_->doReroll(false);
+          if (reroll || skill != SK_UNASSIGNED)
+            api_->doReroll(false);
         }
       else if (skill != SK_UNASSIGNED)
         {
@@ -476,6 +493,13 @@ void Game::evFollow()
   game_dlg_->push(eDlgActFollow);
 }
 
+void Game::evDeclare(int team_id, int player_id, enum eDeclaredAction action)
+{
+  VisuPlayer* p = player_[team_id][player_id];
+  assert(p != NULL);
+
+  player_[team_id][player_id]->onEventDeclare(action);
+}
 
 
 
@@ -485,7 +509,7 @@ void Game::evFollow()
 int Game::run()
 {
   Input& inp = win_.getInput();
-  int game_state = -1;
+  //int game_state = -1;
 
   InputTextSurface textbox("Vera.ttf", 160);
   textbox.setPos(50, 500);

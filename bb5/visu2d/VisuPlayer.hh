@@ -43,17 +43,24 @@ public:
   void unselect();
 
   //! @brief Called at each new turn. Reset some variables.
-  void newTurn();
+  void beginTurn();
 
   //! @brief Called at each end turn. Reset some variables.
-  void finishedTurn();
+  void finishTurn();
   
-  //! @brief A declaration was selected by the popup menu or an other source.
+  //! @brief Declare an action.
+  //! @note Called on coach decision, via e.g. popup menu.
   //! @param declaration Declaration selected.
-  void selectDeclaration(enum eDeclaredAction declaration);
+  void declareAction(enum eDeclaredAction declaration);
 
-  //! @brief An action was selected by the popup menu or an other source.
-  //! @param action Action selected.
+  //! @brief Handles action declaration event.
+  //! @note Called on API event.
+  //! @param declaration Action declared.
+  void onEventDeclare(enum eDeclaredAction declaration);
+
+  //! @brief Select a real action.
+  //! @brief Called on coach decision, via e.g. popup menu.
+  //! @param action Real action selected.
   void selectAction(enum eRealAction action);
 
   virtual void setPos(const Point& pos);
@@ -65,7 +72,7 @@ private:
   void targetAction(enum eRealAction act);
 
   //! @brief To call when this player has finished its action.
-  void actionFinished();
+  void finishAction();
 
   void drawPath();
   
@@ -76,7 +83,6 @@ private:
 
   bool          has_focus_;
   bool          is_selected_;
-  bool          is_second_action_;
   bool          has_played_;
   enum eStatus  last_player_status_;
   

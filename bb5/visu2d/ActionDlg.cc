@@ -74,7 +74,9 @@ void ActionDlg::Callback::clicked(int btn_index)
 
   LOG6("dlg callback for btn: %1, id: %2", btn_index, id_);
   switch (id_)
-    {
+  {
+    case eDlgActInfo:
+      break;
     case eDlgActReroll:
       api->doReroll(btn_index == 0);
       break;
@@ -96,7 +98,7 @@ void ActionDlg::Callback::clicked(int btn_index)
           api->doChooseBlockDice(btn_index + 1);
         }
       break;
-    }
+  }
 }
 
 void ActionDlg::addRerollLabel()

@@ -64,6 +64,14 @@ int CPlayer::declareAction(enum eDeclaredAction action)
   pkt.player_id = id_;
   pkt.action = action;
   r_->sendPacket(pkt);
+
+  // FIXME: Stand-up automation should be set as optional.
+  if (action != DCL_BLOCK && status_ == STA_PRONE)
+    {
+      MsgStandUp pkt;
+      pkt.player_id = id_;
+      r_->sendPacket(pkt);
+    }
   return SUCCESS;
 }
 
@@ -229,18 +237,18 @@ const std::string& CPlayer::getPlayerPicture() const
 
 void CPlayer::msgDeclareAction(const MsgDeclare* m)
 {
-  // End of action
   if (m->action == DCL_UNASSIGNED)
     {
+      // End of action
       has_played_ = true;
-      r_->onEvent(m);
       LOG2("player %1 ends a %2 action", id_, stringify(action_));
-      return;
     }
-  
-  // Beginning of the action
-  LOG2("player %1 begins a %2 action", id_, stringify(action_));
-  action_ = (enum eDeclaredAction)(m->action);
+  else
+    {
+      // Beginning of the action
+      action_ = (enum eDeclaredAction)(m->action);
+      LOG2("player %1 begins a %2 action", id_, stringify(action_));
+    }
   r_->onEvent(m);
 }
 

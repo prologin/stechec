@@ -205,11 +205,18 @@ void Panel::update()
       api->selectTeam(i);
       const CTeam* t = api->getTeam();
       int r = 1;
+      int s = 0;
       if (t != NULL)
-        r = api->getTeam()->getRemainingReroll() + 1;
+        {
+          r = api->getTeam()->getRemainingReroll() + 1;
+          s = api->getTeam()->getScore() + 1;
+        }
       if (r < 1 || r >= 10)
         r = 1;
+      if (s < 1 || s >= 10)
+        s = 1;
       digit_reroll_[i].setFrame(r);
+      digit_score_[i].setFrame(s);
     }
 
   // Update time remaining and wheel

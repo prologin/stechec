@@ -85,26 +85,31 @@ void VisuPlayer::unselect()
     }
 }
 
-void VisuPlayer::newTurn()
+void VisuPlayer::beginTurn()
 {
-  is_second_action_ = false;
+  unselect();
   circle_selected_.setFrame(1);
-  has_played_ = false;
   if (p_->getStatus() == STA_STANDING
-      || p_->getStatus() == STA_PRONE
-      || p_->getStatus() == STA_STUNNED)
-    circle_.show();
+      || p_->getStatus() == STA_PRONE)
+    {
+      has_played_ = false;
+      circle_.show();
+    }
   else
-    circle_.hide();
+    {
+      has_played_ = true;
+      circle_.hide();
+    }
 }
 
-void VisuPlayer::finishedTurn()
+void VisuPlayer::finishTurn()
 {
+  unselect();
   has_played_ = true;
   circle_.hide();
 }
 
-void VisuPlayer::actionFinished()
+void VisuPlayer::finishAction()
 {
   circle_.hide();
   circle_selected_.hide();
@@ -140,66 +145,42 @@ void VisuPlayer::drawPath()
 }
 
 // Called when the coach click on the declarations popup menu
-void VisuPlayer::selectDeclaration(enum eDeclaredAction dcl)
+void VisuPlayer::declareAction(enum eDeclaredAction dcl)
 {
+  assert(DCL_UNASSIGNED < dcl && dcl <= DCL_LAST);
+
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
 
-  LOG2("Select declaration: %1.", dcl);
-  game_.setState(stDoAction);
-  
-  // Depending on action:
-  //  - require another popup menu to display
-  //  - declare the action to the api and waits that coach select target
-  //  - do this action immediately (try to stand up, in case we were prone)
-  switch (dcl)
-  {
-    case DCL_MOVE:
-      api_->doDeclare(DCL_MOVE);
-      if (p_->getStatus() == STA_PRONE)
-        api_->doStandUpPlayer();
-      target_action_ = ACT_MOVE;
-      break;
+  LOG2("Select declaration: %1.", Player::stringify(dcl));
+  api_->doDeclare(dcl);
+}
 
-    case DCL_BLITZ:
-      api_->doDeclare(DCL_BLOCK);
-      if (p_->getStatus() == STA_PRONE)
-        api_->doStandUpPlayer();
-      act_popup_->prepareActionMenu(DCL_BLITZ);
+// Called on API event.
+void VisuPlayer::onEventDeclare(enum eDeclaredAction dcl)
+{
+  if (p_->getTeamId() == api_->myTeamId())
+    {
+      act_popup_->prepareActionMenu(dcl);
       circle_selected_.setFrame(2);
-      game_.unsetState(stDoAction);
-      is_second_action_ = true;
-      break;
-
-    case DCL_BLOCK:
-      api_->doDeclare(DCL_BLOCK);
-      target_action_ = ACT_BLOCK;
-      break;
-
-    case DCL_PASS:
-      api_->doDeclare(DCL_PASS);
-      if (p_->getStatus() == STA_PRONE)
-        api_->doStandUpPlayer();
-      act_popup_->prepareActionMenu(DCL_PASS);
-      circle_selected_.setFrame(2);
-      game_.unsetState(stDoAction);
-      is_second_action_ = true;
-      break;
-
-    default:
-      LOG2("Invalid declaration selection: %1.", dcl);
-      game_.unsetState(stDoAction);
-      break;
+      circle_selected_.show();
+      game_.setState(stDoAction);
+      if (dcl == DCL_BLOCK)
+        target_action_ = ACT_BLOCK;
+      else
+        target_action_ = ACT_MOVE;
     }
 }
 
 // Called when the coach click on the actions popup menu
 void VisuPlayer::selectAction(enum eRealAction act)
 {
+  assert(ACT_UNASSIGNED < act && act <= ACT_LAST);
+
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
 
-  LOG2("Select action: %1.", act);
+  LOG2("Select action: %1.", Player::stringify(act));
   game_.setState(stDoAction);
   
   switch (act)
@@ -316,6 +297,7 @@ void VisuPlayer::update()
     }
 
   // Update focus.
+  // FIXME: It doesn't count action popup and dialog box, which may be overlaying the player.
   bool now_focus = getScreenRect().inside(inp.mouse_);
 
   // Mouse moves on player.
@@ -356,7 +338,7 @@ void VisuPlayer::update()
 
   // Player has finished its action
   if (circle_.isShown() && p_->hasPlayed())
-    actionFinished();
+    finishAction();
   
   // Draw path
   if (game_.isStateSet(stDoAction) && target_action_ == ACT_MOVE)

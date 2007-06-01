@@ -70,6 +70,7 @@ public:
 
   void prepareDeclareMenu(VisuPlayer* vp);
   void prepareActionMenu(enum eDeclaredAction dcl);
+  void dissociateFromPlayer();
 
   virtual void show();
   virtual void hide();

@@ -64,9 +64,9 @@ private:
       : parent_(p), g_(g), id_(id) {}
   private:
     virtual void clicked(int btn_index);
+    ActionDlg* parent_;
     Game* g_;
     enum eDlgAction id_;
-    ActionDlg* parent_;
   };
 
   std::deque<DialogBox*> list_;

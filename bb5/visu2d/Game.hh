@@ -57,10 +57,10 @@ enum eState {
   stWaitKoffTeam,
   stBlockPushChoice,
   stPopupShow = 40,
-  stDoAction = 50,
+  stDoAction = 50,    ///< A Player will perform a real action, woow...
   stWaitPlay = 60,
   stWaitOther,
-  stNothing = 70    ///< last prio - matched if there is nothing else
+  stNothing = 70      ///< last prio - matched if there is nothing else
 };
 
 /*!
@@ -104,6 +104,7 @@ private:
   virtual void evEndGame();
   virtual void evMoveTurnMarker();
   virtual void evTurnOver(enum eTurnOverMotive motive);
+  virtual void evTouchdooown(int team_id, int player_id);
   virtual void evPlayerKnocked(int team_id, int player_id);
   virtual void evDrawKicker(int team_id, bool is_a_question);
   virtual void evKickOff(int team_id, bool place_team);
@@ -111,6 +112,7 @@ private:
   virtual void evPlayerCreate(int team_id, int player_id);
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
+  virtual void evPlayerStatus(int team_id, int player_id, enum eStatus status);
   virtual void evBallPos(const Point& pos);
   virtual void evGiveBall(int team_id);
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, int result, 
@@ -121,6 +123,7 @@ private:
   virtual void evSkill(int team_id, int player_id, enum eSkill skill, int choice);
   virtual void evFollow();
   virtual void evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
+  virtual void evDeclare(int team_id, int player_id, enum eDeclaredAction action);
 
   SDLWindow&            win_;    ///< The SDL window.
   xml::XMLConfig*       xml_;    ///< Configuration file.
