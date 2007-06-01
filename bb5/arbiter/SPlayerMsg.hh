@@ -37,13 +37,14 @@ public:
   void setPlayer(int team_id, int player_id, SPlayer* p);
   
   void sendMsgBlockPush(int nb_choice, const Position choices[], const SPlayer* target_) const;
-  void SPlayerMsg::sendBlockResult(bool can_reroll, int strongest_team_id, int nb_dices,
-      const enum eBlockDiceFace results[], const SPlayer* defender, const SPlayer* attacker) const;
+  void sendBlockResult(bool can_reroll, int strongest_team_id, int nb_dices,
+                       const enum eBlockDiceFace results[], const SPlayer* defender,
+                       const SPlayer* attacker) const;
   void sendMsgKnocked(const SPlayer* p) const;
   void sendMsgKO(int dice, const SPlayer* p) const;
   void sendPosition(const SPlayer* p) const;
   void sendRoll(enum eRoll type, int result, int modifier, int required,
-      int reroll, enum eSkill skill, const SPlayer* p) const;
+                int reroll, enum eSkill skill, const SPlayer* p) const;
   void sendSkillQuestion(enum eSkill skill, const SPlayer* p) const;
   void sendStatus(enum eStatus status, const SPlayer* p) const;
   void sendTouchdooown(const SPlayer* p) const;
