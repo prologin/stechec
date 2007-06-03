@@ -236,7 +236,7 @@ public:
 
   //! @brief After a block action, choose which block dice to use.
   //! @note Wait for the right server reponse before calling it.
-  //! @param n A number between 1 and 3, depending on the previous
+  //! @param n A number between 0 and 2, depending on the previous
   //!  returned server message.
   int           doChooseBlockDice(int n);
 

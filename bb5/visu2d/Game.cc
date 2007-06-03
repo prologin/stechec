@@ -381,12 +381,15 @@ void Game::evPlayerStatus(int team_id, int player_id, enum eStatus)
 
 void Game::evBallPos(const Point& pos)
 {
-  field_->setBallPos(pos);
+  if (pos == Position(-1, -1))
+    field_->removeBall();
+  else if (api_->getBallOwner() == NULL)
+    field_->setBallPos(pos);
 }
 
 void Game::evGiveBall(int team_id, int player_id)
 {
-  VisuPlayer* p;
+  //FIXME when events will be consistent...
   if (team_id == -1)
   {
     LOG4("The ball is left alone.");
@@ -412,8 +415,10 @@ void Game::evGiveBall(int team_id, int player_id)
   {
     LOG4("Player `%1' of team `%2' gets the ball.", player_id, team_id);
     field_->removeBall();
-    p = player_[team_id][player_id];
-    p->updateStatus();
+    for (int i = 0; i < 2; i++)
+      for (int j = 0; j < 16; j++)
+        if (player_[i][j] != NULL)
+          player_[i][j]->updateStatus();
   }
 }
 
@@ -470,11 +475,9 @@ void Game::evBlockResult(int team_id, int player_id, int opponent_player_id,
       game_dlg_->setBlockChoice();
     }
   
-  if (api_->getTeamId() == team_id &&
-      !(strongest_team_id != -1 && api_->getTeamId() == strongest_team_id)
-      && can_reroll)
+  if (api_->getTeamId() == team_id && can_reroll)
     {
-      LOG2("I have the strongest player or I did the block, I can choose to reroll");
+      LOG2("I did the block, I can choose to reroll");
       game_dlg_->addRerollLabel();
     }
 

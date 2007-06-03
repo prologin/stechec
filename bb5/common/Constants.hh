@@ -80,7 +80,7 @@ enum {
   MSG_ENDTURN,        ///< End of a turn.
   MSG_ENDGAME,        ///< End of the game.
   MSG_BALLPOS,        ///< Ball position. @see Ball.hh
-  MSG_GIVEBALL,       ///< Receiving team is awarded a touchback. @see Ball.hh
+  MSG_GIVEBALL,       ///< Ball owner changes, orteam is awarded a touchback. @see Ball.hh
   MSG_WEATHER,        ///< Weather. @see Weather.hh
   MSG_TIMER,          ///< Timer synchronization.
   MSG_TURNOVER,       ///< A turnover happens.

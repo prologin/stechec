@@ -94,8 +94,15 @@ void ActionDlg::Callback::clicked(int btn_index)
         }
       else if (parent_->block_choice_)
         {
-          LOG4("choose dice %1", btn_index + 1);
-          api->doChooseBlockDice(btn_index + 1);
+          LOG4("choose dice %1 (in [0,3[ or less)", btn_index);
+          if (parent_->reroll_index_ != -1)
+            api->doReroll(false); 
+          api->doChooseBlockDice(btn_index);
+        }
+      else
+        {
+          LOG4("accept block dice");
+          api->doReroll(false);
         }
       break;
   }

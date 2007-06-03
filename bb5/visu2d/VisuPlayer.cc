@@ -202,6 +202,9 @@ void VisuPlayer::targetAction(enum eRealAction act)
   VisuField& field = game_.getField();
   Point to(field.mouseToSquare());
 
+  api_->selectTeam(p_->getTeamId());
+  api_->selectPlayer(p_->getId());
+
   switch (act)
   {
     case ACT_MOVE:
@@ -304,7 +307,9 @@ void VisuPlayer::update()
     finishAction();
   
   // Draw path
-  if (game_.isStateSet(stDoAction) && target_action_ == ACT_MOVE)
+  if (game_.isStateSet(stDoAction)
+      && is_selected_
+      && target_action_ == ACT_MOVE)
     drawPath();
   else
     path_.clear();
