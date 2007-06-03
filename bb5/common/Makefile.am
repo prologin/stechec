@@ -11,6 +11,7 @@ libbb5_common_la_SOURCES =			\
 	Dice.cc					\
 	Dice.hh					\
 	Field.hh				\
+	Field.hxx				\
 	Player.hh				\
 	Player.hxx				\
 	Team.hh					\

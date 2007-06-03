@@ -368,15 +368,22 @@ void CmdLineInterface::evPlayerKnocked(int team_id, int player_id)
     << team_id << "' has been knocked down." << endl;
 }
 
-void CmdLineInterface::evGiveBall(int team_id)
+void CmdLineInterface::evGiveBall(int team_id, int player_id)
 {
-  if (team_id == api_->myTeamId())
+  if (team_id == -1)
+    cout << "The ball is left alone." << endl;
+  else if (player_id == -1)
     {
-      cout << "Touchback! Arbiter is asking us to place the ball. (use 'giveBall')" << endl;
-      input_.stopWaiting();
+      if (team_id == api_->myTeamId())
+        {
+          cout << "Touchback! Arbiter is asking us to place the ball. (use 'giveBall')" << endl;
+          input_.stopWaiting();
+        }
+      else
+        cout << "Touchback! Wait that the other team gives the ball and plays his turn." << endl;
     }
   else
-    cout << "Touchback! Wait that the other team gives the ball and plays his turn." << endl;
+    cout << "Player `" << player_id << "' of team `" << team_id << "' gets the ball." << endl;
 }
 
 void CmdLineInterface::evFollow()

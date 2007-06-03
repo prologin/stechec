@@ -133,6 +133,11 @@ void VisuField::setBallPos(const Point& pos)
     }
 }
 
+void VisuField::removeBall()
+{
+  ball_.hide();
+}
+
 bool VisuField::getDrawTicks() const
 {
   return draw_ticks_;

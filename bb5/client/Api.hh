@@ -59,6 +59,9 @@ public:
   //! @brief Get ball position.
   //! @return Return the ball position, (-1, -1) if outside.
   Point                 ball() const;
+  //! @brief Get ball owner.
+  //! @return Return the ball owner, NULL if none.
+  const CPlayer*        getBallOwner() const;
 
   //! @brief Get the stringified version of game status.
   //!  Mainly useful for debugging.

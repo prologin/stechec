@@ -31,7 +31,6 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
     has_focus_(false),
     is_selected_(false),
     has_played_(true),
-    last_player_status_(STA_UNASSIGNED),
     circle_("image/general/circle.png"),
     circle_selected_("image/general/circle_select.png"),
     player_num_("image/general/player_num.png"),
@@ -106,6 +105,7 @@ void VisuPlayer::finishTurn()
 {
   unselect();
   has_played_ = true;
+  target_action_ = ACT_UNASSIGNED;
   circle_.hide();
 }
 
@@ -240,43 +240,6 @@ void VisuPlayer::update()
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
 
-  // Update player status sprite
-  if (p_->getStatus() != last_player_status_)
-    {
-      LOG4("Switch status for player %1 from %2 to %3.",
-          p_->getId(), last_player_status_, p_->getStatus());
-      switch (p_->getStatus())
-      {
-        case STA_PRONE:
-          status_.setFrame(1);
-          status_.show();
-          break;
-        case STA_STUNNED:
-          status_.setFrame(2);
-          status_.show();
-          break;
-        case STA_KO:
-          status_.setFrame(3);
-          status_.show();
-          break;
-        case STA_INJURED:
-          status_.setFrame(4);
-          status_.show();
-          break;
-        case STA_SENTOFF:
-          status_.setFrame(5);
-          status_.show();
-          break;
-        case STA_STANDING:
-          //FIXME: check for ball.
-        case STA_RESERVE:
-        default:
-          status_.hide();
-          break;
-      }
-      last_player_status_ = p_->getStatus();
-    }
-
   // Some action to do ?
   if (target_action_ != ACT_UNASSIGNED && game_.isStateSet(stDoAction))
     {
@@ -352,6 +315,52 @@ void VisuPlayer::update()
 
   has_focus_ = now_focus;
   Sprite::update();
+}
+
+void VisuPlayer::updateStatus()
+{
+  api_->selectTeam(p_->getTeamId());
+  api_->selectPlayer(p_->getId());
+  
+  LOG4("Switch status for player %1 of team %2 to %3.",
+      p_->getId(), p_->getTeamId(), p_->getStatus());
+  switch (p_->getStatus())
+      {
+        case STA_PRONE:
+          status_.setFrame(1);
+          status_.show();
+          break;
+        case STA_STUNNED:
+          status_.setFrame(2);
+          status_.show();
+          break;
+        case STA_KO:
+          status_.setFrame(3);
+          status_.show();
+          break;
+        case STA_INJURED:
+          status_.setFrame(4);
+          status_.show();
+          break;
+        case STA_SENTOFF:
+          status_.setFrame(5);
+          status_.show();
+          break;
+        case STA_STANDING:
+          if (api_->getBallOwner() == p_)
+            {
+              game_.getField().removeBall();
+              status_.setFrame(6);
+              status_.show();
+            }
+          else
+            status_.hide();
+          break;
+        case STA_RESERVE:
+        default:
+          status_.hide();
+          break;
+      }
 }
 
 END_NS(sdlvisu);

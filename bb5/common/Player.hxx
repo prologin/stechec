@@ -154,18 +154,6 @@ inline void Player::resetTurn()
   will_prone_ = (status_ == STA_STUNNED);
 }
 
-inline bool Player::isNearAnEmptySquare() const
-{
-  //FIXME: to do
-  return true;
-}
-
-inline bool Player::isNearAnOpponent(bool standing) const
-{
-  //FIXME : to do
-  return (standing == standing);
-}
-
 // Todo: status, status string
 
 inline const char* Player::stringify(enum eStatus status)

@@ -187,7 +187,14 @@ void        CRules::msgInitKickoff(const MsgInitKickoff* m)
 
 void        CRules::msgGiveBall(const MsgGiveBall* m)
 {
-  setState(GS_TOUCHBACK);
+  if (m->client_id == -1)
+    ball_->setOwner(NULL);
+  else if (m->player_id == -1)
+    setState(GS_TOUCHBACK);
+  else if (m->client_id == getCoachId())
+    ball_->setOwner(our_team_->getPlayer(m->player_id));
+  else
+    ball_->setOwner(other_team_->getPlayer(m->player_id));
   onEvent(m);
 }
 

@@ -37,6 +37,26 @@ void SBall::setPosition(const Position& pos, bool advertise_client)
     pos_ = pos;
 }
 
+void SBall::setOwner(SPlayer* p)
+{
+  if (owner_ != p)
+    {
+      if (p == NULL)
+        {
+          MsgGiveBall msg(-1);
+          msg.player_id = -1;
+          r_->sendPacket(msg);
+        }
+      else
+        {
+          MsgGiveBall msg(p->getTeamId());
+          msg.player_id = p->getId();
+          r_->sendPacket(msg);
+        }
+    }
+  Ball<SPlayer>::setOwner(p);
+}
+
 /*
 ** Kick-off.
 */
@@ -90,7 +110,9 @@ void SBall::touchback()
 {
   LOG5("Coach `%1' is awarded a touchback.", r_->getCurrentTeamId());
   r_->setState(GS_TOUCHBACK);
-  r_->sendPacket(MsgGiveBall(r_->getCurrentTeamId()));
+  MsgGiveBall msg(r_->getCurrentTeamId());
+  msg.player_id = -1;
+  r_->sendPacket(msg);
 }
 
 void SBall::msgGiveBall(const MsgGiveBall* m)
@@ -110,8 +132,8 @@ void SBall::msgGiveBall(const MsgGiveBall* m)
       r_->sendIllegal(MSG_GIVEBALL, m->client_id, ERR_CANNOTCARRYTHEBALL);
       return;
     }
-  owner_ = p;
   setPosition(p->getPosition(), true);
+  setOwner(p);
   r_->finishKickoff();
 }
 
@@ -182,39 +204,23 @@ void SBall::afterBounce(const Position& delta, int amplitude)
 
 void SBall::bounce(int nb)
 {
-  owner_ = NULL;
-  switch (r_->getDice()->roll("bounce", D8))
-    {
-    case N: afterBounce(Position(-1, 0), nb); break;
-    case S: afterBounce(Position(+1, 0), nb); break;
-    case E: afterBounce(Position(0, +1), nb); break;
-    case W: afterBounce(Position(0, -1), nb); break;
-    case NE: afterBounce(Position(-1, +1), nb); break;
-    case NW: afterBounce(Position(-1, -1), nb); break;
-    case SE: afterBounce(Position(+1, +1), nb); break;
-    case SW: afterBounce(Position(+1, -1), nb); break;
-    }
+  enum eDirection dir;
+  setOwner(NULL);
+  dir = static_cast<enum eDirection>(r_->getDice()->roll("bounce", D8));
+  afterBounce(r_->getField()->dirToPos(dir), nb);
 }
 
 void SBall::scatter(int nb)
 {
-  switch (r_->getDice()->roll("scatter", D8))
-    {
-    case N: pos_ += Position(-nb, 0); break;
-    case S: pos_ += Position(+nb, 0); break;
-    case E: pos_ += Position(0, +nb); break;
-    case W: pos_ += Position(0, -nb); break;
-    case NE: pos_ += Position(-nb, +nb); break;
-    case NW: pos_ += Position(-nb, -nb); break;
-    case SE: pos_ += Position(+nb, +nb); break;
-    case SW: pos_ += Position(+nb, -nb); break;
-    }
+  enum eDirection dir;
+  dir = static_cast<enum eDirection>(r_->getDice()->roll("scatter", D8));
+  pos_ += (nb * r_->getField()->dirToPos(dir));
 }
 
 // Spectators throwing the ball
 void SBall::throwIn()
 {
-  owner_ = NULL;
+  setOwner(NULL);
   Position d(0, 0); // Direction of the throw.
   int reach = r_->getDice()->roll("ball throw in", D6, 2) - 1;
   LOG5("Ball gets thrown by spectators from %1.", pos_);
@@ -253,7 +259,7 @@ void SBall::throwIn()
 
 void SBall::removeFromField()
 {
-  owner_ = NULL;
+  setOwner(NULL);
   thrown_ = false;
   pos_ = Position(-1,-1);
   sendPosition();

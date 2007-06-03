@@ -673,7 +673,7 @@ void SPlayer::finishBlockAction()
 
 void SPlayer::tryCatchBall(bool accurate_pass)
 {
-  int nb_tackles = f_->getNbTackleZone(r_->getOpponentTeamId(team_id_), pos_);
+  int nb_tackles = f_->getNbTackleZones(r_->getOpponentTeamId(team_id_), pos_);
   modifier_ = (accurate_pass?1:0) - nb_tackles;
   roll_attempted_ = R_CATCH;
   setRerollAvailability();
@@ -731,7 +731,7 @@ void SPlayer::finishCatchBall(bool reroll, bool success)
 
 void SPlayer::tryDodge()
 {
-  int nb_tackles = f_->getNbTackleZone(r_->getOpponentTeamId(team_id_), pos_);
+  int nb_tackles = f_->getNbTackleZones(r_->getOpponentTeamId(team_id_), pos_);
   modifier_ = 1 - nb_tackles;
   roll_attempted_ = R_DODGE;
   setRerollAvailability();
@@ -800,7 +800,7 @@ void SPlayer::finishDodge(bool reroll, bool success)
 
 void SPlayer::tryMove(Position& aim)
 {
-  int nb_tackles_pos = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+  int nb_tackles_pos = f_->getNbTackleZones(r_->getCurrentOpponentTeamId(), pos_);
   move_aim_ = aim;
 
   MsgMove msg(team_id_);
@@ -836,7 +836,7 @@ void SPlayer::tryMove(Position& aim)
 
 void SPlayer::tryPickUp()
 {
-  int nb_tackles = f_->getNbTackleZone(r_->getOpponentTeamId(team_id_), pos_);
+  int nb_tackles = f_->getNbTackleZones(r_->getOpponentTeamId(team_id_), pos_);
   modifier_ = 1 - nb_tackles;
   roll_attempted_ = R_PICKUP;
   setRerollAvailability();
@@ -959,7 +959,7 @@ void SPlayer::finishStandUp(bool reroll, bool success)
 
 void SPlayer::tryThrow()
 {
-  int nb_tackles = f_->getNbTackleZone(r_->getCurrentOpponentTeamId(), pos_);
+  int nb_tackles = f_->getNbTackleZones(r_->getCurrentOpponentTeamId(), pos_);
   int dist_modifier;
   if (distance_ < 4.f)
     dist_modifier = 1; // quick pass

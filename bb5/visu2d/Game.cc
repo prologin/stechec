@@ -188,7 +188,7 @@ void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
         player_[other_team_id][j]->finishTurn();
     }
   action_popup_->dissociateFromPlayer();
-  
+  unsetState(stDoAction);
   unsetState(stWaitKoffBall);
   if (team_id == api_->myTeamId())
     {
@@ -370,11 +370,12 @@ void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
   p->move(field_->squareToField(pos), 100.);
 }
 
-void Game::evPlayerStatus(int team_id, int player_id, enum eStatus status)
+void Game::evPlayerStatus(int team_id, int player_id, enum eStatus)
 {
   VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
+  p->updateStatus();
   p->update();
 }
 
@@ -383,17 +384,37 @@ void Game::evBallPos(const Point& pos)
   field_->setBallPos(pos);
 }
 
-void Game::evGiveBall(int team_id)
+void Game::evGiveBall(int team_id, int player_id)
 {
-  LOG4("Touchback! receiving team (team id %1) can give the ball to any player on the field.",
-       team_id);
-  if (team_id == api_->getTeamId())
-    game_dlg_->push(eDlgActTouchback);
-  else
+  VisuPlayer* p;
+  if (team_id == -1)
+  {
+    LOG4("The ball is left alone.");
+    for (int i = 0; i < 2; i++)
+      for (int j = 0; j < 16; j++)
+        if (player_[i][j] != NULL)
+          player_[i][j]->updateStatus();
+    field_->setBallPos(api_->ball());
+  }
+  else if (player_id == -1)
+  {
+    LOG4("Touchback! receiving team (team id %1) can give the ball to any player on the field.",
+        team_id);
+    if (team_id == api_->getTeamId())
+      game_dlg_->push(eDlgActTouchback);
+    else
     {
       game_dlg_->push(eDlgActInfo);
       game_dlg_->setText("Touchback! Wait that other team choose to which to give ball");
     }
+  }
+  else
+  {
+    LOG4("Player `%1' of team `%2' gets the ball.", player_id, team_id);
+    field_->removeBall();
+    p = player_[team_id][player_id];
+    p->updateStatus();
+  }
 }
 
 void Game::evResult(int team_id, int player_id, enum eRoll action_type, int result, 

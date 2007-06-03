@@ -376,6 +376,12 @@ inline Point Api::ball() const
   return rules_->ball_->getPosition();
 }
 
+inline const CPlayer* Api::getBallOwner() const
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  return rules_->ball_->getOwner();
+}
+
 inline int Api::teamId(const Point& pos)
 {
   CHECK_POS(pos.x, pos.y);
@@ -437,8 +443,11 @@ inline int Api::declarationPossibleNumber()
   for (int i = 0; i < DCL_LAST; i++)
     possible_declarations_[i] = true;
 
-  if (selected_player_->getStatus() == STA_PRONE
-      || !selected_player_->isNearAnOpponent(true))
+  if (selected_player_->getStatus() == STA_PRONE ||
+      !(rules_->getField()->hasAdjacentPlayer(
+          selected_player_->getPosition(),
+          STA_STANDING,
+          rules_->other_team_->getTeamId())))
     {
       number --;
       possible_declarations_[DCL_BLOCK] = false;
@@ -501,25 +510,25 @@ inline int Api::actionPossibleNumber()
     }
   
   if (selected_player_->getAction() != DCL_BLOCK
-      && selected_player_->isNearAnEmptySquare())
+      && rules_->getField()->hasAdjacentEmptySquare(selected_player_->getPosition()))
     {
       number ++;
       possible_actions_[ACT_MOVE] = true;
     }
   if ((selected_player_->getAction() == DCL_BLOCK
         || selected_player_->getAction() == DCL_BLITZ)
-      && selected_player_->isNearAnOpponent(true)
+      && rules_->getField()->hasAdjacentPlayer(
+        selected_player_->getPosition(),
+        STA_STANDING,
+        rules_->other_team_->getTeamId())
       && !(selected_player_->hasBlocked()))
     {
       number ++;
       possible_actions_[ACT_BLOCK] = true;
     }
   if (selected_player_->getAction() == DCL_PASS
-      /* FIXME: Check also if the player owns the ball,
-       * and if he didn't already tried a throw.
-       * The line below needs that ball owner is kept up-to-date.
        && selected_player_ == rules_->ball_->getOwner()
-       */)
+       )
     {
       number ++;
       possible_actions_[ACT_THROW] = true;
@@ -562,7 +571,7 @@ inline int Api::moveDifficulty(int step)
     return BAD_ARGUMENT;
 
   Position step_pos((*player_path_)[step]);
-  int nbt = rules_->field_->getNbTackleZone(selected_team_->getTeamId(), step_pos);
+  int nbt = rules_->field_->getNbTackleZones(selected_team_->getTeamId(), step_pos);
   if (nbt == 0)
     return 0;
   return (7 - std::min(selected_player_->getAg(), 6)) + nbt - 1;

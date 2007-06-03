@@ -57,7 +57,7 @@ int CField::getScoreModifier(const ScorePoint& cur,
   int        mod = 0;
 
   // Check if a player of the other team can tackles.
-  mod += getNbTackleZone(team_id == 1 ? 2 : 1, cur) * 5;
+  mod += getNbTackleZones(team_id == 1 ? 2 : 1, cur) * 5;
  
   // Decrease probability if we go farther.
   // (speed up algorithm - do not change result)

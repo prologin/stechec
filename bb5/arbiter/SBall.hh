@@ -41,6 +41,10 @@ public:
   //! @param pos Where to place the ball.
   //! @param advertise_client Whether or not send a MSG_BALLPOS to clients.
   void setPosition(const Position& pos, bool advertise_client = true);
+
+  //! @brief Sets ball owner and advertises the client if it has changed.
+  void setOwner(SPlayer* p);
+
   //! @brief Removes the ball from the field.
   //! @note Use it before a kickoff.
   void removeFromField();

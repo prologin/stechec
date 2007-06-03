@@ -51,7 +51,7 @@ public:
   virtual void evHalf(int half);
   virtual void evDrawKicker(int team_id, bool is_a_question);
   virtual void evKickOff(int team_id, bool place_team);
-  virtual void evGiveBall(int team_id);
+  virtual void evGiveBall(int team_id, int player_id);
   virtual void evMoveTurnMarker() {}
   virtual void evTurnOver(enum eTurnOverMotive motive);
   virtual void evTouchdooown(int team_id, int player_id);
@@ -78,7 +78,7 @@ inline void Event::evSkill(int, int, enum eSkill, int) {}
 inline void Event::evHalf(int) {}
 inline void Event::evDrawKicker(int, bool) {}
 inline void Event::evKickOff(int, bool) {}
-inline void Event::evGiveBall(int) {}
+inline void Event::evGiveBall(int, int) {}
 inline void Event::evTurnOver(enum eTurnOverMotive) {}
 inline void Event::evTouchdooown(int, int) {}
 inline void Event::evChat(const std::string&) {}

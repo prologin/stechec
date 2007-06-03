@@ -48,6 +48,7 @@ public:
   void removeMarker();
   
   void setBallPos(const Point& pos);
+  void removeBall();
 
   bool getDrawTicks() const;
   void setDrawTicks(bool enable);

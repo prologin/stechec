@@ -66,6 +66,9 @@ public:
   virtual void setPos(const Point& pos);
   virtual void update();
 
+  //! @brief Update status/ball mini-icon.
+  void updateStatus();
+
 private:
 
   //! @brief Really do an action, after coach has chosen his target.
@@ -84,7 +87,6 @@ private:
   bool          has_focus_;
   bool          is_selected_;
   bool          has_played_;
-  enum eStatus  last_player_status_;
   
   Sprite    circle_;
   Sprite    circle_selected_;

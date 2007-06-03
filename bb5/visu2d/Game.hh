@@ -114,7 +114,7 @@ private:
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void evPlayerStatus(int team_id, int player_id, enum eStatus status);
   virtual void evBallPos(const Point& pos);
-  virtual void evGiveBall(int team_id);
+  virtual void evGiveBall(int team_id, int player_id);
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, int result, 
                         int modifier, int required, bool reroll, enum eSkill skill);
   virtual void evBlockResult(int team_id, int player_id, int opponent_player_id, 

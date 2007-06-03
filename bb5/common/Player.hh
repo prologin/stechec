@@ -302,12 +302,6 @@ public:
   //! @brief Called on new turn.
   void resetTurn();
 
-  //! @brief Checks if there is an adjacent empty square.
-  bool isNearAnEmptySquare() const;
-  //! @brief Checks if there is an opponent in an adjacent square.
-  //! @param standing Whether the opponent must be standing or down.
-  bool isNearAnOpponent(bool standing) const;
-
   static const char* stringify(enum eStatus status);
   static const char* stringify(enum eDeclaredAction action);
   static const char* stringify(enum eRealAction action);

@@ -139,7 +139,7 @@ void EventProcess::dispatch(const MsgInitHalf& pkt) const
 template <>
 void EventProcess::dispatch(const MsgGiveBall& pkt) const
 {
-  ev_->evGiveBall(pkt.client_id);
+  ev_->evGiveBall(pkt.client_id, pkt.player_id);
 }
 
 template <>

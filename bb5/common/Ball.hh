@@ -37,29 +37,13 @@ END_PACKET
 
 /*!
 ** @struct MsgGiveBall
-** @brief Give the Ball to a Player.
+** @brief Changes Ball owner.
 ** Client -> Server, after a touchback.
+** Server -> Client, at any time of the game.
 */
 DECLARE_PACKET(MSG_GIVEBALL, MsgGiveBall)
   int player_id; ///< Player of receiving team who gets the ball back.
 END_PACKET;
-
-//! @brief Scatter template.
-//! @note It is slightly different from BB's template.
-//!  123
-//!  8B4
-//!  765
-enum eScatterDirection {
-  N = 2,
-  S = 6,
-  E = 4,
-  W = 8,
-  NE = 3,
-  NW = 1,
-  SE = 5,
-  SW = 7,
-};
-
 
 /*!
 ** @brief Represents the Blood Bowl Ball.
