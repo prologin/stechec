@@ -46,6 +46,9 @@ public:
   //! @brief Check is the time is elapsed.
   //! @note If called when the timer is stopped, it will return false.
   bool        isTimeElapsed() const;
+  //! @brief Check if the timer is paused.
+  //! @note If called when the timer is stopped, it will return false.
+  bool        isPaused() const;
 
   //! @brief Start the timer.
   void        start();

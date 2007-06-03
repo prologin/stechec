@@ -65,6 +65,11 @@ bool Timer::isTimeElapsed() const
   return getTimeRemaining() <= 0;
 }
 
+bool Timer::isPaused() const
+{
+  return (started_ && (begin_pause_ != 0));
+}
+
 
 void Timer::start()
 {

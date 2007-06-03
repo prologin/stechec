@@ -38,7 +38,6 @@ SRules::SRules()
   team_[1] = NULL;
   scoring_team_ = -1;
   timer_.setAllowedTime(TIME_PER_TURN);
-  turn_timer_paused_ = false;
 
   dice_ = new Dice(this);
   team_msg_ = new STeamMsg(this);
@@ -114,28 +113,26 @@ void SRules::serverProcess()
 
 void SRules::waitForCurrentOpponentChoice(int team_id)
 {
-  if ((!turn_timer_paused_) && (team_id == getCurrentOpponentTeamId()))
+  if ((!timer_.isPaused()) && (team_id == getCurrentOpponentTeamId()))
     {
       LOG4("Suspends turn timer, waiting for coach `%1' reply.", team_id);
       timer_.pause();
-      turn_timer_paused_ = true;
       MsgTimer msg(team_id);
       msg.time_remaining = timer_.getTimeRemaining();
-      msg.pause = turn_timer_paused_;
+      msg.pause = true;
       sendPacket(msg);
     }
 }
 
 void SRules::checkForCurrentOpponentChoice(int team_id)
 {
-  if (turn_timer_paused_ && (team_id == getCurrentOpponentTeamId()))
+  if (timer_.isPaused() && (team_id == getCurrentOpponentTeamId()))
     {
       LOG4("Resumes turn timer, since coach `%1' replied.", team_id);
       timer_.start();
-      turn_timer_paused_ = false;
       MsgTimer msg(team_id);
       msg.time_remaining = timer_.getTimeRemaining();
-      msg.pause = turn_timer_paused_;
+      msg.pause = false;
       sendPacket(msg);
     }
 }
