@@ -2,7 +2,7 @@
 #ifndef VIRUDP_HH_
 # define VIRUDP_HH_
 
-# include "datatfs/cx.hh"
+# include "datatfs/Cx.hh"
 
 class NetUDPError : public NetError
 {
