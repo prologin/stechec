@@ -48,10 +48,10 @@ private:
   virtual void          evInitGame();
   virtual void          evDrawKicker(int team_id, bool is_a_question);
   virtual void          evNewTurn(int player_id, int cur_half, int cur_turn);
-  virtual void          evKickOff(int team_id, bool place_team);
+  virtual void          evPlaceTeam(int team_id);
+  virtual void          evKickOff(int team_id);
   virtual void          evGiveBall(int team_id, int player_id);
   virtual void          evMoveTurnMarker();
-  virtual void          evTurnOver(enum eTurnOverMotive motive);
   virtual void          evTouchdooown(int team_id, int player_id);
   virtual void          evChat(const std::string& msg);
   virtual void          evPlayerStatus(int team_id, int player_id, enum eStatus status);

@@ -125,13 +125,11 @@ public:
   int                   declarationPossible(int index) const;
 
   //! @brief Get the number of possible action for the selected player.
-  //! @attention FIXME: NOT IMPLEMENTED
   //! @return The number of possible action
   int                   actionPossibleNumber();
 
   //! @brief Get a possible action for the selected player.
   //! @param index Action index, in the range [0 - actionPossibleNumber() - 1].
-  //! @attention FIXME: NOT IMPLEMENTED
   //! @return Action that this player may perform.
   int                   actionPossible(int index) const;
 

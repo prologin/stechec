@@ -270,9 +270,8 @@ void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
   our_turn_ = player_id == api_->myTeamId();
 }
 
-void CmdLineInterface::evKickOff(int team_id, bool place_team)
+void CmdLineInterface::evPlaceTeam(int team_id)
 {
-  if (place_team)
     if (team_id == api_->myTeamId())
     {
       cout << "Arbiter is asking us to set up on the field. (use 'place')" << endl;
@@ -280,7 +279,10 @@ void CmdLineInterface::evKickOff(int team_id, bool place_team)
     }
     else
       cout << "Wait that the other team sets up on the field." << endl;
-  else
+}
+
+void CmdLineInterface::evKickOff(int team_id)
+{
     if (team_id == api_->myTeamId())
     {
       cout << "Arbiter is asking us to place the ball. (use 'kickoff')" << endl;
@@ -293,41 +295,6 @@ void CmdLineInterface::evKickOff(int team_id, bool place_team)
 void CmdLineInterface::evMoveTurnMarker()
 {
   cout << "The turn marker has been moved." << endl;
-}
-
-void CmdLineInterface::evTurnOver(enum eTurnOverMotive motive)
-{
-  switch(motive)
-    {
-      case TOM_KNOCKEDDOWN:
-        cout << "Turnover (Player is knocked down)." << endl;
-        break;
-      case TOM_LOSTBALL:
-        cout << "Turnover (Ball is not caught)." << endl;
-        break;
-      case TOM_FAILEDPICKUP:
-        cout << "Turnover (Player fails to pick up the ball)." << endl;
-        break;
-      case TOM_TOUCHDOOOWN:
-        cout << "Touchdooown!" << endl;
-        break;
-      case TOM_TIMEEXCEEDED:
-        cout << "You were too slow, slug!" << endl;
-        break;
-      case TOM_FUMBLEDPASS:
-        cout << "Turnover (Pass attempt is fumbled)." << endl;
-        break;
-      case TOM_THROWNTMFAILED:
-        cout << "Turnover (Team mate's throw fails)." << endl;
-        break;
-      case TOM_EJECTEDFORAFOUL:
-        cout << "Turnover (Referee ejects a player)." << endl;
-        break;
-      default:
-        WARN("Received turnover message with unknown motive.");
-        cout << "Turnover (Unknown motive)." << endl;
-        break;
-    }
 }
 
 void CmdLineInterface::evTouchdooown(int team_id, int player_id)

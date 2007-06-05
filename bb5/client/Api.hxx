@@ -533,7 +533,7 @@ inline int Api::actionPossibleNumber()
       number ++;
       possible_actions_[ACT_THROW] = true;
     }
-  return 0;
+  return number;
 }
 
 inline int Api::actionPossible(int index) const

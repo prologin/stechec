@@ -224,47 +224,38 @@ void Game::evTurnOver(enum eTurnOverMotive motive)
   switch(motive)
     {
       case TOM_KNOCKEDDOWN:
-        LOG2("Turnover (Player is knocked down).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Player is knocked down).");
         break;
       case TOM_LOSTBALL:
-        LOG2("Turnover (Ball is not caught).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Ball is not caught).");
         break;
       case TOM_FAILEDPICKUP:
-        LOG2("Turnover (Player fails to pick up the ball).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Player fails to pick up the ball).");
         break;
       case TOM_TOUCHDOOOWN:
-        LOG2("Turnover (TOUCHDOOOWN!).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Touchdooown!).");
         break;
       case TOM_TIMEEXCEEDED:
-        LOG2("Turnover (Time exceeded).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Time exceeded).");
         break;
       case TOM_FUMBLEDPASS:
-        LOG2("Turnover (Pass attempt is fumbled).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Pass attempt is fumbled).");
         break;
       case TOM_THROWNTMFAILED:
-        LOG2("Turnover (Team mate's throw fails).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Team mate's throw fails).");
         break;
       case TOM_EJECTEDFORAFOUL:
-        LOG2("Turnover (Referee ejects a player).");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Referee ejects a player).");
         break;
       default:
-        WARN("Received turnover message with unknown motive.");
         game_dlg_->push(eDlgActInfo);
         game_dlg_->setText("Turnover (Unknown motive).");
         break;
@@ -294,9 +285,8 @@ void Game::evDrawKicker(int team_id, bool is_a_question)
     api_->doChooseKickoff(false); // Choose to receive.
 }
 
-void Game::evKickOff(int team_id, bool place_team)
+void Game::evPlaceTeam(int team_id)
 {
-  if (place_team)
     if (team_id == api_->myTeamId())
     {
       //FIXME: allow coach to replace his players.
@@ -308,8 +298,10 @@ void Game::evKickOff(int team_id, bool place_team)
       // game_dlg_->push(eDlgActInfo);
       // game_dlg_->setText("Wait that the other team sets up on the field.");
     }
-  else
-  {
+}
+
+void Game::evKickOff(int team_id)
+{
     unsetState(stWait);
     if (team_id == api_->myTeamId())
     {
@@ -323,7 +315,6 @@ void Game::evKickOff(int team_id, bool place_team)
       game_dlg_->push(eDlgActInfo);
       game_dlg_->setText("Waiting that the other team places the ball.");
     }
-  }
 }
 
 void Game::evChat(const std::string& msg)

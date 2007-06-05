@@ -57,7 +57,10 @@ void EventProcess::dispatch(const MsgDrawKicker& m) const
 template <>
 void EventProcess::dispatch(const MsgInitKickoff& m) const
 {
-  ev_->evKickOff(m.client_id, m.place_team);
+  if (m.place_team)
+    ev_->evPlaceTeam(m.client_id);
+  else
+    ev_->evKickOff(m.client_id);
 }
 
 template <>
@@ -69,7 +72,37 @@ void EventProcess::dispatch(const MsgMoveTurnMarker&) const
 template <>
 void EventProcess::dispatch(const MsgTurnOver& pkt) const
 {
-  ev_->evTurnOver((enum eTurnOverMotive) pkt.motive);
+  switch(pkt.motive)
+    {
+      case TOM_KNOCKEDDOWN:
+        LOG4("Turnover (Player is knocked down).");
+        break;
+      case TOM_LOSTBALL:
+        LOG4("Turnover (Ball is not caught).");
+        break;
+      case TOM_FAILEDPICKUP:
+        LOG4("Turnover (Player fails to pick up the ball).");
+        break;
+      case TOM_TOUCHDOOOWN:
+        LOG4("Turnover (Touchdooown!).");
+        break;
+      case TOM_TIMEEXCEEDED:
+        LOG4("Turnover (You were too slow, slug!).");
+        break;
+      case TOM_FUMBLEDPASS:
+        LOG4("Turnover (Pass attempt is fumbled).");
+        break;
+      case TOM_THROWNTMFAILED:
+        LOG4("Turnover (Team mate's throw fails).");
+        break;
+      case TOM_EJECTEDFORAFOUL:
+        LOG4("Turnover (Referee ejects a player).");
+        break;
+      default:
+        LOG2("Turnover event with unknown motive `%1'.", pkt.motive);
+        break;
+    }
+  ev_->evTurnOver(static_cast<enum eTurnOverMotive>(pkt.motive));
 }
 
 template <>

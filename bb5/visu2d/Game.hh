@@ -107,7 +107,8 @@ private:
   virtual void evTouchdooown(int team_id, int player_id);
   virtual void evPlayerKnocked(int team_id, int player_id);
   virtual void evDrawKicker(int team_id, bool is_a_question);
-  virtual void evKickOff(int team_id, bool place_team);
+  virtual void evPlaceTeam(int team_id);
+  virtual void evKickOff(int team_id);
   virtual void evChat(const std::string& msg);
   virtual void evPlayerCreate(int team_id, int player_id);
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
