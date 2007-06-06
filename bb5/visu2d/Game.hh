@@ -45,22 +45,22 @@ class ActionDlg;
 ** @brief Visu global status.
 ** Element with lower value (top of the list) will have higher priority.
 */
-enum eState {
-  stPause = 0,
-  stShowDlgBox = 10,
-  stWaitInput,
-  stWait = 20,
-  stDoKoffBall = 30,
-  stDoKoffGiveBall,
-  stDoKoffTeam,
-  stWaitKoffBall,
-  stWaitKoffTeam,
-  stBlockPushChoice,
-  stPopupShow = 40,
-  stDoAction = 50,    ///< A Player will perform a real action, woow...
-  stWaitPlay = 60,
-  stWaitOther,
-  stNothing = 70      ///< last prio - matched if there is nothing else
+enum eVisuGameState {
+  VGS_PAUSE = 0,            ///< Unused for now.
+  VGS_SHOWDLGBOX = 10,      ///< A dialog box is displayed.
+  VGS_WAITINPUT,            ///< Unused for now.
+  VGS_WAITINIT = 20,        ///< Wait for game startup.
+  VGS_DOKICKOFF = 30,       ///< Wait for coach to kick-off the ball.
+  VGS_DOTOUCHBACK,          ///< Wait for coach to give the ball to one of his players.
+  VGS_DOPLACETEAM,          ///< Unused for now.
+  VGS_WAITKICKOFF,          ///< Wait for opponent to kick-off the ball.
+  VGS_WAITPLACETEAM,        ///< Unused for now.
+  VGS_DOBLOCKPUSHCHOICE,    ///< A square must be chosen to push a player in.
+  VGS_SHOWACTIONPOPUP = 40, ///< Actions popup menu is displayed.
+  VGS_DOACTION = 50,        ///< A Player will perform a real action, woow...
+  VGS_DOPLAY = 60,          ///< It's our turn of game.
+  VGS_WAITPLAY,             ///< It's opponent turn of game.
+  VGS_NOTHING = 70          ///< Lowest priority - matched if there is nothing else.
 };
 
 /*!
@@ -84,13 +84,15 @@ public:
 
   //! @brief Check if the specified state is set (ie, the one which have the
   //!  higher priority);
-  bool isStateSet(enum eState s) const;
+  bool isStateSet(enum eVisuGameState s) const;
 
   //! @brief Set a status in the list.
-  void setState(enum eState s);
+  void setState(enum eVisuGameState s);
 
   //! @brief Remove a status from the list of currently set status.
-  void unsetState(enum eState s);
+  void unsetState(enum eVisuGameState s);
+
+  static const char* stringify(enum eVisuGameState s);
 
   int run();
 
@@ -137,7 +139,7 @@ private:
 
   VisuPlayer*           player_[2][16]; ///< Players...
 
-  std::set<enum eState> state_list_;
+  std::set<enum eVisuGameState> state_list_;
   ActionDlg*            game_dlg_; ///< List of all displayed action.
 
   Sprite                block_push_[3];

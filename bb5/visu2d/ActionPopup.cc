@@ -71,13 +71,13 @@ ActionPopup::~ActionPopup()
 
 void ActionPopup::show()
 {
-  game_.setState(stPopupShow);
+  game_.setState(VGS_SHOWACTIONPOPUP);
   VirtualSurface::show();
 }
 
 void ActionPopup::hide()
 {
-  game_.unsetState(stPopupShow);
+  game_.unsetState(VGS_SHOWACTIONPOPUP);
   VirtualSurface::hide();
 }
 
@@ -190,7 +190,7 @@ void ActionPopup::update()
     }
   
   // If right-click anywhere.
-  if ((game_.isStateSet(stWaitPlay) || game_.isStateSet(stPopupShow))
+  if ((game_.isStateSet(VGS_DOPLAY) || game_.isStateSet(VGS_SHOWACTIONPOPUP))
       && input.button_pressed_[3])
     {
       setPos(std::min(input.mouse_.x, max_pos.x), std::min(input.mouse_.y, max_pos.y));
@@ -198,11 +198,11 @@ void ActionPopup::update()
     }
 
   // If left-click outside of popup menu.
-  if (!have_focus && game_.isStateSet(stPopupShow) && input.button_pressed_[1])
+  if (!have_focus && game_.isStateSet(VGS_SHOWACTIONPOPUP) && input.button_pressed_[1])
     hide();
   
   // If left-click on popup menu.
-  if (have_focus && game_.isStateSet(stPopupShow) && input.button_pressed_[1])
+  if (have_focus && game_.isStateSet(VGS_SHOWACTIONPOPUP) && input.button_pressed_[1])
     {
       // Sanity check. Must not happen.
       if (index < 0 || index >= displayed_items_nb_)

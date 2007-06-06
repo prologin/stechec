@@ -124,7 +124,7 @@ void VisuField::setBallPos(const Point& pos)
     }
   else
     {
-      if (g_.isStateSet(stWaitKoffBall))
+      if (g_.isStateSet(VGS_WAITKICKOFF))
         {
           cross_red_.setPos(squareToField(pos, Point(4, 4)));
           cross_red_.show();
@@ -217,7 +217,7 @@ void VisuField::update()
   Input& inp = g_.getInput();
 
   // Handle kickoff of ball - we place the ball on receiver's field side.
-  if (g_.isStateSet(stDoKoffBall))
+  if (g_.isStateSet(VGS_DOKICKOFF))
     {
       Point square(mouseToSquare());
       ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
@@ -237,8 +237,8 @@ void VisuField::update()
               if (!g_.getApi()->doPlaceBall(square))
                 {
                   ball_.setPos(squareToField(square, Point(10, 10)));
-                  g_.unsetState(stDoKoffBall);
-                  g_.setState(stWaitKoffBall);
+                  g_.unsetState(VGS_DOKICKOFF);
+                  g_.setState(VGS_WAITKICKOFF);
                   cross_black_.setPos(squareToField(square, Point(4, 4)));
                   cross_black_.show();
                   removeMarker();
@@ -250,7 +250,7 @@ void VisuField::update()
     }
 
   // Handle kickoff of ball - give the ball to one of our player.
-  if (g_.isStateSet(stDoKoffGiveBall))
+  if (g_.isStateSet(VGS_DOTOUCHBACK))
     {
       Point square(mouseToSquare());
       ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
@@ -266,8 +266,8 @@ void VisuField::update()
               if (!g_.getApi()->doGiveBall(p->getId()))
                 {
                   ball_.setPos(squareToField(square, Point(10, 10)));
-                  g_.unsetState(stDoKoffGiveBall);
-                  g_.setState(stWaitKoffBall);
+                  g_.unsetState(VGS_DOTOUCHBACK);
+                  g_.setState(VGS_WAITKICKOFF);
                   removeMarker();
                 }
             }

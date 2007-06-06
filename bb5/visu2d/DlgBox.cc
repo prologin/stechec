@@ -189,7 +189,7 @@ void DialogBox::enable()
 {
   if (!isEnabled())
     {
-      game_.setState(stShowDlgBox);
+      game_.setState(VGS_SHOWDLGBOX);
       VirtualSurface::enable();
     }
 }
@@ -199,7 +199,7 @@ void DialogBox::disable()
   if (isEnabled())
     {
       VirtualSurface::disable();
-      game_.unsetState(stShowDlgBox);
+      game_.unsetState(VGS_SHOWDLGBOX);
     }
 }
 

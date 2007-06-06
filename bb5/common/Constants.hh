@@ -31,6 +31,7 @@
 //! @brief Constants describing the current status of the game.
 enum {
   GS_INITGAME = 1,  ///< Wait for coaches to declare their team and players.
+  GS_INITHALF,      ///< Wait for arbiter to prepare the beginning of a half-time.
   GS_DRAWKICKER,    ///< Wait for coach to choose to either kick off or receive the ball.
   GS_INITKICKOFF,   ///< Wait for coach to set up team placement.
   GS_KICKOFF,       ///< Wait for coach to place the ball on the field.

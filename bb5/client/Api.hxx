@@ -615,6 +615,8 @@ inline const char* Api::gameStateString() const
     {
     case GS_INITGAME:
       return "GS_INITGAME";
+    case GS_INITHALF:
+      return "GS_INITHALF";
     case GS_DRAWKICKER:
       return "GS_DRAWKICKER";
     case GS_INITKICKOFF:

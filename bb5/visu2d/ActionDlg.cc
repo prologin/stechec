@@ -43,7 +43,6 @@ DialogBox* ActionDlg::create(enum eDlgAction style)
       break;
     case eDlgActReroll:
       dlg = new DialogBox(g_, eDlgBoxYesNo, eDlgInfo);
-      dlg->setText("Do you want to reroll?");
       dlg->setActionHandler(new Callback(this, &g_, style));
       break;
     case eDlgActFollow:
@@ -61,6 +60,11 @@ DialogBox* ActionDlg::create(enum eDlgAction style)
       dlg->setActionHandler(new Callback(this, &g_, style));
       reroll_index_ = -1;
       block_choice_ = false;
+      break;
+    case eDlgActKickOrReceive:
+      dlg = new DialogBox(g_, eDlgBoxYesNo, eDlgInfo);
+      dlg->setText("Do you want to kick-off the ball first?");
+      dlg->setActionHandler(new Callback(this, &g_, style));
       break;
     }
   dlg->setPos(150, 150);
@@ -84,7 +88,7 @@ void ActionDlg::Callback::clicked(int btn_index)
       api->doFollow(btn_index == 0);
       break;
     case eDlgActTouchback:
-      g_->setState(stDoKoffGiveBall);
+      g_->setState(VGS_DOTOUCHBACK);
       break;
     case eDlgActBlockDice:
       if (btn_index == parent_->reroll_index_)
@@ -104,6 +108,9 @@ void ActionDlg::Callback::clicked(int btn_index)
           LOG4("accept block dice");
           api->doReroll(false);
         }
+      break;
+    case eDlgActKickOrReceive:
+      api->doChooseKickoff(btn_index == 0);
       break;
   }
 }

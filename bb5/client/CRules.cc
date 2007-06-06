@@ -141,6 +141,8 @@ void        CRules::msgInitGame(const MsgInitGame* m)
 
 void        CRules::msgInitHalf(const MsgInitHalf* m)
 {
+  setState(GS_INITHALF);
+  LOG2("-- CRules: change state: GS_INITHALF");
   cur_turn_ = 0;
   cur_half_ = m->cur_half;
   LOG2("-- CRules: Initialize the half %1", cur_half_);
@@ -153,12 +155,17 @@ void        CRules::msgInitHalf(const MsgInitHalf* m)
 
 void        CRules::msgDrawKicker(const MsgDrawKicker* m)
 {
-  if (m->client_id == getCoachId() && m->kickoff == -1)
+  if (m->kickoff == -1)
     {
-      assert(getState() != GS_DRAWKICKER);
-      setState(GS_DRAWKICKER);
-      LOG2("-- CRules: change state: GS_DRAWKICKER");
+      if (m->client_id == getCoachId())
+        {
+          assert(getState() == GS_INITHALF);
+          setState(GS_DRAWKICKER);
+          LOG2("-- CRules: change state: GS_DRAWKICKER");
+        }
     }
+  else if (getState() == GS_DRAWKICKER)
+    setState(GS_INITHALF);
 
   onEvent(m);
 }

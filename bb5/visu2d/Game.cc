@@ -53,8 +53,8 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   win_.getScreen().addChild(field_);
   win_.getScreen().addChild(action_popup_);
     
-  state_list_.insert(stNothing); // Avoid useless segv...
-  setState(stWait);    // Wait game begins.
+  state_list_.insert(VGS_NOTHING); // Avoid useless segv...
+  setState(VGS_WAITINIT);    // Wait game begins.
 
   for (int i = 0; i < 16; i++)
     {
@@ -114,11 +114,11 @@ VisuField& Game::getField()
   return *field_;
 }
 
-bool Game::isStateSet(enum eState s) const
+bool Game::isStateSet(enum eVisuGameState s) const
 {
-  enum eState first = *state_list_.begin();
-  if (first == stNothing)
-    LOG5("getStatus returns stNothing... must be a bug.");
+  enum eVisuGameState first = *state_list_.begin();
+  if (first == VGS_NOTHING)
+    LOG5("getStatus returns VGS_NOTHING... must be a bug.");
 
   // Not in the current chunk.
   if (s / 10 > first / 10)
@@ -127,29 +127,29 @@ bool Game::isStateSet(enum eState s) const
   return state_list_.find(s) != state_list_.end();
 }
 
-void Game::setState(enum eState s)
+void Game::setState(enum eVisuGameState s)
 {
   if (state_list_.find(s) != state_list_.end())
-    WARN("state %1 already set!", s);
+    WARN("State `%1' already set!", stringify(s));
   state_list_.insert(s);
 
   return;
   // debug
-  LOG4("Insert %1", s);
+  LOG4("Insert `%1' (priority: %2).", stringify(s), s);
   std::copy(state_list_.begin(), state_list_.end(), std::ostream_iterator<int>(std::cout, " "));
   std::cout << std::endl;
 }
 
-void Game::unsetState(enum eState s)
+void Game::unsetState(enum eVisuGameState s)
 {
   state_list_.erase(s);
 
-  if (s == stShowDlgBox)
+  if (s == VGS_SHOWDLGBOX)
     game_dlg_->pop();
 
   return;
   // debug
-  LOG4("Remove %1", s);
+  LOG4("Remove `%1' (prority: %2).", stringify(s), s);
   std::copy(state_list_.begin(), state_list_.end(), std::ostream_iterator<int>(std::cout, " "));
   std::cout << std::endl;
 }
@@ -160,6 +160,28 @@ void Game::unselectAllPlayer()
     for (int j = 0; j < 16; j++)
       if (player_[i][j] != NULL)
         player_[i][j]->unselect();
+}
+
+inline const char* Game::stringify(enum eVisuGameState s)
+{
+  switch(s)
+  {
+    case VGS_PAUSE:             return "VGS_PAUSE"; break;
+    case VGS_SHOWDLGBOX:        return "VGS_SHOWDLGBOX"; break;
+    case VGS_WAITINPUT:         return "VGS_WAITINPUT"; break;
+    case VGS_WAITINIT:          return "VGS_WAITINIT"; break;
+    case VGS_DOKICKOFF:         return "VGS_DOKICKOFF"; break;
+    case VGS_DOTOUCHBACK:       return "VGS_DOTOUCHBACK"; break;
+    case VGS_DOPLACETEAM:       return "VGS_DOPLACETEAM"; break;
+    case VGS_WAITKICKOFF:       return "VGS_WAITKICKOFF"; break;
+    case VGS_WAITPLACETEAM:     return "VGS_WAITPLACETEAM"; break;
+    case VGS_DOBLOCKPUSHCHOICE: return "VGS_DOBLOCKPUSHCHOICE"; break;
+    case VGS_SHOWACTIONPOPUP:   return "VGS_SHOWACTIONPOPUP"; break;
+    case VGS_DOACTION:          return "VGS_DOACTION"; break;
+    case VGS_DOPLAY:            return "VGS_DOPLAY"; break;
+    case VGS_WAITPLAY:          return "VGS_WAITPLAY"; break;
+    case VGS_NOTHING:           return "VGS_NOTHING"; break;
+  }
 }
 
 
@@ -188,20 +210,20 @@ void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
         player_[other_team_id][j]->finishTurn();
     }
   action_popup_->dissociateFromPlayer();
-  unsetState(stDoAction);
-  unsetState(stWaitKoffBall);
+  unsetState(VGS_DOACTION);
+  unsetState(VGS_WAITKICKOFF);
   if (team_id == api_->myTeamId())
     {
-      unsetState(stWaitOther);
-      setState(stWaitPlay);
+      unsetState(VGS_WAITPLAY);
+      setState(VGS_DOPLAY);
       os << "It is your turn, Play !";
       game_dlg_->push(eDlgActInfo);
       game_dlg_->setText(os.str());
     }
   else
     {
-      unsetState(stWaitPlay);
-      setState(stWaitOther);
+      unsetState(VGS_DOPLAY);
+      setState(VGS_WAITPLAY);
       os << "Other turn. Please wait...";
       game_dlg_->push(eDlgActInfo);
       game_dlg_->setText(os.str());
@@ -280,9 +302,14 @@ void Game::evPlayerKnocked(int, int player_id)
 
 void Game::evDrawKicker(int team_id, bool is_a_question)
 {
-  //FIXME: to do.
-  if (team_id == api_->myTeamId() && is_a_question)
-    api_->doChooseKickoff(false); // Choose to receive.
+  if (is_a_question)
+    if (team_id == api_->myTeamId())
+      game_dlg_->push(eDlgActKickOrReceive);
+    else
+      {
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Wait for opponent to choose who will kick-off.");
+      }
 }
 
 void Game::evPlaceTeam(int team_id)
@@ -302,18 +329,18 @@ void Game::evPlaceTeam(int team_id)
 
 void Game::evKickOff(int team_id)
 {
-    unsetState(stWait);
+    unsetState(VGS_WAITINIT);
     if (team_id == api_->myTeamId())
     {
-      setState(stDoKoffBall);
+      setState(VGS_DOKICKOFF);
       game_dlg_->push(eDlgActInfo);
       game_dlg_->setText("Kickoff. Place the ball.");
     }
     else
     {
-      setState(stWaitKoffBall);
+      setState(VGS_WAITKICKOFF);
       game_dlg_->push(eDlgActInfo);
-      game_dlg_->setText("Waiting that the other team places the ball.");
+      game_dlg_->setText("Wait for opponent to kick off the ball.");
     }
 }
 
@@ -441,6 +468,8 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
         {
           LOG4(" -> You can use a 'reroll' or 'accept' this result.");
           game_dlg_->push(eDlgActReroll);
+          game_dlg_->setText(String::compose("Do you want to reroll `%1' for player `%2'?",
+                Dice::stringify(action_type), player_id + 1));
         }
     }
 }
@@ -498,7 +527,7 @@ void Game::evBlockPush(const Position& pos, int nb_choice, const Position choice
       block_push_[i].setPos(Point(choices[i]) * 40);
       block_push_[i].show();
     }
-  setState(stBlockPushChoice);
+  setState(VGS_DOBLOCKPUSHCHOICE);
   
 }
 
@@ -575,7 +604,7 @@ int Game::run()
         }
 
       // Block push choice
-      if (isStateSet(stBlockPushChoice))
+      if (isStateSet(VGS_DOBLOCKPUSHCHOICE))
         {
           for (int i = 0; i < 3 && block_push_[i].isShown(); i++)
             if (block_push_[i].getScreenRect().inside(inp.mouse_))
@@ -587,7 +616,7 @@ int Game::run()
                     api_->doBlockPush(i);
                     for (int j = 0; j < 3; j++)
                       block_push_[j].hide();
-                    unsetState(stBlockPushChoice);
+                    unsetState(VGS_DOBLOCKPUSHCHOICE);
                   }
                      }
             else

@@ -164,7 +164,7 @@ void VisuPlayer::onEventDeclare(enum eDeclaredAction dcl)
       act_popup_->prepareActionMenu(dcl);
       circle_selected_.setFrame(2);
       circle_selected_.show();
-      game_.setState(stDoAction);
+      game_.setState(VGS_DOACTION);
       if (dcl == DCL_BLOCK)
         target_action_ = ACT_BLOCK;
       else
@@ -181,7 +181,7 @@ void VisuPlayer::selectAction(enum eRealAction act)
   api_->selectPlayer(p_->getId());
 
   LOG2("Select action: %1.", Player::stringify(act));
-  game_.setState(stDoAction);
+  game_.setState(VGS_DOACTION);
   
   switch (act)
   {
@@ -192,7 +192,7 @@ void VisuPlayer::selectAction(enum eRealAction act)
       break;
     default:
       LOG2("Invalid action selection: %1.", act);
-      game_.unsetState(stDoAction);
+      game_.unsetState(VGS_DOACTION);
       break;
     }
 }
@@ -244,7 +244,7 @@ void VisuPlayer::update()
   api_->selectPlayer(p_->getId());
 
   // Some action to do ?
-  if (target_action_ != ACT_UNASSIGNED && game_.isStateSet(stDoAction))
+  if (target_action_ != ACT_UNASSIGNED && game_.isStateSet(VGS_DOACTION))
     {
       if (field.mouseInsideField())
         {
@@ -254,7 +254,7 @@ void VisuPlayer::update()
             {
               targetAction(target_action_);
               target_action_ = ACT_UNASSIGNED;
-              game_.unsetState(stDoAction);
+              game_.unsetState(VGS_DOACTION);
               field.removeMarker();
             }
         }
@@ -283,7 +283,7 @@ void VisuPlayer::update()
 
   // Click on player (of _my_ team, on my turn). Select him.
   if (now_focus && !is_selected_ && !has_played_
-      && !game_.isStateSet(stPopupShow) && !game_.isStateSet(stDoAction)
+      && !game_.isStateSet(VGS_SHOWACTIONPOPUP) && !game_.isStateSet(VGS_DOACTION)
       && api_->myTeamId() == p_->getTeamId()
       && (inp.button_pressed_[1] || inp.button_pressed_[3]))
     {
@@ -307,7 +307,7 @@ void VisuPlayer::update()
     finishAction();
   
   // Draw path
-  if (game_.isStateSet(stDoAction)
+  if (game_.isStateSet(VGS_DOACTION)
       && is_selected_
       && target_action_ == ACT_MOVE)
     drawPath();

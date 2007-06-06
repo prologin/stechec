@@ -30,6 +30,7 @@ enum eDlgAction {
   eDlgActFollow,
   eDlgActTouchback,
   eDlgActBlockDice,
+  eDlgActKickOrReceive
 };
 
 /*!
