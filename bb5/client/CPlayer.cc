@@ -50,13 +50,13 @@ int CPlayer::declareAction(enum eDeclaredAction action)
 {
   if (has_played_)
     {
-      LOG2("This player has already played.");
+      LOG2("Player #%1 of team #%2 has already played.", id_, team_id_);
       return INVALID_ACTION;
     }
     
   if (action_ != DCL_UNASSIGNED)
     {
-      LOG2("This player is performing an action.");
+      LOG2("Player #%1 of team #%2 is performing an action.", id_, team_id_);
       return INVALID_ACTION;
     }
   
@@ -81,32 +81,33 @@ int CPlayer::move(const Position& to)
 
   if (status_ != STA_STANDING)
     {
-      LOG2("You are not in a standing position.");
+      LOG2("Player #%1 of team #%2 is not in a standing position. (%3)",
+          id_, team_id_, status_);
       return INVALID_ACTION;
     }
   if (to == pos_)
     {
-      LOG2("You are already on %1", pos_);
+      LOG2("Player #%1 of team #%2 is already at %3.", id_, team_id_, pos_);
       return INVALID_ACTION;
     }
   if (!r_->getField()->intoField(to))
     {
-      LOG2("Trying to move player outside of field: %1", to);
+      LOG2("Trying to move player #%1 of team #%2 outside of field: %3.", id_, team_id_, to);
       return INVALID_ACTION;
     }
   if (has_played_)
     {
-      LOG2("Player has already played this turn");
+      LOG2("Player #%1 of team #%2 has already played this turn.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_UNASSIGNED)
     {
-      LOG2("Player must declare an action before moving");
+      LOG2("Player #%1 of team #%2 must declare an action before moving.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_BLOCK)
     {
-      LOG2("Player can't move in a block action");
+      LOG2("Player #%1 of team #%2 can't move in a block action.", id_, team_id_);
       return INVALID_ACTION;
     }
 
@@ -137,17 +138,17 @@ int CPlayer::standUp()
     return INVALID_ACTION;
   if (has_played_)
     {
-      LOG2("Player has already played this turn");
+      LOG2("Player #%1 of team #%2 has already played this turn.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_UNASSIGNED)
     {
-      LOG2("Player must declare an action before standing up");
+      LOG2("Player #%1 of team #%2 must declare an action before standing up", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_BLOCK)
     {
-      LOG2("Player can't stand up in a block action");
+      LOG2("Player #%1 of team #%2 can't stand up in a block action", id_, team_id_);
       return INVALID_ACTION;
     }
 		
@@ -167,22 +168,22 @@ int CPlayer::block(CPlayer* opponent)
   
   if (has_played_)
     {
-      LOG2("Player has already played this turn");
+      LOG2("Player #%1 of team #%2 has already played this turn.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_UNASSIGNED)
     {
-      LOG2("Player must declare an action before blocking");
+      LOG2("Player #%1 of team #%2 must declare an action before blocking.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_MOVE)
     {
-      LOG2("Player can't block in a move action");
+      LOG2("Player #%1 of team #%2 can't block in a move action.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_PASS)
     {
-      LOG2("Player can't block in a pass action");
+      LOG2("Player #%1 of team #%2 can't block in a pass action.", id_, team_id_);
       return INVALID_ACTION;
     }
       
@@ -197,17 +198,17 @@ int CPlayer::pass(const Position& to)
 {
   if (has_played_)
     {
-      LOG2("Player has already played this turn");
+      LOG2("Player #%1 of team #%2 has already played this turn.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ == DCL_UNASSIGNED)
     {
-      LOG2("Player must declare an action before throwing");
+      LOG2("Player #%1 of team #%2 must declare an action before throwing.", id_, team_id_);
       return INVALID_ACTION;
     }
   if (action_ != DCL_PASS)
     {
-      LOG2("Player must declare a pass action to throw");
+      LOG2("Player #%1 of team #%2 must declare a pass action to throw.", id_, team_id_);
       return INVALID_ACTION;
     }
 	

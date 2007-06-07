@@ -74,7 +74,7 @@ public:
   DialogBoxCb* getActionHandler();
 
   //! @brief Add a block button on the dialog box.
-  //! @param dice_face The face of the dice to display in the range [1-6].
+  //! @param dice_face The face of the dice to display in the range [1-5].
   //! @note Only work with eDlgBoxBlock.
   void addBlockButton(int dice_face);
 

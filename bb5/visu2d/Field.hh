@@ -33,6 +33,9 @@ public:
   VisuField(Game& g);
   virtual ~VisuField();
 
+  //! @brief Check if the mouse is inside the visible game stadium.
+  //! @return @c true if the mouse is inside game stadium.
+  bool mouseInsideStadium() const;
   //! @brief Check if the mouse is inside the visible game field.
   //! @return @c true if the mouse is inside one game square.
   bool mouseInsideField() const;

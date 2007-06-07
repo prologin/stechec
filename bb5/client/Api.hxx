@@ -74,9 +74,9 @@ inline void Api::doAskIllegalProcedure()
 inline int Api::doChooseKickoff(bool kickoff)
 {
   assert(rules_->getState() != GS_WAIT);
-  if (false) //FIXME: Do some checks?
+  if (rules_->getState() != GS_DRAWKICKER)
     {
-      LOG2("You do not have the choice...");
+      LOG2("You do not have the choice of who will kick off. (%1)", gameStateString());
       return INVALID_ACTION;
     }
 
@@ -94,7 +94,8 @@ inline int Api::doPlacePlayer(const Point& pos)
 
   if (rules_->getState() != GS_INITKICKOFF)
     {
-      LOG2("It's not the right moment to end placement. (%1)", gameStateString());
+      LOG2("It's not the right moment to place player #%1 on the field. (%2)",
+          selected_player_->getId(), gameStateString());
       return INVALID_ACTION;
     }
 
@@ -114,7 +115,7 @@ inline int Api::doEndPlacement()
 
   if (rules_->getState() != GS_INITKICKOFF)
     {
-      LOG2("It's not the right moment to end placement. (%1)", gameStateString());
+      LOG2("It's not the right moment to end team placement. (%1)", gameStateString());
       return INVALID_ACTION;
     }
 
@@ -131,21 +132,20 @@ inline int Api::doPlaceBall(const Point& pos)
 
   if (rules_->getState() != GS_KICKOFF)
     {
-      LOG2("This is not the right moment to kick-off the ball. (%1)", gameStateString());
+      LOG2("This is not the right moment to kick the ball. (%1)", gameStateString());
       return INVALID_ACTION;
     }
 
   Position bpos(pos);
   if (!rules_->field_->intoField(bpos))
     {
-      LOG2("Kickoff rejected. Ball not on the field: %1", pos);
+      LOG2("Kick-off rejected. Ball is not into the field: %1.", pos);
       return INVALID_ACTION;
     }
   if ((rules_->getCoachId() == 0 && bpos.row < 13)
       || (rules_->getCoachId() == 1 && bpos.row > 12))
     {
-      LOG2("Kickoff rejected. Ball in your part of the field (%1): %2",
-          selected_team_->getTeamId(),  pos);
+      LOG2("Kick-off rejected. Ball is in your part of the field: %1.", pos);
       return INVALID_ACTION;
     }
   MsgBallPos pkt;
@@ -156,29 +156,30 @@ inline int Api::doPlaceBall(const Point& pos)
   return SUCCESS;
 }
 
-inline int Api::doGiveBall(int p)
+inline int Api::doGiveBall(int player_id)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
 
   if (rules_->getState() != GS_TOUCHBACK)
     {
-      LOG2("There is no touchback.");
+      LOG2("There is no touchback. (%1)", gameStateString());
       return INVALID_ACTION;
     }
 
-  if (getPlayer(p) == NULL)
+  const CPlayer* player = getPlayer(player_id);
+  if (player == NULL)
     {
-      LOG2("Player `%1' does not exist.", p);
+      LOG2("Player `%1' does not exist.", player_id);
       return BAD_PLAYER;
     }
 
-  if (getPlayer(p)->getStatus() != STA_STANDING)
+  if (player->getStatus() != STA_STANDING)
     {
-      LOG2("Player `%1' can't carry the ball.", p);
+      LOG2("Player `%1' can't carry the ball. (%2)", player_id, player->getStatus());
       return INVALID_ACTION;
     }
   MsgGiveBall pkt;
-  pkt.player_id = p;
+  pkt.player_id = player_id;
   rules_->sendPacket(pkt);
   return SUCCESS;
 }
@@ -186,14 +187,14 @@ inline int Api::doGiveBall(int p)
 inline int Api::doReroll(bool reroll)
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+  if (rules_->getState() != GS_REROLL && rules_->getState() != GS_BLOCK)
+    {
+      LOG2("Cannot do reroll nor accept (no dice to reroll). (%1)", gameStateString());
+      return INVALID_ACTION;
+    }
   if (reroll && !selected_team_->canUseReroll())
     {
       LOG2("Cannot use reroll (no one left or already use one this turn).");
-      return INVALID_ACTION;
-    }
-  if (rules_->getState() != GS_REROLL && rules_->getState() != GS_BLOCK)
-    {
-      LOG2("Cannot do reroll nor accept (no dice to reroll).");
       return INVALID_ACTION;
     }
 
@@ -242,7 +243,7 @@ inline int Api::doDeclare(enum eDeclaredAction action)
 
   if (action == DCL_UNASSIGNED)
     {
-      LOG2("You can't declare an empty action.");
+      LOG2("You can't declare an empty action for player #%1.", selected_player_->getId());
       return INVALID_ACTION;
     }
   return rules_->our_team_->declareAction(selected_player_, action);
@@ -253,7 +254,7 @@ inline int Api::doChooseBlockDice(int n)
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   if (rules_->getState() != GS_BLOCK && rules_->getState() != GS_REROLL)
     {
-      LOG2("You do not have the choice...");
+      LOG2("You do not have the choice of which block dice to apply.");
       return INVALID_ACTION;
     }
   if (rules_->getState() == GS_REROLL)
@@ -273,7 +274,7 @@ inline int Api::doBlockPush(int n)
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   if (rules_->getState() != GS_PUSH)
     {
-      LOG2("You do not have the choice...");
+      LOG2("You do not have the choice of which square to push in.");
       return INVALID_ACTION;
     }
   MsgBlockPush msg(rules_->our_team_->getTeamId());
@@ -287,7 +288,7 @@ inline int Api::doFollow(bool follow)
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
   if (rules_->getState() != GS_FOLLOW)
     {
-      LOG2("You do not have the choice...");
+      LOG2("You do not have the choice to follow or not.");
       return INVALID_ACTION;
     }
   MsgFollow msg(rules_->our_team_->getTeamId());

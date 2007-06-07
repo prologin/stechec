@@ -61,10 +61,16 @@ VisuField::~VisuField()
 {
 }
 
+bool VisuField::mouseInsideStadium() const
+{
+  Rect render(getPos(), getScreenRect().getSize());
+  return render.inside(g_.getInput().mouse_);
+}
+
 bool VisuField::mouseInsideField() const
 {
   Point sq(mouseToSquare());
-  return sq.x >= 0 && sq.x < COLS && sq.y >= 0 && sq.y < ROWS;
+  return mouseInsideStadium() && sq.x >= 0 && sq.x < COLS && sq.y >= 0 && sq.y < ROWS;
 }
 
 Point VisuField::mouseToSquare() const
@@ -220,7 +226,7 @@ void VisuField::update()
   if (g_.isStateSet(VGS_DOKICKOFF))
     {
       Point square(mouseToSquare());
-      ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
+      ball_.setPos(inp.mouse_ - Point(getScreenRect()) - Point(30, 30));
       ball_.show();
 
       if (mouseInsideField())
@@ -233,7 +239,7 @@ void VisuField::update()
           
           if (inp.button_pressed_[1])
             {
-              LOG(4, "Try to place the ball at " << square);
+              LOG5("Try to place the ball at %1.", square);
               if (!g_.getApi()->doPlaceBall(square))
                 {
                   ball_.setPos(squareToField(square, Point(10, 10)));
@@ -253,7 +259,7 @@ void VisuField::update()
   if (g_.isStateSet(VGS_DOTOUCHBACK))
     {
       Point square(mouseToSquare());
-      ball_.setPos(g_.getInput().mouse_ - Point(getScreenRect()) - Point(30, 30));
+      ball_.setPos(inp.mouse_ - Point(getScreenRect()) - Point(30, 30));
       ball_.show();
 
       const CPlayer* p = g_.getApi()->getPlayer(square);

@@ -182,6 +182,7 @@ inline const char* Game::stringify(enum eVisuGameState s)
     case VGS_WAITPLAY:          return "VGS_WAITPLAY"; break;
     case VGS_NOTHING:           return "VGS_NOTHING"; break;
   }
+  return "VGS_UNDEFINED";
 }
 
 
@@ -394,7 +395,6 @@ void Game::evPlayerStatus(int team_id, int player_id, enum eStatus)
   assert(p != NULL);
 
   p->updateStatus();
-  p->update();
 }
 
 void Game::evBallPos(const Point& pos)
@@ -426,7 +426,7 @@ void Game::evGiveBall(int team_id, int player_id)
     else
     {
       game_dlg_->push(eDlgActInfo);
-      game_dlg_->setText("Touchback! Wait that other team choose to which to give ball");
+      game_dlg_->setText("Touchback! Wait other coach to give the ball.");
     }
   }
   else
@@ -574,8 +574,8 @@ int Game::run()
   DialogBox test_dg2(*this, eDlgBoxBlock, eDlgError);
   test_dg2.setText("Mais non, il n'y a pas (encore) d'erreur.");
   test_dg2.setPos(150, 50);
-  test_dg2.addBlockButton(2);
-  test_dg2.addBlockButton(6);
+  test_dg2.addBlockButton(BATTACKER_DOWN);
+  test_dg2.addBlockButton(BDEFENDER_DOWN);
 
   
   // Sit back and see what's happening...

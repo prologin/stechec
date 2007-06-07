@@ -161,7 +161,7 @@ void DialogBox::addBlockButton(int picture_index)
   assert(button_.size() < 3);
 
   btn_block = new Sprite("image/dialog/block_dices.jpg");
-  btn_block->splitNbFrame(6, 1);
+  btn_block->splitNbFrame(5, 1);
   btn_block->setFrame(picture_index);
   btn_block->setZ(6);
   btn_block->setPos(37 + 60 * button_.size(), 40);
