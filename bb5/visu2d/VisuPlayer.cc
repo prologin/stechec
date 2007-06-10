@@ -257,6 +257,12 @@ void VisuPlayer::update()
               game_.unsetState(VGS_DOACTION);
               field.removeMarker();
             }
+          else if (inp.button_pressed_[3])
+            {
+              target_action_ = ACT_UNASSIGNED;
+              game_.unsetState(VGS_DOACTION);
+              field.removeMarker();
+            }
         }
       else
         field.removeMarker();
@@ -269,7 +275,7 @@ void VisuPlayer::update()
   // Mouse moves on player.
   if (!has_focus_ && now_focus)
     {
-      if (p_->getTeamId() == api_->myTeamId())
+      if (p_->getTeamId() == api_->myTeamId() && !game_.isStateSet(VGS_SHOWDLGBOX))
         circle_.anim(200);
       game_.getPanel().displayPlayerInfo(p_->getTeamId(), p_->getId());
     }
@@ -283,7 +289,7 @@ void VisuPlayer::update()
 
   // Click on player (of _my_ team, on my turn). Select him.
   if (now_focus && !is_selected_ && !has_played_
-      && !game_.isStateSet(VGS_SHOWACTIONPOPUP) && !game_.isStateSet(VGS_DOACTION)
+      && game_.isStateSet(VGS_DOPLAY)
       && api_->myTeamId() == p_->getTeamId()
       && (inp.button_pressed_[1] || inp.button_pressed_[3]))
     {
