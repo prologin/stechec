@@ -348,14 +348,17 @@ void VisuPlayer::updateStatus()
         case STA_KO:
           status_.setFrame(3);
           status_.show();
+          setPos(Point(654, ((p_->getTeamId() == 1) ? 277 : 737)));
           break;
         case STA_INJURED:
           status_.setFrame(4);
           status_.show();
+          setPos(Point(654, ((p_->getTeamId() == 1) ? 177 : 837)));
           break;
         case STA_SENTOFF:
           status_.setFrame(5);
           status_.show();
+          setPos(Point(654, ((p_->getTeamId() == 1) ? 77 : 937)));
           break;
         case STA_STANDING:
           if (api_->getBallOwner() == p_)

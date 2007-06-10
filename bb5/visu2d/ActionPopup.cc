@@ -188,6 +188,13 @@ void ActionPopup::update()
       VirtualSurface::update();
       return;
     }
+
+  // Update associated player (so that it can prepare actions menu),
+  // before to update actions menu
+  if (game_.isStateSet(VGS_SHOWACTIONPOPUP)
+      || game_.isStateSet(VGS_DOACTION)
+      || game_.isStateSet(VGS_DOPLAY))
+    vp_->update();
   
   // If right-click anywhere.
   if ((game_.isStateSet(VGS_DOPLAY) || game_.isStateSet(VGS_SHOWACTIONPOPUP))
