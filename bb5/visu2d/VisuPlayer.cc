@@ -152,7 +152,8 @@ void VisuPlayer::declareAction(enum eDeclaredAction dcl)
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
 
-  LOG2("Select declaration: %1.", Player::stringify(dcl));
+  LOG2("Select declaration `%1' for player `%2' of team `%3'.",
+      Player::stringify(dcl), p_->getId(), p_->getTeamId());
   api_->doDeclare(dcl);
 }
 
@@ -180,7 +181,8 @@ void VisuPlayer::selectAction(enum eRealAction act)
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
 
-  LOG2("Select action: %1.", Player::stringify(act));
+  LOG2("Select action `%1' for player `%2' of team `%3'.",
+      Player::stringify(act), p_->getId(), p_->getTeamId());
   game_.setState(VGS_DOACTION);
   
   switch (act)
@@ -204,6 +206,9 @@ void VisuPlayer::targetAction(enum eRealAction act)
 
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
+
+  LOG2("Do action `%1' for player `%2' of team `%3'.",
+      Player::stringify(act), p_->getId(), p_->getTeamId());
 
   switch (act)
   {
@@ -244,7 +249,7 @@ void VisuPlayer::update()
   api_->selectPlayer(p_->getId());
 
   // Some action to do ?
-  if (target_action_ != ACT_UNASSIGNED && game_.isStateSet(VGS_DOACTION))
+  if (is_selected_ && target_action_ != ACT_UNASSIGNED && game_.isStateSet(VGS_DOACTION))
     {
       if (field.mouseInsideField())
         {
@@ -373,6 +378,7 @@ void VisuPlayer::updateStatus()
         case STA_RESERVE:
         default:
           status_.hide();
+          setPos(Point(654, ((p_->getTeamId() == 1) ? 377 : 637)));
           break;
       }
 }

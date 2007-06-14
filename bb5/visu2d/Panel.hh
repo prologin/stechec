@@ -57,6 +57,7 @@ private:
   TextSurface   name_;
   TextSurface   position_;
   TextSurface   ma_;
+  TextSurface   mar_;
   TextSurface   st_;
   TextSurface   ag_;
   TextSurface   av_;

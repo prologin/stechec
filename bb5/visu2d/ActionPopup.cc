@@ -197,11 +197,14 @@ void ActionPopup::update()
     vp_->update();
   
   // If right-click anywhere.
-  if ((game_.isStateSet(VGS_DOPLAY) || game_.isStateSet(VGS_SHOWACTIONPOPUP))
+  if ((game_.isStateSet(VGS_SHOWACTIONPOPUP)
+        || game_.isStateSet(VGS_DOACTION)
+        || game_.isStateSet(VGS_DOPLAY))
       && input.button_pressed_[3])
     {
       setPos(std::min(input.mouse_.x, max_pos.x), std::min(input.mouse_.y, max_pos.y));
-      show();
+      if (!game_.isStateSet(VGS_SHOWACTIONPOPUP))
+        show();
     }
 
   // If left-click outside of popup menu.
@@ -241,7 +244,7 @@ void ActionPopup::update()
     }
 
   // Highlight of menu.
-  if (have_focus)
+  if (have_focus && game_.isStateSet(VGS_SHOWACTIONPOPUP))
     {
       for (int i = 0; i < displayed_items_nb_; i++)
         if (i == index)

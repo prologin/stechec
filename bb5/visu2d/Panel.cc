@@ -28,11 +28,12 @@ Panel::Panel(Game& g)
     wheel_("image/panel/wheels.png"),
     name_("Bobtag.ttf", 24, 200, 40),
     position_("Bobtag.ttf", 16, 150, 40),
-    ma_("Bobtag.ttf", 32, 50, 45),
-    st_("Bobtag.ttf", 32, 60, 45),
-    ag_("Bobtag.ttf", 32, 80, 45),
-    av_("Bobtag.ttf", 32, 80, 50),
-    misc_("Bobtag.ttf", 32, 80, 50),
+    ma_("Bobtag.ttf", 32, 80, 40),
+    mar_("Bobtag.ttf", 16, 40, 20),
+    st_("Bobtag.ttf", 32, 80, 40),
+    ag_("Bobtag.ttf", 32, 80, 40),
+    av_("Bobtag.ttf", 32, 80, 40),
+    misc_("Bobtag.ttf", 32, 80, 90),
     skills_("Bobtag.ttf", 16, 100, 80)
 {
   setPos(Point(500, 0));
@@ -62,6 +63,11 @@ Panel::Panel(Game& g)
   ma_.setTextColor(whitesmoke_color);
   ma_.hide();
   addChild(&ma_);
+
+  mar_.setPos(245, 145);
+  mar_.setTextColor(whitesmoke_color);
+  mar_.hide();
+  addChild(&mar_);
 
   st_.setPos(215, 180);
   st_.setTextColor(whitesmoke_color);
@@ -145,6 +151,11 @@ void Panel::displayPlayerInfo(int team_id, int player_id)
   ma_.show();
   os.str("");
 
+  os << p->getMaRemain();
+  mar_.setText(os.str());
+  mar_.show();
+  os.str("");
+
   os << p->getSt();
   st_.setText(os.str());
   st_.show();
@@ -179,6 +190,7 @@ void Panel::hidePlayerInfo()
   name_.hide();
   position_.hide();
   ma_.hide();
+  mar_.hide();
   st_.hide();
   ag_.hide();
   av_.hide();
