@@ -28,11 +28,11 @@ Panel::Panel(Game& g)
     wheel_("image/panel/wheels.png"),
     name_("Bobtag.ttf", 24, 200, 40),
     position_("Bobtag.ttf", 16, 150, 40),
-    ma_("Bobtag.ttf", 32, 80, 40),
-    mar_("Bobtag.ttf", 16, 40, 20),
-    st_("Bobtag.ttf", 32, 80, 40),
-    ag_("Bobtag.ttf", 32, 80, 40),
-    av_("Bobtag.ttf", 32, 80, 40),
+    ma_("Bobtag.ttf", 32, 60, 45),
+    mar_("Bobtag.ttf", 16, 60, 45),
+    st_("Bobtag.ttf", 32, 60, 45),
+    ag_("Bobtag.ttf", 32, 60, 45),
+    av_("Bobtag.ttf", 32, 60, 45),
     misc_("Bobtag.ttf", 32, 80, 90),
     skills_("Bobtag.ttf", 16, 100, 80)
 {

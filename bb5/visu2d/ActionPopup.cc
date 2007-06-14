@@ -203,6 +203,8 @@ void ActionPopup::update()
       && input.button_pressed_[3])
     {
       setPos(std::min(input.mouse_.x, max_pos.x), std::min(input.mouse_.y, max_pos.y));
+      if (game_.isStateSet(VGS_DOACTION))
+        game_.unsetState(VGS_DOACTION);
       if (!game_.isStateSet(VGS_SHOWACTIONPOPUP))
         show();
     }
