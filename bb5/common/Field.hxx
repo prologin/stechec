@@ -146,7 +146,7 @@ inline bool Field<T>::hasAdjacentEmptySquare(const Position& pos) const
 {
   Position next_square;
   enum eDirection dir;
-  for (dir = DIR_LAST; dir = static_cast<enum eDirection>(dir - 1); dir > DIR_UNASSIGNED)
+  for (dir = DIR_LAST; dir > DIR_UNASSIGNED; dir = static_cast<enum eDirection>(dir - 1))
     {
       next_square = pos + dirToPos(dir);
       if (intoField(next_square)
@@ -162,7 +162,7 @@ inline PosList Field<T>::getAdjacentEmptySquares(const Position& pos) const
   PosList squares;
   Position next_square;
   enum eDirection dir;
-  for (dir = DIR_LAST; dir = static_cast<enum eDirection>(dir - 1); dir > DIR_UNASSIGNED)
+  for (dir = DIR_LAST; dir > DIR_UNASSIGNED; dir = static_cast<enum eDirection>(dir - 1))
     {
       next_square = pos + dirToPos(dir);
       if (intoField(next_square)
@@ -176,7 +176,7 @@ template <typename T>
 inline bool Field<T>::hasAdjacentPlayer(const Position& pos) const
 {
   enum eDirection dir;
-  for (dir = DIR_LAST; dir = static_cast<enum eDirection>(dir - 1); dir > DIR_UNASSIGNED)
+  for (dir = DIR_LAST; dir > DIR_UNASSIGNED; dir = static_cast<enum eDirection>(dir - 1))
     {
       if (getPlayer(pos + dirToPos(dir)) != NULL)
         return true;
@@ -189,7 +189,7 @@ inline bool Field<T>::hasAdjacentPlayer(const Position& pos, enum eStatus s, int
 {
   T* player;
   enum eDirection dir;
-  for (dir = DIR_LAST; dir = static_cast<enum eDirection>(dir - 1); dir > DIR_UNASSIGNED)
+  for (dir = DIR_LAST; dir > DIR_UNASSIGNED; dir = static_cast<enum eDirection>(dir - 1))
     {
       player = getPlayer(pos + dirToPos(dir));
       if (player != NULL
@@ -206,7 +206,7 @@ inline std::vector<T*> Field<T>::getAdjacentPlayers(const Position& pos) const
   std::vector<T*> neighbours;
   T* player;
   enum eDirection dir;
-  for (dir = DIR_LAST; dir = static_cast<enum eDirection>(dir - 1); dir > DIR_UNASSIGNED)
+  for (dir = DIR_LAST; dir > DIR_UNASSIGNED; dir = static_cast<enum eDirection>(dir - 1))
     {
       player = getPlayer(pos + dirToPos(dir));
       if (player != NULL)
@@ -221,7 +221,7 @@ inline std::vector<T*> Field<T>::getAdjacentPlayers(const Position& pos, enum eS
   std::vector<T*> neighbours;
   T* player;
   enum eDirection dir;
-  for (dir = DIR_LAST; dir = static_cast<enum eDirection>(dir - 1); dir > DIR_UNASSIGNED)
+  for (dir = DIR_LAST; dir > DIR_UNASSIGNED; dir = static_cast<enum eDirection>(dir - 1))
     {
       player = getPlayer(pos + dirToPos(dir));
       if (player != NULL
