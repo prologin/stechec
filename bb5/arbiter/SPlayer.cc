@@ -14,11 +14,13 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "Dice.hh"
-#include "SRules.hh"
 #include "SPlayer.hh"
-#include "SPlayerMsg.hh"
+
 #include "SActionHandler.hh"
+#include "SBall.hh"
+#include "SPlayerMsg.hh"
+#include "SRules.hh"
+#include "STeam.hh"
 
 SPlayer::SPlayer(SRules* r, const MsgPlayerCreate* m, STeam* t, SPlayerMsg* pm)
   : Player(m),

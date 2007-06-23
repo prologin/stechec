@@ -14,6 +14,8 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "STeam.hh"
+
 inline void SRules::sendIllegal(int token, int from) const
 {
   sendIllegal(token, from, ERR_UNASSIGNED);

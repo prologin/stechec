@@ -23,6 +23,7 @@ class CRules;
 
 /*!
 ** Player class for client.
+** @ingroup tbt_client_api
 */
 class CPlayer : public Player
 {

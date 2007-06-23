@@ -1,0 +1,10 @@
+/*!
+** @defgroup tbt_cli Command Line Interface
+** @brief Located in @c bb5/console directory.
+** @ingroup tbt
+*/
+
+/*!
+** @dir bb5/console
+** @brief Contains \ref tbt_cli module.
+*/

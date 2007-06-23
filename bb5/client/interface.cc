@@ -19,6 +19,7 @@
 // FIXME: declare me.
 extern Api* api;
 
+// FIXME: keep this wrapper up-to-date with Api.hh.
 extern "C" {
 
 int my_team_id()

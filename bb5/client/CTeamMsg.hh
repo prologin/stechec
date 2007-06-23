@@ -1,6 +1,3 @@
-
-
-
 /*
 ** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
 **
@@ -24,6 +21,7 @@
 
 /*!
 ** @brief Handle messages for CTeam objects.
+** @ingroup tbt_client_api
 **
 ** There is a single instance of this class, that dispatch
 ** message to the good CTeam object.

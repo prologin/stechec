@@ -25,7 +25,8 @@
 BEGIN_NS(xml);
 
 /*!
-** @brief Our internal utilization of xercesc.
+** @brief Our internal utilisation of Xerces-C++.
+** @ingroup tools_xml
 */
 class XMLInternal
 {

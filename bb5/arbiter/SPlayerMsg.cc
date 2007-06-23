@@ -14,8 +14,9 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "SRules.hh"
 #include "SPlayerMsg.hh"
+
+#include "SPlayer.hh"
 
 SPlayerMsg::SPlayerMsg(SRules* r)
   : r_(r)

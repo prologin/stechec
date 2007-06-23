@@ -29,9 +29,9 @@ template <typename T> TPoint<T> operator* (const TPoint<T>&, double factor);
 template <typename T> TPoint<T> operator/ (const TPoint<T>&, T factor);
 template <typename T> std::ostream& operator<< (std::ostream&, const TPoint<T>&);
 
-
 /*!
-** Handy class to describe a point in x-y coordinate, for GUIs.
+** @brief Handy class to describe a point in x-y coordinate, for GUIs.
+** @ingroup tools_misc
 **
 ** Conversion from/to Position are made implicit, to avoid mistake.
 */
@@ -72,7 +72,9 @@ public:
   T y;  ///< Y coordinate (vertical).
 };
 
+//! @ingroup tools_misc
 typedef TPoint<int>     Point;
+//! @ingroup tools_misc
 typedef TPoint<double>  DPoint;
 
 # include "misc/Position.hh"

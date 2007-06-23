@@ -15,14 +15,17 @@
     */
 
 #ifndef LABELENTRY_H
-#define LABELENTRY_H
+# define LABELENTRY_H
 
-#include "Global.hh"
-#include "GuiError.hh"
-#include "Widget.hh"
-#include "Label.hh"
-#include "Entry.hh"
+# include "Global.hh"
+# include "GuiError.hh"
+# include "Widget.hh"
+# include "Label.hh"
+# include "Entry.hh"
 
+/*!
+** @ingroup tbt_2d_gui
+*/
 class LabelEntry : public Widget
 {
   Label* label;

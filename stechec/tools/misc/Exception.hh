@@ -20,6 +20,7 @@
 # include <string>
 # include <sstream>
 
+//! @ingroup tools_misc
 class Exception
 {
 public:

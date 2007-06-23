@@ -14,9 +14,12 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "SRules.hh"
-#include "SPlayerMsg.hh"
 #include "STeam.hh"
+
+#include "SActionHandler.hh"
+#include "SPlayer.hh"
+#include "SPlayerMsg.hh"
+#include "SRules.hh"
 
 STeam::STeam(int team_id, SRules* r, SPlayerMsg* pm)
   : Team<SPlayer>(team_id),

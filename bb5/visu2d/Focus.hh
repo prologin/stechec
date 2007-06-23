@@ -14,14 +14,16 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-
 #ifndef FOCUS_H
-#define FOCUS_H
+# define FOCUS_H
 
-#include "Widget.hh"
+# include "Widget.hh"
 
 class Widget;
 
+/*!
+** @ingroup tbt_2d_gui
+*/
 class Focus
 {
   Widget* focus;
@@ -32,4 +34,5 @@ class Focus
   Widget* get_focus();
   void set_focus(Widget* widget);
 };
+
 #endif /*FOCUS_H*/

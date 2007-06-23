@@ -17,6 +17,7 @@
 #ifndef STL_HH_
 # define STL_HH_
 
+//! @ingroup tools_misc
 struct Deleter
 {
   template<class T>
@@ -27,6 +28,7 @@ struct Deleter
   }
 };
 
+//! @ingroup tools_misc
 struct ArrayDeleter
 {
   template<class T>
@@ -37,6 +39,7 @@ struct ArrayDeleter
   }
 };
 
+//! @ingroup tools_misc
 inline std::string trim(const std::string& s)
 {
   if (s.length() == 0)
@@ -48,7 +51,8 @@ inline std::string trim(const std::string& s)
   return std::string(s, b, e - b + 1);
 }
 
-// std::for_each with less typing.
+//! @brief Implements std::for_each with less typing.
+//! @ingroup tools_misc
 template <typename Collection, typename Function>
 inline Function for_all(Collection &c, const Function &f) 
 {

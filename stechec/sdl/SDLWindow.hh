@@ -17,39 +17,6 @@
 #ifndef SDLWINDOW_HH_
 # define SDLWINDOW_HH_
 
-/*!
-** @defgroup sdl_base C++ wrapper for SDL.
-**
-** This module basicly defines a wrapper in C++, but it turns out that
-** this is an (almost) complete SDL engine.  It provides:
-** - resouces (picture, fonts) loading and caching
-** - encapsulation of all basic SDL functions in C++ classes
-** - creation of a SDL Window described by an xml file
-** - hierachical handling of surfaces
-** - handling IOLoop, updating and rendering surfaces are done automatically
-** - provides more high-level functions (like sprite animation)
-**
-** Thus, the module's user doesn't have to care with SDL low-level
-** details. The downside is that does things quite differently than
-** SDL (is does it the way this module writer wanted), and may
-** contains lots of bugs. It is mainly targeted to do what is needed,
-** but with little adaptation it can be used everywhere SDL drawing is
-** required.
-** 
-** A more complete documentation is available (in french) in in
-** propal.pdf. All sources and headers files are located in @c
-** stechec/sdl
-**
-** Some examples are available through this documentation, and
-** there are some more working examples in @c stechec/sdl/test
-**
-*/
-
-/*!
-** @file SDLWindow.hh
-** @ingroup sdl_base
-*/
-
 # include "tools.hh"
 
 # include "ResourceCenter.hh"
@@ -59,8 +26,8 @@
 namespace xml { class XMLConfig; }
 
 /*!
-** @ingroup sdl_base
 ** @brief Manage SDL Window.
+** @ingroup sdl_base
 **
 ** Manage creation of a SDL Window and collect its events into Input class.
 **

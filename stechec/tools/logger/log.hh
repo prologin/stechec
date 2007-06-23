@@ -17,51 +17,13 @@
 #ifndef LOG_HH_
 # define LOG_HH_
 
-/*! @file log.hh
-**
-** This module could be used to log debug and error message into a
-** c++ iostream (usually @p std::cerr). This is still experimental, and
-** could be changed in the futur. It is designed to be thread-safe, and could
-** log each thread in a separate ostream.
-**
-** Currently, it could log only into @p std::cerr.
-**
-** To use it, define the following macro to your compilator:
-** @code
-** -DMODULE_NAME=\"server\"  // Name of your module (eg: server).
-** -DMODULE_COLOR=C_GREEN    // Color to use.
-** @endcode
-**
-**
-** Then, somewhere in your code, keep a Log object per thread. If you
-** don't do this, it will happily segfault. (hint: put it at the beginning
-** of your main() and thread starting functions).
-** @code
-** Log log(3);         // Verbose level to 3.
-** log.setPrintLoc();
-** @endcode
-**
-** Now, you are ready to use it ! Only thinks that LOG1 or other macros
-** will be replaced by 'std::cout <<'
-** @code
-** int foo() {
-**   LOG1("hello " << 42 << " world!");
-**   while (true) ;
-**   ERR("Your computer stinks.");
-** }
-** @endcode
-**
-** The module name will be printed into bracket before each line. Beware, the
-** the printed module name will reflect which compilation unit possess it, and
-** may not reflect the source directory module. This is only true for LOG
-** in headers.
-*/
+# include <cassert>
+# include <iostream>
+# include "misc/compose.hpp"
 
-#include <cassert>
-#include <iostream>
-#include "misc/compose.hpp"
-
-/*! @brief Application logger
+/*!
+** @brief Application logger
+** @ingroup tools_log
 **
 ** @author victor
 ** @date 21/01/2006
@@ -78,7 +40,7 @@ public:
   //! @brief Directly change the verbosity mask.
   //! @param mask The mask to apply (eg: 0x06 activate level 1
   //! and 2, but not level 0).
-  //! @note This function is mostly useless, only using \c setVerboseLevel is fine.
+  //! @note This function is mostly useless, only using @c setVerboseLevel is fine.
   void setVerboseMask(int mask);
   //! @brief Set a string to display right after module name, into the braces.
   //! @param name Set it to NULL if you don't want a suffix.
@@ -121,6 +83,9 @@ inline std::ostream& Log::getStream()
 {
   return std::cerr;
 }
+
+//! @ingroup tools_log
+//! @{
 
 // Set default MODULE_NAME and MODULE_COLOR, in case they are not provided.
 # ifndef MODULE_NAME
@@ -206,5 +171,7 @@ do {                                                                            
 # define LOG4(Msg...) LOG(5, String::compose(Msg))
 # define LOG5(Msg...) LOG(6, String::compose(Msg))
 # define LOG6(Msg...) LOG(7, String::compose(Msg))
+
+//! @}
 
 #endif /* !LOG_H_ */

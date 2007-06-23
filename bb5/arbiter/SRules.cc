@@ -14,17 +14,23 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "SRules.hh"
+
 #include "Constants.hh"
 #include "Dice.hh"
-#include "SRules.hh"
-#include "STeamMsg.hh"
+#include "SActionHandler.hh"
+#include "SBall.hh"
+#include "SPlayer.hh"
 #include "SPlayerMsg.hh"
+#include "STeam.hh"
+#include "STeamMsg.hh"
+#include "SWeather.hh"
 #include "xml/xml_config.hh"
 
 // 8 turns per turn.
-#define NB_TURNS 8
+# define NB_TURNS 8
 // 4 min. per turn.
-#define TIME_PER_TURN (4 * 60)
+# define TIME_PER_TURN (4 * 60)
 
 SRules::SRules()
   : cur_turn_(0),

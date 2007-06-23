@@ -35,7 +35,8 @@ class Weather;
 class CTeamMsg;
 class CPlayerMsg;
 
-//! @brief Constants for switchTeam().
+//! @brief Constants for Api::selectTeam() parameter.
+//! @ingroup tbt_client_api
 enum eSelTeam {
   TEAM1 = 0,    ///< Get information on team 1.
   TEAM2,        ///< Get information on team 2.
@@ -45,6 +46,7 @@ enum eSelTeam {
 
 /*!
 ** @brief Rules implementation for the client.
+** @ingroup tbt_client_api
 */
 class CRules : public BaseCRules
 {

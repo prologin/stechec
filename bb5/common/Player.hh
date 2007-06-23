@@ -17,22 +17,22 @@
 #ifndef PLAYER_HH_
 # define PLAYER_HH_
 
-/*!
-** @file bb5/common/Player.hh
-** @ingroup rules
-*/
-
-# include "PacketHandler.hh"
 # include "Constants.hh"
 # include "Field.hh"
+# include "PacketHandler.hh"
 
-// Hard limit of move/skill number, for a single packet.
+//! Maximum number of moves for a single MsgMove packet.
+//! @ingroup tbt_rules
 const int MAX_MOVE = 16;
+
+//! Maximum number of skills for a single MsgPlayerCreate packet.
+//! @ingroup tbt_rules
 const int MAX_SKILL = 16;
 
 /*!
 ** @struct MsgDeclare
 ** @brief Declare a Player action.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_DECLARE, MsgDeclare)
@@ -43,6 +43,7 @@ END_PACKET;
 /*!
 ** @struct MsgMove
 ** @brief A Player moves of one or several squares.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_MOVE, MsgMove)
@@ -57,6 +58,7 @@ END_PACKET;
 /*!
 ** @struct MsgStandUp
 ** @brief A Player stands up.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_STANDUP, MsgStandUp)
@@ -66,6 +68,7 @@ END_PACKET;
 /*!
 ** @struct MsgBlock
 ** @brief Player blocks an opponent.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_BLOCK, MsgBlock)
@@ -76,6 +79,7 @@ END_PACKET;
 /*!
 ** @struct MsgBlockPush
 ** @brief A Player pushes another Player, due to a block.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_BLOCKPUSH, MsgBlockPush)
@@ -92,6 +96,7 @@ END_PACKET;
 /*!
 ** @struct MsgMultiBlock
 ** @brief FIXME: NOT IMPLEMENTED. For extra rules.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_MULTIBLOCK, MsgMultiBlock)
@@ -103,6 +108,7 @@ END_PACKET;
 /*!
 ** @struct MsgPass
 ** @brief A Player throws the ball.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_PASS, MsgPass)
@@ -114,6 +120,7 @@ END_PACKET;
 /*!
 ** @struct MsgPlayerCreate
 ** @brief Create a Player at the very beginning of the game.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_PLAYERCREATE, MsgPlayerCreate)
@@ -133,6 +140,7 @@ END_PACKET;
 /*!
 ** @struct MsgPlayerPos
 ** @brief Player Position changed.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_PLAYERPOS, MsgPlayerPos)
@@ -144,6 +152,7 @@ END_PACKET;
 /*!
 ** @struct MsgPlayerKnocked
 ** @brief A Player is knocked down to the ground.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_PLAYERKNOCKED, MsgPlayerKnocked);
@@ -153,6 +162,7 @@ END_PACKET;
 /*!
 ** @struct MsgPlayerStatus
 ** @brief Player status changed.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_PLAYERSTATUS, MsgPlayerStatus);
@@ -163,6 +173,7 @@ END_PACKET;
 /*!
 ** @struct MsgPlayerKO
 ** @brief A KO'd Player tries to wakes up, during a break time.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_PACKET(MSG_PLAYERKO, MsgPlayerKO);
@@ -173,6 +184,7 @@ END_PACKET;
 /*!
 ** @struct MsgResult
 ** @brief Dice roll result associated to a Player, often agility roll.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_PACKET(MSG_RESULT, MsgResult)
@@ -189,6 +201,7 @@ END_PACKET;
 /*!
 ** @struct MsgBlockResult
 ** @brief Block dices roll result.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_PACKET(MSG_BLOCKRESULT, MsgBlockResult)
@@ -203,6 +216,7 @@ END_PACKET;
 /*!
 ** @struct MsgBlockDice
 ** @brief Coach chooses a block dice roll result.
+** @ingroup tbt_rules
 ** Client -> Server.
 */
 DECLARE_PACKET(MSG_BLOCKDICE, MsgBlockDice)
@@ -212,6 +226,7 @@ END_PACKET;
 /*!
 ** @struct MsgFollow
 ** @brief Attacker follows the defender after having pushed him.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_FOLLOW, MsgFollow)
@@ -225,6 +240,7 @@ END_PACKET;
 /*!
 ** @struct MsgSkill
 ** @brief A player use one of his skill.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_SKILL, MsgSkill)
@@ -238,11 +254,9 @@ DECLARE_PACKET(MSG_SKILL, MsgSkill)
   int choice;
 END_PACKET;
 
-
 /*!
-** @ingroup rules
-** @brief Base class describing a player.
-**
+** @brief Base class describing a BB player.
+** @ingroup tbt_rules
 */
 class Player
 {

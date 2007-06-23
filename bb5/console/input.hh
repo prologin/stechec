@@ -22,6 +22,7 @@ class CmdLineInterface;
 
 /*!
 ** @brief Quick and light command line processer.
+** @ingroup tbt_cli
 */
 class Input
 {
@@ -35,7 +36,7 @@ public:
   bool process();
 
   ///! @brief Process a command.
-  ///! @param s The command line, without trailing '\n'.
+  ///! @param s The command line, without trailing '\\n'.
   void processCommand(const std::string& s);
 
   ///! @brief Wants exit, next call to process() will return true.

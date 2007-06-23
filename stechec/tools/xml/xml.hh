@@ -21,7 +21,10 @@ BEGIN_NS(xml);
 
 class XMLInternal;
 
-//! @brief Class thrown on error.
+/*!
+** @brief Class thrown on error.
+** @ingroup tools_xml
+*/
 class XMLError : public Exception
 {
 public:
@@ -29,9 +32,10 @@ public:
 };
 
 /*!
-** @brief Application interface for XML document reading/writing.
+** @brief Application interface for %XML document reading/writing.
+** @ingroup tools_xml
 **
-** This class can manage a very small subset of XML domain.
+** This class can manage a very small subset of %XML domain.
 ** Indeed, this is all TBT requires, to keep the code using it as
 ** simple as possible.
 **
@@ -43,7 +47,7 @@ public:
 ** Do not instanciate this class directly, use XML*, which have more
 ** knowledge about the document you access.
 **
-** @see There are some examples of its usage in stechec/tools/xml_test.
+** @see There are some examples of its usage in @c stechec/tools/xml_test directory.
 **
 ** @author victor
 ** @date 21/01/2006
@@ -70,8 +74,8 @@ public:
   
   //! @brief Get a text value. (ex: @verbatim<roll>2</rool>@endverbatim, return "2").
   //! @param node_name The node to get text from. (from the exemple above, "roll").
-  //! @return Return the value of the desired type. Currently, \c int, \c bool, and
-  //    \c string are supported.
+  //! @return Return the value of the desired type. Currently, @c int, @c bool, and
+  //    @c string are supported.
   template <typename T>
   T getData(const std::string& node_name, int index = 0) const;
 
@@ -86,14 +90,14 @@ public:
 	    const std::string& attr_name,
 	    int index = 0) const;
 
-  //! @brief Replace text of node \c node_name by \c value. It creates a
-  //! new node if \c node_name is not found.
+  //! @brief Replace text of node @c node_name by @c value. It creates a
+  //! new node if @c node_name is not found.
   template <typename T>
   void setData(const std::string& node_name,
 	       const T& value);
 
-  //! @brief Replace an attribute of the node \c node_name by \c value. It
-  //!   create a new attribute if \c node_name is not found.
+  //! @brief Replace an attribute of the node @c node_name by @c value. It
+  //!   create a new attribute if @c node_name is not found.
   template <typename T>
   void setAttr(const std::string& node_name,
 	       const std::string& attr_name,
@@ -118,7 +122,6 @@ private:
   static int inst_count_;
   mutable int append_node_;
 };
-
 
 END_NS(xml);
 

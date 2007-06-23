@@ -24,6 +24,8 @@ BEGIN_NS(sdlvisu);
 
 class Game;
 
+//! @brief Dialog box type identifier.
+//! @ingroup tbt_2d_gui
 enum eDlgAction {
   eDlgActInfo,
   eDlgActReroll,
@@ -35,6 +37,7 @@ enum eDlgAction {
 
 /*!
 ** Handles all game dialog boxes
+** @ingroup tbt_2d_gui
 */
 class ActionDlg
 {

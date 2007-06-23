@@ -14,8 +14,6 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "tools.hh"
-#include "BaseRules.hh"
 #include "Dice.hh"
 
 Dice::Dice(BaseRules* r)

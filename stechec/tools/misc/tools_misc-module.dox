@@ -1,0 +1,13 @@
+/*!
+** @defgroup tools_misc Miscellaneous Tools
+** @brief Located in @c stechec/tools/misc directory.
+** @ingroup tools
+**
+** There is Position, a tiny Point class, that should be useful
+** everywhere...
+*/
+
+/*!
+** @dir stechec/tools/misc
+** @brief Contains \ref tools_misc module.
+*/

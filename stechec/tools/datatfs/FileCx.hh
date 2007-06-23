@@ -15,11 +15,7 @@
 
 # include "Cx.hh"
 
-/*!
-** @ingroup tools_net
-** @{
-*/
-
+//! @ingroup tools_net
 class FileCx : public Cx
 {
 public:
@@ -32,13 +28,8 @@ protected:
   virtual void sendData(unsigned char* data, unsigned size);
 };
 
-
 inline bool FileCx::pollInternal(int*) { return false; }
 inline int FileCx::recvData(bool) { return 0; }
 inline void FileCx::sendData(unsigned char*, unsigned) {}
-
-
-// !ingroup tools_net
-//! @}
 
 #endif /* !FILECX_HH_ */

@@ -17,18 +17,18 @@
 #ifndef FIELD_HH_
 # define FIELD_HH_
 
-/*!
-** @file common/Field.hh
-** @ingroup rules
-*/
-
 # include "Constants.hh"
 
-//! @brief Scatter template.
-//! @note It is slightly different from BB's template.
-//!  123
-//!  8B4
-//!  765
+/*!
+** @brief Scatter template.
+** @ingroup tbt_rules
+** @note It is slightly different from BB's template.
+** @verbatim
+123
+8B4
+765
+@endverbatim
+*/
 enum eDirection {
   DIR_UNASSIGNED = 0,
 
@@ -45,8 +45,8 @@ enum eDirection {
 };
 
 /*!
-** @ingroup rules
 ** @brief Game playing ground.
+** @ingroup tbt_rules
 **
 ** Parameter T: Player type (CPlayer or SPlayer)
 */

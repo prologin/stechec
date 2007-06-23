@@ -15,21 +15,23 @@
 */
 
 #ifndef MENU_H
-#define MENU_H
+# define MENU_H
 
-#include <vector>
-#include <SDL_gfxPrimitives.h>
+# include <vector>
+# include <SDL_gfxPrimitives.h>
 
-#include "Colors.hh"
-#include "Global.hh"
-#include "Widget.hh"
+# include "Colors.hh"
+# include "Global.hh"
+# include "Widget.hh"
 
-#define MENU_WIDTH 200
-#define MENU_ALPHA 170
-#define MENU_WIDGET_HEIGHT 30
-#define MENU_WIDGET_WIDTH 150
+# define MENU_WIDTH 200
+# define MENU_ALPHA 170
+# define MENU_WIDGET_HEIGHT 30
+# define MENU_WIDGET_WIDTH 150
 
-/*! @brief Menu Class
+/*!
+** @brief Generic menu
+** @ingroup tbt_2d_gui
 **
 ** A menu is a collection of Widget
 ** with a simple box color in background.

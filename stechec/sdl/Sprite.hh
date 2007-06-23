@@ -17,16 +17,11 @@
 #ifndef SPRITE_HH_
 # define SPRITE_HH_
 
-/*!
-** @file sdl/Sprite.hh
-** @ingroup sdl_base
-*/
-
 # include "Surface.hh"
 
 /*!
-** @ingroup sdl_base
 ** @brief Enhancement of Surface, give life to object.
+** @ingroup sdl_base
 **
 ** Have the same behavior of Surface, but have some more features:
 **   * can be animated

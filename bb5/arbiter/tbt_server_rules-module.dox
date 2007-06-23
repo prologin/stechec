@@ -1,0 +1,11 @@
+/*!
+** @defgroup tbt_server_rules Server Rules
+** @brief Located in @c bb5/arbiter directory.
+** @ingroup tbt
+*/
+
+/*!
+** @dir bb5/arbiter
+** @brief Contains \ref tbt_server_rules module.
+*/
+

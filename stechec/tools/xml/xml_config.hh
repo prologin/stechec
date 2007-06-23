@@ -22,8 +22,8 @@
 BEGIN_NS(xml);
 
 /*!
-** @ingroup tools
-** @brief XML parser/writer tailored for the configuration file.
+** @brief %XML parser/writer tailored for the configuration file.
+** @ingroup tools_xml
 **
 ** Here the xml structure used:
 ** @code
@@ -95,15 +95,15 @@ public:
 	    const std::string& node_name,
 	    const std::string& attr_name) const;
 
-  //! @brief Replace text of node \c node_name by \c value. It creates a
-  //! new node if \c node_name is not found.
+  //! @brief Replace text of node @c node_name by @c value. It creates a
+  //! new node if @c node_name is not found.
   template <typename T>
   void setData(const std::string& section_name,
 	       const std::string& node_name,
 	       const T& value);
 
-  //! @brief Replace an attribute of the node \c node_name by \c value. It
-  //!   create a new attribute if \c node_name is not found.
+  //! @brief Replace an attribute of the node @c node_name by @c value. It
+  //!   create a new attribute if @c node_name is not found.
   template <typename T>
   void setAttr(const std::string& section_name,
 	       const std::string& node_name,
@@ -201,7 +201,6 @@ inline void XMLConfig::setAttr(const std::string& section_name,
     }
   }
 }
-
 
 END_NS(xml);
 

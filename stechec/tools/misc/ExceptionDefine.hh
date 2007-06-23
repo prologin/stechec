@@ -18,10 +18,15 @@
 # define EXCEPTIONDEFINE_HH_
 
 /*!
-** @brief Add few #define helper for exception.
+** @file ExceptionDefine.hh
+** @brief Add few macro helpers for Exception.
+** @ingroup tools_misc
 **
 ** This file is included after logger, but before the rest of the world.
 */
+
+//! @ingroup tools_misc
+//! @{
 
 # define THROW(Excpt, Msg)                      \
 do {                                            \
@@ -38,5 +43,7 @@ do {                                            \
   ERR("Throwing " #Excpt ": %1", e.what());     \
   throw e;                                      \
 } while (0)
+
+//! @}
 
 #endif /* !EXCEPTIONDEFINE_HH_ */

@@ -15,14 +15,16 @@
 */
 
 #ifndef DIALOGBOX_H
-#define DIALOGBOX_H
+# define DIALOGBOX_H
 
-#include "Global.hh"
-#include "Button.hh"
-#include "Colors.hh"
-#include <vector>
+# include "Global.hh"
+# include "Button.hh"
+# include "Colors.hh"
+# include <vector>
 
-/*! @brief Master DialogBox Class
+/*!
+** @brief Master DialogBox Class
+** @ingroup tbt_2d_gui
 **
 ** This class is a virtual class.
 ** You need to use a class which inherit from
@@ -103,7 +105,9 @@ class DialogBox: public Widget
   ushort getnbButton();
 };
 
-/*! @brief Dinfo Class : a simple Info DialogBox
+/*!
+** @brief Dinfo Class : a simple Info DialogBox
+** @ingroup tbt_2d_gui
 **
 ** This class create a dialogbox with :
 **  - an icon

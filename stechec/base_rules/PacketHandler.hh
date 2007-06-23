@@ -101,7 +101,7 @@ struct PClass : public Packet                                   \
   DECLARE_PACKET(Cst, PClass)                   \
   END_PACKET 
 
-#define HANDLE_WITH(Token, Class, Object, Method, When)				\
+# define HANDLE_WITH(Token, Class, Object, Method, When)				\
   handleWith(new PacketHandler<Token, Class>(Object, &Class::Method), When)
 
 

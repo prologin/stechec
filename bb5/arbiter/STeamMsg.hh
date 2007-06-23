@@ -17,8 +17,18 @@
 #ifndef STEAMMSG_HH_
 # define STEAMMSG_HH_
 
-class STeam;
+# include "SRules.hh"
 
+/*!
+** @brief Message handler for STeam.
+** @ingroup tbt_server_rules
+**
+** Forwards messages to requested team, send messages as requested.
+** Checks team existence and game state before forwarding to team.
+**
+** You will have only one instance of this class at runtime,
+** handled by the SRules class.
+*/
 class STeamMsg
 {
 public:
@@ -41,6 +51,6 @@ private:
   STeam* t_[2];
 };
 
-#include "STeamMsg.hxx"
+# include "STeamMsg.hxx"
 
 #endif /* !STEAMMSG_HH_ */

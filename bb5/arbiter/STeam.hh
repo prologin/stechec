@@ -17,14 +17,16 @@
 #ifndef STEAM_HH_
 # define STEAM_HH_
 
-# include "SPlayer.hh"
+# include "Player.hh"
 # include "Team.hh"
 
-class SRules;
+class SPlayer;
 class SPlayerMsg;
+class SRules;
 
 /*!
 ** @brief Team management for the server.
+** @ingroup tbt_server_rules
 **
 ** It symbolizes team and checks the validity of
 ** coach's decisions (reroll and block dices).

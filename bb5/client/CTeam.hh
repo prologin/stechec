@@ -27,6 +27,7 @@ class CPlayerMsg;
 
 /*!
 ** @brief Team implementation on client side
+** @ingroup tbt_client_api
 */
 class CTeam : public Team<CPlayer>
 {
@@ -62,6 +63,5 @@ private:
   xml::XMLTeam xml_team_;
   xml::XMLFormation xml_formation_;
 };
-
 
 #endif /* !CTEAM_HH_ */

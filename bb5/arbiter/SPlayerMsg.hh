@@ -17,10 +17,14 @@
 #ifndef SPLAYERMSG_HH_
 # define SPLAYERMSG_HH_
 
+# include "Dice.hh"
+# include "SRules.hh"
+
 class SPlayer;
 
 /*!
 ** @brief Message handler for SPlayer.
+** @ingroup tbt_server_rules
 **
 ** Forwards messages to requested player, send messages as requested.
 ** Checks player existence and game state before forwarding to player.
@@ -64,6 +68,6 @@ private:
   SPlayer* p_[2][MAX_PLAYER];
 };
 
-#include "SPlayerMsg.hxx"
+# include "SPlayerMsg.hxx"
 
 #endif /* !SPLAYERMSG_HH_ */

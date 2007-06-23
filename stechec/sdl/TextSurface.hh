@@ -17,16 +17,12 @@
 #ifndef TEXTSURFACE_HH_
 # define TEXTSURFACE_HH_
 
-/*!
-** @file sdl/TextSurface.hh
-** @ingroup sdl_base
-*/
-
 # include "ResourceCenter.hh"
 # include "Surface.hh"
 
 /*!
 ** @brief Text render method.
+** @ingroup sdl_base
 */
 enum eTextRenderMethod {
   eTextSolid,   ///< Normal, not Anti-Alisased.
@@ -35,8 +31,8 @@ enum eTextRenderMethod {
 };
 
 /*!
-** @ingroup sdl_base
 ** @brief Class that can draw text, similiar to a TextLabel.
+** @ingroup sdl_base
 **
 ** Support multi-line and autowrap.
 */

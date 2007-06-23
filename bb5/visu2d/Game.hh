@@ -43,6 +43,7 @@ class ActionDlg;
 
 /*!
 ** @brief Visu global status.
+** @ingroup tbt_2d_gui
 ** Element with lower value (top of the list) will have higher priority.
 */
 enum eVisuGameState {
@@ -64,8 +65,9 @@ enum eVisuGameState {
 };
 
 /*!
-** @brief Main class to create on new game, to destroy when a game is
-** finished. Control all the game.
+** @brief Main class to create a new game.
+** @ingroup tbt_2d_gui
+** To destroy when a game is finished. Control all the game.
 */
 class Game : public Event
 {

@@ -14,14 +14,19 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "CPlayer.hh"
-#include "Field.hh"
-
 #ifndef CFIELD_HH_
 # define CFIELD_HH_
 
+# include "CPlayer.hh"
+# include "Field.hh"
+
+// Internal structure used for pathfinding.
 struct ScorePoint;
 
+/*!
+** @brief Field for the client.
+** @ingroup tbt_client_api
+*/
 class CField : public Field<CPlayer>
 {
 public:

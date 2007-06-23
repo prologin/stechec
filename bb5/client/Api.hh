@@ -17,12 +17,12 @@
 #ifndef API_HH_
 # define API_HH_
 
-# include "CRules.hh"
 # include "BaseApi.hh"
+# include "CRules.hh"
 
 /*!
-** @ingroup rules
 ** @brief User interface for graphical interface, AI, etc.
+** @ingroup tbt_client_api
 **
 ** This class is really the "bridge" between the "coach" (whether it
 ** would be a human or a computer) and the rules engine.

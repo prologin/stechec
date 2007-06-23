@@ -230,5 +230,4 @@ void XML::setAttr(const std::string& node_name,
   xml_internal_->setAttr(elt, node_name, attr_name, val);
 }
 
-
 END_NS(xml)

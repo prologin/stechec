@@ -17,16 +17,10 @@
 #ifndef CONSTANTS_HH_
 # define CONSTANTS_HH_
 
-/*!
-** @ingroup rules
-** @file common/Constants.hh
-*/
-
-/*!
-** @defgroup rules Blood Bowl rules manager (according to LRB5).
-*/
-
 # include "BaseRules.hh"
+
+//! @ingroup tbt_rules
+//! @{
 
 //! @brief Constants describing the current status of the game.
 enum {
@@ -266,6 +260,7 @@ extern const char *bb5_token_str[RULES_TOKEN_LAST];
 /*!
 ** @struct MsgInitGame
 ** @brief Both coaches and arbiter are ready.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_PACKET(MSG_INITGAME, MsgInitGame)
@@ -275,6 +270,7 @@ END_PACKET;
 /*!
 ** @struct MsgInitHalf
 ** @brief A new half-time begins.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_PACKET(MSG_INITHALF, MsgInitHalf)
@@ -284,6 +280,7 @@ END_PACKET;
 /*!
 ** @struct MsgDrawKicker
 ** @brief Drawn coach chooses to either kick or receive the ball.
+** @ingroup tbt_rules
 ** Server <-> Client.
 */
 DECLARE_PACKET(MSG_DRAWKICKER, MsgDrawKicker);
@@ -297,6 +294,7 @@ END_PACKET;
 /*!
 ** @struct MsgInitKickoff
 ** @brief Teams and ball placement during a kick-off.
+** @ingroup tbt_rules
 ** Server <-> Client.
 */
 DECLARE_PACKET(MSG_INITKICKOFF, MsgInitKickoff);
@@ -306,6 +304,7 @@ END_PACKET;
 /*!
 ** @struct MsgNewTurn
 ** @brief A new turn begins.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_PACKET(MSG_NEWTURN, MsgNewTurn)
@@ -316,6 +315,7 @@ END_PACKET;
 /*!
 ** @struct MsgEndTurn
 ** @brief The turn ends.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn);
@@ -323,6 +323,7 @@ DECLARE_EMPTY_PACKET(MSG_ENDTURN, MsgEndTurn);
 /*!
 ** @struct MsgEndGame
 ** @brief Game ends, according to the rules.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_EMPTY_PACKET(MSG_ENDGAME, MsgEndGame);
@@ -330,6 +331,7 @@ DECLARE_EMPTY_PACKET(MSG_ENDGAME, MsgEndGame);
 /*!
 ** @struct MsgTimer
 ** @brief Timer Synchronization.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_TIMER, MsgTimer)
@@ -340,6 +342,7 @@ END_PACKET;
 /*!
 ** @struct MsgTurnOver
 ** @brief A turnover happens.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_TURNOVER, MsgTurnOver)
@@ -349,6 +352,7 @@ END_PACKET;
 /*!
 ** @struct MsgMoveTurnMarker
 ** @brief Coach moves his turn marker.
+** @ingroup tbt_rules
 ** Client <-> Server.
 ** @attention FIXME: NOT IMPLEMENTED.
 */
@@ -357,6 +361,7 @@ DECLARE_EMPTY_PACKET(MSG_MOVETURNMARKER, MsgMoveTurnMarker);
 /*!
 ** @struct MsgIllegalProc
 ** @brief Coach asks for an illegal procedure.
+** @ingroup tbt_rules
 ** Client <-> Server.
 ** @attention FIXME: NOT IMPLEMENTED.
 */
@@ -365,6 +370,7 @@ DECLARE_EMPTY_PACKET(MSG_ILLEGALPROC, MsgIllegalProc);
 /*!
 ** @struct MsgChat
 ** @brief Coaches have better to play rather than use this...
+** @ingroup tbt_rules
 ** Client <-> Server.
 ** FIXME: Handle different charsets.
 */
@@ -375,6 +381,7 @@ END_PACKET;
 /*!
 ** @struct MsgIllegal
 ** @brief A client sent an illegal request.
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 // A coach tried something forbidden.
@@ -382,5 +389,7 @@ DECLARE_PACKET(MSG_ILLEGAL, MsgIllegal)
   int was_token;  ///< Refused request token.
   int error;      ///< Refusal justification.
 END_PACKET;
+
+//! @}
 
 #endif /* !CONSTANTS_HH_ */

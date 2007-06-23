@@ -20,6 +20,7 @@
 # include "Weather.hh"
 
 /*! @brief Weather management for the server.
+** @ingroup tbt_server_rules
 **
 ** @author victor
 ** @date 29/12/2005
@@ -28,9 +29,6 @@ class SWeather : public Weather
 {
 public:
   SWeather();
-
 };
 
-
 #endif /* !SWEATHER_HH_ */
-

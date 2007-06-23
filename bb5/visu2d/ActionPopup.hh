@@ -24,10 +24,11 @@ class Api;
 
 BEGIN_NS(sdlvisu);
 
-#define POPUP_ITEM_HEIGHT 40
-#define POPUP_ITEM_WIDTH 120
+# define POPUP_ITEM_HEIGHT 40
+# define POPUP_ITEM_WIDTH 120
 
 //! @see data/general/declarations_on.jpg
+//! @ingroup tbt_2d_gui
 enum eDeclarationsImageIndex {
   DCLII_MOVE = 0,
   DCLII_BLITZ,
@@ -38,6 +39,7 @@ enum eDeclarationsImageIndex {
 };
 
 //! @see data/general/actions_on.jpg
+//! @ingroup tbt_2d_gui
 enum eActionsImageIndex {
   ACTII_MOVE = 0,
   ACTII_GOFORIT,
@@ -60,8 +62,8 @@ class Game;
 
 /*!
 ** @brief Action Popup, used for both declaration and action.
+** @ingroup tbt_2d_gui
 */
-
 class ActionPopup : public VirtualSurface
 {
 public:

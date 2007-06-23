@@ -21,9 +21,9 @@
 
 BEGIN_NS(xml);
 
-
 /*!
-** @brief XML parser/writer tailored for team document files.
+** @brief %XML parser/writer tailored for team document files.
+** @ingroup tools_xml
 **
 ** @todo Explain the basic document structure.
 */

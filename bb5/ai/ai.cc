@@ -14,9 +14,9 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "tools.hh"
 #include "ai.hh"
 
+#include "tools.hh"
 
 /* initialize a standard tbt client */
 AIApp::AIApp(int argc, char** argv)

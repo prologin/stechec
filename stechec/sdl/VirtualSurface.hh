@@ -17,16 +17,11 @@
 #ifndef VIRTUALSURFACE_HH_
 # define VIRTUALSURFACE_HH_
 
-/*!
-** @file sdl/VirtualSurface.hh
-** @ingroup sdl_base
-*/
-
 # include "Surface.hh"
 
 /*!
-** @ingroup sdl_base
 ** @brief Container for Surface.
+** @ingroup sdl_base
 **
 ** Other surface (any class derived from Surface) may be attached to
 ** VirtualSurface, in a father-child relationship. Rendering is done

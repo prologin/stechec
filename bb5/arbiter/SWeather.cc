@@ -14,8 +14,9 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "Dice.hh"
 #include "SWeather.hh"
+
+#include "Dice.hh"
 
 SWeather::SWeather()
 {

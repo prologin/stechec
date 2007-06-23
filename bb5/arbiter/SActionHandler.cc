@@ -15,11 +15,13 @@
 */
 
 #include "SActionHandler.hh"
+
+#include "SBall.hh"
+#include "SPlayer.hh"
 #include "SRules.hh"
 
 SActionHandler::SActionHandler(SRules* r)
-  : r_(r),
-  d_(r->getDice())
+  : r_(r)
 {
 }
 

@@ -24,12 +24,8 @@ BEGIN_NS(server);
 
 class Client;
 
-/*!
-** @addtogroup server
-** @{
-*/
-
 //! @brief Status of a single server game thread.
+//! @ingroup server
 enum eGameState {
   eStarting = 0,    ///< Starting thread.
   eWaiting,     ///< Wait for players.
@@ -41,6 +37,7 @@ enum eGameState {
 
 /*! @brief Represents a game, with up to two coachs and as many
 ** viewers as they could be.
+** @ingroup server
 **
 ** Each game is identified by a uid, passed to the ctor.
 **
@@ -106,8 +103,6 @@ private:
   pthread_t             self_;
   pthread_mutex_t	lock_;
 };
-
-//! @}
 
 END_NS(server);
 

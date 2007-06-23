@@ -21,6 +21,7 @@
 
 /*!
 ** @brief A rectangle class.
+** @ingroup tools_misc
 **
 ** Warning: @c w and @c h should _never_ be negative.
 */
@@ -191,6 +192,5 @@ inline std::ostream& operator<< (std::ostream& os, const Rect& p)
   os << "[x:" << p.x << ", y:" << p.y << ", w:" << p.w << ", h:" << p.h << "]";
   return os;
 }
-
 
 #endif /* !RECT_HH_ */

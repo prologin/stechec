@@ -17,14 +17,18 @@
 #ifndef OS_WRAPPER_HH_
 # define OS_WRAPPER_HH_
 
-/*! @file os_wrapper.hh
-**
-** Reimplement or wrap functions that doesn't exists on 'exotic' systems.
+/*!
+** @file os_wrapper.hh
+** @brief Reimplement or wrap functions that doesn't exists on 'exotic' systems.
+** @ingroup tools_misc
 **
 ** Disclaimer: This file is not intended to be clean, nice, nor beautiful.
 **
 ** The reference OS is GNU/Linux.
 */
+
+//! @ingroup tools_misc
+//! @{
 
 # include <cstdarg>
 
@@ -150,5 +154,7 @@ inline int pthread_mutex_destroy(pthread_mutex_t *mutex)
 #endif
 
 void initialize_socket();
+
+//! @}
 
 #endif /* !OS_WRAPPER_HH_ */

@@ -17,6 +17,11 @@
 #ifndef XML_STRINGS_HH
 # define XML_STRINGS_HH
 
+/*!
+** @file stechec/tools/xml/strings.hh
+** @ingroup tools_xml
+*/
+
 # include <string>
 # include <cassert>
 # include <xercesc/util/XMLUniDefs.hpp>
@@ -24,6 +29,7 @@
 
 namespace xml
 {
+  //! @ingroup tools_xml
   inline std::string xml2str(const XMLCh* xmlstr)
   {
     assert(xmlstr != 0);
@@ -37,6 +43,7 @@ namespace xml
     return ret;
   }
 
+  //! @ingroup tools_xml
   inline std::ostream& operator<< (std::ostream& os, const XMLCh* xmlstr)
   {
     return os << xml2str(xmlstr);

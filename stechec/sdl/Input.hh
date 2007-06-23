@@ -17,16 +17,11 @@
 #ifndef INPUT_HH_
 # define INPUT_HH_
 
-/*!
-** @file sdl/Input.hh
-** @ingroup sdl_base
-*/
-
 # include <SDL.h>
 # include "tools.hh"
 
 /*!
-** Hold keyboard and mouse state.
+** @brief Hold keyboard and mouse state.
 ** @ingroup sdl_base
 **
 ** * For mouse absolute position and delta motion, this should be

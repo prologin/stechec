@@ -1,0 +1,10 @@
+/*!
+** @defgroup tools Tools Library
+** @brief Located in @c stechec/tools directory.
+** @ingroup stechec
+*/
+
+/*!
+** @dir stechec/tools
+** @brief Contains \ref tools module.
+*/

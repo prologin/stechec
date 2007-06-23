@@ -19,8 +19,13 @@
 
 # include "Ball.hh"
 
+class CPlayer;
 class CRules;
 
+/*!
+** @brief Ball for the client.
+** @ingroup tbt_client_api
+*/
 class CBall : public Ball<CPlayer>
 {
 public:

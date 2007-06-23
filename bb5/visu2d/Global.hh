@@ -13,67 +13,75 @@
 ** 
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
+
 #ifndef GENERAL_H
-#define GENERAL_H
+# define GENERAL_H
 
 using namespace std;
 
-#include <string>
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_image.h>
+# include <string>
+# include <SDL.h>
+# include <SDL_ttf.h>
+# include <SDL_image.h>
 
-#ifndef MAX
-#define MAX(a,b)    (((a) > (b)) ? (a) : (b))
-#endif
+//! @ingroup tbt_2d_gui
+//! @{
 
-#ifndef TBTHOME
-#define TBTHOME ".."
-#endif
+# ifndef MAX
+#  define MAX(a,b)    (((a) > (b)) ? (a) : (b))
+# endif
 
-#define TEAM_PATH TBTHOME "/data/team/"
-#define SAVES_PATH TBTHOME "/saves/"
-#define VIDEOS_PATH TBTHOME "/data/video/"
-#define SOUNDS_PATH TBTHOME "/data/sound/"
-#define I18N_PATH TBTHOME "/data/i18n/"
-#define FORMATIONS_PATH TBTHOME "/data/formations/"
+# ifndef TBTHOME
+#  define TBTHOME ".."
+# endif
 
-#define CONFIG_FILE TBTHOME "/config.xml"
+# define TEAM_PATH TBTHOME "/data/team/"
+# define SAVES_PATH TBTHOME "/saves/"
+# define VIDEOS_PATH TBTHOME "/data/video/"
+# define SOUNDS_PATH TBTHOME "/data/sound/"
+# define I18N_PATH TBTHOME "/data/i18n/"
+# define FORMATIONS_PATH TBTHOME "/data/formations/"
 
-#define ADD_IMG_PATH(x) IMG_PATH x
-#define ADD_TEAM_PATH(x) TEAM_PATH x
-#define ADD_SAVES_PATH(x) SAVES_PATH x
-#define ADD_VIDEOS_PATH(x) VIDEOS_PATH x
-#define ADD_SOUNDS_PATH(x) SOUNDS_PATH x
-#define ADD_I18N_PATH(x) I18N_PATH x
-#define ADD_FORMATIONS_PATH(x) FORMATIONS_PATH x
-#define ADD_FONTS_PATH(x) FONTS_PATH x
+# define CONFIG_FILE TBTHOME "/config.xml"
 
-#define DIALOG_ALPHA 234
+# define ADD_IMG_PATH(x) IMG_PATH x
+# define ADD_TEAM_PATH(x) TEAM_PATH x
+# define ADD_SAVES_PATH(x) SAVES_PATH x
+# define ADD_VIDEOS_PATH(x) VIDEOS_PATH x
+# define ADD_SOUNDS_PATH(x) SOUNDS_PATH x
+# define ADD_I18N_PATH(x) I18N_PATH x
+# define ADD_FORMATIONS_PATH(x) FORMATIONS_PATH x
+# define ADD_FONTS_PATH(x) FONTS_PATH x
+
+# define DIALOG_ALPHA 234
 
 // dialog button
-#define YES 1
-#define NO 2
-#define CLOSE 3
+# define YES 1
+# define NO 2
+# define CLOSE 3
 
 // menu button
-#define OK 6
-#define EXIT 8
-#define BACK 10
-#define NETWORK 11
-#define STANDALONE 12
-#define SERVER 13
-#define OPTIONS 14
+# define OK 6
+# define EXIT 8
+# define BACK 10
+# define NETWORK 11
+# define STANDALONE 12
+# define SERVER 13
+# define OPTIONS 14
 
 // FIXME: appear to be defined to DialogBoxA and LoadImageA on windows...
-#undef DialogBox
-#undef LoadImage
+# undef DialogBox
+# undef LoadImage
 
 //FIXME: 
 typedef unsigned uint;
 typedef unsigned short ushort;
 
-/*! @brief To print text in SDL_Surface
+//! @}
+
+/*!
+** @brief To print text in SDL_Surface
+** @ingroup tbt_2d_gui
 **
 ** Split string in lines with '\n' caracter,
 ** Create a TTF_RenderText_Solid with the result and
@@ -84,4 +92,5 @@ typedef unsigned short ushort;
 */
 void PrintStrings( SDL_Surface *sDest, TTF_Font *fnt, std::string str,
                    SDL_Rect &rc, SDL_Color clrFg);
+
 #endif

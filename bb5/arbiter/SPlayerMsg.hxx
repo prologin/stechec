@@ -14,6 +14,8 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "SPlayer.hh"
+
 inline SPlayer* SPlayerMsg::getPlayer(int token, int team_id, int player_id)
 {
   if (team_id < 0 || team_id > 1 ||

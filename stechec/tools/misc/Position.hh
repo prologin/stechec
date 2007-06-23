@@ -17,10 +17,12 @@
 #ifndef POSITION_HH_
 # define POSITION_HH_
 
+//! @ingroup tools_misc
 template <typename T> class TPoint;
 typedef TPoint<int> Point;
 
 /*! @brief Handy class to describe a position.
+** @ingroup tools_misc
 **
 ** It is just a point, with a set of methods that makes it useful.
 **
@@ -67,7 +69,9 @@ public:
 
 # include "misc/Point.hh"
 
+//! @ingroup tools_misc
 typedef std::deque<Position>    PosList;
+//! @ingroup tools_misc
 typedef PosList::const_iterator PosIter;
 
 inline Position::Position()
@@ -82,12 +86,12 @@ inline Position::Position(int row, int col)
 {
 }
 
-
 inline Position::Position(const Point& pos)
   : row(pos.y),
     col(pos.x)
 {
 }
+
 
 inline int   Position::getRow() const
 {

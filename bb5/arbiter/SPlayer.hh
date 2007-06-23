@@ -18,17 +18,17 @@
 # define SPLAYER_HH_
 
 # include "Dice.hh"
-# include "Team.hh"
 # include "Player.hh"
+# include "SRules.hh"
+# include "Team.hh"
 
-class SRules;
-class STeam;
-typedef Field<SPlayer> SField;
-class SPlayerMsg;
 class SActionHandler;
+class SPlayerMsg;
+class STeam;
 
 /*!
 ** @brief Player implementation for the server.
+** @ingroup tbt_server_rules
 ** 
 ** It symbolizes player and valids and applies action requests.
 **
@@ -127,7 +127,6 @@ public:
   void msgSkill(const MsgSkill* m);
 
 private:
-
   //! @brief Checks if a team reroll or a skill reroll
   //!   is available, according to the roll attempted.
   void setRerollAvailability();
@@ -189,6 +188,5 @@ private:
   SPlayer* pusher_; ///< Player who is pushing.
   SPlayer* target_; ///< Player that is the target of a block or a push.
 };
-
 
 #endif /* !SPLAYER_HH_ */

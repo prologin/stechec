@@ -3,8 +3,8 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = "Stechec"
-PROJECT_NUMBER         = "v@PACKAGE_VERSION@ %%Revision%%"
+PROJECT_NAME           = "Stechec/TBT"
+PROJECT_NUMBER         = "v@PACKAGE_VERSION@/%%Revision%%"
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -15,7 +15,7 @@ ABBREVIATE_BRIEF       = NO
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = @top_srcdir@/stechec
+STRIP_FROM_PATH        = @top_srcdir@
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = YES

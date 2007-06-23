@@ -25,7 +25,8 @@ BEGIN_NS(sdlvisu);
 class Game;
 
 /*!
-** Game field (on the left).
+** @brief Game field (on the left).
+** @ingroup tbt_2d_gui
 */
 class VisuField : public VirtualScrollableSurface
 {

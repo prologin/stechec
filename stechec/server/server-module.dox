@@ -1,0 +1,10 @@
+/*!
+** @defgroup server Generic Server Application
+** @brief Located in @c stechec/server directory.
+** @ingroup stechec
+*/
+
+/*!
+** @dir stechec/server
+** @brief Contains \ref server module.
+*/

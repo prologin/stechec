@@ -17,12 +17,8 @@
 # include "ClientCx.hh"
 
 /*!
-** @addtogroup client
-** @{
-*/
-
-/*!
 ** @brief Helper class that load/initialize/unload rules.
+** @ingroup client
 */
 class RulesLoader
 {
@@ -38,7 +34,5 @@ private:
   Library       lib_rules_;
   BaseCRules*   base_rules_;
 };
-
-//! @}
 
 #endif /* !RULES_LOADER_HH_ */

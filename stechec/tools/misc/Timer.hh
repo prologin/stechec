@@ -17,7 +17,9 @@
 #ifndef TIMER_HH_
 # define TIMER_HH_
 
-/*! @brief Implement a passive timer, with time accuracy in seconds.
+/*!
+** @brief Implement a passive timer, with time accuracy in seconds.
+** @ingroup tools_misc
 **
 ** You have to start, stop, restart, and check the remaining time yourself.
 ** The timer can be paused, then re-started.
@@ -57,7 +59,7 @@ public:
   //! @brief Restart the timer. This is equivalent to calling stop then start.
   void        restart();
   //! @brief Do a pause.
-  //! @note To restart at the current position, call \c start, not \c restart.
+  //! @note To restart at the current position, call @c start, not @c restart.
   void        pause();
 
 private:

@@ -21,6 +21,7 @@ class BaseCRules;
 
 /*!
 ** @brief A generic client entry point (immediately after main).
+** @ingroup client
 **
 ** Regroup commonly used code.
 */
@@ -66,6 +67,5 @@ private:
   char* config_file_; ///< Optional configuration file to load.
   int client_gid_;    ///< Client game id, as stored in meta-data.
 };
-
 
 #endif /* !CLIENTAPP_H_ */

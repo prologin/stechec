@@ -23,7 +23,7 @@ Misc utility classes and routines for using Xerces-C++
 #include <xercesc/util/XMLString.hpp>
 
 /**
-\brief static functions to release C-style char* strings and XMLCh* strings
+@brief static functions to release C-style char* strings and XMLCh* strings
 allocated by Xerces routines
 
 Required because XMLString::release() takes pointer-to-pointer, not just
@@ -48,7 +48,7 @@ struct FreeXercesString {
 // = = = = = = = = = = = = = = = = = = = =
 
 /**
-\brief Dual-purpose (and two-faced) string: wraps a string (XMLCh* or char*)
+@brief Dual-purpose (and two-faced) string: wraps a string (XMLCh* or char*)
 and lets you access it in either form.
 
 This is a value-added version of the "StrX" class from Xerces-C examples.
@@ -113,7 +113,7 @@ std::ostream& operator<<( std::ostream& s, const DualString& obj ) ;
 #include<xercesc/util/XMLString.hpp>
 
 /**
-\\brief Converts between XMLCh* and char* strings, and takes ownership of the
+@brief Converts between XMLCh* and char* strings, and takes ownership of the
 newly-created string.
 
 It's a wrapper around and an alternative to direct XMLString::transcode()
@@ -165,7 +165,7 @@ class StringManager {
 
 
 	/**
-	\brief grant ownership of the string to the calling code
+	@brief grant ownership of the string to the calling code
 
 	throw std::logic_error if the specified string isn't found
 	*/
@@ -173,7 +173,7 @@ class StringManager {
 
 
 	/**
-	\brief grant ownership of the string to the calling code
+	@brief grant ownership of the string to the calling code
 
 	throw std::logic_error if the specified string isn't found
 	*/
@@ -181,7 +181,7 @@ class StringManager {
 
 
 	/**
-	\brief transcode the supplied C string to XMLCh* and take ownership of the XMLCh*
+	@brief transcode the supplied C string to XMLCh* and take ownership of the XMLCh*
 
 	The returned XMLCh* will be added to the const pool; calls to own() must therefore
 	pass a const XMLCh* parameter
@@ -191,7 +191,7 @@ class StringManager {
 
 
 	/**
-	\brief transcode the supplied C++ string to XMLCh* and take ownership of the XMLCh*
+	@brief transcode the supplied C++ string to XMLCh* and take ownership of the XMLCh*
 
 	The returned XMLCh* will be added to the const pool; calls to own() must therefore
 	pass a const XMLCh* parameter
@@ -201,7 +201,7 @@ class StringManager {
 
 
 	/**
-	\brief transcode the supplied XMLCh* to a C string and take ownership of the C string
+	@brief transcode the supplied XMLCh* to a C string and take ownership of the C string
 
 	The returned char* will be added to the const pool; calls to own() must therefore
 	pass a const char* parameter

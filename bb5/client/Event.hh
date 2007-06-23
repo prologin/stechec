@@ -20,12 +20,17 @@
 # include "EventProcess.hh"
 # include "Dice.hh"
 
-enum {
+/*!
+** @brief Custom event identifier, for use as BaseCRules::onEvent(int) parameter.
+** @ingroup tbt_client_api
+*/
+enum eCustomEvent {
   eInitGame,
 };
 
 /*!
-** Base UI events class.
+** @brief Base UI events class.
+** @ingroup tbt_client_api
 **
 ** Derive from this class and virtual methods will be called...
 ** when time will come.

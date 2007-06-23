@@ -17,12 +17,13 @@
 #ifndef AI_HH_
 # define AI_HH_
 
+# include "Api.hh"
 # include "ClientApp.hh"
 # include "Event.hh"
-# include "Api.hh"
 
-/*
-** @brief Test for a TBT Artificial Intelligence client.
+/*!
+** @brief Test for a TBT Artificial Intelligence Client.
+** @ingroup tbt_ai
 */
 class AIApp : public ClientApp, public Event
 {

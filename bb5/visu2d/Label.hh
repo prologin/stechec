@@ -15,15 +15,18 @@
     */
 
 #ifndef LABEL_H
-#define LABEL_H
+# define LABEL_H
 
-#include "Global.hh"
-#include "GuiError.hh"
-#include "Colors.hh"
-#include "Widget.hh"
-#include <SDL_gfxPrimitives.h>
+# include "Global.hh"
+# include "GuiError.hh"
+# include "Colors.hh"
+# include "Widget.hh"
+# include <SDL_gfxPrimitives.h>
 
-class Label:public Widget
+/*!
+** @ingroup tbt_2d_gui
+*/
+class Label: public Widget
 {
     protected:
   TTF_Font* font;

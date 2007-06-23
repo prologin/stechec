@@ -21,6 +21,7 @@
 
 /*!
 ** @brief Exception class for dynamic library loader errors.
+** @ingroup tools_misc
 */
 class LibraryError : public Exception
 {
@@ -34,7 +35,10 @@ public:
   LibraryError(const std::string& msg);
 };
 
-
+/*!
+** @brief Dynamic library loader.
+** @ingroup tools_misc
+*/
 class Library
 {
 public:

@@ -22,11 +22,6 @@
 # include "Surface.hh"
 
 /*!
-** @file sdl/ResourceCenter.hh
-** @ingroup sdl_base
-*/
-
-/*!
 ** @brief Exception thrown by SDL functions.
 ** @ingroup sdl_base
 */
@@ -51,8 +46,8 @@ struct _TTF_Font;
 typedef struct _TTF_Font TTF_Font;
 
 /*!
-** @ingroup sdl_base
 ** @brief Provide loader (with cache) for SDL resources.
+** @ingroup sdl_base
 **
 ** This class is a singleton. You can access it from anywhere. It
 ** provides image and font loader, with a transparent caching

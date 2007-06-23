@@ -17,13 +17,14 @@
 #ifndef SACTIONHANDLER_HH_
 # define SACTIONHANDLER_HH_
 
-# include "Dice.hh"
+# include "Constants.hh"
 
-class SRules;
 class SPlayer;
+class SRules;
 
 /*!
 ** @brief Elementary action handler for the server.
+** @ingroup tbt_server_rules
 **
 ** It memorizes the sequence of pending elementary actions.
 **
@@ -33,7 +34,6 @@ class SPlayer;
 class SActionHandler
 {
 public:
-
   SActionHandler(SRules* r);
   virtual ~SActionHandler();
 
@@ -63,7 +63,6 @@ public:
   void process(bool reroll = false, int choice = -1);
 
 private:
-
   enum eElementaryAction {
     EA_BALL,          ///< Bounce the ball.
     EA_BLOCKBDD,      ///< Choose to either use or ignore Block skill for the defender.
@@ -95,9 +94,7 @@ private:
   void put(ElementaryAction ea);
 
   SRules* r_;
-  Dice* d_;
   ElementaryActionList eal_;
 };
 
 #endif /* !SACTIONHANDLER_HH_ */
-

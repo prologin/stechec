@@ -17,7 +17,6 @@
 #include "ResourceCenter.hh"
 #include "Label.hh"
 
-
 Label::Label(const uint x, const uint y, SDL_Surface * screen, Widget* father, const string txt):
 Widget(x, y, 0, 0, screen, father)
 {

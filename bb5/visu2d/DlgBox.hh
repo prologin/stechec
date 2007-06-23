@@ -23,6 +23,7 @@
 
 BEGIN_NS(sdlvisu);
 
+//! @ingroup tbt_2d_gui
 enum eDlgBoxIcon {
   eDlgError = 2,
   eDlgWarning = 3,
@@ -30,6 +31,7 @@ enum eDlgBoxIcon {
   eDlgInfo = 7,
 };
 
+//! @ingroup tbt_2d_gui
 enum eDlgBoxButton {
   eDlgBoxYesNo,
   eDlgBoxOk,
@@ -39,8 +41,8 @@ enum eDlgBoxButton {
 class Game;
 
 /*!
-** @class DialogBoxCb
 ** @brief Base class for DialogBox button handler.
+** @ingroup tbt_2d_gui
 */
 class DialogBoxCb
 {
@@ -52,8 +54,8 @@ public:
 };
 
 /*!
-** @class DialogBox
 ** @brief Victor reimplementation of dialog box.
+** @ingroup tbt_2d_gui
 **
 ** Sorry poltuiu I can't reuse your... my system is too different :)
 **

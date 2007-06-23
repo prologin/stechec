@@ -1,0 +1,10 @@
+/*!
+** @defgroup client Generic Client Application
+** @brief Located in @c stechec/client directory.
+** @ingroup stechec
+*/
+
+/*!
+** @dir stechec/client
+** @brief Contains \ref client module.
+*/

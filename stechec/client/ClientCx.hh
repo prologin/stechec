@@ -18,16 +18,11 @@
 # include "PacketSender.hh"
 # include "BaseCRules.hh"
 
-/*! @file
-**
-** @defgroup client Generic client application.
-** @{
-*/
-
 class Cx;
 
 /*!
 ** @brief Handle connection with the server.
+** @ingroup client
 **
 ** Takes care of network connection with the server, provides methods
 ** to connect, disconnect, ...
@@ -73,7 +68,6 @@ public:
   //!    useful for viewers.
   void          setReady();
 
-
 private:
   //! @brief Last call to send a packet to the arbiter.
   virtual void  sendPacket(const Packet& p);
@@ -92,7 +86,5 @@ private:
   BaseCRules*   rules_;
   int           client_gid_;
 };
-
-//! @}
 
 #endif /* !CLIENTCX_HH_ */

@@ -21,6 +21,7 @@
 
 /*!
 ** @brief Handle messages for CPlayer objects.
+** @ingroup tbt_client_api
 **
 ** There is a single instance of this class, that dispatch
 ** message to the good CPlayer object.

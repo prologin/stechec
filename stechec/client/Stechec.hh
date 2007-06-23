@@ -16,7 +16,8 @@
 # include "ClientApp.hh"
 
 /*!
-** @brief Stechec generic binary client.
+** @brief %Stechec generic binary client.
+** @ingroup client
 **
 ** This is by far the most simple client available: it presents no menu, loads
 ** a gui/champion/whatever, and runs it once.
@@ -30,6 +31,5 @@ public:
 private:
   virtual int onPlay(bool is_replay);
 };
-
 
 #endif /* !STECHEC_HH_ */

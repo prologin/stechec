@@ -17,24 +17,23 @@
 #ifndef _DICE_HH_
 # define _DICE_HH_
 
-/*!
-** @file bb5/common/Dice.hh
-** @ingroup rules
-*/
-
-# include "PacketHandler.hh"
 # include "Constants.hh"
+# include "PacketHandler.hh"
+
+class BaseRules;
 
 /*!
 ** @struct MsgCheatDice
 ** @brief Load the next Dice roll result.
+** @ingroup tbt_rules
 ** Client -> Server, used for rules tests.
 */
 DECLARE_PACKET(MSG_CHEATDICE, MsgCheatDice)
   int next_result; ///< Loaded dice roll result.
 END_PACKET;
 
-class BaseRules;
+//! @ingroup tbt_rules
+//! @{
 
 //! @brief Some Dice number of face.
 enum eDiceFaceNumber {
@@ -59,9 +58,11 @@ enum eBlockDiceFace {
   BDEFENDER_DOWN
 };
 
+//! @}
 
 /*!
-** @brief Classe représentant un dé à X faces.
+** @brief X-faced dice.
+** @ingroup tbt_rules
 */
 class Dice
 {

@@ -10,7 +10,6 @@
 ** Copyright (C) 2007 Prologin
 */
 
-
 #ifndef CXPOOL_HH_
 # define CXPOOL_HH_
 
@@ -24,12 +23,14 @@
 #  include <sys/select.h>
 # endif
 
+//! @ingroup tools_net
 enum ECxPollFdState {
   E_FD_READ_READY,
   E_FD_CONNECTION_PENDING,
   E_FD_CONNECTION_CLOSED
 };
 
+//! @ingroup tools_net
 template <typename T>
 class CxPool
 {
@@ -67,7 +68,6 @@ private:
   struct pollfd*        ev_;
   int			ev_size_;
 # endif
-
 };
 
 # include "CxPool.hxx"

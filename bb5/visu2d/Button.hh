@@ -15,17 +15,19 @@
 */
 
 #ifndef BUTTON_H
-#define BUTTON_H
+# define BUTTON_H
 
-#include "Global.hh"
-#include "Colors.hh"
-#include "Widget.hh"
+# include "Global.hh"
+# include "Colors.hh"
+# include "Widget.hh"
 
-#include <SDL_gfxPrimitives.h>
+# include <SDL_gfxPrimitives.h>
 
-#define BUTTON_ALPHA 200
+# define BUTTON_ALPHA 200
 
-/*! @brief Image Button Class
+/*!
+** @brief Image Button Class
+** @ingroup tbt_2d_gui
 **
 ** This class create a button with an image
 **
@@ -65,7 +67,9 @@ class ImageButton: public Widget
   ushort mousebuttondown(const uint mousex = 0, const uint mousey = 0);
 };
 
-/*! @brief Text Button Class
+/*!
+** @brief Text Button Class
+** @ingroup tbt_2d_gui
 **
 ** This class create a button with a text
 **
@@ -121,7 +125,9 @@ class TextButton : public Widget
   ushort mousebuttondown(const uint mousex = 0, const uint mousey = 0);
 };
 
-/*! @brief Button Close Class
+/*!
+** @brief Button Close Class
+** @ingroup tbt_2d_gui
 **
 ** This class create a button with a "Close" image
 **
@@ -136,7 +142,9 @@ class BClose:public ImageButton
   {}
 };
 
-/*! @brief Button Yes Class
+/*!
+** @brief Button Yes Class
+** @ingroup tbt_2d_gui
 **
 ** This class create a button with a "Yes" image
 **
@@ -151,7 +159,9 @@ class BYes:public ImageButton
   {}
 };
 
-/*! @brief Button No Class
+/*!
+** @brief Button No Class
+** @ingroup tbt_2d_gui
 **
 ** This class create a button with a "No" image
 **

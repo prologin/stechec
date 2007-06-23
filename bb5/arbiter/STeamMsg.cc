@@ -14,8 +14,9 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "SRules.hh"
 #include "STeamMsg.hh"
+
+#include "STeam.hh"
 
 STeamMsg::STeamMsg(SRules *r)
   : r_(r)

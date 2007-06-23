@@ -14,7 +14,6 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-
 template <typename T>
 inline Team<T>::Team(int team_id)
   : team_id_(team_id),

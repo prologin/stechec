@@ -15,17 +15,14 @@
 
 # include "Cx.hh"
 
-/*!
-** @ingroup tools_net
-** @{
-*/
-
+//! @ingroup tools_net
 enum eCxWhoIAm {
   CXD_IS_SERVER,
   CXD_IS_COACH1,
   CXD_IS_COACH2
 };
 
+//! @ingroup tools_net
 class DirectCx : public Cx
 {
 public:
@@ -46,8 +43,5 @@ private:
   static DirectCx* inst_client_[2];
   static DirectCx* inst_server_;
 };
-
-// !ingroup tools_net
-//! @}
 
 #endif /* !DIRECT_HH_ */

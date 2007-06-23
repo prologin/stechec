@@ -22,8 +22,9 @@
 BEGIN_NS(xml);
 
 /*!
-** @brief XML parser/writer tailored for team formation
+** @brief %XML parser/writer tailored for team formation
 ** document files.
+** @ingroup tools_xml
 **
 ** @todo Explain the basic document structure.
 */
@@ -46,7 +47,6 @@ protected:
   virtual const char* getExpectedRoot() const;
   int formation_id_;
 };
-
 
 END_NS(xml);
 

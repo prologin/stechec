@@ -20,12 +20,8 @@
 # include <sstream>
 
 /*!
-** @ingroup tools_net
-** @{
-*/
-
-/*!
 ** @brief Container for data passed through network.
+** @ingroup tools_net
 ** @author victor
 ** @date 28/12/2005
 */
@@ -60,6 +56,8 @@ inline std::ostream& operator<< (std::ostream& os, const Packet& pkt)
   return os;
 }
 
+//! @ingroup tools_net
+//! @{
 
 //! @brief Encapsulate a string into a packet.
 //! @param dst Packet attribute that will receive the string.
@@ -70,8 +68,6 @@ void          stringToPacket(int* dst, const std::string& src, unsigned max_size
 //! @brief Decapsulate a string from a packet.
 std::string   packetToString(const int* src);
 
-
-// !ingroup tools_net
 //! @}
 
 #endif /* !PACKET_HH_ */

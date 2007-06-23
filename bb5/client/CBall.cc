@@ -14,8 +14,9 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "CRules.hh"
-#include "CBall.hh"
+# include "CBall.hh"
+# include "CPlayer.hh"
+# include "CRules.hh"
 
 CBall::CBall(CRules* rules)
   : r_(rules)

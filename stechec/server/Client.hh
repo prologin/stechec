@@ -15,16 +15,12 @@
 
 # include <string>
 
-/*!
-** @addtogroup server
-** @{
-*/
-
 class Cx;
 class CoachErrorCustom;
 
 /*!
 ** @brief Clients statistics that can be retrieved from Client.
+** @ingroup server
 **
 ** Originated from a kludge: Generic server and arbiter have several
 ** different informations on each client. They are all grouped here (with
@@ -50,6 +46,7 @@ BEGIN_NS(server);
 
 /*!
 ** @brief Keep additional data about a client (statistics, status, ...)
+** @ingroup server
 */
 class Client
 {
@@ -163,9 +160,5 @@ inline void Client::send(const Packet* p)
 }
 
 END_NS(server);
-
-
-//! @}
-
 
 #endif /* !CLIENT_HH_ */

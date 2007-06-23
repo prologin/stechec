@@ -28,8 +28,9 @@ BEGIN_NS(sdlvisu);
 class Game;
 class ActionPopup;
 
-/*
-** Player class for visu.
+/*!
+** @brief Player class for visu.
+** @ingroup tbt_2d_gui
 **
 ** Player caracteristics are not stored in this class, they are
 ** fetched from Api.

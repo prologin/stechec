@@ -1,0 +1,13 @@
+/*!
+** @defgroup tools_net Network
+** @brief Located in @c stechec/tools/datatfs directory.
+** @ingroup tools
+**
+** There is already all that is needed for networking.
+** See Cx, TcpCx, DirectCx, and Packet classes.
+*/
+
+/*!
+** @dir stechec/tools/datatfs
+** @brief Contains \ref tools_net module.
+*/

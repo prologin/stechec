@@ -19,19 +19,23 @@
 
 # include "BaseSRules.hh"
 # include "Field.hh"
-# include "SBall.hh"
-# include "SWeather.hh"
-# include "STeam.hh"
-# include "SPlayer.hh"
-# include "SActionHandler.hh"
 
-typedef Field<SPlayer> SField;
-class STeamMsg;
+class Dice;
+class SActionHandler;
+class SBall;
+class SPlayer;
 class SPlayerMsg;
+class STeam;
+class STeamMsg;
+class SWeather;
+
+//! @brief Field for the server.
+//! @ingroup tbt_server_rules
+typedef Field<SPlayer> SField;
 
 /*!
 ** @brief Rules implementation for the server.
-** @ingroup rules
+** @ingroup tbt_server_rules
 **
 ** It symbolizes the main referee, who manages
 ** game state, teams, turns, turnover and score.
@@ -110,7 +114,8 @@ public:
   virtual void unserialize(std::istream& is);
 
 private:
-
+  //! @brief Stringifies rules defined tokens.
+  //! FIXME: Move it to common/ so that client can use it too.
   const char* tokenToString(unsigned token) const;
 
   //! @brief Initialize rules and launch game.

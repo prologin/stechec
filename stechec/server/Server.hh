@@ -21,14 +21,8 @@
 # include "datatfs/CxPool.hh"
 # include "GameHosting.hh"
 
-/*!
-** @file
-**
-** @defgroup server Generic server application.
-** @{
-*/
-
 //! @brief Maximum number of coachs + spectators connected on server.
+//! @ingroup server
 # define MAX_CONNECTION        250
 
 class Cx;
@@ -40,6 +34,7 @@ BEGIN_NS(server);
 /*!
 ** @brief Control multiple game, receive new clients, handle
 ** spectators...
+** @ingroup server
 */
 class Server
 {
@@ -97,8 +92,6 @@ private:
 
   pthread_mutex_t		lock_;
 };
-
-//! @}
 
 END_NS(server);
 

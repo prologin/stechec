@@ -15,17 +15,20 @@
 */
 
 #ifndef ENTRY_H
-#define ENTRY_H
+# define ENTRY_H
 
-#include "Global.hh"
-#include "Colors.hh"
-#include "GuiError.hh"
-#include "Widget.hh"
+# include "Global.hh"
+# include "Colors.hh"
+# include "GuiError.hh"
+# include "Widget.hh"
 
-#include <SDL_gfxPrimitives.h>
+# include <SDL_gfxPrimitives.h>
 
-#define ENTRY_ALPHA 170
+# define ENTRY_ALPHA 170
 
+/*!
+** @ingroup tbt_2d_gui
+*/
 class Entry: public Widget
 {
     protected:

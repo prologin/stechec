@@ -15,10 +15,14 @@
 */
 
 #ifndef GUIERROR_H
-#define GUIERROR_H
-#include "Global.hh"
+# define GUIERROR_H
 
-//! @brief Class thrown on error.
+# include "Global.hh"
+
+/*!
+** @brief Class thrown on error.
+** @ingroup tbt_2d_gui
+*/
 class GUIError
 {
     public:
@@ -27,4 +31,5 @@ class GUIError
     private:
   string msg;
 };
+
 #endif

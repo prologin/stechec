@@ -21,13 +21,13 @@
 # include "Sprite.hh"
 # include "TextSurface.hh"
 
-
 BEGIN_NS(sdlvisu);
 
 class Game;
 
 /*!
-** Game panel (on the right).
+** @brief Game panel (on the right).
+** @ingroup tbt_2d_gui
 */
 class Panel : public VirtualSurface
 {

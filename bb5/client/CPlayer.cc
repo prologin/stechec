@@ -14,9 +14,9 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "CRules.hh"
 #include "CField.hh"
 #include "CPlayer.hh"
+#include "CRules.hh"
 
 CPlayer::CPlayer(CRules* r, const MsgPlayerCreate* m)
   : Player(m),

@@ -18,12 +18,8 @@
 # define TOOLS_HH_
 
 /*!
-** @defgroup tools Stechec tools library.
-**
-** Provide some useful tools.
-**
-** All these files are located in @c stechec/tools
-**
+** @file tools.hh
+** @ingroup tools
 */
 
 # include <sstream>
@@ -44,10 +40,15 @@
 # include <ctime>
 # include <cmath>
 
+//! @ingroup tools
+//! @{
+
 # define STECHEC_BINARY_VERSION 2
 
 # define BEGIN_NS(Ns) namespace Ns {
 # define END_NS(Ns) }
+
+//! @}
 
 # include "misc/Exception.hh"
 # include "misc/os_wrapper.hh"

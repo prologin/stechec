@@ -13,9 +13,14 @@
 #ifndef START_ARBITER_HH_
 # define START_ARBITER_HH_
 
+/*!
+** @file stechec/client/start_arbiter.hh
+** @ingroup client
+*/
+
 # include "xml/xml_config.hh"
 
-//! @addtogroup client
+//! @ingroup client
 //! @{
 
 bool start_arbiter(xml::XMLConfig& cfg);

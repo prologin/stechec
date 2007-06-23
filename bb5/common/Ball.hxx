@@ -14,7 +14,6 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-
 template <typename T>
 inline Ball<T>::Ball()
   : owner_(NULL)

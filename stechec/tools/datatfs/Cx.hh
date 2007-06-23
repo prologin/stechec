@@ -13,19 +13,17 @@
 #ifndef CX_HH_
 # define CX_HH_
 
-/*! @file Cx.hh
-**
-** @defgroup tools_net Networking tools.
-** @{
-*/
-
 # include "datatfs/Packet.hh"
 # include "misc/Exception.hh"
 
+//! @ingroup tools_net
 const unsigned CX_TOKEN_START = 0x8000;
 
-//! @brief Network tokens.
-//! Handled by Stechec in base_rules.
+/*!
+** @brief Network tokens.
+** @ingroup tools_net
+** Handled by Stechec in base_rules.
+*/
 enum eCxToken {
   CX_INIT = CX_TOKEN_START,
   CX_ACCEPT,
@@ -41,6 +39,7 @@ enum eCxToken {
 
 /*!
 ** @brief Exception class for network errors.
+** @ingroup tools_net
 */
 class NetError : public Exception
 {
@@ -52,6 +51,7 @@ public:
 
 /*!
 ** @brief Exception class for network errors.
+** @ingroup tools_net
 */
 class NetSysError : public NetError
 {
@@ -61,6 +61,8 @@ public:
   NetSysError(const std::string& msg);
 };
 
+//! @ingroup tools_net
+//! @{
 
 const unsigned PACKET_SIZE_MAX  = 2048;
 const unsigned BUF_SEND_SIZE    = PACKET_SIZE_MAX * 4;
@@ -73,8 +75,11 @@ const int CX_RW         = 0x03;
 const int CX_CONNECTING = 0x04;
 const int CX_LISTENING  = 0x08;
 
+//! @}
+
 /*!
 ** @brief Base class for network/file data transfert.
+** @ingroup tools_net
 **
 ** This class contain only methods related to data transfert (send,
 ** receive). Use a derived class to be able to open a connection, like
@@ -161,6 +166,8 @@ inline std::ostream& operator<< (std::ostream& os, const Cx& cx)
 //
 // Cx packets, managed by clients and server, not by rules.
 //
+
+//! @ingroup tools_net
 struct CxInit : public Packet
 {
   CxInit()
@@ -168,6 +175,7 @@ struct CxInit : public Packet
   int binary_version;
 };
 
+//! @ingroup tools_net
 struct CxDeny : public Packet
 {
   CxDeny()
@@ -175,6 +183,7 @@ struct CxDeny : public Packet
   int reason[16];
 };
 
+//! @ingroup tools_net
 struct CxList : public Packet
 {
   CxList()
@@ -185,6 +194,7 @@ struct CxList : public Packet
   int nb_viewer;
 };
 
+//! @ingroup tools_net
 struct CxJoin : public Packet
 {
   CxJoin(int player_id = -1)
@@ -198,14 +208,12 @@ struct CxJoin : public Packet
   int client_extid;
 };
 
+//! @ingroup tools_net
 struct CxError : public Packet
 {
   CxError(int player_id = -1)
     : Packet(CX_ERROR, player_id) { data_size = sizeof(*this); }
   int msg[16];
 };
-
-//! !defgroup
-//! @}
 
 #endif /* !CX_HH_ */

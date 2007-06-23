@@ -21,6 +21,9 @@
 
 #ifdef CONSOLE_BINARY
 
+/*!
+** @ingroup tbt_cli
+*/
 class ConsoleApp : public ClientApp
 {
 public:

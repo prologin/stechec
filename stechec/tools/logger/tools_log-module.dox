@@ -1,0 +1,50 @@
+/*!
+** @defgroup tools_log Logger
+** @brief Located in @c stechec/tools/logger directory.
+** @ingroup tools
+**
+** This is a facility to log debug message, with customizable
+** verbosity level.
+**
+** This module could be used to log debug and error message into a
+** c++ iostream (usually @p std::cerr). This is still experimental, and
+** could be changed in the futur. It is designed to be thread-safe, and could
+** log each thread in a separate ostream.
+**
+** Currently, it could log only into @p std::cerr.
+**
+** To use it, define the following macro to your compilator:
+** @code
+** -DMODULE_NAME=\"server\"  // Name of your module (eg: server).
+** -DMODULE_COLOR=C_GREEN    // Color to use.
+** @endcode
+**
+**
+** Then, somewhere in your code, keep a Log object per thread. If you
+** don't do this, it will happily segfault. (hint: put it at the beginning
+** of your main() and thread starting functions).
+** @code
+** Log log(3);         // Verbose level to 3.
+** log.setPrintLoc();
+** @endcode
+**
+** Now, you are ready to use it ! Only thinks that LOG1 or other macros
+** will be replaced by 'std::cout <<'
+** @code
+** int foo() {
+**   LOG1("hello " << 42 << " world!");
+**   while (true) ;
+**   ERR("Your computer stinks.");
+** }
+** @endcode
+**
+** The module name will be printed into bracket before each line. Beware, the
+** the printed module name will reflect which compilation unit possess it, and
+** may not reflect the source directory module. This is only true for LOG
+** in headers.
+*/
+
+/*!
+** @dir stechec/tools/logger
+** @brief Contains \ref tools_log module.
+*/

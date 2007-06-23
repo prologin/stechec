@@ -17,23 +17,22 @@
 #ifndef WEATHER_HH_
 # define WEATHER_HH_
 
-/*!
-** @file common/Weather.hh
-** @ingroup rules
-*/
-
 # include "Constants.hh"
 # include "PacketHandler.hh"
 
-//! @brief Server -> Client. Send the current weather, once in the game.
+/*!
+** @struct MsgWeather
+** @brief Current Weather.
+** @ingroup tbt_rules
+** Server -> Client.
+*/
 DECLARE_PACKET(MSG_WEATHER, MsgWeather)
   int weather;
 END_PACKET;
 
-
 /*!
-** @ingroup rules
 ** @brief Base class for storing current match weather.
+** @ingroup tbt_rules
 */
 class Weather
 {

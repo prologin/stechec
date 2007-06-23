@@ -16,8 +16,9 @@
 # include "Cx.hh"
 
 /*! @brief Implements TCP networking.
+** @ingroup tools_net
 **
-** This class implement TCP/IP data connections. Nagle algorithm
+** This class implements TCP/IP data connections. Nagle algorithm
 ** is turned off, to speed up little but frequent transfers.
 **
 ** @code

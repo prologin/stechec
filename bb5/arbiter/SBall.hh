@@ -19,11 +19,12 @@
 
 # include "Ball.hh"
 
-class SRules;
 class SPlayer;
+class SRules;
 
 /*!
 ** @brief Ball for the server.
+** @ingroup tbt_server_rules
 **
 ** It symbolizes the ball, checks all ball manipulations.
 **
@@ -77,7 +78,6 @@ private:
   
   SRules* r_;
   bool thrown_;
-
 };
-  
+
 #endif /* !SBALL_H_ */

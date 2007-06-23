@@ -15,17 +15,19 @@
 */
 
 #ifndef WIDGET_H
-#  define WIDGET_H
+# define WIDGET_H
 
-#include "Global.hh"
-#include "Focus.hh"
+# include "Global.hh"
+# include "Focus.hh"
 
-#define WIDGET_HEIGHT 30
-#define WIDGET_WIDTH 150
+# define WIDGET_HEIGHT 30
+# define WIDGET_WIDTH 150
+
 class Focus;
 
-/*!@class Widget
+/*!
  * @brief Master Widget Class
+ * @ingroup tbt_2d_gui
  *
  * This class is a virtual class.
  * You need to use a class which inherit from it to do a widget.
@@ -210,6 +212,6 @@ public:
    * @param height is the value to set
    */
   void set_height(const uint height);
-
 };
+
 #endif

@@ -1,0 +1,9 @@
+/*!
+** @defgroup stechec Stechec
+** @brief Located in @c stechec directory.
+*/
+
+/*!
+** @dir stechec
+** @brief Contains \ref stechec module.
+*/

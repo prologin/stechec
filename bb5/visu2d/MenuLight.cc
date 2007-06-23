@@ -25,6 +25,7 @@
 
 /*!
 ** @brief Implementation of a 'very light' menu.
+** @ingroup tbt_2d_gui
 **
 ** Inherit of 'ClientApp', a crappy class that does all dirty
 ** things a stechec client need: handle command line options,

@@ -17,16 +17,13 @@
 #ifndef TEAM_HH_
 # define TEAM_HH_
 
-/*!
-** @file bb5/common/Team.hh
-** @ingroup rules
-*/
-
+# include "Constants.hh"
 # include "PacketHandler.hh"
 
 /*!
 ** @struct MsgReroll
 ** @brief Team reroll use, or result acceptation.
+** @ingroup tbt_rules
 ** Client <-> Server.
 */
 DECLARE_PACKET(MSG_REROLL, MsgReroll)
@@ -36,6 +33,7 @@ END_PACKET;
 /*!
 ** @struct MsgTeamInfo
 ** @brief Create a Team, at the very beginning of the game.
+** @ingroup tbt_rules
 ** Client <-> Server.
 ** FIXME: 'race' info is missing. (note: many others too...)
 */
@@ -48,16 +46,16 @@ END_PACKET;
 /*!
 ** @struct MsgTouchdooown
 ** @brief Touchdooown!
+** @ingroup tbt_rules
 ** Server -> Client.
 */
 DECLARE_PACKET(MSG_TOUCHDOOOWN, MsgTouchdooown)
   int player_id;  ///< Scoring Player id.
 END_PACKET;
 
-
 /*!
-** @ingroup rules
 ** @brief Base class describing a BB team.
+** @ingroup tbt_rules
 */
 template <typename T>
 class Team

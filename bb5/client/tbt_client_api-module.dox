@@ -1,0 +1,10 @@
+/*!
+** @defgroup tbt_client_api Client API
+** @brief Located in @c bb5/client directory.
+** @ingroup tbt
+*/
+
+/*!
+** @dir bb5/client
+** @brief Contains \ref tbt_client_api module.
+*/

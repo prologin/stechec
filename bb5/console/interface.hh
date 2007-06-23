@@ -25,6 +25,7 @@
 
 /*!
 ** @brief A stupid command line based client.
+** @ingroup tbt_cli
 */
 class CmdLineInterface : public Event
 {

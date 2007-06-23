@@ -14,9 +14,13 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "Dice.hh"
-#include "SRules.hh"
 #include "SBall.hh"
+
+#include "Dice.hh"
+#include "SActionHandler.hh"
+#include "SPlayer.hh"
+#include "STeam.hh"
+#include "SRules.hh"
 
 SBall::SBall(SRules* r)
   : r_(r),

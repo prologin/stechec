@@ -17,16 +17,13 @@
 #ifndef _BALL_HH_
 # define _BALL_HH_
 
-/*!
-** @file bb5/common/Ball.hh
-** @ingroup rules
-*/
-
+# include "Constants.hh"
 # include "PacketHandler.hh"
 
 /*!
 ** @struct MsgBallPos
 ** @brief Ball Position.
+** @ingroup tbt_rules
 ** Client -> Server, only during a kick-off.
 ** Server -> Client, at any time of the game.
 */
@@ -38,6 +35,7 @@ END_PACKET
 /*!
 ** @struct MsgGiveBall
 ** @brief Changes Ball owner.
+** @ingroup tbt_rules
 ** Client -> Server, after a touchback.
 ** Server -> Client, at any time of the game.
 */
@@ -46,8 +44,8 @@ DECLARE_PACKET(MSG_GIVEBALL, MsgGiveBall)
 END_PACKET;
 
 /*!
-** @brief Represents the Blood Bowl Ball.
-** @ingroup rules
+** @brief Base class describing the ball.
+** @ingroup tbt_rules
 */
 template <typename T>
 class Ball
