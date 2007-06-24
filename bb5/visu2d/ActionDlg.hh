@@ -17,8 +17,8 @@
 #ifndef ACTIONDLG_HH_
 # define ACTIONDLG_HH_
 
-# include "tools.hh"
 # include "DlgBox.hh"
+# include "tools.hh"
 
 BEGIN_NS(sdlvisu);
 

@@ -17,8 +17,8 @@
 #ifndef GAMEFIELD_HH_
 # define GAMEFIELD_HH_
 
-# include "VirtualScrollableSurface.hh"
 # include "Sprite.hh"
+# include "VirtualScrollableSurface.hh"
 
 BEGIN_NS(sdlvisu);
 

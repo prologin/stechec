@@ -14,8 +14,8 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "SDLWindow.hh"
 #include "Game.hh"
+#include "SDLWindow.hh"
 
 //
 // Library entry point. Called by the generic client 'tbt'.

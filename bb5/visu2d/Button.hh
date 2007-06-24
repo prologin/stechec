@@ -17,8 +17,8 @@
 #ifndef BUTTON_H
 # define BUTTON_H
 
-# include "Global.hh"
 # include "Colors.hh"
+# include "Global.hh"
 # include "Widget.hh"
 
 # include <SDL_gfxPrimitives.h>

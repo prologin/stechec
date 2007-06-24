@@ -14,10 +14,11 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include <SDL_gfxPrimitives.h>
 #include "Api.hh"
-#include "Game.hh"
 #include "Field.hh"
+#include "Game.hh"
+
+#include <SDL_gfxPrimitives.h>
 
 BEGIN_NS(sdlvisu);
 

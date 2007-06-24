@@ -14,8 +14,9 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
-#include "tools.hh"
 #include "Global.hh"
+
+#include "tools.hh"
 
 void PrintStrings(SDL_Surface *dest, TTF_Font *font, string str,
                   SDL_Rect &rc, SDL_Color textColor)

@@ -14,14 +14,14 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "tools.hh"
-#include "SDLWindow.hh"
-#include "VirtualSurface.hh"
-#include "InputTextSurface.hh"
-#include "Sprite.hh"
+#include "ClientApp.hh"
 #include "Colors.hh"
 #include "Game.hh"
-#include "ClientApp.hh"
+#include "InputTextSurface.hh"
+#include "SDLWindow.hh"
+#include "Sprite.hh"
+#include "tools.hh"
+#include "VirtualSurface.hh"
 
 /*!
 ** @brief Implementation of a 'very light' menu.

@@ -17,7 +17,7 @@
 #ifndef FOCUS_H
 # define FOCUS_H
 
-# include "Widget.hh"
+# include <cstdlib>
 
 class Widget;
 
@@ -29,7 +29,7 @@ class Focus
   Widget* focus;
   
     public:
-  Focus(Widget* widget=NULL);
+  Focus(Widget* widget = NULL);
   
   Widget* get_focus();
   void set_focus(Widget* widget);

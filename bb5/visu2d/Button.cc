@@ -14,9 +14,10 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
-#include "ResourceCenter.hh"
 #include "Button.hh"
+
 #include "GuiError.hh"
+#include "ResourceCenter.hh"
 
     //
     // ImageButton

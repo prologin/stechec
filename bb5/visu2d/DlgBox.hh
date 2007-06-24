@@ -17,9 +17,9 @@
 #ifndef DLGBOX_HH_
 # define DLGBOX_HH_
 
-# include "VirtualSurface.hh"
 # include "Sprite.hh"
 # include "TextSurface.hh"
+# include "VirtualSurface.hh"
 
 BEGIN_NS(sdlvisu);
 

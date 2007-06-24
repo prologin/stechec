@@ -17,9 +17,9 @@
 #ifndef PANEL_HH_
 # define PANEL_HH_
 
-# include "VirtualSurface.hh"
 # include "Sprite.hh"
 # include "TextSurface.hh"
+# include "VirtualSurface.hh"
 
 BEGIN_NS(sdlvisu);
 

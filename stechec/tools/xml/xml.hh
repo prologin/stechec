@@ -17,6 +17,8 @@
 #ifndef XML_HH_
 # define XML_HH_
 
+# include "tools.hh"
+
 BEGIN_NS(xml);
 
 class XMLInternal;

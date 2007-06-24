@@ -17,8 +17,9 @@
 #ifndef ACTIONPOPUP_HH_
 # define ACTIONPOPUP_HH_
 
-# include "VirtualSurface.hh"
+# include "Constants.hh"
 # include "Sprite.hh"
+# include "VirtualSurface.hh"
 
 class Api;
 

@@ -16,6 +16,8 @@
 
 #include "Focus.hh"
 
+#include "Widget.hh"
+
 Focus::Focus(Widget* widget)
   : focus(widget)
 {}

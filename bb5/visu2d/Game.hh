@@ -17,11 +17,11 @@
 #ifndef GAME_HH_
 # define GAME_HH_
 
-# include <SDL.h>
-
-# include "tools.hh"
 # include "Event.hh"
 # include "Sprite.hh"
+# include "tools.hh"
+
+# include <SDL.h>
 
 // All forward decl. Avoid recompilation of all sdlvisu when a header
 // is modified.

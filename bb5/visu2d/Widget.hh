@@ -17,13 +17,11 @@
 #ifndef WIDGET_H
 # define WIDGET_H
 
-# include "Global.hh"
 # include "Focus.hh"
+# include "Global.hh"
 
 # define WIDGET_HEIGHT 30
 # define WIDGET_WIDTH 150
-
-class Focus;
 
 /*!
  * @brief Master Widget Class

@@ -17,8 +17,8 @@
 #ifndef ENTRY_H
 # define ENTRY_H
 
-# include "Global.hh"
 # include "Colors.hh"
+# include "Global.hh"
 # include "GuiError.hh"
 # include "Widget.hh"
 

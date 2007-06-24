@@ -14,9 +14,10 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
-#include "ResourceCenter.hh"
 #include "Menu.hh"
+
 #include "GuiError.hh"
+#include "ResourceCenter.hh"
 
 Menu::Menu (const uint x, const uint y, SDL_Surface * screen,
             const ushort width, const string title) : Widget(x, y, width, 0, screen)

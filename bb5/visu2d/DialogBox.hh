@@ -17,9 +17,10 @@
 #ifndef DIALOGBOX_H
 # define DIALOGBOX_H
 
-# include "Global.hh"
 # include "Button.hh"
 # include "Colors.hh"
+# include "Global.hh"
+
 # include <vector>
 
 /*!

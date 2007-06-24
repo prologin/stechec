@@ -14,9 +14,9 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
-#include "ResourceCenter.hh"
 #include "DialogBox.hh"
 #include "GuiError.hh"
+#include "ResourceCenter.hh"
 
     //
     // ATTENTION ICI : faire sauter toutes les valeurs en dur !!!!!!!!!!!!!!

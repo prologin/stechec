@@ -17,11 +17,11 @@
 #ifndef LABELENTRY_H
 # define LABELENTRY_H
 
+# include "Entry.hh"
+# include "Label.hh"
 # include "Global.hh"
 # include "GuiError.hh"
 # include "Widget.hh"
-# include "Label.hh"
-# include "Entry.hh"
 
 /*!
 ** @ingroup tbt_2d_gui

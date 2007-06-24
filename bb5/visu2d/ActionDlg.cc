@@ -14,10 +14,11 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "Api.hh"
-#include "Game.hh"
-#include "DlgBox.hh"
 #include "ActionDlg.hh"
+
+#include "Api.hh"
+#include "DlgBox.hh"
+#include "Game.hh"
 
 BEGIN_NS(sdlvisu);
 

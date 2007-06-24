@@ -14,18 +14,18 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "tools.hh"
-#include "xml/xml_config.hh"
-#include "SDLWindow.hh"
-#include "ResourceCenter.hh"
-
-#include "Global.hh"
 #include "DialogBox.hh"
+#include "Entry.hh"
+#include "Global.hh"
 #include "GuiError.hh"
 #include "Label.hh"
-#include "Entry.hh"
 #include "LabelEntry.hh"
 #include "Menu.hh"
+
+#include "ResourceCenter.hh"
+#include "SDLWindow.hh"
+#include "tools.hh"
+#include "xml/xml_config.hh"
 
 using namespace std;
 

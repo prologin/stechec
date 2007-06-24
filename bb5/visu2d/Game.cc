@@ -14,26 +14,26 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include <iterator>
-#include <SDL_ttf.h>
+#include "Game.hh"
 
+#include "ActionDlg.hh"
+#include "ActionPopup.hh"
 #include "Api.hh"
 #include "ClientCx.hh"
-
-#include "SDLWindow.hh"
-#include "Input.hh"
-#include "Surface.hh"
-#include "VirtualSurface.hh"
-#include "VirtualScrollableSurface.hh"
-#include "TextSurface.hh"
-#include "InputTextSurface.hh"
-#include "Sprite.hh"
-#include "Panel.hh"
 #include "Field.hh"
+#include "Input.hh"
+#include "InputTextSurface.hh"
+#include "Panel.hh"
+#include "SDLWindow.hh"
+#include "Sprite.hh"
+#include "Surface.hh"
+#include "TextSurface.hh"
+#include "VirtualScrollableSurface.hh"
+#include "VirtualSurface.hh"
 #include "VisuPlayer.hh"
-#include "ActionPopup.hh"
-#include "ActionDlg.hh"
-#include "Game.hh"
+
+#include <iterator>
+#include <SDL_ttf.h>
 
 BEGIN_NS(sdlvisu);
 

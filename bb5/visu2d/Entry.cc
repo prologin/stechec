@@ -14,8 +14,9 @@
  ** The TBT Team consists of people listed in the `AUTHORS' file.
  */
 
-#include "ResourceCenter.hh"
 #include "Entry.hh"
+
+#include "ResourceCenter.hh"
 
 Entry::Entry(const uint x, const uint y, const uint w, const uint h, string* ptxt,
              SDL_Surface * screen, Widget* father): Widget(x, y, w, h, screen, father)

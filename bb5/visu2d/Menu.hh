@@ -17,12 +17,12 @@
 #ifndef MENU_H
 # define MENU_H
 
-# include <vector>
-# include <SDL_gfxPrimitives.h>
-
 # include "Colors.hh"
 # include "Global.hh"
 # include "Widget.hh"
+
+# include <SDL_gfxPrimitives.h>
+# include <vector>
 
 # define MENU_WIDTH 200
 # define MENU_ALPHA 170
