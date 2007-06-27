@@ -284,7 +284,7 @@ int main (int argc, char *argv[])
   Log log_client(5);
   xml::XMLConfig cfg(".tbt/tbtrc", PKGDATADIR);
   SDLWindow win;
-
+  cfg.parse("");//FIXME: parse command line for options and custom config file.
   win.init(&cfg);
   screen = win.getScreen().getSDLSurface();
   LOG1("Init SDL Window ok.");
