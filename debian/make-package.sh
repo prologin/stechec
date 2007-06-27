@@ -13,7 +13,7 @@ fi
 DEBIANDIST=$PWD/deb-build
 
 TARFILE=$1
-TARDIR=`echo $TARFILE | sed -r 's/\.tar\.(bz2|gz)//'`
+TARDIR=`echo $TARFILE | sed 's/\.tar\.\(bz2\|gz\)//'`
 if [ "$TARFILE" = "$TARDIR" ]; then
 	echo "$TARFILE must be .tar.gz or .tar.bz2"
 	exit 1

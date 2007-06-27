@@ -286,7 +286,7 @@ AC_OUTPUT
 ## Print summary
 ##
 
-show_modules=`echo ${used_modules} | sed -r 's/prologin//g;s/^,+//;s/,+$//;s/,+/,/g'`
+show_modules=`echo ${used_modules} | sed 's/prologin//g;s/^,\+//;s/,\+$//;s/,\+/,/g'`
 echo "
  ---{ $PACKAGE_NAME $VERSION }---
 

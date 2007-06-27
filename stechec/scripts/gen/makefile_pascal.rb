@@ -38,7 +38,7 @@ $(NAME): $(SRC) $(LIMEOBJ)
 #\tfpc, what a bullshit ! it doesn't want our ~2000 command line argument...
 #\tinstead, omit link phase, add options for ld in his script, then link.
 \t@sed -e 's!^/usr/bin/ld!& $(CHECK_CHEAT) $(LIMEOBJ) !' ./ppas.sh
-\t@sed -rie '/INPUT\\(/ a $(LIMEOBJ) ' ./link.res
+\t@sed -ie '/INPUT(/ a $(LIMEOBJ) ' ./link.res
 \t@./ppas.sh
 \t@$(RM) ./ppas.sh ./link.res*
 \t@mv lib${NAME} ${NAME}

@@ -58,10 +58,10 @@ abort()
 output=`awk -f "${xml_parser_path}xmlparser.awk" "$1"`
 [ $? -ne 0 ] && abort "Cannot parse $1."
 # then go back to ugly sed scripts
-clients=`echo "$output" | sed -nr 's!^CONFIG/CLIENT/id=([0-9]+).*$!\1!p' | grep -v 0 | uniq`
-NB_INSTANCE=`echo "$output" | sed -nr 's!^CONFIG/GAME/NB_TEAM/player_per_team=([0-9]+).*$!\1!p' | uniq`
-USE_VALGRIND=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/valgrind=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
-USE_GDB=`echo "$output" | sed -nre ':n2 /^CONFIG\/CLIENT\/id=([0-9]+)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/gdb=true$/ { g; s/.*([0-9]+)$/x\1x/p; n; b n2; }; b n; }'`
+clients=`echo "$output" | sed -n 's!^CONFIG/CLIENT/id=\([0-9]\+\).*$!\1!p' | grep -v 0 | uniq`
+NB_INSTANCE=`echo "$output" | sed -n 's!^CONFIG/GAME/NB_TEAM/player_per_team=\([0-9]\+\).*$!\1!p' | uniq`
+USE_VALGRIND=`echo "$output" | sed -ne ':n2 /^CONFIG\/CLIENT\/id=\([0-9]\+\)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/valgrind=true$/ { g; s/.*\([0-9]\+\)$/x\1x/p; n; b n2; }; b n; }'`
+USE_GDB=`echo "$output" | sed -ne ':n2 /^CONFIG\/CLIENT\/id=\([0-9]\+\)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/gdb=true$/ { g; s/.*\([0-9]\+\)$/x\1x/p; n; b n2; }; b n; }'`
 
 if [ "x$NB_INSTANCE" = x ]; then
     NB_INSTANCE=1
@@ -96,7 +96,7 @@ pid_server=$!
 #
 for id in $clients; do
 
-SPECTATOR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/MODE/spectator=(true|false)$,\1,p; t q; b n; :q q }"`
+SPECTATOR=`echo "$output" | sed -ne "/^CONFIG\\/CLIENT\\/id=${id}\$/ { :n n; s,CONFIG/CLIENT/MODE/spectator=\\(true\\|false\\)\$,\\1,p; t q; b n; :q q }"`
 
 if [ x$SPECTATOR = x"true" ]; then
     LOOP=1
@@ -104,14 +104,14 @@ else
     LOOP=$NB_INSTANCE
 fi
 
-
-for i in `seq 1 $LOOP`; do
+i=1
+while [ $i -le $LOOP ] ; do
     echo "======== launch client id $id ($i)"  1>&2
     case $USE_VALGRIND in
 	*x${id}x*) VALGRIND=valgrind ;;
     esac
-    STDIN_REDIR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdin=(.*)$,\1,p; t q; b n; :q q }"`
-    STDOUT_REDIR=`echo "$output" | sed -nre "/^CONFIG\/CLIENT\/id=${id}$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdout=(.*)$,\1,p; t q; b n; :q q }"`
+    STDIN_REDIR=`echo "$output" | sed -ne "/^CONFIG\\/CLIENT\\/id=${id}\$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdin=\\(.*\\)\$,\\1,p; t q; b n; :q q }"`
+    STDOUT_REDIR=`echo "$output" | sed -ne "/^CONFIG\\/CLIENT\\/id=${id}\$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdout=\\(.*\\)\$,\\1,p; t q; b n; :q q }"`
     if [ "x$USE_GDB" = "x$id" ]; then
 	gdb -q --args $CLIENT_BIN $id "$1"
     else
@@ -124,6 +124,7 @@ for i in `seq 1 $LOOP`; do
     fi
 
     unset VALGRIND STDIN_REDIR
+    i=`expr $i + 1`
 done
 done
 
