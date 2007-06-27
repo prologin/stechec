@@ -129,7 +129,7 @@ fi
 
 # Check for proper autoconf version
 autoconf_maj_req=2
-autoconf_min_req=60
+autoconf_min_req=59
 
 printf "Checking Autoconf version... "
 
