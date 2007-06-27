@@ -84,6 +84,10 @@ fi
 AC_CHECK_PROGS([HELP2MAN], [help2man], [$am_aux_dir/missing help2man])
 AC_ARG_VAR([HELP2MAN], [automatically generate simple manual pages])
 
+# Texi2dvi
+AC_CHECK_PROGS([TEXI2DVI], [texi2dvi], [$am_aux_dir/missing texi2dvi])
+AC_ARG_VAR([TEXI2DVI], [PDF documentation])
+
 # Doxygen
 AC_CHECK_PROGS([DOXYGEN], [doxygen], [$am_aux_dir/missing doxygen])
 AC_ARG_VAR([DOXYGEN], [A C++ documentation system program])
@@ -92,6 +96,9 @@ AC_ARG_VAR([DOXYGEN], [A C++ documentation system program])
 AC_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+
+# Pkg-config
+PKG_PROG_PKG_CONFIG
 
 #
 # Configure system specific stuff.
@@ -110,6 +117,11 @@ case $host_os in
 
   netbsd*)
     AC_DEFINE([HOSTTYPE_NETBSD], [], [host type is netbsd])
+    LIBDL=
+  ;;
+
+  freebsd*)
+    AC_DEFINE([HOSTTYPE_FREEBSD], [], [host type is netbsd])
     LIBDL=
   ;;
 
