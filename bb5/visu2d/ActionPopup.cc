@@ -19,6 +19,7 @@
 #include "Api.hh"
 #include "Game.hh"
 #include "Input.hh"
+#include "Map.hh"
 #include "VisuPlayer.hh"
 
 BEGIN_NS(sdlvisu);

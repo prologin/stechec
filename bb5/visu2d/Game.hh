@@ -35,8 +35,8 @@ class VirtualSurface;
 
 BEGIN_NS(sdlvisu);
 
+class Map;
 class Panel;
-class VisuField;
 class VisuPlayer;
 class ActionPopup;
 class ActionDlg;
@@ -57,6 +57,7 @@ enum eVisuGameState {
   VGS_WAITKICKOFF,          ///< Wait for opponent to kick-off the ball.
   VGS_WAITPLACETEAM,        ///< Unused for now.
   VGS_DOBLOCKPUSHCHOICE,    ///< A square must be chosen to push a player in.
+  VGS_SHOWBLOCKPUSH,        ///< Push squares are shown but can not be chosen by us.
   VGS_SHOWACTIONPOPUP = 40, ///< Actions popup menu is displayed.
   VGS_DOACTION = 50,        ///< A Player will perform a real action, woow...
   VGS_DOPLAY = 60,          ///< It's our turn of game.
@@ -79,7 +80,7 @@ public:
   Input&                getInput();
   VirtualSurface&       getScreen();
   Panel&                getPanel();
-  VisuField&            getField();
+  Map&                  getField();
 
   //! @brief Unselect all selected players on the screen.  
   void unselectAllPlayer();
@@ -136,7 +137,7 @@ private:
   ClientCx*             ccx_;    ///< Connection with the server.
 
   Panel*                panel_;  ///< Game panel.
-  VisuField*            field_;  ///< Game field.
+  Map*                  field_;  ///< Game field.
   ActionPopup*          action_popup_;  ///< Action for player, on left click.
 
   VisuPlayer*           player_[2][16]; ///< Players...

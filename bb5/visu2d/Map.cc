@@ -14,16 +14,19 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include "Map.hh"
+
 #include "Api.hh"
-#include "Field.hh"
+#include "CPlayer.hh"
 #include "Game.hh"
+#include "VisuPlayer.hh"
 
 #include <SDL_gfxPrimitives.h>
 
 BEGIN_NS(sdlvisu);
 
-VisuField::VisuField(Game& g)
-  : VirtualScrollableSurface("VVisuField", g.getInput(), Point(500, 600), Point(723, 1054)),
+Map::Map(Game& g)
+  : VirtualScrollableSurface("VSMap", g.getInput(), Point(500, 600), Point(723, 1054)),
     g_(g),
     bg_("image/general/playground_0.jpg"),
     ball_("image/general/ball.png"),
@@ -58,45 +61,45 @@ VisuField::VisuField(Game& g)
   addChild(&cross_red_);
 }
 
-VisuField::~VisuField()
+Map::~Map()
 {
 }
 
-bool VisuField::mouseInsideStadium() const
+bool Map::mouseInsideMap() const
 {
   Rect render(getPos(), getScreenRect().getSize());
   return render.inside(g_.getInput().mouse_);
 }
 
-bool VisuField::mouseInsideField() const
+bool Map::mouseInsideField() const
 {
   Point sq(mouseToSquare());
-  return mouseInsideStadium() && sq.x >= 0 && sq.x < COLS && sq.y >= 0 && sq.y < ROWS;
+  return mouseInsideMap() && sq.x >= 0 && sq.x < COLS && sq.y >= 0 && sq.y < ROWS;
 }
 
-Point VisuField::mouseToSquare() const
+Point Map::mouseToSquare() const
 {
   return (g_.getInput().mouse_ - Point(getScreenRect()) - Point(7, 7)) / 40;
 }
 
-Point VisuField::squareToField(const Point& pt, const Point& adjust) const
+Point Map::squareToMap(const Point& pt, const Point& adjust) const
 {
   return pt * 40 + Point(7, 7) + adjust;
 }
 
-void VisuField::setMarker(const Point& square, int type)
+void Map::setMarker(const Point& square, int type)
 {
   switch (type)
     {
     case 0:
       red_highlight_.hide();
-      blue_highlight_.setPos(squareToField(square));
+      blue_highlight_.setPos(squareToMap(square));
       blue_highlight_.show();
       break;
 
     case 1:
       blue_highlight_.hide();
-      red_highlight_.setPos(squareToField(square));
+      red_highlight_.setPos(squareToMap(square));
       red_highlight_.show();
       break;
       
@@ -106,13 +109,13 @@ void VisuField::setMarker(const Point& square, int type)
     }
 }
 
-void VisuField::removeMarker()
+void Map::removeMarker()
 {
   red_highlight_.hide();
   blue_highlight_.hide();
 }
 
-void VisuField::setBallPos(const Point& pos)
+void Map::setBallPos(const Point& pos)
 {
   if (pos == Point(-1, -1))
     {
@@ -124,35 +127,70 @@ void VisuField::setBallPos(const Point& pos)
     {
       // This case happen when other team does the kickoff, on reception
       // of the first MSG_BALLPOS
-      cross_black_.setPos(squareToField(pos, Point(4, 4)));
+      cross_black_.setPos(squareToMap(pos, Point(4, 4)));
       cross_black_.show();
-      ball_.setPos(squareToField(pos, Point(3, 3)));
+      ball_.setPos(squareToMap(pos, Point(3, 3)));
       ball_.show();
     }
   else
     {
       if (g_.isStateSet(VGS_WAITKICKOFF))
         {
-          cross_red_.setPos(squareToField(pos, Point(4, 4)));
+          cross_red_.setPos(squareToMap(pos, Point(4, 4)));
           cross_red_.show();
         }
-      ball_.move(squareToField(pos, Point(3, 3)), 100.);
+      ball_.move(squareToMap(pos, Point(3, 3)), 100.);
     }
 }
 
-void VisuField::removeBall()
+void Map::removeBall()
 {
   ball_.hide();
 }
 
-bool VisuField::getDrawTicks() const
+void Map::placePlayer(VisuPlayer* vp, Position& pos)
+{
+  assert(vp != NULL);
+  assert(pos.col >= 0 && pos.col < COLS && pos.row >= 0 && pos.row < ROWS);
+
+  //FIXME: to do.
+  vp->setPos(squareToMap(pos));
+}
+
+void Map::removePlayer(VisuPlayer* vp, enum eStatus s)
+{
+  assert(vp != NULL);
+
+  //FIXME: to do.
+  switch (s)
+  {
+    case STA_RESERVE:
+      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 377 : 637)));
+      break;
+    case STA_KO:
+      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 277 : 737)));
+      break;
+    case STA_INJURED:
+      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 177 : 837)));
+      break;
+    case STA_SENTOFF:
+      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 77 : 937)));
+      break;
+    default:
+      WARN("Player `%1' of team `%2' doesn't have to leave the field in state `%3'.",
+          vp->getPlayer()->getId(), vp->getPlayer()->getTeamId(), Player::stringify(s));
+      break;
+  }
+}
+
+bool Map::getDrawTicks() const
 {
   return draw_ticks_;
 }
 
 // FIXME: doesn't work right now.
 // I don't handle surface alteration very well.
-void VisuField::setDrawTicks(bool enable)
+void Map::setDrawTicks(bool enable)
 {
   draw_ticks_ = enable;
   if (draw_ticks_)
@@ -171,7 +209,7 @@ void VisuField::setDrawTicks(bool enable)
 ** Draw square borders. Modify directly bg_ by 'erasing' with black
 ** little arrows.
 */
-void VisuField::drawTicks()
+void Map::drawTicks()
 {
   const int square_size = 40;
   const int margin_size = 7;
@@ -219,7 +257,7 @@ void VisuField::drawTicks()
     }
 }
 
-void VisuField::update()
+void Map::update()
 {
   Input& inp = g_.getInput();
 
@@ -243,10 +281,10 @@ void VisuField::update()
               LOG5("Try to place the ball at %1.", square);
               if (!g_.getApi()->doPlaceBall(square))
                 {
-                  ball_.setPos(squareToField(square, Point(10, 10)));
+                  ball_.setPos(squareToMap(square, Point(10, 10)));
                   g_.unsetState(VGS_DOKICKOFF);
                   g_.setState(VGS_WAITKICKOFF);
-                  cross_black_.setPos(squareToField(square, Point(4, 4)));
+                  cross_black_.setPos(squareToMap(square, Point(4, 4)));
                   cross_black_.show();
                   removeMarker();
                 }
@@ -272,7 +310,7 @@ void VisuField::update()
               LOG4("Try to give the ball to %1 at %2", p->getId(), square);
               if (!g_.getApi()->doGiveBall(p->getId()))
                 {
-                  ball_.setPos(squareToField(square, Point(10, 10)));
+                  ball_.setPos(squareToMap(square, Point(10, 10)));
                   g_.unsetState(VGS_DOTOUCHBACK);
                   g_.setState(VGS_WAITKICKOFF);
                   removeMarker();

@@ -41,6 +41,9 @@ public:
   VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p);
   virtual ~VisuPlayer();
 
+  //! @brief Get CPlayer associated with.
+  const CPlayer* getPlayer() const;
+
   void unselect();
 
   //! @brief Called at each new turn. Reset some variables.

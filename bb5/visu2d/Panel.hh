@@ -35,7 +35,7 @@ public:
   Panel(Game& g);
   virtual ~Panel();
 
-  //! @brief Called by VisuField, when the user move the mouse on a player.
+  //! @brief Called by VisuPlayer, when the user moves the mouse on a player.
   void displayPlayerInfo(int team_id, int player_id);
 
   //! @brief Hide player information.

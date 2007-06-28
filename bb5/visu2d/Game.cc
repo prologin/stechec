@@ -20,9 +20,9 @@
 #include "ActionPopup.hh"
 #include "Api.hh"
 #include "ClientCx.hh"
-#include "Field.hh"
 #include "Input.hh"
 #include "InputTextSurface.hh"
+#include "Map.hh"
 #include "Panel.hh"
 #include "SDLWindow.hh"
 #include "Sprite.hh"
@@ -44,7 +44,7 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
     ccx_(ccx)
 {
   panel_ = new Panel(*this);
-  field_ = new VisuField(*this);
+  field_ = new Map(*this);
   action_popup_ = new ActionPopup(*this);
   game_dlg_ = new ActionDlg(*this);
 
@@ -109,7 +109,7 @@ Panel& Game::getPanel()
   return *panel_;
 }
 
-VisuField& Game::getField()
+Map& Game::getField()
 {
   return *field_;
 }
@@ -176,6 +176,7 @@ inline const char* Game::stringify(enum eVisuGameState s)
     case VGS_WAITKICKOFF:       return "VGS_WAITKICKOFF"; break;
     case VGS_WAITPLACETEAM:     return "VGS_WAITPLACETEAM"; break;
     case VGS_DOBLOCKPUSHCHOICE: return "VGS_DOBLOCKPUSHCHOICE"; break;
+    case VGS_SHOWBLOCKPUSH:     return "VGS_SHOWBLOCKPUSH"; break;
     case VGS_SHOWACTIONPOPUP:   return "VGS_SHOWACTIONPOPUP"; break;
     case VGS_DOACTION:          return "VGS_DOACTION"; break;
     case VGS_DOPLAY:            return "VGS_DOPLAY"; break;
@@ -378,7 +379,13 @@ void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
   VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
-  p->setPos(field_->squareToField(pos));
+  p->setPos(field_->squareToMap(pos));
+  if (isStateSet(VGS_SHOWBLOCKPUSH))
+  {
+    for (int i = 0; i < 3 && block_push_[i].isShown(); i ++)
+      block_push_[i].hide();
+    unsetState(VGS_SHOWBLOCKPUSH);
+  }
 }
 
 void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
@@ -386,7 +393,7 @@ void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
   VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
-  p->move(field_->squareToField(pos), 100.);
+  p->move(field_->squareToMap(pos), 100.);
 }
 
 void Game::evPlayerStatus(int team_id, int player_id, enum eStatus)
@@ -524,11 +531,16 @@ void Game::evBlockPush(const Position& pos, int nb_choice, const Position choice
   for (int i = 0; i < nb_choice; i++)
     {
       LOG4(" - push %1: %2", i, choices[i]);
-      block_push_[i].setPos(Point(choices[i]) * 40);
+      block_push_[i].setPos(field_->squareToMap(choices[i]));
       block_push_[i].show();
     }
-  setState(VGS_DOBLOCKPUSHCHOICE);
-  
+  if (nb_choice > 1)
+    setState(VGS_DOBLOCKPUSHCHOICE);
+  else
+  {
+    block_push_[1].setFrame(2);
+    setState(VGS_SHOWBLOCKPUSH);
+  }
 }
 
 void Game::evFollow()
@@ -618,7 +630,7 @@ int Game::run()
                       block_push_[j].hide();
                     unsetState(VGS_DOBLOCKPUSHCHOICE);
                   }
-                     }
+              }
             else
               block_push_[i].setFrame(1);
         }

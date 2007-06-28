@@ -18,8 +18,8 @@
 
 #include "ActionPopup.hh"
 #include "Api.hh"
-#include "Field.hh"
 #include "Game.hh"
+#include "Map.hh"
 #include "Panel.hh"
 
 BEGIN_NS(sdlvisu);
@@ -38,7 +38,7 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
     status_("image/general/status.png"),
     target_action_(ACT_UNASSIGNED)
 {
-  VisuField& field = game_.getField();
+  Map& field = game_.getField();
 
   circle_.setZ(5);
   circle_.splitNbFrame(3, 1);
@@ -74,6 +74,11 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
 
 VisuPlayer::~VisuPlayer()
 {
+}
+
+const CPlayer* VisuPlayer::getPlayer() const
+{
+  return p_;
 }
 
 void VisuPlayer::unselect()
@@ -119,7 +124,7 @@ void VisuPlayer::finishAction()
 
 void VisuPlayer::drawPath()
 {
-  VisuField& field = game_.getField();
+  Map& field = game_.getField();
   Point to(field.mouseToSquare());
   
   if (prev_dst_ == to)
@@ -139,7 +144,7 @@ void VisuPlayer::drawPath()
       Point pt(api_->movePath(i));
       path_.push_back(move_sprite_);
       Sprite& sp = path_.back();
-      sp.setPos(field.squareToField(pt, Point(5, 5)));
+      sp.setPos(field.squareToMap(pt, Point(5, 5)));
       game_.getField().addChild(&sp);
     }
   prev_dst_ = to;
@@ -202,7 +207,7 @@ void VisuPlayer::selectAction(enum eRealAction act)
 
 void VisuPlayer::targetAction(enum eRealAction act)
 {
-  VisuField& field = game_.getField();
+  Map& field = game_.getField();
   Point to(field.mouseToSquare());
 
   api_->selectTeam(p_->getTeamId());
@@ -244,7 +249,7 @@ void VisuPlayer::setPos(const Point& pos)
 void VisuPlayer::update()
 {
   Input& inp = game_.getInput();
-  VisuField& field = game_.getField();
+  Map& field = game_.getField();
 
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
@@ -336,6 +341,8 @@ void VisuPlayer::update()
 
 void VisuPlayer::updateStatus()
 {
+  Map& m = game_.getField();
+
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
   
@@ -354,17 +361,17 @@ void VisuPlayer::updateStatus()
         case STA_KO:
           status_.setFrame(3);
           status_.show();
-          setPos(Point(654, ((p_->getTeamId() == 1) ? 277 : 737)));
+          m.removePlayer(this, p_->getStatus());
           break;
         case STA_INJURED:
           status_.setFrame(4);
           status_.show();
-          setPos(Point(654, ((p_->getTeamId() == 1) ? 177 : 837)));
+          m.removePlayer(this, p_->getStatus());
           break;
         case STA_SENTOFF:
           status_.setFrame(5);
           status_.show();
-          setPos(Point(654, ((p_->getTeamId() == 1) ? 77 : 937)));
+          m.removePlayer(this, p_->getStatus());
           break;
         case STA_STANDING:
           if (api_->getBallOwner() == p_)
@@ -377,9 +384,11 @@ void VisuPlayer::updateStatus()
             status_.hide();
           break;
         case STA_RESERVE:
+          status_.hide();
+          m.removePlayer(this, p_->getStatus());
+          break;
         default:
           status_.hide();
-          setPos(Point(654, ((p_->getTeamId() == 1) ? 377 : 637)));
           break;
       }
 }

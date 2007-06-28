@@ -14,8 +14,8 @@ libbb5_visu_common_la_SOURCES =			\
 	ActionPopup.cc				\
 	Panel.hh				\
 	Panel.cc				\
-	Field.hh				\
-	Field.cc				\
+	Map.hh					\
+	Map.cc					\
 	VisuPlayer.hh				\
 	VisuPlayer.cc				\
 	Colors.hh				\
