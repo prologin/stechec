@@ -402,6 +402,12 @@ void Game::evPlayerStatus(int team_id, int player_id, enum eStatus)
   assert(p != NULL);
 
   p->updateStatus();
+  if (isStateSet(VGS_SHOWBLOCKPUSH))
+  {
+    for (int i = 0; i < 3 && block_push_[i].isShown(); i ++)
+      block_push_[i].hide();
+    unsetState(VGS_SHOWBLOCKPUSH);
+  }
 }
 
 void Game::evBallPos(const Point& pos)
