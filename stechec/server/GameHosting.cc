@@ -178,7 +178,7 @@ void GameHosting::spectatorReadiness(Client* cl)
   // Check if all spectators are ready.
   ClientList::iterator it;
   for (it = cl_.begin(); it != cl_.end(); ++it)
-    if ((*it)->isCoach() && !(*it)->is_ready_)
+    if (!(*it)->isCoach() && !(*it)->is_ready_)
       break;
   if (it == cl_.end())
     {
