@@ -38,6 +38,8 @@ CxPool<T>::~CxPool()
 {
 #if HAVE_EPOLL
   close(epoll_fd_);
+#else
+  delete[] ev_;
 #endif
 }
 

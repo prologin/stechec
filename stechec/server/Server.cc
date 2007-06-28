@@ -45,6 +45,11 @@ Server::Server(const xml::XMLConfig& cfg)
 
 Server::~Server()
 {
+  RulesList::iterator it;
+
+  for (it = rules_.begin(); it != rules_.end(); ++it)
+    delete it->second;
+
   inst = NULL;
   pthread_mutex_destroy(&lock_);
 }
