@@ -245,7 +245,6 @@ void GameHosting::killClient(Client* cl, const std::string& msg)
     {
       if (!--nb_viewer_)
 	rules_->setViewerState(rules_->getViewerState() & ~VS_HAVEVIEWER);
-      delete cl;
     }
 
   if ((state_ == ePlaying || state_ == eWaiting) && nb_coach_ == 0)
@@ -258,7 +257,7 @@ void GameHosting::killClient(Client* cl, const std::string& msg)
   CxError err;
   stringToPacket(err.msg, msg, 64);
   cx->send(err);
-  
+
   delete cx;
   cl->cx_ = NULL;
   if (!cl->isCoach() || state_ == eWaiting)
