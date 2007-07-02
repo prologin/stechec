@@ -54,6 +54,8 @@ public:
   void bounce(int nb = 1);
   //! @brief Scatters the ball in a random direction.
   //! @param nb Number of squares covered.
+  //! @attention Kludge: It changes ball position without advertising
+  //! clients, because the ball might be scattered out of the field.
   void scatter(int nb);
 
   //! @brief Makes spectators throw the ball in the field.

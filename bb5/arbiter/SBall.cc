@@ -224,10 +224,11 @@ void SBall::scatter(int nb)
 // Spectators throwing the ball
 void SBall::throwIn()
 {
-  setOwner(NULL);
   Position d(0, 0); // Direction of the throw.
-  int reach = r_->getDice()->roll("ball throw in", D6, 2) - 1;
+  int reach; // Amplitude of the throw.
   LOG5("Ball gets thrown by spectators from %1.", pos_);
+  reach = r_->getDice()->roll("ball throw in", D6, 2) - 1;
+  setOwner(NULL);
 
   // Get the border we just crossed:
   if (pos_.col == 0)

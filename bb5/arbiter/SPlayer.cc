@@ -996,7 +996,11 @@ void SPlayer::rollThrow()
 
 void SPlayer::finishThrow(bool reroll, int success)
 {
-  SBall* b = r_->getBall();
+  SBall* b;
+  Position ball_last_pos;
+  int i;
+  SPlayer* p;
+
   usable_skills_.clear();
   if (reroll)
     {
@@ -1005,16 +1009,28 @@ void SPlayer::finishThrow(bool reroll, int success)
     }
   else
     {
+      b = r_->getBall();
+      b->setThrown();
       b->setPosition(throw_aim_);
       if (!success)
         {
-          b->scatter(1);
-          b->scatter(1);
-          b->scatter(1);
+          i = 3;
+          while (f_->intoField(b->getPosition()) && i > 0)
+            {
+              // Kludge: SBall::scatter(...) must NOT advertise clients here.
+              ball_last_pos = b->getPosition();
+              b->scatter(1);
+              i --;
+            }
+          if (!f_->intoField(b->getPosition()))
+            {
+              b->setPosition(ball_last_pos);
+              b->throwIn();
+              return;
+            }
+          b->sendPosition();
         }
-      b->setThrown();
-      b->sendPosition();
-      SPlayer* p = f_->getPlayer(b->getPosition());
+      p = f_->getPlayer(b->getPosition());
       if (p != NULL && p->getStatus() == STA_STANDING)
         {
           p->tryCatchBall(success);
