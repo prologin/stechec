@@ -18,4 +18,6 @@ if HAVE_SDL
 endif
 
 
+if GENERATE_DOC
 SUBDIRS += subject
+endif

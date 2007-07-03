@@ -92,6 +92,14 @@ AC_ARG_VAR([TEXI2DVI], [PDF documentation])
 AC_CHECK_PROGS([DOXYGEN], [doxygen], [$am_aux_dir/missing doxygen])
 AC_ARG_VAR([DOXYGEN], [A C++ documentation system program])
 
+# Documentation generation
+AC_ARG_ENABLE([documentation],
+    [AS_HELP_STRING([--disable-documentation], [disable documentation generation])],
+    [documentation=${enableval}],
+    [documentation=yes]
+)
+AM_CONDITIONAL([GENERATE_DOC], [test "$documentation" = "yes"])
+
 # Libtool
 AC_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
@@ -310,4 +318,5 @@ echo "
    Building with readline:  ${HAVE_READLINE}
    Building with sdl:	    ${HAVE_SDL}
    Building with paragui:   ${HAVE_PARAGUI}
+   Generating doc:          ${documentation}
 "
