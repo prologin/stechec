@@ -80,7 +80,7 @@ constant:
     cst_comment: Nombre de tours nécessaires a une cellule pour produire un virus.
   -
     cst_name: VIRUS_LIFE
-    cst_val: 50
+    cst_val: 30
     cst_comment: Nombre de tours nécessaires a une cellule pour produire un virus.
   -
     cst_name: MITOSIS_DURATION

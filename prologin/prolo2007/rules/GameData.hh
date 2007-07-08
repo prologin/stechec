@@ -45,6 +45,7 @@ public:
   struct Position	map_size;
   unsigned		player_turn; ///< Actual Date.
   int			max_date;
+  int			chair;
 
   uint8_t		terrain_type[MAX_MAP_SIZE][MAX_MAP_SIZE];
   // uint8_t		terrain_graphic[MAX_MAP_SIZE][MAX_MAP_SIZE];
@@ -58,6 +59,8 @@ public:
   std::vector<Cellule*>	_cells;
 
   std::vector<Virus*>	_virus;
+
+  std::vector<int>	_cells_count; // nombre de cellules vivantes a chaque tour
 
   int			max_new_seeds; //nombre de nouveau foyer de bacterie max par tour
 

@@ -50,6 +50,7 @@ void	GameData::FreeData()
 
 void	GameData::InitMap()
 {
+  this->chair = 0;
 }
 
 int	GameData::GetNextMessage(int id)
@@ -212,6 +213,22 @@ void	GameData::Phagocytose(int id, int y, int x)
 
 void	GameData::PlayTurn ()
 {
+
+  /*
+  ** Ajout deather
+  **
+  ** A chaque tour, on memorise le nombre de cellules en vie.
+  */
+  std::vector<Cellule*>::iterator iter;
+  int count;
+
+  for (count = 0, iter = _cells.begin(); iter != _cells.end(); ++iter)
+    {
+      if ((*iter)->Saine())
+	count++;
+    }
+  _cells_count.push_back(count);
+  LOG1("===== Turn %1, count = %2 =====", _cells_count.size(), count);
 
   /*
    * Evolution des nutriments : spread et ajout
@@ -450,72 +467,36 @@ void GameData::deleteCells ()
 #define SCORE_BACTERIA			1
 #define SCORE_VIRUS			5
 
-  // How to compute the score
+//  How to compute the score
+// Called by ServerEntry::getScore()
 int	GameData::calculScore ()
 {
-  std::vector<int>P(this->getNbTeam());
-  std::fill(P.begin(), P.end(), 0);
+  int	score;
+  int	i;
+  int	alive_cells_t;
+  int	alive_cells_c;
+  int	pct;
 
-  int ids[MAX_PLAYER];
-  int nb_id;
-  int id_leuco_to_team[MAX_PLAYER];
-  //associe a chaque leucocyte sa team
-  std::fill(id_leuco_to_team, id_leuco_to_team+MAX_PLAYER, -1);
-  for (int t=0 ; t < this->getNbTeam() ; ++t) {
-    this->getAllIdFromTeamId(t, ids, &nb_id);
-    for (int j=0 ; j < nb_id ; j++) {
-      id_leuco_to_team[ids[j]] = t;
-    }
-  }
-  for (int i = 0; i < this->getNbPlayer (); ++i)
+  std::vector<int>::iterator iter;
+  std::vector<Cellule *>::iterator iter2;
+
+  alive_cells_t = 0;
+  for (i = 1, iter = _cells_count.begin(); iter != _cells_count.end(); ++iter, i++)
     {
-      tab[i] = 0;
-      players[i].score_ = 0;
+      LOG1("Turn %1, alive_cells_t = %2", i, *iter);
+      alive_cells_t += *iter;
     }
-  int n = 0;
-  //nombre de cellules saines
-  for (int i = 0; i < this->_cells.size (); ++i)
-    if (!this->_cells[i]->Infectee ())
-      ++n;
-
-  //calcul des Pi :
-  for (int i = 0; i < this->getNbPlayer (); ++i)
-    {
-      tab[i] += this->cellules_killed_by_[i] * SCORE_CELL_INFECTED;
-      LOG3("Score of %1 after cells : %2", i, tab[i]);
-      tab[i] += this->bacterias_killed_by_[i] * SCORE_BACTERIA;
-      LOG3("Score of %1 after bacteria: %2", i, tab[i]);
-      if (this->players[i].getState () == STATE_DEAD)
-	tab[i] -= 50;
-      tab[i] += this->virus_killed_by_[i] * SCORE_VIRUS;
-      LOG3("Score of %1 : %2", i, tab[i]);
-      players[i].score_ = tab[i];
-      assert(id_leuco_to_team[i] != -1);
-      P[id_leuco_to_team[i]] += players[i].score_;
-    }
-
-  //mise a zero des scores negatifs pour chaque team, et calcul de la somme des Pi
-  int total=0;
-  for (int t=0 ; t < this->getNbTeam() ; ++t) {
-    if (P[t] < 0)
-      for(int i=0 ; i < this->getNbPlayer() ; ++i)
-	if(id_leuco_to_team[i] == t)
-	  players[i].score_ = 0;
-    P[t] = std::max(P[t], 0);
-    total += P[t];
-  }
-
-  //calcul des scores par player, de telle maniere que la somme donne le score de la team
-  //attention, tous les scores sont mutliples par 100 pour ne pas avoir des erreurs d'arrondis critiques
-  for (int i=0 ; i < this->getNbPlayer() ; ++i) {
-    if (total == 0) {
-      players[i].score_ = 0;
-    } else {
-      players[i].score_ *= 100 * n;
-      players[i].score_ /= total;
-    }
-  }
-
+  alive_cells_c = 0;
+  for (iter2 = _cells.begin(); iter2 != _cells.end(); ++iter2)
+    alive_cells_c += ((*iter2)->Saine() ? 1 : 0);
+  if (alive_cells_c == 0)
+    alive_cells_c++;
+  LOG1("Alive cells at the end: %1", alive_cells_c);
+  score = (int)(1000.0 * ((((double)alive_cells_t / (this->getCurrentTurn())) + alive_cells_c) / 2.0) / (this->chair));
+  LOG1("Global score: %1", score);
+  // On assigne le meme score a tous les joueurs
+  for (i = 0; i < this->getNbPlayer(); ++i)
+    players[i].score_ = score;
 }
 
 

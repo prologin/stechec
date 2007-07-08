@@ -150,11 +150,13 @@ int        ServerEntry::LoadMap(const std::string& map_file)
 	else if (c == 'c' || c == 'C')
 	  {
 	    g_->terrain_type[row][col] = FLESH;
+	    g_->chair += 2;
 	    g_->_cells.push_back(new Cellule(row, col, CELL_MITOSIS_MATERIAL * 2, g_));
 	  }
 	else if (c == 'f' || c == 'F')
 	  {
 	    g_->terrain_type[row][col] = FLESH;
+	    g_->chair++;
 	  }
 	else
 	  {
@@ -164,6 +166,7 @@ int        ServerEntry::LoadMap(const std::string& map_file)
 	    return 1;
 	  }
       }
+  g_->chair /= 2;
   return 0;
 }
 
