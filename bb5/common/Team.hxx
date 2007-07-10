@@ -77,6 +77,21 @@ inline const std::string& Team<T>::getTeamName() const
 }
 
 template <typename T>
+inline const std::string& Team<T>::getNationName() const
+{
+  return nation_name_;
+}
+
+template <typename T>
+inline std::string Team<T>::getNationId() const
+{
+  std::string nation_id = nation_name_;
+  trimAll(nation_id);
+  toLower(nation_id);
+  return nation_id;
+}
+
+template <typename T>
 inline const std::string& Team<T>::getCoachName() const
 {
   return coach_name_;

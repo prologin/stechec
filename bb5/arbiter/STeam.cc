@@ -32,7 +32,9 @@ STeam::STeam(int team_id, SRules* r, SPlayerMsg* pm)
 
 void STeam::msgTeamInfo(const MsgTeamInfo* m)
 {
+  //FIXME: do some checks...
   team_name_ = packetToString(m->team_name);
+  nation_name_ = packetToString(m->nation_name);
   coach_name_ = packetToString(m->coach_name);
   reroll_ = m->reroll;
 

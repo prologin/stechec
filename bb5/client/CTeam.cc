@@ -39,6 +39,7 @@ void CTeam::loadConfig(const std::string& team_file)
   MsgTeamInfo pkt;
   pkt.reroll = xml_team_.getData<int>("reroll");
   stringToPacket(pkt.team_name, xml_team_.getData<std::string>("name"), 32);
+  stringToPacket(pkt.nation_name, xml_team_.getAttr<std::string>("team", "race"), 32);
   stringToPacket(pkt.coach_name, xml_team_.getData<std::string>("coach"), 32);
   r_->sendPacket(pkt);
 
@@ -134,6 +135,7 @@ int CTeam::declareAction(CPlayer* p, enum eDeclaredAction action)
 void CTeam::msgTeamInfo(const MsgTeamInfo* m)
 {
   team_name_ = packetToString(m->team_name);
+  nation_name_ = packetToString(m->nation_name);
   coach_name_ = packetToString(m->coach_name);
   reroll_ = m->reroll;
 }

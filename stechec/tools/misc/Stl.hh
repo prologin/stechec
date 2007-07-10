@@ -39,6 +39,8 @@ struct ArrayDeleter
   }
 };
 
+//! @brief Remove white spaces and tabulations from the beginning and the end of the string.
+//! @param s String to trim.
 //! @ingroup tools_misc
 inline std::string trim(const std::string& s)
 {
@@ -49,6 +51,30 @@ inline std::string trim(const std::string& s)
   if (b == -1) // No non-spaces
     return "";
   return std::string(s, b, e - b + 1);
+}
+
+//! @brief Remove all white spaces from the string.
+//! @param s String to trim.
+//! @ingroup tools_misc
+inline void trimAll(std::string& s)
+{
+  s.erase(std::remove(s.begin(), s.end(), ' '), s.end());
+}
+
+struct ToLower
+{
+  char operator() (char c) const
+  {
+    return std::tolower(static_cast<unsigned char>(c));
+  }
+};
+
+//! @brief Convert all characters to lower if possible.
+//! @param s String to lower.
+//! @ingroup tools_misc
+inline void toLower(std::string& s)
+{
+  std::transform(s.begin(), s.end(), s.begin(), ToLower());
 }
 
 //! @brief Implements std::for_each with less typing.

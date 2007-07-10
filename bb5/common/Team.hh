@@ -35,10 +35,10 @@ END_PACKET;
 ** @brief Create a Team, at the very beginning of the game.
 ** @ingroup tbt_rules
 ** Client <-> Server.
-** FIXME: 'race' info is missing. (note: many others too...)
 */
 DECLARE_PACKET(MSG_TEAMINFO, MsgTeamInfo)
   int team_name[8];
+  int nation_name[8];
   int coach_name[8];
   int reroll;
 END_PACKET;
@@ -68,6 +68,8 @@ public:
   int getNbPlayer() const;
   T* getPlayer(int id);
   const std::string& getTeamName() const;
+  const std::string& getNationName() const;
+  std::string getNationId() const;
   const std::string& getCoachName() const;
   int getScore() const;
   int getReroll() const;
@@ -94,6 +96,7 @@ protected:
   T* player_[MAX_PLAYER];  ///< List of this team players.
 
   std::string team_name_;
+  std::string nation_name_;
   std::string coach_name_;
 
   int score_;

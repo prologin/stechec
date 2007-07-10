@@ -95,13 +95,15 @@ void CmdLineInterface::printGlobal()
     //       << "  - the weather is '" << api_->getWeather()->getWeatherStr()
     //       << "' (" << api_->getWeather()->getWeather() << ")\n"
        << "  - ball position: " << Position(api_->ball()) << "\n"
-       << "  - our team  : '" << t->getTeamName() << "', coached by '"
+       << "  - our team  : '" << t->getTeamName() << "' ("
+       << t->getNationName() << "), coached by '"
        << t->getCoachName() << "' (" << t->getNbPlayer()
        << " players), scored " << t->getScore() << " point(s).\n";
 
   api_->selectTeam(THEM);
   t = api_->getTeam();
-  cout << "  - other team: '" << t->getTeamName() << "', coached by '"
+  cout << "  - other team: '" << t->getTeamName() << "' ("
+       << t->getNationName() << "), coached by '"
        << t->getCoachName() << "' (" << t->getNbPlayer()
        << " players), scored " << t->getScore() << " point(s)." << endl;
 }

@@ -66,7 +66,11 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
   move_sprite_.setZ(3);
 
   // Set its property
-  load("image/figs/amazon.png"); // FIXME: team picture.
+  std::string icons_path = "image/figs/";
+  api_->selectTeam(p->getTeamId());
+  icons_path += api_->getTeam()->getNationId();
+  icons_path += ".png";
+  load(icons_path);
   splitSizeFrame(40, 40);
   setZ(3);
   setFrame(p->getPlayerPosition() * 2 + p->getTeamId() + 1);
