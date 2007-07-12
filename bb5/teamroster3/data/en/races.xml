@@ -1,834 +1,2039 @@
 <?xml version="1.0"?>
 <races BBversion="5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="races.xsd">
-	<race name="Amazon" emblem="amazon.jpg">
-		<apothecary use="true"/>
-		<reroll cost="50000" qty="8"/>
+	<race>
+		<name>Amazon</name>
+		<emblem>amazon.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>50000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Linewoman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
+			<position>
+				<title>Linewoman</title>
+				<qty>16</qty>
+				<cost>50000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>amazon_l.png</display>
 				<skills>
-					<skill name="Dodge"/>
+					<skill>Dodge</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="amazon_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>gp</normal>
+				<double>as</double>
+				<display>amazon_t.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Pass"/>
+					<skill>Dodge</skill>
+					<skill>Pass</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Catcher" cost="70000" ma="6" st="3" ag="3" av="7" normal="ga" double="sp" display="amazon_c.png">
+			<position>
+				<title>Catcher</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>amazon_c.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Catch"/>
+					<skill>Dodge</skill>
+					<skill>Catch</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Blitzer" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap" display="amazon_b.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>4</qty>
+				<cost>90000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>amazon_b.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Block"/>
+					<skill>Dodge</skill>
+					<skill>Block</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeywoman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="amazon_l.png">
+			<position>
+				<title>Journeywoman</title>
+				<qty>11</qty>
+				<cost>50000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>amazon_l.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Loner"/>
+					<skill>Dodge</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Long ago, driven by a desire for adventure, the Valkyries of the Norse settlement in Lustria sailed away from their men-folk and founded a colony deep within the estuary of the river Amaxon. Now these ferocious warriors have taken to the Blood Bowl pitch and Nuffle save those who dare play against them!</background>
 	</race>
-	<race name="Chaos" emblem="chaos.jpg">
-		<apothecary use="true"/>
-		<reroll cost="60000" qty="8"/>
+	<race>
+		<name>Chaos</name>
+		<emblem>chaos.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>60000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Beastman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
+			<position>
+				<title>Beastman</title>
+				<qty>16</qty>
+				<cost>60000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gsm</normal>
+				<double>ap</double>
+				<display>chaos_b.png</display>
 				<skills>
-					<skill name="Horns"/>
+					<skill>Horns</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Chaos warrior" cost="100000" ma="5" st="4" ag="3" av="9" normal="gsm" double="ap" display="chaos_w.png">
+			<position>
+				<title>Chaos warrior</title>
+				<qty>4</qty>
+				<cost>100000</cost>
+				<ma>5</ma>
+				<st>4</st>
+				<ag>3</ag>
+				<av>9</av>
+				<normal>gsm</normal>
+				<double>ap</double>
+				<display>chaos_w.png</display>
 				<skills/>
 			</position>
-			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="sm" double="gap" display="minautor.png">
+			<position>
+				<title>Minotaur</title>
+				<qty>1</qty>
+				<cost>150000</cost>
+				<ma>5</ma>
+				<st>5</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>sm</normal>
+				<double>gap</double>
+				<display>minautor.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Frenzy"/>
-					<skill name="Horns"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Wild Animal"/>
+					<skill>Loner</skill>
+					<skill>Frenzy</skill>
+					<skill>Horns</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Thick Skull</skill>
+					<skill>Wild Animal</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="chaos_b.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>60000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gsm</normal>
+				<double>ap</double>
+				<display>chaos_b.png</display>
 				<skills>
-					<skill name="Horns"/>
-					<skill name="Loner"/>
+					<skill>Horns</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Chaos teams are not noted for the subtlety or originality of their game play. A simple drive up the centre of the pitch, maiming and injuring as many opposing players as possible, is about the limit of their game plan. They rarely, if ever, worry about such minor considerations like picking up the ball and scoring touchdowns not while there are any players left alive on the opposing team, anyway.</background>
 	</race>
-	<race name="Chaos Dwarf" emblem="chaosdwarves.jpg">
-		<apothecary use="true"/>
-		<reroll cost="70000" qty="8"/>
+	<race>
+		<name>Chaos Dwarf</name>
+		<emblem>chaosdwarves.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>70000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Hobgoblin" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
+			<position>
+				<title>Hobgoblin</title>
+				<qty>16</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>chaosdwarf_h.png</display>
 				<skills/>
 			</position>
-			<position qty="6" title="Chaos dwarf" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="apm" display="chaosdwarf_b.png">
+			<position>
+				<title>Chaos dwarf</title>
+				<qty>6</qty>
+				<cost>70000</cost>
+				<ma>4</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>apm</double>
+				<display>chaosdwarf_b.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Tackle"/>
-					<skill name="Thick Skull"/>
+					<skill>Block</skill>
+					<skill>Tackle</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Bull centaurs" cost="130000" ma="6" st="4" ag="2" av="9" normal="gs" double="ap" display="centaur.png">
+			<position>
+				<title>Bull centaurs</title>
+				<qty>2</qty>
+				<cost>130000</cost>
+				<ma>6</ma>
+				<st>4</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>centaur.png</display>
 				<skills>
-					<skill name="Sprint"/>
-					<skill name="Sure Feet"/>
-					<skill name="Thick Skull"/>
+					<skill>Sprint</skill>
+					<skill>Sure Feet</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Minotaur" cost="150000" ma="5" st="5" ag="2" av="8" normal="s" double="gapm" display="minautor.png">
+			<position>
+				<title>Minotaur</title>
+				<qty>1</qty>
+				<cost>150000</cost>
+				<ma>5</ma>
+				<st>5</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>s</normal>
+				<double>gapm</double>
+				<display>minautor.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Frenzy"/>
-					<skill name="Horns"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Wild Animal"/>
+					<skill>Loner</skill>
+					<skill>Frenzy</skill>
+					<skill>Horns</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Thick Skull</skill>
+					<skill>Wild Animal</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="chaosdwarf_h.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>chaosdwarf_h.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Chaos Dwarfs are the twisted descendants of Dwarf explorers who have been terribly affected by the forces of Chaos, turning them into evil, self-centred creatures. In one way, however, they haven't changed at all, they still love playing Blood Bowl! Chaos Dwarfs are not very numerous and make great use of sneaky Hobgoblin slaves to perform all kinds of tasks, including playing on their Blood Bowl teams.</background>
 	</race>
-	<race name="Dark Elf" emblem="darkelves.jpg">
-		<apothecary use="true"/>
-		<reroll cost="50000" qty="8"/>
+	<race>
+		<name>Dark Elf</name>
+		<emblem>darkelves.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>50000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>darkelf_l.png</display>
 				<skills/>
 			</position>
-			<position qty="2" title="Runner" cost="80000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="darkelf_t.png">
+			<position>
+				<title>Runner</title>
+				<qty>2</qty>
+				<cost>80000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>gap</normal>
+				<double>s</double>
+				<display>darkelf_t.png</display>
 				<skills>
-					<skill name="Dump Off"/>
+					<skill>Dump Off</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Assassin" cost="90000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="assasin.png">
+			<position>
+				<title>Assassin</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>assasin.png</display>
 				<skills>
-					<skill name="Shadowing"/>
-					<skill name="Stab"/>
+					<skill>Shadowing</skill>
+					<skill>Stab</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_b.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>4</qty>
+				<cost>100000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>darkelf_b.png</display>
 				<skills>
-					<skill name="Block"/>
+					<skill>Block</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Witch elf" cost="110000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="darkelf_w.png">
+			<position>
+				<title>Witch elf</title>
+				<qty>2</qty>
+				<cost>110000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>darkelf_w.png</display>
 				<skills>
-					<skill name="Frenzy"/>
-					<skill name="Dodge"/>
-					<skill name="Jump Up"/>
+					<skill>Frenzy</skill>
+					<skill>Dodge</skill>
+					<skill>Jump Up</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="darkelf_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>darkelf_l.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Evil beyond belief, skilled without doubt, the Dark Elves take to the pitch to show the world their superiority. Dark Elf teams prefer a malevolent and spiteful running game over the passing of their goodly cousins. Backed up by the ruthless Witch Elves and dangerous assassins, a Dark Elf team has all the tools to power through rather than around any opposition line.</background>
 	</race>
-	<race name="Dwarf" emblem="dwarves.jpg">
-		<apothecary use="true"/>
-		<reroll cost="40000" qty="8"/>
+	<race>
+		<name>Dwarf</name>
+		<emblem>dwarves.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>40000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Blocker" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
+			<position>
+				<title>Blocker</title>
+				<qty>16</qty>
+				<cost>70000</cost>
+				<ma>4</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>dwarf_b.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Tackle"/>
-					<skill name="Thick Skull"/>
+					<skill>Block</skill>
+					<skill>Tackle</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Runner" cost="80000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="dwarf_r.png">
+			<position>
+				<title>Runner</title>
+				<qty>2</qty>
+				<cost>80000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gp</normal>
+				<double>as</double>
+				<display>dwarf_r.png</display>
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Thick Skull"/>
+					<skill>Sure Hands</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="80000" ma="5" st="3" ag="3" av="9" normal="gs" double="ap" display="dwarf_lb.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>2</qty>
+				<cost>80000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>dwarf_lb.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Thick Skull"/>
+					<skill>Block</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Troll slayer" cost="90000" ma="5" st="3" ag="2" av="8" normal="gs" double="ap" display="dwarf_ts.png">
+			<position>
+				<title>Troll slayer</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>dwarf_ts.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Dauntless"/>
-					<skill name="Frenzy"/>
-					<skill name="Thick Skull"/>
+					<skill>Block</skill>
+					<skill>Dauntless</skill>
+					<skill>Frenzy</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Deathroller" cost="160000" ma="4" st="7" ag="1" av="10" normal="s" double="gap" display="deathroller.png">
+			<position>
+				<title>Deathroller</title>
+				<qty>1</qty>
+				<cost>160000</cost>
+				<ma>4</ma>
+				<st>7</st>
+				<ag>1</ag>
+				<av>10</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>deathroller.png</display>
 				<skills>
-					<skill name="Break Tackle"/>
-					<skill name="Dirty Player"/>
-					<skill name="Juggernaut"/>
-					<skill name="Mighty Blow"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stand Firm"/>
+					<skill>Break Tackle</skill>
+					<skill>Dirty Player</skill>
+					<skill>Juggernaut</skill>
+					<skill>Mighty Blow</skill>
+					<skill>No Hands</skill>
+					<skill>Secret Weapon</skill>
+					<skill>Stand Firm</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="4" st="3" ag="2" av="9" normal="gs" double="ap" display="dwarf_b.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>70000</cost>
+				<ma>4</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>dwarf_b.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Dwarfs seem to be ideal Blood Bowl players, being compact, tough, well-armoured and having a stubborn knack of refusing to die! Most successful Dwarf teams work to the principle that if they can take out all the other team's potential scorers, and wear down the rest, then there won't be anybody left to stop them scoring the winning touchdowns!</background>
 	</race>
-	<race name="Elf" emblem="elves.jpg">
-		<apothecary use="true"/>
-		<reroll cost="50000" qty="8"/>
+	<race>
+		<name>Elf</name>
+		<emblem>elves.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>50000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>60000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>elf_l.png</display>
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="4" av="7" normal="gap" double="s" display="elf_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>gap</normal>
+				<double>s</double>
+				<display>elf_t.png</display>
 				<skills>
-					<skill name="Pass"/>
+					<skill>Pass</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Catcher" cost="100000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_c.png">
+			<position>
+				<title>Catcher</title>
+				<qty>4</qty>
+				<cost>100000</cost>
+				<ma>8</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>elf_c.png</display>
 				<skills>
-					<skill name="Catch"/>
-					<skill name="Nerves of Steel"/>
+					<skill>Catch</skill>
+					<skill>Nerves of Steel</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="110000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="elf_b.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>2</qty>
+				<cost>110000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>elf_b.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Side Step"/>
+					<skill>Block</skill>
+					<skill>Side Step</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="6" st="3" ag="4" av="7" normal="ga" double="sp" display="elf_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>60000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>elf_l.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>When the NAF collapsed, many Elven teams were left penniless. Those teams that have survived the fallout are not as rich as the High Elf teams nor as well equipped, but they sure know how to play the game. Sporting facemasks and mohawks, they take to the pitch to relive the glory days they once played in.</background>
 	</race>
-	<race name="Goblin" emblem="goblins.jpg">
-		<apothecary use="true"/>
-		<reroll cost="60000" qty="8"/>
+	<race>
+		<name>Goblin</name>
+		<emblem>goblins.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>60000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
+			<position>
+				<title>Goblin</title>
+				<qty>16</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>goblin_g.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
+					<skill>Dodge</skill>
+					<skill>Right Stuff</skill>
+					<skill>Stunty</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Bombardier" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="bombardier.png">
+			<position>
+				<title>Bombardier</title>
+				<qty>1</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>bombardier.png</display>
 				<skills>
-					<skill name="Bombardier"/>
-					<skill name="Dodge"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
+					<skill>Bombardier</skill>
+					<skill>Dodge</skill>
+					<skill>No Hands</skill>
+					<skill>Secret Weapon</skill>
+					<skill>Stunty</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Pogoer" cost="40000" ma="7" st="2" ag="3" av="7" normal="a" double="gsp" display="pogoer.png">
+			<position>
+				<title>Pogoer</title>
+				<qty>1</qty>
+				<cost>40000</cost>
+				<ma>7</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>pogoer.png</display>
 				<skills>
-					<skill name="Dirty Player"/>
-					<skill name="Dodge"/>
-					<skill name="Leap"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
-					<skill name="Very Long Legs"/>
+					<skill>Dirty Player</skill>
+					<skill>Dodge</skill>
+					<skill>Leap</skill>
+					<skill>Secret Weapon</skill>
+					<skill>Stunty</skill>
+					<skill>Very Long Legs</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Looney" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="looney.png">
+			<position>
+				<title>Looney</title>
+				<qty>1</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>looney.png</display>
 				<skills>
-					<skill name="Chainsaw"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
+					<skill>Chainsaw</skill>
+					<skill>No Hands</skill>
+					<skill>Secret Weapon</skill>
+					<skill>Stunty</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Fanatic" cost="70000" ma="3" st="7" ag="3" av="7" normal="s" double="gap" display="fanatic.png">
+			<position>
+				<title>Fanatic</title>
+				<qty>1</qty>
+				<cost>70000</cost>
+				<ma>3</ma>
+				<st>7</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>fanatic.png</display>
 				<skills>
-					<skill name="Ball and Chain"/>
-					<skill name="No Hands"/>
-					<skill name="Secret Weapon"/>
-					<skill name="Stunty"/>
+					<skill>Ball and Chain</skill>
+					<skill>No Hands</skill>
+					<skill>Secret Weapon</skill>
+					<skill>Stunty</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap" display="troll.png">
+			<position>
+				<title>Troll</title>
+				<qty>2</qty>
+				<cost>110000</cost>
+				<ma>4</ma>
+				<st>5</st>
+				<ag>1</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>troll.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Always Hungry"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Really Stupid"/>
-					<skill name="Regeneration"/>
-					<skill name="Throw Team-Mate"/>
+					<skill>Loner</skill>
+					<skill>Always Hungry</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Really Stupid</skill>
+					<skill>Regeneration</skill>
+					<skill>Throw Team-Mate</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>goblin_g.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
-					<skill name="Loner"/>
+					<skill>Dodge</skill>
+					<skill>Right Stuff</skill>
+					<skill>Stunty</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>A Goblin team's game plan owes much more to hope than potential. Goblins can make quite good catchers because they are small and agile, but the art of throwing is sadly lost to them, while the chances of their blocking anything larger than a Halfling are remote to say the least. Still, this never seems to bother Goblin players, and occasionally the use of a particularly devious Secret Weapon will even allow a Goblin team to win a match.</background>
 	</race>
-	<race name="Halfling" emblem="halflings.jpg">
-		<apothecary use="true"/>
-		<reroll cost="60000" qty="8"/>
+	<race>
+		<name>Halfling</name>
+		<emblem>halflings.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>60000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Halflings" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
+			<position>
+				<title>Halflings</title>
+				<qty>16</qty>
+				<cost>30000</cost>
+				<ma>5</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>6</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>halfling_h.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
+					<skill>Dodge</skill>
+					<skill>Right Stuff</skill>
+					<skill>Stunty</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Treeman" cost="120000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
+			<position>
+				<title>Treeman</title>
+				<qty>2</qty>
+				<cost>120000</cost>
+				<ma>2</ma>
+				<st>6</st>
+				<ag>1</ag>
+				<av>10</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>treeman.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Stand Firm"/>
-					<skill name="Strong Arm"/>
-					<skill name="Take Root"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill>Loner</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Stand Firm</skill>
+					<skill>Strong Arm</skill>
+					<skill>Take Root</skill>
+					<skill>Thick Skull</skill>
+					<skill>Throw Team-Mate</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="2" ag="3" av="6" normal="a" double="gsp" display="halfling_h.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>30000</cost>
+				<ma>5</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>6</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>halfling_h.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Stunty"/>
-					<skill name="Loner"/>
+					<skill>Dodge</skill>
+					<skill>Right Stuff</skill>
+					<skill>Stunty</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>The technical deficiency of Halfling teams is legendary. They're too short to throw or catch, they run at half pace, and the whole team can spend all afternoon trying to block an Ogre without any chance of success. Most Halfling coaches try to make up for quality with quantity. After all, if you can get half a dozen players in the opposing team's End Zone and, by some miracle, manage to end up with the ball, then there is a small chance that one or two of them won't be jelly by the time you throw the thing.</background>
 	</race>
-	<race name="High Elf" emblem="highelves.jpg">
-		<apothecary use="true"/>
-		<reroll cost="50000" qty="8"/>
+	<race>
+		<name>High Elf</name>
+		<emblem>highelves.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>50000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>highelf_l.png</display>
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="90000" ma="6" st="3" ag="4" av="8" normal="gap" double="s" display="highelf_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>gap</normal>
+				<double>s</double>
+				<display>highelf_t.png</display>
 				<skills>
-					<skill name="Pass"/>
-					<skill name="Safe Throw"/>
+					<skill>Pass</skill>
+					<skill>Safe Throw</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Catcher" cost="90000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="highelf_c.png">
+			<position>
+				<title>Catcher</title>
+				<qty>4</qty>
+				<cost>90000</cost>
+				<ma>8</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>highelf_c.png</display>
 				<skills>
-					<skill name="Catch"/>
+					<skill>Catch</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="100000" ma="7" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_b.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>2</qty>
+				<cost>100000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>highelf_b.png</display>
 				<skills>
-					<skill name="Block"/>
+					<skill>Block</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="70000" ma="6" st="3" ag="4" av="8" normal="ga" double="sp" display="highelf_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>highelf_l.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>The Elven Kingdom sponsored High Elf teams, feature a dangerous passing game and some of the most arrogant players you will find. Rich beyond the dreams of most teams, the High Elves often feature many Princes and noble born Elves on the team and what they cannot beat, they'll buy.</background>
 	</race>
-	<race name="Human" emblem="humans.jpg">
-		<apothecary use="true"/>
-		<reroll cost="50000" qty="8"/>
+	<race>
+		<name>Human</name>
+		<emblem>humans.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>50000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>50000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>human_l.png</display>
 				<skills/>
 			</position>
-			<position qty="4" title="Catcher" cost="70000" ma="8" st="2" ag="3" av="7" normal="ga" double="sp" display="human_c.png">
+			<position>
+				<title>Catcher</title>
+				<qty>4</qty>
+				<cost>70000</cost>
+				<ma>8</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>human_c.png</display>
 				<skills>
-					<skill name="Catch"/>
-					<skill name="Dodge"/>
+					<skill>Catch</skill>
+					<skill>Dodge</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="8" normal="gp" double="as" display="human_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gp</normal>
+				<double>as</double>
+				<display>human_t.png</display>
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Pass"/>
+					<skill>Sure Hands</skill>
+					<skill>Pass</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="ap" display="human_b.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>4</qty>
+				<cost>90000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>human_b.png</display>
 				<skills>
-					<skill name="Block"/>
+					<skill>Block</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap" display="ogre.png">
+			<position>
+				<title>Ogre</title>
+				<qty>1</qty>
+				<cost>140000</cost>
+				<ma>5</ma>
+				<st>5</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>ogre.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Bone-Head"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill>Loner</skill>
+					<skill>Bone-Head</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Thick Skull</skill>
+					<skill>Throw Team-Mate</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="6" st="3" ag="3" av="8" normal="g" double="asp" display="human_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>50000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>human_l.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
-			</position>			
+			</position>
 		</positions>
 		<background>Although Human teams do not have the individual strengths or outstanding abilities available to other races, they do not suffer from any outstanding weakness either. This makes Human teams extremely flexible, equally at home running the ball, passing it, or ignoring it and pounding the opposition into the turf instead!</background>
 	</race>
-	<race name="Khemri" emblem="khemri.jpg">
-		<apothecary use="false"/>
-		<reroll cost="70000" qty="8"/>
+	<race>
+		<name>Khemri</name>
+		<emblem>khemri.jpg</emblem>
+		<apothecary>false</apothecary>
+		<reroll>
+			<cost>70000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
+			<position>
+				<title>Skeleton</title>
+				<qty>16</qty>
+				<cost>30000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>khemri_s.png</display>
 				<skills>
-					<skill name="Regeneration"/>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Thro-Ras" cost="70000" ma="6" st="3" ag="2" av="7" normal="gp" double="as" display="khemri_t.png">
+			<position>
+				<title>Thro-Ras</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>7</av>
+				<normal>gp</normal>
+				<double>as</double>
+				<display>khemri_t.png</display>
 				<skills>
-					<skill name="Pass"/>
-					<skill name="Regeneration"/>
-					<skill name="Sure Hands"/>
+					<skill>Pass</skill>
+					<skill>Regeneration</skill>
+					<skill>Sure Hands</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Blitz-Ras" cost="90000" ma="6" st="3" ag="2" av="8" normal="gs" double="ap" display="khemri_b.png">
+			<position>
+				<title>Blitz-Ras</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>khemri_b.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Regeneration"/>
+					<skill>Block</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="khemri_m.png">
+			<position>
+				<title>Mummy</title>
+				<qty>4</qty>
+				<cost>110000</cost>
+				<ma>3</ma>
+				<st>5</st>
+				<ag>1</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>khemri_m.png</display>
 				<skills>
-					<skill name="Mighty Blow"/>
-					<skill name="Regeneration"/>
+					<skill>Mighty Blow</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="khemri_s.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>30000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>khemri_s.png</display>
 				<skills>
-					<skill name="Regeneration"/>
-					<skill name="Loner"/>
+					<skill>Regeneration</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Over 8,000 years ago, the Khemri played the first games of Blood Bowl against the Slann. But, as the Kingdom died off, so did the game until its rediscovery. And as the game returned, it was inevitable that the ancient players and stars of the Khemri would return to the pitch they once played on.</background>
 	</race>
-	<race name="Lizardman" emblem="lizardmen.jpg">
-		<apothecary use="true"/>
-		<reroll cost="60000" qty="8"/>
+	<race>
+		<name>Lizardman</name>
+		<emblem>lizardmen.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>60000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Skinks" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
+			<position>
+				<title>Skinks</title>
+				<qty>16</qty>
+				<cost>60000</cost>
+				<ma>8</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>lizardmen_sk.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Stunty"/>
+					<skill>Dodge</skill>
+					<skill>Stunty</skill>
 				</skills>
 			</position>
-			<position qty="6" title="Saurus" cost="80000" ma="6" st="4" ag="1" av="9" normal="gs" double="ap" display="lizardmen_sa.png">
+			<position>
+				<title>Saurus</title>
+				<qty>6</qty>
+				<cost>80000</cost>
+				<ma>6</ma>
+				<st>4</st>
+				<ag>1</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>lizardmen_sa.png</display>
 				<skills/>
 			</position>
-			<position qty="1" title="Kroxigor" cost="140000" ma="6" st="5" ag="1" av="9" normal="s" double="gap" display="kroxigor.png">
+			<position>
+				<title>Kroxigor</title>
+				<qty>1</qty>
+				<cost>140000</cost>
+				<ma>6</ma>
+				<st>5</st>
+				<ag>1</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>kroxigor.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Bone-Head"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Prehensile Tail"/>
-					<skill name="Thick Skull"/>
+					<skill>Loner</skill>
+					<skill>Bone-Head</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Prehensile Tail</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="60000" ma="8" st="2" ag="3" av="7" normal="a" double="gsp" display="lizardmen_sk.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>60000</cost>
+				<ma>8</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>lizardmen_sk.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Stunty"/>
-					<skill name="Loner"/>
+					<skill>Dodge</skill>
+					<skill>Stunty</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>The Mage-Priests foretold the game of Blood Bowl thousands of years before it was discovered by the Dwarf Roze-El. So it is no surprise that the Lizardmen play Blood Bowl. Providing an odd blend of dexterity and strength, the Lustrian team can almost last the distance against a power team such as Chaos, while remaining able to pull off the running plays of the Skaven.</background>
 	</race>
-	<race name="Necromantic" emblem="necromantics.jpg">
-		<apothecary use="false"/>
-		<reroll cost="70000" qty="8"/>
+	<race>
+		<name>Necromantic</name>
+		<emblem>necromantics.jpg</emblem>
+		<apothecary>false</apothecary>
+		<reroll>
+			<cost>70000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="necromantic_z.png">
+			<position>
+				<title>Zombie</title>
+				<qty>16</qty>
+				<cost>40000</cost>
+				<ma>4</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>necromantic_z.png</display>
 				<skills>
-					<skill name="Regeneration"/>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="necromantic_g.png">
+			<position>
+				<title>Ghoul</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>necromantic_g.png</display>
 				<skills>
-					<skill name="Dodge"/>
+					<skill>Dodge</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="necromantic_wi.png">
+			<position>
+				<title>Wight</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>necromantic_wi.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Regeneration"/>
+					<skill>Block</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Flesh golem" cost="110000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="necromantic_fg.png">
+			<position>
+				<title>Flesh golem</title>
+				<qty>2</qty>
+				<cost>110000</cost>
+				<ma>4</ma>
+				<st>4</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>necromantic_fg.png</display>
 				<skills>
-					<skill name="Regeneration"/>
-					<skill name="Stand Firm"/>
-					<skill name="Thick Skull"/>
+					<skill>Regeneration</skill>
+					<skill>Stand Firm</skill>
+					<skill>Thick Skull</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Werewolf" cost="120000" ma="8" st="3" ag="3" av="8" normal="ga" double="sp" display="necromantic_ww.png">
+			<position>
+				<title>Werewolf</title>
+				<qty>2</qty>
+				<cost>120000</cost>
+				<ma>8</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>necromantic_ww.png</display>
 				<skills>
-					<skill name="Claws"/>
-					<skill name="Frenzy"/>
-					<skill name="Regeneration"/>
+					<skill>Claws</skill>
+					<skill>Frenzy</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="necromantic_z.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>40000</cost>
+				<ma>4</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>necromantic_z.png</display>
 				<skills>
-					<skill name="Regeneration"/>
-					<skill name="Loner"/>
+					<skill>Regeneration</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>The damned and the cursed do not always lurk in the forests or in the graveyards of the Old World. Sometimes they come together, forming a group to hunt those more fortunate of souls. Finding relief in crazed outbursts of terrible violence, these groups do the best they can to ease their suffering - they pop off for a nice game of Blood Bowl.</background>
 	</race>
-	<race name="Norse" emblem="norses.jpg">
-		<apothecary use="true"/>
-		<reroll cost="60000" qty="8"/>
+	<race>
+		<name>Norse</name>
+		<emblem>norses.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>60000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>50000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>norse_l.png</display>
 				<skills>
-					<skill name="Block"/>
+					<skill>Block</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="6" st="3" ag="3" av="7" normal="gp" double="as" display="norse_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>gp</normal>
+				<double>as</double>
+				<display>norse_t.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Pass"/>
+					<skill>Block</skill>
+					<skill>Pass</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Runner" cost="90000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="norse_r.png">
+			<position>
+				<title>Runner</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>norse_r.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Dauntless"/>
+					<skill>Block</skill>
+					<skill>Dauntless</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Berserker" cost="90000" ma="6" st="3" ag="3" av="7" normal="gs" double="ap" display="norse_b.png">
+			<position>
+				<title>Berserker</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>norse_b.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Frenzy"/>
-					<skill name="Jump Up"/>
+					<skill>Block</skill>
+					<skill>Frenzy</skill>
+					<skill>Jump Up</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Ulfwerener" cost="110000" ma="6" st="4" ag="2" av="8" normal="gs" double="ap" display="norse_u.png">
+			<position>
+				<title>Ulfwerener</title>
+				<qty>2</qty>
+				<cost>110000</cost>
+				<ma>6</ma>
+				<st>4</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>norse_u.png</display>
 				<skills>
-					<skill name="Frenzy"/>
+					<skill>Frenzy</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Snow troll" cost="140000" ma="5" st="5" ag="1" av="8" normal="s" double="gap" display="snow_troll.png">
+			<position>
+				<title>Snow troll</title>
+				<qty>1</qty>
+				<cost>140000</cost>
+				<ma>5</ma>
+				<st>5</st>
+				<ag>1</ag>
+				<av>8</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>snow_troll.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Claws"/>
-					<skill name="Disturbing Presence"/>
-					<skill name="Frenzy"/>
-					<skill name="Wild Animal"/>
+					<skill>Loner</skill>
+					<skill>Claws</skill>
+					<skill>Disturbing Presence</skill>
+					<skill>Frenzy</skill>
+					<skill>Wild Animal</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="norse_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>50000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>norse_l.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Loner"/>
+					<skill>Block</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Norse teams have a well deserved reputation for ferocity both on and off the playing pitch. The Norse that takes up Blood Bowl is a truly unedifying specimen, interested only in beer, women and song off the playing pitch, and beer, women and bloody carnage while on it!</background>
 	</race>
-	<race name="Nurgle" emblem="nurgles.jpg">
-		<apothecary use="false"/>
-		<reroll cost="70000" qty="8"/>
+	<race>
+		<name>Nurgle</name>
+		<emblem>nurgles.jpg</emblem>
+		<apothecary>false</apothecary>
+		<reroll>
+			<cost>70000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Rotter" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
+			<position>
+				<title>Rotter</title>
+				<qty>16</qty>
+				<cost>40000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gm</normal>
+				<double>asp</double>
+				<display>nurgle_r.png</display>
 				<skills>
-					<skill name="Decay"/>
-					<skill name="Nurgle's Rot"/>
+					<skill>Decay</skill>
+					<skill>Nurgle's Rot</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Pestigor" cost="80000" ma="6" st="3" ag="3" av="8" normal="gsm" double="ap" display="nurgle_p.png">
+			<position>
+				<title>Pestigor</title>
+				<qty>4</qty>
+				<cost>80000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gsm</normal>
+				<double>ap</double>
+				<display>nurgle_p.png</display>
 				<skills>
-					<skill name="Horns"/>
-					<skill name="Nurgle's Rot"/>
-					<skill name="Regeneration"/>
+					<skill>Horns</skill>
+					<skill>Nurgle's Rot</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Nurgle warrior" cost="110000" ma="4" st="4" ag="2" av="9" normal="gsm" double="ap" display="nurgle_w.png">
+			<position>
+				<title>Nurgle warrior</title>
+				<qty>4</qty>
+				<cost>110000</cost>
+				<ma>4</ma>
+				<st>4</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>gsm</normal>
+				<double>ap</double>
+				<display>nurgle_w.png</display>
 				<skills>
-					<skill name="Disturbing Presence"/>
-					<skill name="Foul Appearance"/>
-					<skill name="Nurgle's Rot"/>
-					<skill name="Regeneration"/>
+					<skill>Disturbing Presence</skill>
+					<skill>Foul Appearance</skill>
+					<skill>Nurgle's Rot</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Beast of Nurgle" cost="140000" ma="4" st="5" ag="1" av="9" normal="s" double="gapm" display="nurgle_b.png">
+			<position>
+				<title>Beast of Nurgle</title>
+				<qty>1</qty>
+				<cost>140000</cost>
+				<ma>4</ma>
+				<st>5</st>
+				<ag>1</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gapm</double>
+				<display>nurgle_b.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Disturbing Presence"/>
-					<skill name="Foul Appearance"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Nurgle's Rot"/>
-					<skill name="Really Stupid"/>
-					<skill name="Regeneration"/>
-					<skill name="Tentacles"/>
+					<skill>Loner</skill>
+					<skill>Disturbing Presence</skill>
+					<skill>Foul Appearance</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Nurgle's Rot</skill>
+					<skill>Really Stupid</skill>
+					<skill>Regeneration</skill>
+					<skill>Tentacles</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="5" st="3" ag="3" av="8" normal="gm" double="asp" display="nurgle_r.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>40000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gm</normal>
+				<double>asp</double>
+				<display>nurgle_r.png</display>
 				<skills>
-					<skill name="Decay"/>
-					<skill name="Nurgle's Rot"/>
-					<skill name="Loner"/>
+					<skill>Decay</skill>
+					<skill>Nurgle's Rot</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Nurgle teams are a form of Chaos team whose players worship the god Nurgle. Nurgle is the Chaos god of corruption and disease, and he rewards his players by granting them a rather unpleasant disease known as Nurgle's Rot. The fact that Nurgle teams smell awful is assumed rather than proven. True, they are all made up of semi decomposed flesh surrounded by swarms of flies, but by the time anyone gets close enough to get a really accurate whiff, he has inevitably caught one of Nurgle's nasty diseases, and he usually dies before he can suggest a new personal hygiene regime.</background>
 	</race>
-	<race name="Ogre" emblem="ogres.jpg">
-		<apothecary use="true"/>
-		<reroll cost="70000" qty="8"/>
+	<race>
+		<name>Ogre</name>
+		<emblem>ogres.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>70000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Snotling" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
+			<position>
+				<title>Snotling</title>
+				<qty>16</qty>
+				<cost>20000</cost>
+				<ma>5</ma>
+				<st>1</st>
+				<ag>3</ag>
+				<av>5</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>ogre_s.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Side Step"/>
-					<skill name="Stunty"/>
-					<skill name="Titchy"/>
+					<skill>Dodge</skill>
+					<skill>Right Stuff</skill>
+					<skill>Side Step</skill>
+					<skill>Stunty</skill>
+					<skill>Titchy</skill>
 				</skills>
 			</position>
-			<position qty="6" title="Ogre" cost="140000" ma="5" st="5" ag="2" av="9" normal="s" double="gap" display="ogre.png">
+			<position>
+				<title>Ogre</title>
+				<qty>6</qty>
+				<cost>140000</cost>
+				<ma>5</ma>
+				<st>5</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>ogre.png</display>
 				<skills>
-					<skill name="Bone-Head"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill>Bone-Head</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Thick Skull</skill>
+					<skill>Throw Team-Mate</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="20000" ma="5" st="1" ag="3" av="5" normal="a" double="gsp" display="ogre_s.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>20000</cost>
+				<ma>5</ma>
+				<st>1</st>
+				<ag>3</ag>
+				<av>5</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>ogre_s.png</display>
 				<skills>
-					<skill name="Dodge"/>
-					<skill name="Right Stuff"/>
-					<skill name="Side Step"/>
-					<skill name="Stunty"/>
-					<skill name="Titchy"/>
-					<skill name="Loner"/>
+					<skill>Dodge</skill>
+					<skill>Right Stuff</skill>
+					<skill>Side Step</skill>
+					<skill>Stunty</skill>
+					<skill>Titchy</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Ogre teams have existed since the forming of the NAF and have even had some success such as winning the XV Blood Bowl. However, as any right-minded person will tell you, having more than one Ogre in the same place at the same time is a disaster in the making. The key to an Ogre team is the Snotlings. If they are close enough to jab an Ogre in the leg to remind him that they are playing in a match then you may have the makings of a team.</background>
 	</race>
-	<race name="Orc" emblem="orc.jpg">
-		<apothecary use="true"/>
-		<reroll cost="60000" qty="8"/>
+	<race>
+		<name>Orc</name>
+		<emblem>orc.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>60000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>50000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>9</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>orc_l.png</display>
 				<skills/>
 			</position>
-			<position qty="4" title="Goblin" cost="40000" ma="6" st="2" ag="3" av="7" normal="a" double="gsp" display="goblin_g.png">
+			<position>
+				<title>Goblin</title>
+				<qty>4</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>2</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>a</normal>
+				<double>gsp</double>
+				<display>goblin_g.png</display>
 				<skills>
-					<skill name="Right Stuff"/>
-					<skill name="Dodge"/>
-					<skill name="Stunty"/>
+					<skill>Right Stuff</skill>
+					<skill>Dodge</skill>
+					<skill>Stunty</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="5" st="3" ag="3" av="8" normal="gp" double="as" display="orc_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gp</normal>
+				<double>as</double>
+				<display>orc_t.png</display>
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Pass"/>
+					<skill>Sure Hands</skill>
+					<skill>Pass</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Black orc" cost="80000" ma="4" st="4" ag="2" av="9" normal="gs" double="ap" display="orc_bo.png">
+			<position>
+				<title>Black orc</title>
+				<qty>4</qty>
+				<cost>80000</cost>
+				<ma>4</ma>
+				<st>4</st>
+				<ag>2</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>orc_bo.png</display>
 				<skills/>
 			</position>
-			<position qty="4" title="Blitzer" cost="80000" ma="6" st="3" ag="3" av="9" normal="gs" double="ap" display="orc_b.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>4</qty>
+				<cost>80000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>9</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>orc_b.png</display>
 				<skills>
-					<skill name="Block"/>
+					<skill>Block</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Troll" cost="110000" ma="4" st="5" ag="1" av="9" normal="s" double="gap" display="troll.png">
+			<position>
+				<title>Troll</title>
+				<qty>1</qty>
+				<cost>110000</cost>
+				<ma>4</ma>
+				<st>5</st>
+				<ag>1</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>troll.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Always Hungry"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Really Stupid"/>
-					<skill name="Regeneration"/>
-					<skill name="Throw Team-Mate"/>
+					<skill>Loner</skill>
+					<skill>Always Hungry</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Really Stupid</skill>
+					<skill>Regeneration</skill>
+					<skill>Throw Team-Mate</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="5" st="3" ag="3" av="9" normal="g" double="asp" display="orc_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>50000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>9</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>orc_l.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Orcs have been playing Blood Bowl since the game was invented, and Orc teams such as the Gouged Eye and Severed Heads are amongst the best in the league. Orc teams are tough and hard-hitting, grinding down the opposition's line to create gaps for their excellent Orc Blitzers to exploit.</background>
 	</race>
-	<race name="Skaven" emblem="skavens.jpg">
-		<apothecary use="true"/>
-		<reroll cost="60000" qty="8"/>
+	<race>
+		<name>Skaven</name>
+		<emblem>skavens.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>60000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>50000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>aspm</double>
+				<display>skaven_l.png</display>
 				<skills/>
 			</position>
-			<position qty="2" title="Thrower" cost="70000" ma="7" st="3" ag="3" av="7" normal="gp" double="asm" display="skaven_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>70000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>gp</normal>
+				<double>asm</double>
+				<display>skaven_t.png</display>
 				<skills>
-					<skill name="Sure Hands"/>
-					<skill name="Pass"/>
+					<skill>Sure Hands</skill>
+					<skill>Pass</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Gutter runner" cost="80000" ma="9" st="2" ag="4" av="7" normal="ga" double="spm" display="skaven_gr.png">
+			<position>
+				<title>Gutter runner</title>
+				<qty>4</qty>
+				<cost>80000</cost>
+				<ma>9</ma>
+				<st>2</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>spm</double>
+				<display>skaven_gr.png</display>
 				<skills>
-					<skill name="Dodge"/>
+					<skill>Dodge</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Blitzer" cost="90000" ma="7" st="3" ag="3" av="8" normal="gs" double="apm" display="skaven_b.png">
+			<position>
+				<title>Blitzer</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gs</normal>
+				<double>apm</double>
+				<display>skaven_b.png</display>
 				<skills>
-					<skill name="Block"/>
+					<skill>Block</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Rat ogre" cost="160000" ma="6" st="5" ag="2" av="8" normal="s" double="gapm" display="ratogre.png">
+			<position>
+				<title>Rat ogre</title>
+				<qty>1</qty>
+				<cost>160000</cost>
+				<ma>6</ma>
+				<st>5</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>s</normal>
+				<double>gapm</double>
+				<display>ratogre.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Frenzy"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Prehensile Tail"/>
-					<skill name="Wild Animal"/>
+					<skill>Loner</skill>
+					<skill>Frenzy</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Prehensile Tail</skill>
+					<skill>Wild Animal</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="7" st="3" ag="3" av="7" normal="g" double="aspm" display="skaven_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>50000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>aspm</double>
+				<display>skaven_l.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>They may not be all that strong, they certainly aren't tough, but boy oh boy are Skaven fast! Many an opponent has been left in the starting blocks as fast-moving Skaven players scamper through a gap in the line and run in for a lightning fast touchdown.</background>
 	</race>
-	<race name="Undead" emblem="undeads.jpg">
-		<apothecary use="false"/>
-		<reroll cost="70000" qty="8"/>
+	<race>
+		<name>Undead</name>
+		<emblem>undeads.jpg</emblem>
+		<apothecary>false</apothecary>
+		<reroll>
+			<cost>70000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Skeleton" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
+			<position>
+				<title>Skeleton</title>
+				<qty>16</qty>
+				<cost>30000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>undead_s.png</display>
 				<skills>
-					<skill name="Regeneration"/>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="16" title="Zombie" cost="40000" ma="4" st="3" ag="2" av="8" normal="g" double="asp" display="undead_z.png">
+			<position>
+				<title>Zombie</title>
+				<qty>16</qty>
+				<cost>40000</cost>
+				<ma>4</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>8</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>undead_z.png</display>
 				<skills>
-					<skill name="Regeneration"/>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="4" title="Ghoul" cost="70000" ma="7" st="3" ag="3" av="7" normal="ga" double="sp" display="undead_g.png">
+			<position>
+				<title>Ghoul</title>
+				<qty>4</qty>
+				<cost>70000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>undead_g.png</display>
 				<skills>
-					<skill name="Dodge"/>
+					<skill>Dodge</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Wight" cost="90000" ma="6" st="3" ag="3" av="8" normal="gs" double="ap" display="undead_w.png">
+			<position>
+				<title>Wight</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>8</av>
+				<normal>gs</normal>
+				<double>ap</double>
+				<display>undead_w.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Regeneration"/>
+					<skill>Block</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Mummy" cost="110000" ma="3" st="5" ag="1" av="9" normal="s" double="gap" display="undead_m.png">
+			<position>
+				<title>Mummy</title>
+				<qty>2</qty>
+				<cost>110000</cost>
+				<ma>3</ma>
+				<st>5</st>
+				<ag>1</ag>
+				<av>9</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>undead_m.png</display>
 				<skills>
-					<skill name="Mighty Blow"/>
-					<skill name="Regeneration"/>
+					<skill>Mighty Blow</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="30000" ma="5" st="3" ag="2" av="7" normal="g" double="asp" display="undead_s.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>30000</cost>
+				<ma>5</ma>
+				<st>3</st>
+				<ag>2</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>undead_s.png</display>
 				<skills>
-					<skill name="Regeneration"/>
-					<skill name="Loner"/>
+					<skill>Regeneration</skill>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>In the Old World the dead do not rest easy. Vampires lurk in haunted castles, Necromancers seek to escape death by searching for forbidden knowledge, the Liche-lords rule over legions of corpses, and on the Blood Bowl field players who died long ago return to the scenes of their former glory and play Blood Bowl once again'</background>
 	</race>
-	<race name="Vampire" emblem="vampires.jpg">
-		<apothecary use="true"/>
-		<reroll cost="70000" qty="8"/>
+	<race>
+		<name>Vampire</name>
+		<emblem>vampires.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>70000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Thrall" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
+			<position>
+				<title>Thrall</title>
+				<qty>16</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>vampire_t.png</display>
 				<skills/>
 			</position>
-			<position qty="6" title="Vampire" cost="110000" ma="6" st="4" ag="4" av="8" normal="gas" double="p" display="vampire_v.png">
+			<position>
+				<title>Vampire</title>
+				<qty>6</qty>
+				<cost>110000</cost>
+				<ma>6</ma>
+				<st>4</st>
+				<ag>4</ag>
+				<av>8</av>
+				<normal>gas</normal>
+				<double>p</double>
+				<display>vampire_v.png</display>
 				<skills>
-					<skill name="Blood Lust"/>
-					<skill name="Hypnotic Gaze"/>
-					<skill name="Regeneration"/>
+					<skill>Blood Lust</skill>
+					<skill>Hypnotic Gaze</skill>
+					<skill>Regeneration</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="40000" ma="6" st="3" ag="3" av="7" normal="g" double="asp" display="vampire_t.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>40000</cost>
+				<ma>6</ma>
+				<st>3</st>
+				<ag>3</ag>
+				<av>7</av>
+				<normal>g</normal>
+				<double>asp</double>
+				<display>vampire_t.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>
 		<background>Although Vampire teams include a number of extremely capable players, they are let down by the unreliability of the Vampires. While they should be concentrating on the game, their attention often wanders to their hunger and before you know it they are off for a quick bite!</background>
 	</race>
-	<race name="Wood Elf" emblem="woodelves.jpg">
-		<apothecary use="true"/>
-		<reroll cost="50000" qty="8"/>
+	<race>
+		<name>Wood Elf</name>
+		<emblem>woodelves.jpg</emblem>
+		<apothecary>true</apothecary>
+		<reroll>
+			<cost>50000</cost>
+			<qty>8</qty>
+		</reroll>
 		<positions>
-			<position qty="16" title="Lineman" cost="70000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
+			<position>
+				<title>Lineman</title>
+				<qty>16</qty>
+				<cost>70000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>woodelf_l.png</display>
 				<skills/>
 			</position>
-			<position qty="4" title="Catcher" cost="90000" ma="9" st="2" ag="4" av="7" normal="ga" double="sp" display="woodelf_c.png">
+			<position>
+				<title>Catcher</title>
+				<qty>4</qty>
+				<cost>90000</cost>
+				<ma>9</ma>
+				<st>2</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>woodelf_c.png</display>
 				<skills>
-					<skill name="Catch"/>
-					<skill name="Dodge"/>
+					<skill>Catch</skill>
+					<skill>Dodge</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Thrower" cost="90000" ma="7" st="3" ag="4" av="7" normal="gap" double="s" display="woodelf_t.png">
+			<position>
+				<title>Thrower</title>
+				<qty>2</qty>
+				<cost>90000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>gap</normal>
+				<double>s</double>
+				<display>woodelf_t.png</display>
 				<skills>
-					<skill name="Pass"/>
+					<skill>Pass</skill>
 				</skills>
 			</position>
-			<position qty="2" title="Wardancer" cost="120000" ma="8" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_w.png">
+			<position>
+				<title>Wardancer</title>
+				<qty>2</qty>
+				<cost>120000</cost>
+				<ma>8</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>woodelf_w.png</display>
 				<skills>
-					<skill name="Block"/>
-					<skill name="Dodge"/>
-					<skill name="Leap"/>
+					<skill>Block</skill>
+					<skill>Dodge</skill>
+					<skill>Leap</skill>
 				</skills>
 			</position>
-			<position qty="1" title="Treeman" cost="140000" ma="2" st="6" ag="1" av="10" normal="s" double="gap" display="treeman.png">
+			<position>
+				<title>Treeman</title>
+				<qty>1</qty>
+				<cost>140000</cost>
+				<ma>2</ma>
+				<st>6</st>
+				<ag>1</ag>
+				<av>10</av>
+				<normal>s</normal>
+				<double>gap</double>
+				<display>treeman.png</display>
 				<skills>
-					<skill name="Loner"/>
-					<skill name="Mighty Blow"/>
-					<skill name="Stand Firm"/>
-					<skill name="Strong Arm"/>
-					<skill name="Take Root"/>
-					<skill name="Thick Skull"/>
-					<skill name="Throw Team-Mate"/>
+					<skill>Loner</skill>
+					<skill>Mighty Blow</skill>
+					<skill>Stand Firm</skill>
+					<skill>Strong Arm</skill>
+					<skill>Take Root</skill>
+					<skill>Thick Skull</skill>
+					<skill>Throw Team-Mate</skill>
 				</skills>
 			</position>
-			<position qty="11" title="Journeyman" cost="50000" ma="7" st="3" ag="4" av="7" normal="ga" double="sp" display="woodelf_l.png">
+			<position>
+				<title>Journeyman</title>
+				<qty>11</qty>
+				<cost>70000</cost>
+				<ma>7</ma>
+				<st>3</st>
+				<ag>4</ag>
+				<av>7</av>
+				<normal>ga</normal>
+				<double>sp</double>
+				<display>woodelf_l.png</display>
 				<skills>
-					<skill name="Loner"/>
+					<skill>Loner</skill>
 				</skills>
 			</position>
 		</positions>

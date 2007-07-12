@@ -6,15 +6,10 @@
 		Tu peux soi commencer une nouvelle équipe en choisissant une des races qui suit, 
 		ou bien charger une fiche d'équipe sauvegardée dans le format xml.</intro>
 
-		<heading>Commencer une nouvelle équipe.</heading>
+		<new>Commencer une nouvelle équipe.</new>
 		
-		<heading>Charger une équipe sauvegardée.</heading>
-		
-		<upload>
-		
-			<label>Envoyer ce fichier:</label>
-			<submit>Envoyer</submit>
-		
-		</upload>
+		<load>Charger une équipe sauvegardée.</load>	
+		<upload>Envoyer ce fichier:</upload>
+		<submit>Envoyer</submit>
 		
 </interface>

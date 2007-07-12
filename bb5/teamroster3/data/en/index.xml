@@ -5,12 +5,10 @@
 		You can either start with a new team, choosing one of the following races,
 		or load a previously saved teamsheet in the xml format.</intro>
 		
-	<heading>Start a fresh team.</heading>
-	<heading>Load a saved team.</heading>
-		
-	<upload>
-		<label>Send this file:</label>
-		<submit>Send File</submit>
-	</upload>
+	<new>Start a fresh team.</new>
+	
+	<load>Load a saved team.</load>	
+	<upload>Send this file:</upload>
+	<submit>Send File</submit>
 		
 </interface>

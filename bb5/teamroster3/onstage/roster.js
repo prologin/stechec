@@ -1,71 +1,16 @@
-function setSelects() {
-		for ( i=0; i < 16; i++) {
-			document.getElementsByName("POSITION[]")[i].selectedIndex = arrpositions[i]
-		}
-}
-
-function countHealthyPlayers() {
-
-	// first it counts how many healthy players the roster has
-	
-	healthy_players = 0
-	for ( i=0; i<16; i++ ) {
-		if ( isPlayerAssigned(i) != false && isPlayerInjured(i) == false ) {
-			healthy_players++
-		}
-	}
-	document.getElementsByName("HEALTHY")[0].value = healthy_players
-	
-	// then it will return a boolean to say if journeymen are allowed
-	
-	return healthy_players
-}
-
 function legalize(player) {
-	setRoster(player,"POSITION[]",0)
+	setRoster(player,"POSITION[]",1)
 	legalize_skills = getFromRoster(player,"SKILLS[]")
 	legalize_skills = legalize_skills.replace(/,Loner,/,",")
 	legalize_skills = legalize_skills.replace(/,Loner/,"")
 	legalize_skills = legalize_skills.replace(/Loner,/,"")
 	legalize_skills = legalize_skills.replace(/Loner/,"")
 	setRoster(player,"SKILLS[]",legalize_skills)
-}
-
-function isJourneymanAllowed() {
-	if ( countHealthyPlayers() < 12 ) {
-		return true
-	}
-	else {
-		return false
-	}
-}
-
-function isPlayerInjured(row) {
-	if ( document.getElementsByName("INJ[]")[row].value.charAt(0) == "M" ) {
-		return true
-	}
-	else {
-		return false
-	}
-}			
-
-function findInjuredPlayers() {
-	for ( i=0; i<16; i++) {
-		if ( isPlayerInjured(i) == true ) {
-			document.getElementsByName("VALUE[]")[i].className = 'injured'
-		}
-		else {
-			document.getElementsByName("VALUE[]")[i].className = 'healthy'
-		}
-	}
-}
-
-function setlogo() {
-	document.getElementById("BADGE").src = "data/logos/"+logo
+	hide('jm_box')
 }
 
 function checkName(row) {
-	if(!(isPlayerAssigned(row) != false)) {
+	if( isPlayerAssigned(row) == false ) {
 		alert(warning[2])
 		setRoster(row,"NAME[]","")
 	}
@@ -74,14 +19,15 @@ function checkName(row) {
 function fillPlayerStats(row) {
 	position = getFromRoster(row,"POSITION[]")
 	
-	if ( isQtyProblem() ) {
-		position = positions
+	if ( pos = isQtyProblem() ) {
+		alert(warning[0] + " " + stats[pos][6] + " '" + stats[pos][0] + "'.")
+		position = 0
 	}
 	
-	if ( position == (positions - 1) && !(isJourneymanAllowed()) ) {
-		healthy_players = document.getElementsByName("HEALTHY")[0].value
-		alert(healthy_players + " " + warning[1])
-		position = positions
+	if ( position == positions && !(isJourneymanAllowed()) ) {
+		healthy_players = getFromRoster(0, "HEALTHY") - 1
+		alert(warning[1] + " " + healthy_players + ".")
+		position = 0
 	}
 	setRoster(row,"NAME[]","")
 	setRoster(row,"MA[]",stats[position][1])
@@ -92,7 +38,7 @@ function fillPlayerStats(row) {
 	setRoster(row,"VALUE[]",stats[position][5])
 	setRoster(row,"POSITION[]",position)
 	setRoster(row,"SKILLS[]",skills[position].join(","))
-	setRoster(row,"INJ[]","")
+	setRoster(row,"INJURIES[]","")
 	setRoster(row,"COMP[]","")
 	setRoster(row,"TD[]","")
 	setRoster(row,"INT[]","")
@@ -102,46 +48,51 @@ function fillPlayerStats(row) {
 	calcTeamValue()
 }
 
-function setInjury() {
-	row = parseInt(document.getElementById('ROSTER').TEMP2.value-1)
-	if (document.getElementById('ROSTER').M.checked == false) {
-		setRoster(row,"INJ[]","")
-		document.getElementsByName("VALUE[]")[row].className = 'healthy'
+function setInjury(string) {
+	output = document.getElementById('ROSTER').TEMP2.value
+	row = output - 1
+	
+	if(string == 'M')
+	{
+		injuries = getFromRoster(row,"INJURIES[]")
+		setRoster(row,"INJURIES[]",'M')
+		if (injuries != '') { concatRoster(row,"INJURIES[]",injuries) }
 	}
-	if (document.getElementById('ROSTER').M.checked == true) {
-		setRoster(row,"INJ[]","M")
-		document.getElementsByName("VALUE[]")[row].className = 'injured'
+	
+	if(string == 'N')
+	{
+		if(!isPlayerInjured(row))
+		{
+			injuries = getFromRoster(row,"INJURIES[]")
+			setRoster(row,"INJURIES[]",'M')
+			if (injuries != '') { concatRoster(row,"INJURIES[]",injuries) }
+		}
+		concatRoster(row,"INJURIES[]",'N')
 	}
-	for (i=0; i<document.getElementById('ROSTER').N.value; i++) { 
-		concatRoster(row,"INJ[]","N")
+	
+	if(string == "")
+	{
+		if ( document.getElementsByName("INJURIES[]")[row].value.charAt(1) == "," ) {
+			setRoster(row,"INJURIES[]", document.getElementsByName("INJURIES[]")[row].value.slice(2))
+		}
+		else {
+			setRoster(row,"INJURIES[]",'')
+		}
 	}
-	for (i=0; i<document.getElementById('ROSTER').TEMPMA.value; i++) {
-		concatRoster(row,"INJ[]","-MA")
-	}
-	for (i=0; i<document.getElementById('ROSTER').TEMPST.value; i++) {
-		concatRoster(row,"INJ[]","-ST")
-	}
-	for (i=0; i<document.getElementById('ROSTER').TEMPAG.value; i++) {
-		concatRoster(row,"INJ[]","-AG")
-	}
+	
+	findInjuredPlayers()
+	countHealthyPlayers()	
 	calcTeamValue()
-	countHealthyPlayers()
-	hideLayer('inj_box')
+	hide('inj_box')
 }
 
-function setNiggling(operator) {
-	nigglings = parseInt(document.getElementById('ROSTER').N.value)
-	if (operator == "plus") {
-		nigglings++
-		document.getElementById('ROSTER').M.checked = true		
+function changeStat(stat,operator) {
+	if (operator == "p") {
+		row = document.getElementById('ROSTER').TEMP1.value - 1	
 	}
-	if (operator == "minus" && nigglings > 0) {
-		nigglings--
+	if (operator == "m") {
+		row = document.getElementById('ROSTER').TEMP2.value - 1	
 	}
-	document.getElementById('ROSTER').N.value = nigglings
-}
-
-function changeStat(stat,operator,row) {
 	if(isPlayerAssigned(row) == true) {
 		position= getFromRoster(row,"POSITION[]")
 		ma_diff = getFromRoster(row,"MA[]") - stats[position][1]
@@ -162,7 +113,7 @@ function changeStat(stat,operator,row) {
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
 							concatRoster(row,"SKILLS[]","+"+MA)
 						}
-					} else { alert(warning[5]) }
+					} else { alert(warning[4]) }
 					break
 				case 'ST':
 					if (st_diff < 2 && statlesserten == true) {
@@ -171,7 +122,7 @@ function changeStat(stat,operator,row) {
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
 							concatRoster(row,"SKILLS[]","+"+ST)
 						}
-					} else { alert(warning[5]) }
+					} else { alert(warning[4]) }
 					break
 				case 'AG':
 					if (ag_diff < 2 && statlesserten == true) {
@@ -180,7 +131,7 @@ function changeStat(stat,operator,row) {
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
 							concatRoster(row,"SKILLS[]","+"+AG)
 						}						
-					} else { alert(warning[5]) }
+					} else { alert(warning[4]) }
 					break
 				case 'AV':
 					if (av_diff < 2 && statlesserten == true) {
@@ -189,7 +140,7 @@ function changeStat(stat,operator,row) {
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
 							concatRoster(row,"SKILLS[]","+"+AV)
 						}						
-					} else { alert(warning[5]) }
+					} else { alert(warning[4]) }
 					break
 				default:
 					alert("No valid stat parameter given.")
@@ -206,40 +157,43 @@ function changeStat(stat,operator,row) {
 					if (ma_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("MA[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-"+MA)
+							concatRoster(row,"INJURIES[]","-"+MA)
 						}
-					} else { alert(warning[6]) }
+					} else { alert(warning[5]) }
 					break
 				case 'ST':
 					if (st_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("ST[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-"+ST)
+							concatRoster(row,"INJURIES[]","-"+ST)
 						}						
-					} else { alert(warning[6]) }
+					} else { alert(warning[5]) }
 					break
 				case 'AG':
 					if (ag_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("AG[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-"+AG)							
+							concatRoster(row,"INJURIES[]","-"+AG)							
 						}						
-					} else { alert(warning[6]) }
+					} else { alert(warning[5]) }
 					break
 				case 'AV':
 					if (av_diff > -2 && statgreaterone == true) {
 						document.getElementsByName("AV[]")[row].value--
 						if(document.getElementById('ROSTER').VERBOSE.checked == true) {
-							concatRoster(row,"INJ[]","-"+AV)
+							concatRoster(row,"INJURIES[]","-"+AV)
 						}
-					} else { alert(warning[6]) }
+					} else { alert(warning[5]) }
 					break
 				default:
 					alert("No valid stat parameter given.")
 			}
 		}
-	} else { alert(warning[7]) }
+	} else { alert(warning[2]) }
+	findInjuredPlayers()
 	calcTeamValue()
+	hide('skill_box')
+	hide('inj_box')
 }
 
 function calcPlayerSPP(row) {
@@ -274,9 +228,9 @@ function calcPlayerSPP(row) {
 		setRoster(row,"INT[]",INT)
 		setRoster(row,"CAS[]",CAS)
 		setRoster(row,"MVP[]",MVP)
-		document.getElementsByName("SPP[]")[row].value = COMP*1 + TD*3 + INT*2 + CAS*2 + MVP*5
+		setRoster(row,"SPP[]",COMP*1 + TD*3 + INT*2 + CAS*2 + MVP*5)
 	} else { 
-		alert(warning[4])
+		alert(warning[2])
 		setRoster(row,"COMP[]","")
 		setRoster(row,"TD[]","")
 		setRoster(row,"INT[]","")
@@ -289,43 +243,50 @@ function calcExtraValue(j) {
 	if(j == 16) {
 		if(document.getElementById('ROSTER').REROLLS.value>8) {
 			document.getElementById('ROSTER').REROLLS.value=8
-			alert(warning[9])
+			alert(warning[10])
 		}
-		document.getElementsByName("VALUE[]")[j].value = document.getElementById('ROSTER').REROLLS.value*reroll_cost
+		setRoster(j, "VALUE[]", document.getElementById('ROSTER').REROLLS.value*reroll_cost)
 	}
 	if(j == 17) {
-		document.getElementsByName("VALUE[]")[j].value = document.getElementById('ROSTER').FANFACTOR.value*10000
+		setRoster(j, "VALUE[]", document.getElementById('ROSTER').FANFACTOR.value*10000)
 	}
 	if(j == 18) {
-		document.getElementsByName("VALUE[]")[j].value = document.getElementById('ROSTER').COACHES.value*10000
+		setRoster(j, "VALUE[]", document.getElementById('ROSTER').COACHES.value*10000)
 	}
 	if(j == 19) {
-		document.getElementsByName("VALUE[]")[j].value = document.getElementById('ROSTER').CHEERLEADERS.value*10000
+		setRoster(j, "VALUE[]", document.getElementById('ROSTER').CHEERLEADERS.value*10000)
 	}
 	if(j == 20) {
 		if (apothecary == false) {
-			alert(warning[10])
+			alert(warning[11])
 			document.getElementById('ROSTER').APOTHECARY.value = 0
 		}
 		if (document.getElementById('ROSTER').APOTHECARY.value > 1) {
-			alert(warning[15])
+			alert(warning[12])
 			document.getElementById('ROSTER').APOTHECARY.value = 1
 		}
-	document.getElementsByName("VALUE[]")[j].value = document.getElementById('ROSTER').APOTHECARY.value*50000
+	setRoster(j, "VALUE[]", document.getElementById('ROSTER').APOTHECARY.value*50000)
 	}
 	calcTeamValue()
 }
 
 function calcTeamValue() {
 	teamvalue = 0
-	for ( k=0; k<=20; k++) {
-		value = parseInt(document.getElementsByName("VALUE[]")[k].value)
-		if(isNaN(value) == false && document.getElementsByName("VALUE[]")[k].className != 'injured') {
+	for ( k=0; k<=15; k++) { // players
+		value = parseInt(getFromRoster(k, "VALUE[]"))
+		if(isNaN(value) == false && isPlayerInjured(k) == false ) {
+			teamvalue = teamvalue + value
+    	}
+    }
+	for ( k=16; k<=20; k++) { // extras
+		value = parseInt(getFromRoster(k, "VALUE[]"))
+		if(isNaN(value) == false ) {
 			teamvalue = teamvalue + value
     	}
     }
 	document.getElementById('ROSTER').TEAMVALUE.value = teamvalue
-	// color teamvalue red it it is > 1.000.000 gp
+	
+	// color teamvalue red if it is > 1.000.000 gp
 	if (teamvalue > 1000000) {
 		document.getElementById('ROSTER').TEAMVALUE.style.color = "red"
 	}
@@ -334,61 +295,34 @@ function calcTeamValue() {
 	}
 }
 
-function hideLayer(ID) {
-	document.getElementById(ID).className = 'element_hidden';
-	box_visible = false;
-}
-
 function showInjBox(row) {
-	if(isPlayerAssigned(row) != false) {
-		if(box_visible == true) {
-			alert(warning[11])
-		} else {
-			statreductions = new Array(0,0,0)
-			injurystring = document.getElementsByName("INJ[]")[row].value
-			for (i=0; injurystring.match("-"+MA) != null; i++ ) {
-				statreductions[0]++
-				injurystring = injurystring.replace("-"+MA,"0")
-			}			
-			for (i=0; injurystring.match("-"+ST) != null; i++ ) {
-				statreductions[1]++
-				injurystring = injurystring.replace("-"+ST,"0")
-			}			
-			for (i=0; injurystring.match("-"+AG) != null; i++ ) {
-				statreductions[2]++
-				injurystring = injurystring.replace("-"+AG,"0")
-			}
-
-			document.getElementById('ROSTER').TEMPMA.value = statreductions[0]
-			document.getElementById('ROSTER').TEMPST.value = statreductions[1]
-			document.getElementById('ROSTER').TEMPAG.value = statreductions[2]
+	if(isPlayerAssigned(row) == true)
+	{
+		if( show('inj_box') == true )
+		{
 			output = row + 1
 			document.getElementById('ROSTER').TEMP2.value = output
-			if(document.getElementsByName("INJ[]")[row].value.charAt(0) == "M") {
-				document.getElementById('ROSTER').M.checked = true
-			} else {
-				document.getElementById('ROSTER').M.checked = false
+			
+			if(isPlayerInjured(row) == true)
+			{
+				document.getElementById('miss').style.display = 'none';
+				document.getElementById('ok').style.display = 'block';
 			}
-			document.getElementById('ROSTER').N.value = 0
-			for(i=0; i < document.getElementsByName("INJ[]")[row].value.length; i++) {
-				if(document.getElementsByName("INJ[]")[row].value.charAt(i) == "N") {
-					document.getElementById('ROSTER').N.value++
-				}
-			}	
-			document.getElementById('inj_box').className = 'element_visible';
-			box_visible = true;
+			else
+			{
+				document.getElementById('miss').style.display= 'block';
+				document.getElementById('ok').style.display = 'none';
+			}
 		}	
-	} else {
-		alert(warning[3]) 
+	}
+	else
+	{
+		alert(warning[2]) 
 	}
 }
 
 function showJmBox() {
-	if ( box_visible == true ) {
-		alert(warning[11])
-	} else {
-		document.getElementById('jm_box').className = 'element_visible';
-		box_visible = true;
+	if ( show('jm_box') == true ) {
 		for ( i = 0; i < 16; i++ ) {
 			if ( isPlayerAssigned(i) != 2 ) {
 				document.getElementById('jm'+i).style.display = "none";
@@ -402,10 +336,7 @@ function showJmBox() {
 
 function showSkillBox(row) {
 	if(isPlayerAssigned(row) == true) {
-		if( box_visible == true ) {
-			alert(warning[11])
-		} 
-		else {
+		if ( show('skill_box') == true ) {
 			position = getFromRoster(row,"POSITION[]")
 			output = row + 1
 			document.getElementById('ROSTER').TEMP3.value = 0
@@ -467,19 +398,21 @@ function showSkillBox(row) {
 				deleteArrayElement(skills_s[1],possible_skills_d)
 				impossible_skills.push(skills_s[1])
 			}
-			
+				
 			arrayToOptions(impossible_skills,'SKILLSRCF',0)
 			arrayToOptions(possible_skills_n,'SKILLSRCN',20000)
 			arrayToOptions(possible_skills_d,'SKILLSRCD',30000)
 			arrayToOptions(chosen_skills,'SKILLDEST',0)
-
-			document.getElementById('skill_box').className = 'element_visible';
-			box_visible = true;
 		}
 	}
 	else { 
-		alert(warning[7]) 
+		alert(warning[2]) 
 	}
+}
+
+function showBox(ID) {
+	// have to use the return value of show()
+	shown = show(ID)
 }
 
 function addskill(repertory) {
@@ -523,6 +456,7 @@ function addskill(repertory) {
 	document.getElementById('ROSTER').TEMP3.value = value_old + value_add
 	
 	x.remove(x.selectedIndex)
+	setSkillchanges()
 }
 
 function remskill() {
@@ -533,10 +467,10 @@ function remskill() {
 	selectedskill = x.options[x.selectedIndex].text
 	
 	if (isStringInArray(selectedskill,skills[position]) == true) {
-		alert(warning[12])
+		alert(warning[6])
 	}
 	else if (selectedskill == "+MA" || selectedskill == "+ST" || selectedskill == "+AG" || selectedskill == "+AV") {
-		alert(warning[13])
+		alert(warning[7])
 	} 
 	else {
 		repertory = findSkill(selectedskill,position)
@@ -591,7 +525,7 @@ function remskill() {
 		}
 		
 		x.remove(x.selectedIndex)
-		
+		setSkillchanges()
 	}
 }
 
@@ -604,17 +538,17 @@ function setSkillchanges() {
 				skillString = skillString + ","
 			}
 	}
-	document.getElementsByName("SKILLS[]")[row].value = skillString
-	value_old = parseInt(document.getElementsByName("VALUE[]")[row].value)
+	value_old = parseInt(getFromRoster(row, "VALUE[]"))
 	value_change = parseInt(document.getElementById('ROSTER').TEMP3.value)
-	document.getElementsByName("VALUE[]")[row].value = value_old + value_change
+	setRoster(row, "SKILLS[]", skillString)
+	setRoster(row, "VALUE[]", value_old + value_change)
 	calcTeamValue()
-	hideLayer('skill_box')
+	hide('skill_box')
 }
 
 function save() {
-	if ( document.getElementsByName("TEAM")[0].value == "" ) {
-		alert(warning[14])
+	if ( getFromRoster(0, "TEAM") == "" ) {
+		alert(warning[13])
 	} 
 	else {
 		document.getElementById('ROSTER').submit()
@@ -622,11 +556,18 @@ function save() {
 }
 
 function show(ID) {
-	if ( box_visible == true ) {
-		alert(warning[11]);
+	if (box_visible == true) {
+		alert(warning[9]);
+		return false
 	}
 	else {
 		box_visible = true;
-		document.getElementById(ID).className = 'element_visible';	
+		document.getElementById(ID).className = 'element_visible';
+		return true
 	}
+}
+
+function hide(ID) {
+	document.getElementById(ID).className = 'element_hidden';
+	box_visible = false;
 }

@@ -12,22 +12,45 @@
 		</background>
 		
 		<journeymen>
+			<jm>journeymen</jm>
 			<label>players</label>
 			<button>manage</button>
 			<text>You may hire one or more of the journeymen you used after a match.
 			Simply click on the corresponding number (non-journeymen are not shown).</text>
 		</journeymen>
 		
+		<skill>
+			<skills>Skills</skills>
+			<own>own skills</own>
+			<normal>normal repertory</normal>
+			<double>double repertory</double>
+			<forbidden>forbidden skills</forbidden>
+			<stat>Stats</stat>
+			<added>You added a value of</added>
+		</skill>
+		
+		<injury>
+			<inj>Injuries</inj>
+			<miss>miss next game</miss>
+			<niggling>niggling injury</niggling>
+			<ok>ready for action</ok>
+		</injury>
+		
+		<player>Player</player>
+		<close>close</close>
+		<add>add</add>
+		<remove>remove</remove>
+		<cancel>cancel</cancel>
+		<validate>validate</validate>
+		
 		<statchanges>Write statchanges to Roster</statchanges>
 		<save>Save Roster</save>
 		<return>Return to Start</return>	
 
-	
 		<team>TEAM</team>
 		<race>RACE</race>		
 		<treasury>TREASURY</treasury>
 		<headcoach>HEADCOACH</headcoach>
-		
 		<rerolls>RE-ROLLS</rerolls>
 		<fanfactor>FAN FACTOR</fanfactor>
 		<assistants>ASSISTANTS</assistants>
@@ -35,17 +58,13 @@
 		<apothecary>APOTHECARY</apothecary>
 		<teamvalue>TOTAL VALUE OF TEAM</teamvalue>
 				
-		
 		<name>PLAYER'S NAME</name>
 		<position>POSITION</position>
-
+		
 		<MA>MA</MA>
 		<ST>ST</ST>
 		<AG>AG</AG>
 		<AV>AV</AV>
-
-		<skills>SKILLS</skills>
-		<inj>INJ</inj>
 		
 		<comp>COM</comp>	
 		<td>TD</td>
@@ -58,28 +77,24 @@
 
 	<javascript>
 	
-		<!-- beginning of sentence: ... more than 3 Ogre. -->
-		<warning>You cannot have more than</warning>
+		<!-- 0 --><warning>You cannot have more than</warning><!-- 1 'Ogre'. -->
+		<!-- 1 --><warning>You are not elligible for journeymen. Players fielded:</warning>
 		
-		<!-- end of sentence: 12 players fielded, you are ... -->
-		<warning>players fielded: you are not elligible for journeymen.</warning>
+		<!-- 2 --><warning>Please select a position for this player.</warning>
+		<!-- 3 --><warning>You may not edit journeymen.</warning>		
+		<!-- 4 --><warning>Characteristics may not be increased by more than 2 points or above 10.</warning>
+		<!-- 5 --><warning>Characteristics may not be decreased by more than 2 points or below 1.</warning>
+		<!-- 6 --><warning>You cannot remove a starting skill.</warning>
+		<!-- 7 --><warning>You cannot remove a stat increase!</warning>			
+		<!-- 8 --><warning>Value must be an integer.</warning>
+		<!-- 9 --><warning>Please close the other open box.</warning>
 		
-		<!-- complete sentences -->
-		<warning>Please select a position before setting a name.</warning>
-		<warning>Please choose a position for this player before adding any injuries.</warning>
-		<warning>Please choose a position for this player before you modify any stats.</warning>		
-		<warning>Characteristics may not be increased by more than 2 points or above 10.</warning>
-		<warning>Characteristics may not be decreased by more than 2 points or below 1.</warning>	
-		<warning>You may not alter stats of journeymen or non-existant players.</warning>	
-		<warning>Value must be an integer. Please correct the data or the value will be set to 0.</warning>
-		<warning>Up to 8 rerolls are allowed per team.</warning>
-		<warning>Your team is excluded from the use of an apothecary.</warning>
-		<warning>Please close other box.</warning>
-		<warning>You cannot remove a starting skill.</warning>
-		<warning>You cannot remove a stat increase!</warning>
-		<warning>You need a fancy name for your team!</warning>
-		<warning>You may use up to one apothecary.</warning>
-		
+		<!-- 10 --><warning>Up to 8 rerolls are allowed per team.</warning>
+		<!-- 11 --><warning>Your team is excluded from the use of an apothecary.</warning>
+		<!-- 12 --><warning>You may use up to one apothecary.</warning>
+
+		<!-- 13 --><warning>You need a fancy name for your team!</warning>
+
 	</javascript>
 	
 </interface>

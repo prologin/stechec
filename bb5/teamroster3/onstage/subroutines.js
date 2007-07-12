@@ -1,13 +1,41 @@
-function isPlayerAssigned(row) {
+function isPlayerInjured(row) {
+	if ( document.getElementsByName("INJURIES[]")[row].value.charAt(0) == "M" ) {
+		return true
+	}
+	else {
+		return false
+	}
+}
 
-	pos = parseInt(document.getElementsByName("POSITION[]")[row].value)
+function findInjuredPlayers() {
+	for ( i=0; i<16; i++) {
+		if ( isPlayerInjured(i) == true ) {
+			document.getElementsByName("VALUE[]")[i].className = 'injured'
+		}
+		else {
+			document.getElementsByName("VALUE[]")[i].className = 'healthy'
+		}
+	}
+}
+
+function isJourneymanAllowed() {
+	if ( countHealthyPlayers() < 12 ) {
+		return true
+	}
+	else {
+		return false
+	}
+}
+
+function isPlayerAssigned(row) {
+	pos = parseInt(getFromRoster(row,"POSITION[]"))
 	
-	if (pos == positions) { // the last position-array is the empty one
+	if (pos == 0) { 
 		return false
 	} 
 	else {
-		if ( pos == positions - 1 ) {
-			return 2
+		if ( pos == positions ) {
+			return 2 // roster.js showJmBox token to recognize a journeyman
 		}
 		return true
 	}
@@ -21,20 +49,20 @@ function isQtyProblem() {
 	
 		// stats[i][7] stores the number of players actually playing that position
 		// it has to be resetted
-	
+
 		stats[i][7] = 0
 	}
 	
 	for (i=0; i<16; i++) {
 	
-		pos = parseInt(document.getElementsByName("POSITION[]")[i].value)
+		pos = parseInt(getFromRoster(i,"POSITION[]"))
 		stats[pos][7]++
 		
 		if (stats[pos][7] > stats[pos][6]) {
-			alert(warning[0] + " " + stats[pos][6] + " '" + stats[pos][0] + "'.")
+
 			stats[pos][7]--
-			
-			return true
+
+			return pos // to use it in the alert
 		}
 		
 	}
@@ -44,16 +72,13 @@ function isQtyProblem() {
 function getFromRoster(row,String) {
 
 	// this function will return just anything you ask for ;-)
-	
-	result = document.getElementsByName(String)[row].value
-	return result
+	return document.getElementsByName(String)[row].value
 
 }
 
 function setRoster(row,String,value) {
 
 	// set a field in the roster to given value
-	
 	document.getElementsByName(String)[row].value = value
 	
 }
@@ -140,10 +165,26 @@ function findSkill(skillname,position) {
 	
 	return "forbidden"
 }
-					
+
+function countHealthyPlayers() {
+
+	// first it counts how many healthy players the roster has
 	
+	healthy_players = 0
+	for ( i=0; i<16; i++ ) {
+		if ( isPlayerAssigned(i) != false && isPlayerInjured(i) == false ) {
+			healthy_players++
+		}
+	}
+	setRoster(0, "HEALTHY", healthy_players)
 	
+	// then it will return a boolean to say if journeymen are allowed
 	
-	
-	
-	
+	return healthy_players
+}
+
+function setSelects() {
+		for ( i=0; i < 16; i++) {
+			document.getElementsByName("POSITION[]")[i].selectedIndex = arrpositions[i]
+		}
+}

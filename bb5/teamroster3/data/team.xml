@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<team BBversion="5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="team.xsd">
+	<name></name>
+	<coach />
+	<bank />
+	<reroll />
+	<rerollcost></rerollcost>
+	<fanfactor />
+	<assistant />
+	<cheerleader />
+	<apothecary />
+	<players>
+	</players>
+	<background></background>
+</team>
+

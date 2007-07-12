@@ -14,16 +14,40 @@
 		</background>
 		
 		<journeymen>
+			<jm>Journaliers</jm>
 			<label>joueurs</label>
 			<button>gérer</button>
 			<text>Tu peux engager un des journaliers que tu as utilisé en cliquant dessus.
 			(les joueurs normaux ne sont pas montrés)</text>
 		</journeymen>
+
+		<skill>
+			<skills>Compétences</skills>
+			<own>propres comp.</own>
+			<normal>répertoire normal</normal>
+			<double>répertoire double</double>
+			<forbidden>comp. interdites</forbidden>
+			<stat>Caractéristiques</stat>
+			<added>Tu as ajouté une valeur de</added>
+		</skill>
+
+		<injury>
+			<inj>Blessures</inj>
+			<miss>manque un match</miss>
+			<niggling>blessure persitante</niggling>
+			<ok>guéri</ok>
+		</injury>
+
+		<player>Joueur</player>
+		<close>fermer</close>
+		<add>ajouter</add>
+		<remove>enlever</remove>
+		<cancel>annuler</cancel>
+		<validate>affirmer</validate>
 		
 		<statchanges>Retenir modifications de valeurs dans la fiche</statchanges>
 		<save>Sauvegarder la fiche</save>
 		<return>Revenir à l'index</return>	
-
 	
 		<team>ÉQUIPE</team>
 		<race>RACE</race>		
@@ -45,9 +69,6 @@
 		<AG>AG</AG>
 		<AV>AR</AV>
 
-		<skills>COMPÉTENCES</skills>
-		<inj>INJ</inj>
-		
 		<comp>COM</comp>	
 		<td>TD</td>
 		<int>INT</int>
@@ -55,31 +76,27 @@
 		<mvp>MVP</mvp>
 		<spp>SPP</spp>
 		
-		<value></value>	
+		<value>Prix</value>	
 
 	<javascript>
 	
-		<!-- beginning of sentence: ... more than 3 Ogre. -->
 		<warning>Tu ne peux pas avoir plus de</warning>
-		
-		<!-- end of sentence: 12 players fielded, you are ... -->
-		<warning>joueurs. Tu n'as pas accès aux journaliers.</warning>
-		
-		<!-- complete sentences -->
-		<warning>Choisis une position avant de donner un nom.</warning>
-		<warning>Choisis une position pour ce joueur avant d'indiquer ses blessures.</warning>
-		<warning>Choisis une position pour ce joueur avant de modifier ses caractéristiques.</warning>		
-		<warning>Une caractéristique ne peux pas être augmentée de plus de 2 points ou au-delà de 10.</warning>
-		<warning>Une caractéristique ne peux pas être diminiuée de plus de 2 points ou en-deçà de 1.</warning>	
-		<warning>Tu ne peux pas modifier les caractéristiques d'un journalier ou d'un joueur inexistant.</warning>	
-		<warning>La valeur doit être entière. Corrige le ou la valeur sera de 0.</warning>
-		<warning>Un maximum de 8 relances est autorisé par équipe.</warning>
-		<warning>Ton équipe ne peut pas engager d'apothicaire.</warning>
-		<warning>Ferme d'abord l'autre fenêtre.</warning>
+		<warning>Tu n'as pas accès aux journaliers. Joueurs:</warning>
+
+		<warning>Choisis une position pour ce joueur.</warning>
+		<warning>Tu ne peux pas modifier les caractéristiques d'un journalier.</warning>
+		<warning>Une caractéristique ne peut pas être augmentée de plus de 2 points ou au-delà de 10.</warning>
+		<warning>Une caractéristique ne peut pas être diminuée de plus de 2 points ou en-deça de 1.</warning>
 		<warning>Tu ne peux pas supprimer une compétence de départ!</warning>
 		<warning>Tu ne peux pas supprimer une augmentation de caractéristique!</warning>
+		<warning>La valeur doit être entière.</warning>
+		<warning>Ferme d'abord l'autre fenetre.</warning>
+		
+		<warning>Un maximum de 8 relances est autorisé par équipe.</warning>
+		<warning>Ton équipe ne peut pas engager d'apothicaire.</warning>
+		<warning>Tu as droit à un apothicaire au maximum.</warning>
+	
 		<warning>Il faut un nom original à ton équipe!</warning>
-		<warning>Tu as le droit d'avoir un apothicaire au maximum.</warning>
 		
 	</javascript>
 			

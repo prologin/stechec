@@ -95,6 +95,8 @@ a.block:active {
 
 #foot {
 	text-align: right;
+	font-size: 80%;
+	font-style: italic;
 	width: 610px;
 	margin-top: 30px;
 	margin-left: 10px;
