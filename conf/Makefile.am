@@ -10,4 +10,4 @@ dist_pkgdata_DATA =				\
 dist_sysconf_DATA = stechec.yml
 
 install-data-local:
-	chmod 600 $(DESTDIR)$(sysconfdir)/stechec.yml
+	-chmod 600 $(DESTDIR)$(sysconfdir)/stechec.yml
