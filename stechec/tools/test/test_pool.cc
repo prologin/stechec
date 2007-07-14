@@ -62,11 +62,12 @@ void server()
 {
   TcpCx cxl;
   TcpCx *cx[NB_THREAD];
-  CxPool<Cx> pool(2000, &lock);
+  CxPool<Cx> pool(2000);
   int cx_nb = 0;
-  
-  cxl.listen(23111);
 
+  cxl.listen(23111);
+  pool.setLock(&lock);
+  
 #if 0
   LOG1("listening, now poll for ready connection");
   for (int i = 0; i < NB_THREAD; i++)
