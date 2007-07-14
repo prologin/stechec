@@ -114,12 +114,12 @@ public class Field extends JLabel implements MouseListener, MouseMotionListener 
 			}
 		}
 		
-/*		
+		
 		Game.c_debug.debugLog(viewPosition + " => ViewPosition\n" +
 				              positionOnScrollPane + " => position on scrollPane\n" +
 				              positionOnField + " => positionOnField\n" +
 				              m_fieldViewPort.getSize() + " => viewPort Size");
-*/
+
 	}
 	
 	private boolean isNearNorthEdge(Point cursorPosition)
@@ -215,13 +215,54 @@ public class Field extends JLabel implements MouseListener, MouseMotionListener 
         m_currentDisplayMode = displayMode;
     }
 
+    /**
+     * Draw the field grid on the background image
+     */
+    private void drawGrid()
+    {
+    	ImageIcon iBackgroundImage = (ImageIcon) getIcon();
+        int w = iBackgroundImage.getIconWidth();
+        int h = iBackgroundImage.getIconHeight();
+        BufferedImage bBackgroundImage =
+        	new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+        Graphics2D imageGraphics = bBackgroundImage.createGraphics();
+        imageGraphics.drawImage(iBackgroundImage.getImage(), 0, 0, null);
+
+        imageGraphics.setPaint(Color.black);
+        int x = 7;
+        int y = 7;
+        while (x < 610)
+        {
+        	while(y < 1050 )
+        	{
+        		// draw a grid point at (x,y)
+        		int left = 0;
+        		int right = 0;
+        		int up = 0;
+        		int down = 0;
+        		if (x != 7) left = 2;
+        		if (x != 607) right = 2;
+        		if (y != 7) up = 2;
+        		if (y != 1047) down = 2;
+                imageGraphics.drawLine(x - left, y, x + right, y);
+                imageGraphics.drawLine(x, y - up, x, y + down);
+                y+=40;
+        	}
+        	y = 7;
+        	x+=40;
+        }
+
+        imageGraphics.dispose();
+        iBackgroundImage.setImage(bBackgroundImage);
+    }
+
 	/**
 	 * Generate a Field Panel
 	 * @param backgroundImage : the background image to display in the field
 	 */
 	public Field(ImageIcon backgroundImage) {
         super(backgroundImage);
-
+        drawGrid();
         addMouseMotionListener(this); //handle mouse drags
         addMouseListener(this); //handle mouse drags
 
