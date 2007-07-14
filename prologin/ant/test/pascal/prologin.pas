@@ -117,9 +117,10 @@ begin
    end;
 end;
 
-exports
-  init_game,
-  play_turn;
+{ seems that fpc doesn't like it (version 2.0.4 [2007/02/02]) }
+{ exports }
+{   init_game, }
+{   play_turn; }
 
 begin
 
