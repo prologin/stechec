@@ -40,3 +40,13 @@ while [ $# -gt 0 ]; do
 	sleep 1
 done
 wait
+
+# add symlinks for standard distro
+cd dists
+test -d etch && ln -sf etch stable
+test -d lenny && ln -sf lenny testing
+test -d sid && ln -sf sid unstable
+
+test -d dapper && ln -sf dapper 6.06
+test -d edgy && ln -sf edgy 6.10
+test -d feisty && ln -sf feisty 7.04
