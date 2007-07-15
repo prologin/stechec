@@ -202,7 +202,6 @@ AC_CONFIG_FILES([
   doc/doc.doxy
   conf/Makefile
   conf/config_prolo.xml
-  conf/stechec.yml
   stechec/Makefile
   stechec/base_rules/Makefile
   stechec/client/Makefile
@@ -248,6 +247,7 @@ AC_CONFIG_FILES([
   prologin/Makefile
   prologin/web_meta/Makefile
   prologin/web_meta/meta_cx.sh
+  prologin/web_meta/stechec.yml
   prologin/common/Makefile
   prologin/tkrun/Makefile
 ])

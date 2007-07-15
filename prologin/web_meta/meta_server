@@ -6,6 +6,7 @@ use YAML ('LoadFile');
 use POSIX qw(:signal_h :sys_wait_h);
 use IO::Socket::INET;
 use IO::Select;
+use Unix::Syslog qw(:macros :subs);
 use FileHandle;
 use Getopt::Std;
 use Data::Dumper;
@@ -16,19 +17,6 @@ my %m = ();         # meta config
 my @proc = ();      # list of launched processus (matchs)
 my $msock = undef;  # socket to main_server
 my $read_set;
-
-sub daemonize 
-{
-    print "daemonizing... see you!\n";
-    chdir '/'               or die "Can't chdir to /: $!";
-    open STDIN, '/dev/null' or die "Can't read /dev/null: $!";
-    open STDOUT, '>/dev/null'
-        or die "Can't write to /dev/null: $!";
-    defined(my $pid = fork) or die "Can't fork: $!";
-    exit if $pid;
-    setsid                  or die "Can't start a new session: $!";
-    open STDERR, '>&STDOUT' or die "Can't dup stdout: $!";
-}       
 
 
 ##########################################################################
@@ -42,13 +30,13 @@ sub meta_init($)
 
     # check if goinfre is readable
     if (! (-w $$cfg{'connection'}{'contest_path'})) {
-        print "[meta] '$$cfg{'connection'}{'contest_path'}' is not writeable. aborting.\n";
+        syslog LOG_ERR, "[meta] '$$cfg{'connection'}{'contest_path'}' is not writeable. aborting.";
         exit 1;
     }
 
-    $m{'main_ip'} = $$cfg{'internal'}{'main_host'} || "localhost";
-    $m{'main_port'} = $$cfg{'internal'}{'main_port'} || 3917;
-    $m{'heartbeat_period'} = $$cfg{'internal'}{'heartbeat_period'};
+    $m{'main_ip'} = $$cfg{'meta_server'}{'main_host'} || "localhost";
+    $m{'main_port'} = $$cfg{'meta_server'}{'main_port'} || 3917;
+    $m{'heartbeat_period'} = $$cfg{'meta_server'}{'heartbeat_period'};
 
     $m{'cmd_path'} = $$cfg{'command'}{'cmd_path'} || "";
     $m{'cmd_path'} =~ s!([^/])$!$1/!;
@@ -88,10 +76,10 @@ sub meta_connect()
 								  Type => SOCK_STREAM,
 								  Timeout => 5);
 	if (!defined($msock)) {
-		print "[cx] $@\n";
+		syslog LOG_INFO, "[cx] $@";
 		return -1;
 	}
-    print "[cx] connected to main_server\n";
+    syslog LOG_INFO, "[cx] connected to main_server";
 	$read_set->add($msock);
 	return 0;
 }
@@ -103,7 +91,7 @@ sub send_msg($)
 
     return unless defined($msock);
 	if (!$msock->connected() || !defined($msock->send($msg, MSG_DONTWAIT))) {
-		print "[cx] connection lost while writing: $!\n";
+		syslog LOG_ERR, "[cx] connection lost while writing: $!";
 		meta_disconnect;
 	}
 }
@@ -114,7 +102,7 @@ sub recv_msg()
 
 	if (!defined($msock->recv($msg, 1024, MSG_DONTWAIT)) ||
         !defined($msg) || length($msg) == 0) {
-		print "[cx] connection lost while reading: $!\n";
+		syslog LOG_ERR, "[cx] connection lost while reading: $!";
 		meta_disconnect;
         return;
 	}
@@ -130,7 +118,7 @@ sub recv_msg()
 		if (exists $m{'cmd'}{$cmd}) {
 			process_fork($cmd, $m{'cmd'}{$cmd}, @argv);
 		} else {
-			print "[cmd] unknown command '$cmd'\n";
+			syslog LOG_NOTICE, "[cmd] unknown command '$cmd'";
 		}
 	}
 }
@@ -139,7 +127,7 @@ sub send_heartbeat()
 {
 	if (time > $m{'last_heartbeat'} + $m{'heartbeat_period'}) {
 		$m{'last_heartbeat'} = time;
-        print "[cx] ping, slot used: $m{'slots'}\n";
+        syslog LOG_DEBUG, "[cx] ping, slot used: $m{'slots'}";
 		send_msg("ping slots $m{'slots'}\n.\n");
 	}
 }
@@ -160,8 +148,8 @@ sub process_finish
 	}
 
 	# process has been properly closed, send results to the main_server
-	print "[proc] finished: id: $proc->{'id_match'}, pid: $proc->{'pid'}, ";
-	print "exit: $proc->{'exit_status'}, slot: $m{'slots'}\n";
+	syslog LOG_DEBUG, "[proc] finished: id: $proc->{'id_match'}, pid: $proc->{'pid'},";
+	syslog LOG_DEBUG, "exit: $proc->{'exit_status'}, slot: $m{'slots'}";
 
     send_msg "result $proc->{'cmd'} $proc->{'id_match'} $proc->{'exit_status'}";
     if (length $proc->{'log'} > 0) {
@@ -190,7 +178,7 @@ sub process_wait
 
 			my ($my_proc, @err) = grep { $_->{'pid'} == $pid } @proc;
             return unless defined $my_proc;
-			print "[proc] WARNING: duplicate pids ($pid)\n" if (@err > 0);
+			syslog LOG_ERR, "[proc] WARNING: duplicate pids ($pid)" if (@err > 0);
 			$my_proc->{"exit_status"} = $exit_status if defined($my_proc);
 			process_finish $my_proc;
 		}
@@ -205,7 +193,7 @@ sub process_fork($$$)
     my $id_match = shift @argv;
 
     if ($id_match !~ /^\d+$/) {
-        print "[proc] id '$id_match' is not an integer\n";
+        syslog LOG_NOTICE, "[proc] id '$id_match' is not an integer";
         # do nothing. main will eventually expires this malformated
         # match query.
         return;
@@ -236,8 +224,8 @@ sub process_fork($$$)
     };
 	$read_set->add($readfh);
 	$m{'slots'}++;
-	print "[proc] created:  id: $id_match, pid: $pid, " .
-		"type: " . $cmd . ", slot: $m{'slots'}\n";
+	syslog LOG_DEBUG, "[proc] created:  id: $id_match, pid: $pid, " .
+		"type: " . $cmd . ", slot: $m{'slots'}";
 }
 
 
@@ -247,7 +235,7 @@ sub process_read($)
 	my $msg;
 
 	my ($my_proc, @err) = grep { fileno($_->{'fd'}) == fileno($fd) } @proc;
-	print "[proc] WARNING: duplicate pipe fd\n" if (@err > 0);
+	syslog LOG_ERR, "[proc] WARNING: duplicate pipe fd" if (@err > 0);
 
 	if (eof($fd) || !defined($fd->read($msg, 128)) || length($msg) == 0) {
 		# read is finished
@@ -268,10 +256,10 @@ sub process_read($)
 my %opts = ();
 getopts("vhc:d", \%opts);
 if (defined($opts{h}) || defined($opts{v})) {
-	print "meta.pl -[hvc]\n";
+	print "meta.pl -[hvcd]\n";
 	print "options:\n";
 	print "  -h          show this help\n";
-	print "  -d          daemonize\n";
+    print "  -d          debug mode (more verbose)\n";
 	print "  -v          show version\n";
 	print "  -c <conf>   use this configuration file [stechec.yml]\n";
 	exit 0;
@@ -281,8 +269,11 @@ if (defined($opts{h}) || defined($opts{v})) {
 $opts{'c'} ||= "stechec.yml";
 my ($cfg) = YAML::LoadFile($opts{c});
 
-# daemonize
-daemonize if $opts{'d'};
+# syslog
+openlog("meta_server", LOG_PERROR, LOG_LOCAL0);
+if (!defined($opts{d})) {
+    setlogmask(LOG_UPTO(LOG_INFO));
+}
 
 # init
 my $sigset = POSIX::SigSet->new(SIGCHLD);
@@ -319,4 +310,5 @@ while ($loop) {
 	sigprocmask(SIG_SETMASK, $old_sigset);
 }
 
-print "[meta]: finished\n";
+syslog LOG_NOTICE, "[meta]: finished";
+closelog();

@@ -2,7 +2,8 @@
 # Fichier de conf Yaml de Stechec Meta-server et Main-server 
 #
 
-# Information sur la base de données. Uniquement pour le main_server
+# Information sur la base de données. 
+# Uniquement pour le main_server
 database:
   ip: localhost
   port: 3306
@@ -11,17 +12,21 @@ database:
   pass: tty4ever
   database: stechec
 
-# Configuration du main_server et du meta_server
-internal:
-  main_host: 192.168.200.1
-  main_port: 3917
+# Configuration du main_server
+main_server:
+  listen_port: 3917
   wait_sleep: 5
   max_process: 10
-  heartbeat_period: 12
   heartbeat_timeout: 30
   match_timeout: 360
   server_port_range_begin: 28100
   server_port_range_end: 28600
+
+# Configuration du meta_server
+meta_server:
+  heartbeat_period: 12
+  main_host: 192.168.200.1
+  main_port: 3917
 
 # Commandes a executer par le meta_server
 command:

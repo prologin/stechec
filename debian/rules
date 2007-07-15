@@ -24,6 +24,7 @@ config.status: configure
 	  --host=$(DEB_HOST_GNU_TYPE)			\
 	  --build=$(DEB_BUILD_GNU_TYPE)			\
           --prefix=/usr					\
+	  --sysconfdir=/etc				\
           --mandir=\$${prefix}/share/man		\
           --infodir=\$${prefix}/share/info		\
 	  --with-modules=ant,prolo2005,prolo2006,prolo2007	\
@@ -64,6 +65,7 @@ binary: build install
 	dh_installdocs
 	dh_installexamples
 	dh_installman
+	dh_installinit --noscripts
 	dh_install --sourcedir=debian/tmp --exclude=.svn
 	dh_link
 	dh_strip

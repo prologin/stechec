@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: stechec
 Architecture: any
 Depends: ${shlibs:Depends}
-Suggests: stechec-prolo2005, stechec-prolo2006, stechec-ant
+Suggests: stechec-prolo2005, stechec-prolo2006, stechec-prolo2007, stechec-ant
 Description: Game's controller based on turn by turn
  Stechec is the program used by the Prologin association to run
  player's source code. Given a specific subject (usually a map-based
@@ -19,6 +19,12 @@ Description: Game's controller based on turn by turn
  .
  This package stands for the base system. Game rules handling specific
  are to be found in another packages.
+
+Package: stechec-meta
+Architecture: any
+Depends: stechec ${shlibs:Depends}
+Description: Stechec website's meta server
+  Administration tools. If you don't know what it is, you don't need it.
 
 Package: stechec-prolo2005
 Architecture: any

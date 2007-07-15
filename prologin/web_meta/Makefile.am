@@ -31,4 +31,9 @@ dist_bin_SCRIPTS =				\
 	meta_server				\
 	main_server
 
+dist_sysconf_DATA = stechec.yml
+
+install-data-local:
+	-chmod 600 $(DESTDIR)$(sysconfdir)/stechec.yml
+
 EXTRA_DIST = meta_cx.sh.in

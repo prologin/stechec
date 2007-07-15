@@ -3,7 +3,6 @@ usr/bin/run
 usr/bin/stechec
 usr/bin/stechec_server
 usr/bin/tkrun
-usr/etc
 usr/lib/stechec
 usr/share/stechec/files
 usr/share/stechec/config.dtd

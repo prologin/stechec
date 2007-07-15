@@ -34,7 +34,7 @@ sub computer_pool_init($)
 	$cconf{'sel'} = IO::Select->new;
 	$cconf{'fd_listen'} =
 		IO::Socket::INET->new(Listen     => 10,
-							  LocalPort  => $$cfg{'meta_port'} || 3917,
+							  LocalPort  => $$cfg{'listen_port'} || 3917,
 							  Reuse      => 1,
 							  Proto      => 'tcp',
 							  Type       => SOCK_STREAM);
@@ -640,7 +640,7 @@ sub rctl_init
                               Listen     => 2,
 							  Type       => SOCK_STREAM);
     if (!defined($rctl_fd)) {
-        print "[rctl] can't open socket: $!\n";
+        print "[rctl] can't open unix socket /tmp/.sun_meta: $!\n";
     } else {
         system("chmod 777 /tmp/.sun_meta");
         $cconf{'sel'}->add($rctl_fd);
@@ -738,13 +738,13 @@ $SIG{INT} = sub { $loop = 0; };
 $SIG{TERM} = sub { $loop = 0; };
 $SIG{PIPE} = 'IGNORE';
 
-computer_pool_init($cfg->{'internal'});
+computer_pool_init($cfg->{'main_server'});
 match_pool_init;
 rctl_init;
 
 my $sigset = POSIX::SigSet->new(SIGINT, SIGTERM);
 my $old_sigset = POSIX::SigSet->new;
-my $sleep_time = $cfg->{'internal'}{'wait_sleep'} || 5;
+my $sleep_time = $cfg->{'main_server'}{'wait_sleep'} || 5;
 
 # main loop
 while ($loop) {

@@ -8,7 +8,7 @@
   <!ELEMENT max_turn (#PCDATA)>
   <!ELEMENT map (#PCDATA)>
 
-<!ELEMENT client (rules?, champion?, connect?, team?, mode?, limit?, debug?, redirection?, screen?)>
+<!ELEMENT client (rules?, champion?, connect?, team?, mode?, limit?, debug?, redirection?, screen?, test_mode?)>
   <!ATTLIST client id CDATA "0">
   <!ELEMENT rules (#PCDATA)>
   <!ELEMENT champion (#PCDATA)>
@@ -38,9 +38,12 @@
   <!ELEMENT screen EMPTY>
     <!ATTLIST screen res_x CDATA "800">
     <!ATTLIST screen res_y CDATA "600">
- 
+  <!ELEMENT test_mode EMPTY>
+    <!ATTLIST test_mode force_uid CDATA "0">
+    <!ATTLIST test_mode active (true|false) "false">
 
-<!ELEMENT server (rules?, options, listen, log, nb_spectator, debug, server_debug)>
+
+<!ELEMENT server (rules?, options, listen, log, nb_spectator, test_mode?, debug, server_debug)>
   <!ELEMENT options EMPTY>
     <!ATTLIST options persistent (true|false) "true">
     <!ATTLIST options wait_timeout CDATA "30">
@@ -50,7 +53,7 @@
   <!ELEMENT log EMPTY>
     <!ATTLIST log enabled (true|false) "false">
     <!ATTLIST log file CDATA "match.log">
-  <!ELEMENT nb_spectator (#PCDATA)>
+  <!ELEMENT nb_spectator (#PCDATA)> 
   <!ELEMENT server_debug EMPTY>
     <!ATTLIST server_debug verbose CDATA "2">
     <!ATTLIST server_debug printloc (true|false) "false">
