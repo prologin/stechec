@@ -279,7 +279,7 @@ CREATE TABLE `user` (
   `nom` varchar(64) NOT NULL default '',
   `prenom` varchar(64) NOT NULL default '',
   `nickname` varchar(16) NOT NULL default '',
-  `login` varchar(8) NOT NULL default '',
+  `login` varchar(80) NOT NULL default '',
   `email` text NOT NULL,
   `photo` varchar(64) NOT NULL default 'photo/none.jpg',
   `adresse` varchar(128) NOT NULL default '',
