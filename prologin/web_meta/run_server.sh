@@ -110,11 +110,14 @@ if [ $is_competition = "0" ]; then
     # Run a game, format output
     #
     tmp_out=$tmp_dir/stdout
-    $stechec_install_path/bin/stechec_server $config_file > $tmp_out 2> $real_out_file
+    echo " * Start at: `date +%T`" >> $real_out_file
+    echo >> $real_out_file
+    $stechec_install_path/bin/stechec_server $config_file > $tmp_out 2>> $real_out_file
     res=$?
     sed -i -e 's/\[[01];3[0-9]m//g;s/\[0m//g' $real_out_file
-    echo "Serveur exited with return code: $res" >> $real_out_file
     echo >> $real_out_file
+    echo " * End at: `date +%T`" >> $real_out_file
+    echo " * Server exited with return code: $res" >> $real_out_file
     if [ -s $tmp_out ]; then
     	echo "Dumping standart output:" >> $real_out_file
     	cat $tmp_out >> $real_out_file

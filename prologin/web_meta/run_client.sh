@@ -112,11 +112,15 @@ EOF
 if [ $is_competition = "0" ]; then
     echo " * Memory limit: $memory_limit" >> $real_out_file
     echo " * Time limit: $time_limit (reserve $reserve_time)" >> $real_out_file
+    echo " * Start at: `date +%T`" >> $real_out_file
     echo >> $real_out_file
 
     $stechec_install_path/bin/stechec $team_id $config_file                     \
        2>&1 | sed -e 's/\[[01];3[0-9]m//g;s/\[0m//g' >> $real_out_file
     res=$?
+    echo >> $real_out_file
+    echo " * Client exited with return code: $res" >> $real_out_file
+    echo " * End at: `date +%T`" >> $real_out_file
 
     # eventually upload log file.
     upload_file $real_out_file $out_file
