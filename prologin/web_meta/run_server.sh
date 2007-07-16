@@ -66,7 +66,7 @@ done
 
 
 # load config and transfert methods.
-source "`dirname $0`/meta_cx.sh $config_meta"
+source "`dirname $0`/meta_cx.sh" "$config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
 log_file=$contest_path/$contest_dir_name/matchs/match_$game_id/visio

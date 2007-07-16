@@ -52,7 +52,7 @@ reserve_time=2000
 memory_limit=20000
 
 # load config and transfert methods.
-source "`dirname $0`/meta_cx.sh $config_meta"
+source "`dirname $0`/meta_cx.sh" "$config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
 champion_path="$contest_path/$contest_dir_name/private/candidat_$candidat_id/champion_$champion_id.so"

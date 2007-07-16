@@ -2,6 +2,7 @@
 
 use strict;
 
+use Cwd;
 use YAML ('LoadFile');
 use POSIX qw(:signal_h :sys_wait_h);
 use IO::Socket::INET;
@@ -38,7 +39,7 @@ sub meta_init($$)
     $m{'main_port'} = $$cfg{'meta_server'}{'main_port'} || 3917;
     $m{'heartbeat_period'} = $$cfg{'meta_server'}{'heartbeat_period'};
 
-    $m{'config_meta'} = $script_pathname;
+    $m{'config_meta'} = Cwd::abs_path($script_pathname);
     $m{'cmd_path'} = $$cfg{'command'}{'cmd_path'} || "";
     $m{'cmd_path'} =~ s!([^/])$!$1/!;
 	$m{'cmd'} = {  
@@ -117,7 +118,9 @@ sub recv_msg()
 		my ($cmd, @argv) = split / /, $line;
 		next unless length $cmd;
 		if (exists $m{'cmd'}{$cmd}) {
-            unshift(@argv, $m{'config_meta'});
+			# insert meta config file
+			my $id = shift @argv;
+			unshift(@argv, $id, $m{'config_meta'});
 			process_fork($cmd, $m{'cmd'}{$cmd}, @argv);
 		} else {
 			syslog LOG_NOTICE, "[cmd] unknown command '$cmd'";

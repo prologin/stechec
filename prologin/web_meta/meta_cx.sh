@@ -29,10 +29,8 @@
 #
 
 config_meta=$1
-if [ ! -s "$config_meta" ]; then
-    echo "Error: can't find meta config file: $config_meta"
-    exit 21
-fi
+
+echo $config_meta >> /tmp/lala
 
 TMPFILE=`mktemp /tmp/run.XXXXXX` || exit 1
 sed -nr -e '
