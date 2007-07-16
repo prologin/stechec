@@ -22,7 +22,7 @@ Description: Game's controller based on turn by turn
 
 Package: stechec-meta
 Architecture: any
-Depends: stechec ${shlibs:Depends}
+Depends: stechec libunix-syslog-perl ${shlibs:Depends}
 Description: Stechec website's meta server
   Administration tools. If you don't know what it is, you don't need it.
 

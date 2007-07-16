@@ -4,8 +4,9 @@ set -e
 
 # /etc/init.d/stechec-meta: start and stop the meta_server daemon
 
-DAEMON=/home/victor/work/tbt/local/bin/meta_server
-META_SERVER_CONFIG_FILE=/home/victor/work/tbt/local/bin/stechec.yml
+DAEMON=/usr/bin/meta_server
+META_SERVER_CONFIG_FILE=/etc/stechec.yml
+META_SERVER_CHID=stechec:nobody
 
 . /lib/lsb/init-functions
 
@@ -26,7 +27,7 @@ case "$1" in
         fi
         start-stop-daemon --start --quiet --background \
             --pidfile /var/run/meta_server.pid --make-pidfile \
-            --nicelevel 5 --chuid victor:users \
+            --nicelevel 5 --chuid $META_SERVER_CHID \
             --exec $DAEMON -- -c $META_SERVER_CONFIG_FILE
         log_end_msg $?
         ;;
