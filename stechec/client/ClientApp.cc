@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 // Required to trick main() function if a dynamic library will use SDL.
@@ -44,7 +44,7 @@ void ClientApp::showHelp(const char* prgname)
 void ClientApp::showVersion()
 {
   std::cout << "Stechec Generic client v" PACKAGE_VERSION << "\n";
-  std::cout << "Copyright (C) 2005, 2006 Prologin.\n";
+  std::cout << "Copyright (C) 2005, 2006, 2007 Prologin.\n";
 }
 
 // Very basic command line manager. We don't need anything more powerful.

@@ -139,6 +139,9 @@ void ClientCx::gameFinished()
 // Connect to the server, in network mode.
 bool ClientCx::connect(const std::string& host, int port)
 {
+  int max_retry = 4;
+  int nb_retry = 0;
+
   if (cx_ != NULL)
     {
       WARN("You are already connected! Disconnect first");
@@ -147,13 +150,25 @@ bool ClientCx::connect(const std::string& host, int port)
 
   LOG3("Connecting to %1:%2", host, port);
   TcpCx* cx = new TcpCx;
-  cx->connect(host.c_str(), port);
-  if (!cx->poll(5000))
+
+  while (true)
     {
-      ERR("Connection failed");
-      delete cx;
-      return false;
+      cx->connect(host.c_str(), port);
+      try {
+        if (cx->poll(500))
+          break;
+      } catch (const NetError&) {
+      }
+      if (++nb_retry > max_retry)
+        {
+          ERR("Connection failed.");
+          delete cx;
+          return false;
+        }
+      LOG2("Connection error - Retrying in %1 seconds.", nb_retry);
+      sleep(nb_retry);
     }
+  LOG2("Connected to %1", *cx);
 
   // Send init packet. (the first one!)
   CxInit pkt_init;
