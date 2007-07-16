@@ -176,6 +176,8 @@ void SRules::serverProcess()
       (!(getViewerState() & VS_HAVEVIEWER) || getViewerState() & VS_READY))
     {
       setViewerState(getViewerState() & ~VS_READY);
+      if (wait_nb_)
+        WARN("%1: wait_nb_ %2", __func__, wait_nb_);
       wait_ok_ = false;
 
       resolver_->ApplyResolverPriv(command_list_);
@@ -208,6 +210,20 @@ void SRules::serverProcess()
             return;
         }
     }
+
+  // Stuck on INITGAME, unlock.
+  if (getState() == GS_INITGAME && wait_ok_)
+    {
+      MsgInitGame fake_init(-1);
+      msgInitGame(&fake_init);
+    }
+
+  // Stuck on BEFORETURN, unlock.
+  if (getState() == GS_BEFORETURN && wait_ok_)
+    {
+      MsgBeforeTurn fake_bt(-1);
+      msgBeforeTurn(&fake_bt);
+    }
 }
 
 bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
@@ -227,7 +243,7 @@ bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
     }
 
   // Could be the last client we waited for. Unlock us.
-  waitAllClient(coach_id);
+  waitAllClient(-1);
 
   return true;
 }
@@ -255,19 +271,22 @@ void  SRules::outputStat(int coach_id, ClientStatistic& coach_stat)
 
 bool SRules::waitAllClient(int client_id)
 {
-  // Check that the same client hasn't signaled twice
-  for (int i = 0; i < wait_nb_; i++)
-    if (wait_tab_[i] == client_id)
-      {
-        WARN("Client `%1' has signaled twice, state: %2", client_id, getState());
-        return false;
-      }
-
-  wait_tab_[wait_nb_++] = client_id;
+  if (client_id >= 0)
+    {
+      // Check that the same client hasn't signaled twice
+      for (int i = 0; i < wait_nb_; i++)
+        if (wait_tab_[i] == client_id)
+          {
+            WARN("Client `%1' has signaled twice, state: %2", client_id, getState());
+            return false;
+          }
+      
+      wait_tab_[wait_nb_++] = client_id;
+    }
   if (wait_nb_ >= getCoachNumber() - coach_killed_nb_)
     {
-      wait_nb_ = 0;
       wait_ok_ = true;
+      wait_nb_ = 0;
       return true;
     }
   return false;
@@ -284,6 +303,9 @@ void SRules::msgInitGame(const MsgInitGame* m)
 {
   if (!waitAllClient(m->client_id))
     return;
+  if (wait_nb_)
+    WARN("%1: wait_nb_ %2", __func__, wait_nb_);
+  wait_ok_ = false;
 
   int r = server_entry_->initGame();
   if (!afterHook(r, "initGame"))
@@ -306,17 +328,18 @@ void SRules::msgBeforeTurn(const MsgBeforeTurn* m)
 {
   if (!waitAllClient(m->client_id))
     return;
+  if (wait_nb_)
+    WARN("%1: wait_nb_ %2", __func__, wait_nb_);
+  wait_ok_ = false;
 
   sendPacket(MsgBeforeTurn());
   setState(GS_PLAYTURN);
-  wait_ok_ = false;
 }
 
 void SRules::msgAfterTurn(const MsgAfterTurn* m)
 {
-  if (!waitAllClient(m->client_id))
-    return;
-
+  waitAllClient(m->client_id);
+  // Next turn will be handled in serverProcess.
 }
 
 void SRules::msgChampionError(const MsgChampionError* m)

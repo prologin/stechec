@@ -243,6 +243,6 @@ void CRules::endTurn()
     sendPacket(*it);
   cl.clear();
 
-  sendPacket(MsgAfterTurn());
   setState(GS_AFTERTURN);
+  sendPacket(MsgAfterTurn());
 }
