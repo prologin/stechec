@@ -28,11 +28,17 @@
 # This file must be in same directory than other scripts
 #
 
+config_meta=$1
+if [ ! -s "$config_meta" ]; then
+    echo "Error: can't find meta config file: $config_meta"
+    exit 21
+fi
+
 TMPFILE=`mktemp /tmp/run.XXXXXX` || exit 1
 sed -nr -e '
   s/^([a-zA-Z0-9_]+): *$/}\n\1\(\) {/p;
   s/^  ?([a-zA-Z0-9_]+): ([a-zA-Z0-9_/\.]+)/  \1="\2"/p' \
-  @prefix@/etc/stechec.yml | sed 1d > $TMPFILE
+  "$config_meta" | sed 1d > $TMPFILE
 echo "}" >> $TMPFILE
 source $TMPFILE
 [ $? -ne 0 ] && exit 1

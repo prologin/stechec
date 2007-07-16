@@ -24,9 +24,9 @@ my $read_set;
 ##########################################################################
 
 # called once on startup
-sub meta_init($)
+sub meta_init($$)
 {
-	my ($cfg) = @_;
+	my ($cfg, $script_pathname) = @_;
 
     # check if goinfre is readable
     if (! (-w $$cfg{'connection'}{'contest_path'})) {
@@ -38,6 +38,7 @@ sub meta_init($)
     $m{'main_port'} = $$cfg{'meta_server'}{'main_port'} || 3917;
     $m{'heartbeat_period'} = $$cfg{'meta_server'}{'heartbeat_period'};
 
+    $m{'config_meta'} = $script_pathname;
     $m{'cmd_path'} = $$cfg{'command'}{'cmd_path'} || "";
     $m{'cmd_path'} =~ s!([^/])$!$1/!;
 	$m{'cmd'} = {  
@@ -116,6 +117,7 @@ sub recv_msg()
 		my ($cmd, @argv) = split / /, $line;
 		next unless length $cmd;
 		if (exists $m{'cmd'}{$cmd}) {
+            unshift(@argv, $m{'config_meta'});
 			process_fork($cmd, $m{'cmd'}{$cmd}, @argv);
 		} else {
 			syslog LOG_NOTICE, "[cmd] unknown command '$cmd'";
@@ -285,7 +287,7 @@ $SIG{INT} = sub { $loop = 0; };
 $SIG{TERM} = sub { $loop = 0; };
 $SIG{PIPE} = 'IGNORE';
 
-meta_init($cfg);
+meta_init($cfg, $opts{c});
 meta_disconnect();
 
 while ($loop) {

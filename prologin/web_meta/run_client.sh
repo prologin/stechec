@@ -21,10 +21,11 @@
 # /!\ With no NFS don't work.
 #
 
-if [ "$#" -ne 10 ]; then
+if [ "$#" -ne 11 ]; then
     cat <<EOF
-Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <candidate_id>
-          <champion_id> <competiteur_id> <team_id> <game_id> <port> <ip_server>
+Usage: $0 <config_meta> <contest_lib_name> <contest_dir_name> <is_competition>
+          <candidat_id> <champion_id> <competiteur_id> <team_id> <game_id>
+          <port> <ip_server>
 EOF
     exit 11
 fi
@@ -32,14 +33,16 @@ fi
 cd /tmp
 
 # is_competition: 0 -> log output; 1 -> don't log (don't crash nfs)
-contest_lib_name=$1
-contest_dir_name=$2
-is_competition=$3
-candidat_id=$4
-champion_id=$5
-competiteur_id=$6
-team_id=$7
-game_id=$8
+config_meta=$1
+contest_lib_name=$2
+contest_dir_name=$3
+is_competition=$4
+candidat_id=$5
+champion_id=$6
+competiteur_id=$7
+team_id=$8
+game_id=$9
+shift
 port=$9
 shift
 ip_server=$9
@@ -49,7 +52,7 @@ reserve_time=2000
 memory_limit=20000
 
 # load config and transfert methods.
-source "`dirname $0`/meta_cx.sh"
+source "`dirname $0`/meta_cx.sh $config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
 champion_path="$contest_path/$contest_dir_name/private/candidat_$candidat_id/champion_$champion_id.so"

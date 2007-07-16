@@ -23,10 +23,10 @@
 #
 
 
-if [ "$#" -le 7 ]; then
+if [ "$#" -le 8 ]; then
     cat <<EOF
-Usage: $0 <contest_lib_name> <contest_dir_name> <is_competition> <game_id>
-          <nb_champion_instance> <port> <nb_player> -- extra_args
+Usage: $0 <config_meta> <contest_lib_name> <contest_dir_name> <is_competition>
+          <game_id> <nb_champion_instance> <port> <nb_player> -- extra_args
 EOF
     exit 1
 fi
@@ -34,16 +34,17 @@ fi
 cd /tmp
 
 # is_competition: 0 -> log output; 1 -> don't log (don't crash nfs)
-contest_lib_name=$1
-contest_dir_name=$2
-is_competition=$3
-game_id=$4
-nb_champion_instance=$5
-port=$6
-nb_player=$7
-# '--' -> $8
+config_meta=$1
+contest_lib_name=$2
+contest_dir_name=$3
+is_competition=$4
+game_id=$5
+nb_champion_instance=$6
+port=$7
+nb_player=$8
+# '--' -> $9
 
-shift 8
+shift 9
 
 # open temporary files for logs.
 tmp_dir=`mktemp -q -d /tmp/match_XXXXXX`
@@ -65,7 +66,7 @@ done
 
 
 # load config and transfert methods.
-source "`dirname $0`/meta_cx.sh"
+source "`dirname $0`/meta_cx.sh $config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
 log_file=$contest_path/$contest_dir_name/matchs/match_$game_id/visio

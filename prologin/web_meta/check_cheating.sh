@@ -14,22 +14,23 @@
 #  along with the Stechec project; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-#  Copyright (C) 2005, 2006 Prologin
+#  Copyright (C) 2005, 2006, 2007 Prologin
 #
 
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 4 ]; then
     cat <<EOF
-Usage: $0 <contest_name> <candidat_id> <champion_id> 
+Usage: $0 <config_meta> <contest_name> <candidat_id> <champion_id> 
 EOF
-    exit 1
+    exit 11
 fi
 
-contest_name=$1
-candidat_id=$2
-champion_id=$3
+config_meta=$1
+contest_name=$2
+candidat_id=$3
+champion_id=$4
 
 # load config and transfert methods.
-source "`dirname $0`/meta_cx.sh"
+source "`dirname $0`/meta_cx.sh $config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
 champion_path=$contest_path/$contest_name/private/candidat_$candidat_id/
