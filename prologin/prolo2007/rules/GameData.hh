@@ -114,6 +114,7 @@ public:
   int		tab[MAX_TEAM * MAX_PLAYER];
 private:
   unsigned int		next_;
+  int			last_score_;
   std::vector<int*>	messages_;
 };
 

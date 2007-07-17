@@ -50,7 +50,7 @@ void Virus::PlayTurn()
   {
      _hote->Infect();
      _hote->setInfection (_maladie);
-     LOG1("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row,
+     LOG5("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row,
 	  _hote->col);
      _hote = 0;
      _etat_infection = 0;
@@ -81,7 +81,6 @@ void Virus::PlayTurn()
 	      else
 		 cell[i] = 2;
   }
-  LOG1("::::: %1 ::::::", nb);
   if (nb != 0) // Pas de cellules saine dans les parages
   {
      int n;

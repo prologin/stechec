@@ -15,6 +15,7 @@
 
 GameData::GameData()
 {
+  last_score_ = 0;
   player_turn = 0;
   max_date = 0;
   cellules_killed_ = 0;
@@ -68,7 +69,6 @@ unsigned int	GameData::rand()
 
   next_ = next_ * 1103515245 + 12345;
   res = (next_ >> 16) & 32767;
-  //  LOG3("TOCTOC Random %1", res);
   return res;
 }
 
@@ -76,10 +76,8 @@ bool GameData::TestVirus (int row, int col)
 {
   for (std::vector<Virus*>::iterator i = _virus.begin ();
        i != _virus.end (); ++i)
-    {
-      if ((*i)->row == row && (*i)->col == col)
-	return false;
-    }
+    if ((*i)->row == row && (*i)->col == col)
+      return false;
   return true;
 }
 
@@ -87,10 +85,8 @@ bool GameData::TestCell(int row, int col)
 {
   for (std::vector<Cellule*>::iterator i = _cells.begin ();
        i != _cells.end (); ++i)
-    {
-      if ((*i)->row == row && (*i)->col == col)
-	return false;
-    }
+    if ((*i)->row == row && (*i)->col == col)
+      return false;
   return true;
 }
 
@@ -228,7 +224,6 @@ void	GameData::PlayTurn ()
 	count++;
     }
   _cells_count.push_back(count);
-  LOG1("===== Turn %1, count = %2 =====", _cells_count.size(), count);
 
   /*
    * Evolution des nutriments : spread et ajout
@@ -271,7 +266,7 @@ void	GameData::PlayTurn ()
 	    if (bacterias[y][x]->getKilledBy () >= 0)
 	      {
 		bacterias_killed_by_[bacterias[y][x]->getKilledBy ()] += 1;
-		LOG3("Bacterias died because of %1", bacterias[y][x]->getKilledBy ());
+		LOG5("Bacterias died because of %1", bacterias[y][x]->getKilledBy ());
 	      }
 	    delete bacterias[y][x];
 	    bacterias[y][x] = 0;
@@ -287,7 +282,7 @@ void	GameData::PlayTurn ()
   std::vector<Cellule*>::iterator i = _cells.begin();
   while (j < n)
     {
-      LOG4("Cellule r: %1, c :%2",
+      LOG5("Cellule r: %1, c :%2",
 	   _cells[j]->row, _cells[j]->col);
       if (_cells[j]->Sante() != CELL_STATE_DEAD &&
 	  _cells[j]->Sante() != CELL_STATE_BEING_PHAGOCYTED)
@@ -310,7 +305,7 @@ void	GameData::PlayTurn ()
 	if (tmp->getKilledBy () >= 0)
 	  {
 	    virus_killed_by_[tmp->getKilledBy ()]++;
-	    LOG3("Found a virus killed by %1", tmp->getKilledBy ());
+	    LOG5("Found a virus killed by %1", tmp->getKilledBy ());
 	  }
 	//	delete tmp;
 	virus_killed_++;
@@ -321,7 +316,7 @@ void	GameData::PlayTurn ()
   for (it = _virus.begin();
        it != _virus.end(); ++it)
     {
-      LOG4("Virus %1, [%2, %3]", (*it)->Maladie()
+      LOG6("Virus %1, [%2, %3]", (*it)->Maladie()
 	   ,(*it)->row, (*it)->col);
       (*it)->PlayTurn();
     }
@@ -329,85 +324,87 @@ void	GameData::PlayTurn ()
     if (players[i].getState () == STATE_NORMAL ||
 	players[i].getState () == STATE_PHAGOCYTOSING)
       players[i].PlayTurn();
-
+  LOG1("Current Score: %1 -- Currently alive cells: %2", this->calculScore(),
+  count);
   deleteCells ();
 }
 
 void	GameData::end ()
 {
-  LOG3("************************************");
-  LOG3("         Match statistics");
-  LOG3("====================================");
+  LOG1("************************************");
+  LOG1("         Match statistics");
+  LOG1("====================================");
   int n;
   int nb;
   n = 0;
-  LOG3("####################################");
-  LOG3("               Cells                ");
-  LOG3("####################################");
-  LOG3("Total cells alive                 %1", _cells.size ());
+  LOG1("####################################");
+  LOG1("               Cells                ");
+  LOG1("####################################");
+  LOG1("Total cells alive                 %1", _cells.size ());
   for (int i = 0; i < _cells.size (); ++i)
     if (_cells[i]->Infectee ())
       ++n;
-  LOG3("Infected cells                    %1", n);
+  LOG1("Infected cells                    %1", n);
   n = 0;
   for (int i = 0; i < getNbTeam (); ++i)
     {
       nb = 0;
-      LOG3("Team %1", i);
+      LOG1("Team %1", i);
       for (int j = 0; j < getNbPlayer (); ++j)
 	if (players[j].get_player () == i)
 	  {
 	    nb += cellules_killed_by_[j];
-	    LOG3("Leucocyte id %1                  :%2", j, cellules_killed_by_[j]);
+	    LOG4("Leucocyte id %1                  :%2", j, cellules_killed_by_[j]);
 	  }
-      LOG3("------------------------------------");
+      LOG1("------------------------------------");
       n += nb;
     }
-  LOG3("Cells killed by the game          %1", cellules_killed_ - n);
-  LOG3("                            Total %1", cellules_killed_);
+  LOG1("Cells killed by the game          %1", cellules_killed_ - n);
+  LOG1("                            Total %1", cellules_killed_);
 
   n = 0;
-  LOG3("####################################");
-  LOG3("             Bacterias              ");
-  LOG3("####################################");
+  LOG1("####################################");
+  LOG1("             Bacterias              ");
+  LOG1("####################################");
   for (int i = 0; i < getNbTeam (); ++i)
     {
       nb = 0;
-      LOG3("Team %1", i);
+      LOG1("Team %1", i);
       for (int j = 0; j < getNbPlayer (); ++j)
 	if (players[j].get_player () == i)
 	  {
 	    nb += bacterias_killed_by_[j];
-	    LOG3("Leucocyte id %1                  :%2", j, bacterias_killed_by_[j]);
+	    LOG4("Leucocyte id %1                  :%2", j, bacterias_killed_by_[j]);
 	  }
-      LOG3("------------------------------------");
+      LOG1("------------------------------------");
       n += nb;
     }
-  LOG3("Bacterias killed by the game      %1", bacterias_killed_ - n);
-  LOG3("                            Total %1", bacterias_killed_);
+  LOG1("Bacterias killed by the game      %1", bacterias_killed_ - n);
+  LOG1("                            Total %1", bacterias_killed_);
 
   n = 0;
-  LOG3("####################################");
-  LOG3("               Virii                ");
-  LOG3("####################################");
+  LOG1("####################################");
+  LOG1("               Viruses              ");
+  LOG1("####################################");
   for (int i = 0; i < getNbTeam (); ++i)
     {
       nb = 0;
-      LOG3("Team %1", i);
+      LOG1("Team %1", i);
       for (int j = 0; j < getNbPlayer (); ++j)
 	if (players[j].get_player () == i)
 	  {
 	    nb += virus_killed_by_[j];
-	    LOG3("Leucocyte id %1                  :%2", j, virus_killed_by_[j]);
+	    LOG1("Leucocyte id %1                  :%2", j, virus_killed_by_[j]);
 	  }
-      LOG3("------------------------------------");
+      LOG1("------------------------------------");
       n += nb;
     }
-  LOG3("Virii killed by the game          %1", virus_killed_ - n);
-  LOG3("                            Total %1", virus_killed_);
+  LOG1("Viruses killed by the game          %1", virus_killed_ - n);
+  LOG1("                              Total %1", virus_killed_);
 
 
-  LOG3("************************************");
+  LOG1("************************************");
+  LOG1("----> Score: %1", last_score_);
 }
 
 void	GameData::init ()
@@ -428,7 +425,7 @@ void	GameData::init ()
 	  this->terrain_type[r][c] == VESSEL)
 	{
 	  this->bacterias[r][c] = new Bacterias(r, c, 1, this);
-	  LOG4("New bacteria seed [%1, %2]", r, c);
+	  LOG6("New bacteria seed [%1, %2]", r, c);
 	}
       else
 	--i;
@@ -482,20 +479,18 @@ int	GameData::calculScore ()
 
   alive_cells_t = 0;
   for (i = 1, iter = _cells_count.begin(); iter != _cells_count.end(); ++iter, i++)
-    {
-      alive_cells_t += *iter;
-    }
+    alive_cells_t += *iter;
   alive_cells_c = 0;
   for (iter2 = _cells.begin(); iter2 != _cells.end(); ++iter2)
     alive_cells_c += ((*iter2)->Saine() ? 1 : 0);
   if (alive_cells_c == 0)
     alive_cells_c++;
-  LOG1("Alive cells at the end: %1", alive_cells_c);
   score = (int)(1000.0 * ((((double)alive_cells_t / (this->getCurrentTurn())) + alive_cells_c) / 2.0) / (this->chair));
-  LOG1("Global score: %1", score);
   // On assigne le meme score a tous les joueurs
   for (i = 0; i < this->getNbPlayer(); ++i)
     players[i].score_ = score;
+  last_score_ = score;
+  return (score);
 }
 
 

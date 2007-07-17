@@ -279,7 +279,7 @@ int         ServerEntry::initGame()
 
 int         ServerEntry::beforeNewTurn()
 {
-  LOG1("Random is now : %1", g_->rand());
+  LOG4("Random is now : %1", g_->rand());
   return 0;
 }
 
@@ -308,7 +308,7 @@ bool        ServerEntry::isMatchFinished()
       calculScores ();
     }
   else
-    LOG1("Max date : %1 and turn : %2", g_->max_date, g_->player_turn);
+    LOG4("Max date : %1 and turn : %2", g_->max_date, g_->player_turn);
   return g_->getCurrentTurn () >= g_->max_date;
 }
 

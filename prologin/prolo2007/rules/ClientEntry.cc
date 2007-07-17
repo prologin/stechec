@@ -55,7 +55,7 @@ int        ClientEntry::initGame()
 
 int        ClientEntry::beforeNewTurn()
 {
-  LOG1("Random is now : %1", g_->rand ());
+  LOG4("Random is now : %1", g_->rand ());
   for (int i = 0; i < g_->getNbPlayer (); ++i)
     {
       if (g_->players[i].getState () == STATE_NORMAL)

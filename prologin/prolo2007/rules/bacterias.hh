@@ -20,7 +20,7 @@ public:
 private:
   void	eat ();
   void	spread (); // Only in the vessels
-  GameData* g_;
+  GameData* const g_;
   int nb_;
 };
 
