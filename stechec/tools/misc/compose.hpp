@@ -30,369 +30,292 @@
 // more details.
 //
 
-#ifndef STRING_COMPOSE_H
-#define STRING_COMPOSE_H
+//
+// The original implementation was too slow for our need, and
+// as I supected some segv in this code, I rewrote most of the code.
+// Basically, it does not have the same feature as before, but it is a lot
+// faster...
+// Victor, 2007.
+//
 
-#include <sstream>
-#include <string>
-#include <list>
-#include <map>			// for multimap
+#ifndef STRING_COMPOSE_H
+# define STRING_COMPOSE_H
+
+# include <iostream>
+# include <sstream>
+# include <string>
+# include <deque>
 
 namespace StringPrivate
 {
-  // the actual composition class - using string::compose is cleaner, so we
-  // hide it here
+  // Hide the mess in a obscur namespace... Yes, really.
+
   class Composition
   {
   public:
     // initialize and prepare format string on the form "text %1 text %2 etc."
     explicit Composition(std::string fmt);
+    ~Composition();
 
     // supply an replacement argument starting from %1
     template <typename T>
     Composition &arg(const T &obj);
 
-    // compose and return string
-    std::string str() const;
-
   private:
     std::ostringstream os;
-    int arg_no;
-
-    // we store the output as a list - when the output string is requested, the
-    // list is concatenated to a string; this way we can keep iterators into
-    // the list instead of into a string where they're possibly invalidated on
-    // inserting a specification string
-    typedef std::list<std::string> output_list;
-    output_list output;
-
-    // the initial parse of the format string fills in the specification map
-    // with positions for each of the various %?s
-    typedef std::multimap<int, output_list::iterator> specification_map;
-    specification_map specs;
+    typedef std::deque<std::pair<int, std::string> > SpecList;
+    SpecList spec;
   };
 
-  // helper for converting spec string numbers
-  inline int char_to_int(char c)
+  inline Composition::Composition(std::string fmt)
   {
-    switch (c) {
-    case '0': return 0;
-    case '1': return 1;
-    case '2': return 2;
-    case '3': return 3;
-    case '4': return 4;
-    case '5': return 5;
-    case '6': return 6;
-    case '7': return 7;
-    case '8': return 8;
-    case '9': return 9;
-    default: return -1000;
-    }
+    std::string::size_type fmt_size = fmt.length();
+    std::string::size_type last = 0;
+    std::string::size_type i;
+    bool next_m = false;
+    std::string current;
+    int spec_no;
+    int spec_size;
+  
+    for (i = 0; i < fmt_size; i++)
+      {
+	if (fmt[i] == '%')
+	  {
+	    if (next_m)
+	      {
+		current += fmt.substr(last, i - last - 1);
+		last = i;
+		next_m = false;
+	      }
+	    else
+	      next_m = true;
+	    continue;
+	  }
+
+	if (next_m && fmt[i] >= '0' && fmt[i] <= '9')
+	  {
+	    spec_no = fmt[i] - '0';
+	    spec_size = 1;
+	    if (i + 1 < fmt_size && fmt[i + 1] >= '0' && fmt[i + 1] <= '9') {
+	      spec_no = spec_no * 10 + (fmt[i + 1] - '0');
+	      spec_size = 2;
+	      i += 1;
+	    }
+
+	    spec.push_back(std::make_pair(spec_no, current + fmt.substr(last, i - last - spec_size)));
+	    last = i + 1;
+	    next_m = false;
+	    current = "";
+	  }
+      }
+    spec.push_back(std::make_pair(spec_no, current + fmt.substr(last, i - last)));
   }
 
-  inline bool is_number(int n)
+  // Print remainings data in format string
+  inline Composition::~Composition()
   {
-    switch (n) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-      return true;
-    
-    default:
-      return false;
-    }
+    for (SpecList::iterator it = spec.begin(); it != spec.end(); ++it)
+      {
+	std::cerr << it->second;
+      }
+    std::cerr << std::endl;
   }
-
-
+  
   // implementation of class Composition
   template <typename T>
   inline Composition &Composition::arg(const T &obj)
   {
-    os << obj;
-
-    std::string rep = os.str();
-  
-    if (!rep.empty())
-    {		// manipulators don't produce output
-      for (specification_map::const_iterator i = specs.lower_bound(arg_no),
-	     end = specs.upper_bound(arg_no); i != end; ++i)
-	     {
-	     	output_list::iterator pos = i->second;
-				++pos;
-				output.insert(pos, rep);
-				}
+    std::cerr << spec.front().second;
+    spec.pop_front();
+    std::cerr << obj;
+    os.str("");
     
-    	os.str(std::string());
-      //os.clear();
-      ++arg_no;
-    }
-  
     return *this;
   }
-
-  inline Composition::Composition(std::string fmt)
-    : arg_no(1)
-  {
-    std::string::size_type b = 0, i = 0;
-  
-    // fill in output with the strings between the %1 %2 %3 etc. and
-    // fill in specs with the positions
-    while (i < fmt.length()) {
-      if (fmt[i] == '%' && i + 1 < fmt.length()) {
-	if (fmt[i + 1] == '%') {	// catch %%
-	  fmt.replace(i, 2, "%");
-	  ++i;
-	}
-	else if (is_number(fmt[i + 1])) { // aha! a spec!
-	  // save string
-	  output.push_back(fmt.substr(b, i - b));
-	
-	  int n = 1;		// number of digits
-	  int spec_no = 0;
-
-	  do {
-	    spec_no += char_to_int(fmt[i + n]);
-	    spec_no *= 10;
-	    ++n;
-	  } while (i + n < fmt.length() && is_number(fmt[i + n]));
-
-	  spec_no /= 10;
-	  output_list::iterator pos = output.end();
-	  --pos;		// safe since we have just inserted a string>
-	
-	  specs.insert(specification_map::value_type(spec_no, pos));
-	
-	  // jump over spec string
-	  i += n;
-	  b = i;
-	}
-	else
-	  ++i;
-      }
-      else
-	++i;
-    }
-  
-    if (i - b > 0)		// add the rest of the string
-      output.push_back(fmt.substr(b, i - b));
-  }
-
-  inline std::string Composition::str() const
-  {
-    // assemble string
-    std::string str;
-  
-    for (output_list::const_iterator i = output.begin(), end = output.end();
-	 i != end; ++i)
-      str += *i;
-  
-    return str;
-  }
+    
 }
 
-// now for the real thing(s)
-namespace String 
+
+
+
+
+inline void tlog(const std::string &fmt)
 {
-	inline std::string compose(const std::string &fmt)
-	{
-			StringPrivate::Composition c(fmt);
-			return c.str();
-	}
-  // a series of functions which accept a format string on the form "text %1
-  // more %2 less %3" and a number of templated parameters and spits out the
-  // composited string
-  template <typename T1>
-  inline std::string compose(const std::string &fmt, const T1 &o1)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1);
-    return c.str();
-  }
+  std::cerr << fmt << std::endl;
+}
 
-  template <typename T1, typename T2>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2);
-    return c.str();
-  }
+// a series of functions which accept a format string on the form "text %1
+// more %2 less %3" and a number of templated parameters and spits out the
+// composited string
+template <typename T1>
+inline void tlog(const std::string &fmt, const T1 &o1)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1);
+}
 
-  template <typename T1, typename T2, typename T3>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3);
-    return c.str();
-  }
+template <typename T1, typename T2>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8, typename T9>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8, const T9 &o9)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8, typename T9, typename T10>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8, const T9 &o9,
-			     const T10 &o10)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
-      .arg(o10);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8, typename T9>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8, const T9 &o9)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9);
+}
+
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8, typename T9, typename T10>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8, const T9 &o9,
+			const T10 &o10)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
+    .arg(o10);
+}
   
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8, typename T9, typename T10,
-	    typename T11>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8, const T9 &o9,
-			     const T10 &o10, const T11 &o11)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
-      .arg(o10).arg(o11);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8, typename T9, typename T10,
+	  typename T11>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8, const T9 &o9,
+			const T10 &o10, const T11 &o11)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
+    .arg(o10).arg(o11);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8, typename T9, typename T10,
-	    typename T11, typename T12>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8, const T9 &o9,
-			     const T10 &o10, const T11 &o11, const T12 &o12)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
-      .arg(o10).arg(o11).arg(o12);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8, typename T9, typename T10,
+	  typename T11, typename T12>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8, const T9 &o9,
+			const T10 &o10, const T11 &o11, const T12 &o12)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
+    .arg(o10).arg(o11).arg(o12);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8, typename T9, typename T10,
-	    typename T11, typename T12, typename T13>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8, const T9 &o9,
-			     const T10 &o10, const T11 &o11, const T12 &o12,
-			     const T13 &o13)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
-      .arg(o10).arg(o11).arg(o12).arg(o13);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8, typename T9, typename T10,
+	  typename T11, typename T12, typename T13>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8, const T9 &o9,
+			const T10 &o10, const T11 &o11, const T12 &o12,
+			const T13 &o13)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
+    .arg(o10).arg(o11).arg(o12).arg(o13);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8, typename T9, typename T10,
-	    typename T11, typename T12, typename T13, typename T14>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8, const T9 &o9,
-			     const T10 &o10, const T11 &o11, const T12 &o12,
-			     const T13 &o13, const T14 &o14)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
-      .arg(o10).arg(o11).arg(o12).arg(o13).arg(o14);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8, typename T9, typename T10,
+	  typename T11, typename T12, typename T13, typename T14>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8, const T9 &o9,
+			const T10 &o10, const T11 &o11, const T12 &o12,
+			const T13 &o13, const T14 &o14)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
+    .arg(o10).arg(o11).arg(o12).arg(o13).arg(o14);
+}
 
-  template <typename T1, typename T2, typename T3, typename T4, typename T5,
-	    typename T6, typename T7, typename T8, typename T9, typename T10,
-	    typename T11, typename T12, typename T13, typename T14,
-	    typename T15>
-  inline std::string compose(const std::string &fmt,
-			     const T1 &o1, const T2 &o2, const T3 &o3,
-			     const T4 &o4, const T5 &o5, const T6 &o6,
-			     const T7 &o7, const T8 &o8, const T9 &o9,
-			     const T10 &o10, const T11 &o11, const T12 &o12,
-			     const T13 &o13, const T14 &o14, const T15 &o15)
-  {
-    StringPrivate::Composition c(fmt);
-    c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
-      .arg(o10).arg(o11).arg(o12).arg(o13).arg(o14).arg(o15);
-    return c.str();
-  }
+template <typename T1, typename T2, typename T3, typename T4, typename T5,
+	  typename T6, typename T7, typename T8, typename T9, typename T10,
+	  typename T11, typename T12, typename T13, typename T14,
+	  typename T15>
+inline void tlog(const std::string &fmt,
+			const T1 &o1, const T2 &o2, const T3 &o3,
+			const T4 &o4, const T5 &o5, const T6 &o6,
+			const T7 &o7, const T8 &o8, const T9 &o9,
+			const T10 &o10, const T11 &o11, const T12 &o12,
+			const T13 &o13, const T14 &o14, const T15 &o15)
+{
+  StringPrivate::Composition c(fmt);
+  c.arg(o1).arg(o2).arg(o3).arg(o4).arg(o5).arg(o6).arg(o7).arg(o8).arg(o9)
+    .arg(o10).arg(o11).arg(o12).arg(o13).arg(o14).arg(o15);
 }
 
 

@@ -162,15 +162,53 @@ do {                                                                            
   }                                                                             \
 } while (0)
 
-# define ERR(Msg...) LOG(0, String::compose(Msg))
-# define WARN(Msg...) LOG(1, String::compose(Msg))
 
-# define LOG1(Msg...) LOG(2, String::compose(Msg))
-# define LOG2(Msg...) LOG(3, String::compose(Msg))
-# define LOG3(Msg...) LOG(4, String::compose(Msg))
-# define LOG4(Msg...) LOG(5, String::compose(Msg))
-# define LOG5(Msg...) LOG(6, String::compose(Msg))
-# define LOG6(Msg...) LOG(7, String::compose(Msg))
+# define TLOG(Level, Msg...)                                                    \
+do {                                                                            \
+  Log* l__ = Log::getInst();                                                    \
+  if (l__->verbose_mask_ & (1 << Level)) {                                      \
+    pthread_mutex_lock(&Log::lock_);                                            \
+    std::ostringstream os__;                                                    \
+    if (Level == 0)                                                             \
+      if (l__->use_color_)                                                      \
+        os__ << C_BRED "Error: " C_NONE;                                        \
+      else                                                                      \
+        os__ << "Error: ";                                                      \
+    else if (Level == 1)                                                        \
+      if (l__->use_color_)                                                      \
+        os__ << C_YELLOW "Warning: " C_NONE;                                    \
+      else                                                                      \
+        os__ << "Warning: ";                                                    \
+    if (l__->print_loc_)                                                        \
+      if (l__->use_color_)                                                      \
+        l__->getStream() << "[" MODULE_COLOR MODULE_NAME << l__->modsuffix_     \
+                       << C_NONE "] " << __FILE__ << ":" << __LINE__ << ": "    \
+                       ;							\
+      else                                                                      \
+        l__->getStream() << "[" MODULE_NAME << l__->modsuffix_                  \
+                       << "] " << __FILE__ << ":" << __LINE__ << ": "           \
+                       ;							\
+    else                                                                        \
+      if (l__->use_color_)                                                      \
+        l__->getStream() << "[" MODULE_COLOR MODULE_NAME << l__->modsuffix_     \
+                       << C_NONE "] ";						\
+      else                                                                      \
+        l__->getStream() << "[" MODULE_NAME << l__->modsuffix_ << "] ";		\
+    tlog(Msg);									\
+    pthread_mutex_unlock(&Log::lock_);                                          \
+  }                                                                             \
+} while (0)
+
+
+# define ERR(Msg...)  TLOG(0, Msg)
+# define WARN(Msg...) TLOG(1, Msg) 
+
+# define LOG1(Msg...) TLOG(2, Msg)
+# define LOG2(Msg...) TLOG(3, Msg)
+# define LOG3(Msg...) TLOG(4, Msg)
+# define LOG4(Msg...) TLOG(5, Msg)
+# define LOG5(Msg...) TLOG(6, Msg)
+# define LOG6(Msg...) TLOG(7, Msg)
 
 //! @}
 

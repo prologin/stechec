@@ -481,8 +481,9 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
         {
           LOG4(" -> You can use a 'reroll' or 'accept' this result.");
           game_dlg_->push(eDlgActReroll);
-          game_dlg_->setText(String::compose("Do you want to reroll `%1' for player `%2'?",
-                Dice::stringify(action_type), player_id + 1));
+	  // FIXME: use std::ostream directly
+	  // game_dlg_->setText(String::compose("Do you want to reroll `%1' for player `%2'?",
+	  //                    Dice::stringify(action_type), player_id + 1));
         }
     }
 }
