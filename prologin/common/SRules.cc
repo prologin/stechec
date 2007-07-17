@@ -243,6 +243,9 @@ bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
     }
 
   // Could be the last client we waited for. Unlock us.
+  for (int i = 0; i < wait_nb_; i++)
+    if (wait_tab_[i] == coach_id)
+      wait_tab_[i] = wait_tab_[--wait_nb_];
   waitAllClient(-1);
 
   return true;
@@ -287,9 +290,8 @@ bool SRules::waitAllClient(int client_id)
     {
       wait_ok_ = true;
       wait_nb_ = 0;
-      return true;
     }
-  return false;
+  return wait_ok_;
 }
 
 // All StechecPkt are for StechecServerServer.

@@ -30,8 +30,6 @@
 
 config_meta=$1
 
-echo $config_meta >> /tmp/lala
-
 TMPFILE=`mktemp /tmp/run.XXXXXX` || exit 1
 sed -nr -e '
   s/^([a-zA-Z0-9_]+): *$/}\n\1\(\) {/p;

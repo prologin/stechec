@@ -483,7 +483,6 @@ int	GameData::calculScore ()
   alive_cells_t = 0;
   for (i = 1, iter = _cells_count.begin(); iter != _cells_count.end(); ++iter, i++)
     {
-      LOG1("Turn %1, alive_cells_t = %2", i, *iter);
       alive_cells_t += *iter;
     }
   alive_cells_c = 0;

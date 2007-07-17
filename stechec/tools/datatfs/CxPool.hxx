@@ -175,10 +175,7 @@ const typename CxPool<T>::EltList& CxPool<T>::poll()
 
   // No need to wait if some elements are ready
   if (!ready_list_.empty())
-    {
-      LOG1("ready list not empty: %1", ready_list_.size()); 
-      return ready_list_;
-    }
+    return ready_list_;
 
   if (lock_)
     pthread_mutex_unlock(lock_);
