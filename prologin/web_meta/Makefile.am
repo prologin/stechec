@@ -18,7 +18,7 @@
 
 bashdir = $(pkglibdir)/bash
 
-nodist_bash_DATA =				\
+dist_bash_DATA =				\
 	meta_cx.sh
 
 dist_bash_SCRIPTS =				\
@@ -36,4 +36,4 @@ dist_sysconf_DATA = stechec.yml
 install-data-local:
 	-chmod 600 $(DESTDIR)$(sysconfdir)/stechec.yml
 
-EXTRA_DIST = meta_cx.sh.in
+EXTRA_DIST = stechec.yml.in
