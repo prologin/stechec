@@ -4,9 +4,9 @@
 <config>
 
   <game>
-    <nb_team>1</nb_team>
+    <nb_team player_per_team="1">1</nb_team>
     <max_turn>30</max_turn>
-    <map>simple.map</map>
+    <map>arena1.map</map>
   </game>
 
   <client>
@@ -16,16 +16,16 @@
   </client>
 
   <client id="1">
-    <champion>/home/victor/work/tbt/local/prolo2006/c/champion</champion>
+    <champion>/home/victor/stechec/local/prolo2007/c/champion</champion>
     <mode replay="false" spectator="false" />
     <limit memory="10000" time="500" time_reserve="2500" />
-    <debug valgrind="false" gdb="false" verbose="8" printloc="true" />
+    <debug valgrind="false" gdb="false" verbose="3" printloc="true" />
   </client>
 
   <client id="2">
     <champion>globulus_sdlvisu</champion>
     <mode replay="false" file="match.log" spectator="true" />
-    <limit memory="0" time="500" time_reserve="2500" />
+    <limit memory="0" time="0" time_reserve="0" />
     <debug valgrind="false" gdb="false" verbose="1" printloc="true" />
   </client>
 
@@ -35,8 +35,8 @@
     <listen port="25150" />
     <log enabled="false" file="match.log" />
     <nb_spectator>1</nb_spectator>
-    <debug verbose="8" printloc="true" />
-    <server_debug verbose="3" printloc="false" />
+    <debug verbose="2" printloc="true" />
+    <server_debug verbose="2" printloc="false" />
   </server>
 
 </config>

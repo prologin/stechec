@@ -23,7 +23,8 @@ dist_prolo2007data_DATA =			\
 	uniform.map				\
 	alban.map				\
 	alban2.map				\
-	deather.map
+	deather.map				\
+	arena1.map
 
 dist_prolo2007font_DATA =		\
 	font/Vera.ttf
