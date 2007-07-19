@@ -20,73 +20,73 @@
 const SDL_Color white_color = { 255, 255, 255, SDL_ALPHA_OPAQUE };
 
 static const char* players[] = {		// OK
-  "/prolo2007/graphics/player_t1.png",
-  "/prolo2007/graphics/player_t2.png",
-  "/prolo2007/graphics/player_t3.png",
-  "/prolo2007/graphics/player_t4.png"
+  "/graphics/player_t1.png",
+  "/graphics/player_t2.png",
+  "/graphics/player_t3.png",
+  "/graphics/player_t4.png"
 };
 static const int nb_player = sizeof(players) / sizeof(char*);
 
 static const char* virus[] = {		// OK
-  "/prolo2007/graphics/virus_0.png",
-  "/prolo2007/graphics/virus_1.png",
-  "/prolo2007/graphics/virus_2.png",
-  "/prolo2007/graphics/virus_3.png",
-  "/prolo2007/graphics/virus_4.png"
+  "/graphics/virus_0.png",
+  "/graphics/virus_1.png",
+  "/graphics/virus_2.png",
+  "/graphics/virus_3.png",
+  "/graphics/virus_4.png"
 };
 static const int nb_virus = sizeof(virus) / sizeof(char*);
 
 static const char* bacteria[] = {	// OK
-  "/prolo2007/graphics/bacteria_1.png",
-  "/prolo2007/graphics/bacteria_2.png",
-  "/prolo2007/graphics/bacteria_3.png"
+  "/graphics/bacteria_1.png",
+  "/graphics/bacteria_2.png",
+  "/graphics/bacteria_3.png"
 };
 static const int nb_bacteria = sizeof(bacteria) / sizeof(char*);
 
 static const char* cell[] = {		// OK
-  "/prolo2007/graphics/cell.png",
-  "/prolo2007/graphics/cell_infected.png",
-  "/prolo2007/graphics/cell2.png",
-  "/prolo2007/graphics/cell2_infected.png"
+  "/graphics/cell.png",
+  "/graphics/cell_infected.png",
+  "/graphics/cell2.png",
+  "/graphics/cell2_infected.png"
 };
 static const int nb_cell = sizeof(cell) / sizeof(char*);
 
 static const char* flesh[] = {		// OK
-  "/prolo2007/graphics/full_blood2.png",
-  "/prolo2007/graphics/1left_top_corner.png",
-  "/prolo2007/graphics/2top_center.png",
-  "/prolo2007/graphics/3right_top_corner.png",
-  "/prolo2007/graphics/4left_center.png",
-  "/prolo2007/graphics/5center.png",
-  "/prolo2007/graphics/6right_center.png",
-  "/prolo2007/graphics/7left_bottom_corner.png",
-  "/prolo2007/graphics/8bottom_center.png",
-  "/prolo2007/graphics/9right_bottom_corner.png",
-  "/prolo2007/graphics/left_vertical_line.png",
-  "/prolo2007/graphics/right_vertical_line.png",
-  "/prolo2007/graphics/line_bottom.png",
-  "/prolo2007/graphics/line_top.png",
-  "/prolo2007/graphics/double_line.png",
-  "/prolo2007/graphics/double_vertical_line.png"
+  "/graphics/full_blood2.png",
+  "/graphics/1left_top_corner.png",
+  "/graphics/2top_center.png",
+  "/graphics/3right_top_corner.png",
+  "/graphics/4left_center.png",
+  "/graphics/5center.png",
+  "/graphics/6right_center.png",
+  "/graphics/7left_bottom_corner.png",
+  "/graphics/8bottom_center.png",
+  "/graphics/9right_bottom_corner.png",
+  "/graphics/left_vertical_line.png",
+  "/graphics/right_vertical_line.png",
+  "/graphics/line_bottom.png",
+  "/graphics/line_top.png",
+  "/graphics/double_line.png",
+  "/graphics/double_vertical_line.png"
 };
 static const int nb_flesh = sizeof(flesh) / sizeof(char*);
 
 static const char* vessel[] = {		// OK
-  "/prolo2007/graphics/full_blood.png"
+  "/graphics/full_blood.png"
 };
 static const int nb_vessel = sizeof(vessel) / sizeof(char*);
 
 static const char* food[] = {		// OK
-  "/prolo2007/graphics/nutriment.png",
-  "/prolo2007/graphics/nutriment2.png",
-  "/prolo2007/graphics/nutriment3.png"
+  "/graphics/nutriment.png",
+  "/graphics/nutriment2.png",
+  "/graphics/nutriment3.png"
 };
 static const int nb_food = sizeof(food) / sizeof(char*);
 
 static const char* antibody[] = {		// OK
-  "/prolo2007/graphics/anticorps.png",
-  "/prolo2007/graphics/anticorps2.png",
-  "/prolo2007/graphics/anticorps3.png"
+  "/graphics/anticorps.png",
+  "/graphics/anticorps2.png",
+  "/graphics/anticorps3.png"
 };
 static const int nb_antibody = sizeof(antibody) / sizeof(char*);
 
@@ -104,6 +104,9 @@ GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   map_x_ = api_->taille_corps_x();
   map_y_ = api_->taille_corps_y();
 
+  // Set ressources prefix to share/stechec/prolo2007
+  ResourceCenter::getInst()->setResourcePrefix(PKGDATADIR);
+  
   LOG4("Map size %1 %2\n", map_x_, map_y_);
 
   // Initialize SDL window and the main scrollable surface.
@@ -115,7 +118,7 @@ GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   win_.getScreen().addChild(vscreen_);
 
   // Init surface behind text
-  back_txt_ = Surface("prolo2007/graphics/background_text.png");
+  back_txt_ = Surface("/graphics/background_text.png");
   back_txt_.setPos(580, 5);
   back_txt_.setZ(-1);
   win_.getScreen().addChild(&back_txt_);
