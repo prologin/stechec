@@ -33,11 +33,11 @@ GameData::GameData()
       }
   for (int i = 0; i < MAX_TEAM * MAX_PLAYER; ++i)
     {
-      players[i].setGameData (this);
-      cellules_killed_by_.push_back (0);
-      bacterias_killed_by_.push_back (0);
-      virus_killed_by_.push_back (0);
-      good_cellules_killed_by_.push_back (0);
+      players[i].setGameData(this);
+      cellules_killed_by_.push_back(0);
+      bacterias_killed_by_.push_back(0);
+      virus_killed_by_.push_back(0);
+      good_cellules_killed_by_.push_back(0);
     }
 }
 
@@ -142,7 +142,7 @@ bool GameData::TestAround(int row, int col, int *dest_row, int *dest_col)
 
 int GameData::knows_type(int type, int id)
 {
-  return players[id].knows_type (type);
+  return players[id].isKnownDisease(type);
 }
 
 bool	GameData::PhagocyteVirus(int id, int y, int x, bool t)
@@ -269,7 +269,7 @@ void	GameData::PlayTurn ()
 		LOG5("Bacterias died because of %1", bacterias[y][x]->getKilledBy ());
 	      }
 	    delete bacterias[y][x];
-	    bacterias[y][x] = 0;
+	    bacterias[y][x] = NULL;
 	    bacterias_killed_++;
 	    LOG4("Bacteria [%1, %2] died", y, x);
 	  }
@@ -501,6 +501,6 @@ extern "C" const struct RuleDescription rules_description = {
   "prolo2007",
   "Prologin 2007 final contest rules",
   "globulus",
-  1,
-  0,
+  2,	/* version major */
+  1,	/* version minor */
 };

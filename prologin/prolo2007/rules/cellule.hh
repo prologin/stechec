@@ -1,3 +1,15 @@
+/*
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** The complete GNU General Public Licence Notice can be found as the
+** `NOTICE' file in the root directory.
+**
+** Copyright (C) 2007 Prologin
+*/
+
 #ifndef CELLULE_HH
 #define CELLULE_HH
 
@@ -21,14 +33,15 @@ class Cellule : public Object
 {
 public:
   Cellule(int row, int col, int matiere, GameData* g);
-
+  ~Cellule();
+  
   // Santé
   int Sante() const;
   bool Saine() const;
   bool Infectee() const;
   void Infect();
 
-  void	setInfection (int i)
+  void	setInfection(int i)
   {
     _sante = CELL_STATE_INFECTED;
     keep_ = CELL_STATE_INFECTED;
@@ -67,7 +80,9 @@ public:
   virtual void		StopActions ();
 
   int keep_;
+
 private:
+  GameData* g_;
   int _sante;
   int _matiere;
   int _etat_production_virus;
@@ -75,7 +90,6 @@ private:
   int maladie_;
   int duration_;
   int life_;
-  GameData* g_;
 };
 
 #endif // CELLULE_HH

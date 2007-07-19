@@ -1,3 +1,15 @@
+/*
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** The complete GNU General Public Licence Notice can be found as the
+** `NOTICE' file in the root directory.
+**
+** Copyright (C) 2007 Prologin
+*/
+
 #include "Contest.hh"
 #include "GameData.hh"
 #include "cellule.hh"
@@ -5,12 +17,27 @@
 static unsigned int id_cell = 0;
 
 
-Cellule::Cellule(int row, int col, int matiere, GameData *g) :
-  Object(row, col), _sante(CELL_STATE_HEALTHY), _matiere(matiere),
-  _etat_production_virus(0), _etat_mitose(0), g_(g), maladie_ (-1),
-  duration_(-1), life_(CELL_LIFE), keep_(CELL_STATE_HEALTHY)
+Cellule::Cellule(int row, int col, int matiere, GameData *g)
+  : Object(row, col),
+    keep_(CELL_STATE_HEALTHY),
+    g_(g),
+    _sante(CELL_STATE_HEALTHY),
+    _matiere(matiere),
+    _etat_production_virus(0),
+    _etat_mitose(0),
+    maladie_(-1),
+    duration_(-1),
+    life_(CELL_LIFE)
 {
   set_id (id_cell++);
+}
+
+Cellule::~Cellule()
+{
+  std::vector<Virus*>::iterator it;
+
+  for (it = g_->_virus.begin(); it != g_->_virus.end(); ++it)
+    (*it)->celluleDied(this);
 }
 
 int Cellule::Sante() const

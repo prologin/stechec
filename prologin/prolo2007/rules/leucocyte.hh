@@ -77,15 +77,9 @@ public:
   virtual void	PlayTurn ();
 
   unsigned int antibodies[MAX_MAP_SIZE][MAX_MAP_SIZE];
-  std::vector<int>	known_types;
-  int			knows_type (int type)
-  {
-    for (std::vector<int>::iterator it = known_types.begin ();
-	 it != known_types.end (); ++it)
-      if (*it == type)
-	return SUCCESS;
-    return UNKNOWN;
-  }
+
+  int isKnownDisease(int type);
+
   int	score_;
 
 private:
@@ -96,6 +90,8 @@ private:
   int	last_message_;
   int	phagocytose_turn_;
   bool	action_done_;		// to be reinitialized each turn
+
+  std::vector<int> known_types_;
 
   Virus* v_;
   Cellule* c_;

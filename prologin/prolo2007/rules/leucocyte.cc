@@ -22,7 +22,7 @@ Leucocyte::Leucocyte()
     max_messages_sendable_(0),
     last_message_(0),
     phagocytose_turn_(PHAGOCYTOSIS_DURATION),
-    v_(0),
+    v_(NULL),
     c_(0),
     l_(0),
     g_(0)
@@ -42,9 +42,9 @@ void Leucocyte::resetTurn()
 
 void Leucocyte::addAntibody()
 {
-  int	nb = competences[ANTIBODY_NB] * MULT_ANTIBODY;
+  int nb = competences[ANTIBODY_NB] * MULT_ANTIBODY;
 
-  LOG4("Dropping %1 antibodies", nb);
+  LOG4("Dropping %1 antibodies at [%1, %2]", nb, row, col);
   antibodies[row][col] += nb;
   for (int i = 0; i < 4; ++i)
     {
@@ -77,7 +77,7 @@ void	Leucocyte::PlayTurn ()
   if (state_ == STATE_DEAD)
     return;
   // antibody attack
-  LOG3("Antibody map, player :%1", get_id ());
+  LOG3("Antibody map, player :%1", get_id());
 
 //   std::stringstream s;
 //   s << std::endl;
@@ -108,7 +108,7 @@ void	Leucocyte::PlayTurn ()
 	  {
 	    if ((*cell)->col == x && (*cell)->row == y &&
 		(*cell)->Sante () == CELL_STATE_INFECTED &&
-		knows_type((*cell)->Maladie ()) == SUCCESS)
+		isKnownDisease((*cell)->Maladie()) == SUCCESS)
 	      {
 		n = (*cell)->kill (antibodies[y][x]);
 		antibodies[y][x] -= (antibodies[y][x] < n) ?
@@ -122,7 +122,7 @@ void	Leucocyte::PlayTurn ()
 	for (it = g_->_virus.begin();
 	     it != g_->_virus.end(); ++it)
 	  if ((*it)->col == x && (*it)->row == y &&
-	      knows_type((*it)->Maladie ()) == SUCCESS)
+	      isKnownDisease((*it)->Maladie ()) == SUCCESS)
 	    {
 	      n = (*it)->kill (antibodies[y][x]);
 	      antibodies[y][x] -= (antibodies[y][x] < n) ?
@@ -167,7 +167,7 @@ void	Leucocyte::PlayTurn ()
 //       }
   if (state_ == STATE_PHAGOCYTOSING)
     {
-      LOG3("Phagocytose turn %1: %2", get_id (), phagocytose_turn_);
+      LOG3("Phagocytose turn %1: %2", get_id(), phagocytose_turn_);
       if (phagocytose_turn_ <= 0)
 	{
 	  if (l_)
@@ -176,22 +176,22 @@ void	Leucocyte::PlayTurn ()
 	      l_->killedBy(get_id ());
 	      l_ = 0;
 	    }
-	  else if (v_)
+	  else if (v_ != NULL)
 	    {
-	      known_types.push_back (v_->Maladie ());
-	      LOG3("Me %1, I've learned : %2", get_id (),v_->Maladie ());
-	      v_ = 0;
-	      g_->virus_killed_by_[get_id ()]++;
+	      known_types_.push_back(v_->Maladie());
+	      LOG3("Me %1, I've learned: %2", get_id(), v_->Maladie());
+	      g_->virus_killed_by_[get_id()]++;
 	      delete v_;
+	      v_ = NULL;
 	    }
 	  else if (c_)
 	    {
-	      c_->setSante (CELL_STATE_DEAD);
-	      c_->killedBy(get_id ());
+	      c_->setSante(CELL_STATE_DEAD);
+	      c_->killedBy(get_id());
 	      if (c_->keep_ == CELL_STATE_INFECTED)
 		{
-		  known_types.push_back (c_->Maladie ());
-		  LOG3("I've learned : %1",c_->Maladie ());
+		  known_types_.push_back(c_->Maladie());
+		  LOG3("I've learned: %1", c_->Maladie());
 		}
 	      LOG1("Killed a cell :)");
 	      c_ = 0;
@@ -243,11 +243,11 @@ void		Leucocyte::StopActions ()
 	  l_->setState (STATE_NORMAL);
 	  l_ = 0;
 	}
-      else if (v_)
+      else if (v_ != NULL)
 	{
 	  g_->_virus.push_back(v_);
 	  LOG3("Replacing virus");
-	  v_ = 0;
+	  v_ = NULL;
 	}
       else if (c_)
 	{
@@ -255,4 +255,15 @@ void		Leucocyte::StopActions ()
 	  c_ = 0;
 	}
     }
+}
+
+
+int Leucocyte::isKnownDisease(int type)
+{
+  if (std::find(known_types_.begin(), known_types_.end(), type) !=
+      known_types_.end())
+    {
+      return SUCCESS;
+    }
+  return UNKNOWN;
 }

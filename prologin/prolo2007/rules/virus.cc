@@ -36,8 +36,8 @@ bool Virus::DeplacementPossible(int x, int y)
 void Virus::StopActions()
 {
   _etat_infection = -1;
-  if (_hote)
-    _hote->setSante (_hote->keep_);
+  if (_hote != NULL)
+    _hote->setSante(_hote->keep_);
   _hote = NULL;
 }
 
@@ -49,9 +49,8 @@ void Virus::PlayTurn()
   if (_etat_infection == INFECTION_DURATION)
   {
      _hote->Infect();
-     _hote->setInfection (_maladie);
-     LOG5("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row,
-	  _hote->col);
+     _hote->setInfection(_maladie);
+     LOG3("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row, _hote->col);
      _hote = NULL;
      _etat_infection = 0;
      life_ = 0;
@@ -71,15 +70,18 @@ void Virus::PlayTurn()
      int ncol = col + ((i == DEC_X) ? -1 : ((i == INC_X) ? 1 : 0));
      if (nrow >= 0 && nrow < _g->map_size.row &&
 	 ncol >= 0 && ncol < _g->map_size.col)
-	for (std::vector<Cellule*>::iterator it =
-		_g->_cells.begin();
+	for (std::vector<Cellule*>::iterator it = _g->_cells.begin();
 	     it != _g->_cells.end(); ++it)
-	   if ((*it)->row == nrow && (*it)->col == ncol
-	       && (*it)->Sante () != CELL_STATE_BEING_PHAGOCYTED)
-	      if (!((*it)->Infectee()) && ++nb)
-		 cell[i] = 1;
-	      else
-		 cell[i] = 2;
+	  {
+	    if ((*it)->row == nrow && (*it)->col == ncol
+		&& (*it)->Sante () != CELL_STATE_BEING_PHAGOCYTED)
+	      {
+		if (!((*it)->Infectee()) && ++nb)
+		  cell[i] = 1;
+		else
+		  cell[i] = 2;
+	      }
+	  }
   }
   if (nb != 0) // Pas de cellules saine dans les parages
   {
@@ -92,12 +94,16 @@ void Virus::PlayTurn()
      for (std::vector<Cellule*>::iterator it =
 	     _g->_cells.begin();
 	  it != _g->_cells.end(); ++it)
-	if ((*it)->row == nrow && (*it)->col == ncol)
-	  {
-	    _hote = (*it);
-	    _hote->setSante(CELL_STATE_BEING_INFECTED);
-	  }
-     _etat_infection = 1;
+       {
+	 if ((*it)->row == nrow && (*it)->col == ncol)
+	   {
+	     _hote = (*it);
+	     _hote->setSante(CELL_STATE_BEING_INFECTED);
+	     break;
+	   }
+       }
+     if (_hote != NULL)
+       _etat_infection = 1;
   }
   else
   {
@@ -126,4 +132,14 @@ void Virus::PlayTurn()
      row = nrow;
      col = ncol;
   }
+}
+
+
+void Virus::celluleDied(Cellule *cell)
+{
+  if (_hote == cell)
+    {
+      _hote == NULL;
+      _etat_infection = 0;
+    }
 }
