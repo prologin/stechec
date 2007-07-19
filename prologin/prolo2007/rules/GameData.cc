@@ -56,10 +56,10 @@ void	GameData::InitMap()
 
 int	GameData::GetNextMessage(int id)
 {
-  if (players[id].GetLastMessage() >= (int)messages_.size())
+  if (players[id].getLastMessage() >= (int)messages_.size())
     return UNKNOWN;
-  players[id].MessageReaded ();
-  return players[id].GetLastMessage() - 1;
+  players[id].setLastMessageReaded();
+  return players[id].getLastMessage() - 1;
 }
 
 unsigned int	GameData::rand()

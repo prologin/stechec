@@ -1,28 +1,46 @@
+/*
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** The complete GNU General Public Licence Notice can be found as the
+** `NOTICE' file in the root directory.
+**
+** Copyright (C) 2007 Prologin
+*/
 
 #include "Constant.hh"
 #include "GameData.hh"
 #include "leucocyte.hh"
 
-Leucocyte::Leucocyte() :
-  Object (),
-  score_(0),
-  state_(STATE_NORMAL),
-  nb_sent_messages_(0),
-  max_messages_sendable_(0),
-  last_message_(0),
-  phagocytose_turn_(PHAGOCYTOSIS_DURATION),
-  v_(0),
-  c_(0),
-  l_(0),
-  g_(0)
+Leucocyte::Leucocyte()
+  : Object(),
+    score_(0),
+    state_(STATE_NORMAL),
+    nb_sent_messages_(0),
+    max_messages_sendable_(0),
+    last_message_(0),
+    phagocytose_turn_(PHAGOCYTOSIS_DURATION),
+    v_(0),
+    c_(0),
+    l_(0),
+    g_(0)
 {
-  for (int i = 0; i < LAST_COMPETENCE; ++i)
-    competences[i] = 0;
+  std::fill(competences, competences + LAST_COMPETENCE, 0);
+  for (int i = 0; i < MAX_MAP_SIZE; i++)
+    std::fill(antibodies[i], antibodies[i] + MAX_MAP_SIZE, 0);
 }
 
-# define MULT_ANTIBODY 5
 
-void	Leucocyte::addAntibody ()
+void Leucocyte::resetTurn()
+{
+  action_done_ = (state_ != STATE_NORMAL);
+  nb_sent_messages_ = 0;
+}
+
+
+void Leucocyte::addAntibody()
 {
   int	nb = competences[ANTIBODY_NB] * MULT_ANTIBODY;
 
@@ -184,12 +202,9 @@ void	Leucocyte::PlayTurn ()
     }
 }
 
-void	Leucocyte::setGameData (GameData*g)
+void	Leucocyte::setGameData(GameData* g)
 {
   g_ = g;
-  for (int y = 0; y < g_->map_size.row; ++y)
-    for (int x = 0; x < g_->map_size.col; ++x)
-      antibodies[y][x] = 0;
 }
 
 void  Leucocyte::Phagocyte(int y, int x, Virus& v)

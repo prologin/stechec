@@ -15,6 +15,8 @@ public:
     player_id_(-42),
     killed_by_ (-1)
   {}
+  virtual ~Object() {}
+
   unsigned		get_id() const { return id_; }
   unsigned		get_player() const { return player_id_; }
 

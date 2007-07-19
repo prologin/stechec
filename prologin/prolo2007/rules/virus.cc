@@ -7,7 +7,7 @@ static unsigned int id_virus = 0;
 Virus::Virus(int row, int col, int maladie, GameData *g) :
    Object(row, col),
    _maladie(maladie),
-   _hote(0),
+   _hote(NULL),
    _etat_infection(0),
    life_(VIRUS_LIFE),
    _g(g)
@@ -38,7 +38,7 @@ void Virus::StopActions()
   _etat_infection = -1;
   if (_hote)
     _hote->setSante (_hote->keep_);
-  _hote = 0;
+  _hote = NULL;
 }
 
 // La méthode à appeler à chaque tour
@@ -52,7 +52,7 @@ void Virus::PlayTurn()
      _hote->setInfection (_maladie);
      LOG5("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row,
 	  _hote->col);
-     _hote = 0;
+     _hote = NULL;
      _etat_infection = 0;
      life_ = 0;
      return;

@@ -319,11 +319,12 @@ int Api::phagocyte(int x, int y)
   TRY_ACT();
   TEST_POS(x, y);
   CHECK_FOG(x, y);
+
   bool found = false;
   int x1 = g_->players[g_->getUid ()].col;
   int y1 = g_->players[g_->getUid ()].row;
-  int i;
   std::vector<Cellule*>::iterator it;
+
   if (abs(x - x1) + abs(y - y1) > 1)
     return BAD_ARGUMENT;
   found = g_->PhagocyteVirus (g_->getUid (), y, x, false) ||
@@ -353,16 +354,16 @@ int Api::transmettre_message(int message_arg1, int message_arg2,
   CHECK_DEAD();
   int id = g_->getUid();
 
-  if (g_->players[id].NbSentMessages() >= g_->players[id].MaxMessagesSendable())
+  if (!g_->players[id].canSendMessage())
     return INVALID_COMMAND;
 
   StechecPkt com(TRANSMISSION, -1);
-  com.Push(4, message_arg1 % 65536, // because caml is such a pityful language...
-	   message_arg2 % 65536,    // I don't understand why using such a poor
-	   message_arg3 % 65536,    // and unsignificant language
-	   message_arg4 % 65536);   // Please, code in JAVA :)
+  com.Push(4, message_arg1 & 0xffff, // because caml is such a pityful language...
+	   message_arg2 & 0xffff,    // I don't understand why using such a poor
+	   message_arg3 % 0xffff,    // and unsignificant language
+	   message_arg4 % 0xffff);   // Please, code in JAVA :)
   SendToServer(com);
-  g_->players[id].SendMessage();
+  g_->players[id].sendMessage();
   return SUCCESS;
 }
 

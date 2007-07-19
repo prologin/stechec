@@ -37,10 +37,10 @@
     return UNKNOWN;
 
 #define ALREADY_ACT(id) \
-  (g_->players[(id)].action)
+  (g_->players[(id)].alreadyPlayed())
 
 #define SET_ACT() \
-  g_->players[g_->getUid()].action = true;
+  g_->players[g_->getUid()].setPlayed();
 
 #define CHECK_DEAD() \
   if (g_->players[g_->getUid()].getState () == STATE_DEAD)\

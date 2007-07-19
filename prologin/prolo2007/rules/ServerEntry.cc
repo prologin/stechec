@@ -240,8 +240,8 @@ int		ServerEntry::beforeGame()
   //  displayMap();
   //  pathCalculation();
 
-  LOG1("No players connected %1", g_->getNbPlayer ());
-  LOG1("No team connected %1", g_->getNbTeam ());
+  LOG1("Number of players: %1, number of teams: %2",
+       g_->getNbPlayer(), g_->getNbTeam());
 
   int seed = time(0);
   CheckMap ();

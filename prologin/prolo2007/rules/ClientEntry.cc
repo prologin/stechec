@@ -55,15 +55,10 @@ int        ClientEntry::initGame()
 
 int        ClientEntry::beforeNewTurn()
 {
-  LOG4("Random is now : %1", g_->rand ());
-  for (int i = 0; i < g_->getNbPlayer (); ++i)
-    {
-      if (g_->players[i].getState () == STATE_NORMAL)
-	g_->players[i].action = false;
-      else
-	g_->players[i].action = true;
-      g_->players[i].ResetSentMessages ();
-    }
+  LOG4("Random is now: %1", g_->rand());
+  for (int i = 0; i < g_->getNbPlayer(); ++i)
+    g_->players[i].resetTurn();
+
   return 0;
 }
 
