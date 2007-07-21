@@ -464,6 +464,8 @@ void Game::evGiveBall(int team_id, int player_id)
 void Game::evResult(int team_id, int player_id, enum eRoll action_type, int result, 
                     int modifier, int required, bool reroll, enum eSkill skill)
 {
+  std::ostringstream s;
+
   LOG4("Player `%1' tried an action : `%2' : roll [%3] + [%4], required : [%5].",
        player_id, Dice::stringify(action_type), result, modifier, required);
 
@@ -489,9 +491,9 @@ void Game::evResult(int team_id, int player_id, enum eRoll action_type, int resu
         {
           LOG4(" -> You can use a 'reroll' or 'accept' this result.");
           game_dlg_->push(eDlgActReroll);
-	  // FIXME: use std::ostream directly
-	  // game_dlg_->setText(String::compose("Do you want to reroll `%1' for player `%2'?",
-	  //                    Dice::stringify(action_type), player_id + 1));
+          s << "Do you want to reroll `" << Dice::stringify(action_type)
+            << "' for player `" << (player_id + 1) << "'?";
+          game_dlg_->setText(s.str());
         }
     }
 }

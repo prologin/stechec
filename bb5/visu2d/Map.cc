@@ -38,10 +38,11 @@ Map::Map(Game& g)
 {
   bg_.setZ(-1);
   addChild(&bg_);
-  addChild(&ball_);
-  ball_.setZ(5);
-  ball_.hide();
   drawTicks();
+
+  ball_.setZ(5);
+  addChild(&ball_);
+  ball_.hide();
 
   red_highlight_.create(40, 40);
   blue_highlight_.create(40, 40);
@@ -207,7 +208,6 @@ void Map::setDrawTicks(bool enable)
 }
 
 /*
-** FIXME: Copy the image before modifying it, or it will be impossible to reload the original.
 ** Draw square borders. Modify directly bg_ by 'erasing' with black
 ** little arrows.
 */
@@ -219,9 +219,15 @@ void Map::drawTicks()
   SDL_Rect r;
   SDL_Surface* surf;
   Uint32 color;
-  Surface img(ResourceCenter::getInst()->getImage("image/general/playground_0.jpg"));
+  Surface img;
 
-  bg_.create(img.getSize().x, img.getSize().y, img.getSDLSurface());
+  // FIXME: Copy the image before modifying it,
+  // or it will be impossible to reload the original image.
+
+  //bg_.create(bg_.getSize().x, bg_.getSize().y, bg_.getSDLSurface());
+  //img.load("image/general/playground_0.jpg");
+  //img.blit(bg_);
+
   surf = bg_.getSDLSurface();
   color = SDL_MapRGB(surf->format, 0, 0, 0);
 
