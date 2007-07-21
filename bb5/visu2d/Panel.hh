@@ -41,8 +41,11 @@ public:
   //! @brief Hide player information.
   void hidePlayerInfo();
   
-  void setTurn(int player_id, int cur_turn);
-    
+  //! @brief Set half-time information.
+  void setHalf(int cur_half);
+  //! @brief Set turn information.
+  void setTurn(int team_id, int cur_turn);
+
   virtual void update();
 
 private:

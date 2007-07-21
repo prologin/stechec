@@ -105,7 +105,8 @@ private:
   ** All Events.
   */
   virtual void evIllegal(int team_id, int was_token);
-  virtual void evNewTurn(int player_id, int cur_half, int cur_turn);
+  virtual void evHalf(int half);
+  virtual void evNewTurn(int team_id, int cur_half, int cur_turn);
   virtual void evEndGame();
   virtual void evMoveTurnMarker();
   virtual void evTurnOver(enum eTurnOverMotive motive);

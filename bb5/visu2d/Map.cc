@@ -21,6 +21,8 @@
 #include "Game.hh"
 #include "VisuPlayer.hh"
 
+#include "ResourceCenter.hh"
+
 #include <SDL_gfxPrimitives.h>
 
 BEGIN_NS(sdlvisu);
@@ -188,8 +190,6 @@ bool Map::getDrawTicks() const
   return draw_ticks_;
 }
 
-// FIXME: doesn't work right now.
-// I don't handle surface alteration very well.
 void Map::setDrawTicks(bool enable)
 {
   draw_ticks_ = enable;
@@ -202,10 +202,12 @@ void Map::setDrawTicks(bool enable)
     {
       // To erase ticks borders, reload image.
       LOG3("Remove tick border");
+      bg_.load("image/general/playground_0.jpg");
     }
 }
 
 /*
+** FIXME: Copy the image before modifying it, or it will be impossible to reload the original.
 ** Draw square borders. Modify directly bg_ by 'erasing' with black
 ** little arrows.
 */
@@ -215,7 +217,13 @@ void Map::drawTicks()
   const int margin_size = 7;
   int i, j;
   SDL_Rect r;
-  SDL_Surface* surf = bg_.getSDLSurface();
+  SDL_Surface* surf;
+  Uint32 color;
+  Surface img(ResourceCenter::getInst()->getImage("image/general/playground_0.jpg"));
+
+  bg_.create(img.getSize().x, img.getSize().y, img.getSDLSurface());
+  surf = bg_.getSDLSurface();
+  color = SDL_MapRGB(surf->format, 0, 0, 0);
 
   for (i = 0; i <= COLS; i++)
     {
@@ -225,18 +233,18 @@ void Map::drawTicks()
           r.h = 1;
           r.x = i * square_size + margin_size;
           r.y = j * square_size + margin_size;
-          SDL_FillRect(surf, &r, 0xFF00);
+          SDL_FillRect(surf, &r, color);
           if (i > 0)
             { 
              r.x = i * square_size + margin_size - 2;
              r.w = 2;
-             SDL_FillRect(surf, &r, 0xFF00);
+             SDL_FillRect(surf, &r, color);
             }
           if (i < COLS)
             { 
               r.x = i * square_size + margin_size + 1;
               r.w = 2;
-              SDL_FillRect(surf, &r, 0xFF00);
+              SDL_FillRect(surf, &r, color);
             }
       
           r.x = i * square_size + margin_size;
@@ -245,13 +253,13 @@ void Map::drawTicks()
             { 
               r.y = j * square_size + margin_size - 2;
               r.h = 2;
-              SDL_FillRect(surf, &r, 0xFF00);
+              SDL_FillRect(surf, &r, color);
             }
           if (j < ROWS)
             { 
               r.y = j * square_size + margin_size + 1;
               r.h = 2;
-              SDL_FillRect(surf, &r, 0xFF00);
+              SDL_FillRect(surf, &r, color);
             }
         }
     }

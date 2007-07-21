@@ -132,6 +132,7 @@ void Panel::displayPlayerInfo(int team_id, int player_id)
 {
   std::ostringstream os;
   const CPlayer* p;
+  int i;
 
   g_.getApi()->selectTeam(team_id);
   g_.getApi()->selectPlayer(player_id);
@@ -152,7 +153,10 @@ void Panel::displayPlayerInfo(int team_id, int player_id)
   ma_.show();
   os.str("");
 
-  os << p->getMaRemain();
+  i = p->getMaRemain();
+  if (i < 0)
+    i = 0;
+  os << i;
   mar_.setText(os.str());
   mar_.show();
   os.str("");
@@ -198,14 +202,21 @@ void Panel::hidePlayerInfo()
   skills_.hide();
 }
 
-void Panel::setTurn(int player_id, int cur_turn)
+void Panel::setHalf(int cur_half)
+{
+  //FIXME: Display half-time information somewhere into the panel.
+  turn_[0].hide();
+  turn_[1].hide();
+}
+
+void Panel::setTurn(int team_id, int cur_turn)
 {
   if (cur_turn == 0)
-    turn_[player_id].hide();
+    turn_[team_id].hide();
   else
     {
-      turn_[player_id].show();
-      turn_[player_id].setPos(4 + (cur_turn * 33), 428 + player_id * 36);
+      turn_[team_id].show();
+      turn_[team_id].setPos(4 + (cur_turn * 33), 428 + team_id * 36);
     }
 }
 

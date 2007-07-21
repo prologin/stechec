@@ -197,6 +197,13 @@ void Game::evIllegal(int team_id, int token)
       bb5_token_str[token], team_id);
 }
 
+void Game::evHalf(int half)
+{
+  std::ostringstream os;
+  os << "Half " << half << std::endl;
+  panel_->setHalf(half);
+}
+
 void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
 {
   std::ostringstream os;
@@ -372,6 +379,7 @@ void Game::evPlayerCreate(int team_id, int player_id)
   VisuPlayer* p = new VisuPlayer(*this, action_popup_, ap);
   player_[team_id][player_id] = p;
   field_->addChild(p);
+  p->updateStatus();
 }
 
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
