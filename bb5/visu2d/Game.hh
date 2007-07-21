@@ -104,33 +104,43 @@ private:
   /*
   ** All Events.
   */
+
   virtual void evIllegal(int team_id, int was_token);
-  virtual void evHalf(int half);
-  virtual void evNewTurn(int team_id, int cur_half, int cur_turn);
+  virtual void evChat(const std::string& msg);
+
+  virtual void evInitGame();
   virtual void evEndGame();
-  virtual void evMoveTurnMarker();
-  virtual void evTurnOver(enum eTurnOverMotive motive);
-  virtual void evTouchdooown(int team_id, int player_id);
-  virtual void evPlayerKnocked(int team_id, int player_id);
+
+  virtual void evHalf(int half);
   virtual void evDrawKicker(int team_id, bool is_a_question);
   virtual void evPlaceTeam(int team_id);
   virtual void evKickOff(int team_id);
-  virtual void evChat(const std::string& msg);
+  virtual void evGiveBall(int team_id, int player_id);
+  virtual void evNewTurn(int team_id, int cur_half, int cur_turn);
+  virtual void evMoveTurnMarker();
+  virtual void evTurnOver(enum eTurnOverMotive motive);
+  virtual void evTouchdooown(int team_id, int player_id);
+
+  virtual void evBallPos(const Point& pos);
+
   virtual void evPlayerCreate(int team_id, int player_id);
+  virtual void evPlayerStatus(int team_id, int player_id, enum eStatus status);
   virtual void evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void evPlayerMove(int team_id, int player_id, const Point& pos);
-  virtual void evPlayerStatus(int team_id, int player_id, enum eStatus status);
-  virtual void evBallPos(const Point& pos);
-  virtual void evGiveBall(int team_id, int player_id);
+  virtual void evPlayerKnocked(int team_id, int player_id);
+  virtual void evPlayerKO(int team_id, int player_id, int dice);
+
+  virtual void evDeclare(int team_id, int player_id, enum eDeclaredAction action);
   virtual void evResult(int team_id, int player_id, enum eRoll action_type, int result, 
                         int modifier, int required, bool reroll, enum eSkill skill);
   virtual void evBlockResult(int team_id, int player_id, int opponent_player_id, 
                              int nb_dice, enum eBlockDiceFace result[3],
                              int strongest_team_id, bool reroll);
-  virtual void evSkill(int team_id, int player_id, enum eSkill skill, int choice);
-  virtual void evFollow();
   virtual void evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
-  virtual void evDeclare(int team_id, int player_id, enum eDeclaredAction action);
+  virtual void evFollow();
+
+  virtual void evReroll(int team_id, bool reroll);
+  virtual void evSkill(int team_id, int player_id, enum eSkill skill, int choice);
 
   SDLWindow&            win_;    ///< The SDL window.
   xml::XMLConfig*       xml_;    ///< Configuration file.

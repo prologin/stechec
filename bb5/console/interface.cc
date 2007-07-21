@@ -236,6 +236,11 @@ void CmdLineInterface::evIllegal(int team_id, int was_token)
     << ") was tried by the coach `" << team_id << "'. Bouh." << endl;
 }
 
+void CmdLineInterface::evChat(const std::string& msg)
+{
+  cout << "<CHAT> " << msg << endl;
+}
+
 void CmdLineInterface::evInitGame()
 {
   // Cheat, player 0 will always choose first.
@@ -257,19 +262,6 @@ void CmdLineInterface::evDrawKicker(int team_id, bool is_a_question)
   else
     cout << ((team_id == api_->myTeamId()) ? "Our" : "Other" )
       << " team will kick off the ball." << endl; 
-}
-
-void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
-{
-  if (player_id == api_->myTeamId())
-    {
-      cout << "It's our turn (turn " << cur_turn << ", half "
-           << cur_half << ")..." << endl;
-      input_.stopWaiting();
-    }
-  else
-    cout << "It's their turn (turn " << cur_turn << ")..." << endl;    
-  our_turn_ = player_id == api_->myTeamId();
 }
 
 void CmdLineInterface::evPlaceTeam(int team_id)
@@ -294,6 +286,37 @@ void CmdLineInterface::evKickOff(int team_id)
       cout << "Wait that the other team places the ball." << endl;
 }
 
+void CmdLineInterface::evGiveBall(int team_id, int player_id)
+{
+  if (team_id == -1)
+    cout << "The ball is left alone." << endl;
+  else if (player_id == -1)
+    {
+      if (team_id == api_->myTeamId())
+        {
+          cout << "Touchback! Arbiter is asking us to place the ball. (use 'giveBall')" << endl;
+          input_.stopWaiting();
+        }
+      else
+        cout << "Touchback! Wait that the other team gives the ball and plays his turn." << endl;
+    }
+  else
+    cout << "Player `" << player_id << "' of team `" << team_id << "' gets the ball." << endl;
+}
+
+void CmdLineInterface::evNewTurn(int player_id, int cur_half, int cur_turn)
+{
+  if (player_id == api_->myTeamId())
+    {
+      cout << "It's our turn (turn " << cur_turn << ", half "
+           << cur_half << ")..." << endl;
+      input_.stopWaiting();
+    }
+  else
+    cout << "It's their turn (turn " << cur_turn << ")..." << endl;    
+  our_turn_ = player_id == api_->myTeamId();
+}
+
 void CmdLineInterface::evMoveTurnMarker()
 {
   cout << "The turn marker has been moved." << endl;
@@ -306,11 +329,6 @@ void CmdLineInterface::evTouchdooown(int team_id, int player_id)
   else
     cout << "Player `" << player_id << "' of team `"
       << team_id << "' scores a touchdooown!" << endl;
-}
-
-void CmdLineInterface::evChat(const std::string& msg)
-{
-  cout << "<CHAT> " << msg << endl;
 }
 
 void CmdLineInterface::evPlayerStatus(int team_id, int player_id, enum eStatus status)
@@ -337,34 +355,10 @@ void CmdLineInterface::evPlayerKnocked(int team_id, int player_id)
     << team_id << "' has been knocked down." << endl;
 }
 
-void CmdLineInterface::evGiveBall(int team_id, int player_id)
+void CmdLineInterface::evPlayerKO(int team_id, int player_id, int dice)
 {
-  if (team_id == -1)
-    cout << "The ball is left alone." << endl;
-  else if (player_id == -1)
-    {
-      if (team_id == api_->myTeamId())
-        {
-          cout << "Touchback! Arbiter is asking us to place the ball. (use 'giveBall')" << endl;
-          input_.stopWaiting();
-        }
-      else
-        cout << "Touchback! Wait that the other team gives the ball and plays his turn." << endl;
-    }
-  else
-    cout << "Player `" << player_id << "' of team `" << team_id << "' gets the ball." << endl;
-}
-
-void CmdLineInterface::evFollow()
-{
-  cout << "You can 'follow' the opponent player or 'stay' here." << endl;
-}
-
-void CmdLineInterface::evBlockPush(const Position& pos, int nb_choice, const Position choices[])
-{
-  cout << "You can push the player from the square" << pos << " to : " << endl;
-  for (int i = 0; i < nb_choice; i++)
-    cout << "  'push " << i << " : " << choices[i] << endl;
+  cout << "Player `" << player_id << "' of team `" << team_id
+    << "' " << ((dice > 3) ? "is still KO" : "wakes up") << "." << endl;
 }
 
 void CmdLineInterface::evResult(int team_id, int player_id, enum eRoll action_type, int result,
@@ -422,6 +416,25 @@ void CmdLineInterface::evBlockResult(int team_id, int player_id, int opponent_id
     cout << " You must choose a 'block dice <n>'." << endl;
 }
 
+void CmdLineInterface::evBlockPush(const Position& pos, int nb_choice, const Position choices[])
+{
+  cout << "You can push the player from the square" << pos << " to : " << endl;
+  for (int i = 0; i < nb_choice; i++)
+    cout << "  'push " << i << " : " << choices[i] << endl;
+}
+
+void CmdLineInterface::evFollow()
+{
+  cout << "You can 'follow' the opponent player or 'stay' here." << endl;
+}
+
+void CmdLineInterface::evReroll(int team_id, bool reroll)
+{
+  cout << "Coach " << team_id
+    << (reroll?"uses":"doesn't use")
+    << " a team reroll." << endl;
+}
+
 void CmdLineInterface::evSkill(int team_id, int player_id, enum eSkill skill, int choice)
 {
   if (team_id != api_->getTeamId())
@@ -448,4 +461,3 @@ void CmdLineInterface::evSkill(int team_id, int player_id, enum eSkill skill, in
       ((skill == SK_BLOCK) || (skill == SK_CATCH) || (skill == SK_DODGE)))
     input_.stopWaiting();
 }
-

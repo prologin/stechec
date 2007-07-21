@@ -37,15 +37,21 @@ void EventProcess::dispatch(const MsgIllegal& m) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgNewTurn& m) const
+void EventProcess::dispatch(const MsgChat& pkt) const
 {
-  ev_->evNewTurn(m.client_id, m.cur_half, m.cur_turn);
+  ev_->evChat(packetToString(pkt.msg));
 }
 
 template <>
 void EventProcess::dispatch(const MsgEndGame&) const
 {
   ev_->evEndGame();
+}
+
+template <>
+void EventProcess::dispatch(const MsgInitHalf& pkt) const
+{
+  ev_->evHalf(pkt.cur_half);
 }
 
 template <>
@@ -61,6 +67,18 @@ void EventProcess::dispatch(const MsgInitKickoff& m) const
     ev_->evPlaceTeam(m.client_id);
   else
     ev_->evKickOff(m.client_id);
+}
+
+template <>
+void EventProcess::dispatch(const MsgGiveBall& pkt) const
+{
+  ev_->evGiveBall(pkt.client_id, pkt.player_id);
+}
+
+template <>
+void EventProcess::dispatch(const MsgNewTurn& m) const
+{
+  ev_->evNewTurn(m.client_id, m.cur_half, m.cur_turn);
 }
 
 template <>
@@ -112,12 +130,6 @@ void EventProcess::dispatch(const MsgTouchdooown& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgChat& pkt) const
-{
-  ev_->evChat(packetToString(pkt.msg));
-}
-
-template <>
 void EventProcess::dispatch(const MsgBallPos& pkt) const
 {
   ev_->evBallPos(Point(pkt.col, pkt.row));
@@ -127,6 +139,12 @@ template <>
 void EventProcess::dispatch(const MsgPlayerCreate& pkt) const
 {
   ev_->evPlayerCreate(pkt.client_id, pkt.player_id);
+}
+
+template <>
+void EventProcess::dispatch(const MsgPlayerStatus& pkt) const
+{
+  ev_->evPlayerStatus(pkt.client_id, pkt.player_id, (enum eStatus)pkt.status);
 }
 
 template <>
@@ -152,27 +170,15 @@ void EventProcess::dispatch(const MsgPlayerKnocked& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgPlayerStatus& pkt) const
-{
-  ev_->evPlayerStatus(pkt.client_id, pkt.player_id, (enum eStatus)pkt.status);
-}
-
-template <>
 void EventProcess::dispatch(const MsgPlayerKO& pkt) const
 {
   ev_->evPlayerKO(pkt.client_id, pkt.player_id, pkt.dice);
 }
 
 template <>
-void EventProcess::dispatch(const MsgInitHalf& pkt) const
+void EventProcess::dispatch(const MsgDeclare& pkt) const
 {
-  ev_->evHalf(pkt.cur_half);
-}
-
-template <>
-void EventProcess::dispatch(const MsgGiveBall& pkt) const
-{
-  ev_->evGiveBall(pkt.client_id, pkt.player_id);
+  ev_->evDeclare(pkt.client_id, pkt.player_id, (enum eDeclaredAction) pkt.action);
 }
 
 template <>
@@ -200,24 +206,6 @@ void EventProcess::dispatch(const MsgBlockResult& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgReroll& pkt) const
-{
-  ev_->evReroll(pkt.client_id, pkt.reroll);
-}
-
-template <>
-void EventProcess::dispatch(const MsgSkill& pkt) const
-{
-  ev_->evSkill(pkt.client_id, pkt.player_id, (enum eSkill) pkt.skill, pkt.choice);
-}
-
-template <>
-void EventProcess::dispatch(const MsgFollow&) const
-{
-  ev_->evFollow();
-}
-
-template <>
 void EventProcess::dispatch(const MsgBlockPush& pkt) const
 {
   Position pos(pkt.target_row, pkt.target_col);
@@ -230,29 +218,29 @@ void EventProcess::dispatch(const MsgBlockPush& pkt) const
 }
 
 template <>
-void EventProcess::dispatch(const MsgDeclare& pkt) const
+void EventProcess::dispatch(const MsgFollow&) const
 {
-  ev_->evDeclare(pkt.client_id, pkt.player_id, (enum eDeclaredAction) pkt.action);
+  ev_->evFollow();
 }
 
+template <>
+void EventProcess::dispatch(const MsgReroll& pkt) const
+{
+  ev_->evReroll(pkt.client_id, pkt.reroll);
+}
 
+template <>
+void EventProcess::dispatch(const MsgSkill& pkt) const
+{
+  ev_->evSkill(pkt.client_id, pkt.player_id, (enum eSkill) pkt.skill, pkt.choice);
+}
 
 
 // We must declare them, even if they aren't used, to make the linker happy.
-template <>
-void EventProcess::dispatch<MsgInitGame>(MsgInitGame const&) const
-{
-  assert(false);
-}
+
 
 template <>
 void EventProcess::dispatch<MsgBlockDice>(MsgBlockDice const&) const
-{
-  assert(false);
-}
-
-template <>
-void EventProcess::dispatch<MsgTeamInfo>(MsgTeamInfo const&) const
 {
   assert(false);
 }
@@ -264,13 +252,25 @@ void EventProcess::dispatch<MsgCheatDice>(MsgCheatDice const&) const
 }
 
 template <>
-void EventProcess::dispatch<MsgWeather>(MsgWeather const&) const
+void EventProcess::dispatch<MsgInitGame>(MsgInitGame const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgTeamInfo>(MsgTeamInfo const&) const
 {
   assert(false);
 }
 
 template <>
 void EventProcess::dispatch<MsgTimer>(MsgTimer const&) const
+{
+  assert(false);
+}
+
+template <>
+void EventProcess::dispatch<MsgWeather>(MsgWeather const&) const
 {
   assert(false);
 }

@@ -45,28 +45,36 @@ private:
   bool                checkInput();
 
   // All callbacks.
+
   virtual void          evIllegal(int team_id, int was_token);
+  virtual void          evChat(const std::string& msg);
+
   virtual void          evInitGame();
+
   virtual void          evDrawKicker(int team_id, bool is_a_question);
-  virtual void          evNewTurn(int player_id, int cur_half, int cur_turn);
   virtual void          evPlaceTeam(int team_id);
   virtual void          evKickOff(int team_id);
   virtual void          evGiveBall(int team_id, int player_id);
+  virtual void          evNewTurn(int player_id, int cur_half, int cur_turn);
   virtual void          evMoveTurnMarker();
   virtual void          evTouchdooown(int team_id, int player_id);
-  virtual void          evChat(const std::string& msg);
+
   virtual void          evPlayerStatus(int team_id, int player_id, enum eStatus status);
   virtual void          evPlayerPos(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerMove(int team_id, int player_id, const Point& pos);
   virtual void          evPlayerKnocked(int team_id, int player_id);
+  virtual void          evPlayerKO(int team_id, int player_id, int dice);
+
   virtual void          evResult(int team_id, int player_id, enum eRoll action_type, int result, 
                                  int modifier, int required, bool reroll, enum eSkill skill);
   virtual void          evBlock(int team_id, int player_id, int opponent_id);
   virtual void          evBlockResult(int team_id, int player_id, int opponent_id, 
                                       int nb_dice, enum eBlockDiceFace result[3],
                                       int choose, bool reroll);
-  virtual void          evFollow();
   virtual void          evBlockPush(const Position& pos, int nb_choice, const Position choices[]);
+  virtual void          evFollow();
+
+  virtual void          evReroll(int team_id, bool reroll);
   virtual void          evSkill(int team_id, int player_id, enum eSkill skill, int choice);
 
   xml::XMLConfig*       cfg_;

@@ -197,11 +197,105 @@ void Game::evIllegal(int team_id, int token)
       bb5_token_str[token], team_id);
 }
 
+void Game::evChat(const std::string& msg)
+{
+  LOG1(std::string("<chat> ") + msg);
+}
+
+void Game::evInitGame()
+{
+  LOG4("Game initialization.");
+}
+
+void Game::evEndGame()
+{
+  game_dlg_->push(eDlgActInfo);
+}
+
 void Game::evHalf(int half)
 {
   std::ostringstream os;
   os << "Half " << half << std::endl;
   panel_->setHalf(half);
+}
+
+void Game::evDrawKicker(int team_id, bool is_a_question)
+{
+  if (is_a_question)
+    if (team_id == api_->myTeamId())
+      game_dlg_->push(eDlgActKickOrReceive);
+    else
+      {
+        game_dlg_->push(eDlgActInfo);
+        game_dlg_->setText("Wait for opponent to choose who will kick-off.");
+      }
+}
+
+void Game::evPlaceTeam(int team_id)
+{
+    if (team_id == api_->myTeamId())
+    {
+      //FIXME: allow coach to replace his players.
+      api_->doEndPlacement();
+    }
+    else
+    {
+      //FIXME: (un)setState...
+      // game_dlg_->push(eDlgActInfo);
+      // game_dlg_->setText("Wait that the other team sets up on the field.");
+    }
+}
+
+void Game::evKickOff(int team_id)
+{
+    unsetState(VGS_WAITINIT);
+    if (team_id == api_->myTeamId())
+    {
+      setState(VGS_DOKICKOFF);
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Kickoff. Place the ball.");
+    }
+    else
+    {
+      setState(VGS_WAITKICKOFF);
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Wait for opponent to kick off the ball.");
+    }
+}
+
+void Game::evGiveBall(int team_id, int player_id)
+{
+  //FIXME when events will be consistent...
+  if (team_id == -1)
+  {
+    LOG4("The ball is left alone.");
+    for (int i = 0; i < 2; i++)
+      for (int j = 0; j < 16; j++)
+        if (player_[i][j] != NULL)
+          player_[i][j]->updateStatus();
+    field_->setBallPos(api_->ball());
+  }
+  else if (player_id == -1)
+  {
+    LOG4("Touchback! receiving team (team id %1) can give the ball to any player on the field.",
+        team_id);
+    if (team_id == api_->getTeamId())
+      game_dlg_->push(eDlgActTouchback);
+    else
+    {
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Touchback! Wait other coach to give the ball.");
+    }
+  }
+  else
+  {
+    LOG4("Player `%1' of team `%2' gets the ball.", player_id, team_id);
+    field_->removeBall();
+    for (int i = 0; i < 2; i++)
+      for (int j = 0; j < 16; j++)
+        if (player_[i][j] != NULL)
+          player_[i][j]->updateStatus();
+  }
 }
 
 void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
@@ -238,11 +332,6 @@ void Game::evNewTurn(int team_id, int cur_half, int cur_turn)
       game_dlg_->setText(os.str());
     }
   panel_->setTurn(team_id, cur_turn);
-}
-
-void Game::evEndGame()
-{
-  game_dlg_->push(eDlgActInfo);
 }
 
 void Game::evMoveTurnMarker()
@@ -298,64 +387,12 @@ void Game::evTouchdooown(int team_id, int player_id)
   LOG2("Player `%1' of team `%2' scores a touchdooown!", player_id, team_id);
 }
 
-
-void Game::evPlayerKnocked(int, int player_id)
+void Game::evBallPos(const Point& pos)
 {
-  LOG4("A player was knocked down.");
-
-  std::ostringstream os;
-  os << "Player " << (player_id + 1) << " has been knocked down";
-  game_dlg_->push(eDlgActInfo);
-  game_dlg_->setText(os.str());
-}
-
-void Game::evDrawKicker(int team_id, bool is_a_question)
-{
-  if (is_a_question)
-    if (team_id == api_->myTeamId())
-      game_dlg_->push(eDlgActKickOrReceive);
-    else
-      {
-        game_dlg_->push(eDlgActInfo);
-        game_dlg_->setText("Wait for opponent to choose who will kick-off.");
-      }
-}
-
-void Game::evPlaceTeam(int team_id)
-{
-    if (team_id == api_->myTeamId())
-    {
-      //FIXME: allow coach to replace his players.
-      api_->doEndPlacement();
-    }
-    else
-    {
-      //FIXME: (un)setState...
-      // game_dlg_->push(eDlgActInfo);
-      // game_dlg_->setText("Wait that the other team sets up on the field.");
-    }
-}
-
-void Game::evKickOff(int team_id)
-{
-    unsetState(VGS_WAITINIT);
-    if (team_id == api_->myTeamId())
-    {
-      setState(VGS_DOKICKOFF);
-      game_dlg_->push(eDlgActInfo);
-      game_dlg_->setText("Kickoff. Place the ball.");
-    }
-    else
-    {
-      setState(VGS_WAITKICKOFF);
-      game_dlg_->push(eDlgActInfo);
-      game_dlg_->setText("Wait for opponent to kick off the ball.");
-    }
-}
-
-void Game::evChat(const std::string& msg)
-{
-  LOG1(std::string("<chat> ") + msg);
+  if (pos == Position(-1, -1))
+    field_->removeBall();
+  else if (api_->getBallOwner() == NULL)
+    field_->setBallPos(pos);
 }
 
 void Game::evPlayerCreate(int team_id, int player_id)
@@ -382,6 +419,20 @@ void Game::evPlayerCreate(int team_id, int player_id)
   p->updateStatus();
 }
 
+void Game::evPlayerStatus(int team_id, int player_id, enum eStatus)
+{
+  VisuPlayer* p = player_[team_id][player_id];
+  assert(p != NULL);
+
+  p->updateStatus();
+  if (isStateSet(VGS_SHOWBLOCKPUSH))
+  {
+    for (int i = 0; i < 3 && block_push_[i].isShown(); i ++)
+      block_push_[i].hide();
+    unsetState(VGS_SHOWBLOCKPUSH);
+  }
+}
+
 void Game::evPlayerPos(int team_id, int player_id, const Point& pos)
 {
   VisuPlayer* p = player_[team_id][player_id];
@@ -404,61 +455,29 @@ void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
   p->move(field_->squareToMap(pos), 100.);
 }
 
-void Game::evPlayerStatus(int team_id, int player_id, enum eStatus)
+void Game::evPlayerKnocked(int team_id, int player_id)
+{
+  LOG4("A player was knocked down.");
+
+  std::ostringstream os;
+  os << "Player " << (player_id + 1) << " of team " << team_id << " has been knocked down";
+  game_dlg_->push(eDlgActInfo);
+  game_dlg_->setText(os.str());
+}
+
+void Game::evPlayerKO(int team_id, int player_id, int dice)
+{
+  LOG4("Player `%1' of team `%2' %3.",
+      (player_id + 1), team_id,
+      ((dice > 3) ? "is still KO" : "wakes up"));
+}
+
+void Game::evDeclare(int team_id, int player_id, enum eDeclaredAction action)
 {
   VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
-  p->updateStatus();
-  if (isStateSet(VGS_SHOWBLOCKPUSH))
-  {
-    for (int i = 0; i < 3 && block_push_[i].isShown(); i ++)
-      block_push_[i].hide();
-    unsetState(VGS_SHOWBLOCKPUSH);
-  }
-}
-
-void Game::evBallPos(const Point& pos)
-{
-  if (pos == Position(-1, -1))
-    field_->removeBall();
-  else if (api_->getBallOwner() == NULL)
-    field_->setBallPos(pos);
-}
-
-void Game::evGiveBall(int team_id, int player_id)
-{
-  //FIXME when events will be consistent...
-  if (team_id == -1)
-  {
-    LOG4("The ball is left alone.");
-    for (int i = 0; i < 2; i++)
-      for (int j = 0; j < 16; j++)
-        if (player_[i][j] != NULL)
-          player_[i][j]->updateStatus();
-    field_->setBallPos(api_->ball());
-  }
-  else if (player_id == -1)
-  {
-    LOG4("Touchback! receiving team (team id %1) can give the ball to any player on the field.",
-        team_id);
-    if (team_id == api_->getTeamId())
-      game_dlg_->push(eDlgActTouchback);
-    else
-    {
-      game_dlg_->push(eDlgActInfo);
-      game_dlg_->setText("Touchback! Wait other coach to give the ball.");
-    }
-  }
-  else
-  {
-    LOG4("Player `%1' of team `%2' gets the ball.", player_id, team_id);
-    field_->removeBall();
-    for (int i = 0; i < 2; i++)
-      for (int j = 0; j < 16; j++)
-        if (player_[i][j] != NULL)
-          player_[i][j]->updateStatus();
-  }
+  player_[team_id][player_id]->onEventDeclare(action);
 }
 
 void Game::evResult(int team_id, int player_id, enum eRoll action_type, int result, 
@@ -532,16 +551,6 @@ void Game::evBlockResult(int team_id, int player_id, int opponent_player_id,
     }
 }
 
-void Game::evSkill(int team_id, int player_id, enum eSkill skill, int choice)
-{
-  if (choice == -1 && team_id == api_->getTeamId())
-    {
-      //FIXME: Give the choice.
-      api_->selectSkilledPlayer(player_id);
-      api_->doUseSkill(skill, true);
-    }
-}
-
 void Game::evBlockPush(const Position& pos, int nb_choice, const Position choices[])
 {
   LOG4( "You can push the player from the square %1 to : ", pos);
@@ -566,18 +575,24 @@ void Game::evFollow()
   game_dlg_->push(eDlgActFollow);
 }
 
-void Game::evDeclare(int team_id, int player_id, enum eDeclaredAction action)
+void Game::evReroll(int team_id, bool reroll)
 {
-  VisuPlayer* p = player_[team_id][player_id];
-  assert(p != NULL);
-
-  player_[team_id][player_id]->onEventDeclare(action);
+  LOG4("Coach %1 %2 a team reroll.", team_id, (reroll?"uses":"doesn't use"));
 }
 
+void Game::evSkill(int team_id, int player_id, enum eSkill skill, int choice)
+{
+  if (choice == -1 && team_id == api_->getTeamId())
+    {
+      //FIXME: Give the choice.
+      api_->selectSkilledPlayer(player_id);
+      api_->doUseSkill(skill, true);
+    }
+}
 
-
-
-
+//
+//
+//
 
 int Game::run()
 {
