@@ -215,15 +215,25 @@ void	GameData::PlayTurn ()
   **
   ** A chaque tour, on memorise le nombre de cellules en vie.
   */
-  std::vector<Cellule*>::iterator iter;
-  int count;
+  std::vector<Cellule*>::iterator citer;
+  std::vector<Virus*>::iterator viter;
+  int ccount; // cellules
+  int tccount; // total cellules
+  int vcount; // viruses
 
-  for (count = 0, iter = _cells.begin(); iter != _cells.end(); ++iter)
+  for (tccount = ccount = 0, citer = _cells.begin(); 
+       citer != _cells.end(); 
+       ++citer, tccount++)
     {
-      if ((*iter)->Saine())
-	count++;
+      if ((*citer)->Saine())
+	ccount++;
     }
-  _cells_count.push_back(count);
+  _cells_count.push_back(ccount);
+  for (vcount = 0, viter = _virus.begin();
+       viter != _virus.end();
+       ++viter, ++vcount)
+    ;
+  LOG1("%1 %2 %3 %4", LOG_PATTERN, ccount, tccount - ccount, vcount);
 
   /*
    * Evolution des nutriments : spread et ajout
@@ -325,7 +335,8 @@ void	GameData::PlayTurn ()
 	players[i].getState () == STATE_PHAGOCYTOSING)
       players[i].PlayTurn();
   LOG1("Current Score: %1 -- Currently alive cells: %2", this->calculScore(),
-  count);
+  ccount);
+  LOG1("End of turn %1", this->getCurrentTurn());
   deleteCells ();
 }
 

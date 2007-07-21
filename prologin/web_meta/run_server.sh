@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -x
 #
 #  Stechec project is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ cat > $config_file <<EOF
     <log enabled="true" file="$real_log_file" />
     <nb_spectator>0</nb_spectator>
     <debug verbose="3" />
-    <server_debug verbose="5" />
+    <server_debug verbose="2" />
   </server>
 
 </config>
@@ -112,6 +112,7 @@ if [ $is_competition = "0" ]; then
     tmp_out=$tmp_dir/stdout
     echo " * Start at: `date +%T`" >> $real_out_file
     echo >> $real_out_file
+    ulimit -c 10000
     $stechec_install_path/bin/stechec_server $config_file > $tmp_out 2>> $real_out_file
     res=$?
     sed -i -e 's/\[[01];3[0-9]m//g;s/\[0m//g' $real_out_file
@@ -119,6 +120,7 @@ if [ $is_competition = "0" ]; then
     echo " * End at: `date +%T`" >> $real_out_file
     echo " * Server exited with return code: $res" >> $real_out_file
     if [ -s $tmp_out ]; then
+        echo >> $real_out_file
     	echo "Dumping standart output:" >> $real_out_file
     	cat $tmp_out >> $real_out_file
         # meta_server need it on stdout for match result.
@@ -128,6 +130,52 @@ if [ $is_competition = "0" ]; then
     # Now upload log and visio files.
     # FIXME: make it no-NFS aware.
     mkdir -p $contest_path/$contest_dir_name/matchs/match_$game_id
+
+# deather's hack begin
+
+    # we generate filenames to be used to store
+    # the temporary log without ___LOG_PATTERN___ before being
+    # stored back in the original file and the temporary sed file.
+    gp_file=/tmp/stechec.$game_id.$RANDOM
+    tmp_file=/tmp/stechec.$game_id.$RANDOM
+    tmp_gp_file=/tmp/stechec.$game_id.$RANDOM
+
+    # extracts logging data from the out_file and remove it from the original
+    # file.
+    cat $real_out_file | grep ___LOG_PATTERN___ > $gp_file
+    cat $real_out_file | grep -v  ___LOG_PATTERN___ > $tmp_file
+    mv $tmp_file $real_out_file
+
+    # formats the logfile
+    sed "s/\[globulus $game_id] ___LOG_PATTERN___ //g" \
+	$gp_file > $tmp_gp_file
+    rm -f $gp_file
+    # prepend line numbers
+    i=0
+    cat $tmp_gp_file | while read LINE ; do
+      echo $i $LINE >> $gp_file
+      i=$(($i+1))
+    done
+
+    # generates the gnuplot data
+    cat > $gp_file.gp <<EOF
+set terminal png
+set output "$gp_file.png"
+plot '$gp_file' using 1:2 title "Cellules saines" with lines, \
+'$gp_file' using 1:3 title "Cellules infectees" with lines, \
+'$gp_file' using 1:4 title "Virus" with lines
+EOF
+    # runs gnuplot
+    gnuplot $gp_file.gp
+    # upload the file
+    upload_file $gp_file.png $out_file.png
+    # remove temporary files
+    rm -f $gp_file.png
+    rm -f $gp_file.gp
+    rm -f $tmp_gp_file
+    rm -f $gp_file
+# deather's hack end
+ 
     upload_file $real_out_file $out_file
     upload_file $real_log_file $log_file
 

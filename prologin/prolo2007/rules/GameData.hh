@@ -26,6 +26,8 @@
 #include "nutriments.hh"
 #include "bacterias.hh"
 
+#define LOG_PATTERN "___LOG_PATTERN___"
+
 /*!
 ** This class is meant to contain all data, accessible from
 ** everywhere.

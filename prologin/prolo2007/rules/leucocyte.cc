@@ -193,7 +193,7 @@ void	Leucocyte::PlayTurn ()
 		  known_types_.push_back(c_->Maladie());
 		  LOG3("I've learned: %1", c_->Maladie());
 		}
-	      LOG1("Killed a cell :)");
+	      LOG1("Killed a cell");
 	      c_ = 0;
 	    }
 	  state_ = STATE_NORMAL;
