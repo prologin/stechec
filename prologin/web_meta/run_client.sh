@@ -50,6 +50,7 @@ ip_server=$9
 time_limit=200
 reserve_time=2000
 memory_limit=20000
+log_limit=128
 
 # load config and transfert methods.
 source "`dirname $0`/meta_cx.sh" "$config_meta"
@@ -115,9 +116,21 @@ if [ $is_competition = "0" ]; then
     echo " * Start at: `date +%T`" >> $real_out_file
     echo >> $real_out_file
 
-    $stechec_install_path/bin/stechec $team_id $config_file                     \
-       2>&1 | sed -e 's/\[[01];3[0-9]m//g;s/\[0m//g' >> $real_out_file
-    res=$?
+    $stechec_install_path/bin/stechec $team_id $config_file 2>&1        \
+        | $stechec_install_path/bin/log_limit $log_limit                \
+        | sed -e 's/\[[01];3[0-9]m//g;s/\[0m//g' >> $real_out_file
+
+    # get error return for our command
+    # yes... it's bash... it could be better with zsh :)
+    res="${PIPESTATUS[0]} ${PIPESTATUS[1]}"
+    truncated=$(echo $res | cut -f2 -d' ')
+    res=$(echo $res | cut -f1 -d' ')
+
+    if [ $truncated -eq 1 ]; then
+        echo "[...]"
+        echo " * Log was truncated, it is limited to ${log_limit}ko."
+    fi
+
     echo >> $real_out_file
     echo " * Client exited with return code: $res" >> $real_out_file
     echo " * End at: `date +%T`" >> $real_out_file

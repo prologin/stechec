@@ -18,6 +18,8 @@
 
 bashdir = $(pkglibdir)/bash
 
+bin_PROGRAMS = log_limit
+
 dist_bash_DATA =				\
 	meta_cx.sh
 
