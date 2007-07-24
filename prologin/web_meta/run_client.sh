@@ -14,7 +14,7 @@
 #  along with the Stechec project; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-#  Copyright (C) 2005, 2006 Prologin
+#  Copyright (C) 2005, 2006, 2007 Prologin
 #
 
 #
@@ -50,7 +50,7 @@ ip_server=$9
 time_limit=200
 reserve_time=2000
 memory_limit=20000
-log_limit=128
+log_limit=256
 
 # load config and transfert methods.
 source "`dirname $0`/meta_cx.sh" "$config_meta"
@@ -122,13 +122,14 @@ if [ $is_competition = "0" ]; then
 
     # get error return for our command
     # yes... it's bash... it could be better with zsh :)
-    res="${PIPESTATUS[0]} ${PIPESTATUS[1]}"
-    truncated=$(echo $res | cut -f2 -d' ')
-    res=$(echo $res | cut -f1 -d' ')
+    real_res="${PIPESTATUS[0]}|${PIPESTATUS[1]}"
+    truncated=$(echo $real_res | cut -f2 -d'|')
+    res=$(echo $real_res | cut -f1 -d'|')
 
     if [ $truncated -eq 1 ]; then
-        echo "[...]"
-        echo " * Log was truncated, it is limited to ${log_limit}ko."
+	echo >> $real_out_file
+        echo "[...]" >> $real_out_file
+        echo " * Log was truncated, it is limited to ${log_limit}ko." >> $real_out_file
     fi
 
     echo >> $real_out_file
