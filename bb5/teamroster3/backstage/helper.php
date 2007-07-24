@@ -1,24 +1,8 @@
 <?php
 
-class benchmark{
-    function start(){
-        $time = explode(' ', microtime());
-        $this->start = $time[0] + $time[1];
-    }
-
-    function stop(){
-        $time = explode(' ', microtime());
-        $this->stop = $time[0] + $time[1];
-    }
-    
-    function time(){
-        return number_format(($this->stop - $this->start), '2');
-    }
-}
-
 function checkLang() {
 	
-	/* $lang = &$_COOKIE['lang'];
+	$lang = &$_COOKIE['lang'];
 	
 	if ( isset($lang) && is_dir('data/'.$lang) ) {
 		$lang = $_COOKIE['lang'];
@@ -27,24 +11,25 @@ function checkLang() {
 		$lang = 'en';
 	}
 	
-	return $lang; */
-	return 'en';
+	return $lang;
 }
 
-class benchmark{
-    function start(){
-        $time = explode(' ', microtime());
-        $this->start = $time[0] + $time[1];
-    }
+class benchmark
+{
+	private $start;
 
-    function stop(){
-        $time = explode(' ', microtime());
-        $this->stop = $time[0] + $time[1];
-    }
-    
-    function time(){
-        return number_format(($this->stop - $this->start), '4');
-    }
+	function start()
+	{
+		$time = explode(' ', microtime());
+		$this->start = $time[0] + $time[1];
+	}
+
+	function time()
+	{
+		$time = explode(' ', microtime());
+		$stop = $time[0] + $time[1];	
+		return number_format(($stop - $this->start), '4');
+	}
 }
 
 if (! function_exists('array_combine')) {
