@@ -34,6 +34,7 @@ tbt_visu_SOURCES =				\
 	Button.cc Button.hh			\
 	DialogBox.cc DialogBox.hh		\
 	Global.cc Global.hh			\
+	VisuApp.cc VisuApp.hh			\
 	Menu.cc Menu.hh				\
 	Label.cc Label.hh			\
 	Entry.cc Entry.hh			\

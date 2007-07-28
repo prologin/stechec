@@ -50,6 +50,8 @@ void PrintStrings(SDL_Surface *dest, TTF_Font *font, string str,
   {
         // The rendered text:
     string tmpstr(vLines[i]);
+    if (strcmp(tmpstr.c_str(), "") != 0)
+    {
     TTF_SizeText(font, tmpstr.c_str(), &width, &height);
 
         // Get the height : (vLines.size() == Number of Lines)
@@ -63,5 +65,6 @@ void PrintStrings(SDL_Surface *dest, TTF_Font *font, string str,
     SDL_BlitSurface(temp, NULL, dest, &r);
         // Clean up:
     SDL_FreeSurface(temp);
+    }
   }
 }
