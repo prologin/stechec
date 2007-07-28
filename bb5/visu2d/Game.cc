@@ -233,29 +233,35 @@ void Game::evDrawKicker(int team_id, bool is_a_question)
 
 void Game::evPlaceTeam(int team_id)
 {
-    if (team_id == api_->myTeamId())
+  if (team_id == api_->myTeamId())
     {
-      //FIXME: allow coach to replace his players.
-      api_->doEndPlacement();
+      unsetState(VGS_WAITINIT);
+      unsetState(VGS_WAITPLACETEAM);
+      setState(VGS_DOPLACETEAM);
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Set up your team, then type 'e' key.");
     }
-    else
+  else
     {
-      //FIXME: (un)setState...
-      // game_dlg_->push(eDlgActInfo);
-      // game_dlg_->setText("Wait that the other team sets up on the field.");
+      unsetState(VGS_WAITINIT);
+      unsetState(VGS_DOPLACETEAM);
+      setState(VGS_WAITPLACETEAM);
+      game_dlg_->push(eDlgActInfo);
+      game_dlg_->setText("Wait that the other team sets up on the field.");
     }
 }
 
 void Game::evKickOff(int team_id)
 {
-    unsetState(VGS_WAITINIT);
-    if (team_id == api_->myTeamId())
+  unsetState(VGS_WAITPLACETEAM);
+  unsetState(VGS_DOPLACETEAM);
+  if (team_id == api_->myTeamId())
     {
       setState(VGS_DOKICKOFF);
       game_dlg_->push(eDlgActInfo);
       game_dlg_->setText("Kickoff. Place the ball.");
     }
-    else
+  else
     {
       setState(VGS_WAITKICKOFF);
       game_dlg_->push(eDlgActInfo);
@@ -415,7 +421,7 @@ void Game::evPlayerCreate(int team_id, int player_id)
   // Create it, and add it to the field.
   VisuPlayer* p = new VisuPlayer(*this, action_popup_, ap);
   player_[team_id][player_id] = p;
-  field_->addChild(p);
+  field_->addPlayer(p);
   p->updateStatus();
 }
 
@@ -452,7 +458,9 @@ void Game::evPlayerMove(int team_id, int player_id, const Point& pos)
   VisuPlayer* p = player_[team_id][player_id];
   assert(p != NULL);
 
-  p->move(field_->squareToMap(pos), 100.);
+  //FIXME: Sprite::move(...) lacks a way to be stopped.
+  //p->move(field_->squareToMap(pos), 100.);
+  p->setPos(field_->squareToMap(pos));
 }
 
 void Game::evPlayerKnocked(int team_id, int player_id)
@@ -670,10 +678,13 @@ int Game::run()
       // Field border around squares.
       if (win_.getInput().key_pressed_[SDLK_s])
         field_->setDrawTicks(!field_->getDrawTicks());
-
+      
       // End turn
       if (win_.getInput().key_pressed_[SDLK_e])
-        api_->doEndTurn();
+        if (isStateSet(VGS_DOPLACETEAM))
+          api_->doEndPlacement();
+        else
+          api_->doEndTurn();
       
       // Print FPS
       std::ostringstream os;

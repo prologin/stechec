@@ -36,7 +36,8 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
     circle_selected_("image/general/circle_select.png"),
     player_num_("image/general/player_num.png"),
     status_("image/general/status.png"),
-    target_action_(ACT_UNASSIGNED)
+    target_action_(ACT_UNASSIGNED),
+    old_status_(STA_UNASSIGNED)
 {
   Map& field = game_.getField();
 
@@ -240,6 +241,24 @@ void VisuPlayer::targetAction(enum eRealAction act)
   }
 }
 
+void VisuPlayer::enable()
+{
+  Surface::enable();
+  status_.enable();
+  player_num_.enable();
+  circle_selected_.enable();
+  circle_.enable();
+}
+
+void VisuPlayer::disable()
+{
+  circle_.disable();
+  circle_selected_.disable();
+  player_num_.disable();
+  status_.disable();
+  Surface::disable();
+}
+
 void VisuPlayer::setPos(const Point& pos)
 {
   Sprite::setPos(pos);
@@ -249,11 +268,11 @@ void VisuPlayer::setPos(const Point& pos)
   status_.setPos(pos + Point(20, 18));
 }
 
-
 void VisuPlayer::update()
 {
   Input& inp = game_.getInput();
   Map& field = game_.getField();
+  bool was_selected = is_selected_;
 
   api_->selectTeam(p_->getTeamId());
   api_->selectPlayer(p_->getId());
@@ -283,6 +302,34 @@ void VisuPlayer::update()
         field.removeMarker();
     }
 
+  // A player to place?
+  if (is_selected_ && game_.isStateSet(VGS_DOPLACETEAM))
+    {
+      if (field.mouseInsideField()
+          && api_->getPlayer(field.mouseToSquare()) == NULL)
+        {
+          field.setMarker(field.mouseToSquare(), p_->getTeamId());
+          if (inp.button_pressed_[1])
+            {
+              // Note: Any invalid player placement will put him in the reserve.
+              api_->doPlacePlayer(field.mouseToSquare());
+              field.removeMarker();
+              unselect();
+            }
+          else if (inp.button_pressed_[3])
+            {
+              field.removeMarker();
+              unselect();
+            }
+        }
+      else
+        {
+          field.removeMarker();
+          if (inp.button_pressed_[1] || inp.button_pressed_[3])
+            unselect();
+        }
+    }
+
   // Update focus.
   // FIXME: It doesn't count action popup and dialog box, which may be overlaying the player.
   bool now_focus = getScreenRect().inside(inp.mouse_);
@@ -302,26 +349,32 @@ void VisuPlayer::update()
         circle_.stopAnim();
     }
 
-  // Click on player (of _my_ team, on my turn). Select him.
-  if (now_focus && !is_selected_ && !has_played_
-      && game_.isStateSet(VGS_DOPLAY)
+  // Click on unselected player of _my_ team. Select him.
+  if (now_focus && !is_selected_
       && api_->myTeamId() == p_->getTeamId()
       && (inp.button_pressed_[1] || inp.button_pressed_[3]))
-    {
-      game_.unselectAllPlayer();
-      if (p_->getAction() == DCL_UNASSIGNED)
-        act_popup_->prepareDeclareMenu(this);
-      else
-        act_popup_->prepareActionMenu(p_->getAction());
-      circle_selected_.show();
-      is_selected_ = true;
-      // Left button will show it now
-      if (inp.button_pressed_[3])
-        {
-          act_popup_->setPos(inp.mouse_);
-          act_popup_->show();
-        }
-    }
+    if (game_.isStateSet(VGS_DOPLAY) && !has_played_) // on my turn
+      {
+        game_.unselectAllPlayer();
+        if (p_->getAction() == DCL_UNASSIGNED)
+          act_popup_->prepareDeclareMenu(this);
+        else
+          act_popup_->prepareActionMenu(p_->getAction());
+        circle_selected_.show();
+        is_selected_ = true;
+        // Left button will show it now
+        if (inp.button_pressed_[3])
+          {
+            act_popup_->setPos(inp.mouse_);
+           act_popup_->show();
+          }
+      }
+    else if (game_.isStateSet(VGS_DOPLACETEAM) && !was_selected) // on my team placement
+      {
+        game_.unselectAllPlayer();
+        circle_selected_.show();
+        is_selected_ = true;
+      }
 
   // Player has finished its action
   if (circle_.isShown() && p_->hasPlayed())
@@ -365,17 +418,14 @@ void VisuPlayer::updateStatus()
         case STA_KO:
           status_.setFrame(3);
           status_.show();
-          m.removePlayer(this, p_->getStatus());
           break;
         case STA_INJURED:
           status_.setFrame(4);
           status_.show();
-          m.removePlayer(this, p_->getStatus());
           break;
         case STA_SENTOFF:
           status_.setFrame(5);
           status_.show();
-          m.removePlayer(this, p_->getStatus());
           break;
         case STA_STANDING:
           if (api_->getBallOwner() == p_)
@@ -389,12 +439,13 @@ void VisuPlayer::updateStatus()
           break;
         case STA_RESERVE:
           status_.hide();
-          m.removePlayer(this, p_->getStatus());
           break;
         default:
           status_.hide();
           break;
       }
+  m.movePlayer(old_status_, p_->getStatus(), p_->getTeamId(), p_->getId());
+  old_status_ = p_->getStatus();
 }
 
 END_NS(sdlvisu);

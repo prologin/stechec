@@ -31,14 +31,21 @@ Map::Map(Game& g)
   : VirtualScrollableSurface("VSMap", g.getInput(), Point(500, 600), Point(723, 1054)),
     g_(g),
     bg_("image/general/playground_0.jpg"),
+    reserve_bg_("image/general/reserve_0.jpg"),
     ball_("image/general/ball.png"),
     cross_black_("image/general/crosses_rgbbw.png"),
     cross_red_("image/general/crosses_rgbbw.png"),
-    draw_ticks_(true)
+    draw_ticks_(true),
+    dugouts_back_(g, "image/general/reserve_navigator_down.png"),
+    dugouts_forth_(g, "image/general/reserve_navigator_up.png")
 {
   bg_.setZ(-1);
   addChild(&bg_);
   drawTicks();
+
+  reserve_bg_.setZ(-1);
+  reserve_bg_.setPos(619,365);
+  addChild(&reserve_bg_);
 
   ball_.setZ(5);
   addChild(&ball_);
@@ -54,6 +61,7 @@ Map::Map(Game& g)
   blue_highlight_.hide();
   addChild(&red_highlight_);
   addChild(&blue_highlight_);
+
   cross_black_.splitNbFrame(5, 1);
   cross_black_.setFrame(4);
   cross_black_.hide();
@@ -62,16 +70,36 @@ Map::Map(Game& g)
   cross_red_.hide();
   addChild(&cross_black_);
   addChild(&cross_red_);
+
+  for (int dugout = 0; dugout < 4; dugout ++)
+    for (int team = 0; team < 2; team ++)
+      dugouts_page_index_[dugout][team] = 0;
+  for (int zone = 0; zone < 5; zone ++)
+    for (int team = 0; team < 2; team ++)
+      for (int player = 0; player < MAX_PLAYER; player ++)
+        players_by_zone_[zone][team][player] = NULL;
+
+  dugouts_back_.setPos(607, 467);
+  dugouts_forth_.setPos(619, 467);
+  dugouts_back_.setActionHandler(new DugoutsCallback(this, false));
+  dugouts_forth_.setActionHandler(new DugoutsCallback(this, true));
+  addChild(&dugouts_back_);
+  addChild(&dugouts_forth_);
+  dugouts_back_.disable();
+  dugouts_forth_.enable();
 }
 
 Map::~Map()
 {
 }
 
+//
+// Mouse and field squares coordinates
+//
+
 bool Map::mouseInsideMap() const
 {
-  Rect render(getPos(), getScreenRect().getSize());
-  return render.inside(g_.getInput().mouse_);
+  return getRenderRect().inside(g_.getInput().mouse_);
 }
 
 bool Map::mouseInsideField() const
@@ -89,6 +117,10 @@ Point Map::squareToMap(const Point& pt, const Point& adjust) const
 {
   return pt * 40 + Point(7, 7) + adjust;
 }
+
+//
+// Marker
+//
 
 void Map::setMarker(const Point& square, int type)
 {
@@ -117,6 +149,10 @@ void Map::removeMarker()
   red_highlight_.hide();
   blue_highlight_.hide();
 }
+
+//
+// Ball
+//
 
 void Map::setBallPos(const Point& pos)
 {
@@ -151,40 +187,217 @@ void Map::removeBall()
   ball_.hide();
 }
 
-void Map::placePlayer(VisuPlayer* vp, Position& pos)
+//
+// Players and dugouts
+//
+
+void Map::addPlayer(VisuPlayer* vp)
 {
   assert(vp != NULL);
-  assert(pos.col >= 0 && pos.col < COLS && pos.row >= 0 && pos.row < ROWS);
-
-  //FIXME: to do.
-  vp->setPos(squareToMap(pos));
+  const CPlayer* p = vp->getPlayer();
+  addChild(vp);
+  players_by_zone_[MZ_RESERVE][p->getTeamId()][p->getId()] = vp;
+  updateDugout(MZ_RESERVE, p->getTeamId(), p->getId());
 }
 
-void Map::removePlayer(VisuPlayer* vp, enum eStatus s)
+void Map::movePlayer(enum eStatus old_s, enum eStatus new_s, int team_id, int player_id)
 {
-  assert(vp != NULL);
+  enum eMapZone from, to;
+  from = statusToZone(old_s);
+  to = statusToZone(new_s);
+  if (from != to)
+    movePlayer(from, to, team_id, player_id);
+}
 
-  //FIXME: to do.
+inline enum eMapZone Map::statusToZone(enum eStatus s)
+{
   switch (s)
   {
-    case STA_RESERVE:
-      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 377 : 637)));
-      break;
-    case STA_KO:
-      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 277 : 737)));
-      break;
-    case STA_INJURED:
-      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 177 : 837)));
-      break;
-    case STA_SENTOFF:
-      vp->setPos(Point(654, ((vp->getPlayer()->getTeamId() == 1) ? 77 : 937)));
-      break;
-    default:
-      WARN("Player `%1' of team `%2' doesn't have to leave the field in state `%3'.",
-          vp->getPlayer()->getId(), vp->getPlayer()->getTeamId(), Player::stringify(s));
-      break;
+    case STA_SENTOFF:     return MZ_EJECTED;  break;
+    case STA_INJURED:     return MZ_OUT;      break;
+    case STA_KO:          return MZ_KO;       break;
+    case STA_UNASSIGNED:
+    case STA_RESERVE:     return MZ_RESERVE;  break;
+    case STA_STANDING:
+    case STA_PRONE:
+    case STA_STUNNED:     return MZ_FIELD;    break;
   }
+  ERR("Unable to determine map zone according to player status `%1'.", s);
+  return MZ_RESERVE;
 }
+
+void Map::movePlayer(enum eMapZone from, enum eMapZone to, int team_id, int player_id)
+{
+  assert (from != to);
+  VisuPlayer* vp = players_by_zone_[from][team_id][player_id];
+  enum eMapZone by = (to == MZ_FIELD) ? from : to;
+
+  if (team_id == 0)
+    switch (by)
+    {
+      case MZ_EJECTED:  vp->setPos(Point(607,  69));  break;
+      case MZ_OUT:      vp->setPos(Point(607, 177));  break;
+      case MZ_KO:       vp->setPos(Point(607, 285));  break;
+      case MZ_RESERVE:  vp->setPos(Point(607, 435));  break;
+      case MZ_FIELD:    ERR("Field is not a dugout"); break;
+    }
+  else
+    switch (by)
+    {
+      case MZ_EJECTED:  vp->setPos(Point(607, 983));  break;
+      case MZ_OUT:      vp->setPos(Point(607, 835));  break;
+      case MZ_KO:       vp->setPos(Point(607, 727));  break;
+      case MZ_RESERVE:  vp->setPos(Point(607, 517));  break;
+      case MZ_FIELD:    ERR("Field is not a dugout"); break;
+    }
+  vp->enable();
+
+  players_by_zone_[from][team_id][player_id] = NULL;
+  players_by_zone_[to][team_id][player_id] = vp;
+
+  if (from != MZ_FIELD)
+    updateDugout(from, team_id, player_id);
+  if (to != MZ_FIELD)
+    updateDugout(to, team_id, player_id);
+}
+
+void Map::scrollDugout(enum eMapZone dugout, int team_id, unsigned int page_index)
+{
+  assert(dugout != MZ_FIELD);
+  VisuPlayer** players = players_by_zone_[dugout][team_id];
+  unsigned int old_page_index = dugouts_page_index_[dugout][team_id];
+  unsigned int min_page_index = std::min(old_page_index, page_index);
+  unsigned int max_page_index = std::max(old_page_index, page_index);
+  unsigned int nb_players = 0;
+  unsigned int i = 0;
+  Point pos;
+  if (team_id == 0)
+    switch (dugout)
+    {
+      case MZ_EJECTED:  pos = (Point(630,  45));  break;
+      case MZ_OUT:      pos = (Point(630, 153));  break;
+      case MZ_KO:       pos = (Point(630, 261));  break;
+      case MZ_RESERVE:  pos = (Point(630, 387));  break;
+      case MZ_FIELD:    ERR("Field is not a dugout"); break;
+    }
+  else
+    switch (dugout)
+    {
+      case MZ_EJECTED:  pos = (Point(630, 959));  break;
+      case MZ_OUT:      pos = (Point(630, 811));  break;
+      case MZ_KO:       pos = (Point(630, 703));  break;
+      case MZ_RESERVE:  pos = (Point(630, 575));  break;
+      case MZ_FIELD:    ERR("Field is not a dugout"); break;
+    }
+
+  if (dugout == MZ_EJECTED && team_id == 0) // there is only one button for all dugouts
+    {
+      if (page_index > 0)
+        {
+          dugouts_back_.enable();
+          if (page_index == ((MAX_PLAYER - 1) / 4))
+            dugouts_forth_.disable();
+        }
+      if (page_index < ((MAX_PLAYER - 1) / 4))
+        {
+          dugouts_forth_.enable();
+          if (page_index == 0)
+            dugouts_back_.disable();
+        }
+    }
+
+  while ((nb_players / 4 < min_page_index) && (i < MAX_PLAYER))
+    {
+      if (players[i] != NULL)
+        nb_players ++;
+      i ++;
+    }
+  while ((nb_players / 4 <= max_page_index) && (i < MAX_PLAYER))
+    {
+      if (players[i] != NULL)
+        {
+          if ((nb_players / 4) != page_index)
+            {
+              players[i]->disable();
+            }
+          else
+            {
+              switch (nb_players % 4)
+              {
+                case 0: players[i]->setPos(pos);                  break;
+                case 1: players[i]->setPos(pos + Point( 0, 48));  break;
+                case 2: players[i]->setPos(pos + Point(40,  0));  break;
+                case 3: players[i]->setPos(pos + Point(40, 48));  break;
+              }
+              players[i]->enable();
+            }
+          nb_players ++;
+        }
+      i ++;
+    }
+  dugouts_page_index_[dugout][team_id] = page_index;
+}
+
+void Map::updateDugout(enum eMapZone dugout, int team_id, int player_id)
+{
+  assert(dugout != MZ_FIELD);
+  VisuPlayer** players = players_by_zone_[dugout][team_id];
+  unsigned int page_index = dugouts_page_index_[dugout][team_id];
+  unsigned int nb_players = 0;
+  int i = 0;
+  Point pos;
+  if (team_id == 0)
+    switch (dugout)
+    {
+      case MZ_EJECTED:  pos = (Point(630,  45));  break;
+      case MZ_OUT:      pos = (Point(630, 153));  break;
+      case MZ_KO:       pos = (Point(630, 261));  break;
+      case MZ_RESERVE:  pos = (Point(630, 387));  break;
+      case MZ_FIELD:    ERR("Field is not a dugout"); break;
+    }
+  else
+    switch (dugout)
+    {
+      case MZ_EJECTED:  pos = (Point(630, 959));  break;
+      case MZ_OUT:      pos = (Point(630, 811));  break;
+      case MZ_KO:       pos = (Point(630, 703));  break;
+      case MZ_RESERVE:  pos = (Point(630, 575));  break;
+      case MZ_FIELD:    ERR("Field is not a dugout"); break;
+    }
+  while (i < player_id)
+    {
+      if (players[i] != NULL)
+        nb_players ++;
+      i ++;
+    }
+  while (i < MAX_PLAYER)
+    {
+      if (players[i] != NULL)
+        {
+          if ((nb_players / 4) != page_index)
+            {
+              players[i]->disable();
+            }
+          else
+            {
+              switch (nb_players % 4)
+              {
+                case 0: players[i]->setPos(pos);                  break;
+                case 1: players[i]->setPos(pos + Point( 0, 48));  break;
+                case 2: players[i]->setPos(pos + Point(40,  0));  break;
+                case 3: players[i]->setPos(pos + Point(40, 48));  break;
+              }
+              players[i]->enable();
+            }
+          nb_players ++;
+        }
+      i ++;
+    }
+}
+
+//
+// Field grid ticks
+//
 
 bool Map::getDrawTicks() const
 {
@@ -271,6 +484,10 @@ void Map::drawTicks()
     }
 }
 
+//
+// Update routine
+//
+
 void Map::update()
 {
   Input& inp = g_.getInput();
@@ -342,4 +559,20 @@ void Map::update()
   VirtualScrollableSurface::update();
 }
 
-END_NS(sdl_visu);
+void Map::scrollDugouts(bool forth)
+{
+  assert((forth && (dugouts_page_index_[0][0] < ((MAX_PLAYER -1) / 4)))
+      || ((!forth) && (dugouts_page_index_[0][0] > 0)));
+  unsigned int new_page_index = dugouts_page_index_[0][0] + (forth ? 1 : -1);
+  for (enum eMapZone dugout = MZ_EJECTED; dugout <= MZ_RESERVE;
+      dugout = static_cast<enum eMapZone>(dugout + 1))
+    for (int team = 0; team < 2; team ++)
+      scrollDugout(dugout, team, new_page_index);
+}
+
+void Map::DugoutsCallback::clicked()
+{
+  map_->scrollDugouts(forth_);
+}
+
+END_NS(sdlvisu);

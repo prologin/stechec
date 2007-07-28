@@ -16,6 +16,8 @@ libbb5_visu_common_la_SOURCES =			\
 	Panel.cc				\
 	Map.hh					\
 	Map.cc					\
+	GameButton.hh				\
+	GameButton.cc				\
 	VisuPlayer.hh				\
 	VisuPlayer.cc				\
 	Colors.hh				\

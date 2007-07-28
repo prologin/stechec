@@ -18,6 +18,7 @@
 # define GAMEFIELD_HH_
 
 # include "Constants.hh"
+# include "GameButton.hh"
 # include "Sprite.hh"
 # include "VirtualScrollableSurface.hh"
 
@@ -25,6 +26,15 @@ BEGIN_NS(sdlvisu);
 
 class Game;
 class VisuPlayer;
+
+  //! @brief Map zones identifiers.
+  enum eMapZone {
+    MZ_EJECTED = 0,
+    MZ_OUT,
+    MZ_KO,
+    MZ_RESERVE,
+    MZ_FIELD
+  };
 
 /*!
 ** @brief Game map (on the left).
@@ -59,21 +69,23 @@ public:
   void removeBall();
 
   /*!
-  ** @brief Place a player at the given square position.
+  ** @brief Add a VisuPlayer to the map.
   **
-  ** Use it instead of VisuPlayer::setPos() to take count of dugouts map management.
-  ** @param vp Player to place into the field.
-  ** @param pos Square position (between 0 and ROwS/COLS).
+  ** VisuPlayer will be added to the map and placed in the reserve.
+  ** Use this instead of addChild, because map handles player position in dugouts.
+  **
+  ** @param vp VisuPlayer to add to the map.
   */
-  void placePlayer(VisuPlayer* vp, Position& pos);
+  void addPlayer(VisuPlayer* vp);
   /*!
-  ** @brief Remove a player from the field and place him in a dugout, according to his status.
+  ** @brief Move a VisuPlayer from a zone to another, if needed.
   **
-  ** Use it instead of VisuPlayer::setPos() to take count of dugouts map management.
-  ** @param vp Player to remove from the field.
-  ** @param s Player status.
+  ** @param old_status Old player status. It determines the zone he comes from.
+  ** @param new_status New player status. It determines the zone he goes to.
+  ** @param team_id Team id of the player.
+  ** @param player_id Player id.
   */
-  void removePlayer(VisuPlayer* vp, enum eStatus s);
+  void movePlayer(enum eStatus old_status, enum eStatus new_status, int team_id, int player_id);
 
   bool getDrawTicks() const;
   void setDrawTicks(bool enable);
@@ -81,13 +93,25 @@ public:
   virtual void update();
 
 private:
+  //! @brief Determine the map zone according to a player status.
+  enum eMapZone statusToZone(enum eStatus status);
+  //! @brief Move a player from a zone to another.
+  void movePlayer(enum eMapZone from, enum eMapZone to, int team_id, int player_id);
+  //! @brief Scroll the dugout to the given page index.
+  void scrollDugout(enum eMapZone dugout, int team_id, unsigned int page_index);
+  //! @brief Update a dugout after a player has been added or removed.
+  void updateDugout(enum eMapZone dugout, int team_id, int player_id);
+
+  //! @brief Scroll all dugouts forth or back.
+  void scrollDugouts(bool forth);
 
   //! @brief Draw markers around squares.
   void drawTicks();
-  
+
   Game&         g_;
   
   Surface       bg_;
+  Surface       reserve_bg_;
   Sprite        ball_;
   Sprite        cross_black_;
   Sprite        cross_red_;
@@ -96,6 +120,21 @@ private:
 
   Surface       red_highlight_;
   Surface       blue_highlight_;
+
+  unsigned int  dugouts_page_index_[4][2];
+  VisuPlayer*   players_by_zone_[5][2][MAX_PLAYER];
+
+  class DugoutsCallback : public GameButtonCallback
+  {
+    public:
+    DugoutsCallback(Map* map, bool forth)
+      : map_(map), forth_(forth) {}
+    private:
+      virtual void clicked();
+      Map* map_;
+      bool forth_;
+  };
+  GameButton    dugouts_back_, dugouts_forth_;
 };
 
 END_NS(sdlvisu);

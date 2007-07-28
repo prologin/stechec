@@ -53,9 +53,9 @@ enum eVisuGameState {
   VGS_WAITINIT = 20,        ///< Wait for game startup.
   VGS_DOKICKOFF = 30,       ///< Wait for coach to kick-off the ball.
   VGS_DOTOUCHBACK,          ///< Wait for coach to give the ball to one of his players.
-  VGS_DOPLACETEAM,          ///< Unused for now.
+  VGS_DOPLACETEAM,          ///< It's our time to enter into the field.
   VGS_WAITKICKOFF,          ///< Wait for opponent to kick-off the ball.
-  VGS_WAITPLACETEAM,        ///< Unused for now.
+  VGS_WAITPLACETEAM,        ///< Wait for opponent team to enter into the field.
   VGS_DOBLOCKPUSHCHOICE,    ///< A square must be chosen to push a player in.
   VGS_SHOWBLOCKPUSH,        ///< Push squares are shown but can not be chosen by us.
   VGS_SHOWACTIONPOPUP = 40, ///< Actions popup menu is displayed.

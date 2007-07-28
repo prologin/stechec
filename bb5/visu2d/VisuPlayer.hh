@@ -67,11 +67,17 @@ public:
   //! @param action Real action selected.
   void selectAction(enum eRealAction action);
 
-  virtual void setPos(const Point& pos);
-  virtual void update();
-
   //! @brief Update status/ball mini-icon.
   void updateStatus();
+
+  //! @brief Enable player number, status, etc. at the same time.
+  virtual void enable();
+  //! @brief Disable player number, status, etc. at the same time.
+  virtual void disable();
+  //! @brief Set position of player number, status, etc. at the same time.
+  virtual void setPos(const Point& pos);
+
+  virtual void update();
 
 private:
 
@@ -98,6 +104,7 @@ private:
   Sprite    status_;
 
   enum eRealAction      target_action_;
+  enum eStatus          old_status_; ///< Kludge spotted, better to have consistent events.
 
   // for pathway.
   Sprite                move_sprite_;
