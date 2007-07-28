@@ -23,6 +23,7 @@
 /*!
 ** @brief Scrollable kind of VirtualSurface.
 ** @ingroup sdl_base
+** @attention It must be directly attached to a SDLWindow.
 */
 class VirtualScrollableSurface : public VirtualSurface
 {
@@ -43,6 +44,19 @@ public:
   //! @note Default disabled.
   void setAutomaticAdjust(bool enable);
   
+  //! @brief Get the absolute surface from the point (0, 0) on the screen.
+  //! This is where (on the screen) the visible surface is rendered and visible by the user.
+  //! This should only be used for events, ie. to compare mouse position
+  //! (which has absolute position) with this surface position.
+  //! @return Absolute surface Rect.
+  virtual Rect getRenderRect() const;
+
+  //! @brief Get the absolute surface from the point (0, 0) on the logical surface.
+  //! This is where (on the logical surface) the visible surface is taken from.
+  //! This looks to be also used for events... ie. to compare mouse position
+  //! (which has absolute position) with this surface position.
+  //! (I guess that I still need an explanation... ^^)
+  //! @return Visible surface Rect, relative to logical surface.
   virtual Rect getScreenRect() const;
 
   virtual void setPos(const Point& to);
@@ -53,7 +67,6 @@ public:
   virtual void blit(Surface& to, const Rect& to_rect, const Rect& from_rect);
 
 private:
-  virtual Rect getRenderRect() const;
   void adjustSize(const Rect& rect);
 
   Input&        inp_;
