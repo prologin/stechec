@@ -398,6 +398,10 @@ void GameHosting::run(Log& log)
   if (state_ == ePlaying)
     playGame();
 
+  // Send cx_abort to all alive clients
+  Packet abort(CX_ABORT);
+  for_all(cl_, std::bind2nd(std::mem_fun(&Client::send), &abort));
+
   // Clean game.
   state_ = eFinishing;
   cl_pool_.flush();

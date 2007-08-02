@@ -74,7 +74,7 @@ void CmdLineInterface::init()
 
 void CmdLineInterface::run()
 {    
-  while (api_->getState() != GS_END)
+  while (ccx_->isConnected() && api_->getState() != GS_END)
     {
       // Process every incoming packets
       while (ccx_->process())

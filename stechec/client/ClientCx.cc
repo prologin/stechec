@@ -83,7 +83,17 @@ bool    ClientCx::process(bool block)
   if (cx_ != NULL && cx_->poll(block ? 50 : 0))
     {
       Packet* p = cx_->receive();
-      rules_->handlePacket(p);
+      switch (p->token)
+        {
+        case CX_ABORT:
+          delete cx_;
+          cx_ = NULL;
+          break;
+
+        default:
+          rules_->handlePacket(p);
+          break;
+        }
       return true;
     }
   return false;
