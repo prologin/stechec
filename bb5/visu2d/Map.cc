@@ -269,7 +269,7 @@ void Map::scrollDugout(enum eMapZone dugout, int team_id, unsigned int page_inde
   unsigned int min_page_index = std::min(old_page_index, page_index);
   unsigned int max_page_index = std::max(old_page_index, page_index);
   unsigned int nb_players = 0;
-  unsigned int i = 0;
+  int i = 0;
   Point pos;
   if (team_id == 0)
     switch (dugout)
