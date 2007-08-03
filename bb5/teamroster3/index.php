@@ -20,6 +20,7 @@ $lang = checkLang();
 	
 /**** OUTPUT ****/
 $smarty = new mySmarty();
+$smarty->assign('revision', '1187');
 $smarty->assign('races', $races);
 $smarty->assign('text', $interface);
 $smarty->display('index.tpl');

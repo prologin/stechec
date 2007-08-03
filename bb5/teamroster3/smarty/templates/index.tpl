@@ -66,7 +66,7 @@
 
 <div id="foot">
 <p>
-
+ Rev. {$revision}
 </p>
 </div>
 
