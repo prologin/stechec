@@ -98,8 +98,8 @@ private:
   bool          is_selected_;
   bool          has_played_;
   
-  Sprite    circle_;
-  Sprite    circle_selected_;
+  Sprite    availability_circle_; ///< Shown if player can play during this turn.
+  Sprite    selection_circle_;    ///< Shown if player is selected, active or targetted.
   Sprite    player_num_;
   Sprite    status_;
 

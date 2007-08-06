@@ -111,6 +111,7 @@ private:
   // Place commands
   void cmdPlaceField(const std::string& args);
   void cmdPlaceReserve(const std::string& args);
+  void cmdPlaceTeam(const std::string& args);
   void cmdEndPlacement(const std::string& args);
 
   // Move commands

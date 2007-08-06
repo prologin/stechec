@@ -102,6 +102,7 @@ Input::InputSubCommand Input::choose_cmd_[] = {
 Input::InputSubCommand Input::place_cmd_[] = {
   {"", &Input::cmdPlaceField, "<p> <r> <c>|Place the player <p> at [<r> <c>]."},
   {"reserve", &Input::cmdPlaceReserve, "<p>|Place the player <p> in the reserve."},
+  {"team", &Input::cmdPlaceReserve, "<f>|Place the team according to formation no. <f>."},
   {"end", &Input::cmdEndPlacement, "End team placement."},
   {NULL, NULL, NULL}
 };
@@ -265,6 +266,8 @@ void Input::cmdPlace(const string& cmd, const string& args)
 {
   if (cmd == "end")
     cmdEndPlacement(args);
+  else if (cmd == "team")
+    cmdPlaceTeam(args);
   else if (cmd == "reserve")
     cmdPlaceReserve(args);
   else
@@ -475,6 +478,14 @@ void Input::cmdChooseReceive(const std::string& args)
 void Input::cmdEndPlacement(const std::string& args)
 {
   api_->doEndPlacement();
+}
+
+void Input::cmdPlaceTeam(const std::string& args)
+{
+  istringstream is(args);
+  int formation_id = -1;
+  is >> formation_id;
+  api_->doPlaceTeam(formation_id);
 }
 
 void Input::cmdPlaceReserve(const std::string& args)

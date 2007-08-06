@@ -109,6 +109,35 @@ inline int Api::doPlacePlayer(const Point& pos)
   return SUCCESS;
 }
 
+inline int Api::doPlaceTeam(int formation_id)
+{
+  assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);
+
+  if (rules_->getState() != GS_INITKICKOFF)
+    {
+      LOG2("It's not the right moment to place our team on the field. (%1)", gameStateString());
+      return INVALID_ACTION;
+    }
+  if (formation_id < 1 || 4 < formation_id)
+    {
+      LOG2("`%1' is not a valid formation identifier.", formation_id);
+      return INVALID_ACTION;
+    }
+
+  MsgPlayerPos pkt;
+  for (int player_id = 0; player_id < MAX_PLAYER; player_id ++)
+    if (rules_->our_team_->getPlayer(player_id) != NULL
+        && rules_->our_team_->getPlayer(player_id)->getStatus() == STA_STANDING)
+      {
+        pkt.player_id = player_id;
+        pkt.col = -1;
+        pkt.row = -1;
+        rules_->sendPacket(pkt);
+      }
+  rules_->our_team_->placeTeam(formation_id);
+  return SUCCESS;
+}
+
 inline int Api::doEndPlacement()
 {
   assert(rules_->getState() != GS_WAIT && rules_->getState() != GS_INITGAME);

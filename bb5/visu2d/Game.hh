@@ -157,6 +157,8 @@ private:
   ActionDlg*            game_dlg_; ///< List of all displayed action.
 
   Sprite                block_push_[3];
+
+  int                   selected_formation_id_;
 };
 
 END_NS(sdlvisu);

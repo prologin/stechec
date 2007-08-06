@@ -56,6 +56,7 @@ public:
   //! @brief Grab your team id.
   //! @return A team identifiant, in the range [0, 1].
   int                   myTeamId() const;
+
   //! @brief Get ball position.
   //! @return Return the ball position, (-1, -1) if outside.
   Point                 ball() const;
@@ -204,6 +205,13 @@ public:
   //!   @c (-1,-1) to place the player in the reserve.
   //!     Any other coordinates out of team's zone do the same.
   int           doPlacePlayer(const Point& pos);
+
+  //! @brief Place our team, according to a registered formation, before a kick off.
+  //! @note All standing players will be sent back to the reserve at first,
+  //! before placing the players according to the formation.
+  //! @attention FIXME: Adds formations number and names to XML schema.
+  //! @param formation_id Formation identifier in the range [1, 4].
+  int           doPlaceTeam(int formation_id);
 
   //! @brief End team's placement, before a kick off.
   int           doEndPlacement();

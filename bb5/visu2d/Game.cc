@@ -70,6 +70,7 @@ Game::Game(SDLWindow& win, xml::XMLConfig* xml, Api* api, ClientCx* ccx)
       block_push_[i].hide();
       field_->addChild(&block_push_[i]);
     }
+  selected_formation_id_ = 1;
 }
 
 Game::~Game()
@@ -679,6 +680,14 @@ int Game::run()
       if (win_.getInput().key_pressed_[SDLK_s])
         field_->setDrawTicks(!field_->getDrawTicks());
       
+      // Team placement
+      if (win_.getInput().key_pressed_[SDLK_f]
+          && isStateSet(VGS_DOPLACETEAM))
+        {
+          selected_formation_id_ = selected_formation_id_ % 4 + 1;
+          api_->doPlaceTeam(selected_formation_id_);
+        }
+
       // End turn
       if (win_.getInput().key_pressed_[SDLK_e])
         if (isStateSet(VGS_DOPLACETEAM))

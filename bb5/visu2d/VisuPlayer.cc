@@ -32,8 +32,8 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
     has_focus_(false),
     is_selected_(false),
     has_played_(true),
-    circle_("image/general/circle.png"),
-    circle_selected_("image/general/circle_select.png"),
+    availability_circle_("image/general/circle.png"),
+    selection_circle_("image/general/circle_select.png"),
     player_num_("image/general/player_num.png"),
     status_("image/general/status.png"),
     target_action_(ACT_UNASSIGNED),
@@ -41,22 +41,22 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
 {
   Map& field = game_.getField();
 
-  circle_.setZ(5);
-  circle_.splitNbFrame(3, 1);
-  circle_.hide();
-  field.addChild(&circle_);
+  availability_circle_.setZ(4);
+  availability_circle_.splitNbFrame(3, 1);
+  availability_circle_.hide();
+  field.addChild(&availability_circle_);
 
-  circle_selected_.setZ(6);
-  circle_selected_.splitNbFrame(2, 1);
-  circle_selected_.hide();
-  field.addChild(&circle_selected_);
+  selection_circle_.setZ(5);
+  selection_circle_.splitNbFrame(2, 1);
+  selection_circle_.hide();
+  field.addChild(&selection_circle_);
 
-  player_num_.setZ(4);
+  player_num_.setZ(6);
   player_num_.splitNbFrame(16, 1);
   player_num_.setFrame(p->getId() + 1);
   field.addChild(&player_num_);
 
-  status_.setZ(4);
+  status_.setZ(6);
   status_.splitNbFrame(6, 1);
   status_.hide();
   field.addChild(&status_);
@@ -64,7 +64,7 @@ VisuPlayer::VisuPlayer(Game& game, ActionPopup* act_popup, const CPlayer* p)
   move_sprite_.load("image/general/map-move.png");
   move_sprite_.splitNbFrame(3, 2);
   move_sprite_.setFrame(3);
-  move_sprite_.setZ(3);
+  move_sprite_.setZ(7);
 
   // Set its property
   std::string icons_path = "image/figs/";
@@ -91,24 +91,24 @@ void VisuPlayer::unselect()
   if (is_selected_)
     {
       is_selected_ = false;
-      circle_selected_.hide();
+      selection_circle_.hide();
     }
 }
 
 void VisuPlayer::beginTurn()
 {
   unselect();
-  circle_selected_.setFrame(1);
+  selection_circle_.setFrame(1);
   if (p_->getStatus() == STA_STANDING
       || p_->getStatus() == STA_PRONE)
     {
       has_played_ = false;
-      circle_.show();
+      availability_circle_.show();
     }
   else
     {
       has_played_ = true;
-      circle_.hide();
+      availability_circle_.hide();
     }
 }
 
@@ -117,13 +117,13 @@ void VisuPlayer::finishTurn()
   unselect();
   has_played_ = true;
   target_action_ = ACT_UNASSIGNED;
-  circle_.hide();
+  availability_circle_.hide();
 }
 
 void VisuPlayer::finishAction()
 {
-  circle_.hide();
-  circle_selected_.hide();
+  availability_circle_.hide();
+  selection_circle_.hide();
   has_played_ = true;
 }
 
@@ -174,8 +174,8 @@ void VisuPlayer::onEventDeclare(enum eDeclaredAction dcl)
   if (p_->getTeamId() == api_->myTeamId())
     {
       act_popup_->prepareActionMenu(dcl);
-      circle_selected_.setFrame(2);
-      circle_selected_.show();
+      selection_circle_.setFrame(2);
+      selection_circle_.show();
       game_.setState(VGS_DOACTION);
       if (dcl == DCL_BLOCK)
         target_action_ = ACT_BLOCK;
@@ -246,14 +246,14 @@ void VisuPlayer::enable()
   Surface::enable();
   status_.enable();
   player_num_.enable();
-  circle_selected_.enable();
-  circle_.enable();
+  selection_circle_.enable();
+  availability_circle_.enable();
 }
 
 void VisuPlayer::disable()
 {
-  circle_.disable();
-  circle_selected_.disable();
+  availability_circle_.disable();
+  selection_circle_.disable();
   player_num_.disable();
   status_.disable();
   Surface::disable();
@@ -262,8 +262,8 @@ void VisuPlayer::disable()
 void VisuPlayer::setPos(const Point& pos)
 {
   Sprite::setPos(pos);
-  circle_.setPos(pos);
-  circle_selected_.setPos(pos);
+  availability_circle_.setPos(pos);
+  selection_circle_.setPos(pos);
   player_num_.setPos(pos + Point(3, 18));
   status_.setPos(pos + Point(20, 18));
 }
@@ -338,7 +338,7 @@ void VisuPlayer::update()
   if (!has_focus_ && now_focus)
     {
       if (p_->getTeamId() == api_->myTeamId() && !game_.isStateSet(VGS_SHOWDLGBOX))
-        circle_.anim(200);
+        availability_circle_.anim(200);
       game_.getPanel().displayPlayerInfo(p_->getTeamId(), p_->getId());
     }
 
@@ -346,7 +346,7 @@ void VisuPlayer::update()
   if (has_focus_ && !now_focus)
     {
       if (p_->getTeamId() == api_->myTeamId())
-        circle_.stopAnim();
+        availability_circle_.stopAnim();
     }
 
   // Click on unselected player of _my_ team. Select him.
@@ -360,7 +360,7 @@ void VisuPlayer::update()
           act_popup_->prepareDeclareMenu(this);
         else
           act_popup_->prepareActionMenu(p_->getAction());
-        circle_selected_.show();
+        selection_circle_.show();
         is_selected_ = true;
         // Left button will show it now
         if (inp.button_pressed_[3])
@@ -372,12 +372,12 @@ void VisuPlayer::update()
     else if (game_.isStateSet(VGS_DOPLACETEAM) && !was_selected) // on my team placement
       {
         game_.unselectAllPlayer();
-        circle_selected_.show();
+        selection_circle_.show();
         is_selected_ = true;
       }
 
   // Player has finished its action
-  if (circle_.isShown() && p_->hasPlayed())
+  if (availability_circle_.isShown() && p_->hasPlayed())
     finishAction();
   
   // Draw path

@@ -103,7 +103,9 @@ void CTeam::placeTeam(int formation_id)
 {
   xml_formation_.switchFormationId(formation_id);
   for (int i = 0; i < MAX_PLAYER; i++)
-    if (player_[i] != NULL&&player_[i]->getStatus() == STA_RESERVE)
+    if (player_[i] != NULL
+        && (player_[i]->getStatus() == STA_RESERVE
+          || player_[i]->getStatus() == STA_STANDING))
       {
 	MsgPlayerPos pkt;
 	Position pos = xml_formation_.getPos(player_[i]->getId() + 1);
