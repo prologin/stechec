@@ -11,16 +11,17 @@
     <rules>bb5_client_rules</rules>
     <connect val="network" host="localhost" port="25151"
              game_uid="41" connect_on_startup="true" />
-    <team>amazon.xml</team>
     <screen res_x="800" res_y="600"/>
  </client>
 
   <client id="1">
+    <team>amazon.xml</team>
     <mode spectator="false" />
     <debug verbose="4" printloc="false" />
   </client>
 
   <client id="2">
+    <team>amazon.xml</team>
     <mode spectator="false" />
     <debug verbose="4" printloc="false" />
   </client>
