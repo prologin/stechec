@@ -68,26 +68,25 @@ void CTeam::loadPlayerConfig(xml::XMLTeam& xml_team, int player_id)
 
   pkt.skill_nb = 0;
   try {
-    for (int i = 0; ; i++)
+    for (int i = 0; pkt.skill_nb < MAX_SKILL; i++)
       {
-	pkt.skill[i] = -1;
-	std::string skill = xml_team.getData<std::string>("skill", i);
+        std::string skill = xml_team.getData<std::string>("skill", i);
 
-	if (skill == "Block")
-	  pkt.skill[i] = SK_BLOCK;
-	if (skill == "Catch")
-	  pkt.skill[i] = SK_CATCH;
-	if (skill == "Dodge")
-	  pkt.skill[i] = SK_DODGE;
-	if (skill == "Pass")
-	  pkt.skill[i] = SK_PASS;
-	if (skill == "Surehand")
-	  pkt.skill[i] = SK_SUREHANDS;
+        if (skill == "Block")
+          pkt.skill[pkt.skill_nb] = SK_BLOCK;
+        else if (skill == "Catch")
+          pkt.skill[pkt.skill_nb] = SK_CATCH;
+        else if (skill == "Dodge")
+          pkt.skill[pkt.skill_nb] = SK_DODGE;
+        else if (skill == "Pass")
+          pkt.skill[pkt.skill_nb] = SK_PASS;
+        else if (skill == "Surehand")
+          pkt.skill[pkt.skill_nb] = SK_SUREHANDS;
+        else
+          pkt.skill[pkt.skill_nb] = SK_UNASSIGNED;
 
-	if (pkt.skill[i] != -1)
-	  pkt.skill_nb++;
-	else
-	  i--;
+        if (pkt.skill[pkt.skill_nb] != SK_UNASSIGNED)
+          pkt.skill_nb++;
       }
   }  catch (xml::XMLError&) {}
 
@@ -107,15 +106,15 @@ void CTeam::placeTeam(int formation_id)
         && (player_[i]->getStatus() == STA_RESERVE
           || player_[i]->getStatus() == STA_STANDING))
       {
-	MsgPlayerPos pkt;
-	Position pos = xml_formation_.getPos(player_[i]->getId() + 1);
-	pkt.player_id = player_[i]->getId();
-	pkt.row = pos.row;
-	pkt.col = pos.col;
-	// if this is team 2, mirror on rows [|13-25|].
-	if (team_id_ == 1)
-	  pkt.row = ROWS - pkt.row - 1;
-	r_->sendPacket(pkt);
+        MsgPlayerPos pkt;
+        Position pos = xml_formation_.getPos(player_[i]->getId() + 1);
+        pkt.player_id = player_[i]->getId();
+        pkt.row = pos.row;
+        pkt.col = pos.col;
+        // if this is team 2, mirror on rows [|13-25|].
+        if (team_id_ == 1)
+          pkt.row = ROWS - pkt.row - 1;
+        r_->sendPacket(pkt);
       }
 }
 

@@ -178,6 +178,7 @@ void        CRules::msgInitKickoff(const MsgInitKickoff* m)
         {
           assert(getState() != GS_INITKICKOFF);
           setState(GS_INITKICKOFF);
+          api_->selectTeam(US);
           // Our team has to enter the field
           // FIXME: Automatically use default placement, for now.
           our_team_->placeTeam(1);
