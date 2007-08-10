@@ -7,24 +7,24 @@
 	<xs:element name="bank" type="xs:long"/> <!-- team's treasury -->
 	<xs:element name="cas" type="xs:byte"/> <!-- player's number of opponent casualities -->
 	<xs:element name="cheerleader" type="xs:byte"/> <!-- team's number of chearleaders -->
-	<xs:element name="coach" type="xs:string"/> <!-- team's coach name -->
+	<xs:element name="coach" type="xs:token"/> <!-- team's coach name -->
 	<xs:element name="com" type="xs:byte"/> <!-- player's number of passing completions -->
 	<xs:element name="cost" type="xs:long"/> <!-- player's cost -->
 	<xs:element name="fanfactor" type="xs:byte"/> <!-- team's fan factor -->
 	<xs:element name="int" type="xs:byte"/> <!-- player's number of interceptions -->
 	<xs:element name="inj"> <!-- player's injuries -->
 		<xs:complexType>
-			<xs:attribute name="missNextMatch" type="xs:string" use="optional"/>
-			<xs:attribute name="nigglingInjuries" type="xs:string" use="optional"/>
-			<xs:attribute name="MaReduction" type="xs:string" use="optional"/>
-			<xs:attribute name="StReduction" type="xs:string" use="optional"/>
-			<xs:attribute name="AvReduction" type="xs:string" use="optional"/>
-			<xs:attribute name="AgReduction" type="xs:string" use="optional"/>
+			<xs:attribute name="missNextMatch" type="xs:token" use="optional"/>
+			<xs:attribute name="nigglingInjuries" type="xs:token" use="optional"/>
+			<xs:attribute name="MaReduction" type="xs:token" use="optional"/>
+			<xs:attribute name="StReduction" type="xs:token" use="optional"/>
+			<xs:attribute name="AvReduction" type="xs:token" use="optional"/>
+			<xs:attribute name="AgReduction" type="xs:token" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="ma" type="xs:byte"/> <!-- player's movement allowance -->
 	<xs:element name="mvp" type="xs:byte"/> <!-- player's number of Most Valuable Player awards -->
-	<xs:element name="name" type="xs:string"/> <!-- team's name -->
+	<xs:element name="name" type="xs:token"/> <!-- team's name -->
 	<xs:element name="player"> <!-- player -->
 		<xs:complexType>
 			<xs:sequence>
@@ -45,7 +45,7 @@
 			</xs:sequence>
 			<xs:attribute name="name" use="required">
 				<xs:simpleType>
-					<xs:restriction base="xs:string"/>
+					<xs:restriction base="xs:token"/>
 				</xs:simpleType>
 			</xs:attribute>
 			<xs:attribute name="number" use="required">
@@ -58,12 +58,12 @@
 			</xs:attribute>
 			<xs:attribute name="position" use="required">
 				<xs:simpleType>
-					<xs:restriction base="xs:string"/>
+					<xs:restriction base="xs:token"/>
 				</xs:simpleType>
 			</xs:attribute>
 			<xs:attribute name="display" use="required">
 				<xs:simpleType>
-					<xs:restriction base="xs:string"/>
+					<xs:restriction base="xs:token"/>
 				</xs:simpleType>
 			</xs:attribute>
 		</xs:complexType>
@@ -79,7 +79,7 @@
 	<xs:element name="rerollcost" type="xs:long"/> <!-- team's cost of reroll -->
 	<xs:element name="skill"> <!-- player's skill -->
 		<xs:simpleType>
-			<xs:restriction base="xs:string">
+			<xs:restriction base="xs:token">
 				<xs:enumeration value="Always Hungry"/>
 				<xs:enumeration value="Ball and Chain"/>
 				<xs:enumeration value="Block"/>
@@ -169,7 +169,7 @@
 			</xs:sequence>
 			<xs:attribute name="race" use="required">
 				<xs:simpleType>
-					<xs:restriction base="xs:string">
+					<xs:restriction base="xs:token">
 						<xs:enumeration value="Amazon"/>
 						<xs:enumeration value="Chaos"/>
 						<xs:enumeration value="Chaos Dwarf"/>
@@ -201,7 +201,7 @@
 			</xs:attribute>
 			<xs:attribute name="emblem" use="required">
 				<xs:simpleType>
-					<xs:restriction base="xs:string"/>
+					<xs:restriction base="xs:token"/>
 				</xs:simpleType>
 			</xs:attribute>
 		</xs:complexType>
