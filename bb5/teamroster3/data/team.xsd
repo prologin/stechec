@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="ag" type="xs:byte"/> <!-- player's agility -->
+	<xs:element name="apothecary" type="xs:byte"/> <!-- team's number of apothecaries -->
+	<xs:element name="assistant" type="xs:byte"/> <!-- team's number of assistants -->
+	<xs:element name="av" type="xs:byte"/> <!-- player's armor value -->
+	<xs:element name="bank" type="xs:long"/> <!-- team's treasury -->
+	<xs:element name="cas" type="xs:byte"/> <!-- player's number of opponent casualities -->
+	<xs:element name="cheerleader" type="xs:byte"/> <!-- team's number of chearleaders -->
+	<xs:element name="coach" type="xs:string"/> <!-- team's coach name -->
+	<xs:element name="com" type="xs:byte"/> <!-- player's number of passing completions -->
+	<xs:element name="cost" type="xs:long"/> <!-- player's cost -->
+	<xs:element name="fanfactor" type="xs:byte"/> <!-- team's fan factor -->
+	<xs:element name="int" type="xs:byte"/> <!-- player's number of interceptions -->
+	<xs:element name="inj"> <!-- player's injuries -->
+		<xs:complexType>
+			<xs:attribute name="missNextMatch" type="xs:string" use="optional"/>
+			<xs:attribute name="nigglingInjuries" type="xs:string" use="optional"/>
+			<xs:attribute name="MaReduction" type="xs:string" use="optional"/>
+			<xs:attribute name="StReduction" type="xs:string" use="optional"/>
+			<xs:attribute name="AvReduction" type="xs:string" use="optional"/>
+			<xs:attribute name="AgReduction" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ma" type="xs:byte"/> <!-- player's movement allowance -->
+	<xs:element name="mvp" type="xs:byte"/> <!-- player's number of Most Valuable Player awards -->
+	<xs:element name="name" type="xs:string"/> <!-- team's name -->
+	<xs:element name="player"> <!-- player -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ma"/>
+				<xs:element ref="st"/>
+				<xs:element ref="ag"/>
+				<xs:element ref="av"/>
+				<xs:element ref="cost"/>
+				<xs:element ref="skill" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="skills_double" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="inj" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="com"/>
+				<xs:element ref="td"/>
+				<xs:element ref="int"/>
+				<xs:element ref="cas"/>
+				<xs:element ref="mvp"/>
+				<xs:element ref="spp"/>
+			</xs:sequence>
+			<xs:attribute name="name" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="number" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:byte">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="15"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="position" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="display" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="players"> <!-- team's players -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="player" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="reroll" type="xs:byte"/> <!-- team's number of reroll -->
+	<xs:element name="rerollcost" type="xs:long"/> <!-- team's cost of reroll -->
+	<xs:element name="skill"> <!-- player's skill -->
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="Always Hungry"/>
+				<xs:enumeration value="Ball and Chain"/>
+				<xs:enumeration value="Block"/>
+				<xs:enumeration value="Blood Lust"/>
+				<xs:enumeration value="Bombardier"/>
+				<xs:enumeration value="Bone-Head"/>
+				<xs:enumeration value="Break Tackle"/>
+				<xs:enumeration value="Catch"/>
+				<xs:enumeration value="Chainsaw"/>
+				<xs:enumeration value="Claws"/>
+				<xs:enumeration value="Dauntless"/>
+				<xs:enumeration value="Decay"/>
+				<xs:enumeration value="Dirty Player"/>
+				<xs:enumeration value="Disturbing Presence"/>
+				<xs:enumeration value="Dodge"/>
+				<xs:enumeration value="Dump Off"/>
+				<xs:enumeration value="Foul Appearance"/>
+				<xs:enumeration value="Frenzy"/>
+				<xs:enumeration value="Horns"/>
+				<xs:enumeration value="Hypnotic Gaze"/>
+				<xs:enumeration value="Juggernaut"/>
+				<xs:enumeration value="Jump Up"/>
+				<xs:enumeration value="Leap"/>
+				<xs:enumeration value="Loner"/>
+				<xs:enumeration value="Mighty Blow"/>
+				<xs:enumeration value="Nerves of Steel"/>
+				<xs:enumeration value="No Hands"/>
+				<xs:enumeration value="Nurgle's Rot"/>
+				<xs:enumeration value="Pass"/>
+				<xs:enumeration value="Prehensile Tail"/>
+				<xs:enumeration value="Really Stupid"/>
+				<xs:enumeration value="Regeneration"/>
+				<xs:enumeration value="Right Stuff"/>
+				<xs:enumeration value="Safe Throw"/>
+				<xs:enumeration value="Secret Weapon"/>
+				<xs:enumeration value="Shadowing"/>
+				<xs:enumeration value="Side Step"/>
+				<xs:enumeration value="Sprint"/>
+				<xs:enumeration value="Stab"/>
+				<xs:enumeration value="Stand Firm"/>
+				<xs:enumeration value="Strong Arm"/>
+				<xs:enumeration value="Stunty"/>
+				<xs:enumeration value="Sure Feet"/>
+				<xs:enumeration value="Sure Hands"/>
+				<xs:enumeration value="Tackle"/>
+				<xs:enumeration value="Take Root"/>
+				<xs:enumeration value="Tentacles"/>
+				<xs:enumeration value="Thick Skull"/>
+				<xs:enumeration value="Throw Team-Mate"/>
+				<xs:enumeration value="Titchy"/>
+				<xs:enumeration value="Very Long Legs"/>
+				<xs:enumeration value="Wild Animal"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="skills"> <!-- player's normal skills -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="skill" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="skills_double"> <!-- player's skills on a double roll -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="skill_double" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="spp" type="xs:byte"/> <!-- player's star player points -->
+	<xs:element name="st" type="xs:byte"/> <!-- player's strength -->
+	<xs:element name="td" type="xs:byte"/> <!-- player's number of touchdowns -->
+	<xs:element name="team"> <!-- team -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="name"/>
+				<xs:element ref="coach"/>
+				<xs:element ref="bank"/>
+				<xs:element ref="reroll"/>
+				<xs:element ref="rerollcost"/>
+				<xs:element ref="fanfactor"/>
+				<xs:element ref="assistant"/>
+				<xs:element ref="cheerleader"/>
+				<xs:element ref="apothecary"/>
+				<xs:element ref="players"/>
+				<xs:element name="background" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="race" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Amazon"/>
+						<xs:enumeration value="Chaos"/>
+						<xs:enumeration value="Chaos Dwarf"/>
+						<xs:enumeration value="Dark Elf"/>
+						<xs:enumeration value="Dwarf"/>
+						<xs:enumeration value="Elf"/>
+						<xs:enumeration value="Goblin"/>
+						<xs:enumeration value="Halfling"/>
+						<xs:enumeration value="High Elf"/>
+						<xs:enumeration value="Human"/>
+						<xs:enumeration value="Khemri"/>
+						<xs:enumeration value="Lizardman"/>
+						<xs:enumeration value="Necromantic"/>
+						<xs:enumeration value="Norse"/>
+						<xs:enumeration value="Nurgle"/>
+						<xs:enumeration value="Ogre"/>
+						<xs:enumeration value="Orc"/>
+						<xs:enumeration value="Skaven"/>
+						<xs:enumeration value="Undead"/>
+						<xs:enumeration value="Vampire"/>
+						<xs:enumeration value="Wood Elf"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="BBversion" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:byte"/>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="emblem" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
