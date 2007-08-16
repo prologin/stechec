@@ -12,10 +12,8 @@ wait
 cheat 1 1
 kickoff 0 0
 
-print BEGIN DIFF
-print global
-print END DIFF
-
 wait
 # Turn 2, not reached.
+print BEGIN DIFF
 print This should not be printed, in any case.
+print END DIFF

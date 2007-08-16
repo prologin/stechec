@@ -12,7 +12,10 @@ cheat 1 1 1
 kickoff 2 2
 
 wait
-# Turn 1, not reached.
+# Turn 1.
+
 print BEGIN DIFF
-print This should not be printed, in any case.
+print players
 print END DIFF
+
+quit

@@ -27,4 +27,6 @@ end
 
 wait
 # Turn 2, never reached.
-print This should not be print, in any case.
+print BEGIN DIFF
+print This should not be printed, in any case.
+print END DIFF

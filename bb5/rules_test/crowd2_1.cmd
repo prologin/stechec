@@ -19,9 +19,8 @@ accept
 # Do nothing else.
 end
 
-# Drop End Turn event.
-wait
-
 wait
 # Turn 2, not reached.
+print BEGIN DIFF
 print This should not be printed, in any case.
+print END DIFF

@@ -3,10 +3,6 @@ wait
 place end
 
 wait
-# Don't reroll failed catch ball roll at kick-off.
-accept
-
-wait
 # Turn 1.
 
 # Move player 10 on ball's square.

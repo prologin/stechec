@@ -14,4 +14,6 @@ kickoff 0 0
 
 wait
 # Not reached.
+print BEGIN DIFF
 print This should not be printed, in any case.
+print END DIFF

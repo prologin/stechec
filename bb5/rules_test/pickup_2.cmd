@@ -18,4 +18,6 @@ print END DIFF
 
 wait
 # Turn 1, never reached.
+print BEGIN DIFF
 print This should not be printed, in any case.
+print END DIFF
