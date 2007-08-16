@@ -64,8 +64,7 @@ void STeamMsg::msgReroll(const MsgReroll* m)
   STeam* t;
 
   if (r_->getState() != GS_COACH1
-      && r_->getState() != GS_COACH2
-      && r_->getState() != GS_KICKOFF)
+      && r_->getState() != GS_COACH2)
     {
       LOG3("Token `%1' is not allowed in game state `%2'.",
           r_->stringifyToken(m->token), r_->getState());

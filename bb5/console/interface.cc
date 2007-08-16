@@ -430,7 +430,7 @@ void CmdLineInterface::evFollow()
 
 void CmdLineInterface::evReroll(int team_id, bool reroll)
 {
-  cout << "Coach " << team_id
+  cout << "Coach " << team_id << " "
     << (reroll?"uses":"doesn't use")
     << " a team reroll." << endl;
 }

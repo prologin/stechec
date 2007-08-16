@@ -179,7 +179,8 @@ void SPlayer::prepareKickoff()
 void SPlayer::setRerollAvailability()
 {
   setUsableSkills();
-  reroll_enabled_ = t_->canUseReroll() || !usable_skills_.empty();
+  reroll_enabled_ = !usable_skills_.empty()
+    || (r_->getState() != GS_KICKOFF && t_->canUseReroll());
 }
 
 void SPlayer::setUsableSkills()
