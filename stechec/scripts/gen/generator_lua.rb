@@ -109,36 +109,28 @@ static const struct binding_reg
 LuaInterface::LuaInterface()
 {
   l_ = lua_open();
-  luaopen_base(l_);
-  luaopen_string(l_);
-  luaopen_math(l_);
+  luaL_openlibs(l_);
 
   /* Register the API bindings */
-  fprintf(stderr, "[Lua] Populating the Lua table 'prologin'...\\n");
-  fprintf(stderr, "[Lua]  registering");
+  fprintf(stderr, "[Lua] populating the lua table 'prologin'...\\n");
   lua_newtable(l_);
   for (int i = 0; binding_func[i].lua_name; i++)
     {
       lua_pushstring(l_, binding_func[i].lua_name);
       lua_pushcfunction(l_, binding_func[i].lua_func);
       lua_settable(l_, -3);
-      fprintf(stderr, " %s", binding_func[i].lua_name);
     }
 
   lua_setglobal(l_, "prologin");
-  fprintf(stderr, ".\\n");
 
-  fprintf(stderr, "[Lua] Loading Lua code from lua_code.h...");
+  fprintf(stderr, "[Lua] loading lua code from lua_code.h...");
 #include "lua_code.h"
   fprintf(stderr, " done.\\n");
-
-  // run the script once to initialize statics, get global and functions.
-  callLuaFunction(NULL);
 }
 
 LuaInterface::~LuaInterface()
 {
-  // FIXME: maybe some desinit ?
+  lua_close(l_);
 }
 
 /*
@@ -146,12 +138,12 @@ LuaInterface::~LuaInterface()
 */
 void LuaInterface::callLuaFunction(const char* name)
 {
-  if (name != NULL)
-    lua_getglobal(l_, name);
+  lua_getglobal(l_, name);
   if (lua_pcall(l_, 0, 0, 0))
     {
-      fprintf(stderr, "[Lua] Error running function %s: %s !\\n",
+      fprintf(stderr, "[Lua] Error running function %s: %s\\n",
               name, lua_tostring(l_, -1));
+      lua_pop(l_, 1);  /* pop error message from the stack */
     }
 }
 

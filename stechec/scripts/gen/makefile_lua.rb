@@ -7,7 +7,7 @@
 # The complete GNU General Public Licence Notice can be found as the
 # `NOTICE' file in the root directory.
 #
-# Copyright (C) 2005, 2006 Prologin
+# Copyright (C) 2005, 2006, 2007 Prologin
 #
 
 class LuaMakefile
@@ -16,17 +16,18 @@ class LuaMakefile
 #####################
 # Macro Definitions #
 #####################
-LUA	= lua
+LUA_VER	= 5.1
+LUA	= lua$(LUA_VER)
 CXX 	= g++
 LIMEOBJ ?= ../includes/main.o
 OBJS 	= interface.o $(LIMEOBJ)
 RM 	= /bin/rm -f
 
-CXXFLAGS = -fPIC -W -Wall \
-   $(shell pkg-config --cflags lua50 lualib50) \
+CXXFLAGS = -fPIC -W -Wall \\
+   $(shell pkg-config --cflags lua$(LUA_VER)) \\
    $(MY_CXXFLAGS)
 
-LIBS = $(shell pkg-config --libs lua50 lualib50)
+LIBS = $(shell pkg-config --libs lua$(LUA_VER))
 
 ##############################
 # Basic Compile Instructions #
@@ -35,10 +36,10 @@ LIBS = $(shell pkg-config --libs lua50 lualib50)
 all: $(NAME)
 
 # generated c-code from lua
-lua_code.h : $(SRC)
+lua_code.h: $(SRC) bin2c.lua Makefile
 \t$(LUA) bin2c.lua $(SRC) > $@
 
-interface.o : interface.cc lua_code.h interface.hh
+interface.o: interface.cc lua_code.h interface.hh
 
 $(NAME): $(OBJS)
 \t$(CXX) #{TARGET_GCC_LINK} $(OBJS) $(LIBS) -o $(NAME) $(CHECK_CHEAT)
@@ -74,8 +75,6 @@ NAME      = #{$conf['conf']['player_lib']}.so
 
 MY_CXXFLAGS = -O2
 
-# FIXME: see it.
-#CHECK_CHEAT = `while read i; do echo -Wl,-wrap $$i; done < forbidden_fun-c`
 LIMEOBJ = stechec_lime.o
 
     EOF
