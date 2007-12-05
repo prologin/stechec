@@ -1,0 +1,42 @@
+conf:
+  package_name: prolo2008
+  client_rule_lib: fixme
+  server_rule_lib: fixme
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: \subsection{Constantes}
+  - doc_extra: \subsubsection{Les codes d'erreur}
+  -
+    cst_name: BAD_ARGUMENT
+    cst_val: -1
+    cst_comment: Un des arguments passe a la fonction est incorrect.
+  -
+    cst_name: SUCCESS
+    cst_val: 0
+    cst_comment: La commande s'est correctement effectuee.
+
+
+function:
+  - doc_extra: |
+     \subsection{Fonctions d'information}
+     Toutes les fonctions peuvent renvoyer les constantes
+     \textbf{BAD_ARGUMENT} ou \textbf{NO_UNIT} quand au moins un des
+     arguments est incorrect (même si cela n'est pas précisé pour chaque
+     fonction). Par exemple, cela se produit si vous appelez
+     la fonction \texttt{regarde} avec \texttt{x=13} et \texttt{y=5142}.
+     \subsubsection{Informations sur le monde}
+  -
+    fct_name: equipes
+    fct_summary: Nombre d'equipes presentes sur le terrain.
+    fct_ret_type: int
+
+user_function:
+  - doc_extra: |-
+     \subsection{Ce qu'il faut faire}
+     Chacun est libre de mener la stratégie qui lui semble la plus
+     adaptée, et a entière liberté sur la façon de l'implémenter.
+     Toutefois il est demandé d'écrire deux fonctions en particulier :
+     une fonction qui sera appelée au début de la partie, et une autre
+     qui sera appelée à chaque tour.

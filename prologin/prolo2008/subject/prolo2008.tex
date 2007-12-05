@@ -1,0 +1,72 @@
+%LaTeX Document
+
+\documentclass[a4paper,twoside,12pt]{article}
+
+\usepackage{a4}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage{verbatim}
+
+\usepackage{graphicx}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{subject}
+\usepackage{eurosym}
+
+%\NoAutoSpaceBeforeFDP
+
+\makeindex
+
+\begin{document}
+
+\sloppy
+
+\lhead[\textsl{Prologin 2007}]{\nouppercase \leftmark}
+\rhead[Sujet de finale]{}
+
+% Couverture =========================================================
+\begin{titlepage}
+\begin{center}
+%% \includegraphics[width=\linewidth]{logo_prologin2008} \\
+\vspace{4cm}
+\Huge
+\textbf{fixme}\\
+\vspace{2cm}
+\normalsize
+Sujet de la finale du Concours National d'Informatique\\
+6 au 8 mai 2008\\
+%\vspace{2cm}
+%\large(Dernière révision~: \date)\\
+\end{center}
+\end{titlepage}
+
+
+% Sommaire ===========================================================
+\cleardoublepage
+\tableofcontents
+
+% Corps ==============================================================
+\cleardoublepage
+\setcounter{page}{1}
+\pagestyle{fancy}
+\parskip=6pt plus 3pt
+
+\section{Introduction} %-----------------------------------
+
+\newpage
+
+\input{api}
+
+
+\newpage
+\section{Et que le meilleur gagne} %----------------------------------
+
+Il vous reste désormais 36h pour être le plus performant et c'est pour
+la bonne cause ! Donnez tout !
+
+\end{document}
+
+% ====================================================================
