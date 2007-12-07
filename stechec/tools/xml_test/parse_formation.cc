@@ -37,7 +37,7 @@ struct pt {
 
 int main()
 {
-  Log l(-1);
+  Log l(-2);
 
   XMLFormation p;
   p.parse(std::string(getenv("srcdir")) + "/formations.xml");

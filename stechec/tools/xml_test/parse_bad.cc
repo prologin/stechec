@@ -22,7 +22,7 @@ using namespace xml;
 
 int main()
 {
-  Log l(-1);
+  Log l(-2);
 
   // try a malformated xml file.
   XMLFormation p;
