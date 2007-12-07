@@ -1,9 +1,8 @@
 # -*- Makefile -*-
 
+TESTS = test_cx.sh
 
-check_PROGRAMS	=				\
-	cx					\
-	pool
+check_PROGRAMS = cx pool
 
 cx_SOURCES = test_tcp.cc
 pool_SOURCES = test_pool.cc

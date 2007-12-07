@@ -10,6 +10,7 @@
 ** Copyright (C) 2007 Prologin
 */
 
+#include <map>
 #include "logger/log.hh"
 #include "datatfs/TcpCx.hh"
 
@@ -20,6 +21,7 @@ void client()
   cx.connect("localhost", 23111);
   if (!cx.poll(2000)) {
     ERR("connection failed");
+    exit(3);
   }
   LOG1("connected");
 
@@ -28,8 +30,10 @@ void client()
   LOG1("5 packet sended");
 
   sleep(1);
-  if (!cx.poll())
+  if (!cx.poll()) {
     LOG1("nothing to read?");
+    exit(3);
+  }
   cx.receive();
 }
 
@@ -43,7 +47,7 @@ void server()
   LOG1("listening, now poll for ready connection");
   if (!cxl.poll(5000)) {
     ERR("no client after 5 seconds");
-    return;
+    exit(3);
   }
   cx = cxl.accept();
   LOG1("accepted");
@@ -55,7 +59,7 @@ void server()
   for (int i = 0; i < 5; i++) {
     if (!cx->poll(500)) {
       ERR("read1 timeout");
-      return;
+      exit(4);
     }
     Packet* p = cx->receive();
     printf(".");
@@ -72,7 +76,7 @@ int main(int argc, char **argv)
   if (argc < 2 || (strcmp(argv[1], "client") && strcmp(argv[1], "server")))
     {
       ERR("usage: %1 <server|client>", argv[0]);
-      return 0;
+      return 1;
     }
 
   try {
@@ -82,6 +86,7 @@ int main(int argc, char **argv)
       server();
   } catch (const NetError& e) {
     ERR(e.what());
+    return 2;
   }
   
   return 0;
