@@ -96,7 +96,7 @@ static const int nb_antibody = sizeof(antibody) / sizeof(char*);
 
 
 
-GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
+GlobulusGui::GlobulusGui(ConfFile* cfg_file, Api* api, ClientCx* ccx)
   : api_(api),
     ccx_(ccx),
     case_size_(64) // .png are 128x128
@@ -110,7 +110,7 @@ GlobulusGui::GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
   LOG4("Map size %1 %2\n", map_x_, map_y_);
 
   // Initialize SDL window and the main scrollable surface.
-  win_.init(xml);
+  win_.init(cfg_file);
   vscreen_ = new VirtualScrollableSurface("Screen",
                                           win_.getInput(),
                                           win_.getScreen().getSize(),
@@ -489,8 +489,8 @@ int GlobulusGui::run()
 
 
 // Library entry point.
-extern "C" int run(xml::XMLConfig* xml, Api* api, ClientCx* ccx)
+extern "C" int run(ConfFile* cfg_file, Api* api, ClientCx* ccx)
 {
-  GlobulusGui visu(xml, api, ccx);
+  GlobulusGui visu(cfg_file, api, ccx);
   return visu.run();
 }

@@ -13,7 +13,7 @@
 #include <time.h>
 #include "GameData.hh"
 #include "ServerEntry.hh"
-#include "conf/IniFile.hh"
+#include "misc/Conf.hh"
 
 ServerEntry::ServerEntry(GameData* game, Server* server,
                          const ConfSection* cfg)

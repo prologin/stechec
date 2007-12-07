@@ -25,7 +25,6 @@ Api::Api(GameData* gameData, Client* c) :
 
 int Api::equipes()
 {
-  //  LOG3("NB team: %1, NB player: %2", g_->getNbTeam(), g_->getNbPlayer());
   return g_->getNbTeam();
 }
 
@@ -173,7 +172,6 @@ int Api::position_leucocyte_x(int id)
 int Api::position_leucocyte_y(int id)
 {
   CHECK_DEAD();
-  //  LOG3("Looking for x: %1, y: %2", g_->players[id].col, g_->players[id].row);
   CHECK_PLAYER(id);
   CHECK_FOG(g_->players[id].col, g_->players[id].row);
 
@@ -260,7 +258,7 @@ int Api::definit_competence(int rapidite, int anticorps, int messages, int visio
   SendToServer(com);
 
   c_->ResetFogOfWar();
-  LOG1("UID : %1", g_->getUid());
+  LOG6("UID : %1", g_->getUid());
   g_->players[g_->getUid()].competences[PHAGO_SPEED] = rapidite;
   g_->players[g_->getUid()].competences[ANTIBODY_NB] = anticorps;
   g_->players[g_->getUid()].competences[MESSAGES_NB] = messages;
@@ -283,11 +281,11 @@ int Api::deplace_leucocyte(int x, int y)
   //   int		dir;
 
   TEST_POS(x, y);
-  LOG3("try to move Leucocyte row: %1 column: %2, from row: %3 col: %4",
+  LOG5("try to move Leucocyte row: %1 column: %2, from row: %3 col: %4",
        y, x, y2, x2);
   if (x == x2 && y == y2)
     {
-      LOG3("Deplacement useless...");
+      LOG5("Deplacement useless...");
       return SUCCESS;
     }
 

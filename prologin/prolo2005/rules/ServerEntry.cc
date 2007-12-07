@@ -16,8 +16,8 @@
 #include "ServerEntry.hh"
 #include "xml/xml_config.hh"
 
-ServerEntry::ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg) :
-  StechecServerEntry(game, server, cfg)
+ServerEntry::ServerEntry(GameData* game, Server* server, const ConfSection* cfg)
+  : StechecServerEntry(game, server, cfg)
 {
   g_->maxTurn = 20;
 }
@@ -28,8 +28,8 @@ ServerEntry::~ServerEntry()
 
 int        ServerEntry::ParseOptions()
 {
-  g_->maxTurn = cfg_.getData<int>("game", "max_turn");
-  mapFile = cfg_.getData<std::string>("game", "map");
+  g_->maxTurn = cfg_->getValue<int>("max_turn");
+  mapFile = cfg_.getValue<std::string>("map");
   return 0;
 }
 

@@ -30,9 +30,9 @@
 class OutAGui : public OutAnEvent
 {
 public:
-  OutAGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx);
+  OutAGui(ConfFile* cfg_file, Api* api, ClientCx* ccx);
   ~OutAGui();
-  
+
   int run();
 
 private:

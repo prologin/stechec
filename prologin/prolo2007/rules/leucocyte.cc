@@ -77,7 +77,7 @@ void	Leucocyte::PlayTurn ()
   if (state_ == STATE_DEAD)
     return;
   // antibody attack
-  LOG3("Antibody map, player :%1", get_id());
+  LOG3("Antibody map, player: %1", get_id());
 
 //   std::stringstream s;
 //   s << std::endl;
@@ -95,7 +95,7 @@ void	Leucocyte::PlayTurn ()
 //       s << std::endl;
 //     }
 //   LOG2(s.str().c_str());
-  LOG4("Leucocyte %1 antibodies", get_id ());
+  LOG4("Leucocyte %1 antibodies", get_id());
   for (int y = 0; y < g_->map_size.row; ++y)
     for (int x = 0; x < g_->map_size.col; ++x)
       {
@@ -167,7 +167,7 @@ void	Leucocyte::PlayTurn ()
 //       }
   if (state_ == STATE_PHAGOCYTOSING)
     {
-      LOG3("Phagocytose turn %1: %2", get_id(), phagocytose_turn_);
+      LOG4("Phagocytose turn %1: %2", get_id(), phagocytose_turn_);
       if (phagocytose_turn_ <= 0)
 	{
 	  if (l_)
@@ -179,7 +179,7 @@ void	Leucocyte::PlayTurn ()
 	  else if (v_ != NULL)
 	    {
 	      known_types_.push_back(v_->Maladie());
-	      LOG3("Me %1, I've learned: %2", get_id(), v_->Maladie());
+	      LOG4("Me %1, I've learned: %2", get_id(), v_->Maladie());
 	      g_->virus_killed_by_[get_id()]++;
 	      delete v_;
 	      v_ = NULL;
@@ -191,9 +191,9 @@ void	Leucocyte::PlayTurn ()
 	      if (c_->keep_ == CELL_STATE_INFECTED)
 		{
 		  known_types_.push_back(c_->Maladie());
-		  LOG3("I've learned: %1", c_->Maladie());
+		  LOG4("I've learned: %1", c_->Maladie());
 		}
-	      LOG1("Killed a cell");
+	      LOG3("Killed a cell");
 	      c_ = 0;
 	    }
 	  state_ = STATE_NORMAL;
@@ -210,7 +210,7 @@ void	Leucocyte::setGameData(GameData* g)
 void  Leucocyte::Phagocyte(int y, int x, Virus& v)
 {
   Phagocyte ();
-  LOG3("Phagocytosing virus");
+  LOG4("Phagocytosing virus");
   v.StopActions ();
   v_ = &v;
 
@@ -219,7 +219,7 @@ void  Leucocyte::Phagocyte(int y, int x, Virus& v)
 void  Leucocyte::Phagocyte(int y, int x, Cellule& c)
 {
   Phagocyte ();
-  LOG3("Phagocytosing cell");
+  LOG4("Phagocytosing cell");
   c.setSante (CELL_STATE_BEING_PHAGOCYTED);
   c.StopActions ();
   c_ = &c;
@@ -228,7 +228,7 @@ void  Leucocyte::Phagocyte(int y, int x, Cellule& c)
 void  Leucocyte::Phagocyte(int y, int x, Leucocyte& l)
 {
   Phagocyte ();
-  LOG3("Phagocytosing Leucocyte : %1", l.get_id ());
+  LOG4("Phagocytosing Leucocyte : %1", l.get_id ());
   l.StopActions ();
   l.setState (STATE_BEING_PHAGOCYTED);
   l_ = &l;
@@ -246,7 +246,7 @@ void		Leucocyte::StopActions ()
       else if (v_ != NULL)
 	{
 	  g_->_virus.push_back(v_);
-	  LOG3("Replacing virus");
+	  LOG4("Replacing virus");
 	  v_ = NULL;
 	}
       else if (c_)

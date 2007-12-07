@@ -95,15 +95,3 @@ Player::Player()
   hotel_count = 0; 
 }
 
-
-
-/*!
-** @brief Module description
-*/
-extern "C" const struct RuleDescription rules_description = {
-  "prolo2005",
-  "Prologin 2005 final contest rules",
-  "libzavie",
-  1,
-  0,
-};

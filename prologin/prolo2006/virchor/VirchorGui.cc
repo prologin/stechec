@@ -12,6 +12,7 @@
 
 #include "VirchorGui.hh"
 
+class ConfFile;
 
 VirchorGui::VirchorGui(Api* api, ClientCx* ccx)
   : api_(api),
@@ -202,7 +203,7 @@ int VirchorGui::run()
 }
 
 // Library entry point.
-extern "C" int run(xml::XMLConfig*, Api* api, ClientCx* ccx)
+extern "C" int run(ConfFile*, Api* api, ClientCx* ccx)
 {
   VirchorGui visu(api, ccx);
 

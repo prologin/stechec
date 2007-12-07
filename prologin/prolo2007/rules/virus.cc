@@ -1,3 +1,15 @@
+/*
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** The complete GNU General Public Licence Notice can be found as the
+** `NOTICE' file in the root directory.
+**
+** Copyright (C) 2007 Prologin
+*/
+
 #include <iostream>
 #include "GameData.hh"
 #include "virus.hh"
@@ -50,7 +62,7 @@ void Virus::PlayTurn()
   {
      _hote->Infect();
      _hote->setInfection(_maladie);
-     LOG3("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row, _hote->col);
+     LOG4("/!\\ Cellule Infected (%1, %2) /!\\", _hote->row, _hote->col);
      _hote = NULL;
      _etat_infection = 0;
      life_ = 0;
@@ -128,7 +140,7 @@ void Virus::PlayTurn()
 	    ncol < 0 || ncol >= _g->map_size.col ||
 	    cell[n] == 2 /* Cellule infectée */  || !_g->TestLeucocyte(nrow, ncol)
 	    || !_g->TestVirus (nrow, ncol));
-     LOG3("Virus decided to move to %1, %2", nrow, ncol);
+     LOG4("Virus decided to move to %1, %2", nrow, ncol);
      row = nrow;
      col = ncol;
   }

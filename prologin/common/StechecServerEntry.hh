@@ -41,9 +41,9 @@ class StechecServerEntry: protected StechecServer, public StechecEntry
 
 public:
 
-  StechecServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg) :
-    StechecServer(game, server),
-    cfg_(cfg)
+  StechecServerEntry(GameData* game, Server* server, const ConfSection* cfg)
+    : StechecServer(game, server),
+      cfg_(cfg)
   { }
   virtual ~StechecServerEntry() {}
 
@@ -66,8 +66,8 @@ protected:
   */
   FILE*        OpenMap(const char* filename);
 
-  //! @brief Some parameters...
-  const xml::XMLConfig& cfg_;
+  //! @brief Keep rules parameters, somebody will need it.
+  const ConfSection* cfg_;
 };
 
 

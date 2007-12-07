@@ -1,8 +1,8 @@
 # -*- Makefile -*-
 
-lib_LTLIBRARIES = globulus.la
+lib_LTLIBRARIES = robotus.la
 
-globulus_la_SOURCES =			\
+robotus_la_SOURCES =			\
 	Api.cc				\
 	Api.hh				\
 	Client.cc			\
@@ -24,15 +24,15 @@ globulus_la_SOURCES =			\
 	load_rules.cc			\
 	interface.cc
 
-globulus_la_LDFLAGS = -module
-globulus_la_LIBADD =						\
+robotus_la_LDFLAGS = -module
+robotus_la_LIBADD =						\
 	$(top_builddir)/prologin/common/libstechec_rules.la
 
 
-globulus_la_CXXFLAGS =					\
+robotus_la_CXXFLAGS =					\
 	-DMODULE_NAME=\"fixme\"			\
 	-DMODULE_COLOR=C_RED				\
-	-DLIB_NAME=\"GLOBULUS\"				\
+	-DLIB_NAME=\"robotus\"				\
 	-DPKG_DATA_DIR=\"$(pkgdatadir)/prolo2008\"	\
 	-DYAML
 
@@ -46,9 +46,9 @@ INCLUDES 	=				\
 #
 check_PROGRAMS = prolo2008
 
-prolo2008_SOURCES  = check.cc $(globulus_la_SOURCES)
-prolo2008_CXXFLAGS = $(globulus_la_AM_CXXFLAGS)
+prolo2008_SOURCES  = check.cc $(robotus_la_SOURCES)
+prolo2008_CXXFLAGS = $(robotus_la_AM_CXXFLAGS)
 prolo2008_LDADD    =					\
-	$(globulus_la_LIBADD)				\
+	$(robotus_la_LIBADD)				\
 	$(top_builddir)/stechec/tools/libtools.la	\
 	$(LIBDL)

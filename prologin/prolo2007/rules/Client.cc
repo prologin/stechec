@@ -15,7 +15,7 @@
 
 void	Client::InitData ()
 {
-   ResetFogOfWar ();
+   ResetFogOfWar();
 }
 
 void	Client::FreeData ()
@@ -65,7 +65,7 @@ void		Client::UpdateFogOfWar(unsigned player_id, struct Position& from,
 {
    if (dec)
       change_fog(player_id, from, -1);
-   LOG1("FOG of war wil change (normaly)");
+   LOG5("FOG of war wil change (normaly)");
    change_fog(player_id, to, 1);
 }
 

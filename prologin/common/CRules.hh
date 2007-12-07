@@ -35,7 +35,7 @@ class StechecClientEntry;
 class CRules : public BaseCRules, public SignalHandler
 {
 public:
-  CRules(const xml::XMLConfig& cfg, StechecGameData* data, StechecClient* client,
+  CRules(const ConfSection* cfg, StechecGameData* data, StechecClient* client,
          StechecApi* api, StechecClientDiffer* differ, StechecClientEntry* clientep);
   virtual ~CRules();
 

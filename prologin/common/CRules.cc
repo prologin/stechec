@@ -13,7 +13,7 @@
 # include "Contest.hh"
 # include "CRules.hh"
 
-CRules::CRules(const xml::XMLConfig& cfg,
+CRules::CRules(const ConfSection* cfg,
                StechecGameData* data,
                StechecClient* client,
                StechecApi* api,
@@ -39,7 +39,7 @@ CRules::CRules(const xml::XMLConfig& cfg,
   api_->setClientRules(this);
   client_entry_->flushPacketList();
 
-  limiter_.setConfigLimits(cfg);
+  limiter_.setConfigLimits(*cfg);
   limiter_.setSignalHandler(this);
 }
 
@@ -123,11 +123,10 @@ void CRules::msgListTeam(const MsgListTeam* m)
 }
    
 // Called before the champion is loaded.
-void CRules::msgBeforeGame(const MsgBeforeGame*)
+void CRules::msgBeforeGame(const MsgBeforeGame* m)
 {
-  data_->nb_player_ = getCoachNumber();
+  data_->nb_player_ = m->nb_player;
   data_->nb_team_ = getTeamNumber();
-  LOG2("nbplayer: %1, nbteam: %2", data_->nb_player_, data_->nb_team_);
   if (getCoachId() < UID_VIEWER_BASE)
     data_->id_ = getCoachId();
 

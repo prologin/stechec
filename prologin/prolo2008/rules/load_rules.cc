@@ -10,7 +10,7 @@
 ** Copyright (C) 2007 Prologin
 */
 
-#include "conf/IniFile.hh"
+#include "misc/Conf.hh"
 #include "CRules.hh"
 #include "SRules.hh"
 #include "Client.hh"

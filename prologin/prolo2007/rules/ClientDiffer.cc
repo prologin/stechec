@@ -40,13 +40,13 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
       }
     case NEW_VIRUS:
       {
-	LOG1("New virus detected : %1 %2 %3", com->arg[0], com->arg[1], com->arg[2]);
+	LOG4("New virus detected : %1 %2 %3", com->arg[0], com->arg[1], com->arg[2]);
 	g_->_virus.push_back(new Virus(com->arg[0], com->arg[1], com->arg[2], g_));
 	break;
       }
     case NEW_CELL:
       {
-	LOG1("New cell detected");
+	LOG4("New cell detected");
 	g_->_cells.push_back(new Cellule(com->arg[0], com->arg[1], CELL_MITOSIS_MATERIAL * 2,
 					 g_));
 	break;
@@ -60,12 +60,12 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 
 	Position dep = Position(l.row, l.col);
 	Position arr = Position(row, col);
-	LOG3("Changing fow of : %1", g_->getUid ());
+	LOG6("Changing fow of : %1", g_->getUid ());
 	//	if (g_->getUid () == player_id)
 	c_->UpdateFogOfWar(player_id, dep, arr, true);
 	l.row = row;
 	l.col = col;
-	LOG3("Differ: move Leucocyte %1 from: %2 to : %3", player_id, dep, arr);
+	LOG4("Differ: move Leucocyte %1 from: %2 to : %3", player_id, dep, arr);
 	break;
       }
 
@@ -74,7 +74,7 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	int player_id = com->client_id;
 	int team_id = com->arg[0];
 
-	LOG3("NEW_LEUCO: team: %1, uid: %2, x: %3, y: %4",
+	LOG4("NEW_LEUCO: team: %1, uid: %2, x: %3, y: %4",
 	     team_id, player_id, com->arg[1], com->arg[2]);
 
 	g_->players[player_id].set_id(player_id);
@@ -88,7 +88,7 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 // 	  {
 	Position dep = Position(0, 0);
 	Position arr = Position(com->arg[2], com->arg[1]); // [row, col]
-	LOG4("This is me :))) -> update fog of war");
+	LOG5("This is me :))) -> update fog of war");
 	c_->UpdateFogOfWar(player_id, dep, arr, false);
 	    //	  }
 	break;
@@ -103,7 +103,7 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
     case DROP_ANTIBODY:
       {
 	g_->players[com->client_id].addAntibody();
-	LOG3("Dropping antibody.. %1", com->client_id);
+	LOG4("Dropping antibody.. %1", com->client_id);
 	break;
       }
     case COMPETENCE:
@@ -122,7 +122,7 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
       }
     case PHAGOCYTE:
       {
-	LOG1("Phagocytose requested by %1 to [%2, %3]", com->client_id, com->arg[0], com->arg[1]);
+	LOG4("Phagocytose requested by %1 to [%2, %3]", com->client_id, com->arg[0], com->arg[1]);
 	g_->Phagocytose (com->client_id, com->arg[0], com->arg[1]);
 	break;
       }
@@ -131,9 +131,10 @@ void		ClientDiffer::ApplyDiff(const StechecPkt *com)
 	g_->players[com->client_id].score_ = com->arg[0];
 	break;
       }
-    default :
+    default:
       {
-	//	LOG1("Unexpected message arrives... id : %1", com->type);
+        LOG2("Differ get unexpected message, id: %1", com->type);
+        break;
       }
     }
 }

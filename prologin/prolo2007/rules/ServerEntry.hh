@@ -20,7 +20,7 @@ class ServerEntry : public StechecServerEntry
 {
 public:
 
-  ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg);
+  ServerEntry(GameData* game, Server* server, const ConfSection* cfg);
   virtual ~ServerEntry();
 
   // Different entry pointg
@@ -45,7 +45,6 @@ private:
   void		CheckMap ();
 
   std::string	mapFile;
-
 };
 
 #endif // !SERVERENTRY_HH_

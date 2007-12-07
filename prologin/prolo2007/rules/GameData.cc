@@ -207,33 +207,36 @@ void	GameData::Phagocytose(int id, int y, int x)
     return;
 }
 
-void	GameData::PlayTurn ()
+void	GameData::PlayTurn()
 {
 
   /*
   ** Ajout deather
   **
   ** A chaque tour, on memorise le nombre de cellules en vie.
+  ** Victor: seulement cote serveur.
   */
   std::vector<Cellule*>::iterator citer;
   std::vector<Virus*>::iterator viter;
   int ccount; // cellules
   int tccount; // total cellules
   int vcount; // viruses
-
-  for (tccount = ccount = 0, citer = _cells.begin(); 
-       citer != _cells.end(); 
-       ++citer, tccount++)
+  if (getUid() == -1)
     {
-      if ((*citer)->Saine())
-	ccount++;
+      for (tccount = ccount = 0, citer = _cells.begin(); 
+           citer != _cells.end(); 
+           ++citer, tccount++)
+        {
+          if ((*citer)->Saine())
+            ccount++;
+        }
+      _cells_count.push_back(ccount);
+      for (vcount = 0, viter = _virus.begin();
+           viter != _virus.end();
+           ++viter, ++vcount)
+        ;
+      LOG1("%1 %2 %3 %4", LOG_PATTERN, ccount, tccount - ccount, vcount);
     }
-  _cells_count.push_back(ccount);
-  for (vcount = 0, viter = _virus.begin();
-       viter != _virus.end();
-       ++viter, ++vcount)
-    ;
-  LOG1("%1 %2 %3 %4", LOG_PATTERN, ccount, tccount - ccount, vcount);
 
   /*
    * Evolution des nutriments : spread et ajout
@@ -334,14 +337,22 @@ void	GameData::PlayTurn ()
     if (players[i].getState () == STATE_NORMAL ||
 	players[i].getState () == STATE_PHAGOCYTOSING)
       players[i].PlayTurn();
-  LOG1("Current Score: %1 -- Currently alive cells: %2", this->calculScore(),
-  ccount);
-  LOG1("End of turn %1", this->getCurrentTurn());
-  deleteCells ();
+
+  if (getUid() == -1)
+    {
+      LOG1("Current Score: %1 -- Currently alive cells: %2",
+           this->calculScore(), ccount);
+    }
+
+  deleteCells();
 }
 
-void	GameData::end ()
+void	GameData::end()
 {
+  // This function should only be called server-side
+  if (getUid() >= 0)
+    return;
+    
   LOG1("************************************");
   LOG1("         Match statistics");
   LOG1("====================================");
@@ -418,7 +429,7 @@ void	GameData::end ()
   LOG1("----> Score: %1", last_score_);
 }
 
-void	GameData::init ()
+void	GameData::init()
 {
   for (int x = 0; x < map_size.row; x++)
     for (int y = 0; y < map_size.col; y++)
@@ -444,7 +455,7 @@ void	GameData::init ()
 }
 
 
-void GameData::deleteCells ()
+void GameData::deleteCells()
 {
   std::vector<Cellule*>::iterator i;
   i = _cells.begin();
@@ -477,7 +488,7 @@ void GameData::deleteCells ()
 
 //  How to compute the score
 // Called by ServerEntry::getScore()
-int	GameData::calculScore ()
+int	GameData::calculScore()
 {
   int	score;
   int	i;
@@ -503,15 +514,3 @@ int	GameData::calculScore ()
   last_score_ = score;
   return (score);
 }
-
-
-/*!
-** @brief Module description
-*/
-extern "C" const struct RuleDescription rules_description = {
-  "prolo2007",
-  "Prologin 2007 final contest rules",
-  "globulus",
-  2,	/* version major */
-  1,	/* version minor */
-};

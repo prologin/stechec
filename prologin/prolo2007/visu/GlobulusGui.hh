@@ -34,7 +34,7 @@
 class GlobulusGui : public GlobulusEvent
 {
 public:
-  GlobulusGui(xml::XMLConfig* xml, Api* api, ClientCx* ccx);
+  GlobulusGui(ConfFile* cfg_file, Api* api, ClientCx* ccx);
   ~GlobulusGui();
 
   int run();

@@ -15,10 +15,13 @@
 #include "Client.hh"
 
 SRules::SRules(StechecGameData* data, StechecServer* server,
-               StechecServerResolver* resolver, StechecServerEntry* serverep)
-  : wait_nb_(0),
+               StechecServerResolver* resolver, StechecServerEntry* serverep,
+               int team_nb, int player_per_team_nb)
+  : BaseSRules(player_per_team_nb * team_nb),
+    nb_team_(team_nb),
+    wait_nb_(0),
     wait_ok_(false),
-    coach_killed_nb_(0),
+    player_killed_nb_(0),
     league_tab_size_(0),
     data_(data),
     server_(server),
@@ -26,7 +29,7 @@ SRules::SRules(StechecGameData* data, StechecServer* server,
     server_entry_(serverep)
 {
   for (int i = 0; i < MAX_PLAYER; i++)
-    coach_error_[i] = NULL;
+    player_error_[i] = NULL;
   
   HANDLE_WITH(STECHEC_PKT, SRules, this, msgStechecPkt, GS_PLAYTURN);
   HANDLE_WITH(MSG_INIT_GAME, SRules, this, msgInitGame, GS_INITGAME);
@@ -49,7 +52,7 @@ SRules::~SRules()
   delete server_;
   delete data_;
 
-  std::for_each(coach_error_, coach_error_ + MAX_PLAYER, Deleter());
+  std::for_each(player_error_, player_error_ + MAX_PLAYER, Deleter());
 }
 
 const char* SRules::tokenToString(unsigned token) const
@@ -78,7 +81,7 @@ void SRules::addPlayer(int client_id, int league_id)
       league_tab_[i].league_id = league_id;
       league_tab_[i].count = 1;
       if (++league_tab_size_ > MAX_TEAM)
-	ERR("too much team (max %1)", MAX_TEAM);
+	ERR("Too much team (max %1)", MAX_TEAM);
     }
 
   data_->team_[client_id] = i;
@@ -92,7 +95,7 @@ bool SRules::afterHook(int res, const char* hook_name)
 {
   if (res)
     {
-      LOG1("Server hook `%1' failed.", hook_name);
+      LOG3("Server hook `%1' failed.", hook_name);
       if (getState() != GS_BEFOREGAME && getState() != GS_AFTERGAME)
         {
           LOG4("Prematurly call afterGame()");
@@ -117,30 +120,31 @@ bool SRules::afterHook(int res, const char* hook_name)
 }
 
 // Check all teams are full, and we have the exact number of announced
-// connected team / clients than in the xml.
+// connected team / clients we should expect from parameters.
 // Maybe we can remove this check, but rules must be made accordingly.
 bool SRules::checkTeamFilling()
 {
-  const int player_per_team = getCoachNumber() /  getTeamNumber();
+  const int nb_player = getTeamNumber();
+  const int player_per_team = nb_player / nb_team_;
 
-  if (league_tab_size_ != getTeamNumber())
+  if (league_tab_size_ != nb_team_)
     {
-      ERR("not enough, or too much team connected (%1/%2)",
-	  league_tab_size_, getTeamNumber());
+      ERR("Not enough, or too much teams connected (%1/%2)",
+	  league_tab_size_, nb_team_);
       return false;
     }
 
-  for (int i = 0; i < getCoachNumber(); i++)
+  for (int i = 0; i < nb_player; i++)
     if (data_->team_[i] == -1)
       {
-	ERR("id %1 is not filled", i);
+	ERR("Team id %1 is not filled", i);
 	return false;
       }
 
-  for (int i = 0; i < getTeamNumber(); i++)
+  for (int i = 0; i < nb_team_; i++)
     if (league_tab_[i].count != player_per_team)
       {
-	ERR("not enough player connected to the team %1 (%2/%3)",
+	ERR("Not enough player connected to the team %1 (%2/%3)",
 	    league_tab_[i].league_id, league_tab_[i].count, player_per_team);
 	return false;
       }
@@ -150,8 +154,8 @@ bool SRules::checkTeamFilling()
 // Called _once_, when all clients are connected.
 void SRules::serverStartup()
 {
-  data_->nb_player_ = getCoachNumber();
-  data_->nb_team_ = getTeamNumber();
+  data_->nb_player_ = getTeamNumber();
+  data_->nb_team_ = nb_team_;
 
   if (!checkTeamFilling())
     {
@@ -164,7 +168,10 @@ void SRules::serverStartup()
   if (!afterHook(r, "beforeGame"))
     return;
 
-  sendPacket(MsgBeforeGame());
+  MsgBeforeGame mbg;
+  mbg.nb_player = data_->nb_player_;
+  sendPacket(mbg);
+
   setState(GS_INITGAME);
 }
 
@@ -228,12 +235,12 @@ void SRules::serverProcess()
 
 bool  SRules::coachKilled(int coach_id, CoachErrorCustom*& cec)
 {
-  coach_killed_nb_++;
-  if (coach_error_[coach_id] != NULL)
+  player_killed_nb_++;
+  if (player_error_[coach_id] != NULL)
     {
       // We already have a failure reports from the client itself.
-      cec = coach_error_[coach_id];
-      coach_error_[coach_id] = NULL; 
+      cec = player_error_[coach_id];
+      player_error_[coach_id] = NULL; 
     }
   else
     {
@@ -286,7 +293,7 @@ bool SRules::waitAllClient(int client_id)
       
       wait_tab_[wait_nb_++] = client_id;
     }
-  if (wait_nb_ >= getCoachNumber() - coach_killed_nb_)
+  if (wait_nb_ >= data_->nb_player_ - player_killed_nb_)
     {
       wait_ok_ = true;
       wait_nb_ = 0;
@@ -346,12 +353,12 @@ void SRules::msgAfterTurn(const MsgAfterTurn* m)
 
 void SRules::msgChampionError(const MsgChampionError* m)
 {
-  if (coach_error_[m->client_id] == NULL)
+  if (player_error_[m->client_id] == NULL)
     {
       CoachErrorCustom* cec = new CoachErrorCustom;
       cec->fail_reason_ = packetToString(m->reason);
       cec->fail_turn_ = data_->getCurrentTurn();
-      coach_error_[m->client_id] = cec;
+      player_error_[m->client_id] = cec;
       LOG4("Champion `%1' has fatal error: %2",
            m->client_id, cec->fail_reason_);
     }

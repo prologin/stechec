@@ -12,10 +12,10 @@
 
 #include "GameData.hh"
 #include "ServerEntry.hh"
-#include "xml/xml_config.hh"
+#include "misc/Conf.hh"
 
-ServerEntry::ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg) :
-   StechecServerEntry(game, server, cfg)
+ServerEntry::ServerEntry(GameData* game, Server* server, const ConfSection* cfg)
+  : StechecServerEntry(game, server, cfg)
 {
   g_->max_date = -1;
   std::fill(score_, score_ + MAX_PLAYER, 0);
@@ -30,8 +30,8 @@ ServerEntry::~ServerEntry()
 // don't know what to do with this method for now.. let met think of this
 int        ServerEntry::ParseOptions()
 {
-  g_->max_date = cfg_.getData<int>("game", "max_turn");
-  mapFile = cfg_.getData<std::string>("game", "map");
+  g_->max_date = cfg_->getValue<int>("max_turn");
+  mapFile = cfg_->getValue<std::string>("map");
 
   // Check for crasy people.
   if (g_->max_date > MAX_DATE)

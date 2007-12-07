@@ -15,7 +15,6 @@
 
 void	ServerResolver::ApplyResolver(CommandListRef cmdList[])
 {
-
   // Gere les messages speciaux a part.
   Competences   (cmdList[COMPETENCE]);
   moveLeucocyte (cmdList[MOVE_LEUCO]);
@@ -72,7 +71,7 @@ void	ServerResolver::moveLeucocyte(CommandListRef& cmdList)
 	  g_->players[id].row = y;
 	  g_->players[id].col = x;
 	  //      g_->terrain_type[y][x] = WHITE_CELL;
-	  LOG3("Accept MOVE: Get arg x: %1, y:%2, id: %3", x, y, id);
+	  LOG4("Accept MOVE: Get arg x: %1, y:%2, id: %3", x, y, id);
 	  // Si mouvement valide, on envoit ca a tout le monde
 	  SendToAll(*elt);
 	}
@@ -88,7 +87,7 @@ void	ServerResolver::Antibody (CommandListRef& cmdList)
     {
       elt = *it;
       Leucocyte* cur = &g_->players[elt->client_id];
-      LOG3("Leucocyte %1 drops antibodies", elt->client_id);
+      LOG4("Leucocyte %1 drops antibodies", elt->client_id);
       cur->addAntibody();
       SendToAll(*elt);
     }
@@ -127,7 +126,7 @@ void	ServerResolver::validatePh (bool*  validated,
 	    {
 	      validated[i] = false;
 	      validated[index] = false;
-	      LOG3("Action %1 %2 cancelled...", i, index);
+	      LOG4("Action %1 %2 cancelled...", i, index);
     }
 	}
     }
@@ -141,7 +140,7 @@ void	ServerResolver::validate (bool*  validated,
 
   for (int i = 0; i < cmdList.size (); ++i)
     {
-      LOG3("Validating %1 with %2 : [%3,%4]<>[%5,%6]", i, index,
+      LOG4("Validating %1 with %2 : [%3,%4]<>[%5,%6]", i, index,
 	   y, x, cmdList[i]->arg[0],cmdList[i]->arg[1]);
       if (i != index)
 	{
@@ -150,7 +149,7 @@ void	ServerResolver::validate (bool*  validated,
 	    {
 	      validated[i] = false;
 	      validated[index] = false;
-	      LOG3("Action %1 %2 cancelled...", i, index);
+	      LOG4("Action %1 %2 cancelled...", i, index);
 	    }
 	}
     }
@@ -168,14 +167,14 @@ void	ServerResolver::Phagocytose(CommandListRef& cmdList)
   for (it = cmdList.begin(); it != cmdList.end(); ++it, ++i)
     {
       StechecPkt* elt = *it;
-      LOG1("Phagocytose requested by %1 to [%2,%3]",
+      LOG3("Phagocytose requested by %1 to [%2,%3]",
 	  elt->client_id, elt->arg[0], elt->arg[1]);
       if (validated[i])
 	{
 	  validatePh (validated, cmdList, i);
 	  if (!validated[i])
 	    continue;
-	  LOG1("Phagocytose accepted by %1 to [%2,%3]",
+	  LOG3("Phagocytose accepted by %1 to [%2,%3]",
 	       elt->client_id, elt->arg[0], elt->arg[1]);
 	  g_->Phagocytose (elt->client_id, elt->arg[0], elt->arg[1]);
 	  SendToAll(**it);
@@ -190,7 +189,7 @@ void	ServerResolver::Messages(CommandListRef& cmdList)
 
   for (it = cmdList.begin(); it != cmdList.end(); ++it)
     {
-      LOG3("Send Message ...");
+      LOG5("Send Message ...");
       SendToAll(**it);
     }
 }

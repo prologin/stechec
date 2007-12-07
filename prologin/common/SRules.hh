@@ -46,7 +46,8 @@ class SRules : public BaseSRules
 {
 public:
   SRules(StechecGameData* data, StechecServer* server,
-	 StechecServerResolver* resolver, StechecServerEntry* serverep);
+	 StechecServerResolver* resolver, StechecServerEntry* serv_entry,
+         int team_nb, int player_per_team_nb);
   virtual ~SRules();
 
 private:
@@ -74,11 +75,14 @@ private:
   void msgAfterTurn(const MsgAfterTurn* m);
   void msgChampionError(const MsgChampionError* m);
 
+  //! @brief Team number.
+  int                    nb_team_;   
+  
   int                    wait_nb_;			///< Number of ready player.
-  bool                   wait_ok_;
+  bool                   wait_ok_;                      ///< All player are ready.
   int                    wait_tab_[MAX_PLAYER];		///< Uid list of ready player.
-  CoachErrorCustom*      coach_error_[MAX_PLAYER];	///< Array of received player error.
-  int                    coach_killed_nb_;        ///< Number of coach killed.
+  CoachErrorCustom*      player_error_[MAX_PLAYER];	///< Array of received player error.
+  int                    player_killed_nb_;             ///< Number of player killed.
   
   // Correspondance between league_id and team_id.
   struct LeagueTab

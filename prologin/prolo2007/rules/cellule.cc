@@ -190,7 +190,7 @@ void	Cellule::PlayTurn ()
   if (_matiere <= 0 || life_ <= 0)
     {
       _sante = CELL_STATE_DEAD;
-      LOG1("A cell is dead");
+      LOG3("A cell is dead");
       return;
     }
 
