@@ -120,10 +120,10 @@ namespace StringPrivate
       }
     std::cerr << std::endl;
   }
-  
+
   // implementation of class Composition
   template <typename T>
-  inline Composition &Composition::arg(const T &obj)
+  inline Composition &Composition::arg(const T& obj)
   {
     std::cerr << spec.front().second;
     spec.pop_front();
@@ -132,7 +132,6 @@ namespace StringPrivate
     
     return *this;
   }
-    
 }
 
 

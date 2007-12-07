@@ -44,7 +44,7 @@ void Library::open(const std::string& library_file)
 {
   if (hndl_ != NULL)
     {
-			LOG5("Unload dynamic library `%1`", library_file);
+      LOG5("Unload dynamic library `%1`", library_file);
       dlclose(hndl_);
     }
 

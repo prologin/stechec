@@ -8,6 +8,8 @@ libtools_la_SOURCES =				\
 	tools.hh
 
 libtools_la_SOURCES +=				\
+	misc/Conf.cc				\
+	misc/Conf.hh				\
 	misc/Library.cc				\
 	misc/Library.hh				\
 	misc/Stl.hh				\
@@ -42,8 +44,6 @@ libtools_la_SOURCES +=				\
 libtools_la_SOURCES +=				\
 	xml/xml.cc				\
 	xml/xml.hh				\
-	xml/xml_config.cc			\
-	xml/xml_config.hh			\
 	xml/xml_team.cc				\
 	xml/xml_team.hh				\
 	xml/xml_formation.cc			\

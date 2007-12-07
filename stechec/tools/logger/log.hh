@@ -168,17 +168,6 @@ do {                                                                            
   Log* l__ = Log::getInst();                                                    \
   if (l__->verbose_mask_ & (1 << Level)) {                                      \
     pthread_mutex_lock(&Log::lock_);                                            \
-    std::ostringstream os__;                                                    \
-    if (Level == 0)                                                             \
-      if (l__->use_color_)                                                      \
-        os__ << C_BRED "Error: " C_NONE;                                        \
-      else                                                                      \
-        os__ << "Error: ";                                                      \
-    else if (Level == 1)                                                        \
-      if (l__->use_color_)                                                      \
-        os__ << C_YELLOW "Warning: " C_NONE;                                    \
-      else                                                                      \
-        os__ << "Warning: ";                                                    \
     if (l__->print_loc_)                                                        \
       if (l__->use_color_)                                                      \
         l__->getStream() << "[" MODULE_COLOR MODULE_NAME << l__->modsuffix_     \
@@ -194,6 +183,16 @@ do {                                                                            
                        << C_NONE "] ";						\
       else                                                                      \
         l__->getStream() << "[" MODULE_NAME << l__->modsuffix_ << "] ";		\
+    if (Level == 0)                                                             \
+      if (l__->use_color_)                                                      \
+        l__->getStream() << C_BRED "Error: " C_NONE;                            \
+      else                                                                      \
+        l__->getStream() << "Error: ";                                          \
+    else if (Level == 1)                                                        \
+      if (l__->use_color_)                                                      \
+        l__->getStream() << C_YELLOW "Warning: " C_NONE;                        \
+      else                                                                      \
+        l__->getStream() << "Warning: ";                                        \
     tlog(Msg);									\
     pthread_mutex_unlock(&Log::lock_);                                          \
   }                                                                             \
