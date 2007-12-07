@@ -14,10 +14,10 @@
 # define CLIENTCX_HH_
 
 # include "tools.hh"
-# include "xml/xml_config.hh"
 # include "PacketSender.hh"
 # include "BaseCRules.hh"
 
+class ConfSection;
 class Cx;
 
 /*!
@@ -36,13 +36,13 @@ public:
   //! @brief Connect to the server.
   //! @param cfg The client configuration.
   //! @return true if the connection was successful, false otherwise.
-  bool          connect(xml::XMLConfig& cfg);
+  bool          connect(const ConfSection& cfg);
 
   //! @brief Join a game on the server.
   //! @param cfg The client configuration.
   //! @param desc The rules description (usually loaded from dynamic library).
   //! @return true if the join was successful, false otherwise.
-  bool		join(xml::XMLConfig& cfg, const struct RuleDescription& desc);
+  bool		join(const ConfSection& cfg, const struct RuleDescription& desc);
     
   //! @brief Open a log file (for game replay).
   //! @note Mutually exclusive with connect()/join().

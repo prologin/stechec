@@ -18,15 +18,16 @@
 #include "tools.hh"
 #include "datatfs/Cx.hh"
 #include "start_arbiter.hh"
-#include "ChampionLoader.hh"
 #include "ClientApp.hh"
+#include "ChampionLoader.hh"
 
-ClientApp::ClientApp(int argc, char** argv, const std::string& cfg_def_file, const std::string& cfg_def_loc)
+
+ClientApp::ClientApp(int argc, char** argv, const std::string&, const std::string&)
   : log_client_(5),
-    cfg_(cfg_def_file, cfg_def_loc),
+    cfg_file_(argc, argv),
     argc_(argc),
     argv_(argv),
-    config_file_(""),
+    config_file_(0),
     client_gid_(1)
 {
 }
@@ -36,68 +37,97 @@ ClientApp::~ClientApp()
   clean_arbiter();
 }
 
-void ClientApp::showHelp(const char* prgname)
+void ClientApp::showHelp(const char* prgname,
+                         const struct ConfCmdLineOpt* cmd_opt)
 {
-  std::cout << "usage: " << prgname << " [client_id] [config-file]\n";
+  std::cout << "usage: " << prgname << " [options]\n";
+  std::cout << "options:\n";
+  cfg_file_.printHelpOption(cmd_opt);
+  exit(0);
 }
 
 void ClientApp::showVersion()
 {
   std::cout << "Stechec Generic client v" PACKAGE_VERSION << "\n";
   std::cout << "Copyright (C) 2005, 2006, 2007 Prologin.\n";
+  exit(0);
 }
 
-// Very basic command line manager. We don't need anything more powerful.
-void ClientApp::parseOption()
-{
-  if (argc_ >= 2 && (!strcmp(argv_[1], "--help") || !strcmp(argv_[1], "-h")))
-    {
-      showHelp(argv_[0]);
-      exit(0);
-    }
-  if (argc_ >= 2 && (!strcmp(argv_[1], "--version") || !strcmp(argv_[1], "-v")))
-    {
-      showVersion();
-      exit(0);
-    }
-
-  if (argc_ >= 2)
-    {
-      char* endptr;
-      int client_gid = strtol(argv_[1], &endptr, 10);
-      if (*endptr == 0)
-        {
-          client_gid_ = client_gid;
-          if (argc_ >= 3)
-            config_file_ = argv_[2];
-        }
-      else
-        config_file_ = argv_[1];
-    }
-}
-
-// Parse xml configuration file.
 void ClientApp::parseConfig()
 {
-  try {
-    cfg_.parse(config_file_);
-  } catch (const xml::XMLError& e) {
-    ERR("Sorry, I can't go further without a working configuration file...");
-    exit(3);
-  }
-}
+  ConfSection::RegList def;
 
-// Set some basic settings based on XML config file.
-void ClientApp::setOpt()
-{
-  try {
-    cfg_.switchClientSection(client_gid_);
-    log_client_.setVerboseLevel(cfg_.getAttr<int>("client", "debug", "verbose"));
-    log_client_.setPrintLoc(cfg_.getAttr<bool>("client", "debug", "printloc"));
-  } catch (const xml::XMLError& e) {
-    ERR("%1", e.what());
-    exit(4);
-  }
+  // Set default values (lower priority)
+  def["server_host"] = "127.0.0.1";
+  def["server_port"] = "25150";
+  def["game_uid"] = "42";
+  def["spectator"] = "false";
+  def["rules"] = "";
+  def["path"] = "";
+  def["library"] = "";
+  def["memory"] = "0";
+  def["time"] = "0";
+  def["time_reserve"] = "2500";
+  def["valgrind"] = "true";
+  def["gdb"] = "false";
+  def["verbose"] = "3";
+  def["verbose_location"] = "false";
+  def["log"] = "";
+  def["log_replay"] = "false";
+  def["config"] = "";
+  def["id"] = "1";
+
+  // Set command line options (higher priority)
+  static const struct ConfCmdLineOpt opt[] = {
+    { 'h', "help", 0, "show this help" },
+    { 'v', "version", 0, "show version" },
+    { 'c', "config", 1, "use this configuration file" },
+    { 'i', "id", 1, "client/config id" },
+    { 'r', "rules", 1, "rules name" },
+    { 's', "spectator", 0, "join game as a spectator" },
+    { 'd', "server-host", 1, "server address" },
+    { 'p', "server-port", 1, "server port" },
+    { 'a', "path", 1, "libray path" },
+    { 'l', "library", 1, "library name" },
+    { 'g', "valgrind", 0, "use valgrind" },
+    { 'b', "gdb", 0, "use gdb" },
+    { 'e', "verbose", 1, "verbose level" },
+    { 'o', "log", 1, "file to log name" },
+    { 'm', "memory", 1, "max memory for the process" },
+    { 't', "time", 1, "max time per turn" },
+    { 'f', "time-reserve", 1, "time reserve" },
+    { 0, 0, 0, 0 }
+  };
+
+  // Parse and handle basic command line options
+  cfg_ = cfg_file_.parseCmdLine("client", opt);
+
+  if (cfg_->exist("help") && cfg_->getValue<bool>("help"))
+    showHelp(argv_[0], opt);
+
+  if (cfg_->exist("version") && cfg_->getValue<bool>("version"))
+    showVersion();
+
+  client_gid_ = 1;
+  if (cfg_->exist("id"))
+    client_gid_ = cfg_->getValue<int>("id");
+
+  // [client] section will refer to [client_<gid>]
+  std::ostringstream os;
+  os << "client_" << client_gid_;
+  cfg_file_.addAlias(os.str(), "client");
+  
+  // Parse config file, if any
+  if (cfg_->exist("config") && cfg_->getValue<std::string>("config") != "")
+    cfg_file_.parse(cfg_->getValue<std::string>("config"));
+
+  // Add default entries, superseded by command line opt.
+  cfg_file_.setDefaultEntries("client", def);
+  cfg_file_.parseCmdLine("client", opt);
+  
+  // Set some settings, that have to be set asap
+  log_client_.setVerboseLevel(cfg_->getValue<int>("verbose"));
+  log_client_.setPrintLoc(cfg_->getValue<bool>("verbose_location"));
 }
 
 
@@ -105,10 +135,10 @@ int ClientApp::runChampion()
 {
   // Load the UI/Champion.
   ChampionLoader cl;
-  cl.loadLibrary(argc_, argv_, cfg_);
+  cl.loadLibrary(argc_, argv_, *cfg_);
 
   // Give the hand to the UI/Champion.
-  return cl.run(cfg_, rules_, &ccx_);
+  return cl.run(&cfg_file_, rules_, &ccx_);
 }
 
 int ClientApp::showMenu()
@@ -121,9 +151,12 @@ int ClientApp::runApp()
 {
   int ret_value = 0;
 
-  parseOption();
-  parseConfig();
-  setOpt();
+  try {
+    parseConfig();
+  } catch (const ConfException& e) {
+    ERR("Error loading configuration: %1", e.what());
+    return 69;
+  }
 
   // If the champion/UI is the first to use printf, it will segv :/
   // so 'initialize' it.
@@ -142,23 +175,23 @@ int ClientApp::runApp()
 	bool replay_log = false;
 
 	// Optionally start a thread for the arbiter, if needed.
-	start_arbiter(cfg_);
+	start_arbiter(*cfg_);
 
 	// Load rules.
-	rules_ = rules_loader_.loadRules(cfg_);
+	rules_ = rules_loader_.loadRules(&cfg_file_, cfg_);
 	ccx_.setRules(rules_);
 	ccx_.setClientGameId(client_gid_);
 
 	// Try connecting, if not done yet.
 	if (!ccx_.isConnected())
-	  if (!ccx_.connect(cfg_))
+	  if (!ccx_.connect(*cfg_))
 	    {
 	      ret_value = 21;
 	      break;
 	    }
 
 	// Join the game.
-	if (!ccx_.join(cfg_, rules_loader_.getModuleDesc()))
+	if (!ccx_.join(*cfg_, rules_loader_.getModuleDesc()))
 	  {
 	    ret_value = 22;
 	    break;
@@ -167,7 +200,7 @@ int ClientApp::runApp()
 	if (replay_log)
 	  {
 	    // Log replay. Open the file, and play.
-	    ccx_.openLog(cfg_.getAttr<std::string>("client", "mode", "file"));
+	    ccx_.openLog(cfg_->getValue<std::string>("log"));
 	    ret_value = onPlay(true);
 	  }
 	else
@@ -183,7 +216,7 @@ int ClientApp::runApp()
     return 50;
   } catch (const LibraryError&) {
     return 52;
-  } catch (const xml::XMLError& e) {
+  } catch (const Exception& e) {
     ERR("%1", e.what());
     return 53;
   } catch (...) {

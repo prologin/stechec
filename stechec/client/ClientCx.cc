@@ -14,6 +14,7 @@
 #include "datatfs/FileCx.hh"
 #include "datatfs/Direct.hh"
 #include "datatfs/TcpCx.hh"
+#include "misc/Conf.hh"
 #include "ClientCx.hh"
 
 ClientCx::ClientCx()
@@ -28,16 +29,16 @@ ClientCx::~ClientCx()
   delete cx_;
 }
 
-bool    ClientCx::connect(xml::XMLConfig& cfg)
+bool    ClientCx::connect(const ConfSection& cfg)
 {
-  return connect(cfg.getAttr<std::string>("client", "connect", "host"),
-		 cfg.getAttr<int>("client", "connect", "port"));
+  return connect(cfg.getValue<std::string>("server_host"),
+		 cfg.getValue<int>("server_port"));
 }
 
-bool	ClientCx::join(xml::XMLConfig& cfg, const struct RuleDescription& desc)
+bool	ClientCx::join(const ConfSection& cfg, const struct RuleDescription& desc)
 {
-  bool mode = cfg.getAttr<bool>("client", "mode", "spectator");
-  int game_uid = cfg.getAttr<int>("client", "connect", "game_uid");
+  bool mode = cfg.getValue<bool>("spectator");
+  int game_uid = cfg.getValue<int>("game_uid");
   return join(game_uid, mode, desc);
 }
 

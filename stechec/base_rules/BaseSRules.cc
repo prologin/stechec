@@ -16,8 +16,9 @@
 
 # include "BaseSRules.hh"
 
-BaseSRules::BaseSRules()
-  : viewer_state_(0)
+BaseSRules::BaseSRules(int team_number)
+  : BaseRules(team_number),
+    viewer_state_(0)
 {
 }
 

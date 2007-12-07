@@ -1,27 +1,23 @@
 /*
-** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
-**
-** Copyright (C) 2006 The TBT Team.
-**
-** This program is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License
-** as published by the Free Software Foundation; either version 2
-** of the License, or (at your option) any later version.
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
 **
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** The TBT Team consists of people listed in the `AUTHORS' file.
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 
 #include "SDLWindow.hh"
-#include "xml/xml_config.hh"
+#include "misc/Conf.hh"
 
 SDLWindow::SDLWindow()
-  : xml_(NULL),
+  : cfg_(NULL),
     is_fullscreen_(false),
     frame_drawed_(0),
     fps_(0)
@@ -75,13 +71,29 @@ bool SDLWindow::isInitialized()
   return screen_.getSDLSurface() != NULL;
 }
 
-void SDLWindow::init(xml::XMLConfig* xml)
+ConfSection* SDLWindow::parseOption(ConfFile* cfg_file)
 {
-  xml_ = xml;
-  // FIXME: get window size, fullscreen mode, ... from xml.
+  ConfSection::RegList def;
+  const struct ConfCmdLineOpt cmd_opt[] = {
+    { 'x', "res_x", 1, "window width size" },
+    { 'y', "res_y", 1, "window height size" },
+    { 0, 0, 0, 0 }
+  };
 
-  int res_x = xml_->getAttr<int>("client", "screen", "res_x");
-  int res_y = xml_->getAttr<int>("client", "screen", "res_y");
+  def["res_x"] = "640";
+  def["res_y"] = "480";
+
+  cfg_file->parseCmdLine("gui", cmd_opt, 2);
+  cfg_file->setDefaultEntries("gui", def);
+  return cfg_file->getSection("gui");
+}
+
+void SDLWindow::init(ConfFile* cfg_file)
+{
+  cfg_ = parseOption(cfg_file);
+  
+  int res_x = cfg_->getValue<int>("res_x");
+  int res_y = cfg_->getValue<int>("res_y");
 
   if (!isInitialized())
     {

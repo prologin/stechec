@@ -7,9 +7,10 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
+#include "misc/Conf.hh"
 #include "RulesLoader.hh"
 
 RulesLoader::RulesLoader()
@@ -22,19 +23,18 @@ RulesLoader::~RulesLoader()
   delete base_rules_;
 }
 
-BaseCRules* RulesLoader::loadRules(xml::XMLConfig& cfg)
+BaseCRules* RulesLoader::loadRules(ConfFile* cfg_file, const ConfSection* cfg)
 {
-  typedef BaseCRules *(*load_func_t)(xml::XMLConfig* cfg);
+  typedef BaseCRules *(*load_func_t)(ConfFile* cfg);
 
   load_func_t load_fun;
+  const std::string& rules = cfg->getValue<std::string>("rules");
 
-  try {
-    lib_rules_.open(cfg.getData<std::string>("client", "rules"));
-  } catch (const xml::XMLError&) {
-    lib_rules_.open(cfg.getData<std::string>("game", "rules"));
-  }
+  if (rules == "")
+    THROW(Exception, "No rules specified");
+  lib_rules_.open(rules);
   load_fun = (load_func_t)(lib_rules_.getSymbol("load_client_rules"));
-  return base_rules_ = load_fun(&cfg);
+  return base_rules_ = load_fun(cfg_file);
 }
 
 const struct RuleDescription& RulesLoader::getModuleDesc()

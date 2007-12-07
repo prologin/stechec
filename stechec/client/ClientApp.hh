@@ -7,13 +7,13 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #ifndef CLIENTAPP_H_
 # define CLIENTAPP_H_
 
-# include "xml/xml_config.hh"
+# include "misc/Conf.hh"
 # include "ClientCx.hh"
 # include "RulesLoader.hh"
 
@@ -46,26 +46,25 @@ private:
   Log log_client_; // FIXME: its destructor must be called _last_.
 
 protected:
-  virtual void showHelp(const char* prgname);
+  virtual void showHelp(const char* prgname, const struct ConfCmdLineOpt* cmd_opt);
   virtual void showVersion();
   virtual int showMenu();
   virtual int onPlay(bool replay) = 0;
 
-  xml::XMLConfig cfg_;
+  ConfFile cfg_file_;   ///< configuration file
+  ConfSection* cfg_;    ///< [client] conf section
   BaseCRules* rules_;
   ClientCx ccx_;
   RulesLoader rules_loader_;
 
 private:
-  void parseOption();
-  void parseConfig();
-  void setOpt();
-  
+  virtual void parseConfig();
+
   int argc_;
   char** argv_;
 
-  char* config_file_; ///< Optional configuration file to load.
-  int client_gid_;    ///< Client game id, as stored in meta-data.
+  const char* config_file_;     ///< Optional configuration file to load.
+  int client_gid_;              ///< Client game id, as stored in meta-data.
 };
 
 #endif /* !CLIENTAPP_H_ */

@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #ifndef RULES_LOADER_HH_
@@ -26,7 +26,7 @@ public:
   RulesLoader();
   ~RulesLoader();
 
-  BaseCRules*   loadRules(xml::XMLConfig& cfg);
+  BaseCRules*   loadRules(ConfFile* cfg_file, const ConfSection* cfg);
   bool          initRules(ClientCx* ccx);
   const struct RuleDescription& getModuleDesc();
 

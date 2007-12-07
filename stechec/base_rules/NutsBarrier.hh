@@ -6,8 +6,6 @@
 # include <cassert>
 # include "tools.hh"
 
-namespace xml { class XMLConfig; }
-
 /*!
 ** @file
 ** @author victor
@@ -33,6 +31,8 @@ private:
   static SignalHandler* inst_;
 };
 
+class ConfSection;
+
 /*!
 ** @brief Extra memory/time limitation, mainly for AIs.
 **
@@ -54,7 +54,7 @@ public:
   int           getTimeRemaining() const;
   int           getExtraTimeRemaining() const;
   
-  void          setConfigLimits(const xml::XMLConfig& cfg);
+  void          setConfigLimits(const ConfSection& cfg);
   void          setTimeLimitValue(int time, int reserve); // in millisecond
   void          setMemoryLimitValue(int memory); // in kbytes.
   void          setSignalHandler(SignalHandler* hdl);

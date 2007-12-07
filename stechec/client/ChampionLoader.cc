@@ -7,9 +7,10 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
+#include "misc/Conf.hh"
 #include "ChampionLoader.hh"
 
 ChampionLoader::ChampionLoader()
@@ -18,9 +19,12 @@ ChampionLoader::ChampionLoader()
 
 void ChampionLoader::loadLibrary(int argc,
                                  char** argv,
-                                 xml::XMLConfig& cfg)
+                                 const ConfSection& cfg)
 {
-  champion_.open(cfg.getData<std::string>("client", "champion"));
+  std::string path = cfg.getValue<std::string>("path");
+  if (path.length() && path[path.length() - 1] != '/')
+    path += "/";
+  champion_.open(path + cfg.getValue<std::string>("library"));
 
   // Special Ocaml
   typedef void (*caml_init)(char**);
@@ -37,9 +41,9 @@ void ChampionLoader::loadLibrary(int argc,
   run_fun_ = (run_func_t)(champion_.getSymbol("run"));
 }
 
-int ChampionLoader::run(xml::XMLConfig& cfg,
+int ChampionLoader::run(ConfFile* cfg_file,
                         BaseCRules* base_rules,
                         ClientCx* client_cx)
 {
-  return run_fun_(&cfg, base_rules->getApi(), client_cx);
+  return run_fun_(cfg_file, base_rules->getApi(), client_cx);
 }

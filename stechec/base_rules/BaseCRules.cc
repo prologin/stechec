@@ -17,7 +17,8 @@
 # include "BaseCRules.hh"
 
 BaseCRules::BaseCRules()
-  : coach_id_(-1),
+  : BaseRules(0),
+    coach_id_(-1),
     league_id_(-1),
     busy_count_(0)
 {
@@ -65,7 +66,7 @@ void    BaseCRules::msgCatchUid(const ClientUid* m)
        m->client_id, m->league_id);
   coach_id_ = m->client_id;
   league_id_ = m->league_id;
-  setTeamNumber(m->nb_coach, m->nb_team);
+  team_number_ = m->nb_team;
 
   assert(packet_sender_ != NULL);
   packet_sender_->setTeamId(m->client_id);

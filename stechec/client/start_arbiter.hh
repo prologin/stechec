@@ -18,12 +18,12 @@
 ** @ingroup client
 */
 
-# include "xml/xml_config.hh"
+class ConfSection;
 
 //! @ingroup client
 //! @{
 
-bool start_arbiter(xml::XMLConfig& cfg);
+bool start_arbiter(const ConfSection& cfg);
 void clean_arbiter();
 
 //! @}

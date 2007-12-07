@@ -13,6 +13,8 @@
 #include "tools.hh"
 #include "start_arbiter.hh"
 
+#if 0
+
 static pthread_t th_server;
 static bool thread_started = false;
 
@@ -62,3 +64,16 @@ void clean_arbiter()
       thread_started = false;
     }
 }
+
+#else
+
+bool start_arbiter(const ConfSection& cfg)
+{
+  return false;
+}
+
+void clean_arbiter()
+{
+}
+
+#endif

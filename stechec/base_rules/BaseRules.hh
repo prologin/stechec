@@ -94,7 +94,7 @@ struct RuleDescription
 class BaseRules
 {
 public:
-  BaseRules();
+  BaseRules(int team_number);
   virtual ~BaseRules();
 
   /*!
@@ -143,9 +143,6 @@ public:
   //! @brief Called on each recieved packet.
   void          handlePacket(const Packet* p);
 
-  //! @brief Set the team/coach number.
-  void          setTeamNumber(int coach_nb, int team_nb);
-
   // see later...
   virtual void  serialize(std::ostream& os) const;
   virtual void  unserialize(std::istream& is);
@@ -158,12 +155,10 @@ protected:
   virtual const char* tokenToString(unsigned token) const;
 
 private:
-
   int           state_;
-  int           coach_number_;
-  int           team_number_;
 
 protected:
+  int           team_number_;
 
   PacketSender* packet_sender_;
   typedef std::vector<std::pair<int, BasePacketHandler*> > PktHList;

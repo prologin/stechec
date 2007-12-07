@@ -10,15 +10,14 @@
 ** Copyright (C) 2006, 2007 Prologin
 */
 
+#include "misc/Conf.hh"
 #include "Server.hh"
 #include "Client.hh"
 #include "GameHosting.hh"
 
 BEGIN_NS(server);
 
-GameHosting::GameHosting(int game_uid,
-                         const xml::XMLConfig& cfg,
-                         BaseSRules* rules)
+GameHosting::GameHosting(int game_uid, const ConfSection* cfg, BaseSRules* rules)
   : cfg_(cfg),
     cl_pool_(500),
     rules_(rules),
@@ -32,20 +31,17 @@ GameHosting::GameHosting(int game_uid,
   pthread_mutex_lock(&lock_);
   cl_pool_.setLock(&lock_);
 
-  nb_team_ = cfg.getData<int>("game", "nb_team");
-  int nb_per_team = cfg.getAttr<int>("game", "nb_team", "player_per_team");
-
-  nb_waited_coach_ = nb_team_ * nb_per_team;
-  rules->setTeamNumber(nb_waited_coach_, nb_team_);
-  nb_waited_viewer_ = cfg.getData<int>("server", "nb_spectator");
+  nb_team_ = rules->getTeamNumber();
+  nb_waited_coach_ = nb_team_;
+  nb_waited_viewer_ = cfg->getValue<int>("nb_spectator");
 
   LOG1("Creating a new game, uid '%1`. Wait for `%2' coachs and `%3' spectators.",
        game_uid, nb_waited_coach_, nb_waited_viewer_);
 
 #if 0
-  if (cfg.getAttr<bool>("server", "log", "enabled"))
+  if (cfg->getValue<std::string>("log") != "")
     {
-      std::string filename = cfg.getAttr<std::string>("server", "log", "file");
+      std::string filename = cfg->getValue<std::string>("log");
       log_.open(filename, CX_WO);
 
       ClientUid pkt_id(CLIENT_UID);
@@ -266,7 +262,7 @@ void GameHosting::killClient(Client* cl, const std::string& msg)
 
 void GameHosting::waitCoaches()
 {
-  int game_start_timeout = cfg_.getAttr<int>("server", "options", "start_game_timeout");
+  int game_start_timeout = cfg_->getValue<int>("start_game_timeout");
   Timer start_timeout(game_start_timeout);
   start_timeout.start();
 
@@ -384,8 +380,8 @@ void GameHosting::run(Log& log)
   self_ = pthread_self();
 
   // Set logger options.
-  log.setVerboseLevel(cfg_.getAttr<int>("server", "debug", "verbose"));
-  log.setPrintLoc(cfg_.getAttr<bool>("server", "debug", "printloc"));
+  log.setVerboseLevel(cfg_->getValue<int>("verbose"));
+  log.setPrintLoc(cfg_->getValue<bool>("verbose_location"));
   std::ostringstream is;
   is << " " << game_uid_;
   log.setModuleSuffix(is.str().c_str());
@@ -421,7 +417,7 @@ void* GameHosting::startThread(void* gh_inst)
   try {
     inst->run(log);
     return NULL;
-  } catch (const xml::XMLError& e) {
+  } catch (const ConfException& e) {
     ERR("%1", e);
   } catch (const Exception& e) {
     ERR("Unhandled error: %1", e);

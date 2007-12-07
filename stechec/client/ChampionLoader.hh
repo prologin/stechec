@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2006 Prologin
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #ifndef CHAMPION_LOADER_HH_
@@ -25,16 +25,16 @@ class ChampionLoader
 public:
   ChampionLoader();
 
-  void loadLibrary(int argc, char** argv, xml::XMLConfig& cfg);
+  void loadLibrary(int argc, char** argv, const ConfSection& cfg);
 
-  int run(xml::XMLConfig& cfg,
+  int run(ConfFile* cfg_file,
           BaseCRules* base_rules,
           ClientCx* client_cx);
 
 private:
   Library champion_;
 
-  typedef int (*run_func_t)(xml::XMLConfig*, Api*, ClientCx*);
+  typedef int (*run_func_t)(ConfFile*, Api*, ClientCx*);
   run_func_t run_fun_;
   Api* api_;
 };

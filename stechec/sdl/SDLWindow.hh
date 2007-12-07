@@ -1,17 +1,13 @@
 /*
-** TowBowlTactics, an adaptation of the tabletop game Blood Bowl.
-**
-** Copyright (C) 2006 The TBT Team.
-**
-** This program is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License
-** as published by the Free Software Foundation; either version 2
-** of the License, or (at your option) any later version.
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
 **
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** The TBT Team consists of people listed in the `AUTHORS' file.
+** Copyright (C) 2006, 2007 Prologin
 */
 
 #ifndef SDLWINDOW_HH_
@@ -23,7 +19,8 @@
 # include "Input.hh"
 # include "VirtualSurface.hh"
 
-namespace xml { class XMLConfig; }
+class ConfFile;
+class ConfSection;
 
 /*!
 ** @brief Manage SDL Window.
@@ -43,9 +40,9 @@ namespace xml { class XMLConfig; }
 **
 ** Here is a simple example of how to use it:
 ** @code
-** int run_win(xml::XMLConfig* xml)
+** int run_win(ConfSection* cfg)
 ** {
-**   SDLWindow win(xml);
+**   SDLWindow win(cfg);
 **   win.init();
 **   VirtualSurface& screen = win.getScreen();
 **   // Do something with screen, like adding sprites.
@@ -88,8 +85,9 @@ public:
 
   //! @brief Initialize all the SDL stuff, or reintialize windows with a
   //!    new set of values.
-  //! @param xml Window configuration (size, fullscreen, ...).
-  void init(xml::XMLConfig* xml);
+  //! @param cfg Configuration file containing window conf
+  //     (size, fullscreen, ...), in "gui" section.
+  void init(ConfFile* cfg_file);
 
   //! @brief Fill the screen with black.
   void clearScreen();
@@ -100,7 +98,9 @@ public:
   bool processOneFrame();
   
 private:
-  xml::XMLConfig*       xml_;    ///< Window configuration file.
+  ConfSection* parseOption(ConfFile* cfg_file);
+
+  ConfSection*          cfg_;    ///< Window configuration file.
 
   Input                 input_;
   ResourceCenter        resource_;

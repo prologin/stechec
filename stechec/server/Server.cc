@@ -13,6 +13,7 @@
 #include <signal.h>
 
 #include "tools.hh"
+#include "misc/Conf.hh"
 #include "datatfs/TcpCx.hh"
 #include "Client.hh"
 #include "Server.hh"
@@ -22,8 +23,9 @@ BEGIN_NS(server);
 
 Server* Server::inst = NULL;
 
-Server::Server(const xml::XMLConfig& cfg)
-  : cfg_(cfg),
+Server::Server(ConfFile& cfg_file, const ConfSection* cfg)
+  : cfg_file_(cfg_file),
+    cfg_(cfg),
     cl_pool_(1500),
     server_shutdown_(0),
     server_shutdown_reset_(2)
@@ -211,7 +213,7 @@ bool Server::serveJoinGame(Client* cl, Packet* pkt)
 
       // This is a new game. Create and start it
       GameHosting* gh = new GameHosting(pkt_join->game_uid, cfg_,
-                                        r->create_fun_(&cfg_));
+                                        r->create_fun_(&cfg_file_));
       it = games_.insert(std::make_pair(pkt_join->game_uid, gh)).first;
       pthread_t th;
       pthread_create(&th, NULL, &GameHosting::startThread, it->second);
@@ -354,9 +356,9 @@ void        Server::run()
   Timer		wait_timeout(0);
   int           port;
 
-  is_persistent_ = cfg_.getAttr<bool>("server", "options", "persistent");
+  is_persistent_ = cfg_->getValue<bool>("persistent");
   if (!is_persistent_)
-    wait_timeout.setAllowedTime(cfg_.getAttr<int>("server", "options", "wait_timeout"));
+    wait_timeout.setAllowedTime(cfg_->getValue<int>("wait_timeout"));
   if (wait_timeout.getAllowedTime() > 0)
     {
       LOG3("Will wait for `%1' second that a game begin before exiting",
@@ -364,7 +366,7 @@ void        Server::run()
       wait_timeout.start();
     }
 
-  port = cfg_.getAttr<int>("server", "listen", "port");
+  port = cfg_->getValue<int>("listen_port");
   LOG2("Listening on port %1", port);
   listen_socket.listen(port);
 

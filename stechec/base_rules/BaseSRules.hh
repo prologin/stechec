@@ -25,7 +25,7 @@ class CoachErrorCustom;
 class BaseSRules : public BaseRules
 {
 public:
-  BaseSRules();
+  BaseSRules(int team_number);
   virtual ~BaseSRules();
 
   //! @brief Get the viewer state.

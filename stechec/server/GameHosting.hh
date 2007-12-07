@@ -16,9 +16,11 @@
 # include "tools.hh"
 # include "datatfs/CxPool.hh"
 # include "datatfs/FileCx.hh"
-# include "xml/xml_config.hh"
 # include "BaseSRules.hh"
 # include "PacketSender.hh"
+
+class ConfSection;
+class ConfSection;
 
 BEGIN_NS(server);
 
@@ -47,7 +49,7 @@ enum eGameState {
 class GameHosting : public PacketSender
 {
 public:
-  GameHosting(int game_uid, const xml::XMLConfig& cfg, BaseSRules* rules);
+  GameHosting(int game_uid, const ConfSection* cfg, BaseSRules* rules);
   ~GameHosting();
 
   //! @brief Add a client to this game.
@@ -82,7 +84,7 @@ private:
   typedef std::vector<Client*>      ClientList;
   typedef std::map<Cx*, Client*>    ClientMapList;
 
-  const xml::XMLConfig& cfg_;             ///< Server configuration.
+  const ConfSection*    cfg_;             ///< Server configuration.
   FileCx                log_;             ///< File to log game to.
 
   CxPool<Cx>            cl_pool_;         ///< Facility to poll all clients at once.

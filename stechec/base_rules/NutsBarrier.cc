@@ -19,9 +19,9 @@
 #include <sys/resource.h>
 #include <dlfcn.h>
 #include <signal.h>
+#include "misc/Conf.hh"
 
 #include "tools.hh"
-#include "xml/xml_config.hh"
 #include "NutsBarrier.hh"
 
 /*
@@ -82,20 +82,19 @@ NutsBarrier::~NutsBarrier()
 {
 }
 
-void    NutsBarrier::setConfigLimits(const xml::XMLConfig& cfg)
+void    NutsBarrier::setConfigLimits(const ConfSection& cfg)
 {
-  if (cfg.getAttr<bool>("client", "debug", "valgrind")
-      || cfg.getAttr<bool>("client", "mode", "spectator"))
+  if (cfg.getValue<bool>("valgrind") || cfg.getValue<bool>("spectator"))
     return;
 
-  int time = cfg.getAttr<int>("client", "limit", "time");
-  int reserve = cfg.getAttr<int>("client", "limit", "time_reserve");
+  int time = cfg.getValue<int>("time");
+  int reserve = cfg.getValue<int>("time_reserve");
   if (reserve < 0)
     reserve = 0;
   if (time > 10)
     setTimeLimitValue(time, reserve);
 
-  int mem = cfg.getAttr<int>("client", "limit", "memory");
+  int mem = cfg.getValue<int>("memory");
   if (mem > 100)
     setMemoryLimitValue(mem);
 }

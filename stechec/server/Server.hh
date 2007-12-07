@@ -17,7 +17,6 @@
 # include <string>
 
 # include "tools.hh"
-# include "xml/xml_config.hh"
 # include "datatfs/CxPool.hh"
 # include "GameHosting.hh"
 
@@ -28,6 +27,7 @@
 class Cx;
 class TcpCx;
 class Client;
+class ConfSection;
 
 BEGIN_NS(server);
 
@@ -39,7 +39,7 @@ BEGIN_NS(server);
 class Server
 {
 public:
-  Server(const xml::XMLConfig& cfg);
+  Server(ConfFile& cfg_file, const ConfSection* cfg);
   ~Server();
 
   //! @brief Run the server, never ending function...
@@ -61,17 +61,18 @@ private:
   void          receivePacket(Cx* cx);
   void          serveNewConnection(TcpCx* cxl);
 
-  static Server*                  inst;
+  static Server*                inst;
 
-  const xml::XMLConfig&           cfg_;
+  ConfFile&                     cfg_file_;
+  const ConfSection*            cfg_;
 
   // Rules loaded on server
   struct Rules
   {
-    typedef BaseSRules*           (*create_rules_t)(const xml::XMLConfig*);
+    typedef BaseSRules*         (*create_rules_t)(const ConfFile *);
     const struct RuleDescription* desc_;
-    Library                       lib_;
-    create_rules_t                create_fun_;
+    Library                     lib_;
+    create_rules_t              create_fun_;
   };
   typedef std::map<std::string, Rules*> RulesList;
   RulesList                     rules_;
