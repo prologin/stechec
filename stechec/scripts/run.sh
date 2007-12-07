@@ -14,9 +14,6 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-CLIENT_BIN=stechec
-SERVER_BIN=stechec_server
-
 #
 # Usage, version, ...
 #
@@ -28,7 +25,7 @@ for \`client' and \`server', allowing to play a game in one command.
 Usage: run <config-file>
 
 Examples:
-  run toto.xml       to run a match, using configuration file 'toto.xml'
+  run toto.ini       to run a match, using configuration file 'toto.ini'
 
 Report bugs to <serveur@prologin.org>
 EOF
@@ -53,37 +50,67 @@ abort()
 }
 
 #
-# parse xml file, with our shiny awk parser
+# ini file function
 #
-output=`awk -f "${xml_parser_path}xmlparser.awk" "$1"`
-[ $? -ne 0 ] && abort "Cannot parse $1."
-# then go back to ugly sed scripts
-clients=`echo "$output" | sed -n 's!^CONFIG/CLIENT/id=\([0-9]\+\).*$!\1!p' | grep -v 0 | uniq`
-NB_INSTANCE=`echo "$output" | sed -n 's!^CONFIG/GAME/NB_TEAM/player_per_team=\([0-9]\+\).*$!\1!p' | uniq`
-USE_VALGRIND=`echo "$output" | sed -ne ':n2 /^CONFIG\/CLIENT\/id=\([0-9]\+\)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/valgrind=true$/ { g; s/.*\([0-9]\+\)$/x\1x/p; n; b n2; }; b n; }'`
-USE_GDB=`echo "$output" | sed -ne ':n2 /^CONFIG\/CLIENT\/id=\([0-9]\+\)$/ { h; :n n; /^CONFIG\/CLIENT\/DEBUG\/gdb=true$/ { g; s/.*\([0-9]\+\)$/x\1x/p; n; b n2; }; b n; }'`
 
+# $1: client conf
+# $2: key
+ini_get_bool()
+{
+    case $1 in
+	*$2~=~true* | *$2~=~on* | *$2~=~1* ) echo "1" ;;
+    esac
+}
+
+# $1: key
+# $2: client conf
+ini_get_val()
+{
+    IFS=""
+    echo "$2" | sed -ns "s/^$1=~=//p"
+    unset IFS
+}
+
+#
+# parse all client sections
+#
+rules=
+clients=$(sed -nr -s 's/^\[client_([0-9])+\]/\1/p' "$1" 2> /dev/null)
+test $? -ne 0 && abort "cannot parse configuration file: '$1'"
+if [ "x$clients" = x ]; then
+    abort "must have at least one client to launch"
+fi
+
+for id in $clients; do
+    client_conf[$id]=$(IFS="" sed -nr -s "/^\[client_$id\]/ { :n n; /^\[/ { q }; s/^([a-z_0-9]+)=/\1~=~/p; b n }" "$1")
+    r=$(ini_get_val rules "${client_conf[$id]}")
+    if [ "$rules" -a x"$r" != x"$rules" ]; then
+	abort "clients have different rules ($rules != $r, offending id: $id)"
+    fi
+    rules=$r
+
+    [ $USE_GDB ] && abort "USE_GDB can only be set for the last champion in config file."
+    USE_GDB=$(ini_get_bool gdb ${client_conf[$id]})
+done
+
+#
+# parse rules section
+#
+rules_conf=$(IFS="" sed -nr -s "/^\[$rules\]/ { :n n; /^\[/ { q }; s/^([a-z_0-9]+)=/\1~=~/p; b n }" "$1")
+NB_INSTANCE=$(ini_get_val nb_player_per_team "$rules_conf")
 if [ "x$NB_INSTANCE" = x ]; then
     NB_INSTANCE=1
 fi
+
+
+CLIENT_BIN=stechec
+SERVER_BIN=stechec_server
+
 if [ ! `which $CLIENT_BIN` ]; then
     abort "$CLIENT_BIN: command not found. Check your \$PATH."
 elif [ ! `which $SERVER_BIN` ]; then
     abort "$SERVER_BIN: command not found. Check your \$PATH."
 fi
-
-if [ "x$clients" = x ]; then
-    abort "must have at least one client to launch."
-fi
-
-#
-# check that gdb is used _only_ on the last client.
-#
-for id in $clients; do
-    # gdb must be the last program to launch, because it starts on foreground
-    [ $HAVE_GDB ] && abort "USE_GDB can only be set for the last champion in config file."
-    [ "x$USE_GDB" = "x$id" ] && HAVE_GDB=1
-done
 
 #
 # Launch server
@@ -95,37 +122,34 @@ pid_server=$!
 # spawn clients
 #
 for id in $clients; do
-
-SPECTATOR=`echo "$output" | sed -ne "/^CONFIG\\/CLIENT\\/id=${id}\$/ { :n n; s,CONFIG/CLIENT/MODE/spectator=\\(true\\|false\\)\$,\\1,p; t q; b n; :q q }"`
-
-if [ x$SPECTATOR = x"true" ]; then
     LOOP=1
-else
-    LOOP=$NB_INSTANCE
-fi
-
-i=1
-while [ $i -le $LOOP ] ; do
-    echo "======== launch client id $id ($i)"  1>&2
-    case $USE_VALGRIND in
-	*x${id}x*) VALGRIND=valgrind ;;
-    esac
-    STDIN_REDIR=`echo "$output" | sed -ne "/^CONFIG\\/CLIENT\\/id=${id}\$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdin=\\(.*\\)\$,\\1,p; t q; b n; :q q }"`
-    STDOUT_REDIR=`echo "$output" | sed -ne "/^CONFIG\\/CLIENT\\/id=${id}\$/ { :n n; s,CONFIG/CLIENT/REDIRECTION/stdout=\\(.*\\)\$,\\1,p; t q; b n; :q q }"`
-    if [ "x$USE_GDB" = "x$id" ]; then
-	gdb -q --args $CLIENT_BIN $id "$1"
-    else
-	if [[ "x$STDIN_REDIR" != "x" &&"x$STDOUT_REDIR" != "x"  ]]; then
-	    $VALGRIND $CLIENT_BIN $id "$1" < $STDIN_REDIR > $STDOUT_REDIR &
-	else
-	    $VALGRIND $CLIENT_BIN $id "$1" &
-	fi
-	pid_client="$pid_client $!"
+    if [ x"$(ini_get_bool spectator \"${client_conf[$id]}\")" != x"1" ]; then
+	LOOP=$NB_INSTANCE
     fi
 
-    unset VALGRIND STDIN_REDIR
-    i=`expr $i + 1`
-done
+    i=1
+    while [ $i -le $LOOP ] ; do
+	echo "======== launch client id $id ($i)"  1>&2
+	if [ x"$(ini_get_bool valgrind \"${client_conf[$id]}\")" == x"1" ]; then
+	    VALGRIND=valgrind
+	fi
+	STDIN_REDIR=$(ini_get_val stdin_redir "${client_conf[$id]}")
+	STDOUT_REDIR=$(ini_get_val stdout_redir "${client_conf[$id]}")
+
+	if [ "x$USE_GDB" = "x$id" ]; then
+	    gdb -q --args $CLIENT_BIN $id --config="$1"
+	else
+	    if [[ "x$STDIN_REDIR" != "x" && "x$STDOUT_REDIR" != "x"  ]]; then
+		$VALGRIND $CLIENT_BIN $id --config="$1" < $STDIN_REDIR > $STDOUT_REDIR &
+	    else
+		$VALGRIND $CLIENT_BIN $id --config="$1" &
+	    fi
+	    pid_client="$pid_client $!"
+	fi
+
+	unset VALGRIND STDIN_REDIR STDOUT_REDIR
+	i=$((i + 1))
+    done
 done
 
 # if the user wants to abort on 'wait', try to kill the server
