@@ -19,13 +19,13 @@
 ** Hook on the server-side to authorize/deny actions wanted by the
 **  client.
 **
-** This class is called *only on server* side.
+** This class is called *only* on server side.
 ** It receives, after each turn, a list of actions made by clients.
 **
 ** You must:
 **  - update your game data.
 **  - send informations to clients so that they can update their
-**    data (Differ)
+**    data (they'll use ClientDiffer)
 **
 ** You can:
 **  - access to the GameData class: g_

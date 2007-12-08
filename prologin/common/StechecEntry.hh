@@ -29,11 +29,11 @@ public:
   /**
   ** Different entry point that a contest implementation can use
   */
-  virtual int  beforeGame()         { return 0; }
+  virtual int  beforeGame()       { return 0; }
   virtual int  initGame()         { return 0; }
-  virtual int  beforeNewTurn()         { return 0; }
-  virtual int  afterNewTurn()         { return 0; }
-  virtual int  afterGame()         { return 0; }
+  virtual int  beforeNewTurn()    { return 0; }
+  virtual int  afterNewTurn()     { return 0; }
+  virtual int  afterGame()        { return 0; }
 };
 
 //! @}

@@ -19,10 +19,9 @@ ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client)
 }
 
 /*!
-** fonction qui permet de recevoir la map, ou/et de faire
-** des initialiation sur les joueurs avant le debut de la partie
-** voir const StechecPkt et tools/module_reseau/ pour les envois
-** voir server.h pour la structure game
+** Fonction qui permet de recevoir la map, ou/et de faire
+** des initialiations sur les joueurs avant le début de la partie.
+** voir StechecPkt et stechec/tools/datatfs/ pour les envois
 */
 int        ClientEntry::beforeGame()
 {
@@ -30,9 +29,9 @@ int        ClientEntry::beforeGame()
 }
 
 /*!
-** fonction situee apres l'initialisation du joueur,
+** Fonction située apres l'initialisation du joueur,
 ** mais avant la boucle de jeu
-** Sert a faire des eventuels envois
+** Sert a faire d'eventuels envois
 */
 
 int        ClientEntry::initGame()
@@ -41,7 +40,7 @@ int        ClientEntry::initGame()
 }
 
 /*!
-** permet d'effectuer diverses operations avant
+** Permet d'effectuer diverses operations avant
 ** chaque tour de jeu
 */
 
@@ -51,7 +50,7 @@ int        ClientEntry::beforeNewTurn()
 }
 
 /*!
-** permet d'effectuer diverses operations apres
+** Permet d'effectuer diverses operations apres
 ** chaque tour de jeu
 */
 int        ClientEntry::afterNewTurn()
@@ -60,7 +59,7 @@ int        ClientEntry::afterNewTurn()
 }
 
 /*!
-** permet d'effectuer diverses operations a la fin
+** Permet d'effectuer diverses operations a la fin
 ** du jeu
 */
 int        ClientEntry::afterGame()

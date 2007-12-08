@@ -18,9 +18,11 @@
 # include "StechecGameData.hh"
 
 /*!
-** Do the binding between the submited code and the specialisation of Stechec
+** Do the binding between submited code (champions) and
+** the current specialisation of Stechec (rules)
 **
-** Method of this call are called by the candidat, throught 'interface.cc'
+** Class' methods are called by the candidat through 'interface.cc',
+** provinding C -> C++ glue.
 **
 ** You can:
 **  - access to the GameData class: g_
@@ -35,6 +37,7 @@ public:
 
   //! @brief Called by the Api to ask something to the server.
   void SendToServer(const StechecPkt& com);
+
   //! @brief Called by the Api to end the turn.
   void doEndTurn();
 

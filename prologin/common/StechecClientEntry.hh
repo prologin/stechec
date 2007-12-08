@@ -13,20 +13,25 @@
 #ifndef STECHECCLIENTENTRY_HH_
 # define STECHECCLIENTENTRY_HH_
 
+/*!
+** @ingroup stechec
+** @{
+*/
+
 # include "StechecGameData.hh"
 # include "StechecEntry.hh"
 
 /*
-** This class provides hooks for, either for real player or for visio.
+** This class provides hooks, either for real player or for visio.
 **
 ** You can:
-**  - overload any virual method you wants
-**  - retrieve message from server: void fetchCommand(StechecPkt&)
+**  - overload any virual method you wants (see StechecEntry)
+**  - retrieve message from server: bool fetchCommand(StechecPkt*)
 **  - access to the GameData class: g_
 **  - access to the Differ class: differ_
 ** 
 ** Note:
-**  - afterGame() (where you usually free memory) is called only
+**  - afterGame() (usually where you free memory) is called only
 **    if beforeGame() was called.
 */
 class StechecClientEntry: protected StechecClient, public StechecEntry
@@ -37,8 +42,8 @@ public:
 
 protected:
 
-  //! Use this fonction in prolo_* to receive data from server.
-  //! @return false when empty.
+  //! Use this fonction in your derived class to receive data from server.
+  //! @return false when empty (nothing to retrieve), else true.
   bool          fetchCommand(StechecPkt *data);
 
   ClientDiffer* differ_;
@@ -86,5 +91,7 @@ inline void StechecClientEntry::flushPacketList()
   index_ = 0;
   cmd_list_.clear();
 }
+
+//! @}
 
 #endif // !STECHECCLIENTENTRY_HH_

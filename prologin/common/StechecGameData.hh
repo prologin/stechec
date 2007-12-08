@@ -15,7 +15,7 @@
 
 # include "Rules.hh"
 
-// Forward declaration of contest dependant class GameData.
+// Forward declaration of contest related class GameData.
 class Caller;
 class Client;
 class ClientDiffer;

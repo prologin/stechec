@@ -24,10 +24,10 @@
 # endif
 
 /*!
-** This class provides hooks for either real players or viewers.
+** This class provides hooks, either for real players or viewers.
 **
 ** You can:
-**  - overload any virual method you wants
+**  - overload any virual method you wants (see StechecEntry)
 **  - send message to clients: void SendToAll(const StechecPkt&)
 **  - access to the GameData class: g_
 **
