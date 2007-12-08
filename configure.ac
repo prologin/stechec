@@ -2,7 +2,7 @@
 
 # Autconf init
 AC_PREREQ(2.59)
-AC_INIT([stechec], [3.2.2], [http://projects.nekeme.net/projects/tbt/newticket])
+AC_INIT([stechec], [3.2.3], [http://projects.nekeme.net/projects/tbt/newticket])
 
 # Auxiliary files
 AC_CONFIG_AUX_DIR([build-aux])
