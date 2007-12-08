@@ -18,7 +18,7 @@ AM_CONFIG_HEADER([config.h])
 
 
 # Modules to build, by default
-modules="bb5"
+modules="prolo2008"
 
 # Existing modules/meta-modules
 STECHEC_ADDMODULE([bb5])
@@ -27,6 +27,7 @@ STECHEC_ADDMODULE([ant])
 STECHEC_ADDMODULE([prolo2005])
 STECHEC_ADDMODULE([prolo2006])
 STECHEC_ADDMODULE([prolo2007])
+STECHEC_ADDMODULE([prolo2008])
 
 # Modules dependencies
 DEPENDS=""
@@ -36,6 +37,7 @@ DEPENDS_ant="prologin"
 DEPENDS_prolo2005="prologin"
 DEPENDS_prolo2006="prologin"
 DEPENDS_prolo2007="prologin"
+DEPENDS_prolo2008="prologin"
 
 # Can select which module(s) to build
 AC_MSG_CHECKING([for modules to build])
@@ -285,7 +287,6 @@ AC_CONFIG_FILES([
 ])
 fi
 
-# Uncomment these lines to build prolo2007
 if test x$BUILD_prolo2007 != x; then
 AC_CONFIG_FILES([
   prologin/prolo2007/Makefile
@@ -293,6 +294,15 @@ AC_CONFIG_FILES([
   prologin/prolo2007/visu/Makefile
   prologin/prolo2007/subject/Makefile
   prologin/prolo2007/data/Makefile
+])
+fi
+
+if test x$BUILD_prolo2008 != x; then
+AC_CONFIG_FILES([
+  prologin/prolo2008/Makefile
+  prologin/prolo2008/rules/Makefile
+  prologin/prolo2008/subject/Makefile
+  prologin/prolo2008/data/Makefile
 ])
 fi
 
