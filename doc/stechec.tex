@@ -4,6 +4,8 @@
 \usepackage{acro}
 \getrevision$LastChangedRevision: 3226 $
 
+\fancyhead[L]{\small{Stechec - A worthless game framework}}
+
 \title{
   \vspace{-2cm}
   \includegraphics[width=8cm]{prolo_undate} \\
@@ -66,10 +68,10 @@ surcouche, c'est à dire un jeu avec des règles, et les interfaces
 utilisateurs correspondantes. Pour l'instant, il existe deux jeux
 construits au dessus de \stechec: \ac{tbt}, et les sujets de finales
 Prologin. Vous pouvez pensez à \stechec comme au moteur de la voiture,
-et à \ac{tbt} (ou les sujets prologin) comme la
-carrosserie\footnote{Dans ce cas, on peut considérer qu'il fait aussi
-  ouvre-vitre électrique}. Les deux parties sont complémentaires, et
-devront s'assembler tant et bien que mal.
+et aux jeux l'utilisant comme la carrosserie\footnote{Dans ce cas, on
+peut considérer qu'il fait aussi ouvre-vitre électrique}. Les deux
+parties sont complémentaires, et devront s'assembler tant et bien que
+mal.
 
 En théorie, tout ce qui est dans \stechec, le code, la modélisation,
 les fonctionnalités sont figées. Ce présent document va essayer de
@@ -80,14 +82,14 @@ besoins.
 
 Voici un aperçu des fonctionnalités:
 \begin{itemize}
-\item Règles:
-\item Client:
+\item Règles
+\item Client
   \begin{itemize}
     \item Interface graphique
     \item UI
   \end{itemize}
-\item Serveur:
-\item Meta-serveur:
+\item Serveur
+\item Meta-serveur
 \end{itemize}
 
 
@@ -96,28 +98,21 @@ Voici un aperçu des fonctionnalités:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Historique}
 
-Chaque année, le serveur de la finale prologin \cite{prologin.www} est
-refait. Un effort a été fait en 2004 pour faire un programme
-suffisamment générique, pour ne pas avoir a tout refaire chaque
-année. Nom de code: \emph{Absolut}. Ce fut un quasi-échec pour un tas
-de raisons, ce qui a fait qu'il n'a pas pu être repris l'année
-suivante.
+Jusqu'en 2004\footnote{Ahhh, \emph{Absolut}, la bonne époque...}, le
+serveur de la finale prologin \cite{prologin.www} était refait chaque
+année. Ce qui finissait par être une perte de temps considérable.
 
-En 2005, un groupe de personnes motivés\footnote{Certaines pour les
-  notes, d'autres pour des raisons plus obscures...} a repris les
-choses en main, et tracé le contour d'un nouveau \emph{serveur
-  générique}. Petit nom pour ce bébé: \emph{\stechec}\footnote{A la
-  base, ce devait être un véritable échec.}. Finalement, quasiment
-tout a fonctionné au dela des espérances, mais le code de base n'était
-pas assez souple pour pouvoir faire des choses un peu différentes des
-sujets prologin.
+En 2005, un petit groupe de personnes motivés ont repris les choses en
+main, et ont tracé le contour d'un nouveau \emph{serveur
+générique}. Petit nom pour ce bébé: \emph{\stechec}\footnote{A la
+base, ce devait être un véritable échec.}. Et, ça a marché.
 
 Début 2006, \stechec a servi de source d'inspiration à la modélisation
 de \ac{tbt}, adapation du célèbre jeu de plateau Blood Bowl. Les
-principes furent repris, mais le code fut faconné de manière un peu
+principes furent repris, mais le code fut façonné de manière un peu
 plus souple et générique. Au bout d'un moment, pour ne pas à avoir à
 maintenir ces deux programmes, qui faisaient à peu près la même chose,
-ils furent mergés\footnote{A l'arrach', comme d'habitude}, avant la
+ils furent fusionnés\footnote{A l'arrach', comme d'habitude}, avant la
 finale de l'édition 2006 de prologin.
 
 Voici un aperçu des fontionnalitées, à travers le temps et les
