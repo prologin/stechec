@@ -30,7 +30,7 @@ robotus_la_LIBADD =						\
 
 
 robotus_la_CXXFLAGS =					\
-	-DMODULE_NAME=\"fixme\"			\
+	-DMODULE_NAME=\"robotus\"			\
 	-DMODULE_COLOR=C_RED				\
 	-DLIB_NAME=\"robotus\"				\
 	-DPKG_DATA_DIR=\"$(pkgdatadir)/prolo2008\"	\

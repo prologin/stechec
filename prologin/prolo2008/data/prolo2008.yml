@@ -1,7 +1,7 @@
 conf:
   package_name: prolo2008
-  client_rule_lib: fixme
-  server_rule_lib: fixme
+  client_rule_lib: robotus
+  server_rule_lib: robotus
   player_lib: champion
   player_filename: prologin
 

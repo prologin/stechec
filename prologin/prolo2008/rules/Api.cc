@@ -17,8 +17,14 @@
 // global used in interface.cc
 Api* api;
 
-Api::Api(GameData* gameData, Client* c) :
-  StechecApi(gameData, c)
+Api::Api(GameData* gameData, Client* c)
+  : StechecApi(gameData, c)
 {
   api = this;
+}
+
+
+void Api::teamSwitched()
+{
+  // GUI stuff. don't care about it
 }
