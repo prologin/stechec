@@ -3,6 +3,9 @@
 SUBDIRS =					\
 	data					\
 	rules					\
-	subject					\
 	editor					\
 	test
+
+if GENERATE_DOC
+SUBDIRS += subject
+endif

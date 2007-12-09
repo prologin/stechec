@@ -8,4 +8,6 @@ if HAVE_SDL
   SUBDIRS += visu
 endif
 
-#SUBDIRS += subject
+if GENERATE_DOC
+SUBDIRS += subject
+endif
