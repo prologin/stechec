@@ -51,7 +51,7 @@ tmp_dir=`mktemp -q -d /tmp/match_XXXXXX`
 real_log_file=$tmp_dir/visio.log
 real_out_file=$tmp_dir/server.out
 
-# parse extra arguments, to fill our xml.
+# parse extra arguments, to fill our ini.
 map="ERROR_not_set"
 max_turn=10
 nb_team=$((nb_player / nb_champion_instance))
@@ -76,29 +76,18 @@ out_file=$contest_path/$contest_dir_name/matchs/match_$game_id/server.out
 #
 # Create server config file.
 #
-config_file=$tmp_dir/config.xml
+config_file=$tmp_dir/config.ini
 cat > $config_file <<EOF
-<?xml version="1.0" encoding="iso-8859-1" ?>
-<!DOCTYPE config SYSTEM "file://${stechec_install_path}/share/stechec/config.dtd">
-<config>
+[server]
+listen_port=$port
+log=$real_log_file
+verbose=1
 
-  <game>
-    <nb_team player_per_team="$nb_champion_instance">$nb_team</nb_team>
-    <max_turn>$max_turn</max_turn>
-    <map>$map</map>
-  </game>
-
-  <server>
-    <rules>$contest_lib_name</rules>
-    <options persistent="false" start_game_timeout="50" />
-    <listen port="$port" />
-    <log enabled="true" file="$real_log_file" />
-    <nb_spectator>0</nb_spectator>
-    <debug verbose="3" />
-    <server_debug verbose="2" />
-  </server>
-
-</config>
+[$contest_lib_name]
+max_turn=$max_turn
+nb_player=$nb_champion_instance
+nb_team=$nb_team
+map=$map
 EOF
 
 #
@@ -113,7 +102,7 @@ if [ $is_competition = "0" ]; then
     echo " * Start at: `date +%T`" >> $real_out_file
     echo >> $real_out_file
     ulimit -c 10000
-    $stechec_install_path/bin/stechec_server $config_file > $tmp_out 2>> $real_out_file
+    $stechec_install_path/bin/stechec_server --config=$config_file > $tmp_out 2>> $real_out_file
     res=$?
     sed -i -e 's/\[[01];3[0-9]m//g;s/\[0m//g' $real_out_file
     echo >> $real_out_file
@@ -131,51 +120,6 @@ if [ $is_competition = "0" ]; then
     # FIXME: make it no-NFS aware.
     mkdir -p $contest_path/$contest_dir_name/matchs/match_$game_id
 
-# deather's hack begin
-
-    # we generate filenames to be used to store
-    # the temporary log without ___LOG_PATTERN___ before being
-    # stored back in the original file and the temporary sed file.
-    gp_file=/tmp/stechec.$game_id.$RANDOM
-    tmp_file=/tmp/stechec.$game_id.$RANDOM
-    tmp_gp_file=/tmp/stechec.$game_id.$RANDOM
-
-    # extracts logging data from the out_file and remove it from the original
-    # file.
-    cat $real_out_file | grep ___LOG_PATTERN___ > $gp_file
-    cat $real_out_file | grep -v  ___LOG_PATTERN___ > $tmp_file
-    mv $tmp_file $real_out_file
-
-    # formats the logfile
-    sed "s/\[globulus $game_id] ___LOG_PATTERN___ //g" \
-	$gp_file > $tmp_gp_file
-    rm -f $gp_file
-    # prepend line numbers
-    i=0
-    cat $tmp_gp_file | while read LINE ; do
-      echo $i $LINE >> $gp_file
-      i=$(($i+1))
-    done
-
-    # generates the gnuplot data
-    cat > $gp_file.gp <<EOF
-set terminal png
-set output "$gp_file.png"
-plot '$gp_file' using 1:2 title "Cellules saines" with lines, \
-'$gp_file' using 1:3 title "Cellules infectees" with lines, \
-'$gp_file' using 1:4 title "Virus" with lines
-EOF
-    # runs gnuplot
-    gnuplot $gp_file.gp
-    # upload the file
-    upload_file $gp_file.png $out_file.png
-    # remove temporary files
-    rm -f $gp_file.png
-    rm -f $gp_file.gp
-    rm -f $tmp_gp_file
-    rm -f $gp_file
-# deather's hack end
- 
     upload_file $real_out_file $out_file
     upload_file $real_log_file $log_file
 

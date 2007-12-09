@@ -77,7 +77,8 @@ if [ ! -f $real_lib ]; then
     abort "FAILED" 3 $real_out_file $out_file
 fi
 echo "OK" >> $real_out_file
-champion_library=`echo $real_lib | sed s/\.so$//`
+champion_library=`basename "$(echo $real_lib | sed s/\.so$//)"`
+champion_path=`dirname $real_lib`
 
 #
 # Hack for java !
@@ -88,22 +89,19 @@ nm $real_lib | grep -q "_Jv_AttachCurrentThread"
 #
 # Create client configuration file.
 #
-config_file="$tmp_dir/config.xml"
+config_file="$tmp_dir/config.ini"
 cat > $config_file <<EOF
-<?xml version="1.0" encoding="iso-8859-1" ?>
-<!DOCTYPE config SYSTEM "file://${stechec_install_path}/share/stechec/config.dtd">
-<config>
-
-  <client id="${team_id}">
-    <rules>$contest_lib_name</rules>
-    <champion>$champion_library</champion>
-    <connect val="network" host="$ip_server" port="$port" game_uid="$game_id" />
-    <mode replay="false" spectator="false" />
-    <limit memory="$memory_limit" time="$time_limit" time_reserve="$reserve_time" />
-    <debug verbose="2" />
-  </client>
-
-</config>
+[client_${team_id}]
+rules=$contest_lib_name
+path=$champion_path
+library=$champion_library
+server_host=$ip_server
+server_port=$port
+game_uid=$game_id
+memory=$memory_limit
+time=$time_limit
+time_reserve=$reserve_time
+verbose=2
 EOF
 
 
