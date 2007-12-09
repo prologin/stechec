@@ -28,25 +28,25 @@ class ServerEntry: public StechecServerEntry
 
 public:
 
-  ServerEntry(GameData* game, Server* server, xml::XMLConfig& cfg);
+  ServerEntry(GameData* game, Server* server, const ConfSection* cfg);
   virtual ~ServerEntry();
 
   // Different entry point
   virtual int        beforeGame();
-  virtual int         initGame();
-  virtual int         beforeNewTurn();
-  virtual int         afterNewTurn();
-  virtual int         afterGame();
+  virtual int        initGame();
+  virtual int        beforeNewTurn();
+  virtual int        afterNewTurn();
+  virtual int        afterGame();
 
   // Indique la fin du jeu
-  virtual bool        isMatchFinished();
+  virtual bool       isMatchFinished();
 
   // Recupere le score
   virtual int        getScore(int uid);
 
 private:
   int                LoadMap(const char *map_file);
-  void                InitPlayer();
+  void               InitPlayer();
   int                ParseOptions();
   std::string        mapFile;
   int                maxTurn;

@@ -1,5 +1,18 @@
+/*
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** The complete GNU General Public Licence Notice can be found as the
+** `NOTICE' file in the root directory.
+**
+** Copyright (C) 2005, 2007 Prologin
+*/
 
 #include "sdl_visu.hh"
+
+class ConfFile;
 
 SDLVisu::SDLVisu(Api* api, ClientCx* ccx)
   : api_(api),
@@ -8,7 +21,7 @@ SDLVisu::SDLVisu(Api* api, ClientCx* ccx)
 {
 }
 
-SDL_Surface *SDLVisu::load_image(const std::string& filename) 
+SDL_Surface* SDLVisu::load_image(const std::string& filename) 
 { 
   SDL_Surface* loadedImage = NULL;
   SDL_Surface* optimizedImage = NULL;
@@ -205,7 +218,7 @@ int SDLVisu::run()
 }
 
 // Library entry point.
-extern "C" int run(xml::XMLConfig*, Api* api, ClientCx* ccx)
+extern "C" int run(ConfFile* cfg_file, Api* api, ClientCx* ccx)
 {
   SDLVisu visu(api, ccx);
   return visu.run();

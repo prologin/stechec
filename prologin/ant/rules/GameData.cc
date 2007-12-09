@@ -124,13 +124,3 @@ const char* GameData::GetCommandString(int cst)
   return names[cst];
 }
 
-/*!
-** @brief Module description
-*/
-extern "C" const struct RuleDescription rules_description = {
-  "ant",
-  "Prologin's world: ant",
-  "ant",
-  1,
-  0,
-};
