@@ -12,3 +12,5 @@ LDADD 		=				\
 
 INCLUDES	= 				\
 	-I$(top_srcdir)/stechec/tools
+
+EXTRA_DIST = test_cx.sh

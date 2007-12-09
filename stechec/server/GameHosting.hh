@@ -15,10 +15,10 @@
 
 # include "tools.hh"
 # include "datatfs/CxPool.hh"
-# include "datatfs/FileCx.hh"
 # include "BaseSRules.hh"
 # include "PacketSender.hh"
 
+class FileCx;
 class ConfSection;
 class ConfSection;
 
@@ -85,7 +85,7 @@ private:
   typedef std::map<Cx*, Client*>    ClientMapList;
 
   const ConfSection*    cfg_;             ///< Server configuration.
-  FileCx                log_;             ///< File to log game to.
+  FileCx*               log_;             ///< File to log network transaction to.
 
   CxPool<Cx>            cl_pool_;         ///< Facility to poll all clients at once.
   ClientList            cl_;              ///< Active client list.

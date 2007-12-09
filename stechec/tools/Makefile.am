@@ -38,6 +38,7 @@ libtools_la_SOURCES +=				\
 	datatfs/Direct.hh			\
 	datatfs/Direct.cc			\
 	datatfs/FileCx.hh			\
+	datatfs/FileCx.cc			\
 	datatfs/Packet.hh			\
 	datatfs/Packet.cc
 

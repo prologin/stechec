@@ -85,8 +85,8 @@ void ClientApp::parseConfig()
     { 'i', "id", 1, "client/config id" },
     { 'r', "rules", 1, "rules name" },
     { 's', "spectator", 0, "join game as a spectator" },
-    { 'd', "server-host", 1, "server address" },
-    { 'p', "server-port", 1, "server port" },
+    { 'd', "server_host", 1, "server address" },
+    { 'p', "server_port", 1, "server port" },
     { 'a', "path", 1, "libray path" },
     { 'l', "library", 1, "library name" },
     { 'g', "valgrind", 0, "use valgrind" },
@@ -95,7 +95,7 @@ void ClientApp::parseConfig()
     { 'o', "log", 1, "file to log name" },
     { 'm', "memory", 1, "max memory for the process" },
     { 't', "time", 1, "max time per turn" },
-    { 'f', "time-reserve", 1, "time reserve" },
+    { 'f', "time_reserve", 1, "time reserve" },
     { 0, 0, 0, 0 }
   };
 

@@ -11,6 +11,7 @@
 */
 
 #include "misc/Conf.hh"
+#include "datatfs/FileCx.hh"
 #include "Server.hh"
 #include "Client.hh"
 #include "GameHosting.hh"
@@ -19,6 +20,7 @@ BEGIN_NS(server);
 
 GameHosting::GameHosting(int game_uid, const ConfSection* cfg, BaseSRules* rules)
   : cfg_(cfg),
+    log_(0),
     cl_pool_(500),
     rules_(rules),
     game_uid_(game_uid),
@@ -38,25 +40,25 @@ GameHosting::GameHosting(int game_uid, const ConfSection* cfg, BaseSRules* rules
   LOG1("Creating a new game, uid '%1`. Wait for `%2' coachs and `%3' spectators.",
        game_uid, nb_waited_coach_, nb_waited_viewer_);
 
-#if 0
   if (cfg->getValue<std::string>("log") != "")
     {
       std::string filename = cfg->getValue<std::string>("log");
-      log_.open(filename, CX_WO);
+      log_ = new FileCx();
+      log_->open(filename, CX_WRITE);
 
       ClientUid pkt_id(CLIENT_UID);
       pkt_id.client_id = UID_COACH_BASE;
       pkt_id.nb_team = nb_team_;
       pkt_id.nb_coach = nb_waited_coach_;
-      log_.send(pkt_id);
-      LOG4("Log game into file `%1`", filename);
+      log_->send(pkt_id);
+      LOG2("Log game into file `%1`", filename);
     }
-#endif
 }
 
 GameHosting::~GameHosting()
 {
   delete rules_;
+  delete log_;
   pthread_mutex_destroy(&lock_);
 
   // All clients _should_ have been disconnected.
@@ -77,7 +79,8 @@ void    GameHosting::sendPacket(const Packet& p)
 {
   LOG5("-> `%1' (id: %2)", rules_->stringifyToken(p.token), p.client_id);
 
-  log_.send(p);
+  if (log_)
+    log_->send(p);
   for_all(cl_, std::bind2nd(std::mem_fun(&Client::send), &p));
 }
 

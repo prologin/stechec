@@ -13,6 +13,7 @@
 #ifndef FILECX_HH_
 # define FILECX_HH_
 
+# include <fstream>
 # include "Cx.hh"
 
 //! @ingroup tools_net
@@ -22,14 +23,15 @@ public:
   FileCx() {}
   virtual ~FileCx() {}
 
+  void open(const std::string& filename, int mode);
+  
 protected:
   virtual bool pollInternal(int* timeout = 0);
   virtual int recvData(bool use_exception);
   virtual void sendData(unsigned char* data, unsigned size);
-};
 
-inline bool FileCx::pollInternal(int*) { return false; }
-inline int FileCx::recvData(bool) { return 0; }
-inline void FileCx::sendData(unsigned char*, unsigned) {}
+private:
+  std::fstream file_;
+};
 
 #endif /* !FILECX_HH_ */
