@@ -18,6 +18,7 @@
 # include <algorithm>
 # include "Contest.hh"
 # include "Constant.hh"
+# include "Robot.hh"
 
 /*!
 ** This class is meant to contain all data, accessible from
@@ -26,8 +27,17 @@
 class GameData: public StechecGameData
 {
 public:
-  GameData();
+  GameData(void);
 
+  unsigned char	_map[MAP_MAX_Y][MAP_MAX_X];
+  unsigned int	_map_size_y;
+  unsigned int	_map_size_x;
+
+  unsigned int	_start_player;			/// Starting player [0-1]
+
+  int _max_turn;
+  int _nb_robots;
+  Robot		_robots[MAX_ROBOTS]; // Robots from team 0 : [0, _nb_robots/2) , robots from team 1 : [_nb_robots/2, _nb_robots)
 };
 
 #endif // !GAMEDATA_HH_

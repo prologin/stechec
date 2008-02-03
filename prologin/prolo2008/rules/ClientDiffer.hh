@@ -16,6 +16,7 @@
 # include "Contest.hh"
 # include "GameData.hh"
 # include "Client.hh"
+# include <cassert>
 
 class ClientDiffer : public StechecClientDiffer
 {

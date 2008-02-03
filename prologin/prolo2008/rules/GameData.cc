@@ -12,6 +12,8 @@
 
 #include "GameData.hh"
 
-GameData::GameData()
+GameData::GameData(void)
 {
+  std::fill(*_map, *_map + MAP_MAX_X * MAP_MAX_Y, MAP_EMPTY);
+  _nb_robots = 0;
 }

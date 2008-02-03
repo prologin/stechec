@@ -25,6 +25,10 @@ ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client)
 */
 int        ClientEntry::beforeGame()
 {
+  StechecPkt	com;
+
+  while (fetchCommand(&com))
+    differ_->ApplyDiff(&com);
   return 0;
 }
 
