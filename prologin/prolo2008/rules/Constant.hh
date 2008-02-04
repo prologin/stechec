@@ -33,20 +33,21 @@
 // Ids for message type.
 enum e_com_type {
   // from server
-  INIT_DATA,
-  MAP_CONTENT,
-  ROBOT_POS,
-  ROBOT_HAS_BALL,
-  ROBOT_HOOK,
+  INIT_DATA,        /* MAP_WIDTH, MAP_HEIGHT, ... */
+  MAP_CONTENT,      /* X, Y, VALUE */
+  ROBOT_POS,        /* ROBOT_ID, X, Y */
+  ROBOT_HAS_BALL,   /* ROBOT_ID, TRUE or FALSE */
+  ROBOT_HOOK,       /* ROBOT_ID, HOOKED_ROBOT_ID */
+  ROBOT_UNHOOK,     /* ROBOT_ID */
   // from client
-  DROP_BALL,
-  MOVE,
-  PICK_UP_BALL,
-  HOOK_ROBOT,
-  RELEASE_HOOK,
-  BOOST_TURBO,
+  DROP_BALL,        /* ROBOT_ID */
+  MOVE,             /* ROBOT_ID, WAY */
+  PICK_UP_BALL,     /* ROBOT_ID */
+  HOOK_ROBOT,       /* ROBOT_ID, HOOKED_ROBOT_ID */
+  RELEASE_HOOK,     /* ROBOT_ID */
+  BOOST_TURBO,      /* ROBOT_ID */
   // misc
-  LAST_MSG
+  LAST_MSG          /* */
 };
 
 #endif // !CONSTANT_HH_

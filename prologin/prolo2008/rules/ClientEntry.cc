@@ -27,6 +27,8 @@ int        ClientEntry::beforeGame()
 {
   StechecPkt	com;
 
+  // We handle every packet sent by the server to
+  // initialize our GameData instance.
   while (fetchCommand(&com))
     differ_->ApplyDiff(&com);
   return 0;
@@ -50,6 +52,12 @@ int        ClientEntry::initGame()
 
 int        ClientEntry::beforeNewTurn()
 {
+  for (int i = 0; i < MAX_ROBOTS; ++i)
+  {
+    g_->_robots[i].ResetHook();
+    g_->_robots[i].ResetTurbo();
+  }
+  
   return 0;
 }
 

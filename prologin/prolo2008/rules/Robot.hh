@@ -16,16 +16,19 @@
 class Robot
 {
 public:
-  Robot(void): _pos_x(-1), _pos_y(-1), _turbo(0), _hook(-1), _has_ball(false), _team_id(-1) {}
+  Robot(void): _pos_x(-1), _pos_y(-1), _turbo(0), _hook(-1), _has_ball(false), _team_id(-1), _enabled(false) {}
 
   void		Init(int x, int y, int team) {
     _pos_x = x;
     _pos_y = y;
     _team_id = team;
+    _enabled = true;
   }
 
   int		GetXPos(void)		{ return _pos_x; }
   int		GetYPos(void)		{ return _pos_y; }
+
+  bool          IsEnabled(void)         { return _enabled; }
 
   void		SetPos(int x, int y)	{ _pos_x = x; _pos_y = y; }
 
@@ -35,16 +38,19 @@ public:
   void		SetHook(int id)		{ _hook = id; }
   void		ResetHook(void)		{ _hook = -1; }
 
-  void		PickBall(void)		{ _has_ball = true; }
+  void		PickUpBall(void)	{ _has_ball = true; }
   void		ReleaseBall(void)	{ _has_ball = false; }
+
+  static bool   CheckRange(int id)      { return (id < 0 || id > MAX_ROBOTS); }
 
 private:
   int		_pos_x;
   int		_pos_y;
   unsigned int	_turbo;
-  int		_hook;		/// Grapin -- -1 if empty
+  int		_hook;		/// Grapin -- -1 if empty.
   bool		_has_ball;
   int		_team_id;
+  bool          _enabled;       /// False if the robot isn't enabled.
 };
 
 #endif // !ROBOT_HH_

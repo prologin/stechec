@@ -39,67 +39,87 @@ int ServerEntry::loadMap(void)
   LOG3("Map file is: %1", map_file);
 
   map_stream.open(map_file.c_str());
-  if (!map_stream) {
+  if (!map_stream)
+  {
     ERR("Unable to load %1", map_file);
     return 1;
   }
 
-  if (map_stream.peek() == '#') // comment
-    {
-      getline(map_stream, line);
-    }
-  if (!(map_stream >> size_y >> size_x)) {
-    ERR("Expecting size_y and size_x separated by a space");
+  // If the first line is a comment, discard it
+  if (map_stream.peek() == '#')
+  {
+    getline(map_stream, line);
+  }
+
+  // The first line is "size_x size_y\n"
+  if (!(map_stream >> size_x >> size_y))
+  {
+    ERR("Expecting size_x and size_y separated by a space");
     return 1;
   }
 
-  if (size_x <= 4 || size_y <= 4 || size_x >= MAP_MAX_X || size_y >= MAP_MAX_Y) {
+  if (size_x <= 4 || size_y <= 4 || size_x >= MAP_MAX_X || size_y >= MAP_MAX_Y)
+  {
     ERR("Map size are invalid, go fix your map");
     return 1;
   }
+
   g_->_map_size_x = (unsigned int) size_x;
   g_->_map_size_y = (unsigned int) size_y;
 
-  while (map_stream.peek() != '\n') map_stream.ignore();
+  while (map_stream.peek() != '\n')
+    map_stream.ignore();
   map_stream.ignore();
 
   int nb_robots[2] = {0};
 
-  for (int i = 0 ; i < size_y ; ++i) {
+  for (int j = 0; j < size_y; ++j)
+  {
     getline(map_stream, line);
-    if (!map_stream) {
-      ERR("Not enough line in map file");
+    if (!map_stream)
+    {
+      ERR("Not enough lines in map file");
       return 1;
     }
-    if ((int)line.size() != size_x) {
-      ERR("Line %1 of map has unexpected size %2 instead of %3", i, line.size(), size_x);
+
+    if ((int) line.size() != size_x)
+    {
+      ERR("Line %1 of map has unexpected size %2 instead of %3", j, line.size(), size_x);
       return 1;
     }
-    for (int j=0 ; j < size_x ; ++j) {
-      switch(line[j]) {
-      case MAP_ROBOT_TEAM1 :
-	if (nb_robots[0] >= MAX_ROBOTS / 2) {
-	  ERR("Too many robots for team 1, whose limit is %1", MAX_ROBOTS/2);
-	  return 1;
-	}
-	g_->_robots[nb_robots[0]++].Init(j,i,0);
-	break;
-      case MAP_ROBOT_TEAM2 :
-	if (nb_robots[1] >= MAX_ROBOTS/2) {
-	  ERR("Too many robots for team 2, whose limit is %1", MAX_ROBOTS/2);
-	  return 1;
-	}
-	g_->_robots[MAX_ROBOTS/2 + nb_robots[1]++].Init(j,i,1);
-	break;
-      case MAP_WALL :
-      case MAP_EMPTY :
-      case MAP_HOLE :
-      case MAP_BALL :
-	g_->_map[i][j] = line[j];
-	break;
-      default :
-	ERR("Unexpected char in map at pos %1,%2", i, j);
-	return 1;
+
+    for (int i = 0; i < size_x; ++i)
+    { 
+      switch (line[i])
+      {
+        case MAP_ROBOT_TEAM1 :
+          if (nb_robots[0] >= MAX_ROBOTS / 2)
+          {
+            ERR("Too many robots for team 1, whose limit is %1", MAX_ROBOTS / 2);
+            return 1;
+          }
+          g_->_robots[nb_robots[0]++].Init(i, j, 0);
+          break;
+
+        case MAP_ROBOT_TEAM2 :
+          if (nb_robots[1] >= MAX_ROBOTS / 2)
+          {
+            ERR("Too many robots for team 2, whose limit is %1", MAX_ROBOTS / 2);
+            return 1;
+          }
+          g_->_robots[MAX_ROBOTS / 2 + nb_robots[1]++].Init(i, j, 1);
+          break;
+
+        case MAP_WALL :
+        case MAP_EMPTY :
+        case MAP_HOLE :
+        case MAP_BALL :
+          g_->_map[i][j] = line[i];
+          break;
+
+        default :
+          ERR("Unexpected char in map at pos %1,%2", i, j);
+          return 1;
       }
     }
   }
@@ -113,21 +133,21 @@ int		ServerEntry::beforeGame(void)
   if (loadMap())
     return 1;
 
-  //max_turn :
-  g_->_max_turn =  cfg_->getValue<int>("max_turn");
-  //broadcast map size :
+  g_->_max_turn = cfg_->getValue<int>("max_turn");
+
+  // Broadcasts initalization data (map size, etc.)
   StechecPkt com(INIT_DATA, -1);
-  com.Push(3, INIT_MAP_SIZE, g_->_map_size_y, g_->_map_size_x);
+  com.Push(3, g_->_map_size_x, g_->_map_size_y);
   SendToAll(com);
 
-  //broadcast the map :
-  for (int i=0 ; i < g_->_map_size_y ; i++)
-    for (int j=0 ; j < g_->_map_size_x ; j++) {
+  // Broadcasts the map's content
+  for (int j = 0; j < g_->_map_size_y; j++)
+    for (int i = 0; i < g_->_map_size_x; i++)
+    {
       StechecPkt com(MAP_CONTENT, -1);
-      com.Push(3, i, j, g_->_map[i][j]);
+      com.Push(3, i, j, g_->_map[j][i]);
       SendToAll(com);
     }
-
 
   return 0;
 }
@@ -139,11 +159,31 @@ int         ServerEntry::initGame(void)
 
 int         ServerEntry::beforeNewTurn(void)
 {
+  for (int i = 0; i < MAX_ROBOTS; ++i)
+  {
+    g_->_robots[i].ResetHook();
+    g_->_robots[i].ResetTurbo();
+  }
+ 
   return 0;
 }
 
 int         ServerEntry::afterNewTurn(void)
 {
+#if 0
+  for (int i = 0; i < MAX_ROBOTS; ++i)
+  {
+    // If the robot exists, we send its position to the client
+    if (g_->_robots[i].IsEnabled())
+    {
+      LOG4("Broadcasting robot's %1 position", i);
+      StechecPkt com(ROBOT_POS, -1);
+      com.Push(3, i, g_->_robots[i].GetXPos(), g_->_robots[i].GetYPos());
+      SendToAll(&com);
+    }
+  }
+#endif
+
   return 0;
 }
 
