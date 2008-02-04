@@ -41,7 +41,7 @@ public:
   void		PickUpBall(void)	{ _has_ball = true; }
   void		ReleaseBall(void)	{ _has_ball = false; }
 
-  static bool   CheckRange(int id)      { return (id < 0 || id > MAX_ROBOTS); }
+  static bool   CheckRange(int id)      { return (id < 0 || id >= MAX_ROBOTS); }
 
 private:
   int		_pos_x;

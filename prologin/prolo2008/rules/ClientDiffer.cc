@@ -74,7 +74,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       {
         int robot_id = pkt->arg[0];
 
-        if (!Robot::CheckRange(robot_id))
+        if (Robot::CheckRange(robot_id))
         {
           ERR("Robot Id %1: invalid range in ROBOT_HAS_BALL", robot_id);
           break;
@@ -96,7 +96,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
         int robot_id        = pkt->arg[0];
         int hooked_robot_id = pkt->arg[1];
 
-        if (Robot::CheckRange(robot_id) && Robot::CheckRange(hooked_robot_id))
+        if (Robot::CheckRange(robot_id) || Robot::CheckRange(hooked_robot_id))
         {
           ERR("Robot Id %1, HookedRobot id %2: invalid range in ROBOT_HOOK", robot_id, hooked_robot_id);
           break;
@@ -125,7 +125,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       {
         int robot_id = pkt->arg[0];
 
-        if (!Robot::CheckRange(robot_id))
+        if (Robot::CheckRange(robot_id))
         {
           ERR("Robot Id %1: invalid range in ROBOT_UNHOOK", robot_id);
           break;
