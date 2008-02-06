@@ -16,21 +16,114 @@ constant:
     cst_name: SUCCESS
     cst_val: 0
     cst_comment: La commande s'est correctement effectuee.
-
+  - doc_extra: \subsubsection{Les constantes de terrain}
+  -
+    cst_name: NORMAL
+    cst_val: 0
+    cst_comment: Case de terrain qui n'est ni un trou, ni un mur
+  -
+    cst_name: TROU
+    cst_val: 1
+    cst_comment: Trou du terrain
+  -
+    cst_name: MUR
+    cst_val: 2
+    cst_comment: Mur du terrain
+  - doc_extra: \subsubsection{Les constantes de d'eplacement}
+  -
+    cst_name: HAUT
+    cst_val: 0
+    cst_comment: 
+  -
+    cst_name: GAUCHE
+    cst_val: 1
+    cst_comment: 
+  -
+    cst_name: BAS
+    cst_val: 2
+    cst_comment: 
+  -
+    cst_name: DROITE
+    cst_val: 3
+    cst_comment: 
 
 function:
   - doc_extra: |
      \subsection{Fonctions d'information}
      Toutes les fonctions peuvent renvoyer les constantes
-     \textbf{BAD_ARGUMENT} ou \textbf{NO_UNIT} quand au moins un des
+     \textbf{BAD_ARGUMENT} quand au moins un des
      arguments est incorrect (même si cela n'est pas précisé pour chaque
      fonction). Par exemple, cela se produit si vous appelez
      la fonction \texttt{regarde} avec \texttt{x=13} et \texttt{y=5142}.
      \subsubsection{Informations sur le monde}
   -
-    fct_name: equipes
-    fct_summary: Nombre d'equipes presentes sur le terrain.
+    fct_name: numero_tour
+    fct_summary: Renvoie le numero du tour
     fct_ret_type: int
+  -
+    fct_name: nombre_tours
+    fct_summary: Renvoie le nombre de tours d'une partie
+    fct_ret_type: int
+  -
+    fct_name: commence
+    fct_summary: Fonction pour savoir si on joue en premier ce tour-ci
+    fct_ret_type: bool
+  -
+    fct_name: pos_x
+    fct_summary: Renvoie la position x du robot id
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, id du robot]
+  -
+    fct_name: pos_y
+    fct_summary: Renvoie la position y du robot id
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, id du robot]
+  -
+    fct_name: porte_balle
+    fct_summary: Indique si le robot id porte une balle
+    fct_ret_type: bool
+    fct_arg:
+      - [id, int, id du robot]
+  -
+    fct_name: distance
+    fct_summary: Renvoie la distance minimale pour aller de (x1,y1) 'a (x2,y2)
+    fct_ret_type: int
+    fct_arg:
+      - [x1, int, la colonne du premier point]
+      - [y1, int, la ligne du premier point]
+      - [x2, int, la colonne du second point]
+      - [y2, int, la ligne du second point]
+  -
+    fct_name: type_case
+    fct_summary: Renvoie le type de la case (x,y) (NORMAL, TROU ou MUR)
+    fct_ret_type: int
+    fct_arg:
+      - [x, int, la colonne]
+      - [y, int, la ligne]
+  -
+    fct_name: balle
+    fct_summary: Indique s'il y a une balle non port'ee sur la case (x,y)
+    fct_ret_type: bool
+    fct_arg:
+      - [x, int, la colonne]
+      - [y, int, la ligne]
+  - doc_extra: |
+     \subsection{Fonctions d'action}
+     Toutes les fonctions peuvent renvoyer les constantes
+     \textbf{BAD_ARGUMENT} quand au moins un des
+     arguments est incorrect (même si cela n'est pas précisé pour chaque
+     fonction). Par exemple, cela se produit si vous appelez
+     la fonction \texttt{regarde} avec \texttt{x=13} et \texttt{y=5142}.
+     \subsubsection{Informations sur le monde}
+  -
+    fct_name: deplacer
+    fct_summary: Demande un d'eplacement du robot
+    fct_ret_type: int
+    fct_arg:
+    - [id, int, l'identifiant de votre robot]
+    - [direction, int, l'une des quatre directions]
 
 user_function:
   - doc_extra: |-
