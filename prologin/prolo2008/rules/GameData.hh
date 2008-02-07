@@ -29,7 +29,9 @@ class GameData: public StechecGameData
 public:
   GameData(void);
 
-  unsigned char	_map[MAP_MAX_Y][MAP_MAX_X];
+  unsigned char	_map[MAP_MAX_Y][MAP_MAX_X]; 
+  //storing only the environnement that doesn't move : floor, wall and hole (MAP_WALL|MAP_EMPTY|MAP_HOLE)
+  unsigned char _balls[MAP_MAX_Y][MAP_MAX_X]; //storing balls that are on the floor (MAP_BALL|MAP_EMPTY)
   unsigned int	_map_size_y;
   unsigned int	_map_size_x;
 

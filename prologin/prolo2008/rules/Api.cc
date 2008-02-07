@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2007 Prologin
+** Copyright (C) 2005, 2006 Prologin
 */
 
 #include <stdlib.h>
@@ -21,6 +21,81 @@ Api::Api(GameData* gameData, Client* c)
   : StechecApi(gameData, c)
 {
   api = this;
+}
+
+int Api::numero_tour()
+{
+  return 0;
+}
+
+int Api::nombre_tours()
+{
+  return 0;
+}
+
+bool Api::commence()
+{
+  return 0;
+}
+
+int Api::pos_x(int id)
+{
+  return 0;
+}
+
+int Api::pos_y(int id)
+{
+  return 0;
+}
+
+bool Api::porte_balle(int id)
+{
+  return 0;
+}
+
+int Api::distance(int x1, int y1, int x2, int y2)
+{
+  return 0;
+}
+
+int Api::type_case(int x, int y)
+{
+  return 0;
+}
+
+bool Api::balle(int x, int y)
+{
+  return 0;
+}
+
+int Api::deplacer(int id, int direction)
+{
+  return 0;
+}
+
+int Api::turbo(int id)
+{
+  return 0;
+}
+
+int Api::lacher_balle(int id)
+{
+  return 0;
+}
+
+int Api::prendre_balle(int id)
+{
+  return 0;
+}
+
+int Api::grapin(int id, int direction)
+{
+  return 0;
+}
+
+int Api::attendre(int id)
+{
+  return 0;
 }
 
 

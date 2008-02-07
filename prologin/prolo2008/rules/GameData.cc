@@ -15,5 +15,6 @@
 GameData::GameData(void)
 {
   std::fill(*_map, *_map + MAP_MAX_X * MAP_MAX_Y, MAP_EMPTY);
+  std::fill(*_balls, *_balls + MAP_MAX_Y * MAP_MAX_X, MAP_EMPTY);
   _nb_robots = 0;
 }

@@ -7,14 +7,34 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2007 Prologin
+** Copyright (C) 2005, 2006 Prologin
 */
 
 #ifndef CONSTANT_HH_
 # define CONSTANT_HH_
 
-# define BAD_ARGUMENT		-1
-# define SUCCESS		0
+// Constantes candidats :
+
+# define BAD_ARGUMENT              -1
+
+# define SUCCESS                   0
+
+# define NORMAL                    0
+
+# define TROU                      1
+
+# define MUR                       2
+
+# define HAUT                      0
+
+# define GAUCHE                    1
+
+# define BAS                       2
+
+# define DROITE                    3
+
+
+//Constants persos (à conserver lors d'un ./generator .. !):
 
 # define MAP_WALL		'X'
 # define MAP_EMPTY		'.'
@@ -27,7 +47,6 @@
 # define MAP_MAX_Y		20
 # define MAX_ROBOTS		6
 
-// types for INIT_DATA packets :
 # define INIT_MAP_SIZE		0
 
 // Ids for message type.
