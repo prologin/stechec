@@ -29,7 +29,7 @@ constant:
     cst_name: MUR
     cst_val: 2
     cst_comment: Mur du terrain
-  - doc_extra: \subsubsection{Les constantes de d'eplacement}
+  - doc_extra: \subsubsection{Les constantes de directions}
   -
     cst_name: HAUT
     cst_val: 0
@@ -54,8 +54,7 @@ function:
      \textbf{BAD_ARGUMENT} quand au moins un des
      arguments est incorrect (même si cela n'est pas précisé pour chaque
      fonction). Par exemple, cela se produit si vous appelez
-     la fonction \texttt{regarde} avec \texttt{x=13} et \texttt{y=5142}.
-     \subsubsection{Informations sur le monde}
+     la fonction \texttt{type_case} avec \texttt{x=13} et \texttt{y=5142}.
   -
     fct_name: numero_tour
     fct_summary: Renvoie le numero du tour
@@ -104,7 +103,7 @@ function:
       - [y, int, la ligne]
   -
     fct_name: balle
-    fct_summary: Indique s'il y a une balle non port'ee sur la case (x,y)
+    fct_summary: Indique s'il y a une balle non portée sur la case (x,y)
     fct_ret_type: bool
     fct_arg:
       - [x, int, la colonne]
@@ -115,15 +114,45 @@ function:
      \textbf{BAD_ARGUMENT} quand au moins un des
      arguments est incorrect (même si cela n'est pas précisé pour chaque
      fonction). Par exemple, cela se produit si vous appelez
-     la fonction \texttt{regarde} avec \texttt{x=13} et \texttt{y=5142}.
-     \subsubsection{Informations sur le monde}
+     la fonction \texttt{deplacer} avec \texttt{id=1} et \texttt{direction=20}.
   -
     fct_name: deplacer
-    fct_summary: Demande un d'eplacement du robot
+    fct_summary: Demande un déplacement du robot
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre robot]
     - [direction, int, l'une des quatre directions]
+  -
+    fct_name: turbo
+    fct_summary: Incrémente le turbo d'un robot
+    fct_ret_type: int
+    fct_arg:
+    - [id, int, l'identifiant de votre robot]
+  -
+    fct_name: lacher_balle
+    fct_summary: Fait lacher la balle à votre robot
+    fct_ret_type: int
+    fct_arg:
+    - [id, int, l'identifiant de votre robot]
+  -
+    fct_name: prendre_balle
+    fct_summary: Demande à votre robot de prendre la balle sur sa case courante
+    fct_ret_type: int
+    fct_arg:
+    - [id, int, l'identifiant de votre robot]
+  -
+    fct_name: grapin
+    fct_summary: Demande à votre robot de lancer le grapin
+    fct_ret_type: int
+    fct_arg:
+    - [id, int, l'identifiant de votre robot]
+    - [direction, int, la direction vers laquelle vous voulez lancer le grapin]
+  -
+    fct_name: attendre
+    fct_summary: Ordonne à votre robot de ne rien faire
+    fct_ret_type: int
+    fct_arg:
+    - [id, int, l'identifiant de votre robot]
 
 user_function:
   - doc_extra: |-
