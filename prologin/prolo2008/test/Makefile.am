@@ -22,7 +22,7 @@ YAML_FILE = prolo2008
 YAML_TEST_POOL = $(srcdir)/test_pool.yml
 
 MY_TESTS =					\
-	basic
+	fetch_map
 
 EXTRA_DIST += 					\
 	cxx/fetch_map.cc
