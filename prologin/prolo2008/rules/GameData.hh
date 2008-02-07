@@ -35,11 +35,13 @@ public:
   unsigned int	_map_size_y;
   unsigned int	_map_size_x;
 
-  unsigned int	_start_player;			/// Starting player [0-1]
+  unsigned int	_start_team;			/// Starting team [0-1]
 
   int _max_turn;
   int _nb_robots;
-  Robot		_robots[MAX_ROBOTS]; // Robots from team 0 : [0, _nb_robots/2) , robots from team 1 : [_nb_robots/2, _nb_robots)
+  Robot	_robots[MAX_ROBOTS]; // Robots from team 0 : [0, _nb_robots/2) , robots from team 1 : [_nb_robots/2, _nb_robots)
+  
+
 };
 
 #endif // !GAMEDATA_HH_

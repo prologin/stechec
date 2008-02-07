@@ -14,6 +14,7 @@
 
 #include "Api.hh"
 
+
 // global used in interface.cc
 Api* api;
 
@@ -25,32 +26,36 @@ Api::Api(GameData* gameData, Client* c)
 
 int Api::numero_tour()
 {
-  return 0;
+  return g_->getCurrentTurn();
 }
 
 int Api::nombre_tours()
 {
-  return 0;
+  return g_->_max_turn;
 }
 
 bool Api::commence()
 {
-  return 0;
+  return (numero_tour()%2) ^ (g_->getTeamId() != g_->_start_team);
 }
 
 int Api::pos_x(int id)
 {
-  return 0;
+  CHECK_ID(id);
+  return g_->_robots[id].GetXPos();
 }
 
 int Api::pos_y(int id)
 {
-  return 0;
+  CHECK_ID(id);
+  return g_->_robots[id].GetYPos();
 }
 
 bool Api::porte_balle(int id)
 {
-  return 0;
+  CHECK_ID(id);
+  return g_->_robots[id].HasBall();
+  // warning : a team can see whether an enemy robot is holding a ball or not
 }
 
 int Api::distance(int x1, int y1, int x2, int y2)
@@ -60,41 +65,62 @@ int Api::distance(int x1, int y1, int x2, int y2)
 
 int Api::type_case(int x, int y)
 {
-  return 0;
+  TEST_POS(x,y);
+  switch(g_->_map[y][x]) {
+  case MAP_WALL : 
+    return MUR;
+  case MAP_EMPTY :
+    return NORMAL;
+  case MAP_HOLE:
+    return TROU;
+  default:
+    assert(0); 
+    //the map is bogus..
+    return BAD_ARGUMENT;
+  };
 }
 
 bool Api::balle(int x, int y)
 {
-  return 0;
+  TEST_POS(x,y);
+  return g_->_balls[x][y] == MAP_BALL;
 }
 
 int Api::deplacer(int id, int direction)
 {
+  CHECK_ID(id);
+  CHECK_DIRECTION(direction);
   return 0;
 }
 
 int Api::turbo(int id)
 {
+  CHECK_ID(id);
   return 0;
 }
 
 int Api::lacher_balle(int id)
 {
+  CHECK_ID(id);
   return 0;
 }
 
 int Api::prendre_balle(int id)
 {
+  CHECK_ID(id);
   return 0;
 }
 
 int Api::grapin(int id, int direction)
 {
+  CHECK_ID(id);
+  CHECK_DIRECTION(direction);
   return 0;
 }
 
 int Api::attendre(int id)
 {
+  CHECK_ID(id);
   return 0;
 }
 

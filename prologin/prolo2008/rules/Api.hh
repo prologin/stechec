@@ -23,6 +23,20 @@
 **  - access to the GameData class: _g
 **  - send message to the server: void SendToServer(struct s_com&)
 */
+
+
+# define TEST_POS(x, y) \
+  if (x >= g_->_map_size_x || y >= g_->_map_size_y || y < 0 || x < 0) \
+    return BAD_ARGUMENT;
+
+# define CHECK_ID(id) \
+  if (id < 0 || id >= MAX_ROBOTS || !g_->_robots[id].IsEnabled()) \
+    return BAD_ARGUMENT;
+
+# define CHECK_DIRECTION(dir) \
+  if (dir < 0 || dir >= 4) \
+    return BAD_ARGUMENT;
+
 class Api: public StechecApi          
 {
 

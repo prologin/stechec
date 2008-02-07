@@ -25,10 +25,10 @@ public:
     _enabled = true;
   }
 
-  int		GetXPos(void)		{ return _pos_x; }
-  int		GetYPos(void)		{ return _pos_y; }
+  int		GetXPos(void) const	{ return _pos_x; }
+  int		GetYPos(void) const	{ return _pos_y; }
 
-  bool          IsEnabled(void)         { return _enabled; }
+  bool          IsEnabled(void) const   { return _enabled; }
 
   void		SetPos(int x, int y)	{ _pos_x = x; _pos_y = y; }
 
@@ -41,7 +41,9 @@ public:
   void		PickUpBall(void)	{ _has_ball = true; }
   void		ReleaseBall(void)	{ _has_ball = false; }
 
-  static bool   CheckRange(int id)      { return (id < 0 || id >= MAX_ROBOTS); }
+  bool		HasBall(void)  const    { return _has_ball; }
+
+  static bool   CheckRange(int id)	{ return (id < 0 || id >= MAX_ROBOTS); }
 
 private:
   int		_pos_x;
@@ -51,6 +53,8 @@ private:
   bool		_has_ball;
   int		_team_id;
   bool          _enabled;       /// False if the robot isn't enabled.
+
+
 };
 
 #endif // !ROBOT_HH_
