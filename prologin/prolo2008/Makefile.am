@@ -2,7 +2,8 @@
 
 SUBDIRS =					\
 	data					\
-	rules
+	rules					\
+	test
 
 # if HAVE_SDL
 #   SUBDIRS += visu
