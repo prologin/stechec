@@ -24,6 +24,13 @@
 **  - send message to the server: void SendToServer(struct s_com&)
 */
 
+/*
+ * Remarks on the robots' id :
+ * Team 0 has id in [0, MAX_ROBOTS / 2)
+ * Team 1 has id in [MAX_ROBOTS / 2, MAX_ROBOTS)
+ * But, on the champion side, his own id are in [0, MAX_ROBOTS / 2) 
+ * and the opponents id are in [MAX_ROBOTS / 2, MAX_ROBOTS)
+ */
 
 # define TEST_POS(x, y) \
   if (x >= g_->_map_size_x || y >= g_->_map_size_y || y < 0 || x < 0) \
@@ -31,6 +38,10 @@
 
 # define CHECK_ID(id) \
   if (id < 0 || id >= MAX_ROBOTS || !g_->_robots[id].IsEnabled()) \
+    return BAD_ARGUMENT;
+
+# define CHECK_OWN_ID(id) \
+  if (id < 0 || id >= MAX_ROBOTS / 2) \
     return BAD_ARGUMENT;
 
 # define CHECK_DIRECTION(dir) \
@@ -66,7 +77,11 @@ public:
 protected:
   virtual void teamSwitched();
   
-
+private: 
+  // some utility function
+  void ChampionIdToRealId(int *id);
+  int Order(int real_id); //returns TOO_MUCH_ORDERS, or the turn of the robot whose id is real_id
+  void SendBasicOrder(int real_id, int robot_turn, int order_cst);
 };
 
 

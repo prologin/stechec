@@ -50,6 +50,8 @@
 
 # define INIT_MAP_SIZE		0
 
+# define MAX_ORDERS		3 // max number of orders that can be issued by a single robot
+
 // Ids for message type.
 enum e_com_type {
   // from server
@@ -61,12 +63,15 @@ enum e_com_type {
   ROBOT_HOOK,       /* ROBOT_ID, HOOKED_ROBOT_ID */
   ROBOT_UNHOOK,     /* ROBOT_ID */
   // from client
-  DROP_BALL,        /* ROBOT_ID */
-  MOVE,             /* ROBOT_ID, WAY */
-  PICK_UP_BALL,     /* ROBOT_ID */
-  HOOK_ROBOT,       /* ROBOT_ID, HOOKED_ROBOT_ID */
-  RELEASE_HOOK,     /* ROBOT_ID */
-  BOOST_TURBO,      /* ROBOT_ID */
+  DROP_BALL,        /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  MOVE,             /* ROBOT_ID, WAY, ROBOT_TURN, ORDER_NUMBER*/
+  PICK_UP_BALL,     /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  HOOK_ROBOT,       /* ROBOT_ID, HOOKED_ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  RELEASE_HOOK,     /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  BOOST_TURBO,      /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  WAIT,		    /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  // Remark : ROBOT_TURN gives the turn (0,1 or 2) of the robot, among others robot of the same team
+  // ORDER_NUMBER give the number of the order (0, 1 or 2). Small robots orders are played first.
   // misc
   LAST_MSG          /* */
 };

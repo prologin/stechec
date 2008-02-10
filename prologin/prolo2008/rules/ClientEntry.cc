@@ -58,6 +58,11 @@ int        ClientEntry::beforeNewTurn()
     g_->_robots[i].ResetTurbo();
   }
   
+  //resetting the order of the robots' orders
+  std::fill(g_->_count_orders_per_robot, g_->_count_orders_per_robot+MAX_ROBOTS, 0);
+  std::fill(g_->_robot_turn, g_->_robot_turn + MAX_ROBOTS, -1);
+  g_->_next_turn = 0;
+
   return 0;
 }
 
