@@ -22,6 +22,7 @@ void init_game()
 //
 void play_turn()
 {
+  /*
   // verification des elements statiques du terrain
   assert( type_case(0,0) == NORMAL );
   assert( type_case(1,0) == MUR );
@@ -45,5 +46,5 @@ void play_turn()
   assert( balle(-1,1) == BAD_ARGUMENT );
   assert( balle(5,4) == BAD_ARGUMENT );
   assert( type_case(5,4) == BAD_ARGUMENT );
-
+  */
 }

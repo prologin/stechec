@@ -97,7 +97,7 @@ int Api::deplacer(int id, int direction)
   if (turn < 0) return turn;
 
   StechecPkt com(MOVE, -1);
-  com.Push(4, id, direction, turn, g_->_count_orders_per_robot[id]++);
+  com.Push(4, id, turn, g_->_count_orders_per_robot[id]++, direction);
   SendToServer(com);
   LOG4("Robot id %1 asks for moving to direction %2, robot's turn = %3, index of order = %4",
        id, direction, turn, g_->_count_orders_per_robot[id]-1);
@@ -161,7 +161,7 @@ int Api::grapin(int id, int direction)
   if (turn < 0) return turn;
 
   StechecPkt com(HOOK_ROBOT, -1);
-  com.Push(4, id, direction, turn, g_->_count_orders_per_robot[id]++);
+  com.Push(4, id, turn, g_->_count_orders_per_robot[id]++,  direction);
   SendToServer(com);
   LOG4("Robot id %1 wants to throw hook to direction %2, robot's turn = %3, index of order = %4",
        id, direction, turn, g_->_count_orders_per_robot[id]-1);

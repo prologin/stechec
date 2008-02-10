@@ -42,7 +42,6 @@ public:
   Robot	_robots[MAX_ROBOTS]; // Robots from team 0 : [0, MAX_ROBOTS/2) , robots from team 1 : [MAX_ROBOTS/2, MAX_ROBOTS)
 
 
-
   // Some data to keep track of the order of the orders issued by the robots
   // This data is not intended to be synchronized with the server
   int _count_orders_per_robot[MAX_ROBOTS]; // For each robots, how many orders has been issued ?

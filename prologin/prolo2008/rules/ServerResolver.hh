@@ -22,6 +22,10 @@ public:
   ServerResolver(GameData* game, Server* server);
 
   virtual void	ApplyResolver(CommandListRef cmdList[]);
+
+private:
+  void ResolveOrder(StechecPkt *pkt, int type);
+
 };
 
 #endif // !SERVERRESOLVER_HH_
