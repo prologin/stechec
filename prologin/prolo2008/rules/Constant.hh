@@ -38,7 +38,8 @@
 
 # define MAP_WALL		'X'
 # define MAP_EMPTY		'.'
-# define MAP_HOLE		'0'
+# define MAP_HOLE		'O'
+# define MAP_HOLE_ALTENATE	'0'
 # define MAP_BALL		'B'
 # define MAP_ROBOT_TEAM1	'R'
 # define MAP_ROBOT_TEAM2	'r'
@@ -54,6 +55,7 @@ enum e_com_type {
   // from server
   INIT_DATA,        /* MAP_WIDTH, MAP_HEIGHT, ... */
   MAP_CONTENT,      /* X, Y, VALUE */
+  BALLS_CONTENT,    /* X, Y, VALUE */
   ROBOT_POS,        /* ROBOT_ID, X, Y */
   ROBOT_HAS_BALL,   /* ROBOT_ID, TRUE or FALSE */
   ROBOT_HOOK,       /* ROBOT_ID, HOOKED_ROBOT_ID */

@@ -82,7 +82,7 @@ function:
   -
     fct_name: porte_balle
     fct_summary: Indique si le robot id porte une balle
-    fct_ret_type: bool
+    fct_ret_type: int
     fct_arg:
       - [id, int, id du robot]
   -
@@ -104,7 +104,7 @@ function:
   -
     fct_name: balle
     fct_summary: Indique s'il y a une balle non portée sur la case (x,y)
-    fct_ret_type: bool
+    fct_ret_type: int
     fct_arg:
       - [x, int, la colonne]
       - [y, int, la ligne]
