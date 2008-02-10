@@ -42,7 +42,7 @@ int pos_y(int id)
   return api->pos_y(id);
 }
 
-bool porte_balle(int id)
+int porte_balle(int id)
 {
   return api->porte_balle(id);
 }
@@ -57,7 +57,7 @@ int type_case(int x, int y)
   return api->type_case(x, y);
 }
 
-bool balle(int x, int y)
+int balle(int x, int y)
 {
   return api->balle(x, y);
 }

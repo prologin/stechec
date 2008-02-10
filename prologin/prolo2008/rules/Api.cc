@@ -51,7 +51,7 @@ int Api::pos_y(int id)
   return g_->_robots[id].GetYPos();
 }
 
-bool Api::porte_balle(int id)
+int Api::porte_balle(int id)
 {
   CHECK_ID(id);
   return g_->_robots[id].HasBall();
@@ -74,16 +74,17 @@ int Api::type_case(int x, int y)
   case MAP_HOLE:
     return TROU;
   default:
+    LOG2("bogus map at pos %1,%2 : '%3'", x,y,g_->_map[y][x]);
     assert(0); 
     //the map is bogus..
     return BAD_ARGUMENT;
   };
 }
 
-bool Api::balle(int x, int y)
+int Api::balle(int x, int y) 
 {
   TEST_POS(x,y);
-  return g_->_balls[x][y] == MAP_BALL;
+  return g_->_balls[y][x] == MAP_BALL;
 }
 
 int Api::deplacer(int id, int direction)

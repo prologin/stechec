@@ -52,10 +52,10 @@ public:
    bool commence();
    int pos_x(int id);
    int pos_y(int id);
-   bool porte_balle(int id);
+   int porte_balle(int id);
    int distance(int x1, int y1, int x2, int y2);
    int type_case(int x, int y);
-   bool balle(int x, int y);
+   int balle(int x, int y);
    int deplacer(int id, int direction);
    int turbo(int id);
    int lacher_balle(int id);

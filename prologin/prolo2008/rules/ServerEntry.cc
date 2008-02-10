@@ -99,6 +99,7 @@ int ServerEntry::loadMap(void)
             return 1;
           }
           g_->_robots[nb_robots[0]++].Init(i, j, 0);
+	  LOG4("Robot in pos %1,%2 for team 0", i, j);
           break;
 
         case MAP_ROBOT_TEAM2 :
@@ -108,18 +109,24 @@ int ServerEntry::loadMap(void)
             return 1;
           }
           g_->_robots[MAX_ROBOTS / 2 + nb_robots[1]++].Init(i, j, 1);
+	  LOG4("Robot in pos %1,%2 for team 0", i, j);
           break;
 
-        case MAP_WALL :
-        case MAP_EMPTY :
-        case MAP_HOLE :
-        case MAP_BALL :
-          g_->_map[i][j] = line[i];
-          break;
-
-        default :
-          ERR("Unexpected char in map at pos %1,%2", i, j);
-          return 1;
+      case MAP_WALL :
+      case MAP_EMPTY :
+      case MAP_HOLE :
+      case MAP_HOLE_ALTENATE:
+	g_->_map[j][i] = line[i];
+	if (g_->_map[j][i] == MAP_HOLE_ALTENATE)
+	  g_->_map[j][i] = MAP_HOLE;
+	break;
+      case MAP_BALL :
+	g_->_balls[j][i] = MAP_BALL;	
+	LOG4("Set ball at %1,%2", i, j);
+	break;
+      default :
+	ERR("Unexpected char in map at pos %1,%2 : '%3'", i, j, line[i]);
+	return 1;
       }
     }
   }
@@ -148,6 +155,15 @@ int		ServerEntry::beforeGame(void)
       com.Push(3, i, j, g_->_map[j][i]);
       SendToAll(com);
     }
+
+  //broadcasts the balls map's content
+  for (int j = 0; j < g_->_map_size_y; j++)
+    for (int i = 0; i < g_->_map_size_x; i++)
+      {
+	StechecPkt com(BALLS_CONTENT, -1);
+	com.Push(3, i, j, g_->_balls[j][i]);
+	SendToAll(com);
+      }
 
   return 0;
 }

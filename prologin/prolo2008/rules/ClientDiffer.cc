@@ -47,7 +47,19 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
         g_->_map[y][x] = (unsigned char) c;
         break;
       }
-
+   //client received data for the "balls" map
+  case BALLS_CONTENT :
+    {
+      int x = pkt->arg[0];
+      int y = pkt->arg[1];
+      int c = pkt->arg[2];
+      assert(g_->_map_size_y != -1);
+      assert( x>= 0 && y >= 0 && x < g_->_map_size_x && y < g_->_map_size_y);
+      assert(c == MAP_EMPTY || c == MAP_BALL);
+      LOG4("Received balls map content in %1 %2 : %3", x, y, c);
+      g_->_balls[y][x] = (unsigned char) c;
+      break;
+    }
     // Client received position of robots
     case ROBOT_POS:
       {
