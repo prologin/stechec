@@ -43,14 +43,12 @@ void ClientApp::showHelp(const char* prgname,
   std::cout << "usage: " << prgname << " [options]\n";
   std::cout << "options:\n";
   cfg_file_.printHelpOption(cmd_opt);
-  exit(0);
 }
 
 void ClientApp::showVersion()
 {
   std::cout << "Stechec Generic client v" PACKAGE_VERSION << "\n";
   std::cout << "Copyright (C) 2005, 2006, 2007 Prologin.\n";
-  exit(0);
 }
 
 void ClientApp::parseConfig()
@@ -76,6 +74,10 @@ void ClientApp::parseConfig()
   def["log_replay"] = "false";
   def["config"] = "";
   def["id"] = "1";
+
+  // Used only run.sh, but may be left here. ignore it.
+  def["stdin_redir"] = "";
+  def["stdout_redir"] = "";
 
   // Set command line options (higher priority)
   static const struct ConfCmdLineOpt opt[] = {
@@ -103,10 +105,16 @@ void ClientApp::parseConfig()
   cfg_ = cfg_file_.parseCmdLine("client", opt);
 
   if (cfg_->exist("help") && cfg_->getValue<bool>("help"))
-    showHelp(argv_[0], opt);
+    {
+      showHelp(argv_[0], opt);
+      exit(0);
+    }
 
   if (cfg_->exist("version") && cfg_->getValue<bool>("version"))
-    showVersion();
+    {
+      showVersion();
+      exit(0);
+    }
 
   client_gid_ = 1;
   if (cfg_->exist("id"))

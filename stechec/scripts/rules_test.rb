@@ -74,7 +74,7 @@ class RuleTest
     check_prog_exec('mv', @tmpdir + lang + (@player_lib + ".so"),
                     @tmpdir + (@player_lib + "_#{index}.so"))
     cmd_result true
-    File.expand_path(@tmpdir + (@player_lib + "_#{index}"))
+    return @player_lib + "_#{index}"
   end
 
   #
@@ -89,8 +89,6 @@ class RuleTest
       if c['source'] then
         source = c['source'].split('/')
         c['champion'] = compile source[0], source[1], n
-      else
-        c['champion'] = @player_lib
       end
       if c['input'] then
         check_prog_exec('cp', ENV['srcdir'] + c['input'], @tmpdir.to_s)
@@ -116,66 +114,43 @@ class RuleTest
   end
 
   #
-  # generate the xml file, in the _hard_ way
+  # generate the ini file, in the _hard_ way
   #
-  def generate_xml(conf)
-    f = File.new(@tmpdir + 'conf.xml', 
+  def generate_ini(conf)
+    f = File.new(@tmpdir + 'conf.ini', 
                  File::CREAT | File::TRUNC | File::WRONLY)
 
-    conf['map'] = 'UNKNOWN' if conf['map'].nil?
+    if conf['map'].nil? then
+      conf['map'] = 'UNKNOWN'
+    else
+      conf['map'] = "../" + conf['map']
+    end
     conf['max_turn'] = 10 if conf['max_turn'].nil?
+    path = File.expand_path(@tmpdir)
 
     f.puts <<-EOF
-<?xml version="1.0" encoding="iso-8859-1" ?>
-<!DOCTYPE config SYSTEM "file://#{PKGDATADIR}/config.dtd">
+[#{@client_rule_lib}]
+nb_team=#{@nb_client}
+max_turn=#{conf['max_turn']}
+map=#{conf['map']}
 
-<config>
-
-  <game>
-    <nb_team>#{@nb_client}</nb_team>
-    <max_turn>#{conf['max_turn']}</max_turn>
-    <map>#{conf['map']}</map>
-  </game>
-
-  <client>
-    <rules>#{@client_rule_lib}</rules>
-    <connect val="network" host="localhost" port="25169"
-             game_uid="42" connect_on_startup="true" />
-  </client>
+[server]
+listen_port=25169
 
      EOF
 
      (1..@nb_client).each do |n|
        c = conf['client_' + n.to_s]
-       redir = ''
-       if c['input'] and c['output'] then
-         redir = "<redirection stdin=\"#{c['input']}\" stdout=\"#{c['output']}\" />"
-       end
        f.puts <<-EOF
-  <client id="#{n}">
-    <champion>#{c['champion']}</champion> 
-    <team>#{c['team']}</team>
-    <mode replay="false" spectator="false" />
-    <limit memory="0" time="0" time_reserve="0" />
-    <debug valgrind="false" verbose="3" printloc="false" />
-    #{redir}
-  </client>
-
+[client_#{n}]
+rules=#{@client_rule_lib}
+path=#{path}
+library=#{c['champion']}
+stdin_redir=#{c['input']}
+stdout_redir=#{c['output']}
+server_port=25169
       EOF
     end
-
-    f.puts <<-EOF
-  <server>
-    <rules>#{@server_rule_lib}</rules>
-    <options persistent="false" wait_timeout="10" start_game_timeout="30" />
-    <listen port="25169" />
-    <log enabled="false" file="match.log" />
-    <nb_spectator>0</nb_spectator>
-    <debug verbose="4" printloc="false" />
-    <server_debug verbose="1" printloc="false" />
-  </server>
-</config>
-    EOF
 
     f.close
   end
@@ -245,8 +220,7 @@ class RuleTest
             f.puts "export PATH=#{ENV['PATH']}"
             f.puts "export RUBYLIB=#{ENV['RUBYLIB']}"          
             f.puts "export LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}"
-            f.puts "export xml_parser_path=#{ENV['BASHLIB']}/"
-            f.puts "bash #{ENV['BASHLIB']}/run.sh conf.xml"
+            f.puts "bash #{ENV['BASHLIB']}/run.sh conf.ini"
           end
         `chmod +x #{"debug_me.sh"}`
         end
@@ -265,8 +239,8 @@ class RuleTest
     # get and compile all clients from source, if needed.
     prepare_client conf
 
-    # generate xml
-    generate_xml conf
+    # generate ini
+    generate_ini conf
 
     # go in the temporary directory
     @oldpwd = Dir.pwd
@@ -276,7 +250,7 @@ class RuleTest
     # run the test.
     print_banner 'Run the test'
     ENV['LD_LIBRARY_PATH'] = ENV['LD_LIBRARY_PATH'] + ":" + File.expand_path(@tmpdir)
-    `bash #{ENV['BASHLIB']}/run.sh conf.xml`
+    `bash #{ENV['BASHLIB']}/run.sh conf.ini`
     res = $?.exitstatus
     cmd_result(res == 0)
 

@@ -42,14 +42,13 @@ public:
   //! @brief Load a champion as an external dynamic library ad run it.
   int runChampion();
 
-private:
-  Log log_client_; // FIXME: its destructor must be called _last_.
-
 protected:
   virtual void showHelp(const char* prgname, const struct ConfCmdLineOpt* cmd_opt);
   virtual void showVersion();
   virtual int showMenu();
   virtual int onPlay(bool replay) = 0;
+
+  Log log_client_; // FIXME: its destructor must be called _last_.
 
   ConfFile cfg_file_;   ///< configuration file
   ConfSection* cfg_;    ///< [client] conf section
@@ -57,7 +56,6 @@ protected:
   ClientCx ccx_;
   RulesLoader rules_loader_;
 
-private:
   virtual void parseConfig();
 
   int argc_;
