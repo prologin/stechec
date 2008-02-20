@@ -28,6 +28,8 @@ void GameData::ComputeDistances() {
 
   //TODO : use the Johnson algorithm
 
+  assert(INFINI >= _map_size_y * _map_size_x);
+  
   LOG4("ComputeDistances");
   int dir[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
   
@@ -44,17 +46,17 @@ void GameData::ComputeDistances() {
 	  _distances[y0][x0][y1][x1] = 1;
       }
   
-    int n = MAP_MAX_X * MAP_MAX_Y;
+    int n = _map_size_x * _map_size_y;
     // perform a "classical" Floyd-Warshall :
     for (int k=0 ; k < n ; k++)
       for (int i=0 ; i < n ; i++)
 	for (int j=0 ; j < n ; j++)  {
-	  int iy = i / MAP_MAX_X;
-	  int ix = i % MAP_MAX_X;
-	  int jy = j / MAP_MAX_X;
-	  int jx = j % MAP_MAX_X;
-	  int ky = k / MAP_MAX_X;
-	  int kx = k % MAP_MAX_X;
+	  int iy = i / _map_size_x;
+	  int ix = i % _map_size_x;
+	  int jy = j / _map_size_x;
+	  int jx = j % _map_size_x;
+	  int ky = k / _map_size_x;
+	  int kx = k % _map_size_x;
 	  int &cur = _distances[iy][ix][jy][jx];
 	  cur = std::min(cur,  _distances[iy][ix][ky][kx] + _distances[ky][kx][jy][jx]);
 	}

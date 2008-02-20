@@ -98,6 +98,7 @@ int ServerEntry::loadMap(void)
             ERR("Too many robots for team 1, whose limit is %1", MAX_ROBOTS / 2);
             return 1;
           }
+	  g_->_nb_robots++;
           g_->_robots[nb_robots[0]++].Init(i, j, 0);
 	  LOG4("Robot in pos %1,%2 for team 0", i, j);
           break;
@@ -108,6 +109,7 @@ int ServerEntry::loadMap(void)
             ERR("Too many robots for team 2, whose limit is %1", MAX_ROBOTS / 2);
             return 1;
           }
+	  g_->_nb_robots++;
           g_->_robots[MAX_ROBOTS / 2 + nb_robots[1]++].Init(i, j, 1);
 	  LOG4("Robot in pos %1,%2 for team 0", i, j);
           break;

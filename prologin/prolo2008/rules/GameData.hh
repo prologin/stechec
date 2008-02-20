@@ -38,7 +38,7 @@ public:
   unsigned int	_start_team;			/// Starting team [0-1]
 
   int _max_turn;
-  int _nb_robots;
+  int _nb_robots; //ne pas oublier de le transmettre client->server
   Robot	_robots[MAX_ROBOTS]; // Robots from team 0 : [0, MAX_ROBOTS/2) , robots from team 1 : [MAX_ROBOTS/2, MAX_ROBOTS)
 
 

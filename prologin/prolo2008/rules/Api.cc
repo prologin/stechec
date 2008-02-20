@@ -26,12 +26,12 @@ Api::Api(GameData* gameData, Client* c)
 
 int Api::taille_carte_x()
 {
-  return 0;
+  return g_->_map_size_x;
 }
 
 int Api::taille_carte_y()
 {
-  return 0;
+  return g_->_map_size_y;
 }
 
 int Api::numero_tour()
@@ -83,11 +83,11 @@ int Api::type_case(int x, int y)
   TEST_POS(x,y);
   switch(g_->_map[y][x]) {
   case MAP_WALL : 
-    return MUR;
+    return OBSTACLE;
   case MAP_EMPTY :
     return NORMAL;
   case MAP_HOLE:
-    return TROU;
+    return TRANCHEE;
   default:
     LOG2("bogus map at pos %1,%2 : '%3'", x,y,g_->_map[y][x]);
     assert(0); 
@@ -105,17 +105,17 @@ int Api::pomme(int x, int y)
 int Api::deplacer(int id, int direction)
 {
   CHECK_OWN_ID(id);
-  CHECK_DIRECTION(direction);
+  CHECK_DIRECTION(direction, 0);
   ChampionIdToRealId(&id);
 
   int turn = Order(id);
   if (turn < 0) return turn;
 
-  StechecPkt com(MOVE, -1);
-  com.Push(4, id, turn, g_->_count_orders_per_robot[id]++, direction);
-  SendToServer(com);
+  SendOrderWithDirection(id, turn, MOVE, direction);
   LOG4("Robot id %1 asks for moving to direction %2, robot's turn = %3, index of order = %4",
-       id, direction, turn, g_->_count_orders_per_robot[id]-1);
+       id, direction, turn, g_->_count_orders_per_robot[id]);
+  g_->_count_orders_per_robot[id]++;
+
   return 0;
 }
 
@@ -138,11 +138,12 @@ int Api::turbo(int id)
 int Api::lacher_pomme(int id, int direction)
 {
   CHECK_OWN_ID(id);
+  CHECK_DIRECTION(direction, 1);
   ChampionIdToRealId(&id);
   
   int turn = Order(id);
   if (turn < 0) return turn;
-  SendBasicOrder(id, turn, DROP_BALL);
+  SendOrderWithDirection(id, turn, DROP_BALL, direction);
 
   LOG4("Robot id %1 wants to drop the ball, robot's turn = %2, index of order = %3",
        id, turn, g_->_count_orders_per_robot[id]);
@@ -169,26 +170,34 @@ int Api::ramasser_pomme(int id)
 int Api::grapin(int id, int direction)
 {
   CHECK_OWN_ID(id);
-  CHECK_DIRECTION(direction);
+  CHECK_DIRECTION(direction, 0);
   ChampionIdToRealId(&id);
   
   int turn = Order(id);
   if (turn < 0) return turn;
 
-  StechecPkt com(HOOK_ROBOT, -1);
-  com.Push(4, id, turn, g_->_count_orders_per_robot[id]++,  direction);
-  SendToServer(com);
+  SendOrderWithDirection(id, turn, HOOK_ROBOT, direction);
   LOG4("Robot id %1 wants to throw hook to direction %2, robot's turn = %3, index of order = %4",
-       id, direction, turn, g_->_count_orders_per_robot[id]-1);
-
+       id, direction, turn, g_->_count_orders_per_robot[id]);
+  g_->_count_orders_per_robot[id]++;
   return 0;
 }
 
 int Api::projectile(int id, int direction)
 {
+  CHECK_OWN_ID(id);
+  CHECK_DIRECTION(direction, 0);
+  ChampionIdToRealId(&id);
+
+  int turn = Order(id);
+  if (turn < 0) return turn;
+  
+  SendOrderWithDirection(id, turn, LAUNCH_BULLET, direction);
+  LOG4("Robot id %1 wants to throw a bullet to direction %2, robot's turn = %3, index of order = %4",
+       id, direction, turn, g_->_count_orders_per_robot[id]);
+  g_->_count_orders_per_robot[id]++;
   return 0;
 }
-
 
 int Api::attendre(int id)
 {
@@ -220,7 +229,7 @@ void Api::ChampionIdToRealId(int *id)
 int Api::Order(int real_id) 
 {
   if (g_->_count_orders_per_robot[real_id] >= MAX_ORDERS)
-    return -2; //return TOO_MUCH_ORDERS
+    return TOO_MANY_ORDERS;
   
   //compute robot's turn :
   int &turn = g_->_robot_turn[real_id];
@@ -234,5 +243,11 @@ void Api::SendBasicOrder(int real_id, int robot_turn, int order_cst)
 {
   StechecPkt com(order_cst, -1);
   com.Push(3, real_id, robot_turn, g_->_count_orders_per_robot[real_id]);
+  SendToServer(com);
+}
+
+void Api::SendOrderWithDirection(int real_id, int robot_turn, int order_cst, int direction) {
+  StechecPkt com(order_cst, -1);
+  com.Push(4, real_id, robot_turn, g_->_count_orders_per_robot[real_id], direction);
   SendToServer(com);
 }

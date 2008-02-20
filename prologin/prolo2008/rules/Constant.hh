@@ -17,7 +17,7 @@
 
 # define BAD_ARGUMENT              -1
 
-# define TOO_MUCH_ORDERS           -2
+# define TOO_MANY_ORDERS           -2
 
 # define SUCCESS                   0
 
@@ -68,13 +68,14 @@ enum e_com_type {
   ROBOT_HOOK,       /* ROBOT_ID, HOOKED_ROBOT_ID */
   ROBOT_UNHOOK,     /* ROBOT_ID */
   // from client
-  DROP_BALL,        /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  DROP_BALL,        /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
   MOVE,             /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
   PICK_UP_BALL,     /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
   HOOK_ROBOT,       /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
   RELEASE_HOOK,     /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
   BOOST_TURBO,      /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
   WAIT,		    /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */
+  LAUNCH_BULLET,    /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
   // Remark : ROBOT_TURN gives the turn (0,1 or 2) of the robot, among others robot of the same team
   // ORDER_NUMBER give the number of the order (0, 1 or 2). Small robots orders are played first.
   // misc

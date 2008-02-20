@@ -44,8 +44,8 @@
   if (id < 0 || id >= MAX_ROBOTS / 2) \
     return BAD_ARGUMENT;
 
-# define CHECK_DIRECTION(dir) \
-  if (dir < 0 || dir >= 4) \
+# define CHECK_DIRECTION(dir, add)			\
+  if (dir < 0 || dir >= 4+add) \
     return BAD_ARGUMENT;
 
 class Api: public StechecApi          
@@ -85,6 +85,7 @@ private:
   void ChampionIdToRealId(int *id);
   int Order(int real_id); //returns TOO_MUCH_ORDERS, or the turn of the robot whose id is real_id
   void SendBasicOrder(int real_id, int robot_turn, int order_cst);
+  void SendOrderWithDirection(int real_id, int robot_turn, int order_cst, int direction);
 };
 
 

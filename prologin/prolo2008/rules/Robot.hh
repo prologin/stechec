@@ -37,6 +37,7 @@ public:
 
   void		SetHook(int id)		{ _hook = id; }
   void		ResetHook(void)		{ _hook = -1; }
+  int		GetHook(void)		{ return _hook; }
 
   void		PickUpBall(void)	{ _has_ball = true; }
   void		ReleaseBall(void)	{ _has_ball = false; }
@@ -45,9 +46,11 @@ public:
 
   static bool   CheckRange(int id)	{ return (id < 0 || id >= MAX_ROBOTS); }
 
-private:
   int		_pos_x;
   int		_pos_y;
+
+private:
+
   unsigned int	_turbo;
   int		_hook;		/// Grapin -- -1 if empty.
   bool		_has_ball;

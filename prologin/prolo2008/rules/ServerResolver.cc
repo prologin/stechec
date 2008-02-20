@@ -16,17 +16,14 @@
 ServerResolver::ServerResolver(GameData* game, Server* server)
   : StechecServerResolver(game, server)
 {
-}
+  // fill directions :
+  std::fill(*_directions, *_directions + 5*2, 0);
 
-static void     ResolveMoves(CommandListRef &cmdList)
-{
-  CommandListRef::iterator iter;
+  _directions[HAUT][1] = -1;
+  _directions[BAS][1] = 1;
+  _directions[GAUCHE][0] = -1;
+  _directions[DROITE][0] = -1;
 
-  for (iter = cmdList.begin(); iter != cmdList.end(); ++iter)
-  {
-    int robot_id = (*iter)->arg[0];
-    LOG2("Robot %1 is moving", robot_id);
-  }
 }
 
 void ServerResolver::ApplyResolver(CommandListRef cmdList[])
@@ -83,8 +80,7 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       }
     }
   }
-  
-  // ResolveMoves(cmdList[MOVE]);
+
 }
 
 void ServerResolver::ResolveOrder(StechecPkt *pkt, int type)
@@ -92,7 +88,87 @@ void ServerResolver::ResolveOrder(StechecPkt *pkt, int type)
   if (!pkt || type < 0) 
     return;
 
-  // todo
   LOG4("Resolving message of type %1, args : %1 %2 %3", type, pkt->arg[0], pkt->arg[1], pkt->arg[2]);
 
+  switch(type) {
+  case MOVE :
+    ResolveMove(pkt);
+    break;
+    
+    
+  default :
+    LOG2("Bogus order coming to the server from robot id %1", pkt->arg[0]);
+    assert(0);
+  }
+
+}
+
+bool ServerResolver::CheckPosition(int x, int y) {
+  return x>= 0 && y >= 0 && x < g_->_map_size_x && y < g_->_map_size_y;
+}
+
+int ServerResolver::GetRobotIdInPos(int x, int y) {
+  for (int i=0 ; i < g_->_nb_robots ; ++i)
+    if (g_->_robots[i].IsEnabled() && g_->_robots[i]._pos_x == x && g_->_robots[i]._pos_y == y)
+      return i;
+  return -1;
+}
+
+bool ServerResolver::CanDoSimpleMove(int x0, int y0, int x1, int y1, bool pushed=false) {
+  if (!CheckPosition(x0,y0) || !CheckPosition(x1,y1))
+    return false;
+  int cur_cell = g_->_map[y0][x0];
+  int next_cell = g_->_map[y1][x1];
+  return 
+    cur_cell == next_cell && (cur_cell == MAP_HOLE || cur_cell == MAP_EMPTY) ||
+    cur_cell == MAP_EMPTY && next_cell == MAP_HOLE ||
+    pushed && cur_cell == MAP_HOLE && next_cell == MAP_EMPTY ;
+}
+
+void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y) {
+  LOG4("Hamster %1 was in %2,%3 and moves to %4,%5", id, g_->_robots[id]._pos_x, g_->_robots[id]._pos_y, new_x, new_y);
+  g_->_robots[id]._pos_x = new_x;
+  g_->_robots[id]._pos_y = new_y;
+  g_->_robots[id].ResetHook(); // Très important, sinon un bug subtile peut aparaitre:
+			       // si id est poussé, et que ses ordres sont résolus après, il pourrait entrainer avec lui un robot..
+}
+
+bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, int next_y, bool first=true) {
+  if (!CheckPosition(x,y) || !CheckPosition(next_x, next_y)) return false;
+  int target_id;
+  if (CanDoSimpleMove(x,y,next_x, next_y, !first) ) {
+    if ( (target_id=GetRobotIdInPos(next_x, next_y)) < 0 ||  //we can move to (next_x, next_y), because there is nothing there
+	 ApplyChainMove(dir, target_id, next_x, next_y, 
+			next_x + _directions[dir][0], 
+			next_y + _directions[dir][1], 
+			false)) { // we can move, because the robot there can !
+      UpdateRobotPos(id, next_x, next_y);
+      int hook = g_->_robots[id].GetHook();
+      if (first && hook != -1) {
+	//take robot hook with us
+	LOG4("Hamster %1 moves to %2,%3, because it was hooked by hamster %4", hook, x, y, id);
+	UpdateRobotPos(hook, x, y);
+      }
+      return true;
+    }
+  }
+  LOG4("Hamster %1 can't move to %2,%3", id, next_x, next_y);
+  return false;
+}
+
+void ServerResolver::ResolveMove(StechecPkt *pkt) {
+  
+  int id = pkt->arg[0];
+  int dir = pkt->arg[3];
+  assert(id >= 0 && id < MAX_ROBOTS);
+  int x = g_->_robots[id]._pos_x;
+  int y = g_->_robots[id]._pos_y;
+  assert(GetRobotIdInPos(x,y) == id);
+  assert(g_->_robots[id].IsEnabled());
+
+  int next_x = x + _directions[dir][0];
+  int next_y = y + _directions[dir][1];
+
+  ApplyChainMove(dir, id, x, y, next_x, next_y);
+  
 }
