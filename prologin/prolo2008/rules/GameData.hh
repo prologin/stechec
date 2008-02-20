@@ -49,6 +49,8 @@ public:
   int _next_turn; // The robot's turn to be given.
   
 
+  int _distances[MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
+  void ComputeDistances();
 };
 
 #endif // !GAMEDATA_HH_

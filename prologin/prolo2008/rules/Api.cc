@@ -60,7 +60,9 @@ int Api::porte_balle(int id)
 
 int Api::distance(int x1, int y1, int x2, int y2)
 {
-  return 0;
+  return g_->_distances[y1][x1][y2][x2];
+  //todo : reverse coords depending on player
+  //return a specified constant if there is no path
 }
 
 int Api::type_case(int x, int y)

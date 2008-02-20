@@ -39,7 +39,7 @@
 # define MAP_WALL		'X'
 # define MAP_EMPTY		'.'
 # define MAP_HOLE		'O'
-# define MAP_HOLE_ALTENATE	'0'
+# define MAP_HOLE_ALTENATE	'0' //only used for input file, no longer used elsewhere !
 # define MAP_BALL		'B'
 # define MAP_ROBOT_TEAM1	'R'
 # define MAP_ROBOT_TEAM2	'r'

@@ -31,6 +31,9 @@ int        ClientEntry::beforeGame()
   // initialize our GameData instance.
   while (fetchCommand(&com))
     differ_->ApplyDiff(&com);
+
+  g_->ComputeDistances();
+
   return 0;
 }
 
