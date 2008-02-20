@@ -13,7 +13,7 @@ constant:
     cst_val: -1
     cst_comment: Un des arguments passe a la fonction est incorrect.
   -
-    cst_name: TOO_MUCH_ORDERS
+    cst_name: TOO_MANY_ORDERS
     cst_val: -2
     cst_comment: Vous avez envoyé trop d'ordres à votre hamster.
   -
