@@ -13,17 +13,21 @@
 #ifndef CONSTANT_HH_
 # define CONSTANT_HH_
 
-// Constantes candidats :
+// Constants candidats :
 
 # define BAD_ARGUMENT              -1
 
+# define TOO_MUCH_ORDERS           -2
+
 # define SUCCESS                   0
+
+# define INFINI                    10000
 
 # define NORMAL                    0
 
-# define TROU                      1
+# define TRANCHEE                  1
 
-# define MUR                       2
+# define OBSTACLE                  2
 
 # define HAUT                      0
 
@@ -33,6 +37,7 @@
 
 # define DROITE                    3
 
+# define ICI                       4
 
 //Constants persos (à conserver lors d'un ./generator .. !):
 

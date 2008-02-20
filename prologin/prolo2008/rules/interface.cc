@@ -17,6 +17,16 @@ extern Api* api;
 
 extern "C" {
 
+int taille_carte_x()
+{
+  return api->taille_carte_x();
+}
+
+int taille_carte_y()
+{
+  return api->taille_carte_y();
+}
+
 int numero_tour()
 {
   return api->numero_tour();
@@ -42,9 +52,9 @@ int pos_y(int id)
   return api->pos_y(id);
 }
 
-int porte_balle(int id)
+int porte_pomme(int id)
 {
-  return api->porte_balle(id);
+  return api->porte_pomme(id);
 }
 
 int distance(int x1, int y1, int x2, int y2)
@@ -57,9 +67,9 @@ int type_case(int x, int y)
   return api->type_case(x, y);
 }
 
-int balle(int x, int y)
+int pomme(int x, int y)
 {
-  return api->balle(x, y);
+  return api->pomme(x, y);
 }
 
 int deplacer(int id, int direction)
@@ -72,19 +82,24 @@ int turbo(int id)
   return api->turbo(id);
 }
 
-int lacher_balle(int id)
+int lacher_pomme(int id, int direction)
 {
-  return api->lacher_balle(id);
+  return api->lacher_pomme(id, direction);
 }
 
-int prendre_balle(int id)
+int ramasser_pomme(int id)
 {
-  return api->prendre_balle(id);
+  return api->ramasser_pomme(id);
 }
 
 int grapin(int id, int direction)
 {
   return api->grapin(id, direction);
+}
+
+int projectile(int id, int direction)
+{
+  return api->projectile(id, direction);
 }
 
 int attendre(int id)

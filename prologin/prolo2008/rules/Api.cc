@@ -24,6 +24,16 @@ Api::Api(GameData* gameData, Client* c)
   api = this;
 }
 
+int Api::taille_carte_x()
+{
+  return 0;
+}
+
+int Api::taille_carte_y()
+{
+  return 0;
+}
+
 int Api::numero_tour()
 {
   return g_->getCurrentTurn();
@@ -51,7 +61,7 @@ int Api::pos_y(int id)
   return g_->_robots[id].GetYPos();
 }
 
-int Api::porte_balle(int id)
+int Api::porte_pomme(int id)
 {
   CHECK_ID(id);
   return g_->_robots[id].HasBall();
@@ -60,6 +70,9 @@ int Api::porte_balle(int id)
 
 int Api::distance(int x1, int y1, int x2, int y2)
 {
+  TEST_POS(x1,y1);
+  TEST_POS(x2,y2);
+
   return g_->_distances[y1][x1][y2][x2];
   //todo : reverse coords depending on player
   //return a specified constant if there is no path
@@ -83,7 +96,7 @@ int Api::type_case(int x, int y)
   };
 }
 
-int Api::balle(int x, int y) 
+int Api::pomme(int x, int y)
 {
   TEST_POS(x,y);
   return g_->_balls[y][x] == MAP_BALL;
@@ -122,7 +135,7 @@ int Api::turbo(int id)
   return 0;
 }
 
-int Api::lacher_balle(int id)
+int Api::lacher_pomme(int id, int direction)
 {
   CHECK_OWN_ID(id);
   ChampionIdToRealId(&id);
@@ -137,7 +150,7 @@ int Api::lacher_balle(int id)
   return 0;
 }
 
-int Api::prendre_balle(int id)
+int Api::ramasser_pomme(int id)
 {
   CHECK_OWN_ID(id);
   ChampionIdToRealId(&id);
@@ -170,6 +183,12 @@ int Api::grapin(int id, int direction)
 
   return 0;
 }
+
+int Api::projectile(int id, int direction)
+{
+  return 0;
+}
+
 
 int Api::attendre(int id)
 {

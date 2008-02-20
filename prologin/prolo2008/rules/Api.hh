@@ -58,20 +58,23 @@ public:
 
 public:
 
+   int taille_carte_x();
+   int taille_carte_y();
    int numero_tour();
    int nombre_tours();
    bool commence();
    int pos_x(int id);
    int pos_y(int id);
-   int porte_balle(int id);
+   int porte_pomme(int id);
    int distance(int x1, int y1, int x2, int y2);
    int type_case(int x, int y);
-   int balle(int x, int y);
+   int pomme(int x, int y);
    int deplacer(int id, int direction);
    int turbo(int id);
-   int lacher_balle(int id);
-   int prendre_balle(int id);
+   int lacher_pomme(int id, int direction);
+   int ramasser_pomme(int id);
    int grapin(int id, int direction);
+   int projectile(int id, int direction);
    int attendre(int id);
 
 protected:

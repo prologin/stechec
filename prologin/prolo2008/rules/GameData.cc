@@ -25,6 +25,9 @@ GameData::GameData(void)
 }
 
 void GameData::ComputeDistances() {
+
+  //TODO : use the Johnson algorithm
+
   LOG4("ComputeDistances");
   int dir[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
   
