@@ -54,7 +54,8 @@
 # define MAX_ROBOTS		6
 
 # define INIT_MAP_SIZE		0
-# define INIT_NB_ROBOTS		1
+
+# define INIT_ROBOT		1
 
 # define MAX_ORDERS		3 // max number of orders that can be issued by a single robot
 

@@ -49,13 +49,13 @@ public:
 
   int		_pos_x;
   int		_pos_y;
+  int		_turbo;
+  int		_team_id;
 
 private:
 
-  unsigned int	_turbo;
   int		_hook;		/// Grapin -- -1 if empty.
   bool		_has_ball;
-  int		_team_id;
   bool          _enabled;       /// False if the robot isn't enabled.
 
 

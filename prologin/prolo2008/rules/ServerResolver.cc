@@ -92,7 +92,7 @@ void ServerResolver::ResolveOrder(StechecPkt *pkt, int type)
   LOG4("Resolving message of type %1, args : %1 %2 %3", type, pkt->arg[0], pkt->arg[1], pkt->arg[2]);
 
   switch(type) {
-  case MOVE : case DROP_BALL : case HOOK_ROBOT :
+  case MOVE : case DROP_BALL : case HOOK_ROBOT : case LAUNCH_BULLET :
     ResolveOrderWithDirection(pkt, type);
     break;
   case PICK_UP_BALL : case BOOST_TURBO :
@@ -126,15 +126,22 @@ bool ServerResolver::CanDoSimpleMove(int x0, int y0, int x1, int y1, bool pushed
     pushed && cur_cell == MAP_HOLE && next_cell == MAP_EMPTY ;
 }
 
-void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y) {
+void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y, int pushed_by = -1) {
   LOG4("Hamster %1 was in %2,%3 and moves to %4,%5", id, g_->_robots[id]._pos_x, g_->_robots[id]._pos_y, new_x, new_y);
   g_->_robots[id]._pos_x = new_x;
   g_->_robots[id]._pos_y = new_y;
-  g_->_robots[id].ResetHook(); // Très important, sinon un bug subtile peut aparaitre:
-			       // si id est poussé, et que ses ordres sont résolus après, il pourrait entrainer avec lui un robot..
+  
+  // très important : réinitialiser le grapin dans certains cas :
+  for (int i=0 ; i < MAX_ROBOTS ; i++) {
+    if (g_->_robots[i].GetHook() == id && i != pushed_by)
+      g_->_robots[i].ResetHook();
+  }
+  if (pushed_by != g_->_robots[id].GetHook())
+    g_->_robots[id].ResetHook(); // Très important, sinon un bug subtile peut aparaitre:
+  // si id est poussé, et que ses ordres sont résolus après, il pourrait entrainer avec lui un robot..
 }
 
-bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, int next_y, bool first=true) {
+bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, int next_y, bool first=true, int pushed_by = -1) {
   if (!CheckPosition(x,y) || !CheckPosition(next_x, next_y)) return false;
   int target_id;
   if (CanDoSimpleMove(x,y,next_x, next_y, !first) ) {
@@ -142,10 +149,13 @@ bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, i
 	 ApplyChainMove(dir, target_id, next_x, next_y, 
 			next_x + _directions[dir][0], 
 			next_y + _directions[dir][1], 
-			false)) { // we can move, because the robot there can !
-      UpdateRobotPos(id, next_x, next_y);
+			false, id)) { // we can move, because the robot there can !
+      UpdateRobotPos(id, next_x, next_y, pushed_by);
       int hook = g_->_robots[id].GetHook();
-      if (first && hook != -1) {
+      if (first && hook != -1 ) {
+	int dx = x - g_->_robots[hook]._pos_x;
+	int dy = y - g_->_robots[hook]._pos_y;
+	assert(std::abs(dx) + std::abs(dy) <= 1);
 	//take robot hook with us
 	LOG4("Hamster %1 moves to %2,%3, because it was hooked by hamster %4", hook, x, y, id);
 	UpdateRobotPos(hook, x, y);
@@ -157,7 +167,7 @@ bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, i
   return false;
 }
 
-bool ServerResolver::ApplyDrop(int id, int x, int y, int target_x, int target_y) {
+bool ServerResolver::ApplyDrop(int id, int dir, int x, int y, int target_x, int target_y) {
   if (!CheckPosition(x,y) || !CheckPosition(target_x, target_y))
     return false;
 
@@ -167,13 +177,13 @@ bool ServerResolver::ApplyDrop(int id, int x, int y, int target_x, int target_y)
   }
    
   int target_id = GetRobotIdInPos(target_x, target_y);
-  if (target_id < 0 && g_->_balls[target_y][target_x] == MAP_EMPTY) {
+  if ( (target_id < 0 || dir == ICI) && g_->_balls[target_y][target_x] == MAP_EMPTY) {
     LOG4("Hamster %1 dropped apple to cell %2,%3", id, target_x, target_y);
     g_->_robots[id].SetBall(false);
     g_->_balls[target_y][target_x] = MAP_BALL;
     return true;
   }
-  if (target_id < 0) {
+  if (target_id < 0 || dir == ICI) {
     LOG4("Hamster %1 cannot drop apple to cell %2,%3, because there is already one in that cell", id, target_x, target_y);
     return false;
   }
@@ -210,14 +220,21 @@ void ServerResolver::ResolveOrderWithDirection(StechecPkt *pkt, int type) {
 
   switch(type) {
   case MOVE :
-    ApplyChainMove(dir, id, x, y, next_x, next_y);
+    assert(g_->_robots[id]._turbo <= MAX_ORDERS);
+    while (g_->_robots[id]._turbo-- >= 0) {
+      int x = g_->_robots[id]._pos_x;
+      int y = g_->_robots[id]._pos_y;
+      ApplyChainMove(dir, id, x, y, x + _directions[dir][0], y + _directions[dir][1]);
+    }
     break;
   case DROP_BALL :
-    ApplyDrop(id, x, y, next_x, next_y);
+    ApplyDrop(id, dir, x, y, next_x, next_y);
     break;
   case HOOK_ROBOT :
     ApplyHook(id, x, y, next_x, next_y);
     break;
+  case LAUNCH_BULLET :
+    ApplyLaunch(id, dir, x, y);
   default :
     assert(0);
   }
@@ -250,6 +267,22 @@ bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
   }
   g_->_balls[y][x] = MAP_EMPTY;
   g_->_robots[id].SetBall(true);
+  return true;
+}
+
+bool ServerResolver::ApplyLaunch(int id, int dir, int x, int y) {
+
+  while (true) {
+    x += _directions[dir][0];
+    y += _directions[dir][1];
+    if (!CheckPosition(x,y)) break;
+    int target_id = GetRobotIdInPos(x,y);
+    if (target_id >= 0) {
+      //Target_id needs to be pushed
+      ApplyChainMove(dir, target_id, x,y, x+_directions[dir][0], y + _directions[dir][1], false);
+      break;
+    }
+  }
   return true;
 }
 

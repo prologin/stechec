@@ -32,6 +32,7 @@ public:
   unsigned char	_map[MAP_MAX_Y][MAP_MAX_X]; 
   //storing only the environnement that doesn't move : floor, wall and hole (MAP_WALL|MAP_EMPTY|MAP_HOLE)
   unsigned char _balls[MAP_MAX_Y][MAP_MAX_X]; //storing balls that are on the floor (MAP_BALL|MAP_EMPTY)
+  unsigned char _balls_old[MAP_MAX_Y][MAP_MAX_X]; // to keep track of the differences between client and server
   unsigned int	_map_size_y;
   unsigned int	_map_size_x;
 

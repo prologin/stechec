@@ -152,6 +152,10 @@ int		ServerEntry::beforeGame(void)
   com2.Push(2, INIT_NB_ROBOTS, g_->_nb_robots);
   SendToAll(com2);
 
+  for (int i=0 ; i < MAX_ROBOTS ; i++)
+    if (g_->_robots[i].IsEnabled())
+      SendToAll(INIT_DATA, -1, 5, INIT_ROBOT, i, g_->_robots[i]._pos_x, g_->_robots[i]._pos_y, g_->_robots[i]._team_id);
+
   // Broadcasts the map's content
   for (int j = 0; j < g_->_map_size_y; j++)
     for (int i = 0; i < g_->_map_size_x; i++)
@@ -185,25 +189,38 @@ int         ServerEntry::beforeNewTurn(void)
     g_->_robots[i].ResetHook();
     g_->_robots[i].ResetTurbo();
   }
- 
+
+  std::copy(*g_->_balls, *g_->_balls + MAP_MAX_Y * MAP_MAX_X, *g_->_balls_old);
+
   return 0;
 }
 
 int         ServerEntry::afterNewTurn(void)
 {
-#if 0
+
+  /*
+   * First of all : broadcast all robot data
+   */
+
   for (int i = 0; i < MAX_ROBOTS; ++i)
   {
-    // If the robot exists, we send its position to the client
     if (g_->_robots[i].IsEnabled())
     {
-      LOG4("Broadcasting robot's %1 position", i);
-      StechecPkt com(ROBOT_POS, -1);
-      com.Push(3, i, g_->_robots[i].GetXPos(), g_->_robots[i].GetYPos());
-      SendToAll(&com);
+      LOG4("Broadcasting robot's %1 data", i);
+      SendToAll(ROBOT_POS, -1, 3, i, g_->_robots[i].GetXPos(), g_->_robots[i].GetYPos());
+      SendToAll(ROBOT_UNHOOK, -1, 1, i); //inutile : en fait, aucune information de grappin n'est utile pour les clients.
+      SendToAll(ROBOT_HAS_BALL, -1, 2, i, g_->_robots[i].HasBall());
     }
   }
-#endif
+
+  /* 
+   * Broadcast balls
+   */
+
+  for (int i=0 ; i < g_->_map_size_y ; ++i)
+    for (int j=0 ; j < g_->_map_size_x ; ++j)
+      if (g_->_balls_old[i][j] != g_->_balls[i][j])
+	SendToAll(BALLS_CONTENT, -1, 3, j, i, g_->_balls[i][j]);
 
   return 0;
 }

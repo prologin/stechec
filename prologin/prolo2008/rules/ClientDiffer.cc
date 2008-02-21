@@ -36,11 +36,18 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	    LOG4("Receiving map size %1 %2", size_x, size_y);
 	    break;
 	  }
-	case INIT_NB_ROBOTS :
+	case INIT_ROBOT :
 	  {
-	    int nb = pkt->arg[1];
-	    assert(nb >= 0 && nb < MAX_ROBOTS);
-	    g_->_nb_robots = nb;
+	    int id = pkt->arg[1];
+	    int x = pkt->arg[2];
+	    int y = pkt->arg[3];
+	    int t = pkt->arg[4];
+	    assert(id >= 0 && id < MAX_ROBOTS);
+	    assert(x >= 0 && y >= 0 && x < MAP_MAX_X && y < MAP_MAX_Y);
+	    assert(t==0 || t==1);
+	    if (!g_->_robots[id].IsEnabled())
+	      g_->_nb_robots++;
+	    g_->_robots[id].Init(x,y,t);
 	    break;
 	  }
 	default :
