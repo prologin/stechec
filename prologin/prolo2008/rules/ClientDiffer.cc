@@ -21,17 +21,32 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 {
   switch (pkt->type)
     {
-      // Client received the map size
     case INIT_DATA :
       {
-	int size_x = pkt->arg[0];
-	int size_y = pkt->arg[1];
-      
-        assert(size_x >= 4 && size_y >= 4 && size_x <= MAP_MAX_X && size_y <= MAP_MAX_Y);
-        g_->_map_size_x = size_x;
-        g_->_map_size_y = size_y;
-        LOG4("Receiving map size %1 %2", size_x, size_y);
-        break;
+	switch(pkt->arg[0]) {
+	case INIT_MAP_SIZE :
+	  {
+	    // Client received the map size
+	    int size_x = pkt->arg[1];
+	    int size_y = pkt->arg[2];
+	    LOG4("%1,%2", size_x, size_y);
+	    assert(size_x >= 4 && size_y >= 4 && size_x <= MAP_MAX_X && size_y <= MAP_MAX_Y);
+	    g_->_map_size_x = size_x;
+	    g_->_map_size_y = size_y;
+	    LOG4("Receiving map size %1 %2", size_x, size_y);
+	    break;
+	  }
+	case INIT_NB_ROBOTS :
+	  {
+	    int nb = pkt->arg[1];
+	    assert(nb >= 0 && nb < MAX_ROBOTS);
+	    g_->_nb_robots = nb;
+	    break;
+	  }
+	default :
+	  assert(0);
+	}
+	break;
       }
 
       // Client received map data

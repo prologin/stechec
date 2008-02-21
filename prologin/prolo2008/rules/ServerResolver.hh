@@ -25,8 +25,9 @@ public:
 
 private:
   void ResolveOrder(StechecPkt *pkt, int type);
-  void ResolveMove(StechecPkt *pkt);
-  //  void Resolve
+  void ResolveOrderWithDirection(StechecPkt *pkt, int type);
+  void ResolveSimpleOrder(StechecPkt *pkt, int type);
+
   int _directions[5][2]; // translations' vectors (column,line)
 
   // some utility, low_level functions :
@@ -36,6 +37,13 @@ private:
   void UpdateRobotPos(int id, int new_x, int new_y);
   bool ApplyChainMove(int dir, int id, int x, int y, 
 		      int next_x, int next_y, bool first);
+  bool ApplyDrop(int id, int x, int y, int target_x, int target_y);
+  bool ApplyPickUpBall(int id, int x, int y);
+  bool ApplyHook(int id, int x, int y, int target_x, int target_y);
+  bool ApplyTurbo(int id);
+
+  //TODO : projectile
+
 };
 
 #endif // !SERVERRESOLVER_HH_

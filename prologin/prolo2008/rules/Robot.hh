@@ -37,12 +37,13 @@ public:
 
   void		SetHook(int id)		{ _hook = id; }
   void		ResetHook(void)		{ _hook = -1; }
-  int		GetHook(void)		{ return _hook; }
+  int		GetHook(void) const	{ return _hook; }
 
   void		PickUpBall(void)	{ _has_ball = true; }
   void		ReleaseBall(void)	{ _has_ball = false; }
 
   bool		HasBall(void)  const    { return _has_ball; }
+  void		SetBall(int has)	{ _has_ball = has; }
 
   static bool   CheckRange(int id)	{ return (id < 0 || id >= MAX_ROBOTS); }
 

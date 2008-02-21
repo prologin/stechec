@@ -54,13 +54,14 @@
 # define MAX_ROBOTS		6
 
 # define INIT_MAP_SIZE		0
+# define INIT_NB_ROBOTS		1
 
 # define MAX_ORDERS		3 // max number of orders that can be issued by a single robot
 
 // Ids for message type.
 enum e_com_type {
   // from server
-  INIT_DATA,        /* MAP_WIDTH, MAP_HEIGHT, ... */
+  INIT_DATA,        /* depending of the first arg (eg : MAP_WIDTH, MAP_HEIGHT) */
   MAP_CONTENT,      /* X, Y, VALUE */
   BALLS_CONTENT,    /* X, Y, VALUE */
   ROBOT_POS,        /* ROBOT_ID, X, Y */

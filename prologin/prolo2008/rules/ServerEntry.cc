@@ -146,8 +146,11 @@ int		ServerEntry::beforeGame(void)
 
   // Broadcasts initalization data (map size, etc.)
   StechecPkt com(INIT_DATA, -1);
-  com.Push(3, g_->_map_size_x, g_->_map_size_y);
+  com.Push(3, INIT_MAP_SIZE, g_->_map_size_x, g_->_map_size_y);
   SendToAll(com);
+  StechecPkt com2(INIT_DATA, -1);
+  com2.Push(2, INIT_NB_ROBOTS, g_->_nb_robots);
+  SendToAll(com2);
 
   // Broadcasts the map's content
   for (int j = 0; j < g_->_map_size_y; j++)

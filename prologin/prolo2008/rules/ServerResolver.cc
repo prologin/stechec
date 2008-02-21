@@ -28,6 +28,7 @@ ServerResolver::ServerResolver(GameData* game, Server* server)
 
 void ServerResolver::ApplyResolver(CommandListRef cmdList[])
 {
+
   // cmdList is an array representing each types of packets.
   // cmdList[PCK_TYPE] evaluates to a list, driven by an iterator.
  
@@ -37,8 +38,8 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
   std::pair<StechecPkt*,int> robot_orders[MAX_ROBOTS][MAX_ORDERS]; // pair of packet and type of packet
   int robots_turn[MAX_ROBOTS];	
   int turn_to_robot[2][MAX_ROBOTS/2];
-  int orders_constants[] = {DROP_BALL, MOVE, PICK_UP_BALL, HOOK_ROBOT, RELEASE_HOOK, BOOST_TURBO, WAIT};
-  int size_orders_constants = 7;
+  int orders_constants[] = {DROP_BALL, MOVE, PICK_UP_BALL, HOOK_ROBOT, RELEASE_HOOK, BOOST_TURBO, WAIT, LAUNCH_BULLET};
+  int size_orders_constants =  (sizeof orders_constants) / sizeof(int);
   std::fill(*robot_orders, *robot_orders + MAX_ROBOTS * MAX_ORDERS, std::make_pair((StechecPkt*)0, -1));
   std::fill(robots_turn, robots_turn + MAX_ORDERS, -1);
   std::fill(*turn_to_robot, *turn_to_robot + 2*(MAX_ROBOTS/2), -1);
@@ -91,11 +92,11 @@ void ServerResolver::ResolveOrder(StechecPkt *pkt, int type)
   LOG4("Resolving message of type %1, args : %1 %2 %3", type, pkt->arg[0], pkt->arg[1], pkt->arg[2]);
 
   switch(type) {
-  case MOVE :
-    ResolveMove(pkt);
+  case MOVE : case DROP_BALL : case HOOK_ROBOT :
+    ResolveOrderWithDirection(pkt, type);
     break;
-    
-    
+  case PICK_UP_BALL : case BOOST_TURBO :
+    ResolveSimpleOrder(pkt, type);
   default :
     LOG2("Bogus order coming to the server from robot id %1", pkt->arg[0]);
     assert(0);
@@ -108,7 +109,7 @@ bool ServerResolver::CheckPosition(int x, int y) {
 }
 
 int ServerResolver::GetRobotIdInPos(int x, int y) {
-  for (int i=0 ; i < g_->_nb_robots ; ++i)
+  for (int i=0 ; i < MAX_ROBOTS ; ++i)
     if (g_->_robots[i].IsEnabled() && g_->_robots[i]._pos_x == x && g_->_robots[i]._pos_y == y)
       return i;
   return -1;
@@ -156,19 +157,122 @@ bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, i
   return false;
 }
 
-void ServerResolver::ResolveMove(StechecPkt *pkt) {
+bool ServerResolver::ApplyDrop(int id, int x, int y, int target_x, int target_y) {
+  if (!CheckPosition(x,y) || !CheckPosition(target_x, target_y))
+    return false;
+
+  if ( ! g_->_robots[id].HasBall() ) {
+    LOG4("Hamster %1 cannot drop the apple, because he doesn't have any !", id);
+    return false;
+  }
+   
+  int target_id = GetRobotIdInPos(target_x, target_y);
+  if (target_id < 0 && g_->_balls[target_y][target_x] == MAP_EMPTY) {
+    LOG4("Hamster %1 dropped apple to cell %2,%3", id, target_x, target_y);
+    g_->_robots[id].SetBall(false);
+    g_->_balls[target_y][target_x] = MAP_BALL;
+    return true;
+  }
+  if (target_id < 0) {
+    LOG4("Hamster %1 cannot drop apple to cell %2,%3, because there is already one in that cell", id, target_x, target_y);
+    return false;
+  }
+
+  if (target_id >= 0 && g_->_robots[target_id].HasBall()==false) {
+    g_->_robots[id].SetBall(false);
+    g_->_robots[target_id].SetBall(true);
+    LOG4("Apple given to hamster %1 from hamster %2", target_id, id);
+    return true;
+  }
+
+  LOG4("Cannot give apple to hamster %1 because he has already one", target_id);
+
+  return true;
+}
+
+void ServerResolver::ResolveOrderWithDirection(StechecPkt *pkt, int type) {
   
   int id = pkt->arg[0];
   int dir = pkt->arg[3];
   assert(id >= 0 && id < MAX_ROBOTS);
   int x = g_->_robots[id]._pos_x;
   int y = g_->_robots[id]._pos_y;
+  //  int expected_id = GetRobotIdInPos(x,y);
+  //  LOG4("GetRobotIdInPos(%1,%2) = %3 ; id = ", x, y, expected_id, id);
+  if (g_->_robots[id].IsEnabled() == false) {
+    LOG4("Warning : hamster %1 is disabled, order ignored", id);
+    return;
+  }
   assert(GetRobotIdInPos(x,y) == id);
-  assert(g_->_robots[id].IsEnabled());
 
   int next_x = x + _directions[dir][0];
   int next_y = y + _directions[dir][1];
 
-  ApplyChainMove(dir, id, x, y, next_x, next_y);
+  switch(type) {
+  case MOVE :
+    ApplyChainMove(dir, id, x, y, next_x, next_y);
+    break;
+  case DROP_BALL :
+    ApplyDrop(id, x, y, next_x, next_y);
+    break;
+  case HOOK_ROBOT :
+    ApplyHook(id, x, y, next_x, next_y);
+    break;
+  default :
+    assert(0);
+  }
+}
+
+bool ServerResolver::ApplyHook(int id, int x, int y, int target_x, int target_y) {
+  if (!CheckPosition(x,y) || !CheckPosition(target_x, target_y)) return false;
+  int target_id = GetRobotIdInPos(target_x, target_y);
+  if (target_id < 0) {
+    LOG4("Hamster %1 cannot throw hook to %2,%3, because there is nobody there", id, target_x, target_y);
+    return false;
+  }
+  g_->_robots[id].SetHook(target_id);
+  return true;
+}
+
+bool ServerResolver::ApplyTurbo(int id) {
+  g_->_robots[id].BoostTurbo();
+}
+
+bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
+  if (!CheckPosition(x,y)) return false;
+  if (g_->_balls[y][x] != MAP_BALL) {
+    LOG4("Hamster %1 cannot take apple in %2,%3, because there is no ball in that cell", id, x, y);
+    return false;
+  }
+  if (g_->_robots[id].HasBall()) {
+    LOG4("Hamster %1 cannot take apple beacause he has already one !", id);
+    return false;
+  }
+  g_->_balls[y][x] = MAP_EMPTY;
+  g_->_robots[id].SetBall(true);
+  return true;
+}
+
+void ServerResolver::ResolveSimpleOrder(StechecPkt *pkt, int type) {
+  int id = pkt->arg[0];
+  assert(id >= 0 && id < MAX_ROBOTS);
+  int x = g_->_robots[id]._pos_x;
+  int y = g_->_robots[id]._pos_y;
+  if (g_->_robots[id].IsEnabled() == false) {
+    LOG4("Warning : hamster %1 is disabled, order ignored", id);
+    return;
+  }
+  assert(GetRobotIdInPos(x,y) == id);
+
+  switch(type) {
+  case PICK_UP_BALL :
+    ApplyPickUpBall(id, x, y);
+    break;
+  case BOOST_TURBO :
+    ApplyTurbo(id);
+    break;
+  default :
+    assert(0);
+  }
   
 }
