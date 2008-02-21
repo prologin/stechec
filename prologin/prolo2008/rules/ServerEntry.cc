@@ -148,9 +148,6 @@ int		ServerEntry::beforeGame(void)
   StechecPkt com(INIT_DATA, -1);
   com.Push(3, INIT_MAP_SIZE, g_->_map_size_x, g_->_map_size_y);
   SendToAll(com);
-  StechecPkt com2(INIT_DATA, -1);
-  com2.Push(2, INIT_NB_ROBOTS, g_->_nb_robots);
-  SendToAll(com2);
 
   for (int i=0 ; i < MAX_ROBOTS ; i++)
     if (g_->_robots[i].IsEnabled())
