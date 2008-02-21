@@ -42,14 +42,6 @@ private:
   bool ApplyHook(int id, int x, int y, int target_x, int target_y);
   bool ApplyLaunch(int id, int dir, int x, int y);
   bool ApplyTurbo(int id);
-
-  bool ApplyDrop(int id, int x, int y, int target_x, int target_y);
-  bool ApplyPickUpBall(int id, int x, int y);
-  bool ApplyHook(int id, int x, int y, int target_x, int target_y);
-  bool ApplyTurbo(int id);
-
-  //TODO : projectile
-
 };
 
 #endif // !SERVERRESOLVER_HH_
