@@ -1,11 +1,4 @@
-- lacher la balle dans un trou ?
-- robots tueurs ?
-- capsules d'energies pour les robots ?
-- largage de mines + reparation
-
-
 Todo :
-
-- score
-
-- inversion des y pour l'une des teams
+- modifier les caractères d'entrée de la map.
+- modifier le contenu des LOG4 .. LOG2 .. (hamster,pomme... au lieu de robot,balle..)
+- faire 20*20 bfs au lieu d'un floyd-warshall pour le calcul des distances (pour aller plus vite)
