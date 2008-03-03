@@ -1,0 +1,2 @@
+#!/bin/sh
+/opt/stechec/bin/stechec -i 2 -c config_go.ini

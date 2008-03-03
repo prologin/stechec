@@ -1,0 +1,3 @@
+#!/bin/sh
+/opt/stechec/bin/stechec_server -c config_go.ini
+
