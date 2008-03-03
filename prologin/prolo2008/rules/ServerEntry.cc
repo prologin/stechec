@@ -45,10 +45,10 @@ int ServerEntry::loadMap(void)
     return 1;
   }
 
-  // If the first line is a comment, discard it
-  if (map_stream.peek() == '#')
+  // If the first lines are comments, discard them
+  while (map_stream.peek() == '#')
   {
-    getline(map_stream, line);
+    getline(map_stream, line); 
   }
 
   // The first line is "size_x size_y\n"
@@ -58,9 +58,9 @@ int ServerEntry::loadMap(void)
     return 1;
   }
 
-  if (size_x <= 4 || size_y <= 4 || size_x >= MAP_MAX_X || size_y >= MAP_MAX_Y)
+  if (size_x <= 4 || size_y <= 4 || size_x > MAP_MAX_X || size_y > MAP_MAX_Y)
   {
-    ERR("Map size are invalid, go fix your map");
+    ERR("Map sizes are invalid, go fix your map");
     return 1;
   }
 
@@ -95,7 +95,7 @@ int ServerEntry::loadMap(void)
         case MAP_ROBOT_TEAM1 :
           if (nb_robots[0] >= MAX_ROBOTS / 2)
           {
-            ERR("Too many robots for team 1, whose limit is %1", MAX_ROBOTS / 2);
+            ERR("Too many robots for team 0, whose limit is %1", MAX_ROBOTS / 2);
             return 1;
           }
 	  g_->_nb_robots++;
@@ -106,12 +106,12 @@ int ServerEntry::loadMap(void)
         case MAP_ROBOT_TEAM2 :
           if (nb_robots[1] >= MAX_ROBOTS / 2)
           {
-            ERR("Too many robots for team 2, whose limit is %1", MAX_ROBOTS / 2);
+            ERR("Too many robots for team 1, whose limit is %1", MAX_ROBOTS / 2);
             return 1;
           }
 	  g_->_nb_robots++;
           g_->_robots[MAX_ROBOTS / 2 + nb_robots[1]++].Init(i, j, 1);
-	  LOG4("Robot in pos %1,%2 for team 0", i, j);
+	  LOG4("Robot in pos %1,%2 for team 1", i, j);
           break;
 
       case MAP_WALL :
@@ -152,6 +152,8 @@ int		ServerEntry::beforeGame(void)
   for (int i=0 ; i < MAX_ROBOTS ; i++)
     if (g_->_robots[i].IsEnabled())
       SendToAll(INIT_DATA, -1, 5, INIT_ROBOT, i, g_->_robots[i]._pos_x, g_->_robots[i]._pos_y, g_->_robots[i]._team_id);
+
+  SendToAll(INIT_DATA, -1, 2, INIT_START_TEAM, g_->_start_team);
 
   // Broadcasts the map's content
   for (int j = 0; j < g_->_map_size_y; j++)
@@ -219,6 +221,11 @@ int         ServerEntry::afterNewTurn(void)
       if (g_->_balls_old[i][j] != g_->_balls[i][j])
 	SendToAll(BALLS_CONTENT, -1, 3, j, i, g_->_balls[i][j]);
 
+  /*
+   * make checks
+   */
+  g_->makeChecks();
+
   return 0;
 }
 
@@ -235,5 +242,13 @@ bool        ServerEntry::isMatchFinished(void)
 
 int        ServerEntry::getScore(int uid)
 {
-  return -42;
+  int balls_team0 = std::count(g_->_balls[0], g_->_balls[0] + 2 * MAP_MAX_X, MAP_BALL);
+  int balls_team1 = std::count(g_->_balls[g_->_map_size_y-2], g_->_balls[g_->_map_size_y-2] + 2 * MAP_MAX_X, MAP_BALL);
+  if (balls_team1 == balls_team0)
+    return 1;
+  else
+    if (balls_team0 > balls_team1)	
+      return 3 * (1-uid);
+    else
+      return 3 * uid;
 }

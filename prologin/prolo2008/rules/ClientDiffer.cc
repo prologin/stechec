@@ -50,6 +50,13 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	    g_->_robots[id].Init(x,y,t);
 	    break;
 	  }
+	case INIT_START_TEAM :
+	  {
+	    int start_team = pkt->arg[1];
+	    assert(start_team == 0 || start_team == 1);
+	    g_->_start_team = start_team;
+	    break;
+	  }
 	default :
 	  assert(0);
 	}
@@ -65,7 +72,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       
 	assert(g_->_map_size_y != -1);
 	assert(x >= 0 && y >= 0 && x < g_->_map_size_x && y < g_->_map_size_y);
-	LOG4("Received map content in %1 %2 : %3", x ,y, c);
+	//	LOG4("Received map content in %1 %2 : %3", x ,y, c);
 	g_->_map[y][x] = (unsigned char) c;
 	break;
       }
@@ -78,7 +85,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	assert(g_->_map_size_y != -1);
 	assert( x>= 0 && y >= 0 && x < g_->_map_size_x && y < g_->_map_size_y);
 	assert(c == MAP_EMPTY || c == MAP_BALL);
-	LOG4("Received balls map content in %1 %2 : %3", x, y, c);
+	//	LOG4("Received balls map content in %1 %2 : %3", x, y, c);
 	g_->_balls[y][x] = (unsigned char) c;
 	break;
       }
@@ -88,7 +95,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
         int robot_id = pkt->arg[0];
         int x        = pkt->arg[1];
         int y        = pkt->arg[2];
-
+	LOG4("Received position of robot %1 : %2,%3", robot_id, x, y);
         if (robot_id < 0 || robot_id >= MAX_ROBOTS)
 	  {
 	    ERR("Robot Id %1: invalid range in ROBOT_POS", robot_id);
@@ -107,7 +114,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
     case ROBOT_HAS_BALL:
       {
         int robot_id = pkt->arg[0];
-
+	LOG4("Received robot_has_ball for robot %1 : %2", robot_id, pkt->arg[1]);
         if (Robot::CheckRange(robot_id))
 	  {
 	    ERR("Robot Id %1: invalid range in ROBOT_HAS_BALL", robot_id);

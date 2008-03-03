@@ -75,6 +75,7 @@ int        ClientEntry::beforeNewTurn()
 */
 int        ClientEntry::afterNewTurn()
 {
+  g_->makeChecks();
   return 0;
 }
 

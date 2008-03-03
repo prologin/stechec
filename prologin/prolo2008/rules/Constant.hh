@@ -53,9 +53,10 @@
 # define MAP_MAX_Y		20
 # define MAX_ROBOTS		6
 
+// types de messages d'initialisation :
 # define INIT_MAP_SIZE		0
-
 # define INIT_ROBOT		1
+# define INIT_START_TEAM	2
 
 # define MAX_ORDERS		3 // max number of orders that can be issued by a single robot
 

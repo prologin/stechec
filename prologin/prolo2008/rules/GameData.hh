@@ -31,6 +31,7 @@ public:
 
   unsigned char	_map[MAP_MAX_Y][MAP_MAX_X]; 
   //storing only the environnement that doesn't move : floor, wall and hole (MAP_WALL|MAP_EMPTY|MAP_HOLE)
+  //remainder : team 0 starts from coordinates 0,1.. and team 1 from coordinates Y_MAX-1,Y_MAX-2...
   unsigned char _balls[MAP_MAX_Y][MAP_MAX_X]; //storing balls that are on the floor (MAP_BALL|MAP_EMPTY)
   unsigned char _balls_old[MAP_MAX_Y][MAP_MAX_X]; // to keep track of the differences between client and server
   unsigned int	_map_size_y;
@@ -52,6 +53,8 @@ public:
 
   int _distances[MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
   void ComputeDistances();
+
+  bool makeChecks(); //performs some checks to see if all is going well
 };
 
 #endif // !GAMEDATA_HH_

@@ -83,6 +83,8 @@ protected:
 private: 
   // some utility function
   void ChampionIdToRealId(int *id);
+  int SwitchSubjectiveGlobalCoords(int y);
+  void SwitchSubjectiveGlobalDir(int *dir);
   int Order(int real_id); //returns TOO_MUCH_ORDERS, or the turn of the robot whose id is real_id
   void SendBasicOrder(int real_id, int robot_turn, int order_cst);
   void SendOrderWithDirection(int real_id, int robot_turn, int order_cst, int direction);

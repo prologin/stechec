@@ -52,18 +52,21 @@ bool Api::commence()
 int Api::pos_x(int id)
 {
   CHECK_ID(id);
+  ChampionIdToRealId(&id);
   return g_->_robots[id].GetXPos();
 }
 
 int Api::pos_y(int id)
 {
   CHECK_ID(id);
-  return g_->_robots[id].GetYPos();
+  ChampionIdToRealId(&id);
+  return SwitchSubjectiveGlobalCoords(g_->_robots[id].GetYPos());
 }
 
 int Api::porte_pomme(int id)
 {
   CHECK_ID(id);
+  ChampionIdToRealId(&id);
   return g_->_robots[id].HasBall();
   // warning : a team can see whether an enemy robot is holding a ball or not
 }
@@ -73,14 +76,15 @@ int Api::distance(int x1, int y1, int x2, int y2)
   TEST_POS(x1,y1);
   TEST_POS(x2,y2);
 
-  return g_->_distances[y1][x1][y2][x2];
-  //todo : reverse coords depending on player
-  //return a specified constant if there is no path
+  return g_->_distances[SwitchSubjectiveGlobalCoords(y1)][x1][SwitchSubjectiveGlobalCoords(y2)][x2];
+  //returns INFINI if there is no path
 }
 
 int Api::type_case(int x, int y)
 {
   TEST_POS(x,y);
+  y = SwitchSubjectiveGlobalCoords(y);
+
   switch(g_->_map[y][x]) {
   case MAP_WALL : 
     return OBSTACLE;
@@ -99,6 +103,7 @@ int Api::type_case(int x, int y)
 int Api::pomme(int x, int y)
 {
   TEST_POS(x,y);
+  y = SwitchSubjectiveGlobalCoords(y);
   return g_->_balls[y][x] == MAP_BALL;
 }
 
@@ -107,7 +112,7 @@ int Api::deplacer(int id, int direction)
   CHECK_OWN_ID(id);
   CHECK_DIRECTION(direction, 0);
   ChampionIdToRealId(&id);
-
+  SwitchSubjectiveGlobalDir(&direction);
   int turn = Order(id);
   if (turn < 0) return turn;
 
@@ -140,7 +145,7 @@ int Api::lacher_pomme(int id, int direction)
   CHECK_OWN_ID(id);
   CHECK_DIRECTION(direction, 1);
   ChampionIdToRealId(&id);
-  
+  SwitchSubjectiveGlobalDir(&direction);
   int turn = Order(id);
   if (turn < 0) return turn;
   SendOrderWithDirection(id, turn, DROP_BALL, direction);
@@ -172,7 +177,7 @@ int Api::grapin(int id, int direction)
   CHECK_OWN_ID(id);
   CHECK_DIRECTION(direction, 0);
   ChampionIdToRealId(&id);
-  
+  SwitchSubjectiveGlobalDir(&direction);
   int turn = Order(id);
   if (turn < 0) return turn;
 
@@ -188,6 +193,7 @@ int Api::projectile(int id, int direction)
   CHECK_OWN_ID(id);
   CHECK_DIRECTION(direction, 0);
   ChampionIdToRealId(&id);
+  SwitchSubjectiveGlobalDir(&direction);
 
   int turn = Order(id);
   if (turn < 0) return turn;
@@ -250,4 +256,19 @@ void Api::SendOrderWithDirection(int real_id, int robot_turn, int order_cst, int
   StechecPkt com(order_cst, -1);
   com.Push(4, real_id, robot_turn, g_->_count_orders_per_robot[real_id], direction);
   SendToServer(com);
+}
+
+
+int Api::SwitchSubjectiveGlobalCoords(int y) {
+  if (g_->getTeamId() == 1) {
+    return taille_carte_y() - y - 1;
+  }
+  return y;
+}
+
+void Api::SwitchSubjectiveGlobalDir(int *dir) {
+  if (g_->getTeamId() == 1) {
+    if (*dir == BAS) *dir = HAUT;
+    else if (*dir == HAUT) *dir = BAS;
+  }
 }
