@@ -71,12 +71,14 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       if (id != -1) {
 	LOG4("Trying to resolve order from robot %1 of team %2, order numbered %3, turn %4",
 	     id, current_start_team, i, turn);
+	LogAction(ACTION_SEPARATOR, id);
 	ResolveOrder( robot_orders[id][i].first, robot_orders[id][i].second );
       }
       id = turn_to_robot[!current_start_team][turn];
       if (id != -1) {
 	LOG4("Trying to resolve order from robot %1 of team %2, order numbered %3, turn %4",
 	     id, !current_start_team, i, turn);
+	LogAction(ACTION_SEPARATOR, id);
 	ResolveOrder( robot_orders[id][i].first, robot_orders[id][i].second );
       }
     }
@@ -128,7 +130,8 @@ bool ServerResolver::CanDoSimpleMove(int x0, int y0, int x1, int y1, bool pushed
     pushed && cur_cell == MAP_HOLE && next_cell == MAP_EMPTY ;
 }
 
-void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y, int pushed_by = -1, int pushing = -1) {
+//dir parameter is only used to log the action
+void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y, int dir, int pushed_by = -1, int pushing = -1) {
   LOG4("Hamster %1 was in %2,%3 and moves to %4,%5", id, g_->_robots[id]._pos_x, g_->_robots[id]._pos_y, new_x, new_y);
   g_->_robots[id]._pos_x = new_x;
   g_->_robots[id]._pos_y = new_y;
@@ -138,15 +141,20 @@ void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y, int pushed_by 
     if (g_->_robots[i].GetHook() == id && i != pushed_by && i != pushing) {
       LOG4("Reseting hook %1 -> %2", i, g_->_robots[i].GetHook()); //debug
       g_->_robots[i].ResetHook();
+      LogAction(ACTION_RELEASE_HOOK, i);
     }
   }
   if (pushed_by != g_->_robots[id].GetHook() && pushed_by != -1 && g_->_robots[id].GetHook() != -1 
       && g_->_robots[id].GetHook() != pushing) { 
     //grapin de nous vers les autres robots
     LOG4("Reseting hook %1 -> %2", id, g_->_robots[id].GetHook());
+    LogAction(ACTION_RELEASE_HOOK, id);
     g_->_robots[id].ResetHook(); // Très important, sinon un bug subtil peut aparaitre:
     // si id est poussé, et que ses ordres sont résolus après, il pourrait entrainer avec lui un robot..
   }
+
+  LogAction(ACTION_MOVE, id, dir);
+
 }
 
 bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, int next_y, bool first=true, int pushed_by = -1) {
@@ -160,7 +168,7 @@ bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, i
 			next_x + _directions[dir][0], 
 			next_y + _directions[dir][1], 
 			false, id)) { // we can move, because the robot there can !
-      UpdateRobotPos(id, next_x, next_y, pushed_by, target_id);
+      UpdateRobotPos(id, next_x, next_y, dir, pushed_by, target_id);      
       int hook = g_->_robots[id].GetHook();
       if (first && hook != -1 ) {
 	int dx = x - g_->_robots[hook]._pos_x;
@@ -168,7 +176,7 @@ bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, i
 	assert(std::abs(dx) + std::abs(dy) <= 1);
 	//take robot hook with us
 	LOG4("Hamster %1 moves to %2,%3, because it was hooked by hamster %4", hook, x, y, id);
-	UpdateRobotPos(hook, x, y, id);
+	UpdateRobotPos(hook, x, y, vector_to_direction(-dx, -dy), id);
       }
       return true;
     }
@@ -189,6 +197,7 @@ bool ServerResolver::ApplyDrop(int id, int dir, int x, int y, int target_x, int 
   int target_id = GetRobotIdInPos(target_x, target_y);
   if ( (target_id < 0 || dir == ICI) && g_->_balls[target_y][target_x] == MAP_EMPTY) {
     LOG4("Hamster %1 dropped apple to cell %2,%3", id, target_x, target_y);
+    LogAction(ACTION_DROP_BALL, id, ICI);
     g_->_robots[id].SetBall(false);
     g_->_balls[target_y][target_x] = MAP_BALL;
     return true;
@@ -199,7 +208,9 @@ bool ServerResolver::ApplyDrop(int id, int dir, int x, int y, int target_x, int 
   }
 
   if (target_id >= 0 && g_->_robots[target_id].HasBall()==false) {
+    LogAction(ACTION_DROP_BALL, id, dir);
     g_->_robots[id].SetBall(false);
+    LogAction(ACTION_PICK_UP_BALL, target_id);
     g_->_robots[target_id].SetBall(true);
     LOG4("Apple given to hamster %1 from hamster %2", target_id, id);
     return true;
@@ -261,11 +272,13 @@ bool ServerResolver::ApplyHook(int id, int x, int y, int target_x, int target_y)
     LOG4("Hamster %1 cannot throw hook to %2,%3, because there is nobody there", id, target_x, target_y);
     return false;
   }
+  LogAction(ACTION_HOOK_ROBOT, id, vector_to_direction(target_x - x, target_y - y));
   g_->_robots[id].SetHook(target_id);
   return true;
 }
 
 bool ServerResolver::ApplyTurbo(int id) {
+  LogAction(ACTION_BOOST_TURBO, id);
   g_->_robots[id].BoostTurbo();
 }
 
@@ -279,6 +292,7 @@ bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
     LOG4("Hamster %1 cannot take apple beacause he has already one !", id);
     return false;
   }
+  LogAction(ACTION_PICK_UP_BALL, id);
   g_->_balls[y][x] = MAP_EMPTY;
   g_->_robots[id].SetBall(true);
   return true;
@@ -287,6 +301,7 @@ bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
 bool ServerResolver::ApplyLaunch(int id, int dir, int x, int y) {
   //todo : quel comportement pour les projectiles qd on change de terrain ou quand on rencontre une pomme ?
   //  LOG4("ApplyLaunch %1 %2 %3 %4", id, dir, x, y); //debug
+  LogAction(ACTION_LAUNCH_BULLET, id, dir);
   while (true) {
     x += _directions[dir][0];
     y += _directions[dir][1];
@@ -294,7 +309,9 @@ bool ServerResolver::ApplyLaunch(int id, int dir, int x, int y) {
     if (g_->_map[y][x] == MAP_WALL) break;
     int target_id = GetRobotIdInPos(x,y);
     if (target_id >= 0) {
-      //Target_id needs to be pushed
+      //Target_id needs to be pushed (and looses his ball)
+      if (g_->_robots[target_id].HasBall())
+	ApplyDrop(target_id, ICI, x, y, x, y);
       ApplyChainMove(dir, target_id, x,y, x+_directions[dir][0], y + _directions[dir][1], false, -2);
       break;
     }
@@ -324,4 +341,19 @@ void ServerResolver::ResolveSimpleOrder(StechecPkt *pkt, int type) {
     assert(0);
   }
   
+}
+
+void ServerResolver::LogAction(int action, int real_id, int arg) {
+  int &k = g_->_num_actions_last_turn;
+  assert(k >= 0 && k < MAX_ACTIONS);
+  g_->_actions_last_turn[k++] = action + real_id * 10 + arg * 100;
+}
+
+int ServerResolver::vector_to_direction(int dx, int dy) {
+  assert(abs(dx) + abs(dy) == 1);
+  if (dx == 1) return DROITE;
+  if (dx == -1) return GAUCHE;
+  if (dy == 1) return BAS;
+  if (dy == -1) return HAUT;
+  return BAD_ARGUMENT;
 }

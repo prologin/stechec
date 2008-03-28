@@ -34,7 +34,7 @@ private:
   bool CheckPosition(int x, int y);
   int GetRobotIdInPos(int x, int y); //returns -1 if no robot
   bool CanDoSimpleMove(int x0, int y0, int x1, int y1, bool pushed);
-  void UpdateRobotPos(int id, int new_x, int new_y, int pushed_by, int pushing);
+  void UpdateRobotPos(int id, int new_x, int new_y, int dir, int pushed_by, int pushing);
   bool ApplyChainMove(int dir, int id, int x, int y, 
 		      int next_x, int next_y, bool first, int pushed_by);
   bool ApplyDrop(int id, int dir, int x, int y, int target_x, int target_y);
@@ -42,6 +42,9 @@ private:
   bool ApplyHook(int id, int x, int y, int target_x, int target_y);
   bool ApplyLaunch(int id, int dir, int x, int y);
   bool ApplyTurbo(int id);
+
+  void LogAction(int action, int real_id, int arg=0);
+  int vector_to_direction(int dx, int dy);
 };
 
 #endif // !SERVERRESOLVER_HH_

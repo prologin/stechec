@@ -20,6 +20,8 @@ GameData::GameData(void)
   std::fill(*_map, *_map + MAP_MAX_X * MAP_MAX_Y, MAP_EMPTY);
   std::fill(*_balls, *_balls + MAP_MAX_Y * MAP_MAX_X, MAP_EMPTY);
   std::fill(*_balls_old, *_balls_old + MAP_MAX_Y * MAP_MAX_X, MAP_EMPTY);
+  std::fill(_actions_last_turn, _actions_last_turn + MAX_ACTIONS, BAD_ARGUMENT);
+  _num_actions_last_turn = 0;
   _nb_robots = 0;
   srand(time(0));
   _start_team = rand() % 2;

@@ -272,3 +272,12 @@ void Api::SwitchSubjectiveGlobalDir(int *dir) {
     else if (*dir == HAUT) *dir = BAS;
   }
 }
+
+/*
+ * From here, not exported to the candidat's API (only for the graphical interface)
+ */
+
+int Api::actions_faites(int numero) {
+  if (numero < 0 || numero >= MAX_ACTIONS) return BAD_ARGUMENT;
+  return g_->_actions_last_turn[numero];
+}

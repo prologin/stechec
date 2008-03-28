@@ -77,6 +77,17 @@ public:
    int projectile(int id, int direction);
    int attendre(int id);
 
+  /*
+   * not exported to the candidat's API (only for the graphical interface)
+   */
+  // Function to get all the actions done during last turn
+  // returns BAD_ARGUMENT if numero is greater than the number of the last action.
+  // returns action + id*10 + arg*100
+  // arg is equal to zero if it is not used for the specified action
+  // id is the *server's* robot id :
+  // (team 0 has robots from 0 to MAX_ROBOTS/2 - 1, and team 1 has robots from MAX_ROBOTS/2 to MAX_ROBOTS-1)
+  int actions_faites(int numero);
+
 protected:
   virtual void teamSwitched();
   

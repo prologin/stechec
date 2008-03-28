@@ -60,6 +60,8 @@
 
 # define MAX_ORDERS		3 // max number of orders that can be issued by a single robot
 
+# define MAX_ACTIONS		(MAX_ROBOTS * MAX_ROBOTS * MAX_ROBOTS)
+
 // Ids for message type.
 enum e_com_type {
   // from server
@@ -70,6 +72,8 @@ enum e_com_type {
   ROBOT_HAS_BALL,   /* ROBOT_ID, TRUE or FALSE */
   ROBOT_HOOK,       /* ROBOT_ID, HOOKED_ROBOT_ID */
   ROBOT_UNHOOK,     /* ROBOT_ID */
+  ACTION_LAST_TURN,  /* INDEX, INTEGER_OF_ACTION */
+  //used to broadcast to the clients the successful orders of the previous turn.
   // from client
   DROP_BALL,        /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
   MOVE,             /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
@@ -84,5 +88,29 @@ enum e_com_type {
   // misc
   LAST_MSG          /* */
 };
+
+/*
+ * To be used by the GUI : constants related to the actions of the robot during last turn
+ */
+
+//some remarks :
+// - when a robot A gives a ball to robot B, we have the two actions :
+// ACTION_DROP_BALL(id=A, dir)
+// ACTION_PICK_UP_BALL(id=B)
+// - actions are given in an order so that the state of the field is never inconsistent
+// that is, if you follow blindly the action given in order, two robots will never be on the same cell
+// - the ACTION_RELEASE_HOOK is only there for hooks released *during* a turn (as a result of a robot move, for example)
+// as all the hooks are automatically released after the turn, no action will be issued for that.
+
+#define ACTION_WAIT 0		/* no args */
+#define ACTION_DROP_BALL 1      /* DIRECTION */
+#define ACTION_MOVE 2		/* DIRECTION */
+#define ACTION_PICK_UP_BALL 3	/* no args */
+#define ACTION_HOOK_ROBOT 4	/* DIRECTION */
+#define ACTION_RELEASE_HOOK 5	/* no args */
+#define ACTION_BOOST_TURBO 6	/* no args */
+#define ACTION_LAUNCH_BULLET 7	/* DIRECTION */
+#define ACTION_SEPARATOR 8	/* separator, no args */
+#define ACTION_INIT 9		/* used for internal purposes (initialization of the actions array on the client side) */
 
 #endif // !CONSTANT_HH_

@@ -190,7 +190,8 @@ int         ServerEntry::beforeNewTurn(void)
   }
 
   std::copy(*g_->_balls, *g_->_balls + MAP_MAX_Y * MAP_MAX_X, *g_->_balls_old);
-
+  std::fill(g_->_actions_last_turn, g_->_actions_last_turn + MAX_ACTIONS, BAD_ARGUMENT);
+  g_->_num_actions_last_turn = 0;
   return 0;
 }
 
@@ -212,7 +213,7 @@ int         ServerEntry::afterNewTurn(void)
     }
   }
 
-  /* 
+  /*
    * Broadcast balls
    */
 
@@ -222,9 +223,17 @@ int         ServerEntry::afterNewTurn(void)
 	SendToAll(BALLS_CONTENT, -1, 3, j, i, g_->_balls[i][j]);
 
   /*
+   * Broadcast actions from last turn
+   */
+  SendToAll(ACTION_LAST_TURN, -1, 2, 0, ACTION_INIT);
+  for (int i=0 ; i < g_->_num_actions_last_turn ; i++) 
+    SendToAll(ACTION_LAST_TURN, -1, 2, i, g_->_actions_last_turn[i]);
+  LOG4("There are %1 actions to broadcast", g_->_num_actions_last_turn);
+
+  /*
    * make checks
    */
-  g_->makeChecks();
+  g_->makeChecks(); 
 
   return 0;
 }

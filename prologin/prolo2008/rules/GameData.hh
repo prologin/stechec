@@ -43,18 +43,23 @@ public:
   int _nb_robots; //ne pas oublier de le transmettre client->server
   Robot	_robots[MAX_ROBOTS]; // Robots from team 0 : [0, MAX_ROBOTS/2) , robots from team 1 : [MAX_ROBOTS/2, MAX_ROBOTS)
 
+  bool makeChecks(); //performs some checks to see if all is going well
 
+  int _actions_last_turn[MAX_ACTIONS]; //keeps all the actions done during last round : useful for the graphical interface
+  int _num_actions_last_turn;
+
+  /*
+   * Data only used by the clients :
+   */
   // Some data to keep track of the order of the orders issued by the robots
   // This data is not intended to be synchronized with the server
   int _count_orders_per_robot[MAX_ROBOTS]; // For each robots, how many orders has been issued ?
   int _robot_turn[MAX_ROBOTS]; // For each robot, his turn among the others robots in the same team. Equal to -1 if not initialized.
   int _next_turn; // The robot's turn to be given.
   
-
   int _distances[MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
   void ComputeDistances();
 
-  bool makeChecks(); //performs some checks to see if all is going well
 };
 
 #endif // !GAMEDATA_HH_

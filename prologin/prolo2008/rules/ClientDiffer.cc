@@ -19,6 +19,7 @@ ClientDiffer::ClientDiffer(GameData* game, Client* client)
 
 void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 {
+  
   switch (pkt->type)
     {
     case INIT_DATA :
@@ -180,10 +181,27 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
         break;
       }
 
+    case ACTION_LAST_TURN :
+      {
+	int n = pkt->arg[0];
+	int action = pkt->arg[1];
+	assert(n >= 0 && n < MAX_ACTIONS);
+	if (action == ACTION_INIT) {
+	  std::fill(g_->_actions_last_turn, g_->_actions_last_turn + g_->_num_actions_last_turn, BAD_ARGUMENT);
+	  g_->_num_actions_last_turn = 0;
+	} else {
+	  g_->_actions_last_turn[n] = action;
+	  g_->_num_actions_last_turn = std::max(g_->_num_actions_last_turn, n+1);
+	  LOG4("Received action of last turn : %1", action);
+	}
+	break;
+      }
+
       // Unexpected packet
     default:
       {
         LOG2("Differ get unexpected message, id: %1", pkt->type);
+	assert(0);
       }
     }
 }
