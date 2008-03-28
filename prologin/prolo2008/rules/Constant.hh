@@ -110,7 +110,7 @@ enum e_com_type {
 #define ACTION_RELEASE_HOOK 5	/* no args */
 #define ACTION_BOOST_TURBO 6	/* no args */
 #define ACTION_LAUNCH_BULLET 7	/* DIRECTION */
-#define ACTION_SEPARATOR 8	/* separator, no args */
+#define ACTION_SEPARATOR 8	/* separator, no args, the robot's id used is the one for which starts the resolution of its order */
 #define ACTION_INIT 9		/* used for internal purposes (initialization of the actions array on the client side) */
 
 #endif // !CONSTANT_HH_

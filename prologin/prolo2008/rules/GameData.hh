@@ -59,7 +59,9 @@ public:
   
   int _distances[MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
   void ComputeDistances();
-
+  struct vertex {
+    int x,y,d;
+  };
 };
 
 #endif // !GAMEDATA_HH_

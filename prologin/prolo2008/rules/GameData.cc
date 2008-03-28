@@ -13,6 +13,7 @@
 #include "GameData.hh"
 #include <ctime>
 #include <cstdlib>
+#include <deque>
 
 GameData::GameData(void)
 {
@@ -28,8 +29,6 @@ GameData::GameData(void)
 }
 
 void GameData::ComputeDistances() {
-
-  //TODO : use the Johnson algorithm (much faster in that case)
 
   assert(INFINI >= _map_size_y * _map_size_x);
   
@@ -50,8 +49,37 @@ void GameData::ComputeDistances() {
 	  _distances[y0][x0][y1][x1] = 1;
       }
     }
+
+  // Compute distances by n BFS
+  int n = _map_size_x * _map_size_y;
+  for (int start=0 ; start < n ; start++) {
+    vertex start_vt = {start / _map_size_x, start % _map_size_x, 0};
+    bool visited[MAP_MAX_Y][MAP_MAX_X];
+    std::fill(*visited, *visited + MAP_MAX_X * MAP_MAX_Y, false);
+    std::deque<vertex>file;    
+    file.push_back(start_vt);
+    while (!file.empty()) {
+      vertex cur = file.front();
+      file.pop_front();
+      if (visited[cur.y][cur.x]) continue;
+      visited[cur.y][cur.x] = true;
+      _distances[start_vt.y][start_vt.x][cur.y][cur.x] = cur.d;
+      for (int d=0 ; d < 4 ; d++) {
+	vertex next = {cur.x + dir[d][0], cur.y + dir[d][1], cur.d + _distances[cur.y][cur.x][next.y][next.x]};
+	if (next.d >= INFINI) continue;
+	if (next.x < 0 || next.y < 0 || next.x >= _map_size_x || next.y >= _map_size_y) continue;
+        if (visited[next.y][next.x]) continue;    
+        file.push_back(next);
+      }
+    }
+  }
+
   
-    int n = _map_size_x * _map_size_y;
+  //to be removed (legacy method that works well, but a bit slow : only there to performs checks on the new method)
+    /*
+  int check_distances[MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
+  std::copy(***_distances, ***_distances + MAP_MAX_X*MAP_MAX_X*MAP_MAX_Y*MAP_MAX_Y, ***check_distances);
+
     // perform a "classical" Floyd-Warshall :
     for (int k=0 ; k < n ; k++)
       for (int i=0 ; i < n ; i++)
@@ -62,10 +90,16 @@ void GameData::ComputeDistances() {
 	  int jx = j % _map_size_x;
 	  int ky = k / _map_size_x;
 	  int kx = k % _map_size_x;
-	  int &cur = _distances[iy][ix][jy][jx];
-	  cur = std::min(cur,  _distances[iy][ix][ky][kx] + _distances[ky][kx][jy][jx]);
+	  int &cur = check_distances[iy][ix][jy][jx];
+	  cur = std::min(cur,  check_distances[iy][ix][ky][kx] + check_distances[ky][kx][jy][jx]);
 	}
 
+    for (int x1=0 ; x1 < _map_size_x ; x1++)
+      for (int y1=0 ; y1 < _map_size_y ; y1++)
+	for (int x2=0 ; x2 < _map_size_x ; x2++)
+	  for (int y2=0 ; y2 < _map_size_y ; y2++)
+	    assert(check_distances[y1][x1][y2][x2] == _distances[y1][x1][y2][x2]);
+    */
 }
 
 
