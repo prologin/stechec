@@ -69,14 +69,14 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
 	current_start_team = !current_start_team;
       int id = turn_to_robot[current_start_team][turn];
       if (id != -1) {
-	LOG4("Trying to resolve order from robot %1 of team %2, order numbered %3, turn %4",
+	LOG5("Trying to resolve order from robot %1 of team %2, order numbered %3, turn %4",
 	     id, current_start_team, i, turn);
 	LogAction(ACTION_SEPARATOR, id);
 	ResolveOrder( robot_orders[id][i].first, robot_orders[id][i].second );
       }
       id = turn_to_robot[!current_start_team][turn];
       if (id != -1) {
-	LOG4("Trying to resolve order from robot %1 of team %2, order numbered %3, turn %4",
+	LOG5("Trying to resolve order from robot %1 of team %2, order numbered %3, turn %4",
 	     id, !current_start_team, i, turn);
 	LogAction(ACTION_SEPARATOR, id);
 	ResolveOrder( robot_orders[id][i].first, robot_orders[id][i].second );
@@ -91,7 +91,7 @@ void ServerResolver::ResolveOrder(StechecPkt *pkt, int type)
   if (!pkt || type < 0) 
     return;
 
-  LOG4("Resolving message of type %1, args : %1 %2 %3", type, pkt->arg[0], pkt->arg[1], pkt->arg[2]);
+  LOG5("Resolving message of type %1, args : %1 %2 %3", type, pkt->arg[0], pkt->arg[1], pkt->arg[2]);
 
   switch(type) {
   case MOVE : case DROP_BALL : case HOOK_ROBOT : case LAUNCH_BULLET :
@@ -159,7 +159,7 @@ void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y, int dir, int p
 
 bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, int next_y, bool first=true, int pushed_by = -1) {
   //debug :
-  LOG4("ApplyChainMove dir %1 id %2 (%3,%4) -> (%5,%6) first %7 pushed_by %8", dir, id, x, y, next_x, next_y, first, pushed_by);
+  LOG5("ApplyChainMove dir %1 id %2 (%3,%4) -> (%5,%6) first %7 pushed_by %8", dir, id, x, y, next_x, next_y, first, pushed_by);
   if (!CheckPosition(x,y) || !CheckPosition(next_x, next_y)) return false;
   int target_id;
   if (CanDoSimpleMove(x,y,next_x, next_y, !first) ) {
@@ -285,7 +285,7 @@ bool ServerResolver::ApplyTurbo(int id) {
 bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
   if (!CheckPosition(x,y)) return false;
   if (g_->_balls[y][x] != MAP_BALL) {
-    LOG4("Hamster %1 cannot take apple in %2,%3, because there is no ball in that cell", id, x, y);
+    LOG4("Hamster %1 cannot take apple in %2,%3, because there is no apple in that cell", id, x, y);
     return false;
   }
   if (g_->_robots[id].HasBall()) {

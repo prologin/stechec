@@ -1,4 +1,1 @@
-Todo :
-- modifier les caractères d'entrée de la map.
-- modifier le contenu des LOG4 .. LOG2 .. (hamster,pomme... au lieu de robot,balle..)
-- faire 20*20 bfs au lieu d'un floyd-warshall pour le calcul des distances (pour aller plus vite)
+pas de todo pour l'instant

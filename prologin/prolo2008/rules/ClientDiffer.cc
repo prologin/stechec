@@ -30,11 +30,10 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	    // Client received the map size
 	    int size_x = pkt->arg[1];
 	    int size_y = pkt->arg[2];
-	    LOG4("%1,%2", size_x, size_y);
 	    assert(size_x >= 4 && size_y >= 4 && size_x <= MAP_MAX_X && size_y <= MAP_MAX_Y);
 	    g_->_map_size_x = size_x;
 	    g_->_map_size_y = size_y;
-	    LOG4("Receiving map size %1 %2", size_x, size_y);
+	    LOG5("Receiving map size %1 %2", size_x, size_y);
 	    break;
 	  }
 	case INIT_ROBOT :
@@ -73,7 +72,6 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       
 	assert(g_->_map_size_y != -1);
 	assert(x >= 0 && y >= 0 && x < g_->_map_size_x && y < g_->_map_size_y);
-	//	LOG4("Received map content in %1 %2 : %3", x ,y, c);
 	g_->_map[y][x] = (unsigned char) c;
 	break;
       }
@@ -86,7 +84,6 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	assert(g_->_map_size_y != -1);
 	assert( x>= 0 && y >= 0 && x < g_->_map_size_x && y < g_->_map_size_y);
 	assert(c == MAP_EMPTY || c == MAP_BALL);
-	//	LOG4("Received balls map content in %1 %2 : %3", x, y, c);
 	g_->_balls[y][x] = (unsigned char) c;
 	break;
       }
@@ -96,7 +93,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
         int robot_id = pkt->arg[0];
         int x        = pkt->arg[1];
         int y        = pkt->arg[2];
-	LOG4("Received position of robot %1 : %2,%3", robot_id, x, y);
+	LOG5("Received position of robot %1 : %2,%3", robot_id, x, y);
         if (robot_id < 0 || robot_id >= MAX_ROBOTS)
 	  {
 	    ERR("Robot Id %1: invalid range in ROBOT_POS", robot_id);
@@ -115,7 +112,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
     case ROBOT_HAS_BALL:
       {
         int robot_id = pkt->arg[0];
-	LOG4("Received robot_has_ball for robot %1 : %2", robot_id, pkt->arg[1]);
+	LOG5("Received robot_has_ball for robot %1 : %2", robot_id, pkt->arg[1]);
         if (Robot::CheckRange(robot_id))
 	  {
 	    ERR("Robot Id %1: invalid range in ROBOT_HAS_BALL", robot_id);
@@ -192,7 +189,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	} else {
 	  g_->_actions_last_turn[n] = action;
 	  g_->_num_actions_last_turn = std::max(g_->_num_actions_last_turn, n+1);
-	  LOG4("Received action of last turn : %1", action);
+	  LOG6("Received action of last turn : %1", action);
 	}
 	break;
       }

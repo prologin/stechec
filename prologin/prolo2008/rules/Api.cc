@@ -117,7 +117,7 @@ int Api::deplacer(int id, int direction)
   if (turn < 0) return turn;
 
   SendOrderWithDirection(id, turn, MOVE, direction);
-  LOG4("Robot id %1 asks for moving to direction %2, robot's turn = %3, index of order = %4",
+  LOG4("Hamster id %1 asks for moving to direction %2, hamster's turn = %3, index of order = %4",
        id, direction, turn, g_->_count_orders_per_robot[id]);
   g_->_count_orders_per_robot[id]++;
 
@@ -133,7 +133,7 @@ int Api::turbo(int id)
   if (turn < 0) return turn;
 
   SendBasicOrder(id, turn, BOOST_TURBO);
-  LOG4("Robot id %1 asks for boosting turbo, robot's turn = %2, index of order = %3",
+  LOG4("Hamster id %1 asks for boosting turbo, hamster's turn = %2, index of order = %3",
        id, turn, g_->_count_orders_per_robot[id]);
   g_->_count_orders_per_robot[id]++;
 
@@ -150,7 +150,7 @@ int Api::lacher_pomme(int id, int direction)
   if (turn < 0) return turn;
   SendOrderWithDirection(id, turn, DROP_BALL, direction);
 
-  LOG4("Robot id %1 wants to drop the ball, robot's turn = %2, index of order = %3",
+  LOG4("Hamster id %1 wants to drop apple, hamster's turn = %2, index of order = %3",
        id, turn, g_->_count_orders_per_robot[id]);
   g_->_count_orders_per_robot[id]++;
   return 0;
@@ -164,7 +164,7 @@ int Api::ramasser_pomme(int id)
   int turn = Order(id);
   if (turn < 0) return turn;
   SendBasicOrder(id, turn, PICK_UP_BALL);
-  LOG4("Robot id %1 wants to take the ball, robot's turn = %2, order number %3", 
+  LOG4("Hamster id %1 wants to take the apple, hamster's turn = %2, order number %3", 
        id, turn, g_->_count_orders_per_robot[id]);
 
   g_->_count_orders_per_robot[id]++;
@@ -182,7 +182,7 @@ int Api::grapin(int id, int direction)
   if (turn < 0) return turn;
 
   SendOrderWithDirection(id, turn, HOOK_ROBOT, direction);
-  LOG4("Robot id %1 wants to throw hook to direction %2, robot's turn = %3, index of order = %4",
+  LOG4("Hamster id %1 wants to throw hook to direction %2, hamster's turn = %3, index of order = %4",
        id, direction, turn, g_->_count_orders_per_robot[id]);
   g_->_count_orders_per_robot[id]++;
   return 0;
@@ -199,7 +199,7 @@ int Api::projectile(int id, int direction)
   if (turn < 0) return turn;
   
   SendOrderWithDirection(id, turn, LAUNCH_BULLET, direction);
-  LOG4("Robot id %1 wants to throw a bullet to direction %2, robot's turn = %3, index of order = %4",
+  LOG4("Hamster id %1 wants to throw a bullet to direction %2, hamster's turn = %3, index of order = %4",
        id, direction, turn, g_->_count_orders_per_robot[id]);
   g_->_count_orders_per_robot[id]++;
   return 0;
@@ -213,7 +213,7 @@ int Api::attendre(int id)
   if (turn < 0) return turn;
 
   SendBasicOrder(id, turn, WAIT);
-  LOG4("Robot id %1 wants to wait, robot's turn = %2, order number %3", 
+  LOG4("Hamster id %1 wants to wait, hamster's turn = %2, order number %3", 
        id, turn, g_->_count_orders_per_robot[id]);
   g_->_count_orders_per_robot[id]++;
   return 0;

@@ -36,7 +36,7 @@ int ServerEntry::loadMap(void)
   int size_y, size_x;
 
   map_file = cfg_->getValue<std::string>("map");
-  LOG3("Map file is: %1", map_file);
+  LOG2("Map file is: %1", map_file);
 
   map_stream.open(map_file.c_str());
   if (!map_stream)
@@ -100,7 +100,7 @@ int ServerEntry::loadMap(void)
           }
 	  g_->_nb_robots++;
           g_->_robots[nb_robots[0]++].Init(i, j, 0);
-	  LOG4("Robot in pos %1,%2 for team 0", i, j);
+	  LOG6("Robot in pos %1,%2 for team 0", i, j);
           break;
 
         case MAP_ROBOT_TEAM2 :
@@ -111,7 +111,7 @@ int ServerEntry::loadMap(void)
           }
 	  g_->_nb_robots++;
           g_->_robots[MAX_ROBOTS / 2 + nb_robots[1]++].Init(i, j, 1);
-	  LOG4("Robot in pos %1,%2 for team 1", i, j);
+	  LOG6("Robot in pos %1,%2 for team 1", i, j);
           break;
 
       case MAP_WALL :
@@ -124,7 +124,7 @@ int ServerEntry::loadMap(void)
 	break;
       case MAP_BALL :
 	g_->_balls[j][i] = MAP_BALL;	
-	LOG4("Set ball at %1,%2", i, j);
+	LOG6("Set ball at %1,%2", i, j);
 	break;
       default :
 	ERR("Unexpected char in map at pos %1,%2 : '%3'", i, j, line[i]);
@@ -206,7 +206,7 @@ int         ServerEntry::afterNewTurn(void)
   {
     if (g_->_robots[i].IsEnabled())
     {
-      LOG4("Broadcasting robot's %1 data", i);
+      LOG6("Broadcasting robot's %1 data", i);
       SendToAll(ROBOT_POS, -1, 3, i, g_->_robots[i].GetXPos(), g_->_robots[i].GetYPos());
       SendToAll(ROBOT_UNHOOK, -1, 1, i); //inutile : en fait, aucune information de grappin n'est utile pour les clients.
       SendToAll(ROBOT_HAS_BALL, -1, 2, i, g_->_robots[i].HasBall());
@@ -228,7 +228,7 @@ int         ServerEntry::afterNewTurn(void)
   SendToAll(ACTION_LAST_TURN, -1, 2, 0, ACTION_INIT);
   for (int i=0 ; i < g_->_num_actions_last_turn ; i++) 
     SendToAll(ACTION_LAST_TURN, -1, 2, i, g_->_actions_last_turn[i]);
-  LOG4("There are %1 actions to broadcast", g_->_num_actions_last_turn);
+  LOG6("There are %1 actions to broadcast", g_->_num_actions_last_turn);
 
   /*
    * make checks
