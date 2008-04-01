@@ -1,8 +1,8 @@
 # des pieges partout !
 # Rappel : team 0 is top, team 1 bottom
-# team 0 robots is R, team 1 is r
+# team 0 hamster is H, team 1 is h
 20 20
-R........R.........R
+H........H.........H
 ....................
 O.O.O.O.O.O.O.O.O.O.
 ....................
@@ -11,8 +11,8 @@ O.O.O.O.O.O.O.O.O.O.
 O.O.O.O.O.O.O.O.O.O.
 ....................
 .O.O.O.O.O.O.O.O.O.O
-B.......BBB........B
-B.......BBB........B
+P.......PPP........P
+P.......PPP........P
 .O.O.O.O.O.O.O.O.O.O
 ....................
 O.O.O.O.O.O.O.O.O.O.
@@ -21,4 +21,4 @@ O.O.O.O.O.O.O.O.O.O.
 ....................
 O.O.O.O.O.O.O.O.O.O.
 ....................
-r........r.........r
+h........h.........h

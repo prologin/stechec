@@ -1,8 +1,8 @@
 # Carte de tests "réaliste". Rappel : team 0 is top, team 1 bottom
-# team 0 robots is R, team 1 is r
+# team 0 hamsters is H, team 1 is H
 20 20
-RRR..............BBB
-.................BBB
+HHH..............PPP
+.................PPP
 XXXXXXXX....XXXXXXXX
 ....................
 ....................
@@ -19,6 +19,6 @@ OOOOOOOOOOOOOOOOOOOO
 ....................
 ....................
 XXXXXXXX....XXXXXXXX
-.................BBB
-rrr..............BBB
+.................PPP
+hhh..............PPP
 

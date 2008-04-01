@@ -45,9 +45,9 @@
 # define MAP_EMPTY		'.'
 # define MAP_HOLE		'O'
 # define MAP_HOLE_ALTENATE	'0' //only used for input file, no longer used elsewhere !
-# define MAP_BALL		'B'
-# define MAP_ROBOT_TEAM1	'R'
-# define MAP_ROBOT_TEAM2	'r'
+# define MAP_BALL		'P'
+# define MAP_ROBOT_TEAM1	'H'
+# define MAP_ROBOT_TEAM2	'h'
 
 # define MAP_MAX_X		20
 # define MAP_MAX_Y		20
