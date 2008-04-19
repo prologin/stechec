@@ -136,7 +136,7 @@ void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y, int dir, int p
   g_->_robots[id]._pos_x = new_x;
   g_->_robots[id]._pos_y = new_y;
   
-  // très important : réinitialiser le grapin dans certains cas : (grapin des autres robots vers nous)
+  // très important : réinitialiser le grappin dans certains cas : (grappin des autres robots vers nous)
   for (int i=0 ; i < MAX_ROBOTS ; i++) {
     if (g_->_robots[i].GetHook() == id && i != pushed_by && i != pushing) {
       LOG4("Reseting hook %1 -> %2", i, g_->_robots[i].GetHook()); //debug
@@ -146,7 +146,7 @@ void ServerResolver::UpdateRobotPos(int id, int new_x, int new_y, int dir, int p
   }
   if (pushed_by != g_->_robots[id].GetHook() && pushed_by != -1 && g_->_robots[id].GetHook() != -1 
       && g_->_robots[id].GetHook() != pushing) { 
-    //grapin de nous vers les autres robots
+    //grappin de nous vers les autres robots
     LOG4("Reseting hook %1 -> %2", id, g_->_robots[id].GetHook());
     LogAction(ACTION_RELEASE_HOOK, id);
     g_->_robots[id].ResetHook(); // Très important, sinon un bug subtil peut aparaitre:

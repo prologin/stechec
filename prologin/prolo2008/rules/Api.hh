@@ -73,7 +73,7 @@ public:
    int turbo(int id);
    int lacher_pomme(int id, int direction);
    int ramasser_pomme(int id);
-   int grapin(int id, int direction);
+   int grappin(int id, int direction);
    int projectile(int id, int direction);
    int attendre(int id);
 

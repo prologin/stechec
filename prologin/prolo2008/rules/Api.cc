@@ -172,7 +172,7 @@ int Api::ramasser_pomme(int id)
   return 0;
 }
 
-int Api::grapin(int id, int direction)
+int Api::grappin(int id, int direction)
 {
   CHECK_OWN_ID(id);
   CHECK_DIRECTION(direction, 0);

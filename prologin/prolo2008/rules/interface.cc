@@ -93,9 +93,9 @@ extern "C" {
     return api->ramasser_pomme(id);
   }
 
-  int grapin(int id, int direction)
+  int grappin(int id, int direction)
   {
-    return api->grapin(id, direction);
+    return api->grappin(id, direction);
   }
 
   int projectile(int id, int direction)
