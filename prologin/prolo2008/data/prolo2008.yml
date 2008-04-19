@@ -57,7 +57,7 @@ constant:
   -
     cst_name: ICI
     cst_val: 4
-    cst_comment: Cette constante n'est utilisée que pour la fonction lacher_pomme
+    cst_comment: Cette constante n'est utilisée que pour la fonction lacher\_pomme
 
 function:
   - doc_extra: |
@@ -133,7 +133,7 @@ function:
      Toutes les fonctions peuvent renvoyer les constantes
      \textbf{BAD_ARGUMENT} quand au moins un des
      arguments est incorrect (même si cela n'est pas précisé pour chaque
-     fonction), ou \textbg{TOO_MUCH_ORDERS} quand vous avez envoyé trop 
+     fonction), ou \textbf{TOO_MUCH_ORDERS} quand vous avez envoyé trop 
      d'ordres à l'un de vos hamsters.
   -
     fct_name: deplacer
