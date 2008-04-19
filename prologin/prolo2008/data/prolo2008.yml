@@ -162,12 +162,12 @@ function:
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
   -
-    fct_name: grapin
-    fct_summary: Demande à votre hamster de lancer le grapin
+    fct_name: grappin
+    fct_summary: Demande à votre hamster de lancer le grappin
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
-    - [direction, int, l'une des quatre directions vers laquelle vous voulez lancer le grapin]
+    - [direction, int, l'une des quatre directions vers laquelle vous voulez lancer le grappin]
   -
     fct_name: projectile
     fct_summary: Demande à votre hamster id de lancer un projectile dans une direction
