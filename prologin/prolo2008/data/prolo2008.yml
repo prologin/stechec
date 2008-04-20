@@ -8,10 +8,10 @@ conf:
 constant:
   - doc_extra: \subsection{Constantes}
   - doc_extra: \subsubsection{Les codes d'erreur}
-  -
-    cst_name: BAD_ARGUMENT
+  - 
+   cst_name: BAD_ARGUMENT
     cst_val: -1
-    cst_comment: Un des arguments passe a la fonction est incorrect.
+    cst_comment: Un des arguments passés a la fonction est incorrect.
   -
     cst_name: TOO_MANY_ORDERS
     cst_val: -2
@@ -19,7 +19,7 @@ constant:
   -
     cst_name: SUCCESS
     cst_val: 0
-    cst_comment: La commande s'est correctement effectuee.
+    cst_comment: La commande s'est correctement effectuée.
   -
     cst_name: INFINI
     cst_val: 10000
@@ -107,7 +107,7 @@ function:
       - [id, int, id du pomme]
   -
     fct_name: distance
-    fct_summary: Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2).
+    fct_summary: Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2). Cette distance est calculée en tenant compte des déplacements possibles d'un seul hamster. Cette fonction a un temps de calcul nul.
     fct_ret_type: int
     fct_arg:
       - [x1, int, la colonne du premier point]
