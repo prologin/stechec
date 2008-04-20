@@ -11,7 +11,7 @@ constant:
   - 
    cst_name: BAD_ARGUMENT
     cst_val: -1
-    cst_comment: Un des arguments passés a la fonction est incorrect.
+    cst_comment: Un des arguments passés à la fonction est incorrect.
   -
     cst_name: TOO_MANY_ORDERS
     cst_val: -2
