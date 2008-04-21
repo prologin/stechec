@@ -9,7 +9,7 @@ constant:
   - doc_extra: \subsection{Constantes}
   - doc_extra: \subsubsection{Les codes d'erreur}
   - 
-   cst_name: BAD_ARGUMENT
+    cst_name: BAD_ARGUMENT
     cst_val: -1
     cst_comment: Un des arguments passés à la fonction est incorrect.
   -
