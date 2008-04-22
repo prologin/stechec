@@ -1,3 +1,4 @@
 todo : 
 interdire les projectiles de retirer quelqu'un d'une tranchee. (est-ce que le projectile passe au dessus d'une tranchee ? )
-2 projectiles par hamster et par partie
+2 projectiles par hamster et par partie (et rajouter une fontion reste_projectile(int hamster_id))
+
