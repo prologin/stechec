@@ -210,6 +210,7 @@ int         ServerEntry::afterNewTurn(void)
       SendToAll(ROBOT_POS, -1, 3, i, g_->_robots[i].GetXPos(), g_->_robots[i].GetYPos());
       SendToAll(ROBOT_UNHOOK, -1, 1, i); //inutile : en fait, aucune information de grappin n'est utile pour les clients.
       SendToAll(ROBOT_HAS_BALL, -1, 2, i, g_->_robots[i].HasBall());
+      SendToAll(ROBOT_REMAINING_BULLETS, -1, 2, i, g_->_robots[i]._remaining_bullets);
     }
   }
 

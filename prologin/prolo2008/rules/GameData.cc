@@ -134,5 +134,14 @@ bool	GameData::makeChecks() {
   else
     assert(ball_count == bc);  
 
+  // remaining bullets are ok :
+  for (int id = 0 ; id < MAX_ROBOTS ; id++) {
+    if (!_robots[id].IsEnabled())
+      continue;
+    int remains_bullets = _robots[id]._remaining_bullets;
+    assert(remains_bullets >= 0);
+    assert(remains_bullets <= NUM_STARTING_BULLETS);
+  }
+
 #endif
 }

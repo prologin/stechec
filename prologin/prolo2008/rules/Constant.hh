@@ -62,9 +62,11 @@
 
 # define MAX_ACTIONS		(MAX_ROBOTS * MAX_ROBOTS * MAX_ROBOTS)
 
+# define NUM_STARTING_BULLETS	2 // at the beginning, the number of bullets a robot has
+
 // Ids for message type.
 enum e_com_type {
-  // from server
+  // from server :
   INIT_DATA,        /* depending of the first arg (eg : MAP_WIDTH, MAP_HEIGHT) */
   MAP_CONTENT,      /* X, Y, VALUE */
   BALLS_CONTENT,    /* X, Y, VALUE */
@@ -74,7 +76,8 @@ enum e_com_type {
   ROBOT_UNHOOK,     /* ROBOT_ID */
   ACTION_LAST_TURN,  /* INDEX, INTEGER_OF_ACTION */
   //used to broadcast to the clients the successful orders of the previous turn.
-  // from client
+  ROBOT_REMAINING_BULLETS, /* ROBOT_ID, VALUE(remaining bullets for that robot) */
+  // from client :
   DROP_BALL,        /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
   MOVE,             /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER, DIRECTION */
   PICK_UP_BALL,     /* ROBOT_ID, ROBOT_TURN, ORDER_NUMBER */

@@ -289,7 +289,7 @@ bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
     return false;
   }
   if (g_->_robots[id].HasBall()) {
-    LOG4("Hamster %1 cannot take apple beacause he has already one !", id);
+    LOG4("Hamster %1 cannot take apple because he has already one !", id);
     return false;
   }
   LogAction(ACTION_PICK_UP_BALL, id);
@@ -301,15 +301,26 @@ bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
 bool ServerResolver::ApplyLaunch(int id, int dir, int x, int y) {
   //todo : quel comportement pour les projectiles qd on change de terrain ou quand on rencontre une pomme ?
   //  LOG4("ApplyLaunch %1 %2 %3 %4", id, dir, x, y); //debug
+  
+  if (g_->_robots[id]._remaining_bullets <= 0) {
+    LOG4("Hamster %1 cannot launch a bullet because he has no more !");
+    return false;
+  }
+
   LogAction(ACTION_LAUNCH_BULLET, id, dir);
+  --g_->_robots[id]._remaining_bullets;
   while (true) {
     x += _directions[dir][0];
     y += _directions[dir][1];
     if (!CheckPosition(x,y)) break;
     if (g_->_map[y][x] == MAP_WALL) break;
     int target_id = GetRobotIdInPos(x,y);
+    if (target_id >= 0 && g_->_map[y][x] == MAP_HOLE) {
+      LOG4("Hamster %1 not pushed because he is in a hole !", target_id);
+      break; // We don't save robots that are in a hole by a bullet
+    }
     if (target_id >= 0) {
-      //Target_id needs to be pushed (and looses his ball)
+      // Target_id needs to be pushed (and looses his ball)
       if (g_->_robots[target_id].HasBall())
 	ApplyDrop(target_id, ICI, x, y, x, y);
       ApplyChainMove(dir, target_id, x,y, x+_directions[dir][0], y + _directions[dir][1], false, -2);

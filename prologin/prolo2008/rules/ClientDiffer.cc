@@ -129,6 +129,26 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
         break;
       }
 
+    case ROBOT_REMAINING_BULLETS:
+      {
+        int robot_id = pkt->arg[0];
+	LOG5("Received robot_remaining_bullets for robot %1 : %2", robot_id, pkt->arg[1]);
+        if (Robot::CheckRange(robot_id))
+	  {
+	    ERR("Robot Id %1: invalid range in ROBOT_HAS_BALL", robot_id);
+	    break;
+	  }
+        else if (!g_->_robots[robot_id].IsEnabled())
+	  {
+	    ERR("Robot Id %1: try to use a disabled robot in ROBOT_HAS_BALL", robot_id);
+	  }
+	int r = pkt->arg[1];
+	assert(r >= 0);
+	assert(r <= NUM_STARTING_BULLETS);
+	g_->_robots[robot_id]._remaining_bullets = r;
+        break;
+      }
+
       // Client received which robot hooks who
     case ROBOT_HOOK:
       {

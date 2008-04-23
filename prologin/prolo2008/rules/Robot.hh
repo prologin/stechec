@@ -16,7 +16,7 @@
 class Robot
 {
 public:
-  Robot(void): _pos_x(-1), _pos_y(-1), _turbo(0), _hook(-1), _has_ball(false), _team_id(-1), _enabled(false) {}
+  Robot(void): _pos_x(-1), _pos_y(-1), _turbo(0), _hook(-1), _has_ball(false), _team_id(-1), _enabled(false), _remaining_bullets(NUM_STARTING_BULLETS) {}
 
   void		Init(int x, int y, int team) {
     _pos_x = x;
@@ -51,6 +51,8 @@ public:
   int		_pos_y;
   int		_turbo;
   int		_team_id;
+
+  int          _remaining_bullets;
 
 private:
 
