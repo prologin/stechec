@@ -57,7 +57,7 @@ public:
   int _robot_turn[MAX_ROBOTS]; // For each robot, his turn among the others robots in the same team. Equal to -1 if not initialized.
   int _next_turn; // The robot's turn to be given.
   
-  int _distances[MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
+  int _distances[2][MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
   void ComputeDistances();
   struct vertex {
     int x,y,d;

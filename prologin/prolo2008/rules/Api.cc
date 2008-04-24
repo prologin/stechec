@@ -70,13 +70,12 @@ int Api::porte_pomme(int id)
   return g_->_robots[id].HasBall();
   // warning : a team can see whether an enemy robot is holding a ball or not
 }
-
-int Api::distance(int x1, int y1, int x2, int y2)
+int Api::distance(int x1, int y1, int x2, int y2, bool sort_tranchee)
 {
   TEST_POS(x1,y1);
   TEST_POS(x2,y2);
 
-  return g_->_distances[SwitchSubjectiveGlobalCoords(y1)][x1][SwitchSubjectiveGlobalCoords(y2)][x2];
+  return g_->_distances[sort_tranchee][SwitchSubjectiveGlobalCoords(y1)][x1][SwitchSubjectiveGlobalCoords(y2)][x2];
   //returns INFINI if there is no path
 }
 
@@ -204,6 +203,12 @@ int Api::projectile(int id, int direction)
   g_->_count_orders_per_robot[id]++;
   return 0;
 }
+
+int Api::projectiles_restants(int id) {
+  CHECK_ID(id);
+  ChampionIdToRealId(&id);
+  return g_->_robots[id]._remaining_bullets;
+} 
 
 int Api::attendre(int id)
 {

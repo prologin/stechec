@@ -58,9 +58,14 @@ extern "C" {
     return api->porte_pomme(id);
   }
 
-  int distance(int x1, int y1, int x2, int y2)
+  int distance(int x1, int y1, int x2, int y2, bool sort_tranchee)
   {
-    return api->distance(x1, y1, x2, y2);
+    return api->distance(x1, y1, x2, y2, sort_tranchee);
+  }
+  
+  int projectiles_restants(int id)
+  {
+    return api->projectiles_restants(id);
   }
 
   int type_case(int x, int y)

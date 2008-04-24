@@ -135,12 +135,12 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	LOG5("Received robot_remaining_bullets for robot %1 : %2", robot_id, pkt->arg[1]);
         if (Robot::CheckRange(robot_id))
 	  {
-	    ERR("Robot Id %1: invalid range in ROBOT_HAS_BALL", robot_id);
+	    ERR("Robot Id %1: invalid range in ROBOT_REMAINING_BULLETS", robot_id);
 	    break;
 	  }
         else if (!g_->_robots[robot_id].IsEnabled())
 	  {
-	    ERR("Robot Id %1: try to use a disabled robot in ROBOT_HAS_BALL", robot_id);
+	    ERR("Robot Id %1: try to use a disabled robot in ROBOT_REMAINING_BULLETS", robot_id);
 	  }
 	int r = pkt->arg[1];
 	assert(r >= 0);

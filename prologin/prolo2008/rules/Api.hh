@@ -66,9 +66,10 @@ public:
    int pos_x(int id);
    int pos_y(int id);
    int porte_pomme(int id);
-   int distance(int x1, int y1, int x2, int y2);
+   int distance(int x1, int y1, int x2, int y2, bool sort_tranchee);
    int type_case(int x, int y);
    int pomme(int x, int y);
+   int projectiles_restants(int id);
    int deplacer(int id, int direction);
    int turbo(int id);
    int lacher_pomme(int id, int direction);

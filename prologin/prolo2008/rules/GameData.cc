@@ -17,7 +17,7 @@
 
 GameData::GameData(void)
 {
-  std::fill(***_distances, ***_distances + MAP_MAX_X * MAP_MAX_X * MAP_MAX_Y * MAP_MAX_Y, INFINI);
+  std::fill(****_distances, ****_distances + 2 * MAP_MAX_X * MAP_MAX_X * MAP_MAX_Y * MAP_MAX_Y, INFINI);
   std::fill(*_map, *_map + MAP_MAX_X * MAP_MAX_Y, MAP_EMPTY);
   std::fill(*_balls, *_balls + MAP_MAX_Y * MAP_MAX_X, MAP_EMPTY);
   std::fill(*_balls_old, *_balls_old + MAP_MAX_Y * MAP_MAX_X, MAP_EMPTY);
@@ -37,7 +37,8 @@ void GameData::ComputeDistances() {
   
   for (int y0=0 ; y0 < _map_size_y ; y0++)
     for (int x0=0 ; x0 < _map_size_x ; x0++) {
-      _distances[y0][x0][y0][x0] = 0;
+      _distances[0][y0][x0][y0][x0] = 0;
+      _distances[1][y0][x0][y0][x0] = 0;
       for (int d=0 ; d < 4 ; d++) {
 	int y1 = y0 + dir[d][0];
 	int x1 = x0 + dir[d][1];
@@ -46,30 +47,35 @@ void GameData::ComputeDistances() {
 	int next = _map[y1][x1];
 	if ( cur == next && (cur == MAP_HOLE || cur == MAP_EMPTY) || // case EMPTY->EMPTY or HOLE -> HOLE
 	     cur == MAP_EMPTY && next == MAP_HOLE ) // case EMPTY -> HOLE
-	  _distances[y0][x0][y1][x1] = 1;
+	  _distances[0][y0][x0][y1][x1] = 1;
+	if ( next != MAP_WALL) // cas ou les tranchees ne comptent pas
+	  _distances[1][y0][x0][y1][x1] = 1;
       }
     }
 
   // Compute distances by n BFS
   int n = _map_size_x * _map_size_y;
-  for (int start=0 ; start < n ; start++) {
-    vertex start_vt = {start / _map_size_x, start % _map_size_x, 0};
-    bool visited[MAP_MAX_Y][MAP_MAX_X];
-    std::fill(*visited, *visited + MAP_MAX_X * MAP_MAX_Y, false);
-    std::deque<vertex>file;    
-    file.push_back(start_vt);
-    while (!file.empty()) {
-      vertex cur = file.front();
-      file.pop_front();
-      if (visited[cur.y][cur.x]) continue;
-      visited[cur.y][cur.x] = true;
-      _distances[start_vt.y][start_vt.x][cur.y][cur.x] = cur.d;
-      for (int d=0 ; d < 4 ; d++) {
-	vertex next = {cur.x + dir[d][0], cur.y + dir[d][1], cur.d + _distances[cur.y][cur.x][next.y][next.x]};
-	if (next.d >= INFINI) continue;
-	if (next.x < 0 || next.y < 0 || next.x >= _map_size_x || next.y >= _map_size_y) continue;
-        if (visited[next.y][next.x]) continue;    
-        file.push_back(next);
+  for (int sort_tranchee = 0 ; sort_tranchee < 2 ; ++sort_tranchee) {
+    for (int start=0 ; start < n ; start++) {
+      vertex start_vt = {start / _map_size_x, start % _map_size_x, 0};
+      bool visited[MAP_MAX_Y][MAP_MAX_X];
+      std::fill(*visited, *visited + MAP_MAX_X * MAP_MAX_Y, false);
+      std::deque<vertex>file;    
+      file.push_back(start_vt);
+      while (!file.empty()) {
+	vertex cur = file.front();
+	file.pop_front();
+	if (visited[cur.y][cur.x]) continue;
+	visited[cur.y][cur.x] = true;
+	_distances[sort_tranchee][start_vt.y][start_vt.x][cur.y][cur.x] = cur.d;
+	for (int d=0 ; d < 4 ; d++) {
+	  vertex next = {cur.x + dir[d][0], cur.y + dir[d][1], 
+			 cur.d + _distances[sort_tranchee][cur.y][cur.x][next.y][next.x]};
+	  if (next.d >= INFINI) continue;
+	  if (next.x < 0 || next.y < 0 || next.x >= _map_size_x || next.y >= _map_size_y) continue;
+	  if (visited[next.y][next.x]) continue;    
+	  file.push_back(next);
+	}
       }
     }
   }

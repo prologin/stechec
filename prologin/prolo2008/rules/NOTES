@@ -3,3 +3,5 @@ interdire les projectiles de retirer quelqu'un d'une tranchee. (est-ce que le pr
 
 2 projectiles par hamster et par partie (et rajouter une fontion reste_projectile(int hamster_id)) [FAIT, a tester]
 
+a tester : distance ou l'on peut sortir des tranchees
+projectiles_restants
