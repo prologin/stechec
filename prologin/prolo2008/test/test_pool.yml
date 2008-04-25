@@ -1,8 +1,9 @@
 --- %YAML:1.0
-
+-
 basic:
-  map: map/fetch_map.map
-  max_turn: 10
-  verbose: 4
-  client_1:
+  server_config:
+    map: map/fetch_map.map
+    MAX_TURN: 10
+    VERBOSE: 2
+  champion_1:
     source: cxx/fetch_map.cc
