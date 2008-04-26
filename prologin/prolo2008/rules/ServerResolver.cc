@@ -299,11 +299,11 @@ bool ServerResolver::ApplyPickUpBall(int id, int x, int y) {
 }
 
 bool ServerResolver::ApplyLaunch(int id, int dir, int x, int y) {
-  //todo : quel comportement pour les projectiles qd on change de terrain ou quand on rencontre une pomme ?
+
   //  LOG4("ApplyLaunch %1 %2 %3 %4", id, dir, x, y); //debug
   
   if (g_->_robots[id]._remaining_bullets <= 0) {
-    LOG4("Hamster %1 cannot launch a bullet because he has no more !");
+    LOG4("Hamster %1 cannot launch a bullet because he has no more !", id);
     return false;
   }
 
@@ -312,11 +312,13 @@ bool ServerResolver::ApplyLaunch(int id, int dir, int x, int y) {
   while (true) {
     x += _directions[dir][0];
     y += _directions[dir][1];
+    int nx = x + _directions[dir][0];;
+    int ny = y + _directions[dir][1];;
     if (!CheckPosition(x,y)) break;
     if (g_->_map[y][x] == MAP_WALL) break;
     int target_id = GetRobotIdInPos(x,y);
-    if (target_id >= 0 && g_->_map[y][x] == MAP_HOLE) {
-      LOG4("Hamster %1 not pushed because he is in a hole !", target_id);
+    if (target_id >= 0 && g_->_map[y][x] == MAP_HOLE && CheckPosition(nx,ny) && g_->_map[ny][nx] == MAP_EMPTY) {
+      LOG4("Hamster %1 not pushed because a bullet cannot make a hamster exit a hole !", target_id);
       break; // We don't save robots that are in a hole by a bullet
     }
     if (target_id >= 0) {
