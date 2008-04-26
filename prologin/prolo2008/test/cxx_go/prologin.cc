@@ -25,7 +25,7 @@ bool go(int id, int goal_x, int goal_y) {
     int nx = pos_x(id) + directions[k][0];
     int ny = pos_y(id) + directions[k][1];
     if (nx >= 0 && ny >= 0 && nx < taille_carte_x() && ny < taille_carte_y()) {
-      int d = distance(nx, ny, goal_x, goal_y);
+      int d = distance(nx, ny, goal_x, goal_y,false);
       if (d < dmin) {
 	dmin = d;
 	goal_dir = k;
@@ -47,7 +47,7 @@ pair<int,int> select_goal_get_apple(int id) {
 	for (int k=0 ; k < 3 ; k++)
 	  if (goal[k] == make_pair(j,i)) unassigned=false;
 	if (unassigned) {
-	  int d = distance(pos_x(id),pos_y(id), j,i);
+	  int d = distance(pos_x(id),pos_y(id), j,i,false);
 	  if (d < nextdmin) {
 	    nextdmin = d;
 	    g = make_pair(j,i);
@@ -127,7 +127,7 @@ void play_turn()
       for (int i=0 ; i < taille_carte_x() ; i++) {
 	for (int j=0 ; j < 2 ; j++) {
 	  if (pomme(i,j)) continue;
-	  int d = distance(pos_x(id), pos_y(id), i, j);
+	  int d = distance(pos_x(id), pos_y(id), i, j,false);
 	  if (d < dmin) {
 	    dmin = d;
 	    x_min = i;
