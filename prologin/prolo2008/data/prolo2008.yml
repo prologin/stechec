@@ -107,13 +107,14 @@ function:
       - [id, int, id du pomme]
   -
     fct_name: distance
-    fct_summary: Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2). Cette distance est calculée en tenant compte des déplacements possibles d'un seul hamster. Cette fonction a un temps de calcul nul.
+    fct_summary: Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2). ce est calculée en tenant compte des déplacements possibles d'un seul hamster. Cette fonction a un temps de calcul nul. Lorsque sort_tranchee vaut false, la distance est calculée en tenant compte des déplacements possibles d'un seul hamster. Lorsque sort_tranchee vaut true, la distance est calculée comme s'il n'y avait pas de tranchees.
     fct_ret_type: int
     fct_arg:
       - [x1, int, la colonne du premier point]
       - [y1, int, la ligne du premier point]
       - [x2, int, la colonne du second point]
       - [y2, int, la ligne du second point]
+      - [sort_tranchee, bool, indique le mode de calcul de la distance]
   -
     fct_name: type_case
     fct_summary: Renvoie le type de la case (x,y) (NORMAL, TRANCHEE ou OBSTACLE)
@@ -128,6 +129,12 @@ function:
     fct_arg:
       - [x, int, la colonne]
       - [y, int, la ligne]
+  -
+    fct_name: projectiles_restants
+    fct_summary: Renvoie le nombre de projectile restants du hamster id
+    fct_ret_type: int
+    fct_arg:
+      - [id, int, identifiant du hamster]
   - doc_extra: |
      \subsection{Fonctions d'action}
      Toutes les fonctions peuvent renvoyer les constantes
