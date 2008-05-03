@@ -1,4 +1,4 @@
-# -*-Autconf-*-
+# -*-Autconf-*
 
 # Autconf init
 AC_PREREQ(2.59)
@@ -304,6 +304,7 @@ AC_CONFIG_FILES([
   prologin/prolo2008/subject/Makefile
   prologin/prolo2008/data/Makefile
   prologin/prolo2008/test/Makefile
+  prologin/prolo2008/editor/Makefile
 ])
 fi
 

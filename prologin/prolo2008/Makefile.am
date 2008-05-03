@@ -5,9 +5,9 @@ SUBDIRS =					\
 	rules					\
 	test
 
-# if HAVE_SDL
-#   SUBDIRS += visu
-# endif
+if HAVE_SDL
+   SUBDIRS += editor
+endif
 
 if GENERATE_DOC
 SUBDIRS += subject
