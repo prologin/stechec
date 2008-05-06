@@ -3,7 +3,7 @@
 #include "Utils.hpp"
 #include "SpriteMgr.hpp"
 
-Gui::Gui(unsigned int xsize, unsigned int ysize)
+Gui::Gui(const char *wnd_name, unsigned int xsize, unsigned int ysize)
 {
   if (SDL_Init(SDL_INIT_VIDEO) == -1)
     throw Error("Unable to initialize SDL: ", SDL_GetError(), NULL);
@@ -18,6 +18,7 @@ Gui::Gui(unsigned int xsize, unsigned int ysize)
     std::cout << "[info] Using " << (_wnd->flags & SDL_HWSURFACE ? "hardware" : "software") << " rendering" << std::endl;
     std::cout << "[info] Double-buffering " << (_wnd->flags & SDL_DOUBLEBUF ? "enabled" : "disabled") << std::endl;
     _bpp = _wnd->format->BytesPerPixel;
+    SDL_WM_SetCaption(wnd_name, NULL);
   }
   else
   {

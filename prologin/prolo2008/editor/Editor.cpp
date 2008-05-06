@@ -31,13 +31,13 @@ static bool		gl_grid = true;
 // Each sprite is represented as an ASCII character in the file.
 static CaseType	g_types[] =
 {
-  {MAP_ROBOT_TEAM1, INSTALL_PREFIX "r.png"},
-  {MAP_ROBOT_TEAM2, INSTALL_PREFIX "R.png"},
-  {MAP_HOLE, INSTALL_PREFIX "trou.png"},
-  {MAP_WALL, INSTALL_PREFIX "mur.png"},
-  {MAP_BALL, INSTALL_PREFIX "balle.png"},
-  {MAP_EMPTY, INSTALL_PREFIX "ground.png"},
-  {0, NULL}
+  {MAP_ROBOT_TEAM1_KEY, MAP_ROBOT_TEAM1, INSTALL_PREFIX "hamster_1.png"},
+  {MAP_ROBOT_TEAM2_KEY, MAP_ROBOT_TEAM2, INSTALL_PREFIX "hamster_2.png"},
+  {MAP_HOLE_KEY, MAP_HOLE, INSTALL_PREFIX "hole.png"},
+  {MAP_ROCK_KEY, MAP_ROCK, INSTALL_PREFIX "rock.png"},
+  {MAP_APPLE_KEY, MAP_APPLE, INSTALL_PREFIX "apple.png"},
+  {MAP_EMPTY_KEY, MAP_EMPTY, INSTALL_PREFIX "ground.png"},
+  {0, 0, NULL}
 };
 
 // Initializes sprites from given images.
@@ -45,8 +45,8 @@ static void	InitSprites(void)
 {
   unsigned int	i;
   
-  for (i = 0; g_types[i]._c; ++i)
-    gl_mgr->AddSprite(g_types[i]._c, g_types[i]._spath);
+  for (i = 0; g_types[i]._map_char; ++i)
+    gl_mgr->AddSprite(g_types[i]._map_char, g_types[i]._spath);
 }
 
 // Parses the map size given in `sizes'. The expected format is "XxY", e.g. "10x5".
@@ -217,8 +217,8 @@ static void	MakeSymMap(bool up_to_down)
 	  break;
 
 	case MAP_EMPTY:
-	case MAP_WALL:
-	case MAP_BALL:
+	case MAP_ROCK:
+	case MAP_APPLE:
 	case MAP_HOLE:
 	  gl_map[newy][x] = gl_map[y][x];
 	  break;
@@ -289,6 +289,8 @@ static void	MouseButtonHandler(SDL_Event *e)
 static void	KeyPressHandler(SDL_Event *e)
 {
   SDLKey	sym;
+  char		new_sym;
+  unsigned int	i;
 
   sym = e->key.keysym.sym;
 
@@ -324,8 +326,15 @@ static void	KeyPressHandler(SDL_Event *e)
   {
     if (e->key.keysym.mod & KMOD_LSHIFT || e->key.keysym.mod & KMOD_RSHIFT)
       sym = (SDLKey)toupper(sym);
-    if (gl_mgr->GetSprite(sym))
-      gl_map[gl_cury][gl_curx] = sym;
+    new_sym = MAP_EMPTY;
+    for (i = 0; g_types[i]._map_char; ++i)
+      if (g_types[i]._key == sym)
+      {
+	new_sym = g_types[i]._map_char;
+	break;
+      }
+    if (gl_mgr->GetSprite(new_sym))
+      gl_map[gl_cury][gl_curx] = new_sym;
   }
 
   RenderMap();
@@ -361,7 +370,7 @@ int	main(int argc, char *argv[])
     InitSprites();
     ParseCmdLine(argc, argv);
 
-    gl_gui = new Gui(gl_xsize * GRID_SIZE, gl_ysize * GRID_SIZE);
+    gl_gui = new Gui("Prologin 2008 -- Map Editor", gl_xsize * GRID_SIZE, gl_ysize * GRID_SIZE);
 
     gl_gui->SetCallback(SDL_KEYUP, KeyPressHandler);
     gl_gui->SetCallback(SDL_MOUSEBUTTONUP, MouseButtonHandler);

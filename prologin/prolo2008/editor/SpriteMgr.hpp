@@ -4,12 +4,17 @@
 # define SPRITEMGR_HPP_
 
 #include "Gui.hpp"
+#include <iostream>
 
 class	Sprite
 {
   public:
     Sprite(void) { _sprite = NULL; }
-    Sprite(const char *path) { _sprite = IMG_Load(path); }
+    Sprite(const char *path)
+    {
+      if (!(_sprite = IMG_Load(path)))
+	std::cerr << "Unable to load sprite '" << path << "': " << IMG_GetError() << std::endl;
+    }
     ~Sprite(void) { }
 
     SDL_Surface		*GetSprite(void) { return (_sprite); }

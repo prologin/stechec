@@ -16,7 +16,7 @@ class	Gui
 {
   public:
     Gui(void);
-    Gui(unsigned int xsize, unsigned int ysize);
+    Gui(const char *wnd_name, unsigned int xsize, unsigned int ysize);
     ~Gui(void);
 
     void		PutPixel(unsigned int x, unsigned int y, unsigned int color);
