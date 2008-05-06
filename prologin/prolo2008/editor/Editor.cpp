@@ -26,6 +26,8 @@ static const char	*gl_filename = NULL;
 static Gui		*gl_gui = NULL;
 static SpriteMgr	*gl_mgr = NULL;
 
+static bool		gl_grid = true;
+
 // Each sprite is represented as an ASCII character in the file.
 static CaseType	g_types[] =
 {
@@ -123,11 +125,14 @@ static void	RenderMap(void)
       gl_gui->PutSprite(x * GRID_SIZE, y * GRID_SIZE, gl_mgr->GetSprite(gl_map[y][x]));
     }
 
-  // Draws the grid *over* the sprites
-  for (x = 0; x < gl_xsize; ++x)
-    gl_gui->DrawRect(x * GRID_SIZE - 1, 0U, 0, gl_gui->GetYSize() - 1, 0);
-  for (y = 0; y < gl_ysize; ++y)
-    gl_gui->DrawRect(0U, y * GRID_SIZE - 1, gl_gui->GetXSize() - 1, 0, 0);
+  if (gl_grid)
+  {
+    // Draws the grid *over* the sprites
+    for (x = 0; x < gl_xsize; ++x)
+      gl_gui->DrawRect(x * GRID_SIZE - 1, 0U, 0, gl_gui->GetYSize() - 1, 0);
+    for (y = 0; y < gl_ysize; ++y)
+      gl_gui->DrawRect(0U, y * GRID_SIZE - 1, gl_gui->GetXSize() - 1, 0, 0);
+  }
 
   gl_gui->DrawRect(gl_curx * GRID_SIZE, gl_cury * GRID_SIZE,
        GRID_SIZE - 1, GRID_SIZE - 1, RECT_COLOR);
@@ -301,6 +306,8 @@ static void	KeyPressHandler(SDL_Event *e)
       RenderMap();
       return ;
     }
+    if (sym == SDLK_g)
+      gl_grid = !gl_grid;
   }
 
   // Arrows
@@ -342,6 +349,7 @@ int	main(int argc, char *argv[])
       "Ctrl-W     Sauvegarde la map\n" <<
       "Ctrl-Up    Execute une symetrie du haut de la map vers le bas\n" <<
       "Ctrl-Down  Idem, du bas vers le haut\n" <<
+      "Ctrl-g     Affiche/masque la grille\n" <<
       "\nBug report: deather@prologin.org" << std::endl;
     return (1);
   }

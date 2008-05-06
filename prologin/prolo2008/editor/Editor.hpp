@@ -6,7 +6,7 @@
 # define INSTALL_PREFIX	"/opt/share/stechec/prolo2008/graphics/"
 
 // This *MUST* match the sprite's size (both width and height).
-# define GRID_SIZE	32
+# define GRID_SIZE	47
 
 # define DEFAULT_XSIZE	10
 # define DEFAULT_YSIZE	10
