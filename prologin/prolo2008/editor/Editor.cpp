@@ -59,18 +59,13 @@ static void	GetMapSize(const char *sizes)
     *(s++) = '\0';
     gl_xsize = atoi(sizes);
     gl_ysize = atoi(s);
-    if (gl_xsize && gl_ysize)
+    if (gl_xsize > MAP_MAX_X || gl_ysize > MAP_MAX_Y || !(gl_xsize && gl_ysize))
+      std::cerr << "Invalid size.  Using default values." << std::endl;
+    else
       return ;
-    // else: use default values
   }
   gl_xsize = DEFAULT_XSIZE;
   gl_ysize = DEFAULT_YSIZE;
-  if (gl_xsize > MAP_MAX_X || gl_ysize > MAP_MAX_Y)
-  {
-    std::cerr << "Invalid size.  Using default values." << std::endl;
-    gl_ysize = DEFAULT_YSIZE;
-    gl_xsize = DEFAULT_XSIZE;
-  }
 }
 
 // Initializes an empty map, filled by standar ground.
