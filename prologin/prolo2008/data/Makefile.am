@@ -11,7 +11,14 @@ dist_prolo2008font_DATA =		\
 	font/Vera.ttf
 
 dist_prolo2008graphics_DATA =	\
-	graphics/ground.png
+	graphics/ground.png	\
+	graphics/rock.png	\
+	graphics/hamster_1.png	\
+	graphics/hamster_2.png	\
+	graphics/hamster_2_apple.png	\
+	graphics/hamster_1_apple.png	\
+	graphics/hole.png		\
+	graphics/apple.png
 
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
