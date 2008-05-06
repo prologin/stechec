@@ -65,6 +65,12 @@ static void	GetMapSize(const char *sizes)
   }
   gl_xsize = DEFAULT_XSIZE;
   gl_ysize = DEFAULT_YSIZE;
+  if (gl_xsize > MAP_MAX_X || gl_ysize > MAP_MAX_Y)
+  {
+    std::cerr << "Invalid size.  Using default values." << std::endl;
+    gl_ysize = DEFAULT_YSIZE;
+    gl_xsize = DEFAULT_XSIZE;
+  }
 }
 
 // Initializes an empty map, filled by standar ground.
@@ -114,10 +120,6 @@ static void	RenderMap(void)
 
   gl_gui->Clear();
   for (y = 0; y < gl_ysize; ++y)
-  {
-    // Draw the grid's line
-    gl_gui->DrawRect(0U, y * GRID_SIZE - 1, gl_gui->GetXSize() - 1, 1, 0);
-
     for (x = 0; x < gl_xsize; ++x)
     {
       // Always draw a ground under the actual sprite.  Looks better.
@@ -125,7 +127,6 @@ static void	RenderMap(void)
 	gl_gui->PutSprite(x * GRID_SIZE, y * GRID_SIZE, gl_mgr->GetSprite(MAP_EMPTY));
       gl_gui->PutSprite(x * GRID_SIZE, y * GRID_SIZE, gl_mgr->GetSprite(gl_map[y][x]));
     }
-  }
 
   // Draws the grid *over* the sprites
   for (x = 0; x < gl_xsize; ++x)
