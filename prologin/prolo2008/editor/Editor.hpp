@@ -3,24 +3,30 @@
 #ifndef EDITOR_HPP_
 # define EDITOR_HPP_
 
+# define INSTALL_PREFIX	"/opt/share/stechec/prolo2008/graphics/"
+
 // This *MUST* match the sprite's size (both width and height).
-#define GRID_SIZE	64
+# define GRID_SIZE	32
 
-#define DEFAULT_XSIZE	10
-#define DEFAULT_YSIZE	10
-
-// The characted used to represent an empty case
-#define GROUND_CHAR	'.'
+# define DEFAULT_XSIZE	10
+# define DEFAULT_YSIZE	10
 
 // The color of the selected case's rectangle.
-#define RECT_COLOR	0x0000ff00
+# define RECT_COLOR	0x0000ff00
 
-#define DEFAULT_FILENAME	"default.map"
+# define DEFAULT_FILENAME	"default.map"
 
-#define MAP_MAX_X	20
-#define MAP_MAX_Y	20
+# define MAP_MAX_X	20
+# define MAP_MAX_Y	20
 
-#define USAGE	"usage: editor [-c] [-g WxH] [-f file]"
+# define USAGE	"usage: editor [-c] [-g WxH] [-f file]"
+
+# define MAP_WALL               'X'
+# define MAP_EMPTY              '.'
+# define MAP_HOLE               'O'
+# define MAP_BALL               'P'
+# define MAP_ROBOT_TEAM1        'H'
+# define MAP_ROBOT_TEAM2        'h'
 
 // Case-Sprite association
 struct		CaseType

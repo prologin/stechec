@@ -29,12 +29,12 @@ static SpriteMgr	*gl_mgr = NULL;
 // Each sprite is represented as an ASCII character in the file.
 static CaseType	g_types[] =
 {
-  {'r', "sprites/r.png"},
-  {'R', "sprites/R.png"},
-  {'O', "sprites/trou.png"},
-  {'X', "sprites/mur.png"},
-  {'B', "sprites/balle.png"},
-  {'.', "sprites/ground.png"},
+  {MAP_ROBOT_TEAM1, INSTALL_PREFIX "r.png"},
+  {MAP_ROBOT_TEAM2, INSTALL_PREFIX "R.png"},
+  {MAP_HOLE, INSTALL_PREFIX "trou.png"},
+  {MAP_WALL, INSTALL_PREFIX "mur.png"},
+  {MAP_BALL, INSTALL_PREFIX "balle.png"},
+  {MAP_EMPTY, INSTALL_PREFIX "ground.png"},
   {0, NULL}
 };
 
@@ -77,7 +77,7 @@ static void	InitEmptyMap(void)
   for (i = 0; i < gl_ysize; ++i)
   {
     gl_map[i] = new char[gl_xsize];
-    memset(gl_map[i], GROUND_CHAR, gl_xsize);
+    memset(gl_map[i], MAP_EMPTY, gl_xsize);
   }
 }
 
@@ -114,13 +114,25 @@ static void	RenderMap(void)
 
   gl_gui->Clear();
   for (y = 0; y < gl_ysize; ++y)
+  {
+    // Draw the grid's line
+    gl_gui->DrawRect(0U, y * GRID_SIZE - 1, gl_gui->GetXSize() - 1, 1, 0);
+
     for (x = 0; x < gl_xsize; ++x)
     {
       // Always draw a ground under the actual sprite.  Looks better.
-      if (gl_map[y][x] != GROUND_CHAR)
-	gl_gui->PutSprite(x * GRID_SIZE, y * GRID_SIZE, gl_mgr->GetSprite(GROUND_CHAR));
+      if (gl_map[y][x] != MAP_EMPTY)
+	gl_gui->PutSprite(x * GRID_SIZE, y * GRID_SIZE, gl_mgr->GetSprite(MAP_EMPTY));
       gl_gui->PutSprite(x * GRID_SIZE, y * GRID_SIZE, gl_mgr->GetSprite(gl_map[y][x]));
     }
+  }
+
+  // Draws the grid *over* the sprites
+  for (x = 0; x < gl_xsize; ++x)
+    gl_gui->DrawRect(x * GRID_SIZE - 1, 0U, 0, gl_gui->GetYSize() - 1, 0);
+  for (y = 0; y < gl_ysize; ++y)
+    gl_gui->DrawRect(0U, y * GRID_SIZE - 1, gl_gui->GetXSize() - 1, 0, 0);
+
   gl_gui->DrawRect(gl_curx * GRID_SIZE, gl_cury * GRID_SIZE,
        GRID_SIZE - 1, GRID_SIZE - 1, RECT_COLOR);
   gl_gui->Refresh();
@@ -176,6 +188,44 @@ static int	InitMapFromFile(void)
   }
   f.close();
   return (0);
+}
+
+// Performs a symetry on the map.
+// If `up_to_down' is true, the upper part of the map
+// is copied to the half bottom.
+static void	MakeSymMap(bool up_to_down)
+{
+  unsigned int	y;
+  unsigned int	x;
+  unsigned int	newy;
+
+  for (y = up_to_down ? 0 : gl_ysize - 1; y != gl_ysize / 2 - (up_to_down ? 0 : 1); y += up_to_down ? 1 : -1)
+  {
+    for (x = 0; x < gl_xsize; ++x)
+    {
+      newy = (gl_ysize - 1) - y;
+
+      switch (gl_map[y][x])
+      {
+	case MAP_ROBOT_TEAM1:
+	  gl_map[newy][x] = MAP_ROBOT_TEAM2;
+	  break;
+
+	case MAP_ROBOT_TEAM2:
+	  gl_map[newy][x] = MAP_ROBOT_TEAM1;
+	  break;
+
+	case MAP_EMPTY:
+	case MAP_WALL:
+	case MAP_BALL:
+	case MAP_HOLE:
+	  gl_map[newy][x] = gl_map[y][x];
+	  break;
+	default:
+	  std::cerr << "Internal error -- invalid character in map..." << std::endl;
+      }
+    }
+  }
 }
 
 static void	ParseCmdLine(int argc, char *argv[])
@@ -237,25 +287,69 @@ static void	MouseButtonHandler(SDL_Event *e)
 
 static void	KeyPressHandler(SDL_Event *e)
 {
-  char		sym;
+  SDLKey	sym;
 
   sym = e->key.keysym.sym;
-  if (e->key.keysym.mod & KMOD_LCTRL && sym == SDLK_w)
+
+  // Ctrl-W
+  if (e->key.keysym.mod & KMOD_LCTRL)
   {
-    WriteMapToFile();
-    return ;
+    if (sym == SDLK_w)
+    {
+      WriteMapToFile();
+      return ;
+    }
+    if (sym == SDLK_UP || sym == SDLK_DOWN)
+    {
+      MakeSymMap(sym == SDLK_DOWN);
+      RenderMap();
+      return ;
+    }
   }
-  if (!isalnum(sym) && !ispunct(sym))
-    return ;
-  if (e->key.keysym.mod & KMOD_LSHIFT || e->key.keysym.mod & KMOD_RSHIFT)
-   sym = toupper(sym);
-  if (gl_mgr->GetSprite(sym))
-    gl_map[gl_cury][gl_curx] = sym;
+
+  // Arrows
+  if (sym == SDLK_LEFT && gl_curx > 0)
+    gl_curx--;
+  else if (sym == SDLK_RIGHT && gl_curx < gl_xsize - 1)
+    gl_curx++;
+  else if (sym == SDLK_UP && gl_cury > 0)
+    gl_cury--;
+  else if (sym == SDLK_DOWN && gl_cury < gl_ysize - 1)
+    gl_cury++;
+
+  if (isalnum(sym) || ispunct(sym))
+  {
+    if (e->key.keysym.mod & KMOD_LSHIFT || e->key.keysym.mod & KMOD_RSHIFT)
+      sym = (SDLKey)toupper(sym);
+    if (gl_mgr->GetSprite(sym))
+      gl_map[gl_cury][gl_curx] = sym;
+  }
+
   RenderMap();
 }
 
 int	main(int argc, char *argv[])
 {
+  if (argc == 1)
+  {
+    std::cout << argv[0] << ": " <<
+      "usage: " << argv[0] << " [-c] [-g WxH] [-f filename]\n" <<
+      " -c:       Lance l'editeur avec une map vide\n" <<
+      " -g:       Permet de definir la taille de la map\n" <<
+      " -f:	  Specifie le nom du fichier a utiliser\n" <<
+      "\nKeys:\n" <<
+      "h/H        Hamster (equipe 1 ou 2)\n" <<
+      "O          Trou\n" <<
+      "P          Pomme\n" <<
+      "X          Mur\n" <<
+      "Arrows	  Deplace le selecteur de case (la souris marche aussi)\n" <<
+      "Ctrl-W     Sauvegarde la map\n" <<
+      "Ctrl-Up    Execute une symetrie du haut de la map vers le bas\n" <<
+      "Ctrl-Down  Idem, du bas vers le haut\n" <<
+      "\nBug report: deather@prologin.org" << std::endl;
+    return (1);
+  }
+
   try
   {
     gl_mgr = new SpriteMgr();

@@ -2,7 +2,7 @@
 
 bin_PROGRAMS = map_editor
 
-map_editor_SOURCES =				\
+map_editor_SOURCES =	\
 	Editor.cpp	\
 	Editor.hpp	\
 	SpriteMgr.cpp	\

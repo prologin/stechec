@@ -27,6 +27,9 @@ class	Gui
     void		Refresh(void);
     void		Loop(void);
 
+    unsigned int	GetXSize(void) { return (_xsize); }
+    unsigned int	GetYSize(void) { return (_ysize); }
+
   private:
     SDL_Surface		*_wnd;
     unsigned int	_xsize;
