@@ -233,6 +233,10 @@ void Api::teamSwitched()
 
 void Api::ChampionIdToRealId(int *id)
 {
+  int k = g_->getTeamId();
+  if (k!=0 && k!=1) {
+    return;
+  }
   *id += MAX_ROBOTS / 2 * g_->getTeamId();
   *id %= MAX_ROBOTS;
 }
