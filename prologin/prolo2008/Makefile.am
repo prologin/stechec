@@ -6,7 +6,7 @@ SUBDIRS =					\
 	test
 
 if HAVE_SDL
-   SUBDIRS += editor
+   SUBDIRS += editor gui
 endif
 
 if GENERATE_DOC
