@@ -18,7 +18,10 @@ dist_prolo2008graphics_DATA =	\
 	graphics/hamster_2_apple.png	\
 	graphics/hamster_1_apple.png	\
 	graphics/hole.png		\
-	graphics/apple.png
+	graphics/apple.png		\
+	graphics/pin.png		\
+	graphics/hole_horiz.png		\
+	graphics/hole_vert.png
 
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
