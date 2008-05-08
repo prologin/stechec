@@ -155,6 +155,9 @@ int		ServerEntry::beforeGame(void)
 
   SendToAll(INIT_DATA, -1, 2, INIT_START_TEAM, g_->_start_team);
 
+  // Broadcast max turn
+  SendToAll(INIT_DATA, -1, 2, INIT_MAX_TURN, g_->_max_turn);
+
   // Broadcasts the map's content
   for (int j = 0; j < g_->_map_size_y; j++)
     for (int i = 0; i < g_->_map_size_x; i++)

@@ -63,7 +63,7 @@ extern "C" {
     return api->distance(x1, y1, x2, y2, sort_tranchee);
   }
   
-  int trognonss_restants(int id)
+  int trognons_restants(int id)
   {
     return api->trognons_restants(id);
   }

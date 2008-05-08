@@ -57,6 +57,13 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	    g_->_start_team = start_team;
 	    break;
 	  }
+	case INIT_MAX_TURN :
+	  {
+	    int mt = pkt->arg[1];
+	    assert(mt > 0);
+	    g_->_max_turn = mt;
+	    break;
+	  }
 	default :
 	  assert(0);
 	}

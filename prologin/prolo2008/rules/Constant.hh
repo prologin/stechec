@@ -57,6 +57,8 @@
 # define INIT_MAP_SIZE		0
 # define INIT_ROBOT		1
 # define INIT_START_TEAM	2
+# define INIT_MAX_TURN		3
+// fin msg d'initialisation
 
 # define MAX_ORDERS		3 // max number of orders that can be issued by a single robot
 
