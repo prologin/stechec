@@ -6,12 +6,12 @@
 #define BITRATE         32
 
 #define TAILLE_CASE     47 //taille d'une case
-#define TAILLE_CONTOUR  1
+#define TAILLE_CONTOUR  2
 
 #define NB_OBSTACLES    1   //toutes les textures d'obstacles
 
-#define NB_TILES        4   //toutes les textures de terrain
-enum {SOL = 0, TROU, CONTOUR_H, CONTOUR_V};
+#define NB_TILES        6   //toutes les textures de terrain
+enum {SOL = 0, TROU, CONTOUR_H1, CONTOUR_V1, CONTOUR_H2, CONTOUR_V2};
 
 #define NB_SPRITES      6  //hamster, pomme, petite pomme, pepin
 enum {HAMSTER1 = 0, HAMSTER2, HAMSTER1_POMME, HAMSTER2_POMME, POMME, PEPIN};

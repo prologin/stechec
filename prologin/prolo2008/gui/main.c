@@ -15,7 +15,7 @@ int done;
 int win_xsize = 0, win_ysize = 0;
 Partie jeu;
 Uint32 color_black;
-TTF_Font *font;
+TTF_Font *font_small, *font_big;
 
 void	render_map(void)
 {
@@ -29,10 +29,15 @@ void	init_game(void)
 {
   printf("GUI Initialization...\n");
 
-  TTF_Init();
+  if (TTF_Init() == -1)
+  {
+    fprintf(stderr, "TTF Initlization error: %s\n", TTF_GetError());
+    exit(1);
+  }
 
-  font = TTF_OpenFont(IMG_PREFIX "font.ttf", 10);
-  if (!font)
+  font_small = TTF_OpenFont(IMG_PREFIX "font.ttf", 10);
+  font_big = TTF_OpenFont(IMG_PREFIX "font.ttf", 14);
+  if (!font_small || !font_big)
   {
     fprintf(stderr, "Unable to open TTF font: %s\n", TTF_GetError());
     exit(1);
@@ -93,8 +98,12 @@ void	play_turn(void)
 	  switch(event.key.keysym.sym)
 	  {
 	    case SDLK_n: /* go to the next turn */
-	      done = 1;
 	      nouveau_tour(&jeu);
+	      done = 1;
+	      break;
+	    case SDLK_q:
+	    case SDLK_ESCAPE:
+	      exit(0);
 	      break;
 	    case SDLK_RIGHT:
 	      //moveCam(&camera, CAMERA_MOVE_SIZE, 0);

@@ -20,8 +20,10 @@ dist_prolo2008graphics_DATA =	\
 	graphics/hole.png		\
 	graphics/apple.png		\
 	graphics/pin.png		\
-	graphics/hole_horiz.png		\
-	graphics/hole_vert.png		\
+	graphics/hole_horiz1.png	\
+	graphics/hole_horiz2.png	\
+	graphics/hole_vert1.png		\
+	graphics/hole_vert2.png		\
 	graphics/font.ttf
 
 dist-hook:

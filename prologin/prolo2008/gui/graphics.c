@@ -8,8 +8,10 @@
 #include "constants.h"
 
 extern int win_xsize, win_ysize;
-extern TTF_Font	*font;
+extern TTF_Font	*font_small, *font_big;
 extern SDL_Surface *numbers[MAX_ROBOTS];
+
+static SDL_Surface *turns[MAX_TURN] = {NULL};
 
 SDL_Surface* MyIMGLoad(const char *filename)
 {
@@ -67,8 +69,10 @@ SDL_Surface* background_init(const int w, const int h)
 
     tiles[SOL]          = MyIMGLoad(IMG_PREFIX "ground.png");
     tiles[TROU]         = MyIMGLoad(IMG_PREFIX "hole.png");
-    tiles[CONTOUR_H]    = MyIMGLoad(IMG_PREFIX "hole_horiz.png");
-    tiles[CONTOUR_V]    = MyIMGLoad(IMG_PREFIX "hole_vert.png");
+    tiles[CONTOUR_H2]    = MyIMGLoad(IMG_PREFIX "hole_horiz2.png");
+    tiles[CONTOUR_H1]    = MyIMGLoad(IMG_PREFIX "hole_horiz1.png");
+    tiles[CONTOUR_V1]    = MyIMGLoad(IMG_PREFIX "hole_vert1.png");
+    tiles[CONTOUR_V2]    = MyIMGLoad(IMG_PREFIX "hole_vert2.png");
 
     for(i = 0; i < NB_TILES; i++)
         if(tiles[i] == NULL)
@@ -103,22 +107,22 @@ SDL_Surface* background_init(const int w, const int h)
 
                 //permet d'afficher des contours aux tranchées
                 if(i > 0 && type_case(i - 1, j) != TRANCHEE)
-                    SDL_BlitSurface(tiles[CONTOUR_V], NULL, result, &pos);
+                    SDL_BlitSurface(tiles[CONTOUR_V1], NULL, result, &pos);
 
                 if(i < w - 1 && type_case(i + 1, j) != TRANCHEE)
                 {
                     pos.x += TAILLE_CASE - TAILLE_CONTOUR;
-                    SDL_BlitSurface(tiles[CONTOUR_V], NULL, result, &pos);
+                    SDL_BlitSurface(tiles[CONTOUR_V2], NULL, result, &pos);
                     pos.x -= TAILLE_CASE - TAILLE_CONTOUR;
                 }
 
                 if(j > 0 && type_case(i, j - 1) != TRANCHEE)
-                    SDL_BlitSurface(tiles[CONTOUR_H], NULL, result, &pos);
+                    SDL_BlitSurface(tiles[CONTOUR_H1], NULL, result, &pos);
 
                 if(j < h - 1 && type_case(i, j + 1) != TRANCHEE)
                 {
                     pos.y += TAILLE_CASE - TAILLE_CONTOUR;
-                    SDL_BlitSurface(tiles[CONTOUR_H], NULL, result, &pos);
+                    SDL_BlitSurface(tiles[CONTOUR_H2], NULL, result, &pos);
                 }
             }
         }
@@ -133,6 +137,7 @@ SDL_Surface** sprites_init()
 {
     int i;
     Uint32 transp_color;
+    SDL_Color black = {0, 0, 0};
 
     SDL_Surface** res = malloc(sizeof(*res) * NB_SPRITES);
 
@@ -148,11 +153,26 @@ SDL_Surface** sprites_init()
             return NULL;
 
     char number[10];
-    SDL_Color black = {200, 0, 0};
-    for (i =0; i < MAX_ROBOTS; i++)
+    SDL_Color turn_color = {100, 50, 0};
+    TTF_SetFontStyle(font_big, TTF_STYLE_BOLD);
+    for (i = 0; i < MAX_ROBOTS; i++)
     {
       snprintf(number, 9, "%i", i);
-      numbers[i] = TTF_RenderText_Solid(font, number, black);
+      TTF_SetError("No error.");
+      numbers[i] = TTF_RenderText_Solid(font_small, number, black);
+      if (!numbers[i])
+	fprintf(stderr, "SDL_ttf error (numbers rendering): %s\n", TTF_GetError());
+    }
+
+    char buf[64];
+    // Draws the current turn number
+    for (i = 0; i < MAX_TURN; ++i)
+    {
+      TTF_SetError("No error. Pwet.");
+      snprintf(buf, 64, "Tour:%i", i + 1);
+      turns[i] = TTF_RenderText_Blended(font_big, buf, black);
+      if (!turns[i])
+	fprintf(stderr, "SDL_ttf error (turn rendering): %s\n", TTF_GetError());
     }
     return res;
 }
@@ -163,6 +183,7 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
   int x, y;
   int i, n = p->nb_tours - 1;
   SDL_Rect blitPos;
+  char	buf[64];
 
 #ifndef REPLAY
   n = 0;
@@ -170,11 +191,12 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
 
   printf("Rendering the map.\n");
 
-  //affiche l'arriere plan
+  // Blits the background
   SDL_BlitSurface(bg, 0, board, NULL);
   blitPos.w = TAILLE_CASE;
   blitPos.h = TAILLE_CASE;
-  //puis tous les hamsters
+
+  // Then all the hamsters
   for(i = 0; i < MAX_ROBOTS; i++)
   {
     printf("Drawing hamster %i\n", i);
@@ -191,6 +213,8 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
     blitPos.y += TAILLE_CASE / 1.5 + 1;
     SDL_BlitSurface(numbers[i], 0, board, &blitPos);
   }
+
+  // Draws apples
   for (y = 0; y < taille_carte_y(); ++y)
     for (x = 0; x < taille_carte_x(); ++x)
       if (pomme(x, y))
@@ -199,6 +223,9 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
 	blitPos.y = y * TAILLE_CASE;
         SDL_BlitSurface(sprites[POMME], 0, board, &blitPos);
       }
+    blitPos.x = 10;
+    blitPos.y = 10;
+    SDL_BlitSurface(turns[p->nb_tours - 1], NULL, board, &blitPos);
 }
 
 
