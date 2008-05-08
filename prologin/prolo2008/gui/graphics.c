@@ -8,6 +8,8 @@
 #include "constants.h"
 
 extern int win_xsize, win_ysize;
+extern TTF_Font	*font;
+extern SDL_Surface *numbers[MAX_ROBOTS];
 
 SDL_Surface* MyIMGLoad(const char *filename)
 {
@@ -145,6 +147,13 @@ SDL_Surface** sprites_init()
         if(res[i] == NULL)
             return NULL;
 
+    char number[10];
+    SDL_Color black = {200, 0, 0};
+    for (i =0; i < MAX_ROBOTS; i++)
+    {
+      snprintf(number, 9, "%i", i);
+      numbers[i] = TTF_RenderText_Solid(font, number, black);
+    }
     return res;
 }
 
@@ -174,7 +183,13 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
     if (i < 3)
       SDL_BlitSurface(porte_pomme(i) ? sprites[HAMSTER1_POMME] : sprites[HAMSTER1], 0, board, &blitPos);
     else
-      SDL_BlitSurface(porte_pomme(i) ? sprites[HAMSTER2_POMME] : sprites[HAMSTER2], 0, board, &blitPos);
+
+    // Blit du nombre
+    SDL_BlitSurface(porte_pomme(i) ? sprites[HAMSTER2_POMME] : sprites[HAMSTER2], 0, board, &blitPos);
+    // Valeurs hardcodees.
+    blitPos.x += TAILLE_CASE / 2 - 2;
+    blitPos.y += TAILLE_CASE / 1.5 + 1;
+    SDL_BlitSurface(numbers[i], 0, board, &blitPos);
   }
   for (y = 0; y < taille_carte_y(); ++y)
     for (x = 0; x < taille_carte_x(); ++x)

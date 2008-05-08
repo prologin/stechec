@@ -8,13 +8,14 @@
 #include "players.h"
 
 SDL_Surface *screen, *game_board, *game_background, **sprites;
+SDL_Surface *numbers[MAX_ROBOTS];
 SDL_Event event;
 SDL_Rect board_pos;
 int done;
 int win_xsize = 0, win_ysize = 0;
 Partie jeu;
 Uint32 color_black;
-TTF_Font *ttf_font;
+TTF_Font *font;
 
 void	render_map(void)
 {
@@ -28,11 +29,10 @@ void	init_game(void)
 {
   printf("GUI Initialization...\n");
 
-  IMG_Init();
   TTF_Init();
 
-  ttf_font = TTF_OpenFont(IMG_PREFIX "font.ttf", 14);
-  if (!ttf_font)
+  font = TTF_OpenFont(IMG_PREFIX "font.ttf", 10);
+  if (!font)
   {
     fprintf(stderr, "Unable to open TTF font: %s\n", TTF_GetError());
     exit(1);
@@ -116,7 +116,7 @@ void	play_turn(void)
 	  render_map();
 	  break;
       }
-      usleep(50); // Don't kill our CPU.
+      usleep(500); // Don't kill our CPU.
     }
   }
 }
