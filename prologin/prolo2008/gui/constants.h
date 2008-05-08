@@ -9,7 +9,7 @@
 
 # define MAX_ROBOTS	6
 
-# define MAX_TURN	100
+# define MAX_TURN	1000
 
 # ifdef REPLAY
 #  undef REPLAY
