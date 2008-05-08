@@ -217,7 +217,7 @@ void play_turn()
     for (int i=0 ; i < 3 ; i++)
       pos[i] = make_pair(pos_x(i), pos_y(i));
     /*
-     * Maintenant, test du projectile 
+     * Maintenant, test du trognon 
      * configuration :
      * 2
      * .
@@ -226,7 +226,7 @@ void play_turn()
      * 1
      */
     grappin(0,BAS);    
-    projectile(2,BAS);
+    trognon(2,BAS);
     deplacer(0,DROITE);
     pos[0].first++;
     pos[0].second++;
@@ -315,7 +315,7 @@ void play_turn()
     deplacer(0,DROITE);
     grappin(2,DROITE);
     grappin(1,GAUCHE);
-    projectile(0,GAUCHE); //test du lacher de pomme lorsque l'on se prend un projectile
+    trognon(0,GAUCHE); //test du lacher de pomme lorsque l'on se prend un trognon
     break;
   case 24 :
     for (int i=0 ; i < 3 ; i++)
@@ -336,20 +336,20 @@ void play_turn()
   case 26:
     get_pos();
     attendre(1);
-    assert(projectiles_restants(1) == 2);
-    projectile(1,HAUT);
-    projectile(1,HAUT);
+    assert(trognons_restants(1) == 2);
+    trognon(1,HAUT);
+    trognon(1,HAUT);
     break;
   case 27: 
-    assert(pos_y(2) == pos[2].second-1); //un projectile ne fait pas sortir d'un trou
+    assert(pos_y(2) == pos[2].second-1); //un trognon ne fait pas sortir d'un trou
     get_pos();
-    // et un hamster dans un trou peut-etre pousse par un projectile si ceci ne le fait pas sortir du trou
-    assert(projectiles_restants(1) == 0);
+    // et un hamster dans un trou peut-etre pousse par un trognon si ceci ne le fait pas sortir du trou
+    assert(trognons_restants(1) == 0);
     deplacer(2,BAS);
-    projectile(1,HAUT);
+    trognon(1,HAUT);
     break;
   case 28: 
-    assert(pos_y(2) == pos[2].second+1); // si plus de projectiles, pas de tir..
+    assert(pos_y(2) == pos[2].second+1); // si plus de trognons, pas de tir..
     get_pos();
     break;
   }
