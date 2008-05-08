@@ -187,7 +187,7 @@ int Api::grappin(int id, int direction)
   return 0;
 }
 
-int Api::projectile(int id, int direction)
+int Api::trognon(int id, int direction)
 {
   CHECK_OWN_ID(id);
   CHECK_DIRECTION(direction, 0);
@@ -204,7 +204,7 @@ int Api::projectile(int id, int direction)
   return 0;
 }
 
-int Api::projectiles_restants(int id) {
+int Api::trognons_restants(int id) {
   CHECK_ID(id);
   ChampionIdToRealId(&id);
   return g_->_robots[id]._remaining_bullets;

@@ -69,13 +69,13 @@ public:
    int distance(int x1, int y1, int x2, int y2, bool sort_tranchee);
    int type_case(int x, int y);
    int pomme(int x, int y);
-   int projectiles_restants(int id);
+   int trognons_restants(int id);
    int deplacer(int id, int direction);
    int turbo(int id);
    int lacher_pomme(int id, int direction);
    int ramasser_pomme(int id);
    int grappin(int id, int direction);
-   int projectile(int id, int direction);
+   int trognon(int id, int direction);
    int attendre(int id);
 
   /*

@@ -63,9 +63,9 @@ extern "C" {
     return api->distance(x1, y1, x2, y2, sort_tranchee);
   }
   
-  int projectiles_restants(int id)
+  int trognonss_restants(int id)
   {
-    return api->projectiles_restants(id);
+    return api->trognons_restants(id);
   }
 
   int type_case(int x, int y)
@@ -103,9 +103,9 @@ extern "C" {
     return api->grappin(id, direction);
   }
 
-  int projectile(int id, int direction)
+  int trognon(int id, int direction)
   {
-    return api->projectile(id, direction);
+    return api->trognon(id, direction);
   }
 
   int attendre(int id)
