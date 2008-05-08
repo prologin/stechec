@@ -41,19 +41,19 @@ constant:
   -
     cst_name: HAUT
     cst_val: 0
-    cst_comment: 
+    cst_comment: Vers le haut
   -
     cst_name: GAUCHE
     cst_val: 1
-    cst_comment: 
+    cst_comment: Vers la gauche
   -
     cst_name: BAS
     cst_val: 2
-    cst_comment: 
+    cst_comment: Vers le bas
   -
     cst_name: DROITE
     cst_val: 3
-    cst_comment: 
+    cst_comment: Vers la droite
   -
     cst_name: ICI
     cst_val: 4
@@ -130,8 +130,8 @@ function:
       - [x, int, la colonne]
       - [y, int, la ligne]
   -
-    fct_name: projectiles_restants
-    fct_summary: Renvoie le nombre de projectile restants du hamster id
+    fct_name: trognons_restants
+    fct_summary: Renvoie le nombre de trognons de pomme restants du hamster id
     fct_ret_type: int
     fct_arg:
       - [id, int, identifiant du hamster]
@@ -176,12 +176,12 @@ function:
     - [id, int, l'identifiant de votre hamster]
     - [direction, int, l'une des quatre directions vers laquelle vous voulez lancer le grappin]
   -
-    fct_name: projectile
-    fct_summary: Demande à votre hamster id de lancer un projectile dans une direction
+    fct_name: trognon
+    fct_summary: Demande à votre hamster id de lancer un trognon dans une direction
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
-    - [direction, int, l'une des quatre direction vers laquelle vous lancez le projectile]
+    - [direction, int, l'une des quatre direction vers laquelle vous lancez le trognon]
   -
     fct_name: attendre
     fct_summary: Ordonne à votre hamster de ne rien faire
