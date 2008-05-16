@@ -1,7 +1,5 @@
 <?php
 
-exit(0);
-
 session_start();
 
 /*

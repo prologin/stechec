@@ -50,55 +50,51 @@ function add_group_match($id_game)
   // Init tab of champion
   //
   // Select in first the best champion in competition
-  $query = db_query("SELECT champion.id, SUM(competiteur.score) AS score,".
-		    " CONCAT(user.nom, ' ', user.prenom, ' (',user.nickname, ')') as candidat,".
+  $query = db_query("SELECT champion.id, champion.score_tournament AS tscore, ".
+		    " CONCAT(user.nom, ' ', user.prenom, ' (',user.nickname, ')') AS candidat,".
 		    " champion.name".
-           	    " FROM champion, competiteur, matchs, user".
+           	    " FROM champion, user".
 	            " WHERE champion.level = 3".
 	            " AND champion.id_game = $id_game".
-	            " AND competiteur.id_champion = champion.id".
-	            " AND competiteur.id_match = matchs.id".
-		    " AND matchs.is_competition = 1".
 		    " AND user.id = champion.id_candidat".
 		    " AND user.id_profil = 1".
-	            " GROUP BY champion.id".
-	            " ORDER BY score DESC");
+	            " ORDER BY tscore DESC");
+  $champ_idx = array();	
   $champ_data = array();
 
-  while (count($champ_data) < $nb_best && $data = db_fetch_array($query))
-    array_push($champ_data, array("id" => $data["id"], "use" => "0",
-				  "candidat" => $data["candidat"], 
-				  "name" => $data["name"]));
+  while (count($champ_data) < $nb_best && $data = db_fetch_array($query)) {
+    $champ_idx[] = $data["id"];
+    array_push($champ_data,
+    	       array("id" => $data["id"], 
+    	             "use" => "0",
+	             "candidat" => $data["candidat"], 
+	             "name" => $data["name"]));
+  }
 
   // If don't have enought champion whe pick on entrenment match and no match
-  if (count($champ_data) < $nb_best)
-  {
-    $query = db_query("SELECT champion.id, SUM(competiteur.score) AS score,".
+  if (count($champ_data) < $nb_best) {
+    echo "Not enough competitors (" . count($champ_data) . "). Taking some from where we can.<br />";
+    $query = db_query("SELECT champion.id,".
+    		      " champion.score_training AS tscore,".
 		      " CONCAT(user.nom, ' ', user.prenom, ' (',user.nickname, ')') as candidat,".
 		      " champion.name".
-             	      " FROM champion, competiteur, matchs, user".
+             	      " FROM champion, user".
 	              " WHERE champion.level = 3".
 	              " AND champion.id_game = $id_game".
-	              " AND competiteur.id_champion = champion.id".
-	              " AND competiteur.id_match = matchs.id".
-		      " AND matchs.is_competition = 0".
 		      " AND user.id = champion.id_candidat".
 		      " AND user.id_profil = 1".
-	              " GROUP BY champion.id".
-	              " ORDER BY score DESC");
+	              " ORDER BY tscore DESC");
 
-     while (count($champ_data) < $nb_best && $data = db_fetch_array($query))
+     while (count($champ_data) < $nb_best && $data = db_fetch_array($query)) 
      {
-       $match_query = db_query("SELECT matchs.id".
-                             " FROM matchs, competiteur, champion".
-                             " WHERE competiteur.id_champion = ".$data["id"].
-                             " AND matchs.id = competiteur.id_match".
-                             " AND matchs.is_competition = 1");
-      
-       if (db_num_rows($match_query) == 0)  
-          array_push($champ_data, array("id" => $data["id"], "use" => "0",
-	  			        "candidat" => $data["candidat"], 
-                                        "name" => $data["name"]));
+     	if (!in_array($data["id"], $champ_idx)) {
+    	  $champ_idx[] = $data["id"];
+	  array_push($champ_data, 
+    		     array("id" => $data["id"], 
+    		           "use" => "0",
+		           "candidat" => $data["candidat"], 
+		           "name" => $data["name"]));
+     	}
      }
 
 
@@ -110,13 +106,13 @@ function add_group_match($id_game)
   //
   $args = array();
  
-  $query= db_query("SELECT *".
+  $query = db_query("SELECT *".
   		   " FROM matchs_opt".
   		   " WHERE id_game = $id_game".
 		   " AND use_competition = 1".
 		   " AND min <= $nb_best".
 		   " AND matchs_opt.id_game = $id_game");
-  while($tmp = db_fetch_array($query))
+  while ($tmp = db_fetch_array($query))
     array_push($args, $tmp);
 
   
@@ -134,9 +130,10 @@ function add_group_match($id_game)
       return ;
 
     // Creer un match
-    // print "Create a new match (opt = ".$args[0]["opt"].").</br>";
+    print "Create a new match (opt = ".$args[0]["opt"].").</br>";
     db_query ("INSERT INTO matchs (id_game, id_createur, opt_match, type, is_competition, nb_champion_instance, date)".
-     " VALUES ($id_game, ".$user["id"].",\"".$args[0]["opt"]."\", 3, 1, 5, NOW())");
+     " VALUES ($id_game, ".$user["id"].",\"".$args[0]["opt"]."\", 3, 1, 1, NOW())");
+     echo "Ajout d'un match";
     $total_match++;
 
     // Get id of new match
@@ -146,14 +143,14 @@ function add_group_match($id_game)
     $nb_champ = rand($args[0]["min"], min($args[0]["max"], count($champ_data)));
 
     // Trouver les champions
-    $nb_instance = 5;
+    $nb_instance = 1;
     $id_team = 10;
     shuffle($champ_data);
     for ($id_champ = $find_champ = 0; $find_champ < $nb_champ; ++$find_champ)
     {
       // Create a competiteur
       //print "+- Champion num ".$champ_data[$id_champ]["id"]."</br>";
-      for ($i = 0; $i < 5; $i++) {
+      for ($i = 0; $i < $nb_instance; $i++) {
      	db_query ("INSERT INTO competiteur (id_champion, id_match, id_team)".
      		  " VALUES (".$champ_data[$id_champ]["id"].", $id_match, $id_team)");
       }
@@ -187,18 +184,13 @@ function disp_classement($id_game)
   style_title("Classement des champions");
 
   $query = db_query("SELECT champion.id, champion.name, champion.comment,".
-                    " champion.level, champion.status,".
-                    " SUM(competiteur.score) AS score,".
+                    " champion.level, champion.status, champion.score_tournament AS score,".
                     " user.nickname as concepteur,".
 		    " user.id as id_user".
-                    " FROM champion, user, competiteur, matchs".
-                    " WHERE champion.id_game=$id_game".
-                    " AND user.id=champion.id_candidat".
-                    " AND competiteur.id_champion = champion.id".
+                    " FROM champion, user".
+                    " WHERE champion.id_game = $id_game".
+                    " AND user.id = champion.id_candidat".
                     " AND champion.level = 3".
-                    " AND matchs.id = competiteur.id_match".
-                    " AND matchs.is_competition = 1".
-                    " GROUP BY champion.id".
 		    " ORDER BY score DESC".
                    // " LIMIT ".($_limit * 50).", 50");
                     "");

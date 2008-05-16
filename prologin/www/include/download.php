@@ -33,7 +33,7 @@ function print_local_file($file)
 {
   if (!is_file($file))
   {
-    print("Echec: Can't find file</br>");
+    print("Echec: Can't find file" . $file . "</br>");
     return;
   }
   $fp = fopen ($file, "r");

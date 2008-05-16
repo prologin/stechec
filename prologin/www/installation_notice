@@ -1,7 +1,7 @@
 Quick HowTo on how to install stechec, and mostly its web interface.
 
 Written by Benoit Tricot and Alban Lefebvre.
-Modified by Olivier Gournet.
+Modified by Olivier Gournet and Thomas Lecomte.
 
 Do this in order, it (should) work.
 
@@ -12,9 +12,8 @@ Do this in order, it (should) work.
 
 ------------------------
 ** php
-in /etc/php4/apache2/php.ini
+in /etc/php5/apache2/php.ini:
 set register_globals = on
-
 
 ------------------------
 ** apache
@@ -41,11 +40,11 @@ create /etc/apache2/sites-available/stechec
 ------------------------
 ** retrieve and compile the whole package
 
-$ svn co https://projects.nekeme.net/svn/tbt/trunk stechec
+$ svn co https://svn.mine.nu/stechec/trunk stechec
 $ ./bootstrap
 $ ./configure --without-sdl \
-              --with-modules="modules_you_want" \
-              --prefix="the path you want to install binaries"
+              --with-modules="modules_you_want (probably prolo200X)" \
+              --prefix="the path you want to install binaries (/opt ?)"
 $ make
 $ make install-strip
 

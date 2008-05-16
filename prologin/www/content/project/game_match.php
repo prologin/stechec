@@ -166,7 +166,7 @@ function table_add_match($id_game)
   $list = array(
                 array("", "<b>Ajout d'un match</b>", "title", ACL_ASSIST_ALL, 0),
                 array("match_opt", "Options du match", "text", ACL_ALL, ACL_ALL),
-                array("match_instance", "Nombre d'instance par champion", "text", ACL_ALL, ACL_ALL),
+                //array("match_instance", "Nombre d'instance par champion", "text", ACL_ALL, ACL_ALL), // FIXME deather : prologin 2008 : toujours a 1
                 array("match_champ", "Champions participant (RegExp: id[:id]*)", "text", ACL_ALL, ACL_ALL),
                );
 
@@ -267,7 +267,7 @@ function disp_champion_competition($id_game)
               array("nickname", "Concepteur", "text", ACL_ALL, 0, array("center")),
               array("id", "Numero", "text", ACL_ALL, 0, array("center")),
               array("name", "Nom", "text", ACL_ALL, 0, array("center")),
-//              array("score", "Score", "text", ACL_ALL, 0, array("center")),
+              array("score_training", "Score", "text", ACL_ALL, 0, array("center")),
               array("comment", "Commentaire", "text", ACL_ALL, 0, array("center")),
           );
   
@@ -275,17 +275,14 @@ function disp_champion_competition($id_game)
   // Les miens
   style_title("Tous mes champions");
 
-  //$query = db_query("SELECT user.nickname, champion.*, SUM(competiteur.score) AS score".
   $query = db_query("SELECT user.nickname, champion.* ".
-                    " FROM champion, game, user, competiteur ".
+                    " FROM champion, game, user ".
                     " WHERE game.id=$id_game".
                     " AND champion.id_game=game.id".
                     " AND user.id=champion.id_candidat".
                     " AND (champion.level=2 OR champion.level=3)".
-                    " AND competiteur.id_champion = champion.id".
                     " AND user.id = ".$user["id"].
-                    " GROUP BY champion.id".
-                    " ORDER BY nickname, score DESC");
+                    " ORDER BY nickname, score_training DESC");
   
   
   list_disp($query, $list, array("gray", "bluegray"), "even");
@@ -293,17 +290,14 @@ function disp_champion_competition($id_game)
   // Les autres
   style_title("Tous les champions contre moi");
 
-  //$query = db_query("SELECT user.nickname, champion.*, SUM(competiteur.score) AS score".
   $query = db_query("SELECT user.nickname, champion.* ".
-                    " FROM champion, game, user, competiteur ".
+                    " FROM champion, game, user ".
                     " WHERE game.id=$id_game".
                     " AND champion.id_game=game.id".
                     " AND user.id=champion.id_candidat".
                     " AND champion.level=3".
-                    " AND competiteur.id_champion = champion.id".
                     " AND user.id <> ".$user["id"].
-                    " GROUP BY champion.id".
-                    " ORDER BY nickname, score DESC");
+                    " ORDER BY nickname, score_training DESC");
 //                    " LIMIT ".($_limit2 * 30).", 30");
   
   

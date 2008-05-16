@@ -69,7 +69,6 @@ if ($maintenance && access_check(ACL_CANDIDAT)) {
 }
 // END MAINTENANCE MODE
 
-
 user_register($_login);
 do_auth();
 

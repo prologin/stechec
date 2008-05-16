@@ -1,5 +1,5 @@
 <?php
 
-define (GAME_PATH, "/home/ghalaax/champions");
+define (GAME_PATH, "/home/goinfre/stechec-data");
 
 ?>

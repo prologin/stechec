@@ -72,7 +72,7 @@ function check_action($entry)
       if ($_POST['_form_champ_name'] == "" 
           || $_POST['_form_champ_comment'] == "")
       {
-        style_alert("Tous les champs doivent etre remplis");
+        style_alert("Tous les champs doivent <EA>tre remplit");
         break;
       }
 
@@ -194,15 +194,12 @@ function disp_all_champion($id_game)
   style_title("Tous les champions");
 
   $query = db_query("SELECT champion.id, champion.name, champion.comment,".
-                    " champion.level, champion.status,".
-                    " SUM(competiteur.score) AS score,".
+                    " champion.level, champion.status, champion.score_training as score, ".
                     " user.nickname as concepteur,".
 		    " user.id as id_user".
-                    " FROM champion, user, competiteur".
+                    " FROM champion, user".
                     " WHERE champion.id_game=$id_game".
                     " AND user.id=champion.id_candidat".
-                    " AND competiteur.id_champion = champion.id".
-                    " GROUP BY champion.id".
 		    " ORDER BY user.nickname, champion.level, score DESC".
                     //" LIMIT ".($_limit * 20).", 20");
                     "");
