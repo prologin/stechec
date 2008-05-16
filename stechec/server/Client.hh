@@ -146,7 +146,7 @@ inline void Client::commit()
   try {
     cx_->commit();
   } catch (const NetError& e) {
-    setFailReason(e.what(), 0);
+    setFailReason(e.what(), 1);
   }
 }
 
@@ -155,7 +155,7 @@ inline void Client::send(const Packet* p)
   try {
     cx_->send(*p);
   } catch (const NetError& e) {
-    setFailReason(e.what(), 0);
+    setFailReason(e.what(), 1);
   }
 }
 

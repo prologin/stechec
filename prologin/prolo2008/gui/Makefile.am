@@ -1,18 +1,18 @@
 # -*- Makefile -*-
 
-lib_LTLIBRARIES	 = robotus_sdlvisu.la
+lib_LTLIBRARIES	 = hamster_sdlvisu.la
 
-robotus_sdlvisu_la_SOURCES	=		\
+hamster_sdlvisu_la_SOURCES	=		\
 	graphics.c	\
 	main.c		\
 	players.c	\
 	camera.c	\
 	next_turn.cc
-	
-robotus_sdlvisu_la_CFLAGS	=		\
+
+hamster_sdlvisu_la_CFLAGS	=		\
 	$(SDL_CFLAGS)
 
-robotus_sdlvisu_la_LDFLAGS	=		\
+hamster_sdlvisu_la_LDFLAGS	=		\
 	-module					\
 	$(SDL_LIBS)
 
@@ -21,4 +21,5 @@ INCLUDES        =				\
         -I$(top_srcdir)/stechec/base_rules	\
 	-I$(top_srcdir)/stechec/client		\
 	-I$(top_srcdir)/stechec/sdl		\
-	-I$(top_srcdir)/prologin/common
+	-I$(top_srcdir)/prologin/common		\
+	-I$(top_srcdir)/prologin/prolo2008/rules

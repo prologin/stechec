@@ -90,7 +90,7 @@ class CamlFileGenerator < FileGenerator
     @types = {
       'void' => 'unit',
       'int' => 'int',
-      'bool' => 'boolean'
+      'bool' => 'bool'
     }
   end
 
@@ -113,7 +113,7 @@ class CamlFileGenerator < FileGenerator
     @f.print "external ", name, " : "
     if args != nil and args != []
       args.each do |arg|
-        @f.print arg[1], " -> "
+        @f.print conv_type(arg[1]), " -> "
       end
     else
       @f.print "unit -> "

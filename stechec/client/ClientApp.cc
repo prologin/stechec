@@ -66,7 +66,7 @@ void ClientApp::parseConfig()
   def["memory"] = "0";
   def["time"] = "0";
   def["time_reserve"] = "2500";
-  def["valgrind"] = "true";
+  def["valgrind"] = "false";
   def["gdb"] = "false";
   def["verbose"] = "3";
   def["verbose_location"] = "false";

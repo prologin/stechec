@@ -6,6 +6,8 @@
 #include "graphics.h"
 #include "camera.h"
 #include "players.h"
+#include "orders.h"
+#include "input.h"
 
 SDL_Surface *screen, *game_board, *game_background, **sprites;
 SDL_Surface *numbers[MAX_ROBOTS];
@@ -14,8 +16,11 @@ SDL_Rect board_pos;
 int done;
 int win_xsize = 0, win_ysize = 0;
 Partie jeu;
+int xpos = 0, ypos = 0;
 Uint32 color_black;
 TTF_Font *font_small, *font_big;
+
+struct AwaitingOrders awaiting_orders;
 
 void	render_map(void)
 {
@@ -27,7 +32,20 @@ void	render_map(void)
 
 void	init_game(void)
 {
+
+  printf(" ********* Touches permettant le controle des hamsters de la GUI *******\n"
+	 "Chaque ordre est entre par une sequence de deux ou trois touches :\n"
+	 "1) 3,4 ou 5 pour le hamster a controler\n"
+	 "2) w,r,l,d,t,g,a pour respectivement: attendre, ramasser_pomme,\n"
+	 " lacher_pomme, deplacement,  turbo, grappin, trognon (attaque)\n"
+	 "3) Pour les ordres qui demandent une direction, entrer la direction avec\n"
+	 "les touches de direction, ou '0' pour la direction ICI\n\n"
+	 "Pour aller au tour suivant: touche 'n', pour quitter, 'q'\n\n"
+	 );
+
   printf("GUI Initialization...\n");
+
+  awaiting_orders.next_order = 0;
 
   if (TTF_Init() == -1)
   {
@@ -83,6 +101,8 @@ void	play_turn(void)
   printf("Playing a turn.\n");
   //main loop
   done = 0;
+  nouveau_tour(&jeu);
+  render_map();
   while (!done)
   {
     while (SDL_PollEvent(&event))
@@ -93,33 +113,27 @@ void	play_turn(void)
 	  printf("Exit request caught, exiting.\n");
 	  exit(1);
 	  break;
+	  
+	case SDL_MOUSEBUTTONUP:
+	  xpos = event.button.x / TAILLE_CASE;
+	  ypos = event.button.y / TAILLE_CASE;
+	  render_map();
+	  break;
 
 	case SDL_KEYDOWN:
 	  switch(event.key.keysym.sym)
 	  {
 	    case SDLK_n: /* go to the next turn */
-	      nouveau_tour(&jeu);
+	      SendOrders(&awaiting_orders);
 	      done = 1;
 	      break;
 	    case SDLK_q:
 	    case SDLK_ESCAPE:
 	      exit(0);
 	      break;
-	    case SDLK_RIGHT:
-	      //moveCam(&camera, CAMERA_MOVE_SIZE, 0);
-	      break;
-	    case SDLK_UP:
-	      //moveCam(&camera, 0, - CAMERA_MOVE_SIZE);
-	      break;
-	    case SDLK_DOWN:
-	      //moveCam(&camera, 0, CAMERA_MOVE_SIZE);
-	      break;
-	    case SDLK_LEFT:
-	      //moveCam(&camera, - CAMERA_MOVE_SIZE, 0);
-	      break;
-	    default: break;
+	    default: handle_input(&event);
 	  }
-	  // We don't break in order to redraw the map.
+	  break;
 
 	case SDL_VIDEOEXPOSE:
 	  render_map();
@@ -128,32 +142,4 @@ void	play_turn(void)
       usleep(500); // Don't kill our CPU.
     }
   }
-}
-
-/* These functions are defined in common stechec rules. */
-extern int api_state_is_end(void*);
-extern int client_cx_process(void*);
-extern void next_turn(void*);
-
-int run(void* foo, void* api, void* client_cx)
-{
-  init_game();
-
-  while (!api_state_is_end(api))
-  {
-    // Play a turn.
-    // When this return, it means the user asked to go to
-    // the next turn.
-    play_turn();
-
-    // Process our messages.
-    while (client_cx_process(client_cx))
-      ;
-    printf("Proceeding to the next turn...\n");
-    next_turn(client_cx);
-  }
-
-  //end_game();
-  foo = foo;
-  return 0;
 }

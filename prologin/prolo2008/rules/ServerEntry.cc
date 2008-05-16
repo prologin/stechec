@@ -255,13 +255,42 @@ bool        ServerEntry::isMatchFinished(void)
 
 int        ServerEntry::getScore(int uid)
 {
-  int balls_team0 = std::count(g_->_balls[0], g_->_balls[0] + 2 * MAP_MAX_X, MAP_BALL);
-  int balls_team1 = std::count(g_->_balls[g_->_map_size_y-2], g_->_balls[g_->_map_size_y-2] + 2 * MAP_MAX_X, MAP_BALL);
+
+  // Score original du sujet :
+  // - 0 pour une defaite
+  // - 3 pour une victoire
+  // - 1 par match null
+
+
+  int balls_team0 = 0;
+  int balls_team1 = 0;
+  for (int i=0 ; i < MAP_MAX_X ; i++) {
+    balls_team0 += (g_->_balls[0][i] == MAP_BALL);
+    balls_team0 += (g_->_balls[1][i] == MAP_BALL);
+  }
+  for (int i=0 ; i < MAP_MAX_X ; i++) {
+    balls_team1 += (g_->_balls[g_->_map_size_y - 1][i] == MAP_BALL);
+    balls_team1 += (g_->_balls[g_->_map_size_y - 2][i] == MAP_BALL);
+  }
+
+  LOG2("Balls of team 0 is %1", balls_team0);
+  LOG2("Balls of team 1 is %1", balls_team1);
+
   if (balls_team1 == balls_team0)
     return 1;
   else
-    if (balls_team0 > balls_team1)	
+    if (balls_team0 > balls_team1)
       return 3 * (1-uid);
     else
       return 3 * uid;
+
+  /*
+  // Score en nombre de pommes
+  if (uid == 0) {
+    return balls_team0;
+  } else {
+    return balls_team1;
+  }
+  assert(0); //shouldn't be reached, to be sure
+  */
 }

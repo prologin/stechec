@@ -13,9 +13,27 @@ SDL_Event event;
 SDL_Rect board_pos;
 int done;
 int win_xsize = 0, win_ysize = 0;
+int xpos = 0, ypos = 0;
 Partie jeu;
 Uint32 color_black;
 TTF_Font *font_small, *font_big;
+void *g_ccx = NULL;
+
+/* These functions are defined in common stechec rules and in next_turn.cc. */
+extern int api_state_is_end(void*);
+extern int client_cx_process(void*);
+extern void next_turn(void *client_cx);
+extern int  get_state(void *api);
+extern void set_event_handler(void *api, void (*fn)(void));
+
+// defined originally in BaseRules.hh, but C++ header... :)
+#define GS_END 0xffff
+
+void	next_turn_callback(void)
+{
+  nouveau_tour(&jeu);
+  render_map();
+}
 
 void	render_map(void)
 {
@@ -35,6 +53,7 @@ void	init_game(void)
     exit(1);
   }
 
+
   font_small = TTF_OpenFont(IMG_PREFIX "font.ttf", 10);
   font_big = TTF_OpenFont(IMG_PREFIX "font.ttf", 14);
   if (!font_small || !font_big)
@@ -50,6 +69,8 @@ void	init_game(void)
     fprintf(stderr, "Unable to open display.  Aborting.\n");
     exit(1);
   }
+
+  SDL_EnableKeyRepeat(100, 300);
 
   sprites = sprites_init();
   if(!sprites)
@@ -94,11 +115,17 @@ void	play_turn(void)
 	  exit(1);
 	  break;
 
+	case SDL_MOUSEBUTTONUP:
+	  xpos = event.button.x / TAILLE_CASE;
+	  ypos = event.button.y / TAILLE_CASE;
+	  render_map();
+	  break;
+
 	case SDL_KEYDOWN:
 	  switch(event.key.keysym.sym)
 	  {
 	    case SDLK_n: /* go to the next turn */
-	      nouveau_tour(&jeu);
+	      next_turn(g_ccx);
 	      done = 1;
 	      break;
 	    case SDLK_q:
@@ -130,16 +157,13 @@ void	play_turn(void)
   }
 }
 
-/* These functions are defined in common stechec rules. */
-extern int api_state_is_end(void*);
-extern int client_cx_process(void*);
-extern void next_turn(void*);
-
 int run(void* foo, void* api, void* client_cx)
 {
   init_game();
+  set_event_handler(api, next_turn_callback);
 
-  while (!api_state_is_end(api))
+  g_ccx = client_cx;
+  while (get_state(api) != GS_END)
   {
     // Play a turn.
     // When this return, it means the user asked to go to
@@ -147,10 +171,7 @@ int run(void* foo, void* api, void* client_cx)
     play_turn();
 
     // Process our messages.
-    while (client_cx_process(client_cx))
-      ;
-    printf("Proceeding to the next turn...\n");
-    next_turn(client_cx);
+    process_messages(client_cx);
   }
 
   //end_game();

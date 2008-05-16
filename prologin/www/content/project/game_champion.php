@@ -72,7 +72,7 @@ function check_action($entry)
       if ($_POST['_form_champ_name'] == "" 
           || $_POST['_form_champ_comment'] == "")
       {
-        style_alert("Tous les champs doivent <EA>tre remplit");
+        style_alert("Tous les champs doivent etre remplis");
         break;
       }
 

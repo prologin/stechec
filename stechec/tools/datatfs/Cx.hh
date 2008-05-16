@@ -43,7 +43,7 @@ enum eCxToken {
 */
 class NetError : public Exception
 {
-public:  
+public:
   //! @brief Standard constructor.
   //! @param msg The failing message.
   NetError(const std::string& msg);
@@ -55,7 +55,7 @@ public:
 */
 class NetSysError : public NetError
 {
-public:  
+public:
   //! @brief Standard constructor.
   //! @param msg The failing message.
   NetSysError(const std::string& msg);
@@ -123,9 +123,12 @@ public:
   //! @note packet is allocated, and never deleted.
   Packet* receive();
 
+  //! @brief Get last error
+  const std::string getLastError() const;
+
   //! @brief Print some debug info into the stream.
   friend std::ostream& operator<< (std::ostream& os, const Cx& cx);
-  
+
 protected:
   virtual bool pollInternal(int* timeout) = 0;
   virtual int recvData(bool use_exception) = 0;
@@ -133,7 +136,7 @@ protected:
 
   //! @brief Print some debug info.
   virtual void print(std::ostream& os) const;
-  
+
   int		fd_;                          ///< The file descriptor.
   int		state_;                       ///< CX_WRITE / CX_READ.
   char          last_error_[64];              ///< Last cx error, if not using exception.

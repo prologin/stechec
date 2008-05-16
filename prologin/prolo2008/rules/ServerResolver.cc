@@ -164,19 +164,24 @@ bool ServerResolver::ApplyChainMove(int dir, int id, int x, int y, int next_x, i
   int target_id;
   if (CanDoSimpleMove(x,y,next_x, next_y, !first) ) {
     if ( (target_id=GetRobotIdInPos(next_x, next_y)) < 0 ||  //we can move to (next_x, next_y), because there is nothing there
-	 ApplyChainMove(dir, target_id, next_x, next_y, 
-			next_x + _directions[dir][0], 
-			next_y + _directions[dir][1], 
+	 ApplyChainMove(dir, target_id, next_x, next_y,
+			next_x + _directions[dir][0],
+			next_y + _directions[dir][1],
 			false, id)) { // we can move, because the robot there can !
-      UpdateRobotPos(id, next_x, next_y, dir, pushed_by, target_id);      
+      UpdateRobotPos(id, next_x, next_y, dir, pushed_by, target_id);
       int hook = g_->_robots[id].GetHook();
       if (first && hook != -1 ) {
 	int dx = x - g_->_robots[hook]._pos_x;
 	int dy = y - g_->_robots[hook]._pos_y;
-	assert(std::abs(dx) + std::abs(dy) <= 1);
+	//	assert(std::abs(dx) + std::abs(dy) <= 1); //debug
 	//take robot hook with us
-	LOG4("Hamster %1 moves to %2,%3, because it was hooked by hamster %4", hook, x, y, id);
-	UpdateRobotPos(hook, x, y, vector_to_direction(-dx, -dy), id);
+	if (std::abs(dx) + std::abs(dy) <= 1) { //debug
+	  LOG4("Hamster %1 moves to %2,%3, because it was hooked by hamster %4", hook, x, y, id);
+	  UpdateRobotPos(hook, x, y, vector_to_direction(-dx, -dy), id);
+	} else {
+	  g_->_robots[id].ResetHook();
+	  LogAction(ACTION_RELEASE_HOOK, id);
+	}
       }
       return true;
     }
@@ -193,9 +198,10 @@ bool ServerResolver::ApplyDrop(int id, int dir, int x, int y, int target_x, int 
     LOG4("Hamster %1 cannot drop the apple, because he doesn't have any !", id);
     return false;
   }
-   
   int target_id = GetRobotIdInPos(target_x, target_y);
-  if ( (target_id < 0 || dir == ICI) && g_->_balls[target_y][target_x] == MAP_EMPTY) {
+  int next_map_content = g_->_map[target_y][target_x];
+  if ( (target_id < 0 || dir == ICI) && g_->_balls[target_y][target_x] == MAP_EMPTY
+       && next_map_content != MAP_WALL  ) {
     LOG4("Hamster %1 dropped apple to cell %2,%3", id, target_x, target_y);
     LogAction(ACTION_DROP_BALL, id, ICI);
     g_->_robots[id].SetBall(false);
@@ -203,7 +209,7 @@ bool ServerResolver::ApplyDrop(int id, int dir, int x, int y, int target_x, int 
     return true;
   }
   if (target_id < 0 || dir == ICI) {
-    LOG4("Hamster %1 cannot drop apple to cell %2,%3, because there is already one in that cell", id, target_x, target_y);
+    LOG4("Hamster %1 cannot drop apple to cell %2,%3, because there is already one in that cell (or this cell is a wall)", id, target_x, target_y);
     return false;
   }
 

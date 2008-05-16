@@ -12,6 +12,9 @@ extern TTF_Font	*font_small, *font_big;
 extern SDL_Surface *numbers[MAX_ROBOTS];
 
 static SDL_Surface *turns[MAX_TURN] = {NULL};
+static SDL_Surface *pos = NULL;
+
+extern int xpos, ypos;
 
 SDL_Surface* MyIMGLoad(const char *filename)
 {
@@ -169,7 +172,7 @@ SDL_Surface** sprites_init()
     for (i = 0; i < MAX_TURN; ++i)
     {
       TTF_SetError("No error. Pwet.");
-      snprintf(buf, 64, "Tour:%i", i + 1);
+      snprintf(buf, 64, "Tour:%i", i);
       turns[i] = TTF_RenderText_Blended(font_big, buf, black);
       if (!turns[i])
 	fprintf(stderr, "SDL_ttf error (turn rendering): %s\n", TTF_GetError());
@@ -226,6 +229,14 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
     blitPos.x = 10;
     blitPos.y = 10;
     SDL_BlitSurface(turns[p->nb_tours - 1], NULL, board, &blitPos);
+
+    SDL_Color black = {0, 0, 0};
+    snprintf(buf, 64, "pos:%i,%i", xpos, ypos);
+    pos = TTF_RenderText_Blended(font_big, buf, black);
+    blitPos.x = 10;
+    blitPos.y = 30;
+    SDL_BlitSurface(pos, NULL, board, &blitPos);
+    SDL_FreeSurface(pos);
 }
 
 

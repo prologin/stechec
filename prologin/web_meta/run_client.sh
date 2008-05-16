@@ -47,9 +47,9 @@ port=$9
 shift
 ip_server=$9
 
-time_limit=200
+time_limit=250
 reserve_time=2000
-memory_limit=20000
+memory_limit=100000
 log_limit=256
 
 # load config and transfert methods.
@@ -84,7 +84,7 @@ champion_path=`dirname $real_lib`
 # Hack for java !
 #
 nm $real_lib | grep -q "_Jv_AttachCurrentThread"
-[ "$?" -eq 0 ] && memory_limit=70000
+[ "$?" -eq 0 ] && memory_limit=250000
 
 #
 # Create client configuration file.
@@ -114,7 +114,7 @@ if [ $is_competition = "0" ]; then
     echo " * Start at: `date +%T`" >> $real_out_file
     echo >> $real_out_file
 
-    $stechec_install_path/bin/stechec $team_id $config_file 2>&1        \
+    $stechec_install_path/bin/stechec --id=$team_id --config=$config_file 2>&1        \
         | $stechec_install_path/bin/log_limit $log_limit                \
         | sed -e 's/\[[01];3[0-9]m//g;s/\[0m//g' >> $real_out_file
 
@@ -137,7 +137,7 @@ if [ $is_competition = "0" ]; then
     # eventually upload log file.
     upload_file $real_out_file $out_file
 else
-    $stechec_install_path/bin/stechec $team_id $config_file                     \
+    $stechec_install_path/bin/stechec --id=$team_id --config=$config_file                     \
        > /dev/null 2> /dev/null 
     res=$?
 fi

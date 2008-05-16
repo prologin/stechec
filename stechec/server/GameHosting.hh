@@ -77,7 +77,7 @@ private:
 
   void spectatorReadiness(Client* cl);
   void servePlaying(Client* cl);
-  void killClient(Client *cl, const std::string& msg);
+  void killClient(Client *cl, const std::string& msg, int msg_prio = 2);
   void waitCoaches();
   void playGame();
   

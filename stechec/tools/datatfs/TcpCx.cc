@@ -289,5 +289,5 @@ void TcpCx::print(std::ostream& os) const
      << ((addr & 0x00ff0000) >> 16) << "."
      << ((addr & 0x0000ff00) >> 8) << "."
      << (addr & 0x000000ff);
-  os << ":" << remote_port_;
+  os << ":" << ntohs(remote_port_);
 }

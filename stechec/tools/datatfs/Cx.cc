@@ -39,6 +39,7 @@ Cx::Cx()
     buff_recv_head_(0),
     buff_recv_tail_(0)
 {
+  last_error_[0] = 0;
 }
 
 Cx::~Cx()
@@ -46,6 +47,14 @@ Cx::~Cx()
   if (fd_ >= 0)
     closesocket(fd_);
 }
+
+const std::string Cx::getLastError() const
+{
+  if (last_error_[0] == 0)
+    return "No error";
+  return last_error_;
+}
+
 
 void Cx::begin()
 {

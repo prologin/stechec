@@ -44,9 +44,14 @@ SignalHandler::~SignalHandler()
 
 void SignalHandler::catchSignal(int signal)
 {
+  struct timeval t;
+
   assert(inst_);
   if (signal == SIGVTALRM)
     {
+      gettimeofday(&t, NULL);
+      ERR("Time limit exceeded. Go fix your (slow) program.");
+      LOG3("Timestamp: %1:%2", t.tv_sec, t.tv_usec);
       inst_->sigAlrm();
       exit(1); // yeah. easier.
     }
@@ -84,6 +89,7 @@ NutsBarrier::~NutsBarrier()
 
 void    NutsBarrier::setConfigLimits(const ConfSection& cfg)
 {
+
   if (cfg.getValue<bool>("valgrind") || cfg.getValue<bool>("spectator"))
     return;
 
@@ -245,11 +251,11 @@ void                NutsBarrier::reachHardLimit(int)
 */
 void                NutsBarrier::dumbLoop() const
 {
-  int                i, j, k;
+  volatile int	    i, j, k;
 
   k = 42;
   for (i = 0; i < 10000; ++i)
-    for (j = 0; j <= 8000; j++)
+    for (j = 0; j <= 6000; j++)
       k += i * j;
 }
 

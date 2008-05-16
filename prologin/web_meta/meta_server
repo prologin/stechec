@@ -153,8 +153,7 @@ sub process_finish
 	}
 
 	# process has been properly closed, send results to the main_server
-	syslog LOG_DEBUG, "[proc] finished: id: $proc->{'id_match'}, pid: $proc->{'pid'},";
-	syslog LOG_DEBUG, "exit: $proc->{'exit_status'}, slot: $m{'slots'}";
+	syslog LOG_DEBUG, "[proc] finished: id: $proc->{'id_match'}, pid: $proc->{'pid'}, exit: $proc->{'exit_status'}, slot: $m{'slots'}";
 
     send_msg "result $proc->{'cmd'} $proc->{'id_match'} $proc->{'exit_status'}";
     if (length $proc->{'log'} > 0) {
@@ -259,13 +258,14 @@ sub process_read($)
 
 # read command line args
 my %opts = ();
-getopts("vhc:d", \%opts);
+getopts("vhc:df", \%opts);
 if (defined($opts{h}) || defined($opts{v})) {
 	print "meta.pl -[hvcd]\n";
 	print "options:\n";
 	print "  -h          show this help\n";
     print "  -d          debug mode (more verbose)\n";
 	print "  -v          show version\n";
+    print "  -f          run daemonized\n";
 	print "  -c <conf>   use this configuration file [stechec.yml]\n";
 	exit 0;
 }
@@ -273,6 +273,12 @@ if (defined($opts{h}) || defined($opts{v})) {
 # read conf
 $opts{'c'} ||= "stechec.yml";
 my ($cfg) = YAML::LoadFile($opts{c});
+
+# daemonize
+if ($opts{'f'}) {
+    use Proc::Daemon;
+    Proc::Daemon::Init;
+}
 
 # syslog
 openlog("meta_server", LOG_PERROR, LOG_LOCAL0);

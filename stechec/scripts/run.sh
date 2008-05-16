@@ -115,7 +115,7 @@ fi
 #
 # Launch server
 #
-$SERVER_BIN "$1" &
+$SERVER_BIN -c "$1" &
 pid_server=$!
 
 #
@@ -137,12 +137,12 @@ for id in $clients; do
 	STDOUT_REDIR=$(ini_get_val stdout_redir "${client_conf[$id]}")
 
 	if [ "x$USE_GDB" = "x$id" ]; then
-	    gdb -q --args $CLIENT_BIN $id --config="$1"
+	    gdb -q --args $CLIENT_BIN -i $id --config="$1"
 	else
 	    if [[ "x$STDIN_REDIR" != "x" && "x$STDOUT_REDIR" != "x"  ]]; then
-		$VALGRIND $CLIENT_BIN $id --config="$1" < $STDIN_REDIR > $STDOUT_REDIR &
+		$VALGRIND $CLIENT_BIN -i $id --config="$1" < $STDIN_REDIR > $STDOUT_REDIR &
 	    else
-		$VALGRIND $CLIENT_BIN $id --config="$1" &
+		$VALGRIND $CLIENT_BIN -i $id --config="$1" &
 	    fi
 	    pid_client="$pid_client $!"
 	fi

@@ -24,6 +24,7 @@ dist_prolo2008graphics_DATA =	\
 	graphics/hole_horiz2.png	\
 	graphics/hole_vert1.png		\
 	graphics/hole_vert2.png		\
+	graphics/grappin.png		\
 	graphics/font.ttf
 
 dist-hook:

@@ -127,7 +127,7 @@ cmd_cc		= $(CC) $(c_flags) $(cpp_flags) -fPIC -c $< -o $@
 cmd_cxx		= $(CXX) $(cxx_flags) $(cpp_flags) -fPIC -c $< -o $@
 cmd_java	= $(CJ) $(java_flags) -C $<
 cmd_javac	= $(CJ) $(java_flags) -c $< -o $@
-cmd_javai	= $(CJH) $(@:.h=)
+cmd_javai	= $(CJH) -classpath /usr/share/java/libgcj.jar:. $(@:.h=)
 cmd_ocaml	= $(OCAMLC) $(_CAMLFLAGS) -c $< -o $@
 cmd_ocamlo	= $(OCAMLC) -output-obj $(_CAMLFLAGS) $^ -o $@
 

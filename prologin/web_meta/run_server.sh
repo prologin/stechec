@@ -44,7 +44,7 @@ port=$7
 nb_player=$8
 # '--' -> $9
 
-shift 9
+shift 10
 
 # open temporary files for logs.
 tmp_dir=`mktemp -q -d /tmp/match_XXXXXX`
@@ -59,7 +59,7 @@ while [ $# -gt 1 ]; do
     case $1 in
         -map) map=$2 ;;
         -turn) max_turn=$2 ;;
-        *) echo "Warning: Unknown server argument: $1=$2" > $real_out_file
+        *) echo "Warning: Unknown server argument: '$1' => '$2'" > $real_out_file
     esac
     shift 2
 done
@@ -81,7 +81,7 @@ cat > $config_file <<EOF
 [server]
 listen_port=$port
 log=$real_log_file
-verbose=1
+verbose=2
 
 [$contest_lib_name]
 max_turn=$max_turn
@@ -127,7 +127,7 @@ else
     #
     # Run a game, trash all debug output and game log.
     #
-    $stechec_install_path/bin/stechec_server $config_file 2> /dev/null
+    $stechec_install_path/bin/stechec_server --config=$config_file 2> /dev/null
     res=$?
 fi
 

@@ -220,18 +220,18 @@ void GameHosting::servePlaying(Client* cl)
 // Either the socket was closed, or we want to kill the client.
 // In both case, remove the client from our lists (cl_pool_, cl_), and
 // close its connection.
-void GameHosting::killClient(Client* cl, const std::string& msg)
+void GameHosting::killClient(Client* cl, const std::string& msg, int msg_prio)
 {
   Cx* cx = cl->cx_;
 
   cl_pool_.removeElt(cx);
-  cl->setFailReason(msg, 1);
+  cl->setFailReason(msg, msg_prio);
   cl_map_.erase(cx);
   cl_.erase(std::remove(cl_.begin(), cl_.end(), cl), cl_.end());
 
   if (cl->isCoach())
     {
-      LOG5("Coach `%1' died.", cl->getId());
+      LOG5("Coach `%1' died: %2", cl->getId(), msg);
       nb_coach_--;
       if (state_ == ePlaying)
 	if (!rules_->coachKilled(cl->getId(), cl->st_.custom_))
@@ -283,7 +283,10 @@ void GameHosting::waitCoaches()
           switch (it->first)
             {
             case E_FD_CONNECTION_CLOSED:
-              killClient(cl, "Connection closed on other side");
+              if (cx->getLastError() != "No error")
+                killClient(cl, cx->getLastError(), 3);
+              else
+                killClient(cl, "I don't know what to do to help you", 0);
               break;
 
             case E_FD_READ_READY:
@@ -318,7 +321,7 @@ void GameHosting::waitCoaches()
 
 void GameHosting::playGame()
 {
-  LOG5("Game starting... %1 connected", nb_coach_);
+  LOG4("Game starting... %1 connected", nb_coach_);
   rules_->setSendPacketObject(this);
 
   // Copy active coaches into coach list;
@@ -355,7 +358,10 @@ void GameHosting::playGame()
           switch (it->first)
             {
             case E_FD_CONNECTION_CLOSED:
-              killClient(cl, "Connection closed on other side");
+              if (cx->getLastError() != "No error")
+                killClient(cl, cx->getLastError(), 3);
+              else
+                killClient(cl, "I don't know what to do to help you", 0);
               break;
 
             case E_FD_READ_READY:

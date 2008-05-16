@@ -203,7 +203,8 @@ sub computer_periodic
 sub match_pool_init
 {
 	$mconf{'sth_poll_match'} =
-		$dbh->prepare(q{SELECT id, type FROM matchs WHERE status = 0});
+		$dbh->prepare(q{SELECT id, type, is_competition FROM matchs 
+                            WHERE status = 0 ORDER BY is_competition ASC, id ASC});
 	$mconf{'sth_update_status'} =
 		$dbh->prepare(q{UPDATE matchs SET status = ? WHERE id = ?});
 	$mconf{'sth_get_participant'} =
@@ -220,13 +221,14 @@ sub match_pool_init
 }
 
 # create a new match, without reserving a slot for it.
-sub match_create($$)
+sub match_create($$$)
 {
-	my ($id_match, $match_type) = @_;
+	my ($id_match, $match_type, $is_tournament) = @_;
 
 	$mlist{$id_match} = {
 		'id' => $id_match,
 		'type' => $match_type,
+        'is_tournament' => $is_tournament,
 		'started' => time(),
         'computer' => [ ],
 	};
@@ -257,9 +259,9 @@ sub match_finish($$)
 	delete $mlist{$$m{'id'}};
 }
 
-sub match_start($$)
+sub match_start($$$)
 {
-	my ($id_match, $type_match) = @_;
+	my ($id_match, $type_match, $is_tournament) = @_;
 	my @client = ();
 	my $nb_comp;
     my $err;
@@ -297,7 +299,7 @@ sub match_start($$)
 	}
 
     # create the match.
-    my $m = match_create($id_match, $type_match);
+    my $m = match_create($id_match, $type_match, $is_tournament);
     # reserve a slot. we always need at least one.
     my $c = match_add_slot($m);
     if (!defined $c) {
@@ -362,8 +364,8 @@ sub match_pool_poll()
     $mconf{'nb_waiting'} = scalar($mconf{'sth_poll_match'}->rows);
 
 	while (my $row = $mconf{'sth_poll_match'}->fetchrow_hashref) {
-		print "[match $$row{'id'}] started, type: $$row{'type'}\n";
-		last if match_start($$row{'id'}, $$row{'type'}) == -1;
+		print "[match $$row{'id'}] started, type: $$row{'type'}, tournament: $$row{'is_competition'}\n";
+		last if match_start($$row{'id'}, $$row{'type'}, $$row{'is_competition'}) == -1;
         $mconf{'nb_waiting'}--;
 	}
 	$mconf{'sth_poll_match'}->finish;
@@ -563,11 +565,27 @@ sub result_server
     }
 
     # well done !
-    my $sth = $dbh->prepare("UPDATE competiteur SET score = score + ?, log = ? " .
+    my $sth = $dbh->prepare("UPDATE competiteur SET score = ?, log = ? " .
                             "WHERE id_match = ? AND id_team = ? LIMIT 1");
     foreach (@res) {
         $sth->execute($$_{'score'}, $$_{'log'}, $id_match, $$_{'id'});
+
     }
+
+    # update champion's score (training or tournament)
+    my $sth_ch_sel = $dbh->prepare("SELECT id_champion FROM competiteur WHERE id_match = ?");
+    my $sth_ch;
+    if ($m->{'is_tournament'}) {
+        $sth_ch = $dbh->prepare("UPDATE champion SET score_tournament = score_tournament + ? WHERE id = ?");
+    } else {
+        $sth_ch = $dbh->prepare("UPDATE champion SET score_training = score_training + ? WHERE id = ?");
+    }
+    foreach (@res) {
+        $sth_ch_sel->execute($id_match);
+        my $row = $sth_ch_sel->fetchrow_hashref;
+        $sth_ch->execute($$_{'score'}, $row->{'id_champion'});
+    }
+
     match_finish($m, 3);
 }
 

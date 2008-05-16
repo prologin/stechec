@@ -48,7 +48,7 @@ $(NAME)	: $(OBJS) $(HEADER) $(CNI)
 \t$(CJ) -c $< -o $@
 
 %.h 	: %.class
-\t$(CJH) $(@:.h=)
+\t$(CJH) -I. $(@:.h=)
 
 tar:
 \ttar cvzf #{$conf['conf']['player_filename']}.tgz $(SRC) $(CNISRC)

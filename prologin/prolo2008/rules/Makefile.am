@@ -1,8 +1,8 @@
 # -*- Makefile -*-
 
-lib_LTLIBRARIES = robotus.la
+lib_LTLIBRARIES = hamster.la
 
-robotus_la_SOURCES =			\
+hamster_la_SOURCES =			\
 	Api.cc				\
 	Api.hh				\
 	Client.cc			\
@@ -24,15 +24,15 @@ robotus_la_SOURCES =			\
 	load_rules.cc			\
 	interface.cc
 
-robotus_la_LDFLAGS = -module
-robotus_la_LIBADD =						\
+hamster_la_LDFLAGS = -module
+hamster_la_LIBADD =						\
 	$(top_builddir)/prologin/common/libstechec_rules.la
 
 
-robotus_la_CXXFLAGS =					\
-	-DMODULE_NAME=\"robotus\"			\
+hamster_la_CXXFLAGS =					\
+	-DMODULE_NAME=\"hamster\"			\
 	-DMODULE_COLOR=C_RED				\
-	-DLIB_NAME=\"robotus\"				\
+	-DLIB_NAME=\"HAMSTER\"				\
 	-DPKG_DATA_DIR=\"$(pkgdatadir)/prolo2008\"	\
 	-DYAML
 
@@ -46,9 +46,9 @@ INCLUDES 	=				\
 #
 check_PROGRAMS = prolo2008
 
-prolo2008_SOURCES  = check.cc $(robotus_la_SOURCES)
-prolo2008_CXXFLAGS = $(robotus_la_AM_CXXFLAGS)
+prolo2008_SOURCES  = check.cc $(hamster_la_SOURCES)
+prolo2008_CXXFLAGS = $(hamster_la_AM_CXXFLAGS)
 prolo2008_LDADD    =					\
-	$(robotus_la_LIBADD)				\
+	$(hamster_la_LIBADD)				\
 	$(top_builddir)/stechec/tools/libtools.la	\
 	$(LIBDL)

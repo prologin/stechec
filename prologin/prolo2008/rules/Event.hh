@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2007 Prologin
+** Copyright (C) 2008 Prologin
 */
 
 #ifndef EVENT_HH_
@@ -15,7 +15,7 @@
 
 # include "StechecEvent.hh"
 
-class GlobulusEvent : public Event
+class HamsterEvent : public Event
 {
 protected:
   virtual void endOfTurn() = 0;
@@ -25,7 +25,7 @@ private:
 };
 
 
-inline void GlobulusEvent::evStechecPkt(const StechecPkt& pkt)
+inline void HamsterEvent::evStechecPkt(const StechecPkt& pkt)
 {
   switch (pkt.type)
     {

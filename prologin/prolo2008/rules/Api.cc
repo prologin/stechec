@@ -288,5 +288,9 @@ void Api::SwitchSubjectiveGlobalDir(int *dir) {
 
 int Api::actions_faites(int numero) {
   if (numero < 0 || numero >= MAX_ACTIONS) return BAD_ARGUMENT;
-  return g_->_actions_last_turn[numero];
+  int k = g_->_actions_last_turn[numero];
+  int id = (k / 10) % 10;
+  k -= id * 10;
+  ChampionIdToRealId(&id); //hack cette fois-ci.
+  return k + id * 10;
 }

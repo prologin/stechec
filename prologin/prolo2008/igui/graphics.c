@@ -12,6 +12,10 @@ extern TTF_Font	*font_small, *font_big;
 extern SDL_Surface *numbers[MAX_ROBOTS];
 
 static SDL_Surface *turns[MAX_TURN] = {NULL};
+static SDL_Surface *pos = NULL;
+
+extern int xpos, ypos;
+
 
 SDL_Surface* MyIMGLoad(const char *filename)
 {
@@ -95,10 +99,10 @@ SDL_Surface* background_init(const int w, const int h)
         {
             pos.x = i * TAILLE_CASE + 1;
             pos.y = j * TAILLE_CASE + 1;
-            if(type_case(i, j) != TRANCHEE)
+            if(type_case(i, taille_carte_y() - j - 1) != TRANCHEE)
             {
                 SDL_BlitSurface(tiles[SOL], NULL, result, &pos);
-                if(type_case(i, j) == OBSTACLE)
+                if(type_case(i, taille_carte_y() - j - 1) == OBSTACLE)
                     SDL_BlitSurface(obstacles[0], NULL, result, &pos);
             }
             else
@@ -106,20 +110,20 @@ SDL_Surface* background_init(const int w, const int h)
                 SDL_BlitSurface(tiles[TROU], NULL, result, &pos);
 
                 //permet d'afficher des contours aux tranchées
-                if(i > 0 && type_case(i - 1, j) != TRANCHEE)
+                if(i > 0 && type_case(i - 1, taille_carte_y() - j - 1) != TRANCHEE)
                     SDL_BlitSurface(tiles[CONTOUR_V1], NULL, result, &pos);
 
-                if(i < w - 1 && type_case(i + 1, j) != TRANCHEE)
+                if(i < w - 1 && type_case(i + 1, taille_carte_y() - j - 1) != TRANCHEE)
                 {
                     pos.x += TAILLE_CASE - TAILLE_CONTOUR;
                     SDL_BlitSurface(tiles[CONTOUR_V2], NULL, result, &pos);
                     pos.x -= TAILLE_CASE - TAILLE_CONTOUR;
                 }
 
-                if(j > 0 && type_case(i, j - 1) != TRANCHEE)
+                if(j > 0 && type_case(i, taille_carte_y() - j - 1 - 1) != TRANCHEE)
                     SDL_BlitSurface(tiles[CONTOUR_H1], NULL, result, &pos);
 
-                if(j < h - 1 && type_case(i, j + 1) != TRANCHEE)
+                if(j < h - 1 && type_case(i, taille_carte_y() - j -1 + 1) != TRANCHEE)
                 {
                     pos.y += TAILLE_CASE - TAILLE_CONTOUR;
                     SDL_BlitSurface(tiles[CONTOUR_H2], NULL, result, &pos);
@@ -169,7 +173,7 @@ SDL_Surface** sprites_init()
     for (i = 0; i < MAX_TURN; ++i)
     {
       TTF_SetError("No error. Pwet.");
-      snprintf(buf, 64, "Tour:%i", i + 1);
+      snprintf(buf, 64, "Tour:%i", i);
       turns[i] = TTF_RenderText_Blended(font_big, buf, black);
       if (!turns[i])
 	fprintf(stderr, "SDL_ttf error (turn rendering): %s\n", TTF_GetError());
@@ -189,8 +193,6 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
   n = 0;
 #endif
 
-  printf("Rendering the map.\n");
-
   // Blits the background
   SDL_BlitSurface(bg, 0, board, NULL);
   blitPos.w = TAILLE_CASE;
@@ -199,25 +201,26 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
   // Then all the hamsters
   for(i = 0; i < MAX_ROBOTS; i++)
   {
-    printf("Drawing hamster %i\n", i);
+    //    printf("Displaying hamster id %d in pos_y %d\n",
+    //	   i, 
+    //	   p->tours[n].hamsters[i].y );
+
     blitPos.x = p->tours[n].hamsters[i].x * TAILLE_CASE;
     blitPos.y = p->tours[n].hamsters[i].y * TAILLE_CASE;
     if (i < 3)
-      SDL_BlitSurface(porte_pomme(i) ? sprites[HAMSTER1_POMME] : sprites[HAMSTER1], 0, board, &blitPos);
+      SDL_BlitSurface(porte_pomme(i) ? sprites[HAMSTER2_POMME] : sprites[HAMSTER2], 0, board, &blitPos);
     else
-
-    // Blit du nombre
-    SDL_BlitSurface(porte_pomme(i) ? sprites[HAMSTER2_POMME] : sprites[HAMSTER2], 0, board, &blitPos);
+      SDL_BlitSurface(porte_pomme(i) ? sprites[HAMSTER1_POMME] : sprites[HAMSTER1], 0, board, &blitPos);
     // Valeurs hardcodees.
     blitPos.x += TAILLE_CASE / 2 - 2;
     blitPos.y += TAILLE_CASE / 1.5 + 1;
-    SDL_BlitSurface(numbers[i], 0, board, &blitPos);
+    SDL_BlitSurface(numbers[(i + MAX_ROBOTS / 2) % MAX_ROBOTS], 0, board, &blitPos);
   }
 
   // Draws apples
   for (y = 0; y < taille_carte_y(); ++y)
     for (x = 0; x < taille_carte_x(); ++x)
-      if (pomme(x, y))
+      if (pomme(x, taille_carte_y() - y - 1))
       {
 	blitPos.x = x * TAILLE_CASE;
 	blitPos.y = y * TAILLE_CASE;
@@ -226,6 +229,15 @@ void display_game(Partie *p, SDL_Surface *board, SDL_Surface **sprites, SDL_Surf
     blitPos.x = 10;
     blitPos.y = 10;
     SDL_BlitSurface(turns[p->nb_tours - 1], NULL, board, &blitPos);
+
+    SDL_Color black = {0, 0, 0};
+    snprintf(buf, 64, "pos:%i,%i", xpos, ypos);
+    pos = TTF_RenderText_Blended(font_big, buf, black);
+    blitPos.x = 10;
+    blitPos.y = 30;
+    SDL_BlitSurface(pos, NULL, board, &blitPos);
+    SDL_FreeSurface(pos);
+
 }
 
 

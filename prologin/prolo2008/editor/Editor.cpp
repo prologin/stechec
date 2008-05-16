@@ -194,7 +194,8 @@ static int	InitMapFromFile(void)
 // Performs a symetry on the map.
 // If `up_to_down' is true, the upper part of the map
 // is copied to the half bottom.
-static void	MakeSymMap(bool up_to_down)
+// when central is false, the central synmetry is applied
+static void	MakeSymMap(bool up_to_down, bool central=false)
 {
   unsigned int	y;
   unsigned int	x;
@@ -204,23 +205,26 @@ static void	MakeSymMap(bool up_to_down)
   {
     for (x = 0; x < gl_xsize; ++x)
     {
+      int xx = x;
+      if (central)
+	xx = gl_xsize - x - 1;
       newy = (gl_ysize - 1) - y;
 
       switch (gl_map[y][x])
       {
 	case MAP_ROBOT_TEAM1:
-	  gl_map[newy][x] = MAP_ROBOT_TEAM2;
+	  gl_map[newy][xx] = MAP_ROBOT_TEAM2;
 	  break;
 
 	case MAP_ROBOT_TEAM2:
-	  gl_map[newy][x] = MAP_ROBOT_TEAM1;
+	  gl_map[newy][xx] = MAP_ROBOT_TEAM1;
 	  break;
 
 	case MAP_EMPTY:
 	case MAP_ROCK:
 	case MAP_APPLE:
 	case MAP_HOLE:
-	  gl_map[newy][x] = gl_map[y][x];
+	  gl_map[newy][xx] = gl_map[y][x];
 	  break;
 	default:
 	  std::cerr << "Internal error -- invalid character in map..." << std::endl;
@@ -294,9 +298,9 @@ static void	KeyPressHandler(SDL_Event *e)
 
   sym = e->key.keysym.sym;
 
-  // Ctrl-W
   if (e->key.keysym.mod & KMOD_LCTRL)
   {
+    // Ctrl-W
     if (sym == SDLK_w)
     {
       WriteMapToFile();
@@ -305,6 +309,12 @@ static void	KeyPressHandler(SDL_Event *e)
     if (sym == SDLK_UP || sym == SDLK_DOWN)
     {
       MakeSymMap(sym == SDLK_DOWN);
+      RenderMap();
+      return ;
+    }
+    if (sym == SDLK_LEFT || sym == SDLK_RIGHT)
+    {
+      MakeSymMap(sym == SDLK_RIGHT, true);
       RenderMap();
       return ;
     }
@@ -358,6 +368,8 @@ int	main(int argc, char *argv[])
       "Ctrl-W     Sauvegarde la map\n" <<
       "Ctrl-Up    Execute une symetrie du haut de la map vers le bas\n" <<
       "Ctrl-Down  Idem, du bas vers le haut\n" <<
+      "Ctrl-Left   Execute une symetrie *centrale* du haut de la map vers le bas\n" <<
+      "Ctrl-Right  Idem, du bas vers le haut\n" <<
       "Ctrl-g     Affiche/masque la grille\n" <<
       "\nBug report: deather@prologin.org" << std::endl;
     return (1);

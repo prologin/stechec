@@ -31,10 +31,10 @@ GameData::GameData(void)
 void GameData::ComputeDistances() {
 
   assert(INFINI >= _map_size_y * _map_size_x);
-  
+
   LOG4("ComputeDistances");
   int dir[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
-  
+
   for (int y0=0 ; y0 < _map_size_y ; y0++)
     for (int x0=0 ; x0 < _map_size_x ; x0++) {
       _distances[0][y0][x0][y0][x0] = 0;
@@ -48,7 +48,7 @@ void GameData::ComputeDistances() {
 	if ( cur == next && (cur == MAP_HOLE || cur == MAP_EMPTY) || // case EMPTY->EMPTY or HOLE -> HOLE
 	     cur == MAP_EMPTY && next == MAP_HOLE ) // case EMPTY -> HOLE
 	  _distances[0][y0][x0][y1][x1] = 1;
-	if ( next != MAP_WALL) // cas ou les tranchees ne comptent pas
+	if ( next != MAP_WALL && cur != MAP_WALL ) // cas ou les tranchees ne comptent pas
 	  _distances[1][y0][x0][y1][x1] = 1;
       }
     }
@@ -57,10 +57,10 @@ void GameData::ComputeDistances() {
   int n = _map_size_x * _map_size_y;
   for (int sort_tranchee = 0 ; sort_tranchee < 2 ; ++sort_tranchee) {
     for (int start=0 ; start < n ; start++) {
-      vertex start_vt = {start / _map_size_x, start % _map_size_x, 0};
+      vertex start_vt = {start % _map_size_x, start / _map_size_x, 0};
       bool visited[MAP_MAX_Y][MAP_MAX_X];
       std::fill(*visited, *visited + MAP_MAX_X * MAP_MAX_Y, false);
-      std::deque<vertex>file;    
+      std::deque<vertex>file;
       file.push_back(start_vt);
       while (!file.empty()) {
 	vertex cur = file.front();
@@ -69,18 +69,17 @@ void GameData::ComputeDistances() {
 	visited[cur.y][cur.x] = true;
 	_distances[sort_tranchee][start_vt.y][start_vt.x][cur.y][cur.x] = cur.d;
 	for (int d=0 ; d < 4 ; d++) {
-	  vertex next = {cur.x + dir[d][0], cur.y + dir[d][1], 
+	  vertex next = {cur.x + dir[d][0], cur.y + dir[d][1],
 			 cur.d + _distances[sort_tranchee][cur.y][cur.x][next.y][next.x]};
 	  if (next.d >= INFINI) continue;
 	  if (next.x < 0 || next.y < 0 || next.x >= _map_size_x || next.y >= _map_size_y) continue;
-	  if (visited[next.y][next.x]) continue;    
+	  if (visited[next.y][next.x]) continue;  // only speedup
 	  file.push_back(next);
 	}
       }
     }
   }
 
-  
   //to be removed (legacy method that works well, but a bit slow : only there to performs checks on the new method)
     /*
   int check_distances[MAP_MAX_Y][MAP_MAX_X][MAP_MAX_Y][MAP_MAX_X];
@@ -138,7 +137,7 @@ bool	GameData::makeChecks() {
   if (ball_count < 0)
     ball_count = bc;
   else
-    assert(ball_count == bc);  
+    assert(ball_count == bc);
 
   // remaining bullets are ok :
   for (int id = 0 ; id < MAX_ROBOTS ; id++) {

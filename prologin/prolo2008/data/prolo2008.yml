@@ -11,15 +11,15 @@ constant:
   - 
     cst_name: BAD_ARGUMENT
     cst_val: -1
-    cst_comment: Un des arguments passés à la fonction est incorrect.
+    cst_comment: Un des arguments passes a la fonction est incorrect.
   -
     cst_name: TOO_MANY_ORDERS
     cst_val: -2
-    cst_comment: Vous avez envoyé trop d'ordres à votre hamster.
+    cst_comment: Vous avez envoye trop d'ordres a votre hamster.
   -
     cst_name: SUCCESS
     cst_val: 0
-    cst_comment: La commande s'est correctement effectuée.
+    cst_comment: La commande s'est correctement effectuee.
   -
     cst_name: INFINI
     cst_val: 10000
@@ -28,11 +28,11 @@ constant:
   -
     cst_name: NORMAL
     cst_val: 0
-    cst_comment: Case de terrain qui n'est ni une tranchée, ni un obstacle
+    cst_comment: Case de terrain qui n'est ni une tranchee, ni un obstacle
   -
     cst_name: TRANCHEE
     cst_val: 1
-    cst_comment: Tranchée du terrain
+    cst_comment: Tranchee du terrain
   -
     cst_name: OBSTACLE
     cst_val: 2
@@ -57,14 +57,14 @@ constant:
   -
     cst_name: ICI
     cst_val: 4
-    cst_comment: Cette constante n'est utilisée que pour la fonction lacher\_pomme
+    cst_comment: Cette constante n'est utilisee que pour la fonction lacher\_pomme
 
 function:
   - doc_extra: |
      \subsection{Fonctions d'information}
      Toutes les fonctions peuvent renvoyer les constantes
      \textbf{BAD_ARGUMENT} quand au moins un des
-     arguments est incorrect (même si cela n'est pas précisé pour chaque
+     arguments est incorrect (meme si cela n'est pas precise pour chaque
      fonction). Par exemple, cela se produit si vous appelez
      la fonction \texttt{type_case} avec \texttt{x=13} et \texttt{y=5142}.
   -
@@ -107,7 +107,7 @@ function:
       - [id, int, id du pomme]
   -
     fct_name: distance
-    fct_summary: Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2). ce est calculée en tenant compte des déplacements possibles d'un seul hamster. Cette fonction a un temps de calcul nul. Lorsque sort_tranchee vaut false, la distance est calculée en tenant compte des déplacements possibles d'un seul hamster. Lorsque sort_tranchee vaut true, la distance est calculée comme s'il n'y avait pas de tranchees.
+    fct_summary: Renvoie la distance minimale pour aller de (x1,y1) a (x2,y2). ce est calculee en tenant compte des deplacements possibles d'un seul hamster. Cette fonction a un temps de calcul nul. Lorsque sort_tranchee vaut false, la distance est calculee en tenant compte des deplacements possibles d'un seul hamster. Lorsque sort_tranchee vaut true, la distance est calculee comme s'il n'y avait pas de tranchees.
     fct_ret_type: int
     fct_arg:
       - [x1, int, la colonne du premier point]
@@ -124,7 +124,7 @@ function:
       - [y, int, la ligne]
   -
     fct_name: pomme
-    fct_summary: Indique s'il y a une pomme non portée sur la case (x,y)
+    fct_summary: Indique s'il y a une pomme non portee sur la case (x,y)
     fct_ret_type: int
     fct_arg:
       - [x, int, la colonne]
@@ -139,52 +139,52 @@ function:
      \subsection{Fonctions d'action}
      Toutes les fonctions peuvent renvoyer les constantes
      \textbf{BAD_ARGUMENT} quand au moins un des
-     arguments est incorrect (même si cela n'est pas précisé pour chaque
-     fonction), ou \textbf{TOO_MUCH_ORDERS} quand vous avez envoyé trop 
-     d'ordres à l'un de vos hamsters.
+     arguments est incorrect (meme si cela n'est pas precise pour chaque
+     fonction), ou \textbf{TOO_MUCH_ORDERS} quand vous avez envoye trop 
+     d'ordres a l'un de vos hamsters.
   -
     fct_name: deplacer
-    fct_summary: Demande un déplacement du hamster
+    fct_summary: Demande un deplacement du hamster
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
     - [direction, int, l'une des quatre directions]
   -
     fct_name: turbo
-    fct_summary: Incrémente le turbo d'un hamster
+    fct_summary: Incremente le turbo d'un hamster
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
   -
     fct_name: lacher_pomme
-    fct_summary: Fait lacher la pomme à votre hamster, dans l'une des cinq directions
+    fct_summary: Fait lacher la pomme a votre hamster, dans l'une des cinq directions
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
     - [direction, int, l'une des cinq directions vers laquelle vous voulez lacher la pomme]
   -
     fct_name: ramasser_pomme
-    fct_summary: Demande à votre hamster de ramasser la pomme sur sa case courante
+    fct_summary: Demande a votre hamster de ramasser la pomme sur sa case courante
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
   -
     fct_name: grappin
-    fct_summary: Demande à votre hamster de lancer le grappin
+    fct_summary: Demande a votre hamster de lancer le grappin
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
     - [direction, int, l'une des quatre directions vers laquelle vous voulez lancer le grappin]
   -
     fct_name: trognon
-    fct_summary: Demande à votre hamster id de lancer un trognon dans une direction
+    fct_summary: Demande a votre hamster id de lancer un trognon dans une direction
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
     - [direction, int, l'une des quatre direction vers laquelle vous lancez le trognon]
   -
     fct_name: attendre
-    fct_summary: Ordonne à votre hamster de ne rien faire
+    fct_summary: Ordonne a votre hamster de ne rien faire
     fct_ret_type: int
     fct_arg:
     - [id, int, l'identifiant de votre hamster]
@@ -192,8 +192,8 @@ function:
 user_function:
   - doc_extra: |-
      \subsection{Ce qu'il faut faire}
-     Chacun est libre de mener la stratégie qui lui semble la plus
-     adaptée, et a entière liberté sur la façon de l'implémenter.
-     Toutefois il est demandé d'écrire deux fonctions en particulier :
-     une fonction qui sera appelée au début de la partie, et une autre
-     qui sera appelée à chaque tour.
+     Chacun est libre de mener la strategie qui lui semble la plus
+     adaptee, et a entière liberte sur la façon de l'implementer.
+     Toutefois il est demande d'ecrire deux fonctions en particulier :
+     une fonction qui sera appelee au debut de la partie, et une autre
+     qui sera appelee a chaque tour.

@@ -171,9 +171,9 @@ class JavaFileGenerator < FileGenerator
     @f.print prefix, " ", ret_type, " ", name, "("
     if args != nil and args != []
       args[0..-2].each do |arg|
-        @f.print arg[1], " ", arg[0], ", "
+        @f.print conv_type(arg[1]), " ", arg[0], ", "
       end
-      @f.print args[-1][1], " ", args[-1][0]
+      @f.print conv_type(args[-1][1]), " ", args[-1][0]
     end
     @f.print ")"
   end
