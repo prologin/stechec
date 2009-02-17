@@ -93,7 +93,7 @@ inline void StechecApi::SendToServer(const StechecPkt& com)
        it != commit_.end(); ++it)
     {
       if (it->getNbArg() != com.getNbArg() || it->type != com.type)
-        break;
+        continue;
       int i;
       for (i = 0; i < com.getNbArg(); i++)
         if (it->arg[i] != com.arg[i])
