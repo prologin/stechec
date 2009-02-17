@@ -1,4 +1,4 @@
 #!/bin/sh
-sudo cp prolo2008.yml /usr/local/share/stechec/prolo2008/
-generator rules prolo2008 /tmp/prolo2008
-generator player prolo2008 /tmp/p2008
+sudo cp prolo2009.yml /usr/local/share/stechec/prolo2009/
+generator rules prolo2009 /tmp/prolo2009
+generator player prolo2009 /tmp/p2009
