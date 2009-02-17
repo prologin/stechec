@@ -50,10 +50,22 @@ to the script file : gen/" + script
   end
 
   def for_each_user_fun(print_comment = true, &block)
-    [ {"fct_summary" => "Fonction appele au debut de la partie", 
-        "fct_name"=>"init_game"}, 
-      {"fct_summary" => "Fonction appele a chaque tour", 
-        "fct_name" => "play_turn"},
+    [ {"fct_summary" => "Fonction appelee au debut de la partie", 
+        "fct_name" => "init_game"}, 
+      {"fct_summary" => "Fonction appelee a la fin de la partie",
+        "fct_name" => "end_game"},
+
+# Valid until prolo2008:
+#      {"fct_summary" => "Fonction appele a chaque tour", 
+#        "fct_name" => "play_turn"},
+
+# Only used for prolo2009:
+      {"fct_summary" => "Fonction appelee a chaque phase de jeu", 
+       "fct_name" => "jouer"},
+      {"fct_summary" => "Fonction appelee a chaque phase d'enchere", 
+       "fct_name" => "enchere"},
+      {"fct_summary" => "Fonction appelee a chaque phase de placement de monument", 
+       "fct_name" => "placement"},
     ].each do |x|
       print_multiline_comment(x['fct_summary']) if print_comment
       block.call(x['fct_name'], x['fct_ret_type'] , x['fct_arg'])

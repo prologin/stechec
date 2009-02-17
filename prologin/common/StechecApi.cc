@@ -57,7 +57,6 @@ bool StechecApi::switchTeam(int team_id)
   return true;
 }
 
-
 //
 // C interface to common api functions used by all contests.
 //
@@ -81,4 +80,10 @@ extern "C" void api_do_end_turn(void* api)
 {
   StechecApi* stechec_api = reinterpret_cast<StechecApi*>(api);
   stechec_api->doEndTurn();
+}
+
+extern "C" int api_get_nb_team(void* api)
+{
+  StechecApi* stechec_api = reinterpret_cast<StechecApi*>(api);
+  return stechec_api->getTeamNumber();
 }
