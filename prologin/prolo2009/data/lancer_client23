@@ -1,0 +1,3 @@
+#!/bin/sh
+/opt/bin/stechec -i 2 -c config.ini&
+/opt/bin/stechec -i 3 -c config.ini&
