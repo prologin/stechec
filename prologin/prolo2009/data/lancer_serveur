@@ -1,0 +1,3 @@
+#!/bin/sh
+stechec_server -c config_move.ini
+

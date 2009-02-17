@@ -1,0 +1,2 @@
+#!/bin/sh
+stechec -i 2 -c config_move.ini

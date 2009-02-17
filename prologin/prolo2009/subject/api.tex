@@ -1,0 +1,988 @@
+
+
+%
+% Ce fichier a été généré avec gen/make_tex.rtex
+% Ne faites pas l'autiste, ne le modifiez pas directement !
+%
+
+\subsection{Constantes}\subsubsection{Les codes d'erreur}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & INFINI \\
+\textbf{Valeur:} & 30000 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & HORS\_TERRAIN \\
+\textbf{Valeur:} & -1 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & PAS\_DE\_MAISON \\
+\textbf{Valeur:} & -2 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & PAS\_DE\_MONUMENT \\
+\textbf{Valeur:} & -3 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & FINANCES\_DEPASSEES \\
+\textbf{Valeur:} & -4 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & BLOCAGE \\
+\textbf{Valeur:} & -5 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & TROP\_DE\_MAISONS \\
+\textbf{Valeur:} & -6 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & JOUEUR\_INCORRECT \\
+\textbf{Valeur:} & -7 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & NON\_CONNEXE \\
+\textbf{Valeur:} & -8 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & CASE\_OCCUPEE \\
+\textbf{Valeur:} & -9 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & ACTION\_INTERDITE \\
+\textbf{Valeur:} & -10 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & TROP\_LOIN \\
+\textbf{Valeur:} & -11 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & SUCCES \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+\subsubsection{Les constantes de possession}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAIRIE \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+\subsubsection{Les constantes de terrain}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & VIDE \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & Case de terrain vide \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAISON \\
+\textbf{Valeur:} & 1 \\
+\textbf{Description:} & Case de terrain qui contient une maison \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & RESERVATION \\
+\textbf{Valeur:} & 2 \\
+\textbf{Description:} & Case de terrain réservée \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MONUMENT \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & Case de terrain qui contient un monument \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & ROUTE \\
+\textbf{Valeur:} & 4 \\
+\textbf{Description:} & Case de terrain qui contient une route \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+\subsubsection{Bornes, tailles}
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & MAX\_MONUMENTS \\
+\textbf{Valeur:} & 13 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{ll}
+\textbf{Constante:} & TAILLE\_CARTE \\
+\textbf{Valeur:} & 100 \\
+\textbf{Description:} & todo \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\subsection{Fonctions d'information}
+Toutes les fonctions peuvent renvoyer les constantes
+\textbf{BAD\_ARGUMENT} quand au moins un des
+arguments est incorrect (même si cela n'est pas précisé pour chaque
+fonction). Par exemple, cela se produit si vous appelez
+la fonction \texttt{type\_case} avec \texttt{x=13} et \texttt{y=5142}.
+
+\begin{minipage}{\linewidth}
+\functitle{type\_case}
+
+\begin{lst-c++}
+int type_case(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le type de la case \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & todo \\
+      
+    
+      
+        \textsl{y}~: & todo \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{valeur\_case}
+
+\begin{lst-c++}
+int valeur_case(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie la valeur de la case \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & todo \\
+      
+    
+      
+        \textsl{y}~: & todo \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{appartenance}
+
+\begin{lst-c++}
+int appartenance(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & todo \\
+      
+    
+      
+        \textsl{y}~: & todo \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{type\_monument}
+
+\begin{lst-c++}
+int type_monument(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & todo \\
+      
+    
+      
+        \textsl{y}~: & todo \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{portee\_monument}
+
+\begin{lst-c++}
+int portee_monument(int num_monument)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_monument}~: & todo \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{prestige\_monument}
+
+\begin{lst-c++}
+int prestige_monument(int num_monument)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_monument}~: & todo \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{numero\_tour}
+
+\begin{lst-c++}
+int numero_tour()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le numero du tour \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{commence}
+
+\begin{lst-c++}
+int commence()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Numero du joueur qui commence \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{montant\_encheres}
+
+\begin{lst-c++}
+int montant_encheres(int num_joueur)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_joueur}~: & todo \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{score}
+
+\begin{lst-c++}
+int score(int num_joueur)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_joueur}~: & id du joueur \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{finances}
+
+\begin{lst-c++}
+int finances(int num_joueur)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_joueur}~: & id du joueur \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{monument\_en\_cours}
+
+\begin{lst-c++}
+int monument_en_cours()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{distance}
+
+\begin{lst-c++}
+int distance(int x1, int y1, int x2, int y2)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x1}~: & la colonne du premier point \\
+      
+    
+      
+        \textsl{y1}~: & la ligne du premier point \\
+      
+    
+      
+        \textsl{x2}~: & la colonne du second point \\
+      
+    
+      
+        \textsl{y2}~: & la ligne du second point \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{route\_possible}
+
+\begin{lst-c++}
+int route_possible(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{construction\_possible}
+
+\begin{lst-c++}
+int construction_possible(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{cout\_achat\_maison}
+
+\begin{lst-c++}
+int cout_achat_maison()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{cout\_achat\_route}
+
+\begin{lst-c++}
+int cout_achat_route()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{mon\_tour}
+
+\begin{lst-c++}
+int mon_tour()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+\subsection{Fonctions d'action}
+Toutes les fonctions peuvent renvoyer les constantes
+\textbf{BAD\_ARGUMENT} quand au moins un des
+arguments est incorrect (même si cela n'est pas précisé pour chaque
+fonction), ou \textbf{TOO\_MUCH\_ORDERS} quand vous avez envoyé trop 
+d'ordres à l'un de vos hamsters. TODO
+
+\begin{minipage}{\linewidth}
+\functitle{construire\_route}
+
+\begin{lst-c++}
+int construire_route(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{construire\_maison}
+
+\begin{lst-c++}
+int construire_maison(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{reserver\_case}
+
+\begin{lst-c++}
+int reserver_case(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{detruire\_maison}
+
+\begin{lst-c++}
+int detruire_maison(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{vendre\_maison}
+
+\begin{lst-c++}
+int vendre_maison(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{encherir}
+
+\begin{lst-c++}
+int encherir(int montant)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{montant}~: & Le montant de votre enchère \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{construire\_monument}
+
+\begin{lst-c++}
+int construire_monument(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & todo \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+
+\end{document}

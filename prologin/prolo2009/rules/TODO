@@ -1,0 +1,6 @@
+implémenter g_->cases_non_blocantes. Idée : mémoriser le nombre de routes qui peuvent accéder à l'extérieur, et commencer à calculer des choses seulement lorsqu'il n'y en a qu'une ? (pour chacune de ses routes, mémoriser le chemin vers l'extérieur ?). Problème de flot en fait. Idée : pour chaque case, essayer de la retirer, et relancer les dfs ? Les cases blocantes sont parmis lesquelles tous les chemins des dfs arbitraires passent.
+
+gérer les spécificités de prolo2009 (3 tours différents, etc..) proprement ?
+(main.c, affichage des tours...)
+
+faire un champion
