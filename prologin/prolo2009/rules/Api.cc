@@ -362,7 +362,7 @@ int Api::vendre_maison(int x, int y)
     return ACTION_INTERDITE; // change that ? todo
 
   const int earning = ScoreConstructionDepuisValeurCase(g_->valeurs_cases_[y][x]);
-    
+
   // action:
   g_->argent_[g_->getTeamId()] += earning;
   g_->constructions_[y][x].second = MAIRIE;

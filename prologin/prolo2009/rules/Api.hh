@@ -76,6 +76,7 @@ public:
    int reserver_case(int x, int y);
    int detruire_maison(int x, int y);
    int vendre_maison(int x, int y);
+  // Seule la première enchère est prise en compte. Les autres sont rejetées.
    int encherir(int montant);
    int construire_monument(int x, int y);
 

@@ -129,7 +129,7 @@ void ServerResolver::ResolveMoneyAndScores(CommandListRef cmdList[])
   for (int i = FIRST_CLIENT_MSG ; i < LAST_MSG ; ++i) {
     for (CommandListRef::iterator cmd = cmdList[i].begin() ; cmd != cmdList[i].end() ; ++cmd) {
       StechecPkt *pkt= *cmd;
-      int team = pkt->client_id;
+      const int team = pkt->client_id;
       assert(team >= 0 && team < g_->getNbTeam());
       switch (i) {
       case BUILD_ROAD:	
