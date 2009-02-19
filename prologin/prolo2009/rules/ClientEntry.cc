@@ -55,9 +55,9 @@ int        ClientEntry::initGame()
 
 int        ClientEntry::beforeNewTurn()
 {
-
   g_->ComputeSecondaryData();
   g_->InitTemporaryData();
+  g_->ComputeNonBlockingCells();
   g_->MakeChecks();
   return 0;
 }

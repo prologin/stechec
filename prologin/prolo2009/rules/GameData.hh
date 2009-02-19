@@ -135,7 +135,14 @@ public:
   // Performs only changes in the map. (constructions_).
   void ApplyBuildOrder(e_com_type type, int param[10]);
 
-  bool MakeChecks(bool server = false); //performs some checks to see if all is going well
+  // Perform some checks to see if all is going well.
+  // Quite fast and not harmful : you can do this whenever you want.
+  bool MakeChecks(bool server = false);
+
+  // performs some tests for the detection of the blocking cells (ComputeNonBlockingCells function).
+  // Crashs if there is a bug
+  // Call this only for testing purposes, it modifies the game !
+  void UnitTestBlockingCells();
 
 private:
   bool initialized_;

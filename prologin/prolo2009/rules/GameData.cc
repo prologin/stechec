@@ -212,10 +212,6 @@ int GameData::CoutConstructions(int routes, int maisons) {
 
 // A couple of the following functions computes the non blocking cells.
 
-// Do a DFS from the outside of the game, and see which road cells are accessible.
-// Get the paths to go to these road cells. Blocking cells are those through which go
-// all these paths.
-
 typedef std::pair<int, int> pii;
 typedef std::set<pii> spii;
 typedef std::vector<pii> vpii;
@@ -270,14 +266,21 @@ static void GetBlockingCandidates(GameData *g) {
   for (int y = 0 ; y < TAILLE_CARTE && (!found_one_road || !blocking_candidates.empty()) ; ++y) {
     for (int x = 0 ; x < TAILLE_CARTE ; ++x) {
       if (g->constructions_[y][x].first == ROUTE) {
+	LOG2("Found road in %1 %2", y, x);
 	for (int k = 0 ; k < 4 ; k++) {
+	  bool reached_other_path = false;
 	  int yy = y + directions4[k][0];
 	  int xx = x + directions4[k][1];
 	  if (dans_les_bornes(yy, xx) && visited[yy][xx] == 1) {
 	    assert(g->constructions_[yy][xx].first == VIDE);
 	    spii path_cells;
 	    // Suivre le chemin à partir de (yy,xx).
-	    while (yy != -1 && xx != -1 && visited[yy][xx] == 1) {
+	    while (yy != -1 && xx != -1) {
+	      if (visited[yy][xx] == 2) {
+		reached_other_path = true;
+		break;
+	      }
+	      assert(visited[yy][xx] == 1);
 	      visited[yy][xx] = 2;
 	      // Prune cells that are sourrounded by 8 empty cells. (hence, they can't be blocking cells).
 	      bool prune = true;
@@ -286,10 +289,10 @@ static void GetBlockingCandidates(GameData *g) {
 		int c = xx + directions8[p][1];
 		if (!dans_les_bornes(l, c) || g->constructions_[l][c].first != VIDE) {
 		  prune = false;
-		}
-		  
+		}		  
 	      }
 	      if (!prune) {
+		LOG2("Inserted %1 %2 along the current path as a possibly blocking cell", yy, xx);
 		path_cells.insert(std::make_pair(yy, xx));
 	      }
 	      int nxx = prev[yy][xx].second;
@@ -299,9 +302,17 @@ static void GetBlockingCandidates(GameData *g) {
 	    // intersecting blocking_candidates and path_cells.
 	    if (found_one_road) {
 	      vpii out;
-	      std::set_intersection(path_cells.begin(), path_cells.end(), blocking_candidates.begin(), blocking_candidates.end(),
+	      if (reached_other_path) {
+		std::set_difference(blocking_candidates.begin(), blocking_candidates.end(), path_cells.begin(), path_cells.end(),
 				    std::back_inserter(out));
-	      blocking_candidates = std::set<std::pair<int, int> >(out.begin(), out.end());
+		blocking_candidates = std::set<std::pair<int,int> >(out.begin(), out.end());
+	      } else {
+		//intersection : (should be empty).
+		std::set_intersection(blocking_candidates.begin(), blocking_candidates.end(), path_cells.begin(), path_cells.end(),
+				      std::back_inserter(out));
+		blocking_candidates = std::set<std::pair<int, int> >(out.begin(), out.end());
+		assert(blocking_candidates.empty());
+	      }
 	    } else {
 	      found_one_road = true;
 	      blocking_candidates = path_cells;
@@ -311,7 +322,9 @@ static void GetBlockingCandidates(GameData *g) {
       }
     }
   }
-
+  LOG2("There are %1 blocking candidates", blocking_candidates.size());
+  if (blocking_candidates.size())
+    LOG2("First one is : %1 %2", blocking_candidates.begin()->first, blocking_candidates.begin()->second);
 }
 
 static bool CanReachRoad(int x, int y, int forbiddenx, int forbiddeny, GameData *g) {
@@ -537,4 +550,122 @@ bool GameData::MakeChecks(bool server) {
     }
   }
 #endif
+  if (GetRealTurn() == 2)
+    UnitTestBlockingCells();
+}
+
+
+
+static void ReplaceGameGrid(const char* grid[], const int n, GameData *g) {
+  fill(*g->constructions_, *g->constructions_ + TAILLE_CARTE * TAILLE_CARTE, std::make_pair(VIDE, -1));
+  assert(n <= TAILLE_CARTE && n > 0);
+  for (int i = 0 ; i < n ; ++i) {
+    const int m = strlen(grid[i]);
+    assert(m <= TAILLE_CARTE && m > 0);
+    for (int j = 0 ; j < m ; ++j) {
+      pii& p = g->constructions_[i][j];
+      const char c = grid[i][j];
+      if (c == '-')
+	p = std::make_pair(ROUTE, -1);
+      else if (c == '.')
+	p = std::make_pair(VIDE, -1);
+      else 
+	p = std::make_pair(MAISON, 0);
+    }
+  }
+}
+
+static void AssertBlocking(const vpii& blocking, GameData *g) {
+  for (int y = 0 ; y < TAILLE_CARTE ; y++) {
+    for (int x = 0 ; x < TAILLE_CARTE ; ++x) {    
+      vpii::const_iterator it = std::find(blocking.begin(), blocking.end(), std::make_pair(y,x));
+      if (it != blocking.end()) {
+	assert(g->constructions_[y][x].first == VIDE);
+	assert(g->cases_non_blocantes_[y][x] == false);
+      } else {
+	if (g->constructions_[y][x].first != VIDE) continue;
+	assert(g->cases_non_blocantes_[y][x] == true);
+      }
+    }
+  }
+}
+
+void GameData::UnitTestBlockingCells() {
+  LOG1("UnitTestBlockingCells");
+  {
+    static const char* grid[3] = {"....................",
+				 "......000-00........",
+				 "......000000........"};
+    ReplaceGameGrid(grid, 3, this);
+    ComputeNonBlockingCells();
+    vpii v;
+    v.push_back(std::make_pair(0,9));
+    AssertBlocking(v, this);
+    LOG1("Test 1 ok");
+  }
+  
+  {
+    static const char* grid[3] = {"....................",
+				 "......000-00........",
+				 "......000.00........"};
+    ReplaceGameGrid(grid, 3, this);
+    ComputeNonBlockingCells();
+    vpii v;
+    AssertBlocking(v, this);
+    LOG1("Test 2 ok");
+  }
+
+  {
+    static const char* grid[] = {"....................",
+				 "......000-00........",
+				 "......000-00........"};
+    ReplaceGameGrid(grid, 3, this);
+    ComputeNonBlockingCells();
+    vpii v;
+    AssertBlocking(v, this);
+    LOG1("Test 3 ok");
+  }
+ 
+  {
+    static const char* grid[] = {"....................", // 10*20
+				 "....................",
+				 "....................",
+				 "........000000......",
+				 "........0...-0......",
+				 "............-0......", // (5,8)
+				 "........0...-0......",
+				 "........000000......",
+				 "....................",
+				 "...................."};
+    ReplaceGameGrid(grid, 10, this);
+    ComputeNonBlockingCells();
+    vpii v;
+    for (int j = 7 ; j <= 9 ; ++j)
+      v.push_back(std::make_pair(5, j));
+    AssertBlocking(v, this);
+    LOG1("Test 4 ok");
+  }
+  {
+    static const char* grid[] = {"....................",
+				 "....................",
+				 "....................",
+				 "........000000......",
+				 "...0000000..-0......",
+				 "..0.........-0......",
+				 "..0.000000..-0......",
+				 "..0.0...000000......",
+				 "....................",
+				 "...................."};
+    ReplaceGameGrid(grid, 10, this);
+    ComputeNonBlockingCells();
+    vpii v;
+    for (int j = 3 ; j <= 10 ; j++)
+      v.push_back(std::make_pair(5, j));
+    v.push_back(std::make_pair(6,3));
+    v.push_back(std::make_pair(7,3));
+    v.push_back(std::make_pair(8,3));
+    AssertBlocking(v, this);
+    LOG1("Test 5 ok");
+  }
+  LOG1("ComputeNonBlockingCells ok");
 }
