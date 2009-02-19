@@ -51,7 +51,7 @@ GameData::GameData()
 void GameData::Init() {
   assert(getNbTeam() <= MAX_TEAMS);
   nb_virtual_turns_ = getNbTeam() * 2 + 1;
-  LOG4("There are %1 virtual turns", nb_virtual_turns_);
+  //  LOG4("There are %1 virtual turns", nb_virtual_turns_);
   initialized_ = true;
 }
 
@@ -217,6 +217,8 @@ typedef std::set<pii> spii;
 typedef std::vector<pii> vpii;
 
 static int visited[TAILLE_CARTE][TAILLE_CARTE];
+// For every cell, its parent in the Trémaux arborescence defined by the BFS. Cells with
+// no parents have parents (-1,-1).
 static pii prev[TAILLE_CARTE][TAILLE_CARTE];
 static spii blocking_candidates;
 
@@ -259,24 +261,28 @@ static void bfs(GameData *g) {
 }
 
 static void GetBlockingCandidates(GameData *g) {
-  // A partir des routes, on regarde tous les chemins retours possibles.
+  // A partir des routes, on regarde tous les chemins retours possibles à partir des routes vers le bord.
   // Une case visitée par ce processus est mis à 2.
-  bool found_one_road = false;
+  // Le premier chemin est ajouté à l'ensemble des cases blocantes candidates.
+  // Si on trouve un deuxième chemin disjoint, on a fini.
+  // Sinon, toutes les cases entre la route et le premier 2 rencontré sont retirées des cases blocantes candidates.
+
+  bool found_one_accessible_road = false;
   blocking_candidates.clear();
-  for (int y = 0 ; y < TAILLE_CARTE && (!found_one_road || !blocking_candidates.empty()) ; ++y) {
+  for (int y = 0 ; y < TAILLE_CARTE ; ++y) {
     for (int x = 0 ; x < TAILLE_CARTE ; ++x) {
       if (g->constructions_[y][x].first == ROUTE) {
-	LOG2("Found road in %1 %2", y, x);
+	//	LOG2("Found road in %1 %2", y, x);
 	for (int k = 0 ; k < 4 ; k++) {
 	  bool reached_other_path = false;
 	  int yy = y + directions4[k][0];
 	  int xx = x + directions4[k][1];
 	  if (dans_les_bornes(yy, xx) && visited[yy][xx] == 1) {
-	    assert(g->constructions_[yy][xx].first == VIDE);
+	    assert(g->constructions_[yy][xx].first == VIDE); // A case visited by the previous bfs should be empty.
 	    spii path_cells;
 	    // Suivre le chemin à partir de (yy,xx).
 	    while (yy != -1 && xx != -1) {
-	      if (visited[yy][xx] == 2) {
+	      if (visited[yy][xx] == 2) {		
 		reached_other_path = true;
 		break;
 	      }
@@ -289,32 +295,34 @@ static void GetBlockingCandidates(GameData *g) {
 		int c = xx + directions8[p][1];
 		if (!dans_les_bornes(l, c) || g->constructions_[l][c].first != VIDE) {
 		  prune = false;
-		}		  
+		}
 	      }
 	      if (!prune) {
-		LOG2("Inserted %1 %2 along the current path as a possibly blocking cell", yy, xx);
+		//		LOG2("Inserted %1 %2 along the current path as a possibly blocking cell", yy, xx);
 		path_cells.insert(std::make_pair(yy, xx));
 	      }
 	      int nxx = prev[yy][xx].second;
 	      int nyy = prev[yy][xx].first;
 	      yy = nyy, xx = nxx;
 	    }
-	    // intersecting blocking_candidates and path_cells.
-	    if (found_one_road) {
+	    // For the first path, add it enterily to the candidats.
+	    // If the path is disjoint with any other path, we are done
+	    // Otherwise, remove any cell that is between the road and the first common cell encountered.
+	    if (found_one_accessible_road) {
 	      vpii out;
 	      if (reached_other_path) {
 		std::set_difference(blocking_candidates.begin(), blocking_candidates.end(), path_cells.begin(), path_cells.end(),
 				    std::back_inserter(out));
 		blocking_candidates = std::set<std::pair<int,int> >(out.begin(), out.end());
+		if (blocking_candidates.empty()) {
+		  return;
+		}
 	      } else {
-		//intersection : (should be empty).
-		std::set_intersection(blocking_candidates.begin(), blocking_candidates.end(), path_cells.begin(), path_cells.end(),
-				      std::back_inserter(out));
-		blocking_candidates = std::set<std::pair<int, int> >(out.begin(), out.end());
-		assert(blocking_candidates.empty());
+		blocking_candidates.clear();
+		return;
 	      }
 	    } else {
-	      found_one_road = true;
+	      found_one_accessible_road = true;
 	      blocking_candidates = path_cells;
 	    }
 	  }
@@ -322,9 +330,9 @@ static void GetBlockingCandidates(GameData *g) {
       }
     }
   }
-  LOG2("There are %1 blocking candidates", blocking_candidates.size());
-  if (blocking_candidates.size())
-    LOG2("First one is : %1 %2", blocking_candidates.begin()->first, blocking_candidates.begin()->second);
+  //  LOG2("There are %1 blocking candidates", blocking_candidates.size());
+  //  if (blocking_candidates.size())
+  //    LOG2("First one is : %1 %2", blocking_candidates.begin()->first, blocking_candidates.begin()->second);
 }
 
 static bool CanReachRoad(int x, int y, int forbiddenx, int forbiddeny, GameData *g) {
@@ -667,5 +675,53 @@ void GameData::UnitTestBlockingCells() {
     AssertBlocking(v, this);
     LOG1("Test 5 ok");
   }
+
+  {
+    static const char* grid[] = {"....................",
+				 "....................",
+				 "...000000....0......",
+				 "...000--00000-0.....",
+				 "...0000000..-0......",
+				 "..0.........-0......",
+				 "..0.000000..-0......",
+				 "..0.0...000000......",
+				 "....................",
+				 "...................."};
+    ReplaceGameGrid(grid, 10, this);
+    ComputeNonBlockingCells();
+    vpii v;
+    for (int j = 3 ; j <= 10 ; j++)
+      v.push_back(std::make_pair(5, j));
+    v.push_back(std::make_pair(6,3));
+    v.push_back(std::make_pair(7,3));
+    v.push_back(std::make_pair(8,3));
+    AssertBlocking(v, this);
+    LOG1("Test 6 ok");
+  }
+
+  {
+    static const char* grid[] = {"....................",
+				 "....................",
+				 "..000000000000000...",
+				 "..0--0..........0...",
+				 "..0..0....0.....0...",
+				 "..0..0.---0.........",
+				 "..0..0....0.....0...",
+				 "..0.......0.....0...",
+				 "...00000000000000...",
+				 "...................."};
+    ReplaceGameGrid(grid, 10, this);
+    ComputeNonBlockingCells();
+    vpii v;
+    for (int j = 9 ; j <= 11 ; ++j) {
+      v.push_back(std::make_pair(3, j));
+    }
+    for (int j = 15 ; j <= 17 ; ++j) {
+      v.push_back(std::make_pair(5, j));
+    }	  
+    AssertBlocking(v, this);
+    LOG1("Test 7 ok");
+  }
+
   LOG1("ComputeNonBlockingCells ok");
 }
