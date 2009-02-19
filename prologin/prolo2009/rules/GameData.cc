@@ -558,8 +558,10 @@ bool GameData::MakeChecks(bool server) {
     }
   }
 #endif
-  if (GetRealTurn() == 2)
-    UnitTestBlockingCells();
+
+  // Run that only for tests purposes!
+  //  if (GetRealTurn() == 2)
+  //    UnitTestBlockingCells();
 }
 
 

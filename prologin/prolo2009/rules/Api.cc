@@ -253,6 +253,7 @@ int Api::construire_route(int x, int y)
   }
 
   // Construction en elle-même :
+  LOG2("Building road at (%1,%2); cost=%3", x, y, c);
   a -= c;
   g_->constructions_[y][x] = std::make_pair(ROUTE, -1);
   g_->ComputeNonBlockingCells();
@@ -279,6 +280,7 @@ int Api::construire_maison(int x, int y)
     return FINANCES_DEPASSEES;
     
   // construction :
+  LOG2("Building house at (%1,%2); cost=%3", x, y, c);
   a -= c;
   g_->constructions_[y][x] = std::make_pair(MAISON, g_->getTeamId());
   g_->maisons_construires_++;
@@ -310,6 +312,7 @@ int Api::reserver_case(int x, int y)
     return FINANCES_DEPASSEES;
     
   // construction :
+  LOG2("Booking cell at (%1,%2); cost=%3", x, y, c);
   a -= c;
   g_->constructions_[y][x] = std::make_pair(RESERVATION, g_->getTeamId());
   g_->NotifyCellModified(x, y);
@@ -335,6 +338,7 @@ int Api::detruire_maison(int x, int y)
     return FINANCES_DEPASSEES;
     
   // action:
+  LOG2("Destroying house at (%1,%2); cost=%3", x, y, c);
   a -= c;
   const int target = g_->constructions_[y][x].second;
   g_->constructions_[y][x] = std::make_pair(VIDE, -1);
@@ -364,6 +368,7 @@ int Api::vendre_maison(int x, int y)
   const int earning = ScoreConstructionDepuisValeurCase(g_->valeurs_cases_[y][x]);
 
   // action:
+  LOG2("Selling house to town hall at (%1,%2); earning=%3", x, y, earning);
   g_->argent_[g_->getTeamId()] += earning;
   g_->constructions_[y][x].second = MAIRIE;
   int score_inc = - earning;
@@ -387,6 +392,7 @@ int Api::encherir(int montant)
   if (g_->did_auction_)
     return ACTION_INTERDITE;
 
+  LOG2("Making a bid of %1 for monument number %2", montant, g_->monument_en_cours_);
   g_->did_auction_ = true;
   StechecPkt com(ENCHERE, -1);
   com.Push(2, g_->getTeamId(), montant);
@@ -408,6 +414,7 @@ int Api::construire_monument(int x, int y)
     return m;
     
   // construction :
+  LOG2("Building monument number %1 at (%1,%2)", g_->monument_en_cours_, x, y);
   g_->constructions_[y][x] = std::make_pair(MONUMENT, g_->monument_en_cours_);
   g_->NotifyCellModified(x, y);
   g_->ComputeNonBlockingCells();
