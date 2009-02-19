@@ -13,12 +13,12 @@
 #ifndef CONSTANT_HH_
 # define CONSTANT_HH_
 
-# define HORS_TERRAIN              -1
+# define HORS_TERRAIN              -12
 # define PAS_DE_MAISON             -2
 # define PAS_DE_MONUMENT           -3
 # define FINANCES_DEPASSEES        -4
 # define BLOCAGE                   -5
-# define TROP_DE_MAISONS           -6
+//# define TROP_DE_MAISONS           -6
 # define JOUEUR_INCORRECT          -7
 # define NON_CONNEXE               -8
 # define CASE_OCCUPEE              -9

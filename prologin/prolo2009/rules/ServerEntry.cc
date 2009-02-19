@@ -103,11 +103,12 @@ int		ServerEntry::beforeGame(void)
   srand(time(0));
   g_->start_team_ = rand() % g_->getNbTeam();
   SendToAll(INIT_START_TEAM, -1, 1, g_->start_team_);
-  LOG4("Sending start_team_ : %1", g_->start_team_);
+  LOG5("Sending start_team_ : %1", g_->start_team_);
+  LOG2("Team %1 will start the game", g_->start_team_);
 
   for (int m = 0 ; m < MAX_MONUMENTS ; ++m) {
     SendToAll(INIT_MONUMENT, -1, 3, m, g_->monuments_[m].first, g_->monuments_[m].second);
-    LOG4("Sending monument %1 : (%2, %3)", m, g_->monuments_[m].first, g_->monuments_[m].second);
+    LOG5("Sending monument %1 : (%2, %3)", m, g_->monuments_[m].first, g_->monuments_[m].second);
   }
   
   return 0;
@@ -131,19 +132,19 @@ int         ServerEntry::afterNewTurn(void)
   // retransmit all msgs in pass_threw_orders_
 
   if (g_->GetCurrentPhase() == 2) { // enchères
-    LOG4("Transmitting winner of auction : %1", g_->won_auction_);
+    LOG5("Transmitting winner of auction : %1", g_->won_auction_);
     SendToAll(WON_AUCTION, -1, 1, g_->won_auction_);   
   }
   
   for (int t = 0 ; t < g_->getNbTeam() ; t++) {
-    LOG4("Transmitting new money/score for team %1 : %2/%3", t, g_->argent_[t], g_->score_[t]);
+    LOG5("Transmitting new money/score for team %1 : %2/%3", t, g_->argent_[t], g_->score_[t]);
     SendToAll(NEW_MONEY, -1, 2, t, g_->argent_[t]);
     SendToAll(NEW_SCORE, -1, 2, t, g_->score_[t]);
   }
   
   for (int i = 0 ; i < g_->nb_pass_threw_orders_ ; ++i) {    
     int* order = g_->pass_threw_orders_[i];
-    LOG4("Re-tranmitting orders from clients ; type : %1, args : %2,%3,%4,%5..", order[0], order[1], order[2], order[3], order[4]);
+    LOG5("Re-tranmitting orders from clients ; type : %1, args : %2,%3,%4,%5..", order[0], order[1], order[2], order[3], order[4]);
     // We suppose here that there will never be more than 6 arguments to the orders.
     // Note that for orders with less than 6 arguments, we transmit garbage as well.
     SendToAll(order[0], -1, 6, order[1], order[2],
@@ -152,7 +153,7 @@ int         ServerEntry::afterNewTurn(void)
 
   if (g_->IsPhase1Ending() && g_->GetRealTurn() <= g_->nb_monuments_) {
     int m = g_->GetRealTurn() - 1;    
-    LOG4("Transmitting next monument : %1", g_->monument_order_[m]);
+    LOG5("Transmitting next monument : %1", g_->monument_order_[m]);
     SendToAll(NEXT_MONUMENT, -1, 1, g_->monument_order_[m]);
     g_->monument_en_cours_ = g_->monument_order_[m];
   }

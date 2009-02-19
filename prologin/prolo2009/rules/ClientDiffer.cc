@@ -60,7 +60,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	assert(reach >= 0 && reach <= 10); //sanity check
 	assert(prestige >= -10 && prestige <= 10); // sanity check
 	g_->monuments_[id] = std::make_pair(prestige, reach);
-	LOG4("Receiving monument id : %1, reach : %2, prestige : %3", 
+	LOG5("Receiving monument id : %1, reach : %2, prestige : %3", 
 	     id, reach, prestige);
 	break;
       }
@@ -69,7 +69,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
 	int monument = pkt->arg[0];
 	assert(monument >= 0 && monument < MAX_MONUMENTS);
 	g_->monument_en_cours_ = monument;
-	LOG4("Receiving next monument : %1", monument);
+	LOG5("Receiving next monument : %1", monument);
 	break;
       }
     case NEW_MONEY:

@@ -206,7 +206,6 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       encheres[team] = montant;
       best_auction = std::max(montant, best_auction);
     }
-    LOG4("nbteam %1", g_->getNbTeam());
     g_->won_auction_ = -1;
     // Determine the winner of the auction.
     for (int p = 0 ; p < g_->getNbTeam() ; p++) {
@@ -215,7 +214,7 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       const int team =  (g_->GetFirstPlayerPhase1() + nbteam - 1 - p) % nbteam;
       assert(team >= 0 && team < g_->getNbTeam());
       if (encheres[team] == best_auction) {
-	LOG4("Team %1 wins auction while spending %2", team, best_auction);
+	LOG2("Team %1 wins auction and spends %2", team, best_auction);
 	g_->won_auction_ = team;
 	g_->argent_[team] -= best_auction;
 	break;
