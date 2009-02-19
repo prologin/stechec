@@ -108,7 +108,7 @@ function:
      au cours de votre tour de jeu.
   -
     fct_name: type_case
-    fct_summary: Renvoie le type de la case : VIDE, MAISON, ROUTE, MONUMENT ou RESERVATION.
+    fct_summary: Renvoie le type de la case, VIDE, MAISON, ROUTE, MONUMENT ou RESERVATION.
     fct_ret_type: int
     fct_arg:
       - [x, int, la colonne]
@@ -122,7 +122,7 @@ function:
       - [y, int, la ligne]
   -
     fct_name: appartenance
-    fct_summary: Renvoie l'entité possédant la case : 0, 1, 2 ou MAIRIE si la case est une maison ou une réservation, et MAIRIE sinon.
+    fct_summary: Renvoie l'entité possédant la case, 0, 1, 2 ou MAIRIE si la case est une maison ou une réservation, et MAIRIE sinon.
     fct_ret_type: int
     fct_arg:
       - [x, int, la colonne]
@@ -142,8 +142,8 @@ function:
       - [num_monument, int, le numéro du monument]
   -
     fct_name: prestige_monument
-    fct_summary: todo
-    fct_ret_type: Renvoie le prestige d'un monument
+    fct_summary: Renvoie le prestige d'un monument
+    fct_ret_type: int
     fct_arg:
       - [num_monument, int, le numéro d'un monument]
   -
