@@ -21,6 +21,12 @@
   assert(initialized_);
 
 static const int directions4[4][2] = {{0,1},{0,-1},{1,0},{-1,0}};
+static const int directions8[8][2] = {{0,1},{0,-1},{1,0},{-1,0},
+				      {1,1},{1,-1},{-1,-1},{-1,1}};
+
+static bool dans_les_bornes(int y, int x) {
+  return y >= 0 && x >= 0 && x < TAILLE_CARTE && y < TAILLE_CARTE;
+}
 
 GameData::GameData()
 {
@@ -60,11 +66,13 @@ void GameData::InitDistances() {
     }
   }
   NotifyCellModified(TAILLE_CARTE / 2, TAILLE_CARTE / 2);
+
+  ComputeNonBlockingCells();
 }
 
 
 void GameData::NotifyCellModified(int x, int y) {
-  assert(x >= 0 && y >= 0 && y < TAILLE_CARTE && x < TAILLE_CARTE);
+  assert(dans_les_bornes(x, y));
   for (int l = 0 ; l <= MAX_DISTANCE * 2; ++l) {
     for (int c = 0 ; c <= MAX_DISTANCE * 2 ; ++c) {
       if (std::abs(l - MAX_DISTANCE) + std::abs(c - MAX_DISTANCE) > MAX_DISTANCE) {
@@ -72,7 +80,7 @@ void GameData::NotifyCellModified(int x, int y) {
       }
       int yy = y + l - MAX_DISTANCE;
       int xx = x + c - MAX_DISTANCE;
-      if (xx >= 0 && yy >= 0 && yy < TAILLE_CARTE && xx < TAILLE_CARTE) {
+      if (dans_les_bornes(xx, yy)) {
 	RecomputeDistanceFrom(xx, yy);
       }
     }
@@ -84,7 +92,7 @@ struct Pos {
 };
 
 void GameData::RecomputeDistanceFrom(int x, int y) {
-  assert(x >= 0 && y >= 0 && y < TAILLE_CARTE && x < TAILLE_CARTE);
+  assert(dans_les_bornes(x, y));
   
   for (int l = 0 ; l <= MAX_DISTANCE ; ++l) {
     for (int c = 0 ; c <= MAX_DISTANCE * 2 + 1 ; ++c) {
@@ -201,75 +209,164 @@ int GameData::CoutConstructions(int routes, int maisons) {
   return maisons + (routes - maisons + 1) / 2;
 }
 
+
+// A couple of the following functions computes the non blocking cells.
+
 // Do a DFS from the outside of the game, and see which road cells are accessible.
 // Get the paths to go to these road cells. Blocking cells are those through which go
 // all these paths.
 
-static int visited[TAILLE_CARTE][TAILLE_CARTE];
-static std::pair<int, int> prev[TAILLE_CARTE][TAILLE_CARTE];
-static std::vector<std::pair<int,int> > roads_reached;
+typedef std::pair<int, int> pii;
+typedef std::set<pii> spii;
+typedef std::vector<pii> vpii;
 
-static void dfs(int x, int y, GameData *g) {
-  if (visited[y][x]) return;
-  visited[y][x] = true;
-  if (g->constructions_[y][x].first == ROUTE) {
-    roads_reached.push_back(std::make_pair(y, x));
-    return;
+static int visited[TAILLE_CARTE][TAILLE_CARTE];
+static pii prev[TAILLE_CARTE][TAILLE_CARTE];
+static spii blocking_candidates;
+
+struct PosBlock {
+  short y,x,py,px;
+};
+
+static void bfs(GameData *g) {
+  std::deque<PosBlock> file;
+  std::fill(*visited, *visited + TAILLE_CARTE * TAILLE_CARTE, 0);
+  std::fill(*prev, *prev + TAILLE_CARTE * TAILLE_CARTE, std::make_pair(-1, -1));
+  for (int i = 0 ; i < TAILLE_CARTE ; i++) {
+    file.push_back((PosBlock){0, i, -1,-1});
+    file.push_back((PosBlock){i, 0, -1,-1});
+    file.push_back((PosBlock){i, TAILLE_CARTE - 1, -1,-1});
+    file.push_back((PosBlock){TAILLE_CARTE - 1, i, -1,-1});
   }
-  for (int k = 0 ; k < 4; k++) {
-    const int xx = x + directions4[k][0];
-    const int yy = y + directions4[k][1];
-    if (xx >= 0 && yy >= 0 && xx < TAILLE_CARTE && yy < TAILLE_CARTE &&
-	!visited[yy][xx] &&
-	(g->constructions_[yy][xx].first == VIDE || g->constructions_[yy][xx].first == ROUTE)) {
-      dfs(xx, yy, g);
-      prev[yy][xx] = std::make_pair(y, x);
+
+  // Visiter toutes les cases (Les seules cases franchissables sont les cases vides)
+  // Et construire l'arborescence retour.
+  while (!file.empty()) {
+    const PosBlock cur = file.front();
+    file.pop_front();
+    if (g->constructions_[cur.y][cur.x].first != VIDE) {
+      continue;
+    }
+    int& v = visited[cur.y][cur.x];
+    if (v) continue;
+    v = true;
+    prev[cur.y][cur.x] = std::make_pair(cur.py, cur.px);
+    for (int k = 0 ; k < 4 ; k++) {
+      const int yy = cur.y + directions4[k][0];
+      const int xx = cur.x + directions4[k][1];
+      if (dans_les_bornes(yy, xx)
+	  && !visited[yy][xx] && g->constructions_[yy][xx].first == VIDE) {
+	file.push_back((PosBlock){yy, xx, cur.y, cur.x});
+      }
     }
   }
 }
 
-void GameData::ComputeNonBlockingCells() {
-  INIT();
-  //  LOG2("ComputeNonBlockingCells()");
-  std::fill(*cases_non_blocantes_, *cases_non_blocantes_ + TAILLE_CARTE * TAILLE_CARTE, true);
-  roads_reached.clear();
-  std::fill(*visited, *visited + TAILLE_CARTE * TAILLE_CARTE, 0);
-  for (int i = 0 ; i < TAILLE_CARTE ; i++) {
-    dfs(0, i, this);
-    dfs(i, 0, this);
-    dfs(i, TAILLE_CARTE - 1, this);
-    dfs(TAILLE_CARTE - 1, i, this);
-  }
-  //  LOG2("Computed DFS's");
-  // At least one road should be accessible from the outside of the game. It is a bug otherwise.
-  assert(!roads_reached.empty());
-
-  std::fill(*visited, *visited + TAILLE_CARTE * TAILLE_CARTE, 0);
-  for (int k = 0 ; k < roads_reached.size() ; k++) {
-    //    LOG2("Going back from %1 th road", k);
-    int y = roads_reached[k].first;
-    int x = roads_reached[k].second;
-    // Tant que (y,x) n'est pas sur le bord.
-    while (x != 0 && y != 0 && x != TAILLE_CARTE - 1 && y != TAILLE_CARTE - 1) {
-      int ny = prev[y][x].first;
-      int nx = prev[y][x].second;
-      y = ny, x = nx;
-      assert(y >= 0 && x >= 0 && x < TAILLE_CARTE && y < TAILLE_CARTE);
-      ++visited[y][x];
-    }
-  }
-  
-  for (int y = 0 ; y < TAILLE_CARTE ; ++y) {
+static void GetBlockingCandidates(GameData *g) {
+  // A partir des routes, on regarde tous les chemins retours possibles.
+  // Une case visitée par ce processus est mis à 2.
+  bool found_one_road = false;
+  blocking_candidates.clear();
+  for (int y = 0 ; y < TAILLE_CARTE && (!found_one_road || !blocking_candidates.empty()) ; ++y) {
     for (int x = 0 ; x < TAILLE_CARTE ; ++x) {
-      if (visited[y][x] == roads_reached.size()) {
-	// This cell is blocking, because all paths from the outside to any road cell go through the cell.
-	//	cases_non_blocantes_[y][x] = false;
-	// TODO, fixme!
+      if (g->constructions_[y][x].first == ROUTE) {
+	for (int k = 0 ; k < 4 ; k++) {
+	  int yy = y + directions4[k][0];
+	  int xx = x + directions4[k][1];
+	  if (dans_les_bornes(yy, xx) && visited[yy][xx] == 1) {
+	    assert(g->constructions_[yy][xx].first == VIDE);
+	    spii path_cells;
+	    // Suivre le chemin à partir de (yy,xx).
+	    while (yy != -1 && xx != -1 && visited[yy][xx] == 1) {
+	      visited[yy][xx] = 2;
+	      // Prune cells that are sourrounded by 8 empty cells. (hence, they can't be blocking cells).
+	      bool prune = true;
+	      for (int p = 0 ; p < 8 ; ++p) {
+		int l = yy + directions8[p][0];
+		int c = xx + directions8[p][1];
+		if (!dans_les_bornes(l, c) || g->constructions_[l][c].first != VIDE) {
+		  prune = false;
+		}
+		  
+	      }
+	      if (!prune) {
+		path_cells.insert(std::make_pair(yy, xx));
+	      }
+	      int nxx = prev[yy][xx].second;
+	      int nyy = prev[yy][xx].first;
+	      yy = nyy, xx = nxx;
+	    }
+	    // intersecting blocking_candidates and path_cells.
+	    if (found_one_road) {
+	      vpii out;
+	      std::set_intersection(path_cells.begin(), path_cells.end(), blocking_candidates.begin(), blocking_candidates.end(),
+				    std::back_inserter(out));
+	      blocking_candidates = std::set<std::pair<int, int> >(out.begin(), out.end());
+	    } else {
+	      found_one_road = true;
+	      blocking_candidates = path_cells;
+	    }
+	  }
+	}
       }
     }
   }
-  // All of this is wrong, because the paths from the dfs are arbitrary !
 
+}
+
+static bool CanReachRoad(int x, int y, int forbiddenx, int forbiddeny, GameData *g) {
+  if (x == forbiddenx && y == forbiddeny)
+    return false;
+  if (visited[y][x]) return false;
+  visited[y][x] = true;
+  if (g->constructions_[y][x].first == ROUTE) {
+    return true;
+  }
+  if (g->constructions_[y][x].first != VIDE) {
+    return false;
+  }
+
+  for (int k = 0 ; k < 4; k++) {
+    const int xx = x + directions4[k][0];
+    const int yy = y + directions4[k][1];
+    if (dans_les_bornes(xx, yy) && 
+	!visited[yy][xx] &&
+	(g->constructions_[yy][xx].first == VIDE || g->constructions_[yy][xx].first == ROUTE)) {
+      bool can = CanReachRoad(xx, yy, forbiddenx, forbiddeny, g);
+      if (can) {
+	return true;
+      }
+    }
+  }
+  return false;
+}
+
+void GameData::ComputeNonBlockingCells() {
+  INIT();
+
+  bfs(this);
+
+  GetBlockingCandidates(this);
+
+  std::fill(*cases_non_blocantes_, *cases_non_blocantes_ + TAILLE_CARTE * TAILLE_CARTE, true);
+
+  // For each candidate, explicitely check whether the cell is blocking or not.
+  for (spii::const_iterator it = blocking_candidates.begin() ; it != blocking_candidates.end() ; ++it) {
+    const pii& cur = *it;
+    std::fill(*visited, *visited + TAILLE_CARTE * TAILLE_CARTE, 0);
+    bool can = false;
+    for (int k = 0 ; k < TAILLE_CARTE && !can; ++k) {
+      can = can || CanReachRoad(0, k, cur.second, cur.first, this)	
+	|| CanReachRoad(k, 0, cur.second, cur.first, this)
+	|| CanReachRoad(TAILLE_CARTE - 1, k, cur.second, cur.first, this)
+	|| CanReachRoad(k, TAILLE_CARTE - 1, cur.second, cur.first, this);
+    }
+    if (!can) {
+      // The cell is blocking!
+      LOG4("Cell y=%1, x=%2 is blocking", cur.first, cur.second);
+      cases_non_blocantes_[cur.first][cur.second] = false;
+    }
+  }
 }
 
 void GameData::InitTemporaryData() {
@@ -310,14 +407,13 @@ void GameData::ComputeSecondaryData() {
       }
     }
   }
-  ComputeNonBlockingCells();
 }
 
 void GameData::ApplyBuildOrder(e_com_type type, int param[10]) {
   INIT();
   int x = param[0];
   int y = param[1];
-  assert(x >= 0 && y >= 0 && x < TAILLE_CARTE && y < TAILLE_CARTE);
+  assert(dans_les_bornes(x, y));
   switch (type) {
   case BUILD_ROAD:
     constructions_[y][x] = std::make_pair(ROUTE, -1);
