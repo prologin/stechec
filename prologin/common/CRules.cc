@@ -164,8 +164,21 @@ void CRules::msgBeforeTurn(const MsgBeforeTurn*)
     return;
   
   data_->current_turn_++;
-  LOG2("================== Turn %1 ==================",
-       data_->getCurrentTurn());
+
+  // Only to display correctly the turns for prolo2009
+  int t = data_->getCurrentTurn();
+  int nb_virtual_turns = 2 * getTeamNumber() + 1; 
+  int m = (t - 1) % nb_virtual_turns;  
+  int phase;
+  if (m < getTeamNumber()) phase = 1;
+  if (m == getTeamNumber()) phase = 2;
+  if (m > getTeamNumber()) phase = 3;
+  LOG2("============= Turn %1, phase %2 =============",
+       1 + (t - 1) / nb_virtual_turns, phase);
+
+  // Valid until prolo2008
+  //  LOG2("================== Turn %1 ==================",
+  //       data_->getCurrentTurn());
 
   int r = client_entry_->beforeNewTurn();
   if (!afterHook(r, "beforeNewTurn"))
