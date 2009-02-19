@@ -152,9 +152,13 @@ void jouer()
       int d3 = ::distance(0,0,25,25);
       assert(d3 == TROP_LOIN);
       int d4 = ::distance(M,M,M,M);
-      assert(d4 == TROP_LOIN);
+      assert(d4 == 0); // we should be able to pass threw roads
+      int d7 = ::distance(M-1,M,M-1,M);
+      assert(d7 == TROP_LOIN);
       int d5 = ::distance(M+1,M+1,M+3,M);
-      assert(d5 == TROP_LOIN);
+      assert(d5 == 3);
+      int d8 = ::distance(M, M-1, M, M-4);
+      assert(d8 == TROP_LOIN);
       int d6 = ::distance(M+1,M+1,M+7,M+1);
       assert(d6 == 6);
     }
@@ -170,6 +174,7 @@ void jouer()
 //
 void enchere()
 {
+  assert(mon_tour());
   cout << "enchere :: mon_tour() : " << mon_tour() << endl;
   switch(numero_tour()) {
   case 7:
