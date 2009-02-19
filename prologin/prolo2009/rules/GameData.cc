@@ -95,7 +95,8 @@ void GameData::RecomputeDistanceFrom(int x, int y) {
   const int type_case = constructions_[y][x].first;
   // Only empty cells and cells that we have reserved can be used.
   if (type_case != VIDE &&
-      (type_case != RESERVATION || constructions_[y][x].second != getTeamId())) {
+      (type_case != RESERVATION || constructions_[y][x].second != getTeamId()) && 
+      type_case != ROUTE) {
     return;
   }  
   
@@ -122,9 +123,11 @@ void GameData::RecomputeDistanceFrom(int x, int y) {
 	continue;
     }
     const int type_case = constructions_[cury][curx].first;
-    // Seulement les cases vides et que l'on a réservées peuvent être parcourues.
+    // Seulement les cases vides et que l'on a réservées peuvent être parcourues (ainsi que
+    // les routes).
     if (type_case != VIDE &&
-       (type_case != RESERVATION || constructions_[cury][curx].second != getTeamId())) {
+       (type_case != RESERVATION || constructions_[cury][curx].second != getTeamId()) &&
+	type_case != ROUTE) {
       continue;
     }
     if (visited[cur.l][cur.c]) {
