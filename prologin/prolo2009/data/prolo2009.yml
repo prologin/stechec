@@ -50,7 +50,7 @@ constant:
     cst_comment: Ce n'est pas votre tour, ou l'action demandée est interdite.
   -
     cst_name: TROP_LOIN
-    cst_val: -11
+    cst_val: 50
     cst_comment: La distance demandée est strictement supérieure à MAX_DISTANCE.
   -
     cst_name: SUCCES
