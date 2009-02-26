@@ -309,8 +309,8 @@ static void GetBlockingCandidates(GameData *g) {
 	    // If the path is disjoint with any other path, we are done
 	    // Otherwise, remove any cell that is between the road and the first common cell encountered.
 	    if (found_one_accessible_road) {
-	      vpii out;
 	      if (reached_other_path) {
+		vpii out;	      
 		std::set_difference(blocking_candidates.begin(), blocking_candidates.end(), path_cells.begin(), path_cells.end(),
 				    std::back_inserter(out));
 		blocking_candidates = std::set<std::pair<int,int> >(out.begin(), out.end());
@@ -410,7 +410,7 @@ void GameData::ComputeSecondaryData() {
 	int reach = monuments_[type].second;
 	for (int i = y - reach ; i <= y + reach ; ++i) {
 	  for (int j = x - reach ; j <= x + reach ; ++j) {
-	    if (i < 0 || j < 0 || i >= TAILLE_CARTE || j >= TAILLE_CARTE)
+	    if (!dans_les_bornes(i, j))
 	      continue;
             valeurs_cases_[i][j] += prestige;
 	  }
