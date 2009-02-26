@@ -147,6 +147,7 @@ int         ServerEntry::afterNewTurn(void)
     LOG5("Re-tranmitting orders from clients ; type : %1, args : %2,%3,%4,%5..", order[0], order[1], order[2], order[3], order[4]);
     // We suppose here that there will never be more than 6 arguments to the orders.
     // Note that for orders with less than 6 arguments, we transmit garbage as well.
+    assert(MAX_PARAM_PER_ORDER >= 6);
     SendToAll(order[0], -1, 6, order[1], order[2],
 	      order[3], order[4], order[5], order[6]);
   }

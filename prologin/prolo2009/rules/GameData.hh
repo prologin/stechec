@@ -37,7 +37,7 @@ public:
 
   // orders that will be broadcasted to other clients, in the intended order.
   // No two orders will affect the same cell (that is, they can be applied in any order)
-  // (they are filtered in ServerEntry)
+  // (they are filtered in ServerResolver and re-transmitted in ServerEntry)
   // [][0] -> type
   // [][i], i>0 -> parameters
   // Only for the server.

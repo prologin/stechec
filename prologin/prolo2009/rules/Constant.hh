@@ -48,7 +48,7 @@
 
 // The maximum number of useful parameters for the orders that are just transmitted
 // by the ServerResolver.
-#define MAX_PARAM_PER_ORDER 10
+#define MAX_PARAM_PER_ORDER 6
 
 // Ids for message type.
 enum e_com_type {
