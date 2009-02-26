@@ -432,8 +432,9 @@ void GameData::ComputeSecondaryData() {
 
 void GameData::ApplyBuildOrder(e_com_type type, int param[10]) {
   INIT();
-  int x = param[0];
-  int y = param[1];
+
+  const int x = param[0];
+  const int y = param[1];
   assert(dans_les_bornes(x, y));
   switch (type) {
   case BUILD_ROAD:
@@ -441,14 +442,14 @@ void GameData::ApplyBuildOrder(e_com_type type, int param[10]) {
     break;
   case BUILD_HOUSE: 
     {
-      int team = param[2];
+      const int team = param[2];
       assert(team >= 0 && team < getNbTeam());
       constructions_[y][x] = std::make_pair(MAISON, team);
       break;
     }
   case RESERVE_CELL:
     {
-      int team = param[2];
+      const int team = param[2];
       assert(team >= 0 && team < getNbTeam());
       constructions_[y][x] = std::make_pair(RESERVATION, team);
       break;
@@ -463,7 +464,7 @@ void GameData::ApplyBuildOrder(e_com_type type, int param[10]) {
     
   case BUILD_MONUMENT:
     { 
-      int m = param[2];
+      const int m = param[2];
       assert(m >= 0 && m < MAX_MONUMENTS);
       constructions_[y][x] = std::make_pair(MONUMENT, m);
       break;

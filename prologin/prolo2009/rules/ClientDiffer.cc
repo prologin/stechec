@@ -45,7 +45,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
     {
     case INIT_START_TEAM:
       {
-	int start_team = pkt->arg[0];
+	const int start_team = pkt->arg[0];
 	assert(start_team >= 0 && start_team < g_->getNbTeam());
 	g_->start_team_ = start_team;
 	LOG4("Received start_team : %1", start_team);
@@ -53,9 +53,9 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       }
     case INIT_MONUMENT:
       {
-	int id = pkt->arg[0];
-	int prestige = pkt->arg[1];
-	int reach = pkt->arg[2];
+	const int id = pkt->arg[0];
+	const int prestige = pkt->arg[1];
+	const int reach = pkt->arg[2];
 	assert(id >= 0 && id < MAX_MONUMENTS);
 	assert(reach >= 0 && reach <= 10); //sanity check
 	assert(prestige >= -10 && prestige <= 10); // sanity check
@@ -66,7 +66,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       }
     case NEXT_MONUMENT:
       {
-	int monument = pkt->arg[0];
+	const int monument = pkt->arg[0];
 	assert(monument >= 0 && monument < MAX_MONUMENTS);
 	g_->monument_en_cours_ = monument;
 	LOG5("Receiving next monument : %1", monument);
@@ -74,7 +74,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       }
     case NEW_MONEY:
       {
-	int team = pkt->arg[0];
+	const int team = pkt->arg[0];
 	assert(team >= 0 && team < g_->getNbTeam());
 	int money = pkt->arg[1];
 	assert(money >= 0);
@@ -84,9 +84,9 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       }
     case NEW_SCORE:
       {
-	int team = pkt->arg[0];
+	const int team = pkt->arg[0];
 	assert(team >= 0 && team < g_->getNbTeam());
-	int score = pkt->arg[1];
+	const int score = pkt->arg[1];
 	assert(score >= 0);
 	g_->score_[team] = score;
 	LOG4("Receiving new score for team %1 : %2", team, score);
@@ -94,7 +94,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       }
     case WON_AUCTION:
       {
-	int team = pkt->arg[0];
+	const int team = pkt->arg[0];
 	assert(team >= 0 && team < g_->getNbTeam());
 	g_->won_auction_ = team;
 	LOG4("Receiving the winner of the auction : %1", team);
@@ -108,7 +108,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       }
     case BUILD_HOUSE:
       {
-	int team = pkt->arg[2];
+	const int team = pkt->arg[2];
 	assert(team >= 0 && team < g_->getNbTeam());
 	g_->constructions_[y][x] = std::make_pair(MAISON, team);
 	g_->NotifyCellModified(x, y);
@@ -116,7 +116,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt *pkt)
       }
     case RESERVE_CELL:
       {
-	int team = pkt->arg[2];
+	const int team = pkt->arg[2];
 	assert(team >= 0 && team < g_->getNbTeam());
 	g_->constructions_[y][x] = std::make_pair(RESERVATION, team);
 	g_->NotifyCellModified(x, y);
