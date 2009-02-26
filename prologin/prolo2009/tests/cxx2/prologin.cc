@@ -31,7 +31,7 @@ void jouer()
     assert(construire_route(M-1,M-1) == ACTION_INTERDITE);
   }
 
-  // Champion qui fait l'hypothèse qu'il n'y a personne d'autre qui joue avec une map
+  // Champion qui fait l'hypothèse qu'il joue avec le champion dans tests/cxx,
   // avec les monuments dans l'ordre.
   if (!mon_tour()) return;
   cout << endl << "*********** numero tour : " << numero_tour() << " ***********" << endl;
