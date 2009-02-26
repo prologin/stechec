@@ -50,7 +50,7 @@ void ServerResolver::CopyPassThrewOrder(CommandListRef cmdList[])
   static bool delete_it[MAX_ORDERS];
   std::fill(delete_it, delete_it + MAX_ORDERS, false);
 
-  std::fill(*g_->pass_threw_orders_, *g_->pass_threw_orders_ + MAX_ORDERS * 10, -1);
+  std::fill(*g_->pass_threw_orders_, *g_->pass_threw_orders_ + MAX_ORDERS * (MAX_PARAM_PER_ORDER + 1), -1);
   g_->nb_pass_threw_orders_ = 0;
   
   for (int i = FIRST_CLIENT_MSG ; i < LAST_XY_ORDERS ; ++i) {
@@ -59,7 +59,7 @@ void ServerResolver::CopyPassThrewOrder(CommandListRef cmdList[])
       const int order = GetOrder(pkt);
       assert(order >= 0 && order < MAX_ORDERS);
       g_->pass_threw_orders_[order][0] = pkt->type;
-      std::copy(pkt->arg, pkt->arg + 6, &g_->pass_threw_orders_[order][1]);
+      std::copy(pkt->arg, pkt->arg + MAX_PARAM_PER_ORDER, &g_->pass_threw_orders_[order][1]);
       g_->nb_pass_threw_orders_ = std::max(g_->nb_pass_threw_orders_, order + 1);
       assert(g_->nb_pass_threw_orders_ < MAX_ORDERS);
     }
@@ -88,7 +88,7 @@ void ServerResolver::CopyPassThrewOrder(CommandListRef cmdList[])
       continue;
     }    
     if (i != j) {
-      std::copy(g_->pass_threw_orders_[i], g_->pass_threw_orders_[i] + 10, g_->pass_threw_orders_[j]);
+      std::copy(g_->pass_threw_orders_[i], g_->pass_threw_orders_[i] + MAX_PARAM_PER_ORDER + 1, g_->pass_threw_orders_[j]);
     }
     ++j;
   }

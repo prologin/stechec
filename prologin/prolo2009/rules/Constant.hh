@@ -46,6 +46,10 @@
 // Must be < 254
 #define MAX_DISTANCE 12
 
+// The maximum number of useful parameters for the orders that are just transmitted
+// by the ServerResolver.
+#define MAX_PARAM_PER_ORDER 10
+
 // Ids for message type.
 enum e_com_type {
   // from server (init)

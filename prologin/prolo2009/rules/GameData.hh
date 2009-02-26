@@ -43,7 +43,7 @@ public:
   // Only for the server.
   // The last getNbTeam() orders will always be of type auction when
   // in phase 2.
-  int pass_threw_orders_[MAX_ORDERS][10]; 
+  int pass_threw_orders_[MAX_ORDERS][MAX_PARAM_PER_ORDER + 1]; 
   int nb_pass_threw_orders_;
 
   // To manage the turns.
@@ -128,11 +128,6 @@ public:
   // Recomputes all the distances from the point (x,y).
   // Cost : 8 * MAX_DISTANCE^2 
   void RecomputeDistanceFrom(int x, int y);
-
-  // Apply an order without any checks.
-  // does not change the money nor the score of the players.
-  // Performs only changes in the map. (constructions_).
-  void ApplyBuildOrder(e_com_type type, int param[10]);
 
   // Perform some checks to see if all is going well.
   // Quite fast and not harmful : you can do this whenever you want.

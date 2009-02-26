@@ -430,50 +430,6 @@ void GameData::ComputeSecondaryData() {
   }
 }
 
-void GameData::ApplyBuildOrder(e_com_type type, int param[10]) {
-  INIT();
-
-  const int x = param[0];
-  const int y = param[1];
-  assert(dans_les_bornes(x, y));
-  switch (type) {
-  case BUILD_ROAD:
-    constructions_[y][x] = std::make_pair(ROUTE, -1);
-    break;
-  case BUILD_HOUSE: 
-    {
-      const int team = param[2];
-      assert(team >= 0 && team < getNbTeam());
-      constructions_[y][x] = std::make_pair(MAISON, team);
-      break;
-    }
-  case RESERVE_CELL:
-    {
-      const int team = param[2];
-      assert(team >= 0 && team < getNbTeam());
-      constructions_[y][x] = std::make_pair(RESERVATION, team);
-      break;
-    }
-  case DESTROY_HOUSE:    
-    constructions_[y][x] = std::make_pair(VIDE, -1);
-    break;
-      
-  case SELL_HOUSE:
-    constructions_[y][x] = std::make_pair(MAISON, MAIRIE);
-    break;
-    
-  case BUILD_MONUMENT:
-    { 
-      const int m = param[2];
-      assert(m >= 0 && m < MAX_MONUMENTS);
-      constructions_[y][x] = std::make_pair(MONUMENT, m);
-      break;
-    }
-  default:
-    assert(0);
-  }
-}
-
 int GameData::GetFirstPlayerPhase1() {
   INIT();
   int team = start_team_ + GetRealTurn() - 1 + (GetCurrentPhase() != 1);
