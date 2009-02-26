@@ -23,7 +23,7 @@
 # define NON_CONNEXE               -8
 # define CASE_OCCUPEE              -9
 # define ACTION_INTERDITE          -10
-# define TROP_LOIN                 50 // -11
+# define TROP_LOIN                 50 // -11 // TODO : check that against prolo2009.yml and make a decision
 # define SUCCES                    0
 # define MAIRIE                    3
 # define VIDE                      0
@@ -76,7 +76,7 @@ enum e_com_type {
   // expected to come in first and second position in the order's arguments.
   ENCHERE, /* TEAM_ID, MONTANT */
   SCORE_UPDATE, /* TEAM_ID, SCORE_INCREASE , seed_to_distinguish_msgs for stechec*/	
-  // todo : circumvent the fact that identical packets won't be send several times
+  // (circumvents the fact that identical packets won't be send several times by stechec).
   LAST_MSG
 };
 
