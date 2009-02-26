@@ -109,9 +109,8 @@ public:
   int CoutConstructions(int routes, int maisons);
   bool did_auction_;
 
-  // Update functions, to be called before each turn.
-  // Cost : 4 * TAILLE_CARTE^2
   void ComputeNonBlockingCells();
+  // Update functions, to be called before each turn.
   void InitTemporaryData();
   void ComputeSecondaryData();
 
