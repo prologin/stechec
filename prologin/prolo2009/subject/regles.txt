@@ -128,7 +128,7 @@ etc.
 
 Lors de la phase 2, s'il y a égalité dans les sommes d'argent, celui
 qui remporte l'enchère est celui (parmi ceux en égalité) qui jouera sa
-phase 1 en dernier.
+phase 1 en dernier au prochain tour.
 
 La liste des monuments du jeu est fixée. Au début de la partie, cette
 liste est mélangée. À chaque tour, on pioche un monument de la liste.
