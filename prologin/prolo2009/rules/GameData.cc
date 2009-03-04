@@ -424,7 +424,7 @@ void GameData::ComputeSecondaryData() {
   for (int y = 0 ; y < TAILLE_CARTE ; ++y) {
     for (int x = 0 ; x < TAILLE_CARTE ; ++x) {
       if (constructions_[y][x].first == MAISON) {
-	score_[constructions_[y][x].second] += std::max(1, valeurs_cases_[y][x] + 1);
+	score_[constructions_[y][x].second] += std::max(0, valeurs_cases_[y][x] + 1);
       }
     }
   }

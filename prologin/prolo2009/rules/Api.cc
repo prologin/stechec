@@ -22,7 +22,7 @@ static const int directions8[8][2] = {{0,1},{0,-1},{1,0},{-1,0},
                                       {1,1},{1,-1},{-1,1},{-1,-1}};
 
 static int ScoreConstructionDepuisValeurCase(int valeur_case) {
-  return std::max(valeur_case + 1, 1);
+  return std::max(valeur_case + 1, 0);
 }
 
 
