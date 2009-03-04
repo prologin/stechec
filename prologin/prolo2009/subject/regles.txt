@@ -1,0 +1,162 @@
+Ce fichier décrit les règles officielles du jeu. Il ne parle pas des
+détails d'implémentation, ni de l'histoire ou de l'API, il se
+concentre uniquement sur les règles. En cas de doute ou de
+contradiction, il faut donc toujours se référer à ce fichier (et il
+faut le mettre à jour si une nouvelle décision est prise).
+
+C'est sur les informations de ce fichier que doivent se baser
+l'implémentation du serveur et la rédaction du sujet.
+
+
+## Principes de base
+
+
+Le jeu se joue sur un plateau. Il est prévu pour 3 joueurs. Le but est de
+faire fortune en participant à la construction d'une ville.
+
+Chaque case du plateau peut contenir : soit un bout de route, soit une
+maison, soit un monument divers, ou sinon rien. Au début de la partie,
+le terrain est entièrement vierge, à l'exception d'un morceau de route
+au centre de la carte.
+
+Un bout de route ne peut être construit qu'à côté d'un autre bout de
+route (diagonales exclues), ce qui fait des vraies routes. Par
+conséquent, toutes les routes sont donc toujours connexes.
+
+Les maisons et les bâtiments ne peuvent être construits qu'à côté
+d'une route (diagonales incluses).
+
+Quand un monument est construit, cela augmente la valeur des cases
+proches. Au début de la partie, toutes les cases ont une valeur de 1.
+La valeur d'une maison correspond à la valeur de la case sur laquelle
+est construite la maison.
+
+À chaque monument est associé deux nombres : le premier note le
+prestige du monument, c'est-à-dire de combien on augmente la valeur
+des cases proches. Le deuxième nombre indique la portée, en nombre de
+cases. Une portée de 1 correspond aux 8 cases adjacentes. Par exemple,
+si on construit une bibliothèque (prestige 2, portée 2), cela augmente
+de 2 la valeur des cases qui sont dans un rayon de 2 (toutes les cases
+qui sont dans le carré 5*5 sont concernées). Certains monuments
+peuvent avoir un prestige négatif : par exemple, un cimetière ou une
+déchetterie.
+
+On impose qu'à tout moment, au moins une case de route soit accessible
+(par 4-connexité) à partir de l'extérieur. Tout ordre annulant cette
+propriété est refusé par le serveur.
+
+Au début de la partie, chaque joueur a un budget de 10 (peu importe
+l'unité, mais ça représente beaucoup d'argent :)).
+
+
+## Déroulement de la partie
+
+
+Chaque tour de jeu est composé de 3 phases.
+
+* Phase 1
+
+ Chaque joueur joue la Phase 1, l'un après l'autre, de façon
+ séquentielle (le 2e joueur voit ce que le joueur 1 a fait). Pendant
+ cette phase, le joueur peut poser sur le terrain une maison et/ou une
+ route. Il peut aussi effectuer d'autres actions (voir plus loin).
+
+* Phase 2
+
+ La mairie décide de construire un monument (qui est choisi au
+ hasard). Chaque joueur propose (simultanément) une somme d'argent.
+ Celui qui propose le plus paie cette somme à la mairie. En échange,
+ il peut jouer la phase 3.
+
+* Phase 3
+
+ Le joueur ayant proposé la plus grande somme place ensuite le
+ monument où il le souhaite sur la carte. En plaçant ce monument, cela
+ modifie la valeur des cases autour.
+
+Ces trois phases sont exécutées en boucle, jusqu'à la fin de la
+partie. La partie commence au début d'une phase 1 et se termine à la
+fin d'une phase 1.
+
+
+## Ordres possibles
+
+
+* [Phases 1 et 3] Détruire une maison en payant la valeur de cette
+  maison, moins un (avec un minimum de 1).
+
+* [Phases 1 et 3] Construire jusqu'à deux routes en payant 1.
+
+* [Phase 1] Réserver une case en payant la valeur de cette case, moins
+  un (avec un minimum de 1). Il est alors le seul à pouvoir construire
+  quoi que ce soit sur cette case, jusqu'à ce qu'il le fasse (par
+  exemple, s'il réserve une case, construit ensuite une maison dessus,
+  puis un adversaire détruit la maison, n'importe qui pourra alors
+  construire à cet endroit).
+
+* [Phase 1] Construire jusqu'à une route et une maison supplémentaires
+  en payant 1. Cet ordre n'est autorisé qu'une fois par tour.
+
+* [Phases 1, 2 et 3] Vendre une de ses maisons. Le joueur gagne alors
+  une somme correspondant à la valeur de la maison. La maison reste en
+  jeu sur le plateau, mais elle n'appartient plus à aucun joueur.
+
+
+## Fin de la partie
+
+
+La partie se termine quand il n'y a plus de monument à piocher,
+c'est-à-dire au après la Phase 1 du 15e tour (puisqu'il y a 14
+monuments). Le score est la somme d'argent en main plus la valeur de
+chaque maison du joueur. Le joueur ayant le plus gros score gagne la
+partie. Pour le championnat, le premier gagne 3 points, le deuxième 1,
+et le dernier aucun.
+
+
+## Détails additionnels
+
+
+Lors de la phase 1, il faut que l'ordre de jeu change à chaque fois,
+pour des raisons d'équité. On utilise le mécanisme suivant (l'ordre
+pour le premier tour est choisi aléatoirement) :
+
+Au premier tour : 1 joue en premier, puis 2 et 3
+Au deuxième tour : 2 joue, puis 3 et 1
+Au troisième tour : 3 joue, puis 1 et 2
+Au quatrième tour : 1 joue, puis 2 et 3
+etc.
+
+Lors de la phase 2, s'il y a égalité dans les sommes d'argent, celui
+qui remporte l'enchère est celui (parmi ceux en égalité) qui jouera sa
+phase 1 en dernier.
+
+La liste des monuments du jeu est fixée. Au début de la partie, cette
+liste est mélangée. À chaque tour, on pioche un monument de la liste.
+Il est donc possible, en fin de partie, de deviner quels monuments
+vont arriver.
+
+La valeur d'une maison peut devenir négative pendant le déroulement de
+la partie. Cependant, lors d'une vente et lors du calcul du score, on
+considère que la valeur d'une telle maison est nulle.
+
+
+## Liste des monuments
+
+
+Le premier chiffre indique la valeur de prestige, le deuxième
+correspond à la portée du monument :
+
++5 1
++4 1
++4 1
++3 1
++3 2
++2 2
++2 2
++2 2
++2 1
++1 3
++1 3
++1 2
+-1 2
+-2 1
