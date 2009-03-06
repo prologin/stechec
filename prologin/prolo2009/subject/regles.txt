@@ -1,3 +1,5 @@
+--------------------------------------------------------------------
+
 Ce fichier décrit les règles officielles du jeu. Il ne parle pas des
 détails d'implémentation, ni de l'histoire ou de l'API, il se
 concentre uniquement sur les règles. En cas de doute ou de
@@ -109,8 +111,13 @@ La partie se termine quand il n'y a plus de monument à piocher,
 c'est-à-dire au après la Phase 1 du 15e tour (puisqu'il y a 14
 monuments). Le score est la somme d'argent en main plus la valeur de
 chaque maison du joueur. Le joueur ayant le plus gros score gagne la
-partie. Pour le championnat, le premier gagne 3 points, le deuxième 1,
-et le dernier aucun.
+partie.
+
+Pour le championnat, le premier gagne 3 points, le deuxième 1, et le
+dernier aucun. Si deux joueurs sont premiers ex-aequo, ils ont 1 point
+chacun. Si deux joueurs sont derniers ex-aequo ou si les trois joueurs
+ont le même score, ils n'ont aucun point.
+
 
 
 ## Détails additionnels
