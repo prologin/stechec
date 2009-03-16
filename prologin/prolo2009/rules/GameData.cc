@@ -291,8 +291,8 @@ static void GetBlockingCandidates(GameData *g) {
 	      // Prune cells that are sourrounded by 8 empty cells. (hence, they can't be blocking cells).
 	      bool prune = true;
 	      for (int p = 0 ; p < 8 ; ++p) {
-		int l = yy + directions8[p][0];
-		int c = xx + directions8[p][1];
+		const int l = yy + directions8[p][0];
+		const int c = xx + directions8[p][1];
 		if (!dans_les_bornes(l, c) || g->constructions_[l][c].first != VIDE) {
 		  prune = false;
 		}
@@ -301,8 +301,8 @@ static void GetBlockingCandidates(GameData *g) {
 		//		LOG2("Inserted %1 %2 along the current path as a possibly blocking cell", yy, xx);
 		path_cells.insert(std::make_pair(yy, xx));
 	      }
-	      int nxx = prev[yy][xx].second;
-	      int nyy = prev[yy][xx].first;
+	      const int nxx = prev[yy][xx].second;
+	      const int nyy = prev[yy][xx].first;
 	      yy = nyy, xx = nxx;
 	    }
 	    // For the first path, add it enterily to the candidats.
