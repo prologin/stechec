@@ -33,20 +33,21 @@ int ServerEntry::loadMap(void)
 {
   // This could be read from a map file, but it's fixed for now.
   // prestige, portée.
-  int monuments[MAX_MONUMENTS][2] = {{5,1},
-				     {4,1},
-				     {4,1},
-				     {3,1},
-				     {3,2},
-				     {2,2},
-				     {2,2},
-				     {2,2},
-				     {2,1},
-				     {1,3},
-				     {1,3},
-				     {1,2},
-				     {-1,2},
-				     {-2,1}};
+  const int monuments[MAX_MONUMENTS][2] = {{5,1},
+					   {4,1},
+					   {4,1},
+					   {3,1},
+					   {3,2},
+					   {2,2},
+					   {2,2},
+					   {2,2},
+					   {2,1},
+					   {1,3},
+					   {1,3},
+					   {1,2},
+					   {-1,2},
+					   {-2,1}};
+
   for (int m = 0 ; m < MAX_MONUMENTS ; ++m)
     g_->monuments_[m] = std::make_pair(monuments[m][0], monuments[m][1]);
 
