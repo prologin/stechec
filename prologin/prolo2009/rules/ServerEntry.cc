@@ -173,7 +173,34 @@ bool        ServerEntry::isMatchFinished(void)
   return g_->IsPhase1Ending() && g_->GetRealTurn() == g_->nb_monuments_ + 1;
 }
 
-int        ServerEntry::getScore(int uid)
+int ServerEntry::getScore(int uid)
 {
-  return g_->score_[uid] + g_->argent_[uid];
+  int scores[MAX_TEAMS] = {0};
+  for (int i = 0 ; i < MAX_TEAMS ; i++) {
+    scores[i] = g_->score_[i] + g_->argent_[i];
+  }
+  // Counts the number of team that has a strictly better or an equal score to the team "uid".
+  int cnt_better_or_equal = 0;
+  for (int i = 0 ; i < MAX_TEAMS ; i++) {
+    if (i == uid) {
+      continue;
+    }
+    if (scores[i] >= scores[uid]) {
+      ++cnt_better_or_equal;
+    }
+  }
+  switch(cnt_better_or_equal) {
+  case 0:
+    return 3; // score absolute winner
+    break;
+  case 1:
+    return 1; // either second place (and strictly better than third), or first place drawn with second.
+    break;
+  case 2:
+    return 0; // either 3 drawns, or third drawn with second.
+    break;
+  default:
+    assert(0);
+    break;
+  }
 }
