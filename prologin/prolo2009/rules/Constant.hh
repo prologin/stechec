@@ -23,7 +23,7 @@
 # define NON_CONNEXE               -8
 # define CASE_OCCUPEE              -9
 # define ACTION_INTERDITE          -10
-# define TROP_LOIN                 50 // -11 // TODO : check that against prolo2009.yml and make a decision
+# define TROP_LOIN                 50
 # define SUCCES                    0
 # define MAIRIE                    3
 # define VIDE                      0

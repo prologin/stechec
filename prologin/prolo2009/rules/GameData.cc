@@ -492,7 +492,7 @@ bool GameData::MakeChecks(bool server) {
       for (int i = 0 ; i < TAILLE_CARTE ; i++) {
 	for (int j = 0 ; j < TAILLE_CARTE ; j++) {
 	  if (constructions_[i][j].first == MAISON && constructions_[i][j].second == t)
-	    score[t] += std::max(1, values[t][i][j]);
+	    score[t] += std::max(0, values[t][i][j]);
 	}
       }
     }
