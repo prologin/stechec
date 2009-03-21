@@ -12,6 +12,8 @@
 
 #include "misc/Conf.hh"
 #include "ChampionLoader.hh"
+#include <unistd.h>
+#include <fcntl.h>
 
 ChampionLoader::ChampionLoader()
 {
@@ -24,6 +26,8 @@ void ChampionLoader::loadLibrary(int argc,
   std::string path = cfg.getValue<std::string>("path");
   if (path.length() && path[path.length() - 1] != '/')
     path += "/";
+
+  setenv("CHAMPION_PATH", path.c_str(), 1);
   champion_.open(path + cfg.getValue<std::string>("library"));
 
   // Special Ocaml

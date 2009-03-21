@@ -111,6 +111,13 @@ PyMODINIT_FUNC initapi()
 PythonInterface::PythonInterface()
 {
   PyObject* pName;
+  char* pChampionPath;
+      
+  pChampionPath = getenv("CHAMPION_PATH");
+  if (pChampionPath == NULL)
+    pChampionPath = ".";
+
+  setenv("PYTHONPATH", pChampionPath, 6);
 
   Py_SetProgramName("stechec");
   Py_Initialize();
@@ -121,7 +128,10 @@ PythonInterface::PythonInterface()
   Py_DECREF(pName);
   if (pModule == NULL)
     if (PyErr_Occurred())
+    {
       PyErr_Print();
+      abort();
+    }
 }
 
 PythonInterface::~PythonInterface()
