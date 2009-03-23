@@ -166,3 +166,46 @@ class CxxProto < CProto
   end
 
 end
+
+# A generic CSharp file generator (proto, ...)
+# We can inherit from CProto, as C# ressembles C, it works for now.
+# And I'm a bit lazy. :-)
+class CSharpProto < CProto
+
+  def initialize
+    @lang = "CSharp"
+    @types = {
+      'void' => 'void',
+      'int' => 'int',
+      'bool' => 'bool'
+    }
+  end
+
+  def print_comment(str)
+    @f.puts '// ' + str if str
+  end
+
+  def print_multiline_comment(str)
+    return unless str
+    @f.puts '///'
+    str.each {|s| @f.print '// ', s }
+    # @f.puts
+    @f.puts "", "//"
+  end
+
+  def print_empty_arg
+  end
+
+  def print_proto(name, ret_type, args, ext = "", types = @types)
+    ext = ext + " " if ext != ""
+    @f.print ext, conv_type(ret_type, types)
+    @f.print " ", name, "("
+    if args != nil and args != []
+      print_args = args.collect { |arg| conv_type(arg[1], types) + " " + arg[0] }
+      @f.print print_args.join(", ")
+    else
+      print_empty_arg
+    end
+    @f.print ")"
+  end
+end

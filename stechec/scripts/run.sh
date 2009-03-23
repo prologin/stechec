@@ -50,6 +50,18 @@ abort()
 }
 
 #
+# test if sed is the GNU sed
+#
+if (sed --version | grep GNU) >/dev/null 2>&1; then
+	sed=sed
+elif (gsed --version | grep GNU) >/dev/null 2>&1; then
+	sed=gsed
+else
+	echo 1>&2 "You need the GNU sed to use $0."
+	exit 1
+fi
+
+#
 # ini file function
 #
 
@@ -67,7 +79,7 @@ ini_get_bool()
 ini_get_val()
 {
     IFS=""
-    echo "$2" | sed -ns "s/^$1=~=//p"
+    echo "$2" | $sed -ns "s/^$1=~=//p"
     unset IFS
 }
 
@@ -75,14 +87,14 @@ ini_get_val()
 # parse all client sections
 #
 rules=
-clients=$(sed -nr -s 's/^\[client_([0-9])+\]/\1/p' "$1" 2> /dev/null)
+clients=$($sed -nr -s 's/^\[client_([0-9])+\]/\1/p' "$1" 2> /dev/null)
 test $? -ne 0 && abort "cannot parse configuration file: '$1'"
 if [ "x$clients" = x ]; then
     abort "must have at least one client to launch"
 fi
 
 for id in $clients; do
-    client_conf[$id]=$(IFS="" sed -nr -s "/^\[client_$id\]/ { :n n; /^\[/ { q }; s/^([a-z_0-9]+)=/\1~=~/p; b n }" "$1")
+    client_conf[$id]=$(IFS="" $sed -nr -s "/^\[client_$id\]/ { :n n; /^\[/ { q }; s/^([a-z_0-9]+)=/\1~=~/p; b n }" "$1")
     r=$(ini_get_val rules "${client_conf[$id]}")
     if [ "$rules" -a x"$r" != x"$rules" ]; then
 	abort "clients have different rules ($rules != $r, offending id: $id)"
@@ -96,7 +108,7 @@ done
 #
 # parse rules section
 #
-rules_conf=$(IFS="" sed -nr -s "/^\[$rules\]/ { :n n; /^\[/ { q }; s/^([a-z_0-9]+)=/\1~=~/p; b n }" "$1")
+rules_conf=$(IFS="" $sed -nr -s "/^\[$rules\]/ { :n n; /^\[/ { q }; s/^([a-z_0-9]+)=/\1~=~/p; b n }" "$1")
 NB_INSTANCE=$(ini_get_val nb_player_per_team "$rules_conf")
 if [ "x$NB_INSTANCE" = x ]; then
     NB_INSTANCE=1
