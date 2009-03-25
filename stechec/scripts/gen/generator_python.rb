@@ -117,7 +117,7 @@ PythonInterface::PythonInterface()
   if (pChampionPath == NULL)
     pChampionPath = ".";
 
-  setenv("PYTHONPATH", pChampionPath, 6);
+  setenv("PYTHONPATH", pChampionPath, 1);
 
   Py_SetProgramName("stechec");
   Py_Initialize();
