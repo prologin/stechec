@@ -21,11 +21,10 @@ OBJS 	= interface.o ../includes/main.o
 RM 	= /bin/rm -f
 
 CXXFLAGS = -fPIC -W -Wall \\
-   -I/usr/include/python2.4 \\
-   -I/sw/include/python2.4 \\
+   `python-config --cflags` \\
    $(MY_CXXFLAGS)
 
-LIBS = -L/sw/lib/python2.4/config -lpython2.4
+LIBS = `python-config --ldflags`
 
 ##############################
 # Basic Compile Instructions #

@@ -77,7 +77,10 @@ extern "C" {
       @f.print "  if (!PyArg_ParseTuple(args, \"#{str_fmt}\""
       @f.print ", &" if args
       @f.print var_args.join(", &"), "))\n"
-      @f.puts "    Py_RETURN_NONE;"
+      @f.puts "{"
+      @f.puts "    PyErr_SetString(PyExc_TypeError, \"Invalid parameters.\");"
+      @f.puts "    return NULL;"
+      @f.puts "}"
       @f.print "  int ret = ", name, "(", var_args.join(", "), ");\n"
       @f.puts "  return PyInt_FromLong(ret);", "}"
     end
@@ -145,7 +148,7 @@ PythonInterface::~PythonInterface()
 void PythonInterface::callPythonFunction(const char* name)
 {
   PyObject *arglist, *pFunc;
-  PyObject *result;
+  PyObject *result = NULL;
   
   pFunc = PyObject_GetAttrString(pModule, (char*)name);
   if (pFunc && PyCallable_Check(pFunc))
@@ -154,9 +157,8 @@ void PythonInterface::callPythonFunction(const char* name)
       result = PyEval_CallObject(pFunc, arglist);
       Py_XDECREF(arglist);
     }
-  if (result == NULL)
-    if (PyErr_Occurred())
-      PyErr_Print();
+  if (result == NULL && PyErr_Occurred())
+    PyErr_Print();
   Py_XDECREF(result);
 }
 
