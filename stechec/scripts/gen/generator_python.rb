@@ -78,7 +78,6 @@ extern "C" {
       @f.print ", &" if args
       @f.print var_args.join(", &"), "))\n"
       @f.puts "{"
-      @f.puts "    PyErr_SetString(PyExc_TypeError, \"Invalid parameters.\");"
       @f.puts "    return NULL;"
       @f.puts "}"
       @f.print "  int ret = ", name, "(", var_args.join(", "), ");\n"
