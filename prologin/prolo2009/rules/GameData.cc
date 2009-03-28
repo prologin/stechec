@@ -12,6 +12,7 @@
 
 #include "GameData.hh"
 #include <ctime>
+#include <cstring>
 #include <cstdlib>
 #include <deque>
 #include <map>

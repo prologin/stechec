@@ -16,6 +16,8 @@
 
 #include "Packet.hh"
 
+#include <cstring>
+
 void stringToPacket(int* dst, const std::string& src, unsigned max_size)
 {
   unsigned i;

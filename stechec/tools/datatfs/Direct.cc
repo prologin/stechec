@@ -11,6 +11,7 @@
 */
 
 #include <time.h>
+#include <cstring>
 #include "tools.hh"
 #include "Direct.hh"
 

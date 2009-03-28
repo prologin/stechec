@@ -21,6 +21,7 @@
 #include <cerrno>
 
 #include <cstdio>
+#include <cstring>
 
 #include "misc/os_wrapper.hh"
 #include "misc/ExceptionDefine.hh"

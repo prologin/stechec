@@ -17,6 +17,8 @@
 #include "tools.hh"
 #include "log.hh"
 
+#include <cstring>
+
 Log::ThreadList Log::thread_list_;
 int Log::ref_count_ = 0;
 pthread_mutex_t Log::lock_;

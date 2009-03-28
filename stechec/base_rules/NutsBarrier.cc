@@ -14,6 +14,8 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
+#include <cstring>
+
 #include <sys/time.h>
 #include <sys/times.h>
 #include <sys/resource.h>

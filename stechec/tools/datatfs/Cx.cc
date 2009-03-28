@@ -13,6 +13,7 @@
 #include <cassert>
 #include <cerrno>
 #include <arpa/inet.h>
+#include <cstring>
 
 #include "misc/os_wrapper.hh"
 #include "Cx.hh"

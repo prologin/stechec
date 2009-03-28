@@ -13,6 +13,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <cstring>
 
 #include "tools.hh"
 #include "misc/Conf.hh"
