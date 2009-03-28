@@ -114,7 +114,7 @@ PyMODINIT_FUNC initapi()
 PythonInterface::PythonInterface()
 {
   PyObject* pName;
-  char* pChampionPath;
+  const char* pChampionPath;
       
   pChampionPath = getenv("CHAMPION_PATH");
   if (pChampionPath == NULL)
@@ -122,7 +122,8 @@ PythonInterface::PythonInterface()
 
   setenv("PYTHONPATH", pChampionPath, 1);
 
-  Py_SetProgramName("stechec");
+  static char program_name[] = "stechec";
+  Py_SetProgramName(program_name);
   Py_Initialize();
   initapi();
 
@@ -139,6 +140,7 @@ PythonInterface::PythonInterface()
 
 PythonInterface::~PythonInterface()
 {
+  Py_XDECREF(pModule);
   Py_Finalize();
 }
 
@@ -156,6 +158,7 @@ void PythonInterface::callPythonFunction(const char* name)
       arglist = Py_BuildValue("()");
       result = PyEval_CallObject(pFunc, arglist);
       Py_XDECREF(arglist);
+      Py_DECREF(pFunc);
     }
   if (result == NULL && PyErr_Occurred())
     PyErr_Print();
