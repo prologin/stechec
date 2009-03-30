@@ -60,8 +60,9 @@ public:
    int prestige_monument(int num_monument);
    int numero_tour();
    int commence();
-  // Renvoie 0 si pas d'enchères déjà faites (premier tour..)
+  // Renvoient 0 si pas d'enchères déjà faites (premier tour..)
    int montant_encheres(int num_joueur);
+   int vainqueur_encheres();
    int score(int num_joueur);
    int finances(int num_joueur);
    int monument_en_cours();

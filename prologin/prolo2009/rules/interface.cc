@@ -62,6 +62,11 @@ int montant_encheres(int num_joueur)
   return api->montant_encheres(num_joueur);
 }
 
+int vainqueur_encheres()
+{
+  return api->vainqueur_encheres();
+}
+
 int score(int num_joueur)
 {
   return api->score(num_joueur);

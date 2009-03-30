@@ -107,6 +107,14 @@ int Api::montant_encheres(int num_joueur)
   return g_->encheres_[TeamFromChampion(num_joueur)];
 }
 
+int Api::vainqueur_encheres() {
+  if (g_->won_auction_ < 0) {
+    assert(g_->GetCurrentPhase() == 1 && g_->GetRealTurn() == 1);
+    return 0;
+  }
+  return TeamFromServer(g_->won_auction_);
+}
+
 int Api::score(int num_joueur)
 {
   CHECK_TEAM(num_joueur);  
