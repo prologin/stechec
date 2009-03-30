@@ -330,7 +330,8 @@ int Api::detruire_maison(int x, int y)
   CHECK_POS(x, y);
   if (!mon_tour())
     return ACTION_INTERDITE;
-  if (g_->GetCurrentPhase() != 1)
+  const int phase = g_->GetCurrentPhase();
+  if (phase == 2)
     return ACTION_INTERDITE;
   if (g_->constructions_[y][x].first != MAISON)
     return PAS_DE_MAISON;
