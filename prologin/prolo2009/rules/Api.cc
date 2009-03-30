@@ -275,6 +275,8 @@ int Api::construire_maison(int x, int y)
   if (m != SUCCES)
     return m;
   const int c = cout_achat_maison();
+  if (c == INFINI)
+    return ACTION_INTERDITE;
   int &a = g_->argent_[g_->getTeamId()];
   if (c > a)
     return FINANCES_DEPASSEES;
