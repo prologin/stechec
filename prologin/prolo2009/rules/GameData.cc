@@ -475,17 +475,24 @@ bool GameData::MakeChecks(bool server) {
     int score[MAX_TEAMS] = {0};
     for (int i = 0 ; i < TAILLE_CARTE ; i++) {
       for (int j = 0 ; j < TAILLE_CARTE ; j++) {
-	if (constructions_[i][j].first == MAISON)
-	  values[constructions_[i][j].second][i][j]++;
+	const int t = constructions_[i][j].second;
+	if (constructions_[i][j].first == MAISON && t != MAIRIE) {
+	  assert(t >= 0 && t < MAX_TEAMS);
+	  values[t][i][j]++;
+	}
 	if (constructions_[i][j].first == MONUMENT) {
 	  const int m = constructions_[i][j].second;
 	  const int l = monuments_[m].second;
 	  const int p = monuments_[m].first;
-	  for (int y = std::max(0, i-l) ; y < std::min(TAILLE_CARTE, i+l+1) ; y++)
-	    for (int x = std::max(0,j-l) ; x < std::min(TAILLE_CARTE, j+l+1) ; x++)
-	      if (constructions_[y][x].first == MAISON) {
-		values[constructions_[y][x].second][y][x] += p;
+	  for (int y = std::max(0, i-l) ; y < std::min(TAILLE_CARTE, i+l+1) ; y++) {
+	    for (int x = std::max(0,j-l) ; x < std::min(TAILLE_CARTE, j+l+1) ; x++) {
+	      const int team = constructions_[y][x].second;
+	      if (constructions_[y][x].first == MAISON && team != MAIRIE) {
+		assert(team >= 0 && team < MAX_TEAMS);
+		values[team][y][x] += p;
 	      }
+	    }
+	  }
 	}
       }
     }
