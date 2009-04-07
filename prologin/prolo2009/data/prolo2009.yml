@@ -98,6 +98,10 @@ constant:
     cst_name: MAX_DISTANCE
     cst_val: 12
     cst_comment: Distance maximale qui peut être calculée.
+  -
+    cst_name: ARGENT_INITIAL
+    cst_val: 10
+    cst_comment: La somme d'argent possédée par les champions au début du jeu.
 
 function:
   - doc_extra: |
@@ -152,7 +156,7 @@ function:
     fct_ret_type: int
   -
     fct_name: commence
-    fct_summary: Numéro du joueur qui commence lors de la phase 1. Si cette fonction est appelée pendant une phase 2 ou 3, renoie le numéro du joueur qui commencera lors de la phase 1 du tour suivant.
+    fct_summary: Numéro du joueur qui commence lors de la phase 1. Si cette fonction est appelée pendant une phase 2 ou 3, renvoie le numéro du joueur qui commencera lors de la phase 1 du tour suivant.
     fct_ret_type: int
   -
     fct_name: montant_encheres
@@ -160,6 +164,10 @@ function:
     fct_ret_type: int
     fct_arg:
       - [num_joueur, int, le numéro du joueur]
+  -
+    fct_name: vainqueur_encheres
+    fct_summary: Donne le numéro du joueur ayant gagné la dernière enchère. Renvoie 0 au premier tour.
+    fct_ret_type: int
   -
     fct_name: score
     fct_summary: Donne le score d'un joueur.
