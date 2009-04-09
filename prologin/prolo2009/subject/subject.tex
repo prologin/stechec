@@ -1,0 +1,246 @@
+%LaTeX Document
+
+%\documentclass[a4paper,twoside,12pt]{book}
+\documentclass[a4paper,twoside,12pt]{article}
+
+\usepackage{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{a4}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{palatino}
+\usepackage{subfigure}
+\usepackage{verbatim,fancyvrb}
+\usepackage{listings}
+\usepackage{array}
+\usepackage{color}
+
+\definecolor{colIdentifier}{gray}{0}
+\definecolor{colKeys}{rgb}{0,0,0.6}
+\lstnewenvironment{lst-c++}{%
+\lstset{%
+language=C++,
+identifierstyle=\color{colIdentifier},
+keywordstyle=\color{colKeys},
+basicstyle=\ttfamily\small
+}}{}
+\renewcommand\ttdefault{cmtt}
+
+\newcommand{\functitle}[1]{%
+\vspace{0.5cm}
+$\bullet$ \underline{\textbf{#1}}
+}
+
+%\NoAutoSpaceBeforeFDP
+\geometry{bindingoffset=5mm,hmarginratio=1:1,heightrounded,headheight=15pt}
+
+\makeindex
+
+\begin{document}
+\pagestyle{empty}
+\sloppy
+
+%\lhead[\textsl{Prologin 2009}]{\nouppercase \leftmark}
+%\rhead[Sujet de la finale]{}
+\lhead[\thepage]{\nouppercase \leftmark}
+\rhead[\textsl{Prologin 2009} --- Sujet de la finale]{\thepage}
+\cfoot{}
+
+% Couverture =========================================================
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=\linewidth]{logo.png}\\ %% FIXME: Logo 2009
+\vspace{4cm}
+\Huge
+\textbf{À la conquête de l'est}\\
+\Large
+\textbf{La loi du plus riche}\\
+\vspace{2cm}
+\normalsize
+Sujet de la finale du Concours National d'Informatique\\
+Vendredi 01 mai 2009\\
+\end{center}
+\end{titlepage}
+
+% Sommaire ===========================================================
+\cleardoublepage
+\tableofcontents
+
+% Corps ==============================================================
+%\cleardoublepage
+\setcounter{page}{1}
+\pagestyle{fancy}
+\parskip=6pt plus 3pt
+
+\newpage
+\includegraphics[width=\linewidth]{image.png}\\
+\newpage
+\section{Introduction}
+
+  \subsection{Prélude}
+
+Pour la première fois depuis des semaines, le téléphone sonna.
+
+-- Allô, répondis-je machinalement.
+
+-- C'est moi, m'indiqua le téléphone. J'ai un plan à te proposer.
+
+Je reconnus aussitôt mon interlocuteur. J'avais travaillé avec lui à plusieurs
+reprises ces dernières années, nos collaborations avaient alors été tantôt à
+peine légales, tantôt complètement illégales. C'est d'ailleurs de là que
+provenait la plupart de ma richesse. C'est fini, m'étais-je alors promis
+quelques mois auparavant, seuls les pauvres ont besoin de prendre des risques.
+Depuis, je me contentais de mes économies et de mon travail de maçon.
+Toutefois, avant que je ne pusse protester, le téléphone enchaîna :
+
+-- C'est un \emph{gros} plan. Sans risque.
+
+Il m'expliqua ensuite le concept, qui faisait intervenir ma propre expérience,
+mes compétences personnelles, puis, malgré ma réticence initiale, je fus
+convaincu : non pas que j'eusse un besoin d'argent immédiat, mais cela
+pourrait m'assurer définitivement quelque longue retraite paisible.
+
+Quelques heures plus tard, je prenais le bateau.
+
+  \subsection{Votre mission}
+    Votre mission si vous l'acceptez sera de construire, de faire fructifier,
+    mais surtout de contrôler la ville dans laquelle vous allez vous installer,
+    avec tout les moyens dont peuvent disposer les honnêtes citoyens : argent,
+    corruption, sabotage et plus encore \ldots\\
+    Mais attention, il ne peut en rester qu'un ! Seul celui qui aura accumulé
+    le plus de maisons de grandes valeur et d'argent contrôlera la ville !
+
+  \subsection{Le plateau de jeu}
+    Le terrain sur lequel vous allez mener votre ville à l'apogée de sa gloire
+    est un grand plateau semé d'herbe verdoyante, de cerisiers en fleurs et
+    d'ossements dissimulés dans les fondations des batiments en construction.\\
+    La plaine s'étend à perte de vue, ainsi votre possibilité d'extension ne
+    semble limitée que par votre désir de puissance et le nombre de billets en
+    votre possession.
+
+      \subsubsection{La zone de départ}
+	Le plateau ne comportera, au début, qu'une seule et unique portion de
+	route autour de laquelle devra se développer la ville.
+
+  \subsection{Le rouble, une monnaie forte !}
+    Le rouble est la monnaie locale à très forte valeur sur l'île.\\
+    Vous débutez avec les économies que vous avez durement gagnées lors de vos
+    précédantes missions, c'est à dire ARGENT\_INITIAL\footnote{cf API} roubles.
+
+    \includegraphics[width=\linewidth]{rouble.jpg}
+
+  \subsection{Chacun mon tour}
+    Chaque protagoniste jouera l'un après l'autre. Vous pourrez dans la
+    première phase de jeu, construire des routes et des maisons puis, dans une
+    deuxième phase, vous vous affronterez sans merci dans une lutte pour la
+    corruption afin jouïr du privilège d'agir seul dans la troisième et
+    dernière phase.
+  
+\newpage
+\section{Phase I} % Construction des routes, ordre des joueurs
+
+  \subsection{L'installation}
+
+    Voilà quelque temps que je m'étais installé sur cette île. Avec mes ouvriers,
+    j'avais déjà construit deux maisons et il fallait que j'en construisisse plus,
+    m'avait-on dit. Mais tout cela coûtait bien cher, mon budget s'amenuisait,
+    tout comme ma confiance : personne ne voulait de ces logements. Après tout,
+    qui aurait pu souhaiter venir ici, sur cette île où, même si le climat était
+    idéal et le cadre sublime, il n'y avait pour ainsi dire aucun confort, aucun
+    modernisme et peu d'accès à la civilisation ?
+
+    Le téléphone, interrompant mes pensées, sonna et m'informa :
+
+      -- La mairie prévoit de construire un parc aquatique par ici : piscines
+      chauffées, tobogans, jacuzzis et tout le toutim. Cela devrait attirer les
+      touristes sur l'île.
+
+      -- Et ainsi faire monter le prix des logements, continuai-je. C'est une très
+      bonne nouvelle, mais sais-tu exactement où il sera construit ?
+
+      -- Ce n'est pas encore décidé. Évidemment, si tu sais te montrer
+      \emph{convaincant}, nul doute que tu pourras influer sur ce choix.
+      Suite à cette brève discussion, je fis successivement des prévisions, des
+      estimations, des calculs, puis un virement bancaire.
+
+  \subsection{Constructions}
+    \subsubsection{Tarifs}
+      Vous avez l'occasion de construire une route et/ou une maison gratuitement
+      à chaque tour.\\
+      Vous pourrez ensuite dépenser une fois par tour un rouble pour, à
+      nouveau, construire une route et/ou une maison supplémentaire.\\
+      Il vous est également possible, et ce autant de fois que vous le désirez,
+      construire jusqu'a deux routes en payant un rouble.
+
+    \subsubsection{Architechture}
+      Même les personnes les plus influentes ont des règles à respecter, et
+      vous n'échappez pas à la règle malgrès les nombreux dessous de tables
+      que vous ayez pu verser.\\
+      Afin que l'île ne ressemble pas à celle du roi Minos\footnote{et parce que vous ne vous appelez pas Dédale}, les règles
+      suivantes ont été imposées :
+	\begin{itemize}
+	\item Une route doit \emph{toujours} être adjacente à une autre route.
+	\item Une maison ou un bâtiment spécial peut être construit tout autour d'une route.
+	\end{itemize}
+    \vspace{1cm}
+    \begin{figure}[!h]
+    \centering
+    \includegraphics{build.png}
+    \caption{Constructions possibles par rapport à la portion de route centrale}
+    \end{figure}
+    \subsubsection{Valeur des biens et propriété}
+      Les routes n'ont aucune valeur financière et ne vous appartiennent pas.
+      Dans votre infinie bonté vous les construisez pour le solde de la mairie
+      qui vous le rend bien en vous aurtorisant à construire autour de
+      celles-ci.
+
+      Les maisons, par défaut, valent 1 rouble, et vous appartiennent
+      totalement jusqu'à ce que vous les vendiez. Libre à vous d'en faire ce
+      que vous voulez. La valeur d'une maison ne peut en aucun cas être
+      inférieure à 0.
+
+\newpage
+\section{Phase II} % Corruption, système d'enchère
+
+  \subsection{La concurrence}
+    Bien sûr, d'autres personnes cherchèrent à corrompre le maire pour tirer
+    profit de cette opportunité, mais aucune ne proposa autant que moi.
+    Rapidement, les travaux débutèrent et, au bout de quelques mois, mes terrains
+    prirent beaucoup de valeur. Je décidai alors de construire plus pour gagner
+    plus. À la même époque, l'on m'apprit d'autres projets de la mairie : cinéma,
+    médiathèque, musée et aussi parc d'attractions étaient prévus, sans toutefois
+    que l'on ne pusse me donner de date, ni même d'ordre dans les plans. Il y
+    avait de plus un projet d'aéroport, mais je ferais tout mon possible pour le
+    tenir loin de mes habitations, puisque le bruit engendré par les avions
+    pourrait nuire fortement à l'immobilier.
+
+  \subsection{Votre mission}
+    Comment fonctionne la corruption, système d'enchères simultanées
+
+\newpage
+\section{Phase III} % Placement des monuments, valeur des terrains
+
+  \subsection{La guerre des clans}
+
+  \subsection{Votre mission}
+
+\newpage
+\section{Autres actions}
+%% Règles - autres actions
+
+Vente, destruction, réservations
+
+\newpage
+\section{Happy end}
+%% Fin de la partie
+
+%% Conclusion + chute ?
+
+\newpage
+\section{API}
+\input{api}
+
+\end{document}
