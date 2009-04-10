@@ -48,7 +48,7 @@ function check_action($entry)
       // plus aucun competiteur ne pointe dessus. Au passage un
       // clean des fichiers est bien.
       db_query("DELETE FROM competiteur WHERE id_champion=".$entry);
-      db_query("DELETE FROM champion WHERE id=".$entry);
+      db_query("DELETE FROM champion WHERE id=".$entry." AND id_candidat=".$user['id']);
       break;
 
     case "switch_mode_champion":
