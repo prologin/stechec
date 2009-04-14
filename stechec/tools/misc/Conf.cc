@@ -172,7 +172,7 @@ void ConfFile::parse(const std::string& file)
         continue;
       if (s[0] == '[')
         {
-          unsigned int end = s.find_first_of(']');
+	  std::string::size_type end = s.find_first_of(']');
           section = s.substr(1, end - 1);
           if (end == std::string::npos || section.length() == 0)
             {
@@ -198,7 +198,7 @@ void ConfFile::parse(const std::string& file)
         }
       else if (cur != NULL)
         {
-          unsigned int eq = s.find_first_of('=');
+          std::string::size_type eq = s.find_first_of('=');
           if (eq == 0 || eq == std::string::npos)
             continue;
           std::string key = s.substr(0, eq);
@@ -249,7 +249,7 @@ ConfSection* ConfFile::parseCmdLine(const std::string& section,
                (!opt[j].have_arg &&
                 !strcmp(opt[j].long_opt, argv_[i] + 2))))
             {
-              unsigned int eq;
+              std::string::size_type eq;
               key = argv_[i] + 2;
               if ((eq = key.find_first_of('=')) != std::string::npos)
                 {
@@ -265,7 +265,7 @@ ConfSection* ConfFile::parseCmdLine(const std::string& section,
               else if (value == "" && opt[j].have_arg)
                 break;
 
-              unsigned int kid = key.find_first_of('-', 0);
+              std::string::size_type kid = key.find_first_of('-', 0);
               while (kid != std::string::npos)
                 {
                   key.replace(kid, 1, "_");
