@@ -55,7 +55,7 @@ $\bullet$ \underline{\textbf{#1}}
 \includegraphics[width=\linewidth]{logo.png}\\ %% FIXME: Logo 2009
 \vspace{4cm}
 \Huge
-\textbf{À la conquête de l'est}\\
+\textbf{La conquête de l'est}\\
 \Large
 \textbf{La loi du plus riche}\\
 \vspace{2cm}
@@ -277,7 +277,9 @@ Vendredi 01 mai 2009\\
       \label{prestige}
     \end{figure}
 
-    % TODO : prestige negatif
+    Certains bâtiments possèdent un préstige négatif, diminuant ainsi la valeur
+    des terrains alentours.
+    Dans tous les cas la valeur d'une maison ne peut pas être inférieure à 0.
 
 \newpage
 \section{Autres actions}
@@ -300,14 +302,33 @@ Vendredi 01 mai 2009\\
 
     Ainsi ils voulaient la guerre\ldots{} Hé bien ils l'auraient\ldots{}
 
-  \subsection {Vente}
-    FIXME
-
   \subsection {Destruction}
-    FIXME
+    La vengeance est un plat qui se mange froid, mais il se trouve que vous
+    avez plutôt le sang chaud. Les gros feux d'artifices vous fascinent
+    depuis votre plus tendre enfance et aujourd'hui vous avez l'occasion d'en
+    faire de gigantesques !
+    Durant les phase I et III du jeu vous pouvez détruire n'importe quelle
+    maison en payant le prix de celle-ci moins 1 (avec un minimum de 1).
+    Le terrain devient alors constructible par tous.
+    
+  \subsection {Vente}
+    Vous manquez de budget pour surpasser vos concurrents ? Pas de problème,
+    vous avez à n'importe quel moment la possibilité de vendre une maison
+    qui vous appartient et ainsi récuperer un nombre de roubles égal à la
+    valeur de cette maison.
+    La maison reste alors en jeu mais appartient désormais à la mairie.
 
   \subsection {Réservation}
-    FIXME
+    L'argent c'est toujours bon d'en avoir, mais à force d'en avoir autant vous
+    ne saviez même plus comment le dépenser. Voilà la solution que vous
+    attendiez afin de remédier à ce terrible problème.
+    Durant la phase I vous avez la possibilité de reserver une case en payant
+    la valeur du terrain moins 1 rouble (avec un minimum de 1 rouble).
+    Vous serez alors le seul à pouvoir construire (qu'il s'agisse d'une route,
+    d'une maison ou encore d'un bâtiment spécial) sur cette case.
+    Attention, si vous construisez une maison sur cette case et qu'une fuite de
+    gaz insoupçonnée venait à détruire la maison la case ne vous serait plus
+    reservée !
 
 \newpage
 \section{Happy end}
@@ -335,8 +356,21 @@ Vendredi 01 mai 2009\\
     continent\ldots{}
 
   \subsection{Fin du jeu}
-    FIXME
+    L'île est à présent prospère et la place commence à faire défaut. Cela
+    tombe bien puisque la maire a décidé de ne plus construire de bâtiment.
+    Le nombre de bâtiments que la mairie pourra construire durant une partie
+    est défini par MAX\_MONUMENTS\footnote{cf API}.
+    Lorsque le dernier bâtiment est construit, un dernier tour composé
+    uniquement de la phase I est joué. À la fin de ce tour le joueur ayant le
+    score le plus élevé remporte la partie.
 
+  \subsection{Score}
+    Le score d'un joueur sur une partie correspond à sa somme d'argent possédé
+    plus la valeur de chaque maison qu'il détient.
+
+    Pour le championnat, le premier gagne 3 points, le deuxième 1 et le dernier
+    n'en gagne aucun. Si deux joueurs sont premiers ex-æquo ou si les trois
+    joueurs ont le même score, ils n'ont aucun point.
 
 \newpage
 \section{API}
