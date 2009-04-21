@@ -105,38 +105,37 @@ Vendredi 01 mai 2009\\
     Quelques heures plus tard, je prenais le bateau.
 
   \subsection{Votre mission}
-    Votre mission si vous l'acceptez sera de construire, de faire fructifier,
-    mais surtout de contrôler la ville dans laquelle vous allez vous installer,
+    Votre mission, que vous acceptez, est de construire, de faire fructifier
+    et, surtout, de contrôler la ville dans laquelle vous allez vous installer,
     avec tout les moyens dont peuvent disposer les honnêtes citoyens : argent,
-    corruption, sabotage et plus encore \ldots\\
-    Mais attention, il ne peut en rester qu'un ! Seul celui qui aura accumulé
-    le plus de maisons de grandes valeur et d'argent contrôlera la ville !
+    corruption, sabotage et plus encore\ldots Pour contrôler une ville,
+    comme chacun le sait, rien n'est plus efficace que la loi du plus riche.
 
   \subsection{Le plateau de jeu}
     Le terrain sur lequel vous allez mener votre ville à l'apogée de sa gloire
     est un grand plateau semé d'herbe verdoyante, de cerisiers en fleurs et
-    d'ossements dissimulés dans les fondations des bâtiments en construction.\\
+    d'ossements dissimulés dans les fondations des bâtiments en construction.
     La plaine s'étend à perte de vue, ainsi votre possibilité d'extension ne
-    semble limitée que par votre désir de puissance et le nombre de billets en
+    semble-t-elle limitée que par votre désir de puissance et le nombre de billets en
     votre possession.
 
       \subsubsection{La zone de départ}
-	Le plateau ne comportera, au début, qu'une seule et unique portion de
-	route autour de laquelle devra se développer la ville.
+	Le plateau ne comporte, au début, qu'une seule et unique portion de
+	route autour de laquelle va se développer la ville.
 
   \subsection{Le rouble, une monnaie forte !}
-    Le rouble est la monnaie locale à très forte valeur sur l'île.\\
-    Vous débutez avec les économies que vous avez durement gagnées lors de vos
-    précédentes missions, c'est à dire ARGENT\_INITIAL\footnote{cf API} roubles.
+    Le rouble est la monnaie locale à très forte valeur sur l'île. Vous débutez
+    avec les économies que vous avez durement gagnées lors de vos précédentes
+    missions, c'est-à-dire ARGENT\_INITIAL\footnote{cf. API} roubles.
 
     \includegraphics[width=\linewidth]{rouble.jpg}
 
   \subsection{Chacun mon tour}
-    Chaque protagoniste jouera l'un après l'autre. Vous pourrez dans la
-    première phase de jeu, construire des routes et des maisons puis, dans une
+    Chaque protagoniste jouera l'un après l'autre. Dans la première phase de
+    jeu, vous pourrez construire des routes et des maisons puis, dans une
     deuxième phase, vous vous affronterez sans merci dans une lutte pour la
-    corruption afin jouir du privilège d'agir seul dans la troisième et
-    dernière phase.
+    corruption afin jouir du privilège d'agir seul dans la troisième et dernière
+    phase.
 
 \newpage
 \section{Phase I} % Construction des routes, ordre des joueurs
@@ -167,22 +166,24 @@ Vendredi 01 mai 2009\\
 
   \subsection{Constructions}
     \subsubsection{Tarifs}
-      Vous avez l'occasion de construire une route et/ou une maison gratuitement
-      à chaque tour.\\
-      Vous pourrez ensuite dépenser une fois par tour un rouble pour, à
-      nouveau, construire une route et/ou une maison supplémentaire.\\
-      Il vous est également possible, et ce autant de fois que vous le désirez,
-      construire jusqu'à deux routes en payant un rouble.
+
+      Vous avez l'occasion de construire gratuitement une route, ainsi qu'une
+      maison à chaque tour. Vous pouvez aussi dépenser une fois par tour un
+      rouble pour, à nouveau, construire une route et une maison
+      supplémentaires.\\ Il vous est également possible, et ce autant de fois que
+      vous le désirez, de construire jusqu'à deux routes en payant un rouble.
 
     \subsubsection{Architecture}
-      Même les personnes les plus influentes ont des règles à respecter, et
-      vous n'échappez pas à la règle malgré les nombreux dessous de table
-      que vous ayez pu verser.\\
-      Afin que l'île ne ressemble pas à celle du roi Minos\footnote{et parce que vous ne vous appelez pas Dédale}, les règles
-      suivantes ont été imposées :
+      Même les personnes les plus influentes ont des règles à respecter, et vous
+      n'échappez pas à la règle malgré les nombreux dessous de table que vous
+      ayez pu verser. Afin que l'île ne ressemble pas à celle du roi
+      Minos\footnote{et parce que vous ne vous appelez pas Dédale}, les règles
+      suivantes, découlant du bon sens, sont imposées :
 	\begin{itemize}
-	\item Une route doit \emph{toujours} être adjacente à une autre route.
-	\item Une maison ou un bâtiment spécial peut être construit tout autour d'une route.
+	\item toute route doit être adjacente à une autre route (diagonales
+          exclues) ;
+	\item toute maison et tout bâtiment spécial doivent être adjacents à une
+          route (diagonales incluses)
 	\end{itemize}
     \vspace{1cm}
     \begin{figure}[!h]
@@ -192,14 +193,14 @@ Vendredi 01 mai 2009\\
     \end{figure}
     \subsubsection{Valeur des biens et propriété}
       Les routes n'ont aucune valeur financière et ne vous appartiennent pas.
-      Dans votre infinie bonté vous les construisez pour le solde de la mairie
+      Dans votre infinie bonté, vous les construisez pour le solde de la mairie
       qui vous le rend bien en vous autorisant à construire autour de
       celles-ci.
 
-      Les maisons, par défaut, valent 1 rouble, et vous appartiennent
-      totalement jusqu'à ce que vous les vendiez. Libre à vous d'en faire ce
-      que vous voulez. La valeur d'une maison ne peut en aucun cas être
-      inférieure à 0.
+      Les maisons, par défaut, valent 1 rouble et vous appartiennent totalement
+      jusqu'à ce que vous les vendiez. Libre à vous d'en faire ce que vous
+      voulez. La valeur d'une maison ne peut en aucun cas être négative, mais
+      elle peut être nulle.
 
 \newpage
 \section{Phase II} % Corruption, système d'enchère
@@ -219,24 +220,24 @@ Vendredi 01 mai 2009\\
   \subsection{Les bâtiments exceptionnels}
     Régulièrement la mairie décide de construire des bâtiments importants pour
     la ville. Mais ce n'est pas parce que vous n'avez pas eu vent des appels
-    d'offres qu'il faut se gêner pour en faire. Ainsi à chaque tour, chacun des
+    d'offres qu'il faut se gêner pour en faire. Ainsi, à chaque tour, chacun des
     joueurs proposera secrètement un dessous de table à la mairie.
     À la fin de la phase II des joueurs, celui qui aura proposé l'offre la plus
     élevée remportera l'immense privilège de placer le monument à l'emplacement
     de son choix (Phase III).
     Attention, en aucun cas ce bâtiment ne vous appartient, la mairie en
-    possède toujours la propriété, bien que dans son soucis de satisfaire ses
-    honnêtes\footnote{et riches} citoyens elle vous laisse décider de son lieu
+    possède toujours la propriété, bien que dans son souci de satisfaire ses
+    honnêtes\footnote{Et riches.} citoyens elle vous laisse décider de son lieu
     de construction.
 
 \newpage
 \section{Phase III} % Placement des monuments, valeur des terrains
 
   \subsection{}
-    -- Patron, on a gagné. La mairie s'est finalement rendu compte que le cinéma
+    -- Patron, on a gagné. La mairie s'est finalement aperçue que le cinéma
    serait \emph{très bien} dans notre quartier.
 
-    -- Hé hé hé\ldots{} Voila une bonne nouvelle. As-tu d'autres informations quant
+   -- Hé, hé ! Voilà une bonne nouvelle. As-tu d'autres informations quant
     aux prochains projets de notre très chère municipalité ?
 
     -- Pour l'instant non. Le budget municipal a beaucoup baissé ces derniers
@@ -300,7 +301,7 @@ Vendredi 01 mai 2009\\
 
     -- Bien reçu. Les explosifs seront prêts d'ici deux heures.
 
-    Ainsi ils voulaient la guerre\ldots{} Hé bien ils l'auraient\ldots{}
+    Ainsi ils voulaient la guerre\ldots{} Hé bien, ils l'auraient !
 
   \subsection {Destruction}
     La vengeance est un plat qui se mange froid, mais il se trouve que vous
@@ -310,7 +311,7 @@ Vendredi 01 mai 2009\\
     Durant les phase I et III du jeu vous pouvez détruire n'importe quelle
     maison en payant le prix de celle-ci moins 1 (avec un minimum de 1).
     Le terrain devient alors constructible par tous.
-    
+
   \subsection {Vente}
     Vous manquez de budget pour surpasser vos concurrents ? Pas de problème,
     vous avez à n'importe quel moment la possibilité de vendre une maison
@@ -359,13 +360,13 @@ Vendredi 01 mai 2009\\
     L'île est à présent prospère et la place commence à faire défaut. Cela
     tombe bien puisque la maire a décidé de ne plus construire de bâtiment.
     Le nombre de bâtiments que la mairie pourra construire durant une partie
-    est défini par MAX\_MONUMENTS\footnote{cf API}.
+    est défini par MAX\_MONUMENTS\footnote{cf. API}.
     Lorsque le dernier bâtiment est construit, un dernier tour composé
     uniquement de la phase I est joué. À la fin de ce tour le joueur ayant le
     score le plus élevé remporte la partie.
 
   \subsection{Score}
-    Le score d'un joueur sur une partie correspond à sa somme d'argent possédé
+    Le score d'un joueur sur une partie correspond à sa somme d'argent possédée
     plus la valeur de chaque maison qu'il détient.
 
     Pour le championnat, le premier gagne 3 points, le deuxième 1 et le dernier
