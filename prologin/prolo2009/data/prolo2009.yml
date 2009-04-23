@@ -15,7 +15,7 @@ constant:
   - 
     cst_name: HORS_TERRAIN
     cst_val: -12
-    cst_comment: Les coordonnées (x,y) avec lesquelles vous avec appelé une fonction sont hors des bornes du terrain.
+    cst_comment: Les coordonnées (x,y) avec lesquelles vous avez appelé une fonction sont hors des bornes du terrain.
   -
     cst_name: PAS_DE_MAISON
     cst_val: -2
@@ -27,7 +27,7 @@ constant:
   -
     cst_name: FINANCES_DEPASSEES
     cst_val: -4
-    cst_comment: Vous voulez dépenser plus d'argent que vous n'avez.
+    cst_comment: Vous voulez dépenser plus d'argent que vous n'en n'avez.
   -
     cst_name: BLOCAGE
     cst_val: -5
