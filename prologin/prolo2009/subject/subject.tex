@@ -116,8 +116,10 @@ Vendredi 01 mai 2009\\
     est un grand plateau semé d'herbe verdoyante, de cerisiers en fleurs et
     d'ossements dissimulés dans les fondations des bâtiments en construction.
     La plaine s'étend à perte de vue, ainsi votre possibilité d'extension ne
-    semble-t-elle limitée que par votre désir de puissance et le nombre de billets en
-    votre possession.
+    semble-t-elle limitée que par votre désir de puissance et le nombre de
+    billets en votre possession.\footnote{La carte fait en réalité 
+    TAILLE\_CARTE * TAILLE\_CARTE cases ce qui revient à un terrain de jeu
+    illimité dans des conditions normales}
 
       \subsubsection{La zone de départ}
 	Le plateau ne comporte, au début, qu'une seule et unique portion de
@@ -131,11 +133,33 @@ Vendredi 01 mai 2009\\
     \includegraphics[width=\linewidth]{rouble.jpg}
 
   \subsection{Chacun mon tour}
-    Chaque protagoniste jouera l'un après l'autre. Dans la première phase de
-    jeu, vous pourrez construire des routes et des maisons puis, dans une
-    deuxième phase, vous vous affronterez sans merci dans une lutte pour la
-    corruption afin jouir du privilège d'agir seul dans la troisième et dernière
-    phase.
+    Chaque protagoniste jouera l'un après l'autre\footnote{Attention à bien
+    vérifier que c'est à votre tour de jouer grâce à la fonction mon\_tour()
+    décrite dans l'API, sans quoi vos actions ne seront pas executées}. Dans
+    la première phase de jeu, vous pourrez construire des routes et des maisons
+    puis, dans une deuxième phase, vous vous affronterez sans merci dans une
+    lutte pour la corruption afin jouir du privilège d'agir seul dans la
+    troisième et dernière phase.
+
+    \subsubsection{Ordre des joueurs}
+      Chaque tour est donc composé de 3 phases. Chacun des joueurs jouera
+      successivement la phase I avec les eventuelles constructions et/ou
+      destructions faites par les joueurs ayant agit avant lui. Lors de la phase
+      II, les participant jouent cette fois de façon simultanée.\\
+      À la fin du tour l'ordre des joueurs change. Ainsi celui qui jouait en
+      deuxième joue en premier, le troisème devient le deuxème et le premier
+      jouera en troisème. %% améliorer ça ?
+
+  \subsection{La concurrence}
+    La concurrence est rude dans le domaine, d'autres ont flairés le bon coup.
+    Deux autres joueurs\footnote{Dans des conditions rééles de jeu, vous serez
+    donc trois, vous inclus} tenterons de vous surpasser. Tout le monde se
+    connait dans le domaine et vu votre passé et celui de vos adversaires il est
+    évident que vous êtes fichés. Vous ne connaissez d'ailleurs pas leur nom
+    mais uniquement leur matricule\footnote{Il s'agit de l'id des joueurs
+    renvoyé par les fonctions du jeu}. Le votre est 0 tandis que ceux des deux
+    autres \emph{investisseurs} sont les suivants entre 1 et le nombre de
+    joueurs - 1.
 
 \newpage
 \section{Phase I} % Construction des routes, ordre des joueurs
@@ -225,6 +249,8 @@ Vendredi 01 mai 2009\\
     À la fin de la phase II des joueurs, celui qui aura proposé l'offre la plus
     élevée remportera l'immense privilège de placer le monument à l'emplacement
     de son choix (Phase III).
+    En cas d'égalité, celui qui jouera en dernier (parmis ceux en égalité) la
+    phase I au prochain tour remporte l'enchère.
     Attention, en aucun cas ce bâtiment ne vous appartient, la mairie en
     possède toujours la propriété, bien que dans son souci de satisfaire ses
     honnêtes\footnote{Et riches.} citoyens elle vous laisse décider de son lieu
@@ -264,12 +290,12 @@ Vendredi 01 mai 2009\\
       maisons est modifiée.
     \end{itemize}
 
-    \noindent{}Sur l'exemple de la FIG.\ref{prestige} :\\
-    En B3 se trouve un cinéma au prestige de +1 et à la portée de 2.\\
-    En E5 se trouve un parc au prestige de +1 et à la portée de 1.\\
-    Les maisons en B4, C2 et D2 ont donc une valeur de 2 grâce au cinéma ;\\
-    La maison en E4 a une valeur de 2 grâce au parc ;\\
-    La maison en D4 a une valeur de 3 grâce au cinéma et au parc.\\
+    \noindent{}Sur l'exemple de la FIG. \ref{prestige} :\\
+    En B3 se trouve un cinéma au prestige de +2 et à la portée de 2.\\
+    En E5 se trouve un restaurant au prestige de +3 et à la portée de 1.\\
+    Les maisons en B4, C2 et D2 ont donc une valeur de 3 grâce au cinéma ;\\
+    La maison en E4 a une valeur de 4 grâce au restaurant ;\\
+    La maison en D4 a une valeur de 6 grâce au cinéma et au restaurant.\\
 
     \begin{figure}[!h]
       \centering
@@ -281,6 +307,92 @@ Vendredi 01 mai 2009\\
     Certains bâtiments possèdent un prestige négatif, diminuant ainsi la valeur
     des terrains alentours.
     Dans tous les cas la valeur d'une maison ne peut pas être inférieure à 0.
+
+
+  \subsection{Liste des bâtiments}
+
+    Votre informateur a réussi à avoir la liste des bâtiments que la mairie
+    entreprend de construire, mais il n'a malheureusement pas réussi à obtenir
+    l'ordre dans lequel cela va être fait. Il semblerait d'ailleurs que la
+    mairie elle-même ne le sache pas, il vous faudra donc attendre que les
+    annonces officielles soient faites pour entreprendre quoi que ce soit.
+
+    Voici la liste de votre informateur :
+
+    %% essayer d'adopter un ton "Guide du Routard").
+    \begin{itemize}
+      \item \textbf{Préstige Portée Nom}. Description.
+
+      \item \textbf{+5 1 Château fort}. Ce château fort, entièrement neuf et
+	construit en pierres venues d'Europe, vous fera revivre les grands
+	évènements du Moyen-Âge. Conçu par les plus grands spécialistes de cette
+	époque, le Château semble \emph{plus vrai que les vrais}. De nombreux
+	spectacles sont prévus, demandez la brochure à l'office du tourisme.
+
+      \item \textbf{+4 1 Parc d'attractions}. Amateurs de sensations fortes, ce
+	parc d'attractions est fait pour vous ! Venez découvrir les nombreuses
+        attractions disponibles tous les jours, toute l'année\up{*}.\\
+        \up{*}{\footnotesize\ sauf attractions aquatiques ouvertes uniquement l'été.}
+
+      \item \textbf{+4 1 Aquarium}. Qui n'a jamais révé de nager avec les
+	dauphins ? de prendre une bonne dose d'adrénaline avec les requins ? Le
+	parc aquatique vous permettra d'effleurer votre rêve et de comtempler
+	les plus rares espèces aquatiques. Pour le plus grand plaisir de vos
+	yeux l'Aquarium est la !
+
+      \item \textbf{+3 1 Restaurant "Le petit moscovite"}. Ce restaurant quatre
+	étoiles est tenu par les plus grands cuisiniers russes de notre temps.
+	Ils vous feront goûter leurs spécialités. Vodka offerte.
+
+      \item \textbf{+3 2 Parc floral}. Un lieu de détente et de découverte
+	incoutournable pour son paysage sans cesse renouvelé, ses riches
+	collections de fleurs, ses expositions horticoles et ses jardins
+	thématiques. À découvrir d'urgence ! 
+
+      \item \textbf{+2 2 Cinéma}. Ce cinéma tout confort vous propose les
+	derniers films sortis sur le continent. Des projections en plein air
+	sont proposées lors des périodes de beau temps, de quoi ravir petits et
+	grands !
+
+      \item \textbf{+2 2 Théâtre}. Un magnifique théâtre à l'italienne composé
+      d'un parterre et de balcons sur plusieurs étages. En ce moment, découvrez
+      en exclusivité, \textit{Platonov} d'Anton Tchékhov interprété par la
+      troupe du \emph{théâtre rouge}.
+
+      \item \textbf{+2 2 Patinoire}. Ouverte toute l'année, cette patinoire
+	propose des cours, des sessions ouvertes au public mais aussi des
+	spectacles musicaux tous les samedi soirs. À ne surtout pas manquer !
+
+      \item \textbf{+2 1 Supermarché}. Vous y trouverez tout ce dont vous pouvez
+	avoir besoin au quotidien  mais aussi les spécialités culinaires
+	locales\up{*}\\
+        \up{*}{\footnotesize\ Au rayon traiteur.}
+
+      \item \textbf{+1 3 Lac artificiel}. Besoin de vous détendre au calme ?
+	Envie de tester votre nouveau bateau télécommandé ? Alors cet endroit
+	est fait pour vous ! Nombre d'habitants aiment y faire un tour après une
+	rude journée de travail.
+
+      \item \textbf{+1 3 Centre commercial}. Un lieu indispensable pour tout fan
+	de shopping qui se respecte. Vous y trouverez les vêtements à la mode
+	(de la chapka pour l'hiver à la serviette de plage pour l'été), des
+	magasins vous proposant des appareils technologiques derniers cris, et
+	bien plus encore.
+
+      \item \textbf{+1 2 Médiathèque}. Vous cherchez désespérément où trouver la
+	bande son de \textit{Scarface} ou encore le dvd \textit{The Godfather} ?
+	N'hésitez pas à faire un tour à la médiathèque. Un lieu très apprécié,
+	en particulier des jeunes.
+
+      \item \textbf{-1 2 Aéroport}. Les amateurs d'avions ne se lasseront
+	probablement pas de voir décoller ces engins sous leurs yeux. Les autres
+	risquent de ne pas apprécier le bruit à sa juste valeur.
+
+      \item \textbf{-2 1 Déchetterie}. Cette déchetterie deux étoiles a été
+	optimisée spécialement pour les besoins des touristes. Des hôtesses font
+	visiter gratuitement les lieus. Étrangement, ce lieu ne fait pas
+	l'unanimité chez les riverains.
+    \end{itemize}
 
 \newpage
 \section{Autres actions}
@@ -375,62 +487,6 @@ Vendredi 01 mai 2009\\
     reviennent. Par exemple, si les deux premiers joueurs sont ex-æquo, ils
     reçoivent chacun un point. Si les trois joueurs sont ex-æquo, ils
     n'obtiennent aucun point. % améliorer ça ?
-
-
-
-%% FIXME : mettre en forme
-%% Il manque aussi des bâtiments et des descriptions (essayer d'adopter un
-%% ton "Guide du Routard").
-
-\begin{itemize}
-\item +5 1 Château fort. Ce château fort, entièrement neuf et construit en
-  pierres venues d'Europe, vous fera revivre les grands évènements du
-  Moyen-Âge. Conçu par les plus grands spécialistes de cette époque, le
-  Château semble \emph{plus vrai que les vrais}. De nombreux spectacles
-  sont prévus, demandez la brochure à l'office du tourisme.
-
-\item +4 1 Parc d'attractions.
-
-\item +4 1 Parc aquatique.
-
-\item +3 1 Restaurant "Le petit moscovite". Ce restaurant quatre étoiles
-  est tenu par les plus grands cuisiniers russes de notre temps. Ils vous
-  feront goûter leurs spécialités. Vodka offerte.
-
-\item +3 2 Parc floral. Un lieu de détente et de découverte, incoutournable
-  pour son paysage sans cesse renouvelé, ses riches collections de fleurs, ses
-  expositions horticoles et ses jardins thématiques. À découvrir d'urgence ! 
-
-\item +2 2 Cinéma. Ce cinéma dernier cri vous propose les derniers films sortis
-  sur le continent. Des projections en plein air sont proposées lors des
-  périodes de beau temps, de quoi ravir petits et grands !
-
-\item +2 2 Théâtre.
-
-\item +2 2 Patinoire. Ouverte toute l'année, cette patinoire propose des cours,
-  des sessions ouvertes au public mais aussi des spectacles musicaux tous les
-  samedi soirs. À ne surtout pas manquer !
-
-\item +2 1 Supermarché.
-
-\item +1 3 Lac artificiel.
-
-\item +1 3 Centre commercial. Un lieu indispensable pour tout fan de shopping
-  qui se respecte. Vous y trouverez les vêtements à la mode (de la chapka pour
-  l'hiver à la serviette de plage pour l'été), des magasins vous proposant des
-  appareils technologiques derniers cris, et bien plus encore.
-
-\item +1 2 Médiathèque.
-
-\item -1 2 Aéroport. Les amateurs d'avions ne se lasseront probablement
-  pas de voir décoller ces engins sous leurs yeux. Les autres risquent de
-  ne pas apprécier le bruit à sa juste valeur.
-
-\item -2 1 Déchetterie. Cette déchetterie deux étoiles a été optimisée
-  spécialement pour les besoins des touristes. Des hôtesses font visiter
-  gratuitement les lieus. Étrangement, ce lieu ne fait pas l'unanimité
-  chez les riverains.
-
 
 \newpage
 \section{API}
