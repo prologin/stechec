@@ -21,10 +21,10 @@ OBJS 	= interface.o ../includes/main.o
 RM 	= /bin/rm -f
 
 CXXFLAGS = -fPIC -W -Wall \\
-   `python-config --cflags` \\
+   `python2.5-config --cflags` \\
    $(MY_CXXFLAGS)
 
-LIBS = `python-config --ldflags`
+LIBS = `python2.5-config --ldflags`
 
 ##############################
 # Basic Compile Instructions #

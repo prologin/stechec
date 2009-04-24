@@ -87,6 +87,7 @@ private:
 
 #include <iostream>
 #include <assert.h>
+#include <cstdlib>
 #define LOG std::cerr
 
 CSharpInterface gl_csharp;
@@ -226,8 +227,6 @@ class CSharpFileGenerator < FileGenerator
 
 SRC       = #{@source_file} # Ajoutez ici vos fichiers .cs
 NAME      = #{$conf['conf']['player_lib']}.so
-
-MY_CXXFLAGS = -ggdb3
 
 include ../includes/makecs
     EOF
