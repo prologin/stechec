@@ -19,13 +19,16 @@ extern int client_cx_process(void*);
 
 /* Must be defined in champion library. */
 extern void init_game();
+extern void end_game();
+
 //extern void play_turn(); // Valid until prolo2008
+
 // Only used for prolo2009:
 extern void enchere();
 extern void jouer();
 extern void placement();
+extern int mon_tour();
 
-extern void end_game();
 
 int run(void* foo, void* api, void* client_cx)
 {
@@ -43,15 +46,16 @@ int run(void* foo, void* api, void* client_cx)
       //      play_turn();  // Use that until prolo2008.
 
       // For prolo2009, we call different functions depending of the type of the turn:
-      int t = api_get_nb_team(api);
-      int nb_virtual_turns = 2 * t + 1;
-      if (tour % nb_virtual_turns < t)
-	jouer();
-      if (tour % nb_virtual_turns == t)
-	enchere();
-      if (tour % nb_virtual_turns > t)
-	placement();
-      
+      if (mon_tour()) {
+	int t = api_get_nb_team(api);
+	int nb_virtual_turns = 2 * t + 1;
+	if (tour % nb_virtual_turns < t)
+	  jouer();
+	if (tour % nb_virtual_turns == t)
+	  enchere();
+	if (tour % nb_virtual_turns > t)
+	  placement();
+      }
       api_do_end_turn(api);
       tour++;
     }
