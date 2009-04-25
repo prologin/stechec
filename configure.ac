@@ -317,6 +317,7 @@ AC_CONFIG_FILES([
   prologin/prolo2009/rules/Makefile
   prologin/prolo2009/subject/Makefile
   prologin/prolo2009/data/Makefile
+  prologin/prolo2009/gui/Makefile
 ])
 fi
 
