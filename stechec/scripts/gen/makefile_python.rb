@@ -46,7 +46,7 @@ distclean: clean
 \t$(RM) $(NAME) prologin.tgz
 
 tar:
-\ttar cvzf prologin.tgz interface.{cc,hh} $(SRC)
+\ttar cvzf prologin.tgz interface.py $(SRC)
 EOF
   end
 
