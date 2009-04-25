@@ -164,7 +164,7 @@ void jouer()
     }
     break;
   case 14:
-    
+    assert(score(0) + finances(0) == 7);
     break;
   }
 }
