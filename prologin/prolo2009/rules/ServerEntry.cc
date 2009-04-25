@@ -64,10 +64,14 @@ int ServerEntry::loadMap(void)
     ERR("Unable to load %1", map_file);
     return 1;
   }
+  bool randomize = false;
   // If the first lines are comments, discard them
   while (map_stream.peek() == '#')
   {
     getline(map_stream, line); 
+    if (line.find("#randomize") == 0) {      
+      randomize = true;
+    }
   }
   
   int nb_monuments;
@@ -76,6 +80,16 @@ int ServerEntry::loadMap(void)
     return 1;
   }
   g_->nb_monuments_ = nb_monuments;
+
+  if (randomize) {
+    LOG1("Monuments are randomly shuffled");
+    for (int i = 0 ; i < MAX_MONUMENTS ; i++) {
+      g_->monument_order_[i] = i;
+    }
+    std::random_shuffle(g_->monument_order_, g_->monument_order_ + MAX_MONUMENTS);
+    return 0;
+  }
+
   for (int m = 0 ; m < nb_monuments ; m++) {
     int p;
     if (!(map_stream >> p)) {

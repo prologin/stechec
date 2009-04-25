@@ -1,0 +1,10 @@
+#! /usr/bin/perl
+# -*- cperl -*-
+
+use List::Util "shuffle";
+
+local *FD = *STDOUT;
+open FD, ">$ARGV[0]" if ($#ARGV >= 0);
+print FD "14\n";
+print FD $_, "\n" for (shuffle 1..14);
+close FD;
