@@ -19,29 +19,29 @@ Display			*Display::_instance = NULL;
 /* surfaces */
 static SurfacesList	DisplaySurface[] =
   {
-    {SFC_FLOOR, "./image/floor.png", NULL},
+    {SFC_FLOOR, "/opt/share/stechec/prolo2009/graphics/floor.png", NULL},
     {SFC_NONE, NULL, NULL}
   };
 
 /* sprites */
 static SpritesList	DisplaySprite[] =
   {
-    {{SP_HOUSE, "./image/house.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_RESERVED, "./image/floor_res.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT1, "./image/monument1.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT2, "./image/monument2.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT3, "./image/monument3.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT4, "./image/monument4.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT5, "./image/monument5.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT6, "./image/monument6.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT7, "./image/monument7.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT8, "./image/monument8.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT9, "./image/monument9.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT10, "./image/monument10.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT11, "./image/monument11.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT12, "./image/monument12.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT13, "./image/monument13.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_MONUMENT14, "./image/monument14.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_HOUSE, "/opt/share/stechec/prolo2009/graphics/house.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_RESERVED, "/opt/share/stechec/prolo2009/graphics/floor_res.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT1, "/opt/share/stechec/prolo2009/graphics/monument1.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT2, "/opt/share/stechec/prolo2009/graphics/monument2.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT3, "/opt/share/stechec/prolo2009/graphics/monument3.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT4, "/opt/share/stechec/prolo2009/graphics/monument4.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT5, "/opt/share/stechec/prolo2009/graphics/monument5.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT6, "/opt/share/stechec/prolo2009/graphics/monument6.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT7, "/opt/share/stechec/prolo2009/graphics/monument7.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT8, "/opt/share/stechec/prolo2009/graphics/monument8.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT9, "/opt/share/stechec/prolo2009/graphics/monument9.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT10, "/opt/share/stechec/prolo2009/graphics/monument10.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT11, "/opt/share/stechec/prolo2009/graphics/monument11.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT12, "/opt/share/stechec/prolo2009/graphics/monument12.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT13, "/opt/share/stechec/prolo2009/graphics/monument13.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_MONUMENT14, "/opt/share/stechec/prolo2009/graphics/monument14.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
     {{SP_NONE, NULL, 0, 0, 0, false, 0, 0, {0,0}}, NULL}
   };
 

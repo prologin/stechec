@@ -10,7 +10,7 @@
 \noindent \begin{tabular}{ll}
 \textbf{Constante:} & INFINI \\
 \textbf{Valeur:} & 30000 \\
-\textbf{Description:} & Renvoyé par cout\_achat\_maison lorsque vous ne pouvez plus construire de maison pour le tour courant. \\
+\textbf{Description:} & Renvoyé par cout_achat_maison lorsque vous ne pouvez plus construire de maison pour le tour en cours. \\
 \end{tabular} 
 \vspace{0.2cm} \\
 
@@ -19,7 +19,7 @@
 \noindent \begin{tabular}{ll}
 \textbf{Constante:} & HORS\_TERRAIN \\
 \textbf{Valeur:} & -12 \\
-\textbf{Description:} & Les coordonnées (x,y) avec lesquelles vous avec appelé une fonction sont hors des bornes du terrain. \\
+\textbf{Description:} & Les coordonnées (x,y) avec lesquelles vous avez appelé une fonction sont hors des bornes du terrain. \\
 \end{tabular} 
 \vspace{0.2cm} \\
 
@@ -46,7 +46,7 @@
 \noindent \begin{tabular}{ll}
 \textbf{Constante:} & FINANCES\_DEPASSEES \\
 \textbf{Valeur:} & -4 \\
-\textbf{Description:} & Vous voulez dépenser plus d'argent que vous n'avez, ou vous ne pouvez plus construire de maison ce tour-ci. \\
+\textbf{Description:} & Vous voulez dépenser plus d'argent que vous n'en n'avez. \\
 \end{tabular} 
 \vspace{0.2cm} \\
 
@@ -55,7 +55,7 @@
 \noindent \begin{tabular}{ll}
 \textbf{Constante:} & BLOCAGE \\
 \textbf{Valeur:} & -5 \\
-\textbf{Description:} & Un blocage intervient lorsqu'aucune route n'est accessible par rapport à l'extérieur du jeu. Ce code d'erreur indique que le jeu serait bloqué si vous construisiez une maison ou un monument en (x,y). \\
+\textbf{Description:} & Un blocage intervient lorsqu'aucune route n'est accessible depuis l'extérieur du jeu. Ce code d'erreur indique que le jeu serait bloqué si vous construisiez une maison ou un monument en (x,y) (ou si vous faisiez une réservation). \\
 \end{tabular} 
 \vspace{0.2cm} \\
 
@@ -100,7 +100,7 @@
 \noindent \begin{tabular}{ll}
 \textbf{Constante:} & TROP\_LOIN \\
 \textbf{Valeur:} & 50 \\
-\textbf{Description:} & La distance demandée est strictement supérieure à MAX\_DISTANCE. \\
+\textbf{Description:} & La distance demandée est strictement supérieure à MAX_DISTANCE. \\
 \end{tabular} 
 \vspace{0.2cm} \\
 
@@ -118,7 +118,7 @@
 \noindent \begin{tabular}{ll}
 \textbf{Constante:} & MAIRIE \\
 \textbf{Valeur:} & 3 \\
-\textbf{Description:} & La case ou la bâtiment est possédée par la mairie. \\
+\textbf{Description:} & La case (ou le bâtiment) est possédée par la mairie. \\
 \end{tabular} 
 \vspace{0.2cm} \\
 
@@ -172,7 +172,7 @@
 \noindent \begin{tabular}{ll}
 \textbf{Constante:} & MAX\_MONUMENTS \\
 \textbf{Valeur:} & 14 \\
-\textbf{Description:} & Nombre de monuments qui seront mis aux enchères. \\
+\textbf{Description:} & Nombre de monuments qui seront mis aux enchères au cours de la partie. \\
 \end{tabular} 
 \vspace{0.2cm} \\
 
@@ -208,8 +208,9 @@
 \subsection{Fonctions d'information}
 Toutes ses fonctions peuvent renvoyer la constante HORS\_TERRAIN quand
 leurs arguments sont incorrects.
-Ces fonctions prennent en comptent toutes les actions que vous avez déjà effectuées
-au cours de votre tour de jeu.
+Ces fonctions (en incluant la fonction distance) prennent en comptent
+toutes les actions que vous avez déjà effectuées au cours de votre phase
+de tour de jeu.
 
 \begin{minipage}{\linewidth}
 \functitle{type\_case}
@@ -255,7 +256,7 @@ int valeur_case(int x, int y)
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Renvoie la valeur de la case, c'est-à-dire la somme des prestiges des monuments qui ont cette case dans leur portée. \\
+Description~: & Renvoie la valeur de la case, c'est-à-dire la somme des prestiges des monuments qui ont cette case dans leur portée. Cette valeur peut être négative. \\
 
 
 Parametres~: &
@@ -290,7 +291,7 @@ int appartenance(int x, int y)
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Renvoie l'entité possédant la case, 0, 1, 2 ou MAIRIE si la case est une maison ou une réservation, et MAIRIE sinon. \\
+Description~: & Renvoie l'entité possédant la case, 0, 1 ou 2 si la case est une maison, et MAIRIE sinon. \\
 
 
 Parametres~: &
@@ -599,7 +600,7 @@ int distance(int x1, int y1, int x2, int y2)
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2). Lors du calcul de cette distance, seules les cases vides, les cases contenant une route, et les cases étant réservée par votre champion sont considérées comme franchissables. Si le résultat est supérieur strictement à MAX\_DISTANCE, la fonction renvoie TROP\_LOIN. Le coût d'un appel à cette fonction est nul. \\
+Description~: & Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2) (sachant qu'un déplacement en bas, à gauche, en haut ou à droite coûte pour 1, et que les déplacements en diagonal ne sont pas autorisés). Lors du calcul de cette distance, seules les cases vides, les cases contenant une route, et les cases étant réservée par votre champion sont considérées comme franchissables. Si le résultat est supérieur strictement à MAX\_DISTANCE, la fonction renvoie TROP\_LOIN. Cette fonction ne fait aucun calcul, elle renvoie immédiatement. \\
 
 
 Parametres~: &
@@ -712,7 +713,7 @@ int cout_achat_maison()
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Renvoie le coût d'achat d'une maison (ou INFINI si vous ne pouvez plus en construire pour ce tour). \\
+Description~: & Renvoie le coût d'achat d'une maison (ou INFINI si vous ne pouvez plus en construire pour ce tour), en fonction de ce que vous avez déjà construit (et dépensé) lors de votre phase de jeu. \\
 
 
 
@@ -733,7 +734,7 @@ int cout_achat_route()
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Renvoie le coût d'achat d'une route. \\
+Description~: & Renvoie le coût d'achat d'une route, en fonction de ce que vous avez déjà construit (et dépensé) lors de votre phase de jeu. \\
 
 
 
@@ -754,7 +755,7 @@ int mon_tour()
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Indique si votre champion doit jouer ou non. Si cette fonction renvoie false, votre champion ne pourra effectuer aucune action. \\
+Description~: & Indique si votre champion doit jouer ou non. Si cette fonction renvoie false, votre champion ne pourra effectuer aucune action. Vous devriez toujours commencer vos fonctions jouer, enchere et placement par \texttt{if (mon\_tour() == false) return;}. \\
 
 
 
