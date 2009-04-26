@@ -105,8 +105,8 @@ Vendredi 01 mai 2009\\
     Quelques heures plus tard, je prenais le bateau.
 
   \subsection{Votre mission}
-    Votre mission, que vous acceptez, est de construire, de faire
-    fructifier et, surtout, de prendre le pouvoir de la ville dans
+    Votre mission, que vous acceptez, est de construire, faire
+    fructifier et, surtout, prendre le pouvoir de la ville dans
     laquelle vous vous installez, avec tous les moyens dont peuvent
     disposer les honnêtes citoyens : argent, corruption, sabotage et plus
     encore\ldots{} Pour diriger une ville, chacun le sait, rien n'est plus
@@ -119,8 +119,8 @@ Vendredi 01 mai 2009\\
     La plaine s'étend à perte de vue ; ainsi votre possibilité d'extension ne
     semble-t-elle limitée que par votre désir de puissance et le nombre de
     billets en votre possession.\footnote{La carte fait en réalité 
-    TAILLE\_CARTE * TAILLE\_CARTE cases ce qui revient à un terrain de jeu
-    illimité dans des conditions normales}
+    TAILLE\_CARTE * TAILLE\_CARTE cases, ce qui revient généralement à un terrain de jeu
+    illimité, dans des conditions normales}
 
       \subsubsection{La zone de départ}
 	Le plateau ne comporte, au début, qu'une seule et unique portion de
@@ -134,31 +134,26 @@ Vendredi 01 mai 2009\\
     \includegraphics[width=\linewidth]{rouble.jpg}
 
   \subsection{Chacun mon tour}
-    Chaque protagoniste jouera l'un après l'autre. Dans la première phase de
-    jeu, vous pourrez construire des routes et des maisons puis, dans une
-    deuxième phase, vous vous affronterez sans merci dans une lutte pour la
-    corruption afin de jouir du privilège d'agir seul dans la troisième et dernière
-    phase.
+    Chaque tour est donc composé de 3 phases. Dans la première phase,
+    chacun joue successivement et a la possibilité de construire des
+    routes et des maisons. Dans la deuxième phase, vous vous affrontez
+    sans merci dans une lutte pour la corruption afin de jouir du
+    privilège d'agir seul dans la troisième phase.
 
-    \subsubsection{Ordre des joueurs}
-      Chaque tour est donc composé de 3 phases. Chacun des joueurs jouera
-      successivement la phase I avec les éventuelles constructions et
-      destructions faites par les joueurs ayant agi avant lui. Lors de la phase
-      II, les participants jouent cette fois de façon simultanée.\\
-      À la fin du tour l'ordre des joueurs change. Ainsi, celui qui jouait en
-      deuxième joue en premier, le troisième devient le deuxième et le premier
-      jouera en troisième. %% améliorer ça ?
+    À la fin du tour, l'ordre des joueurs dans la première phase change :
+    celui qui jouait en deuxième joue en premier, le troisième devient le
+    deuxième et le premier passe dernier. Cela permet d'assurer une
+    certaine équité.
 
   \subsection{La concurrence}
     La concurrence est rude dans le domaine, d'autres ont flairé le bon coup.
-    Deux autres joueurs\footnote{Dans des conditions rééles de jeu, vous serez
+    Deux autres joueurs\footnote{Dans des conditions réelles de jeu, vous serez
     donc trois, vous inclus} tenteront de vous surpasser. Tout le monde se
-    connait dans le domaine et vu votre passé et celui de vos adversaires il est
-    évident que vous êtes fichés. Vous ne connaissez d'ailleurs pas leur nom,
-    mais uniquement leur matricule\footnote{Il s'agit de l'id des joueurs
+    connaît dans le domaine et, vu votre passé et celui de vos adversaires, il est
+    évident que vous êtes fiché. Vous ne connaissez d'ailleurs pas leur nom,
+    mais uniquement leur matricule\footnote{Il s'agit de l'identifiant des joueurs
     renvoyé par les fonctions du jeu}. Le vôtre est 0 tandis que ceux des deux
-    autres \emph{investisseurs} sont les suivants entre 1 et le nombre de
-    joueurs moins un.
+    autres \emph{investisseurs} sont 1 et 2.
 
 \newpage
 \section{Phase I} % Construction des routes, ordre des joueurs
@@ -192,13 +187,14 @@ Vendredi 01 mai 2009\\
 
       Vous avez l'occasion de construire gratuitement une route, ainsi qu'une
       maison à chaque tour. Vous pouvez aussi dépenser une fois par tour un
-      rouble pour, à nouveau, construire une route et une maison
-      supplémentaires. Il vous est également possible, et ce, autant de fois que
-      vous le désirez, de construire jusqu'à deux routes en payant un rouble.
+      rouble\footnote{On avait dit que c'était une monnaie forte.} pour, à
+      nouveau, construire une route et une maison supplémentaires. Il vous est
+      également possible, et ce, autant de fois que vous le désirez, de
+      construire jusqu'à deux routes en payant un rouble.
 
     \subsubsection{Architecture}
-      Même les personnes les plus influentes ont des règles à respecter, et vous
-      n'échappez pas à la règle malgré les nombreux dessous de table que vous
+      Même les personnes les plus influentes ont des règles à respecter et vous
+      n'échappez pas à la règle, malgré les nombreux dessous de table que vous
       avez pu verser. Afin que l'île ne ressemble pas à celle du roi
       Minos\footnote{et parce que vous ne vous appelez pas Dédale}, les règles
       suivantes, découlant du bon sens, sont imposées :
@@ -247,7 +243,7 @@ Vendredi 01 mai 2009\\
     Régulièrement, la mairie décide de construire des bâtiments importants pour
     la ville. Mais ce n'est pas parce que vous n'avez pas eu vent des appels
     d'offres qu'il faut se gêner pour en faire. Ainsi, à chaque tour, chacun des
-    joueurs proposera secrètement un dessous de table à la mairie.
+    joueurs propose secrètement un dessous de table à la mairie.
     À la fin de la phase II des joueurs, celui qui aura proposé l'offre la plus
     élevée remportera l'immense privilège de placer le monument à l'emplacement
     de son choix (Phase III).
@@ -268,7 +264,7 @@ Vendredi 01 mai 2009\\
    -- Hé, hé ! Voilà une bonne nouvelle. As-tu d'autres informations quant
     aux prochains projets de notre très chère municipalité ?
 
-    -- Pour l'instant non. Le budget municipal a beaucoup baissé ces derniers
+    -- Pour l'instant, non. Le budget municipal a beaucoup baissé ces derniers
     temps\ldots{}
 
     -- Bien ! Cela nous laisse le temps de nous développer.
@@ -276,7 +272,7 @@ Vendredi 01 mai 2009\\
     D'ici à ce que la mairie se décide à construire une nouvelle infrastructure,
     j'avais un peu de temps devant moi. Temps que je mis à profit immédiatement.
 
-    Je contactais mes équipes et leur demandais de construire quelques maisons
+    Je contactai mes équipes et leur demandai de construire quelques maisons
     supplémentaires\ldots{} Après tout, ce cinéma allait faire monter la demande
     dans le secteur.
 
@@ -295,8 +291,8 @@ Vendredi 01 mai 2009\\
     \noindent{}Sur l'exemple de la FIG. \ref{prestige} :\\
     En B3 se trouve un cinéma au prestige de +2 et à la portée de 2.\\
     En E5 se trouve un restaurant au prestige de +3 et à la portée de 1.\\
-    Les maisons en B4, C2 et D2 ont donc une valeur de 3 grâce au cinéma ;\\
-    La maison en E4 a une valeur de 4 grâce au restaurant ;\\
+    Les maisons en B4, C2 et D2 ont donc une valeur de 3 grâce au cinéma.\\
+    La maison en E4 a une valeur de 4 grâce au restaurant.\\
     La maison en D4 a une valeur de 6 grâce au cinéma et au restaurant.\\
 
     \begin{figure}[!h]
@@ -334,7 +330,7 @@ Vendredi 01 mai 2009\\
       \item \textbf{+4 1 Parc d'attractions}. Amateurs de sensations fortes, ce
 	parc d'attractions est fait pour vous ! Venez découvrir les nombreuses
         attractions disponibles tous les jours, toute l'année\up{*}.\\
-        \up{*}{\footnotesize\ sauf attractions aquatiques ouvertes uniquement l'été.}
+        \up{*}{\footnotesize\ Sauf attractions aquatiques ouvertes uniquement l'été.}
 
       \item \textbf{+4 1 Aquarium}. Qui n'a jamais rêvé de nager avec les
 	dauphins ? de prendre une bonne dose d'adrénaline avec les requins ? Le
@@ -373,7 +369,7 @@ Vendredi 01 mai 2009\\
       \item \textbf{+1 3 Lac artificiel}. Besoin de vous détendre au calme ?
 	Envie de tester votre nouveau bateau télécommandé ? Alors cet endroit
 	est fait pour vous ! Nombre d'habitants aiment y faire un tour après une
-	rude journée de travail.
+	rude journée de vacances.
 
       \item \textbf{+1 3 Centre commercial}. Un lieu indispensable pour tout adepte
 	des courses qui se respecte. Vous y trouverez les vêtements à la mode
@@ -401,12 +397,12 @@ Vendredi 01 mai 2009\\
 
   \subsection{La guerre des clans}
     Cette nuit-là, je fus réveillé en pleine nuit par un énorme vacarme. Les murs
-    vibrèrent quelques instants, et je commençais à entendre des sirènes au loin.
-    Alors que j'allais appeler mon second, le téléphone sonna.
+    vibrèrent quelques instants et je commençai à entendre des sirènes au loin.
+    Alors que je m'apprêtais à appeler mon second, le téléphone sonna.
 
-    -- Allô ! dis-je nerveusement
+    -- Allô ! fis-je nerveusement
 
-    -- C'est moi. Notre dernier immeuble flambant neuf est en flamme
+    -- C'est moi. Notre dernier immeuble flambant neuf est en flammes
     \footnote{Normal, me direz-vous\ldots{}}. D'après les pompiers sur place, cela
     ressemble à une explosion.
 
@@ -420,11 +416,13 @@ Vendredi 01 mai 2009\\
   \subsection {Destruction}
     La vengeance est un plat qui se mange froid, mais il se trouve que vous
     avez plutôt le sang chaud. Les gros feux d'artifice vous fascinent
-    depuis votre plus tendre enfance et aujourd'hui vous avez l'occasion d'en
+    depuis votre plus tendre enfance et, aujourd'hui, vous avez l'occasion d'en
     faire de gigantesques !
     Durant les phases I et III du jeu vous pouvez détruire n'importe quelle
     maison en payant le prix de celle-ci moins 1 (avec un minimum de 1).
-    Le terrain devient alors constructible par tous.
+    Le terrain devient alors constructible par tous. Il est par exemple possible
+    de détruire une maison et d'en construire une autre à la place, lors de la
+    même phase.
 
   \subsection {Vente}
     Vous manquez de budget pour surpasser vos concurrents ? Pas de problème,
@@ -445,10 +443,33 @@ Vendredi 01 mai 2009\\
     gaz insoupçonnée venait à détruire la maison la case ne vous serait plus
     réservée !
 
-\newpage
-\section{Happy end}
+    COmme pour la construction de bâtiments, la réservation d'une case ne peut
+    en aucun cas bloquer le jeu. Il faut toujours que les autres joueurs
+    puissent construire une route sortant de la ville.
 
-  \subsection{Epilogue}
+\newpage
+\section{Fin de la partie}
+
+    L'île est à présent prospère et la place commence à manquer. Cela
+    tombe bien puisque la mairie a décidé de ne plus construire de bâtiment.
+    Le nombre de bâtiments que la mairie pourra construire durant une partie
+    est défini par MAX\_MONUMENTS\footnote{cf. API}.
+    Lorsque le dernier bâtiment est construit, un dernier tour composé
+    uniquement de la phase I est joué. À la fin de ce tour, le joueur ayant le
+    score le plus élevé remporte la partie.
+
+    Le score d'un joueur sur une partie correspond à sa somme d'argent possédée
+    plus la valeur de chaque maison qu'il détient.\\
+
+    Pour établir un classment, à la fin du concours, un tounoi sera organisé.
+    Lors de chaque partie, le vainqueur gagne 3 points, le deuxième 1 et le
+    dernier n'en gagne aucun. Si deux ou trois joueurs sont ex-æquo, ils
+    reçoivent chacun le nombre de point minimal parmi les nombres de points qui
+    leur reviennent. Par exemple, si les deux premiers joueurs sont ex-æquo, ils
+    reçoivent chacun un point. Si les trois joueurs sont ex-æquo, ils
+    n'obtiennent aucun point. % améliorer ça ?
+
+  \subsection{Épilogue}
     Pour la première fois depuis des semaines, le téléphone sonna.
 
     -- Allô, répondis-je machinalement.
@@ -469,26 +490,6 @@ Vendredi 01 mai 2009\\
 
     Quelques heures plus tard, je reprenais le bateau en direction du
     continent\ldots{}
-
-  \subsection{Fin du jeu}
-    L'île est à présent prospère et la place commence à manquer. Cela
-    tombe bien puisque la mairie a décidé de ne plus construire de bâtiment.
-    Le nombre de bâtiments que la mairie pourra construire durant une partie
-    est défini par MAX\_MONUMENTS\footnote{cf. API}.
-    Lorsque le dernier bâtiment est construit, un dernier tour composé
-    uniquement de la phase I est joué. À la fin de ce tour, le joueur ayant le
-    score le plus élevé remporte la partie.
-
-  \subsection{Score}
-    Le score d'un joueur sur une partie correspond à sa somme d'argent possédée
-    plus la valeur de chaque maison qu'il détient.
-
-    Pour le championnat, le premier gagne 3 points, le deuxième 1 et le dernier
-    n'en gagne aucun. Si deux ou trois joueurs sont ex-æquo, ils reçoivent
-    chacun le nombre de point minimal parmi les nombres de points qui leur
-    reviennent. Par exemple, si les deux premiers joueurs sont ex-æquo, ils
-    reçoivent chacun un point. Si les trois joueurs sont ex-æquo, ils
-    n'obtiennent aucun point. % améliorer ça ?
 
 \newpage
 \section{API}
