@@ -17,6 +17,7 @@ class PythonCxxFileGenerator < CxxProto
     @lang = "C++ (for python interface)"
   end
 
+
   def generate_header()
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_python.rb"
@@ -40,7 +41,6 @@ private:
 
     EOF
 
-    build_constants
     @f.puts "", 'extern "C" {', ""
     for_each_fun { |x, y, z| print_proto(x, y, z, "extern"); @f.puts ";" }
     for_each_user_fun { |x, y, z| print_proto(x, y, z); @f.puts ";" }
@@ -193,6 +193,10 @@ class PythonFileGenerator < FileGenerator
     @lang = "python"
   end
 
+  def print_constant(type, name, val)
+    @f.print name, " = ", val, "\n"
+  end
+
   def print_comment(str)
     @f.puts '# ' + str if str
   end
@@ -234,13 +238,19 @@ include ../includes/makepython
     ######################################
     @f = File.new(@path + @source_file, 'w')
     print_banner "generator_python.rb"
-    @f.puts "import api", ""
+
+    @f.puts "import api", "import constants", ""
+
     for_each_user_fun do |name, ret, args|
       @f.puts "def " + name + "():"
       @f.puts "\tpass # Place ton code ici"
     end
     @f.close
 
+    @f = File.new(@path + "constants.py", 'w')
+    @f.puts "# coding=iso-8859-1"
+    build_constants
+    @f.close
     generate_makefile
   end
 

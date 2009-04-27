@@ -19,6 +19,10 @@ class CSharpCxxFileGenerator < CSharpProto
     @lang = "C++ (for C# interface)"
   end
 
+  def print_constant(type, name, val)
+      @f.print '                public const int ', name, ' = ', val, ";\n"
+  end
+
   def generate_header()
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_cs.rb"
@@ -53,7 +57,6 @@ private:
 
     EOF
 
-    build_constants
     @f.puts "", 'extern "C" {', ""
     for_each_fun { |x, y, z| print_proto(x, y, z, "extern"); @f.puts ";" }
     for_each_user_fun { |x, y, z| print_proto(x, y, z); @f.puts ";" }
@@ -68,6 +71,8 @@ private:
     @f.puts "using System.Runtime.InteropServices;", "using System.Runtime.CompilerServices;", ""
     @f.puts "namespace Prologin {"
     @f.puts "\tclass API {"
+
+    build_constants
 
     for_each_fun(false) do |name, type_ret, args|
       @f.puts "\t\t[MethodImplAttribute(MethodImplOptions.InternalCall)]"
@@ -88,7 +93,6 @@ private:
 #include <iostream>
 #include <assert.h>
 #include <cstdlib>
-#define LOG std::cerr
 
 CSharpInterface gl_csharp;
 
@@ -109,7 +113,6 @@ CSharpInterface::CSharpInterface()
     champion += "/prologin.dll";
   }
 
-  LOG << "[C# Wrapper] Initializing" << std::endl;
   _domain = mono_jit_init(champion.c_str());
   assert(_domain != NULL);
 
@@ -147,19 +150,19 @@ CSharpInterface::CSharpInterface()
      EOF
 
      for_each_fun(false) do |name, ret, args|
-       @f.print "      mono_add_internal_call(\"Prologin.API::" + name + "\", (const void*)" + name + ");"
+       @f.print "  mono_add_internal_call(\"Prologin.API::" + name + "\", (const void*)" + name + ");"
      end
 
      @f.puts <<-EOF
-  LOG << "[C# Wrappper] done." << std::endl;
 }
 
 CSharpInterface::~CSharpInterface()
 {
-  LOG << "[C# Wrapper] cleaning up." << std::endl;
   mono_image_close(_image);
   mono_assembly_close(_assembly);
-  mono_jit_cleanup(_domain);
+  // XXX -- mono segfaults when calling this. Seems to be a known bug
+  //        appearing when mono_jit_clean() is called from a dtor. ???
+  //mono_jit_cleanup(_domain);
 }
 
 /*
@@ -175,7 +178,6 @@ void CSharpInterface::callCSharpMethod(const char* name)
   if (iter == _user_methods.end())
     return ;
   method = (*iter).second;
-  LOG << "[C# Wrapper] Invoking user-method " << name << std::endl;
   mono_runtime_invoke(method, NULL, args, NULL);
 }
 

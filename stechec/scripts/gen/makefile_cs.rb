@@ -52,7 +52,7 @@ clean:
 \t$(RM) $(OBJS) *~ #*#
 
 distclean: clean
-\t$(RM) $(NAME) prologin.tgz
+\t$(RM) $(CHAMPION) $(NAME) prologin.tgz
 
 tar:
 \ttar cvzf prologin.tgz interface.cs $(SRC)

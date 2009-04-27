@@ -108,7 +108,7 @@ class CProto < FileGenerator
   end
 
   def print_constant(type, name, val)
-      @f.print '# define ', name
+      @f.print '# define', name
       (25 - name.to_s.length).times { @f.print " " }
       @f.print " ", val, "\n"
   end
