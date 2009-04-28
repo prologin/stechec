@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Mar 13 14:51:17 2009 Hazgar
-** Last update Sat Apr 25 13:24:20 2009 Hazgar
+** Last update Tue Apr 28 12:29:48 2009 user
 */
 
 #ifndef DISPLAYMAP_H_
@@ -15,12 +15,25 @@
 # include "surface.h"
 # include "sprite.h"
 
+/* ROAD check */
+# define ROAD_N		0x1
+# define ROAD_S		0x2
+# define ROAD_E		0x4
+# define ROAD_W		0x8
+struct			MapRoadType
+{
+  unsigned int		flag;
+  SpriteID		spr_id;
+};
+
+/* */
 struct			MapCaseType
 {
   int			type;
   SpriteID		spr_id;
 };
 
+/* */
 class			DisplayMap
 {
  private:

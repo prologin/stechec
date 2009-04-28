@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Feb 27 11:21:32 2009 Hazgar
-** Last update Sat Apr 25 10:26:56 2009 Hazgar
+** Last update Tue Apr 28 12:53:04 2009 user
 */
 
 #ifndef SPRITE_H_
@@ -15,7 +15,11 @@
 
 enum			SpriteID
 {
-  SP_HOUSE,
+  SP_HOUSE1,
+  SP_HOUSE2,
+  SP_HOUSE3,
+  SP_HOUSE4,
+  SP_HOUSE5,
   SP_ROAD1,
   SP_ROAD2,
   SP_ROAD3,
@@ -23,10 +27,6 @@ enum			SpriteID
   SP_ROAD5,
   SP_ROAD6,
   SP_ROAD7,
-  SP_ROAD8,
-  SP_ROAD9,
-  SP_ROAD10,
-  SP_ROAD11,
   SP_RESERVED,
   SP_MONUMENT1,
   SP_MONUMENT2,
@@ -80,6 +80,8 @@ class			Sprite : public Surface
   void			setCurrentFrame(int frame);
   void			setDirection(int dir);
   void			setRepeat(bool repeat);
+  int			getFieldWidth(void) const;
+  int			getFieldHeight(void) const;
 };
 
 #endif /* !SPRITE_H_ */

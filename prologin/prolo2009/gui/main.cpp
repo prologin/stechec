@@ -1,3 +1,4 @@
+#include <time.h>
 #include <csignal>
 #include <cstdlib>
 #include "display.h"
@@ -33,6 +34,7 @@ int		run(void* foo, void* api, void* client_cx)
   GameEngine	*ge;
 
   (void)foo;
+  srandom(time(NULL));
   g_client_cx = client_cx;
   g_api = api;
   signal(SIGINT, exit_handler);

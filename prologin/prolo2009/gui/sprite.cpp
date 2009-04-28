@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Feb 27 11:25:41 2009 Hazgar
-// Last update Sat Apr 25 11:09:08 2009 Hazgar
+// Last update Tue Apr 28 11:25:35 2009 user
 //
 
 #include <cstring>
@@ -87,4 +87,14 @@ void			Sprite::setDirection(int dir)
 void			Sprite::setRepeat(bool repeat)
 {
   this->_repeat = repeat;
+}
+
+int			Sprite::getFieldWidth(void) const
+{
+  return (this->_defField.w);
+}
+
+int			Sprite::getFieldHeight(void) const
+{
+  return (this->_defField.h);
 }

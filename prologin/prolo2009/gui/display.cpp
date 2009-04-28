@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Sat Apr 25 17:04:35 2009 Hazgar
+// Last update Tue Apr 28 12:54:37 2009 user
 //
 
 #include <cstdlib>
@@ -26,8 +26,19 @@ static SurfacesList	DisplaySurface[] =
 /* sprites */
 static SpritesList	DisplaySprite[] =
   {
-    {{SP_HOUSE, "/opt/share/stechec/prolo2009/graphics/house.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
-    {{SP_RESERVED, "/opt/share/stechec/prolo2009/graphics/floor_res.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
+    {{SP_HOUSE1, "/opt/share/stechec/prolo2009/graphics/house1.png", 4, 400, 0, true, 117, 104, {0,0}}, NULL},
+    {{SP_HOUSE2, "/opt/share/stechec/prolo2009/graphics/house2.png", 4, 400, 0, true, 117, 104, {0,0}}, NULL},
+    {{SP_HOUSE3, "/opt/share/stechec/prolo2009/graphics/house3.png", 4, 400, 0, true, 117, 104, {0,0}}, NULL},
+    {{SP_HOUSE4, "/opt/share/stechec/prolo2009/graphics/house4.png", 4, 400, 0, true, 117, 104, {0,0}}, NULL},
+    {{SP_HOUSE5, "/opt/share/stechec/prolo2009/graphics/house5.png", 4, 400, 0, true, 117, 104, {0,0}}, NULL},
+    {{SP_ROAD1, "/opt/share/stechec/prolo2009/graphics/road1.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
+    {{SP_ROAD2, "/opt/share/stechec/prolo2009/graphics/road2.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
+    {{SP_ROAD3, "/opt/share/stechec/prolo2009/graphics/road3.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
+    {{SP_ROAD4, "/opt/share/stechec/prolo2009/graphics/road4.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
+    {{SP_ROAD5, "/opt/share/stechec/prolo2009/graphics/road5.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
+    {{SP_ROAD6, "/opt/share/stechec/prolo2009/graphics/road6.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
+    {{SP_ROAD7, "/opt/share/stechec/prolo2009/graphics/road7.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
+    {{SP_RESERVED, "/opt/share/stechec/prolo2009/graphics/floor_res.png", 1, 0, 0, true, 117, 61, {0,0}}, NULL},
     {{SP_MONUMENT1, "/opt/share/stechec/prolo2009/graphics/monument1.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
     {{SP_MONUMENT2, "/opt/share/stechec/prolo2009/graphics/monument2.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},
     {{SP_MONUMENT3, "/opt/share/stechec/prolo2009/graphics/monument3.png", 1, 0, 0, true, 124, 62, {0,0}}, NULL},

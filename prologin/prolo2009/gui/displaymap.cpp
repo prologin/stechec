@@ -5,19 +5,20 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Sat Apr 25 13:01:24 2009 Hazgar
+// Last update Tue Apr 28 13:18:26 2009 user
 //
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
+#include <cstdlib>
 #include <cstring>
+#include "prologin.h"
 #include "game.h"
 #include "displaymap.h"
 #include "display.h"
 
 static MapCaseType	CaseType[] =
   {
-    {LD_HOUSE		, SP_HOUSE},
     {LD_RESERVED	, SP_RESERVED},
     {LD_MONUMENTS	, SP_MONUMENT1},
     {LD_MONUMENTS + 1	, SP_MONUMENT2},
@@ -33,7 +34,37 @@ static MapCaseType	CaseType[] =
     {LD_MONUMENTS + 11	, SP_MONUMENT12},
     {LD_MONUMENTS + 12	, SP_MONUMENT13},
     {LD_MONUMENTS + 13	, SP_MONUMENT14},
+    {LD_MONUMENTS + MAX_MONUMENTS	, SP_HOUSE1},
+    {LD_MONUMENTS + MAX_MONUMENTS + 1	, SP_HOUSE2},
+    {LD_MONUMENTS + MAX_MONUMENTS + 2	, SP_HOUSE3},
+    {LD_MONUMENTS + MAX_MONUMENTS + 3	, SP_HOUSE4},
+    {LD_MONUMENTS + MAX_MONUMENTS + 4	, SP_HOUSE5},
     {LD_EMPTY		, SP_NONE}
+  };
+
+static MapRoadType	RoadType[] =
+  {
+    {ROAD_N				, SP_ROAD1},
+    {ROAD_S				, SP_ROAD1},
+    {ROAD_E				, SP_ROAD2},
+    {ROAD_W				, SP_ROAD2},
+    {ROAD_N | ROAD_S			, SP_ROAD1},
+    {ROAD_E | ROAD_W			, SP_ROAD2},
+
+    {ROAD_N | ROAD_E			, SP_ROAD7},
+    {ROAD_N | ROAD_W			, SP_ROAD4},
+
+    {ROAD_S | ROAD_E			, SP_ROAD5},
+    {ROAD_S | ROAD_W			, SP_ROAD6},
+
+    {ROAD_N | ROAD_S | ROAD_E		, SP_ROAD3},
+    {ROAD_N | ROAD_S | ROAD_W		, SP_ROAD3},
+
+    {ROAD_N | ROAD_E | ROAD_W		, SP_ROAD3},
+    {ROAD_S | ROAD_E | ROAD_W		, SP_ROAD3},
+
+    {ROAD_N | ROAD_S | ROAD_E | ROAD_W	, SP_ROAD3},
+    {0					, SP_ROAD1}
   };
 
 DisplayMap::DisplayMap(const Surface &display, Surface *texture)
@@ -41,7 +72,7 @@ DisplayMap::DisplayMap(const Surface &display, Surface *texture)
   this->_floor = texture;
   this->_zoom = 0;
   this->_oldZoom = 0;
-  this->_viewField = 11;
+  this->_viewField = 5;
   this->_zsfc = NULL;
   this->_draw_pos[0] = 0;
   this->_draw_pos[1] = 0;
@@ -76,6 +107,7 @@ void		DisplayMap::BuildFrom(const Surface &display)
 
 void		DisplayMap::Refresh(void)
 {
+  unsigned int	road_type;
   int		mw, mh, scope_start, map_case;
   int		i, j, k, x, y;
   SfcField	pos;
@@ -88,18 +120,35 @@ void		DisplayMap::Refresh(void)
   pos.setSize(this->_sfc->getWidth(), this->_sfc->getHeight());
   this->_floor_sfc->Blit(*(this->_sfc), pos);
 
-  mw = MAP_WIDTH * (this->_viewField / 100.0);
-  mh = MAP_HEIGHT * (this->_viewField / 100.0);
+  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
+  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
   x = (MAP_WIDTH >> 1) - (mw >> 1);
   y = (MAP_HEIGHT >> 1) - (mh >> 1);
   scope_start = x + y * MAP_WIDTH;
   for (i = 0; i < mh; i++)
-    for (j = 0; j < mw; j++)
+    for (j = mw - 1; j >= 0; j--)
       {
 	map_case = j + i * MAP_WIDTH + scope_start;
 	sprite = NULL;
+	if (this->_case[map_case] == LD_HOUSE)
+	  {
+	    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + (random() % ((SP_HOUSE5 - SP_HOUSE1) + 1));
+	    sprite = dsp->GetSprite((SpriteID)(this->_case[map_case]));
+	  }
 	if (this->_case[map_case] == LD_ROAD)
 	  {
+	    road_type = 0;
+	    if ((j - 1 > 0) && this->_case[map_case - 1] == LD_ROAD)
+	      road_type |= ROAD_W;
+	    if ((j + 1 < mw) && this->_case[map_case + 1] == LD_ROAD)
+	      road_type |= ROAD_E;
+	    if ((i - 1 > 0) && this->_case[map_case - MAP_WIDTH] == LD_ROAD)
+	      road_type |= ROAD_N;
+	    if ((i + 1 < mh) && this->_case[map_case + MAP_WIDTH] == LD_ROAD)
+	      road_type |= ROAD_S;
+	    for (k = 0; RoadType[k].flag != 0; k++)
+	      if (RoadType[k].flag == road_type)
+		sprite = dsp->GetSprite(RoadType[k].spr_id);
 	  }
 	else
 	  {
@@ -116,7 +165,9 @@ void		DisplayMap::Refresh(void)
 	    y = (i * (this->_floor->getHeight() >> 1)) - (j * (this->_floor->getHeight() >> 1)) - (this->_floor->getHeight() >> 1);
 	    x += this->_draw_pos[0];
 	    y += this->_draw_pos[1];
+	    y -= (sprite->getFieldHeight() - this->_floor->getHeight());
 	    pos.setPos(x, y);
+	    sprite->action();
 	    sprite->Blit(*(this->_sfc), pos);
 	  }
       }
@@ -131,8 +182,8 @@ void		DisplayMap::InitFloorSfc(void)
   if (this->_floor == NULL)
     return ;
   SDL_FillRect((SDL_Surface*)(this->_floor_sfc->getSurface()), NULL, 0x0);
-  mw = MAP_WIDTH * (this->_viewField / 100.0);
-  mh = MAP_HEIGHT * (this->_viewField / 100.0);
+  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
+  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
   for (i = 0; i < mh; i++)
     for (j = 0; j < mw; j++)
       {
@@ -156,6 +207,7 @@ void		DisplayMap::setZoom(unsigned short zoom)
 void		DisplayMap::setViewField(unsigned short size)
 {
   this->_viewField = size;
+  this->InitFloorSfc();
 }
 
 void		DisplayMap::ZoomIn(void)
@@ -187,7 +239,26 @@ void		DisplayMap::Blit(Surface &dst, SfcField &pos)
 
 void		DisplayMap::setCase(int type, int x, int y)
 {
+  int		px, py;
+  int		sx, sy, ex, ey, mw, mh;
+
   this->_case[x + y * MAP_WIDTH] = type;
+
+  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
+  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
+  sx = (MAP_WIDTH >> 1) - (mw >> 1);
+  sy = (MAP_HEIGHT >> 1) - (mh >> 1);
+  ex = sx + mw;
+  ey = sy + mh;
+  px = 0;
+  py = 0;
+  if (!(x >= sx && x <= ex))
+    px = (abs(x - sx) * 100) / MAP_WIDTH;
+  if (!(y >= sy && y <= ey))
+    py = (abs(y - sy) * 100) / MAP_HEIGHT;
+  if (px || py)
+    this->_viewField += (py > px ? py : px);
+  this->InitFloorSfc();
 }
 
 void		DisplayMap::setDrawPos(int x, int y)
