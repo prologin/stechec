@@ -55,7 +55,7 @@ distclean: clean
 \t$(RM) $(CHAMPION) $(NAME) prologin.tgz
 
 tar:
-\ttar cvzf prologin.tgz interface.cs $(SRC)
+\ttar cvzf prologin.tgz interface.cc interface.hh $(CS)
 EOF
   end
 
