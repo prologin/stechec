@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Thu Feb 26 10:27:25 2009 Hazgar
-** Last update Sat Apr 25 16:56:57 2009 Hazgar
+** Last update Tue Apr 28 17:13:02 2009 user
 */
 
 #ifndef DISPLAY_H_
@@ -16,6 +16,7 @@
 # include "thread.h"
 # include "surface.h"
 # include "sprite.h"
+# include "font.h"
 # include "displaymap.h"
 
 /* Default window size (in pixel) */
@@ -47,6 +48,15 @@ struct			SpritesList
   Sprite		*sprite;
 };
 
+/* font */
+struct			FontsList
+{
+  FontID		id;
+  int			size;
+  const char		*path;
+  Font			*font;
+};
+
 /*
 ** Display control class (singleton and command pattern)
 */
@@ -66,6 +76,7 @@ class			Display : public Thread
   int			_display_motion[2];
   void			loadSurfaces(void);
   void			loadSprites(void);
+  void			loadFonts(void);
   void			keyboardEvent(unsigned int keysym);
   void			mouseMotionEvent(unsigned int x, unsigned int y);
   void			mouseClickEvent(unsigned int x, unsigned int y);
@@ -78,6 +89,7 @@ class			Display : public Thread
   static Display	*GetInstance(void);
   Surface		*GetSurface(SurfaceID id);
   Sprite		*GetSprite(SpriteID id);
+  Font			*GetFont(FontID id);
   void			setWinSize(unsigned int winWidth, unsigned int winHeight);
   void			setWinCaption(std::string caption);
 };

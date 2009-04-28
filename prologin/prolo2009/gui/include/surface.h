@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Feb 27 10:31:15 2009 Hazgar
-** Last update Thu Apr 23 19:43:14 2009 Hazgar
+** Last update Tue Apr 28 17:13:04 2009 user
 */
 
 #ifndef SURFACE_H_
@@ -16,6 +16,7 @@
 enum		SurfaceID
 {
   SFC_FLOOR,
+  SFC_PRICE,
   SFC_NONE
 };
 

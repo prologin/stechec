@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 16:17:43 2009 stephane2 lapie
-// Last update Sat Apr 25 17:08:42 2009 Hazgar
+// Last update Tue Apr 28 13:35:09 2009 user
 //
 
 #include <cstdlib>
@@ -44,6 +44,7 @@ static void		GameEngineCleanup(void)
 GameEngine::GameEngine(void)
 {
   atexit(GameEngineCleanup);
+  this->_run = 0;
   std::cout << "Game engine init done" << std::endl;
 }
 
@@ -57,6 +58,7 @@ GameEngine::GameEngine(const GameEngine &right)
 GameEngine::~GameEngine(void)
 {
   std::cout << "Shutting down game engine...";
+  this->_run = 0;
   std::cout << "done" << std::endl;
 }
 
@@ -88,7 +90,8 @@ GameEngine		*GameEngine::GetInstance(void)
 /* */
 void			GameEngine::Run(void)
 {
-  while (((Api*)g_api)->getState() != GS_END)
+  this->_run = 1;
+  while (this->_run && ((Api*)g_api)->getState() != GS_END)
     {
       this->RetrieveData();
       sleep(2);
@@ -97,20 +100,6 @@ void			GameEngine::Run(void)
 	;
     }
 }
-
-/*int			type_case(int x, int y)
-{
-  if (x == 50 && y == 50)
-    return (LD_MONUMENT);
-  return (LD_EMPTY);
-}
-
-int			type_monument(int x, int y)
-{
-  if (x == 50 && y == 50)
-    return (13);
-  return (0);
-}*/
 
 /* */
 void			GameEngine::RetrieveData(void)
@@ -131,7 +120,6 @@ void			GameEngine::RetrieveData(void)
       {
 	k = x + (y * MAP_WIDTH);
 	case_type = (t_landscape)type_case(x, y);
-	//case_type = LD_EMPTY;
 	if (case_type != this->_map[k].getType())
 	  {
 	    this->_map[k].setType(case_type);
@@ -153,8 +141,7 @@ void			GameEngine::RetrieveData(void)
 	    ev.user.data1 = new EventCase(x, y, case_owner);
 	    SDL_PushEvent(&ev);
 	  }
-	//case_price = valeur_case(x, y);
-	case_price = 1;
+	case_price = valeur_case(x, y);
 	if (case_price != this->_map[k].getPrice())
 	  {
 	    this->_map[k].setPrice(case_price);

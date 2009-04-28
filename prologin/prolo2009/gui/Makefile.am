@@ -11,7 +11,8 @@ simcity_sdlvisu_la_SOURCES	= \
 		displaymap.cpp	\
 		thread.cpp	\
 		gameengine.cpp	\
-		gamecase.cpp
+		gamecase.cpp	\
+		font.cpp
 
 simcity_sdlvisu_la_CXXFLAGS	=		\
 	-W -Wall -ansi $(SDL_CFLAGS)

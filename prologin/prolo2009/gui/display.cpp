@@ -5,9 +5,10 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Tue Apr 28 12:54:37 2009 user
+// Last update Tue Apr 28 17:05:05 2009 user
 //
 
+#include <SDL_ttf.h>
 #include <cstdlib>
 #include <iostream>
 #include "display.h"
@@ -20,6 +21,7 @@ Display			*Display::_instance = NULL;
 static SurfacesList	DisplaySurface[] =
   {
     {SFC_FLOOR, "/opt/share/stechec/prolo2009/graphics/floor.png", NULL},
+    {SFC_PRICE, "/opt/share/stechec/prolo2009/graphics/price.png", NULL},
     {SFC_NONE, NULL, NULL}
   };
 
@@ -56,6 +58,13 @@ static SpritesList	DisplaySprite[] =
     {{SP_NONE, NULL, 0, 0, 0, false, 0, 0, {0,0}}, NULL}
   };
 
+/* fonts */
+static FontsList	DisplayFont[] =
+  {
+    {FT_PRICES, 12, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
+    {FT_NONE, 0, NULL, NULL}
+  };
+
 /*
 ** This function will be called at program exits to correctly
 ** shutdown the display.
@@ -75,7 +84,7 @@ Display::Display(unsigned int winWidth, unsigned int winHeight)
   SDL_Surface	*screen;
 
   atexit(DisplayCleanup);
-  if (SDL_Init(SDL_INIT_VIDEO) == -1)
+  if (SDL_Init(SDL_INIT_VIDEO) == -1 || TTF_Init() == -1)
     throw "Display init failed";
   screen = SDL_SetVideoMode(winWidth, winHeight, 32, SDL_RESIZABLE | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL
 			    | SDL_ANYFORMAT | SDL_SRCCOLORKEY | SDL_RLEACCEL | SDL_SRCALPHA);
@@ -92,6 +101,7 @@ Display::Display(unsigned int winWidth, unsigned int winHeight)
   this->_display_motion[1] = winHeight >> 1;
   this->loadSurfaces();
   this->loadSprites();
+  this->loadFonts();
   try
     {
       this->_map = new DisplayMap(*(this->_screen), this->GetSurface(SFC_FLOOR));
@@ -169,6 +179,17 @@ Sprite			*Display::GetSprite(SpriteID id)
 }
 
 /* */
+Font			*Display::GetFont(FontID id)
+{
+  int			i;
+
+  for (i = 0; DisplayFont[i].id != FT_NONE; i++)
+    if (DisplayFont[i].id == id)
+      return (DisplayFont[i].font);
+  return (NULL);
+}
+
+/* */
 void			Display::loadSurfaces(void)
 {
   int			i;
@@ -187,6 +208,17 @@ void			Display::loadSprites(void)
   std::cout << "Loading sprites...";
   for (i = 0; DisplaySprite[i].cfg.id != SP_NONE; i++)
     DisplaySprite[i].sprite = new Sprite(DisplaySprite[i].cfg);
+  std::cout << "done" << std::endl;
+}
+
+/* */
+void			Display::loadFonts(void)
+{
+  int			i;
+
+  std::cout << "Loading fonts...";
+  for (i = 0; DisplayFont[i].id != FT_NONE; i++)
+    DisplayFont[i].font = new Font(DisplayFont[i].path, DisplayFont[i].size);
   std::cout << "done" << std::endl;
 }
 
@@ -263,6 +295,7 @@ void			Display::setWinSize(unsigned int winWidth, unsigned int winHeight)
   this->_screen = new Surface(nscreen);
   this->_winWidth = winWidth;
   this->_winHeight = winHeight;
+  this->_map->BuildFrom(*(this->_screen));
 }
 
 /* Set display window caption */
@@ -279,6 +312,9 @@ void			Display::keyboardEvent(unsigned int keysym)
     {
     case SDLK_ESCAPE:
       exit(0);
+      break;
+    case SDLK_TAB:
+      this->_map->ShowPrices();
       break;
     case SDLK_KP_MINUS:
       this->_map->ZoomOut();
@@ -340,6 +376,7 @@ void			Display::userEvent(unsigned int code, void *data)
       break;
     case EV_CASEPRICE:
       c = static_cast<EventCase*>(data);
+      this->_map->setCasePrice(c->data, c->x, c->y);
       break;
     case EV_NEWBID:
       break;

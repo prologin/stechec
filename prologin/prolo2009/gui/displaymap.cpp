@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Tue Apr 28 13:18:26 2009 user
+// Last update Tue Apr 28 17:03:40 2009 user
 //
 
 #include <SDL.h>
@@ -14,6 +14,7 @@
 #include <cstring>
 #include "prologin.h"
 #include "game.h"
+#include "font.h"
 #include "displaymap.h"
 #include "display.h"
 
@@ -44,6 +45,7 @@ static MapCaseType	CaseType[] =
 
 static MapRoadType	RoadType[] =
   {
+    {0					, SP_ROAD1},
     {ROAD_N				, SP_ROAD1},
     {ROAD_S				, SP_ROAD1},
     {ROAD_E				, SP_ROAD2},
@@ -64,7 +66,7 @@ static MapRoadType	RoadType[] =
     {ROAD_S | ROAD_E | ROAD_W		, SP_ROAD3},
 
     {ROAD_N | ROAD_S | ROAD_E | ROAD_W	, SP_ROAD3},
-    {0					, SP_ROAD1}
+    {0					, SP_NONE}
   };
 
 DisplayMap::DisplayMap(const Surface &display, Surface *texture)
@@ -76,9 +78,10 @@ DisplayMap::DisplayMap(const Surface &display, Surface *texture)
   this->_zsfc = NULL;
   this->_draw_pos[0] = 0;
   this->_draw_pos[1] = 0;
-  this->BuildFrom(display);
+  this->_show_prices = false;
   memset(this->_case, LD_EMPTY, sizeof(this->_case));
-  this->InitFloorSfc();
+  memset(this->_case_price, 0, sizeof(this->_case_price));
+  this->BuildFrom(display);
 }
 
 DisplayMap::~DisplayMap(void)
@@ -103,6 +106,7 @@ void		DisplayMap::BuildFrom(const Surface &display)
 
   this->_sfc = new Surface(sfc);
   this->_floor_sfc = new Surface(floor_sfc);
+  this->InitFloorSfc();
 }
 
 void		DisplayMap::Refresh(void)
@@ -113,6 +117,8 @@ void		DisplayMap::Refresh(void)
   SfcField	pos;
   Display	*dsp;
   Sprite	*sprite;
+  Surface	*price_sfc;
+  Font		*price_font;
 
 
   dsp = Display::GetInstance();
@@ -146,7 +152,7 @@ void		DisplayMap::Refresh(void)
 	      road_type |= ROAD_N;
 	    if ((i + 1 < mh) && this->_case[map_case + MAP_WIDTH] == LD_ROAD)
 	      road_type |= ROAD_S;
-	    for (k = 0; RoadType[k].flag != 0; k++)
+	    for (k = 0; RoadType[k].spr_id != SP_NONE; k++)
 	      if (RoadType[k].flag == road_type)
 		sprite = dsp->GetSprite(RoadType[k].spr_id);
 	  }
@@ -171,6 +177,30 @@ void		DisplayMap::Refresh(void)
 	    sprite->Blit(*(this->_sfc), pos);
 	  }
       }
+  if (this->_show_prices)
+    {
+      price_sfc = dsp->GetSurface(SFC_PRICE);
+      price_font = dsp->GetFont(FT_PRICES);
+      if (price_sfc != NULL && price_font != NULL)
+	{
+	  price_font->setColor(0xFF0000);
+	  for (i = 0; i < mh; i++)
+	    for (j = mw - 1; j >= 0; j--)
+	      {
+		map_case = j + i * MAP_WIDTH + scope_start;
+		x = (j * (this->_floor->getWidth() >> 1)) + (i * (this->_floor->getWidth() >> 1));
+		y = (i * (this->_floor->getHeight() >> 1)) - (j * (this->_floor->getHeight() >> 1)) - (this->_floor->getHeight() >> 1);
+		x += this->_draw_pos[0];
+		y += this->_draw_pos[1];
+		pos.setPos(x, y);
+		price_sfc->Blit(*(this->_sfc), pos);
+		price_font->Text.str("");
+		price_font->Text << this->_case_price[map_case];
+		pos.setPos(x + 44, y + 24);
+		price_font->Blit(*(this->_sfc), pos);
+	      }
+	}
+    }
 }
 
 void		DisplayMap::InitFloorSfc(void)
@@ -237,6 +267,12 @@ void		DisplayMap::Blit(Surface &dst, SfcField &pos)
     this->_sfc->Blit(dst, pos);
 }
 
+void		DisplayMap::ShowPrices(void)
+{
+  this->_show_prices = (this->_show_prices ? false : true);
+  this->InitFloorSfc();
+}
+
 void		DisplayMap::setCase(int type, int x, int y)
 {
   int		px, py;
@@ -246,10 +282,10 @@ void		DisplayMap::setCase(int type, int x, int y)
 
   mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
   mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
-  sx = (MAP_WIDTH >> 1) - (mw >> 1);
-  sy = (MAP_HEIGHT >> 1) - (mh >> 1);
-  ex = sx + mw;
-  ey = sy + mh;
+  sx = (MAP_WIDTH >> 1) - (mw >> 1) + 2;
+  sy = (MAP_HEIGHT >> 1) - (mh >> 1) + 2;
+  ex = sx + mw - 2;
+  ey = sy + mh - 2;
   px = 0;
   py = 0;
   if (!(x >= sx && x <= ex))
@@ -257,8 +293,17 @@ void		DisplayMap::setCase(int type, int x, int y)
   if (!(y >= sy && y <= ey))
     py = (abs(y - sy) * 100) / MAP_HEIGHT;
   if (px || py)
-    this->_viewField += (py > px ? py : px);
+    {
+      px += (px % 2 ? 1 : 0);
+      py += (py % 2 ? 1 : 0);
+      this->_viewField += (py > px ? py : px);
+    }
   this->InitFloorSfc();
+}
+
+void		DisplayMap::setCasePrice(int price, int x, int y)
+{
+  this->_case_price[x + y * MAP_WIDTH] = price;
 }
 
 void		DisplayMap::setDrawPos(int x, int y)

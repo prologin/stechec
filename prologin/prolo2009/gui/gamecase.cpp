@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Wed Apr 22 14:41:25 2009 Hazgar
-// Last update Wed Apr 22 14:53:26 2009 Hazgar
+// Last update Tue Apr 28 15:50:10 2009 user
 //
 
 #include "gamecase.h"
@@ -13,7 +13,7 @@
 GameCase::GameCase(void)
 {
   this->_type = LD_EMPTY;
-  this->_price = 1;
+  this->_price = 0;
   this->_owner = OWN_TOWNHALL;
 }
 

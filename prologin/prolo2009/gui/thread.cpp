@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 15:52:42 2009 stephane2 lapie
-// Last update Fri Mar  6 16:29:47 2009 stephane2 lapie
+// Last update Tue Apr 28 13:28:18 2009 user
 //
 
 #include "thread.h"
