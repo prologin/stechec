@@ -5,13 +5,15 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Tue Apr 28 17:05:05 2009 user
+// Last update Wed Apr 29 18:54:36 2009 user
 //
 
 #include <SDL_ttf.h>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include "display.h"
+#include "font.h"
 #include "event.hpp"
 
 /* Display instance (Display is a singleton) */
@@ -21,6 +23,7 @@ Display			*Display::_instance = NULL;
 static SurfacesList	DisplaySurface[] =
   {
     {SFC_FLOOR, "/opt/share/stechec/prolo2009/graphics/floor.png", NULL},
+    {SFC_PANEL, "/opt/share/stechec/prolo2009/graphics/panel.png", NULL},
     {SFC_PRICE, "/opt/share/stechec/prolo2009/graphics/price.png", NULL},
     {SFC_NONE, NULL, NULL}
   };
@@ -62,6 +65,7 @@ static SpritesList	DisplaySprite[] =
 static FontsList	DisplayFont[] =
   {
     {FT_PRICES, 12, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
+    {FT_INFOS, 16, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
     {FT_NONE, 0, NULL, NULL}
   };
 
@@ -82,6 +86,7 @@ Display::Display(unsigned int winWidth, unsigned int winHeight)
   : Thread::Thread(), _winCaption("")
 {
   SDL_Surface	*screen;
+  SDL_Surface	*layout;
 
   atexit(DisplayCleanup);
   if (SDL_Init(SDL_INIT_VIDEO) == -1 || TTF_Init() == -1)
@@ -91,9 +96,17 @@ Display::Display(unsigned int winWidth, unsigned int winHeight)
   if (screen == NULL)
     throw "Display screen init failed";
 
+  layout = SDL_CreateRGBSurface(screen->flags, screen->w, screen->h, 32,
+				0xFF000000, 0x00FF0000, 0x0000FF00,
+				0x000000FF);
+  if (layout == NULL)
+    throw "Display layout init failed";
+
   SDL_EnableKeyRepeat(50, 50);
 
   this->_screen = new Surface(screen);
+  this->_layout = new Surface(layout);
+  //  SDL_FreeSurface(layout);
   this->_winWidth = winWidth;
   this->_winHeight = winHeight;
   this->_motions = MOTION_RESET;
@@ -230,6 +243,8 @@ void			Display::Core(void)
   SDL_Surface		*screen;
 
   scr_field.setSize(this->_screen->getWidth(), this->_screen->getHeight());
+  this->GetSurface(SFC_PANEL)->SetAlphaFlags();
+  this->GetSurface(SFC_PANEL)->Blit(*(this->_layout), scr_field);
   screen = static_cast<SDL_Surface*>(this->_screen->getSurface());
   while (1)
     {
@@ -239,6 +254,9 @@ void			Display::Core(void)
 	    {
 	    case SDL_QUIT:
 	      exit(0);
+	      break;
+	    case SDL_ACTIVEEVENT:
+	      this->_motions = MOTION_RESET;
 	      break;
 	    case SDL_KEYUP:
 	      this->_motions = MOTION_RESET;
@@ -262,6 +280,7 @@ void			Display::Core(void)
 	}
       this->displayMotion();
       this->_map->Blit(*(this->_screen), scr_field);
+      this->_layout->Blit(*(this->_screen), scr_field);
       SDL_Flip(screen);
     }
 }
@@ -270,13 +289,25 @@ void			Display::Core(void)
 void			Display::displayMotion(void)
 {
   if (this->_motions & MOTION_LEFT)
-    this->_display_motion[0] += 24;
+    {
+      if (this->_display_motion[0] < 0)
+	this->_display_motion[0] += 20;
+    }
   if (this->_motions & MOTION_RIGHT)
-    this->_display_motion[0] -= 24;
+    {
+      if ((this->_display_motion[0] + this->_map->GetRealWidth()) > (int)(this->_screen->getWidth()))
+	this->_display_motion[0] -= 20;
+    }
   if (this->_motions & MOTION_UP)
-    this->_display_motion[1] += 24;
+    {
+      if (this->_display_motion[1] < (this->_map->GetRealHeight() >> 1))
+	this->_display_motion[1] += 20;
+    }
   if (this->_motions & MOTION_DOWN)
-    this->_display_motion[1] -= 24;
+    {
+      if (this->_display_motion[1] > ((int)(this->_screen->getHeight()) - (this->_map->GetRealHeight() >> 1)))
+	this->_display_motion[1] -= 20;
+    }
   if (this->_motions != MOTION_RESET)
     this->_map->setDrawPos(this->_display_motion[0], this->_display_motion[1]);
 }
@@ -363,24 +394,50 @@ void			Display::mouseClickEvent(unsigned int x, unsigned int y)
 
 void			Display::userEvent(unsigned int code, void *data)
 {
+  int			*i;
   EventCase		*c;
+  EventPlayer		*p;
+  Font			*ft;
+  SfcField		pos;
 
   switch (code)
     {
     case EV_CASETYPE:
       c = static_cast<EventCase*>(data);
       this->_map->setCase(c->data, c->x, c->y);
+      delete c;
       break;
     case EV_CASEOWNER:
       c = static_cast<EventCase*>(data);
+      this->_map->setCaseOwner(c->data, c->x, c->y);
+      delete c;
       break;
     case EV_CASEPRICE:
       c = static_cast<EventCase*>(data);
       this->_map->setCasePrice(c->data, c->x, c->y);
+      delete c;
       break;
-    case EV_NEWBID:
+    case EV_PLAYER:
+      p = static_cast<EventPlayer*>(data);
+      ft = this->GetFont(FT_INFOS);
+      ft->setColor(0xFFFFFFFF);
+      ft->Text.str("");
+      ft->Text << "Player" << p->id << ": score["
+	       << std::setfill('0') << std::setw(4) << p->score
+	       << "] money[" << std::setfill('0') << std::setw(4) << p->money << "]";
+      pos.setPos(0, 16 * p->id + 16);
+      ft->Blit(*(this->_layout), pos);
+      delete p;
       break;
     case EV_NEWTURN:
+      i = (int*)data;
+      ft = this->GetFont(FT_INFOS);
+      ft->setColor(0xFFFFFFFF);
+      ft->Text.str("");
+      ft->Text << "Turn " << *i;
+      pos.setPos(0, 0);
+      ft->Blit(*(this->_layout), pos);
+      delete i;
       break;
     }
 }

@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Mar  6 16:04:01 2009 stephane2 lapie
-** Last update Tue Apr 28 13:30:33 2009 user
+** Last update Wed Apr 29 17:51:19 2009 user
 */
 
 #ifndef GAMEENGINE_H_
@@ -24,7 +24,6 @@ class			GameEngine
   void			RetrieveData(void);
   static GameEngine	*_instance;
   GameCase		_map[MAP_SIZE];
-  int			_run;
 
  public:
   ~GameEngine(void);

@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Mar 13 14:51:17 2009 Hazgar
-** Last update Tue Apr 28 13:47:14 2009 user
+** Last update Wed Apr 29 14:57:43 2009 user
 */
 
 #ifndef DISPLAYMAP_H_
@@ -48,14 +48,17 @@ class			DisplayMap
   Surface		*_zsfc;			/* zoom sfc		*/
   int			_case[MAP_SIZE];	/* cases types		*/
   int			_case_price[MAP_SIZE];	/* cases prices		*/
+  int			_case_owner[MAP_SIZE];	/* cases owners		*/
   int			_draw_pos[2];		/* drawing position	*/
   bool			_show_prices;		/* */
 
  public:
   DisplayMap(const Surface &display, Surface *texture = NULL);
   ~DisplayMap(void);
-  void			setZoom(unsigned short zoom);
-  void			setViewField(unsigned short size);
+  void			setZoom(int zoom);
+  void			setViewField(int size);
+  int			getZoom(void) const;
+  int			getViewField(void) const;
   void			Blit(Surface &dst, SfcField &pos);
   void			BuildFrom(const Surface &display);
   void			ZoomIn(void);
@@ -63,7 +66,10 @@ class			DisplayMap
   void			ShowPrices(void);
   void			setCase(int type, int x, int y);
   void			setCasePrice(int price, int x, int y);
+  void			setCaseOwner(int owner, int x, int y);
   void			setDrawPos(int x, int y);
+  int			GetRealWidth(void) const;
+  int			GetRealHeight(void) const;
 };
 
 #endif /* !DISPLAYMAP_H_ */

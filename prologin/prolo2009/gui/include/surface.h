@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Feb 27 10:31:15 2009 Hazgar
-** Last update Tue Apr 28 17:13:04 2009 user
+** Last update Wed Apr 29 18:52:52 2009 user
 */
 
 #ifndef SURFACE_H_
@@ -16,6 +16,7 @@
 enum		SurfaceID
 {
   SFC_FLOOR,
+  SFC_PANEL,
   SFC_PRICE,
   SFC_NONE
 };
@@ -60,6 +61,8 @@ class		Surface : public SfcField
   Surface(const Surface &right);
   Surface	&operator=(const Surface &right);
   void		*getSurface(void) const;
+  void		SetAlphaFlags(void);
+  void		UnsetAlphaFlags(void);
   void		Blit(Surface &dst, SfcField &pos);
 };
 

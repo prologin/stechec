@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Wed Apr 22 14:21:10 2009 Hazgar
-// Last update Wed Apr 22 14:29:41 2009 Hazgar
+// Last update Wed Apr 29 16:03:20 2009 user
 //
 
 #ifndef EVENT_HPP_
@@ -16,8 +16,8 @@ typedef	enum
   EV_CASETYPE,
   EV_CASEPRICE,
   EV_CASEOWNER,
-  EV_NEWBID,
-  EV_NEWTURN
+  EV_NEWTURN,
+  EV_PLAYER
 }	t_userEvent;
 
 struct	EventCase
@@ -41,6 +41,31 @@ struct	EventCase
     this->x = right.x;
     this->y = right.y;
     this->data = right.data;
+    return (*this);
+  };
+};
+
+struct	EventPlayer
+{
+  int	id;
+  int	score;
+  int	money;
+  EventPlayer(int _id, int _score, int _money)
+  {
+    this->id = _id;
+    this->score = _score;
+    this->money = _money;
+  };
+  ~EventPlayer(void) {};
+  EventPlayer(const EventPlayer &right)
+  {
+    EventPlayer::operator=(right);
+  };
+  EventPlayer	&operator=(const EventPlayer &right)
+  {
+    this->id = right.id;
+    this->score = right.score;
+    this->money = right.money;
     return (*this);
   };
 };

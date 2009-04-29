@@ -5,7 +5,7 @@
 // Login   <user@epitech.net>
 // 
 // Started on  Tue Apr 28 14:25:18 2009 user
-// Last update Tue Apr 28 15:37:48 2009 user
+// Last update Wed Apr 29 18:56:21 2009 user
 //
 
 #include <cstring>
@@ -39,6 +39,7 @@ Font			&Font::operator=(const Font &right)
   this->_color.r = right._color.r;
   this->_color.g = right._color.g;
   this->_color.b = right._color.b;
+  this->_color.unused = right._color.unused;
   return (*this);
 }
 
@@ -50,6 +51,7 @@ void			Font::setText(std::string str)
 /* endianness not checked */
 void			Font::setColor(unsigned int color)
 {
+  this->_color.unused = (color >> 24) & 0xFF;
   this->_color.r = (color >> 16) & 0xFF;
   this->_color.g = (color >> 8) & 0xFF;
   this->_color.b = color & 0xFF;
@@ -65,6 +67,7 @@ unsigned int		Font::getColor(void) const
 {
   unsigned int		color = 0;
 
+  color |= this->_color.unused << 24;
   color |= this->_color.r << 16;
   color |= this->_color.g << 8;
   color |= this->_color.b;
@@ -86,6 +89,8 @@ void			Font::Blit(Surface &dst, SfcField &pos)
   if (sfc)
     {
       delete this->_sfc;
+      //sfc->flags &= ~SDL_SRCALPHA;
+      //sfc->flags |= SDL_SRCCOLORKEY;
       this->_sfc = new Surface(sfc);
     }
   if (this->_sfc != NULL)

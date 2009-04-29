@@ -5,12 +5,11 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Tue Apr 28 17:03:40 2009 user
+// Last update Wed Apr 29 18:59:01 2009 user
 //
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
-#include <cstdlib>
 #include <cstring>
 #include "prologin.h"
 #include "game.h"
@@ -81,6 +80,7 @@ DisplayMap::DisplayMap(const Surface &display, Surface *texture)
   this->_show_prices = false;
   memset(this->_case, LD_EMPTY, sizeof(this->_case));
   memset(this->_case_price, 0, sizeof(this->_case_price));
+  memset(this->_case_owner, 0, sizeof(this->_case_owner));
   this->BuildFrom(display);
 }
 
@@ -138,7 +138,7 @@ void		DisplayMap::Refresh(void)
 	sprite = NULL;
 	if (this->_case[map_case] == LD_HOUSE)
 	  {
-	    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + (random() % ((SP_HOUSE5 - SP_HOUSE1) + 1));
+	    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + this->_case_owner[map_case];
 	    sprite = dsp->GetSprite((SpriteID)(this->_case[map_case]));
 	  }
 	if (this->_case[map_case] == LD_ROAD)
@@ -226,7 +226,7 @@ void		DisplayMap::InitFloorSfc(void)
       }
 }
 
-void		DisplayMap::setZoom(unsigned short zoom)
+void		DisplayMap::setZoom(int zoom)
 {
   if (zoom > 100)
     return ;
@@ -234,21 +234,31 @@ void		DisplayMap::setZoom(unsigned short zoom)
   this->_zoom = zoom;
 }
 
-void		DisplayMap::setViewField(unsigned short size)
+void		DisplayMap::setViewField(int size)
 {
   this->_viewField = size;
   this->InitFloorSfc();
 }
 
+int		DisplayMap::getZoom(void) const
+{
+  return (this->_zoom);
+}
+
+int		DisplayMap::getViewField(void) const
+{
+  return (this->_viewField);
+}
+
 void		DisplayMap::ZoomIn(void)
 {
-  if ((this->_zoom + 2) <= 100)
+  if ((this->_zoom + 10) <= 100)
     this->setZoom(this->_zoom + 10);
 }
 
 void		DisplayMap::ZoomOut(void)
 {
-  if ((this->_zoom - 2) >= 0)
+  if ((this->_zoom - 10) >= 0)
     this->setZoom(this->_zoom - 10);
 }
 
@@ -306,9 +316,34 @@ void		DisplayMap::setCasePrice(int price, int x, int y)
   this->_case_price[x + y * MAP_WIDTH] = price;
 }
 
+void		DisplayMap::setCaseOwner(int owner, int x, int y)
+{
+  this->_case_owner[x + y * MAP_WIDTH] = owner;
+}
+
 void		DisplayMap::setDrawPos(int x, int y)
 {
   this->_draw_pos[0] = x;
   this->_draw_pos[1] = y;
   this->InitFloorSfc();
+}
+
+int		DisplayMap::GetRealWidth(void) const
+{
+  int		mw, z;
+
+  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
+  z = (int)(this->_floor->getWidth() * (this->_zoom / 100.0));
+  mw = mw * (this->_floor->getWidth() + z);
+  return (mw);
+}
+
+int		DisplayMap::GetRealHeight(void) const
+{
+  int		mh, z;
+
+  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
+  z = (int)(this->_floor->getHeight() * (this->_zoom / 100.0));
+  mh = mh * (this->_floor->getHeight() + z);
+  return (mh);
 }

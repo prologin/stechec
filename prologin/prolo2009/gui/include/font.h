@@ -5,7 +5,7 @@
 ** Login   <user@epitech.net>
 ** 
 ** Started on  Tue Apr 28 14:15:47 2009 user
-** Last update Tue Apr 28 15:37:02 2009 user
+** Last update Wed Apr 29 15:50:13 2009 user
 */
 
 #ifndef FONT_H_
@@ -19,6 +19,7 @@
 enum			FontID
   {
     FT_PRICES,
+    FT_INFOS,
     FT_NONE
   };
 

@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Feb 27 09:55:25 2009 Hazgar
-** Last update Sat Apr 25 16:54:19 2009 Hazgar
+** Last update Wed Apr 29 15:26:24 2009 user
 */
 
 #ifndef GAME_H_
@@ -31,8 +31,12 @@ typedef	enum
 /* owners */
 typedef	enum
 {
-  OWN_TOWNHALL
+  OWN_PLAYER0,
+  OWN_PLAYER1,
+  OWN_PLAYER2,
+  OWN_TOWNHALL,
 }	t_owner;
+# define NB_PLAYERS	OWN_TOWNHALL
 
 /* errors */
 typedef	enum

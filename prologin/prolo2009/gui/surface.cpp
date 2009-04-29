@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Feb 27 10:48:30 2009 Hazgar
-// Last update Tue Apr 28 17:13:07 2009 user
+// Last update Wed Apr 29 18:53:56 2009 user
 //
 
 #include <SDL_image.h>
@@ -55,6 +55,18 @@ Surface		&Surface::operator=(const Surface &right)
 void		*Surface::getSurface(void) const
 {
   return (this->_sfc);
+}
+
+void		Surface::SetAlphaFlags(void)
+{
+  this->_sfc->flags &= ~SDL_SRCALPHA;
+  this->_sfc->flags |= SDL_SRCCOLORKEY;
+}
+
+void		Surface::UnsetAlphaFlags(void)
+{
+  this->_sfc->flags |= ~SDL_SRCALPHA;
+  this->_sfc->flags &= SDL_SRCCOLORKEY;
 }
 
 void		Surface::Blit(Surface &dst, SfcField &pos)

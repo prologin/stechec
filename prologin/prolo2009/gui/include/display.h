@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Thu Feb 26 10:27:25 2009 Hazgar
-** Last update Tue Apr 28 17:13:02 2009 user
+** Last update Wed Apr 29 16:04:45 2009 user
 */
 
 #ifndef DISPLAY_H_
@@ -68,6 +68,7 @@ class			Display : public Thread
   Display		&operator=(const Display &right);
   static Display	*_instance;
   Surface		*_screen;
+  Surface		*_layout;
   DisplayMap		*_map;
   unsigned char		_motions;
   unsigned int		_winWidth;

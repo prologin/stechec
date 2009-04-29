@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 16:17:43 2009 stephane2 lapie
-// Last update Tue Apr 28 13:35:09 2009 user
+// Last update Wed Apr 29 17:51:57 2009 user
 //
 
 #include <cstdlib>
@@ -23,6 +23,7 @@
 extern void		*g_client_cx;
 extern void		*g_api;
 
+static int		run; // XXX Debian race condition patch
 #define GS_END 0xffff
 
 /* GameEngine instance (GameEngine is a singleton) */
@@ -44,7 +45,7 @@ static void		GameEngineCleanup(void)
 GameEngine::GameEngine(void)
 {
   atexit(GameEngineCleanup);
-  this->_run = 0;
+  run = 0;
   std::cout << "Game engine init done" << std::endl;
 }
 
@@ -58,7 +59,7 @@ GameEngine::GameEngine(const GameEngine &right)
 GameEngine::~GameEngine(void)
 {
   std::cout << "Shutting down game engine...";
-  this->_run = 0;
+  run = 0;
   std::cout << "done" << std::endl;
 }
 
@@ -90,8 +91,8 @@ GameEngine		*GameEngine::GetInstance(void)
 /* */
 void			GameEngine::Run(void)
 {
-  this->_run = 1;
-  while (this->_run && ((Api*)g_api)->getState() != GS_END)
+  run = 1;
+  while (run && ((Api*)g_api)->getState() != GS_END)
     {
       this->RetrieveData();
       sleep(2);
@@ -104,8 +105,6 @@ void			GameEngine::Run(void)
 /* */
 void			GameEngine::RetrieveData(void)
 {
-  static int		last_monument_bid;
-  int			monument_bid;
   static int		last_game_turn;
   int			game_turn;
   t_landscape		case_type;
@@ -131,8 +130,7 @@ void			GameEngine::RetrieveData(void)
 	      ev.user.data1 = new EventCase(x, y, case_type);
 	    SDL_PushEvent(&ev);
 	  }
-	//case_owner = appartenance(x, y);
-	case_owner = OWN_TOWNHALL;
+	case_owner = (t_owner)appartenance(x, y);
 	if (case_owner != this->_map[k].getOwner())
 	  {
 	    this->_map[k].setOwner(case_owner);
@@ -151,16 +149,22 @@ void			GameEngine::RetrieveData(void)
 	    SDL_PushEvent(&ev);
 	  }
       }
-  //game_turn = numero_tour();
-  game_turn = 0;
+  game_turn = numero_tour();
   if (game_turn != last_game_turn)
     {
-      
-    }
-  //monument_bid = monument_en_cours();
-  monument_bid = 0;
-  if (monument_bid != last_monument_bid)
-    {
-      
+      std::cout << "[Event] New game turn <" << game_turn << ">" << std::endl;
+      ev.user.code = EV_NEWTURN;
+      ev.user.data1 = new int[1];
+      *(int*)(ev.user.data1) = game_turn;
+      SDL_PushEvent(&ev);
+      for (x = 0; x < NB_PLAYERS; x++)
+	{
+	  if (score(x) == JOUEUR_INCORRECT)
+	    continue;
+	  ev.user.code = EV_PLAYER;
+	  ev.user.data1 = new EventPlayer(x, score(x), finances(x));
+	  SDL_PushEvent(&ev);
+	}
+      last_game_turn = game_turn;
     }
 }
