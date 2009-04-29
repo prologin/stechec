@@ -82,6 +82,8 @@ renice 5 $$ > /dev/null
     [ "`echo *.java`" != "*.java" ] && makefile=Makefile-java
     [ "`echo *.ml`" != "*.ml" ] && makefile=Makefile-caml  && cp $contest_path/$contest_name/compil/api.ml .
     [ "`echo *.lua`" != "*.lua" ] && makefile=Makefile-lua
+    [ "`echo *.cs`" != "*.cs" ] && makefile=Makefile-cs
+    [ "`echo *.py`" != "*.py" ] && makefile=Makefile-python
 
     lang=`echo $makefile | sed 's/^Makefile-//'` 
     echo "* Compile champion, language \"$lang\" detected."
