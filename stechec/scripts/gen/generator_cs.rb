@@ -69,6 +69,7 @@ private:
     print_banner "generator_cs.rb"
 
     @f.puts "using System.Runtime.InteropServices;", "using System.Runtime.CompilerServices;", ""
+
     @f.puts "namespace Prologin {"
     @f.puts "\tclass API {"
 

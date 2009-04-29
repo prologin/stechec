@@ -17,7 +17,8 @@ class PythonMakefile
 # Macro Definitions #
 #####################
 CXX 	= g++
-OBJS 	= interface.o ../includes/main.o
+LIMEOBJ ?= ../includes/main.o
+OBJS 	= interface.o $(LIMEOBJ)
 RM 	= /bin/rm -f
 
 CXXFLAGS = -fPIC -W -Wall \\

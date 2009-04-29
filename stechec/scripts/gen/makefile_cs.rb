@@ -17,8 +17,9 @@ class CSharpMakefile
 # Macro Definitions #
 #####################
 CXX 	= g++
-MCS	= mcs
-OBJS 	= interface.o ../includes/main.o
+MCS	= gmcs
+LIMEOBJ ?= ../includes/main.o
+OBJS 	= interface.o $(LIMEOBJ)
 CS	= $(SRC) api.cs
 CHAMPION= prologin.dll
 RM 	= /bin/rm -f
