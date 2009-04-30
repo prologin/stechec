@@ -5,11 +5,13 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Thu Apr 30 21:06:20 2009 user
+// Last update Thu Apr 30 23:31:04 2009 user
 //
 
 #include <SDL.h>
 #include <SDL_rotozoom.h>
+#include <SDL_gfxPrimitives.h>
+#include <algorithm>
 #include <cstring>
 #include "prologin.h"
 #include "game.h"
@@ -188,7 +190,7 @@ void		DisplayMap::Refresh(void)
       price_font = dsp->GetFont(FT_PRICES);
       if (price_sfc != NULL && price_font != NULL)
 	{
-	  price_font->setColor(0xFF0000);
+	  price_font->setColor(0xFFFFFFFF);
 	  for (i = 0; i < mh; i++)
 	    for (j = mw - 1; j >= 0; j--)
 	      {
@@ -197,11 +199,25 @@ void		DisplayMap::Refresh(void)
 		y = (i * (this->_floor->getHeight() >> 1)) - (j * (this->_floor->getHeight() >> 1)) - (this->_floor->getHeight() >> 1);
 		x += this->_draw_pos[0];
 		y += this->_draw_pos[1];
+
+		unsigned int color = (this->_case_price[map_case] > 0 ? 0xFF000000 : 0x0000FF00);
+		unsigned char alpha = std::min(12, std::abs(this->_case_price[map_case])) * 255 / 15;
+		filledTrigonColor((SDL_Surface*)(this->_sfc->getSurface()),
+				  x, y + (price_sfc->getHeight() >> 1),
+				  x + (price_sfc->getWidth() >> 1), y,
+				  x + (price_sfc->getWidth() >> 1), y + price_sfc->getHeight(),
+				  color | alpha);
+		filledTrigonColor((SDL_Surface*)(this->_sfc->getSurface()),
+				  x + price_sfc->getWidth(), y + (price_sfc->getHeight() >> 1),
+				  x + (price_sfc->getWidth() >> 1) + 1, y,
+				  x + (price_sfc->getWidth() >> 1) + 1, y + price_sfc->getHeight(),
+				  color | alpha);
+
 		pos.setPos(x, y);
 		price_sfc->Blit(*(this->_sfc), pos);
 		price_font->Text.str("");
 		price_font->Text << this->_case_price[map_case];
-		pos.setPos(x + 44, y + 24);
+		pos.setPos(x + (price_sfc->getWidth() >> 1), y + (price_sfc->getHeight() >> 1) - 12);
 		price_font->Blit(*(this->_sfc), pos);
 	      }
 	}

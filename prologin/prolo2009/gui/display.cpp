@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Thu Apr 30 21:06:07 2009 user
+// Last update Thu Apr 30 23:14:49 2009 user
 //
 
 #include <SDL_ttf.h>
@@ -69,7 +69,7 @@ static SpritesList	DisplaySprite[] =
 /* fonts */
 static FontsList	DisplayFont[] =
   {
-    {FT_PRICES, 12, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
+    {FT_PRICES, 20, "/opt/share/stechec/prolo2009/graphics/arialbd.ttf", NULL},
     {FT_INFOS, 16, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
     {FT_INFOS2, 18, "/opt/share/stechec/prolo2009/graphics/arialbd.ttf", NULL},
     {FT_NONE, 0, NULL, NULL}
