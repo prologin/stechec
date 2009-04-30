@@ -231,9 +231,6 @@ __argz_replace
 __argz_stringify
 __asctime_r
 __asprintf
-__assert
-__assert_fail
-__assert_perror_fail
 __backtrace
 __backtrace_symbols
 __backtrace_symbols_fd
