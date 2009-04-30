@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Thu Apr 30 23:31:04 2009 user
+// Last update Fri May  1 01:25:26 2009 user
 //
 
 #include <SDL.h>
@@ -62,11 +62,11 @@ static MapRoadType	RoadType[] =
     {ROAD_S | ROAD_E			, SP_ROAD5},
     {ROAD_S | ROAD_W			, SP_ROAD6},
 
-    {ROAD_N | ROAD_S | ROAD_E		, SP_ROAD3},
-    {ROAD_N | ROAD_S | ROAD_W		, SP_ROAD3},
+    {ROAD_N | ROAD_S | ROAD_E		, SP_ROAD8},
+    {ROAD_N | ROAD_S | ROAD_W		, SP_ROAD9},
 
-    {ROAD_N | ROAD_E | ROAD_W		, SP_ROAD3},
-    {ROAD_S | ROAD_E | ROAD_W		, SP_ROAD3},
+    {ROAD_N | ROAD_E | ROAD_W		, SP_ROAD10},
+    {ROAD_S | ROAD_E | ROAD_W		, SP_ROAD11},
 
     {ROAD_N | ROAD_S | ROAD_E | ROAD_W	, SP_ROAD3},
     {0					, SP_NONE}

@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Feb 27 11:21:32 2009 Hazgar
-** Last update Thu Apr 30 20:40:54 2009 user
+** Last update Fri May  1 01:16:01 2009 user
 */
 
 #ifndef SPRITE_H_
@@ -27,6 +27,10 @@ enum			SpriteID
   SP_ROAD5,
   SP_ROAD6,
   SP_ROAD7,
+  SP_ROAD8,
+  SP_ROAD9,
+  SP_ROAD10,
+  SP_ROAD11,
   SP_RESERVED1,
   SP_RESERVED2,
   SP_RESERVED3,

@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 16:17:43 2009 stephane2 lapie
-// Last update Thu Apr 30 11:38:09 2009 user
+// Last update Fri May  1 01:15:23 2009 user
 //
 
 #include <cstdlib>
@@ -160,7 +160,6 @@ void			GameEngine::RetrieveData(void)
 	if (case_type != this->_map[k].getType())
 	  {
 	    this->_map[k].setType(case_type);
-	    std::cout << "[Event] case type changed in " << x << "x" << y << std::endl;
 	    ev.user.code = EV_CASETYPE;
 	    if (case_type == LD_MONUMENT)
 	      ev.user.data1 = new EventCase(x, y, LD_MONUMENTS + type_monument(x, y));
@@ -172,7 +171,6 @@ void			GameEngine::RetrieveData(void)
 	if (case_owner != this->_map[k].getOwner())
 	  {
 	    this->_map[k].setOwner(case_owner);
-	    std::cout << "[Event] case owner changed in " << x << "x" << y << std::endl;
 	    ev.user.code = EV_CASEOWNER;
 	    ev.user.data1 = new EventCase(x, y, case_owner);
 	    SDL_PushEvent(&ev);
@@ -181,7 +179,6 @@ void			GameEngine::RetrieveData(void)
 	if (case_price != this->_map[k].getPrice())
 	  {
 	    this->_map[k].setPrice(case_price);
-	    std::cout << "[Event] case price changed in " << x << "x" << y << std::endl;
 	    ev.user.code = EV_CASEPRICE;
 	    ev.user.data1 = new EventCase(x, y, case_price);
 	    SDL_PushEvent(&ev);
@@ -190,7 +187,6 @@ void			GameEngine::RetrieveData(void)
   game_turn = numero_tour();
   if (game_turn != last_game_turn)
     {
-      std::cout << "[Event] New game turn <" << game_turn << ">" << std::endl;
       ev.user.code = EV_NEWTURN;
       ev.user.data1 = new int[1];
       *(int*)(ev.user.data1) = game_turn;
