@@ -130,7 +130,7 @@ void    NutsBarrier::setMemoryLimitValue(int mem)
 
   // The maximum size of the process stack, in bytes.
   getrlimit(RLIMIT_STACK,&rl);
-  rl.rlim_cur = 20 * 1024;
+  rl.rlim_cur = 20 * 1024 * 1024;
   setrlimit(RLIMIT_STACK, &rl);
 
   // maximum file descriptor number that can be opened

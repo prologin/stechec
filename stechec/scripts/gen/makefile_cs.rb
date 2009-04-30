@@ -17,12 +17,15 @@ class CSharpMakefile
 # Macro Definitions #
 #####################
 CXX 	= g++
-MCS	= gmcs
+MCS	= gmcs </dev/null
 LIMEOBJ ?= ../includes/main.o
 OBJS 	= interface.o $(LIMEOBJ)
 CS	= $(SRC) api.cs
 CHAMPION= prologin.dll
 RM 	= /bin/rm -f
+
+# Files needed by champion.so (don't put variables here, they are not evalued)
+AUXFILES= prologin.dll
 
 CXXFLAGS = -fPIC -W -Wall \\
    `pkg-config --cflags glib-2.0` \\
@@ -75,10 +78,7 @@ EOF
 SRC	  = $(wildcard *.cs)
 NAME      = #{$conf['conf']['player_lib']}.so
 
-MY_CXXFLAGS = -O2
-
-CHECK_CHEAT = `while read i; do echo -Wl,-wrap $$i; done < forbidden_fun-c`
-LIMEOBJ     = stechec-lime.o
+LIMEOBJ     = stechec_lime.o
 
     EOF
     f.print @makefile

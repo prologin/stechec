@@ -103,7 +103,7 @@ renice 5 $$ > /dev/null
     echo "OK"
     echo ""
 
-    aux_files=$(< $makefile grep -E "^AUX_FILES[ \t]*=" 2>/dev/null | head -1 | cut -d '=' -f 2)
+    aux_files=$(< $makefile_path/$makefile grep -E "^AUXFILES[ \t]*=" 2>/dev/null | head -1 | cut -d '=' -f 2)
 
     for f in $aux_files ; do
         upload_file $f $champion_path/
