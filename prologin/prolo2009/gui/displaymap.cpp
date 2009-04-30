@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Wed Apr 29 18:59:01 2009 user
+// Last update Thu Apr 30 21:06:20 2009 user
 //
 
 #include <SDL.h>
@@ -19,7 +19,6 @@
 
 static MapCaseType	CaseType[] =
   {
-    {LD_RESERVED	, SP_RESERVED},
     {LD_MONUMENTS	, SP_MONUMENT1},
     {LD_MONUMENTS + 1	, SP_MONUMENT2},
     {LD_MONUMENTS + 2	, SP_MONUMENT3},
@@ -38,7 +37,10 @@ static MapCaseType	CaseType[] =
     {LD_MONUMENTS + MAX_MONUMENTS + 1	, SP_HOUSE2},
     {LD_MONUMENTS + MAX_MONUMENTS + 2	, SP_HOUSE3},
     {LD_MONUMENTS + MAX_MONUMENTS + 3	, SP_HOUSE4},
-    {LD_MONUMENTS + MAX_MONUMENTS + 4	, SP_HOUSE5},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS		, SP_RESERVED1},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 1	, SP_RESERVED2},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 2	, SP_RESERVED3},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 3	, SP_RESERVED4},
     {LD_EMPTY		, SP_NONE}
   };
 
@@ -139,7 +141,10 @@ void		DisplayMap::Refresh(void)
 	if (this->_case[map_case] == LD_HOUSE)
 	  {
 	    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + this->_case_owner[map_case];
-	    sprite = dsp->GetSprite((SpriteID)(this->_case[map_case]));
+	  }
+	else if (this->_case[map_case] == LD_RESERVED)
+	  {
+	    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + this->_case_owner[map_case];
 	  }
 	if (this->_case[map_case] == LD_ROAD)
 	  {
@@ -318,7 +323,12 @@ void		DisplayMap::setCasePrice(int price, int x, int y)
 
 void		DisplayMap::setCaseOwner(int owner, int x, int y)
 {
-  this->_case_owner[x + y * MAP_WIDTH] = owner;
+  int		map_case;
+
+  map_case = x + y * MAP_WIDTH;
+  this->_case_owner[map_case] = owner;
+  if (this->_case[map_case] >= (LD_MONUMENTS + MAX_MONUMENTS))
+    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + this->_case_owner[map_case];
 }
 
 void		DisplayMap::setDrawPos(int x, int y)
