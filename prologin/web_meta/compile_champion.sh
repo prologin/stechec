@@ -103,6 +103,12 @@ renice 5 $$ > /dev/null
     echo "OK"
     echo ""
 
+    aux_files=$(< $makefile grep -E "^AUX_FILES[ \t]*=" 2>/dev/null | head -1 | cut -d '=' -f 2)
+
+    for f in $aux_files ; do
+        upload_file $f $champion_path/
+    done
+
     upload_file champion.code $champion_final_code
     upload_file champion.so $champion_final_lib
 

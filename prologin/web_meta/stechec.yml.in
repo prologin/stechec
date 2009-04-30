@@ -8,7 +8,7 @@ database:
   ip: 127.0.0.1
   port: 3306
 #  sock: /var/run/mysqld/mysqld.sock
-  login: stechec
+  login: prologin
   pass: tty4ever
   database: stechec
 
@@ -25,7 +25,7 @@ main_server:
 # Configuration du meta_server
 meta_server:
   heartbeat_period: 12
-  main_host: 192.168.50.254
+  main_host: nfs00
   main_port: 3917
 
 # Commandes a executer par le meta_server
@@ -40,6 +40,6 @@ command:
 # method peut etre: nfs ou ssh
 connection:
   method: nfs
-  contest_path: /mnt/goinfre/stechec/goinfre
+  contest_path: /home/goinfre/stechec-data
   stechec_install_path: @prefix@
   host:

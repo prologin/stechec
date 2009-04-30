@@ -47,8 +47,11 @@ port=$9
 shift
 ip_server=$9
 
-time_limit=250
-reserve_time=2000
+# prolo2009-specific
+# Python is so slow that we can't implement  time limits.
+# We just use a big one to detect infinite loops in clients.
+time_limit=1000000
+reserve_time=0
 memory_limit=100000
 log_limit=256
 
