@@ -41,7 +41,7 @@ $(NAME): $(SRC) $(LIMEOBJ)
 \t@sed -ie '/INPUT(/ a $(LIMEOBJ) ' ./link.res
 \t@./ppas.sh
 \t@$(RM) ./ppas.sh ./link.res*
-\t@mv lib${NAME} ${NAME}
+\t\#@mv lib${NAME} ${NAME}
 \t@echo Finished
 
 clean:

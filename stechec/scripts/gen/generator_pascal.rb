@@ -105,7 +105,13 @@ include ../includes/makepascal
       @f.puts "begin", "\t(* fonction a completer *)", "end;"
     end
     @f.puts "", "exports"
-    @f.print ["init_game", "play_turn"].join(",\n")
+
+    # Valid until prolo2009
+    #@f.print ["init_game", "play_turn"].join(",\n")
+
+    # Valid for prolo2009
+    @f.print ["init_game", "end_game", "jouer", "enchere", "placement"].join(",\n")
+
     @f.print ";\n"
     @f.puts "", "begin", "end."
     @f.close

@@ -72,11 +72,13 @@ EOF
     f.print <<-EOF
 # -*- Makefile -*-
 
+SRC	  = $(wildcard *.cs)
 NAME      = #{$conf['conf']['player_lib']}.so
 
 MY_CXXFLAGS = -O2
 
 CHECK_CHEAT = `while read i; do echo -Wl,-wrap $$i; done < forbidden_fun-c`
+LIMEOBJ     = stechec-lime.o
 
     EOF
     f.print @makefile
