@@ -5,12 +5,14 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Mar  6 16:04:01 2009 stephane2 lapie
-** Last update Wed Apr 29 17:51:19 2009 user
+** Last update Thu Apr 30 13:07:14 2009 user
 */
 
 #ifndef GAMEENGINE_H_
 # define GAMEENGINE_H_
 
+# include <map>
+# include "player.h"
 # include "gamecase.h"
 # include "game.h"
 
@@ -24,6 +26,7 @@ class			GameEngine
   void			RetrieveData(void);
   static GameEngine	*_instance;
   GameCase		_map[MAP_SIZE];
+  std::map<int, Player>	_player;
 
  public:
   ~GameEngine(void);

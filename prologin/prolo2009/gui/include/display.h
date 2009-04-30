@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Thu Feb 26 10:27:25 2009 Hazgar
-** Last update Wed Apr 29 16:04:45 2009 user
+** Last update Thu Apr 30 16:02:34 2009 user
 */
 
 #ifndef DISPLAY_H_
@@ -17,6 +17,9 @@
 # include "surface.h"
 # include "sprite.h"
 # include "font.h"
+# include "infopanel.h"
+# include "infopanel2.h"
+# include "turnpanel.h"
 # include "displaymap.h"
 
 /* Default window size (in pixel) */
@@ -70,6 +73,9 @@ class			Display : public Thread
   Surface		*_screen;
   Surface		*_layout;
   DisplayMap		*_map;
+  InfoPanel		*_ipanel;
+  InfoPanel2		*_ipanel_win;
+  TurnPanel		*_tpanel;
   unsigned char		_motions;
   unsigned int		_winWidth;
   unsigned int		_winHeight;

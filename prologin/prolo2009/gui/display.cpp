@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Wed Apr 29 18:54:36 2009 user
+// Last update Thu Apr 30 16:04:27 2009 user
 //
 
 #include <SDL_ttf.h>
@@ -13,7 +13,6 @@
 #include <iostream>
 #include <iomanip>
 #include "display.h"
-#include "font.h"
 #include "event.hpp"
 
 /* Display instance (Display is a singleton) */
@@ -24,6 +23,9 @@ static SurfacesList	DisplaySurface[] =
   {
     {SFC_FLOOR, "/opt/share/stechec/prolo2009/graphics/floor.png", NULL},
     {SFC_PANEL, "/opt/share/stechec/prolo2009/graphics/panel.png", NULL},
+    {SFC_PANEL_INFO, "/opt/share/stechec/prolo2009/graphics/player_infos.png", NULL},
+    {SFC_PANEL2, "/opt/share/stechec/prolo2009/graphics/panel1.png", NULL},
+    {SFC_PANEL_TOP, "/opt/share/stechec/prolo2009/graphics/panel_top.png", NULL},
     {SFC_PRICE, "/opt/share/stechec/prolo2009/graphics/price.png", NULL},
     {SFC_NONE, NULL, NULL}
   };
@@ -66,6 +68,7 @@ static FontsList	DisplayFont[] =
   {
     {FT_PRICES, 12, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
     {FT_INFOS, 16, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
+    {FT_INFOS2, 18, "/opt/share/stechec/prolo2009/graphics/arialbd.ttf", NULL},
     {FT_NONE, 0, NULL, NULL}
   };
 
@@ -106,7 +109,6 @@ Display::Display(unsigned int winWidth, unsigned int winHeight)
 
   this->_screen = new Surface(screen);
   this->_layout = new Surface(layout);
-  //  SDL_FreeSurface(layout);
   this->_winWidth = winWidth;
   this->_winHeight = winHeight;
   this->_motions = MOTION_RESET;
@@ -115,6 +117,16 @@ Display::Display(unsigned int winWidth, unsigned int winHeight)
   this->loadSurfaces();
   this->loadSprites();
   this->loadFonts();
+
+  this->_ipanel = new InfoPanel(this->GetSurface(SFC_PANEL), this->_layout);
+  this->_ipanel->setPos(0, winHeight - this->_ipanel->getHeight());
+
+  this->_ipanel_win = new InfoPanel2(this->GetSurface(SFC_PANEL2), this->_layout);
+  this->_ipanel_win->setPos(winWidth - this->_ipanel_win->getWidth(), winHeight - this->_ipanel_win->getHeight());
+
+  this->_tpanel = new TurnPanel(this->GetSurface(SFC_PANEL_TOP), this->_layout);
+  this->_tpanel->setPos(0, 0);
+
   try
     {
       this->_map = new DisplayMap(*(this->_screen), this->GetSurface(SFC_FLOOR));
@@ -140,6 +152,9 @@ Display::~Display()
 {
   std::cout << "Shutting down display engine...";
   delete this->_screen;
+  delete this->_layout;
+  delete this->_map;
+  delete this->_ipanel;
   SDL_Quit();
   std::cout << "done" << std::endl;
 }
@@ -238,13 +253,12 @@ void			Display::loadFonts(void)
 /* Event and display loop */
 void			Display::Core(void)
 {
+  int			status;
   SfcField		scr_field;
   SDL_Event		ev;
   SDL_Surface		*screen;
 
   scr_field.setSize(this->_screen->getWidth(), this->_screen->getHeight());
-  this->GetSurface(SFC_PANEL)->SetAlphaFlags();
-  this->GetSurface(SFC_PANEL)->Blit(*(this->_layout), scr_field);
   screen = static_cast<SDL_Surface*>(this->_screen->getSurface());
   while (1)
     {
@@ -253,7 +267,8 @@ void			Display::Core(void)
 	  switch (ev.type)
 	    {
 	    case SDL_QUIT:
-	      exit(0);
+	      status = EV_DISPLAY_END;
+	      this->Write((void*)(&status), sizeof(status));
 	      break;
 	    case SDL_ACTIVEEVENT:
 	      this->_motions = MOTION_RESET;
@@ -279,6 +294,9 @@ void			Display::Core(void)
 	    }
 	}
       this->displayMotion();
+      this->_tpanel->Refresh();
+      this->_ipanel->Refresh();
+      this->_ipanel_win->Refresh();
       this->_map->Blit(*(this->_screen), scr_field);
       this->_layout->Blit(*(this->_screen), scr_field);
       SDL_Flip(screen);
@@ -317,16 +335,26 @@ void			Display::setWinSize(unsigned int winWidth, unsigned int winHeight)
 {
   SDL_Surface		*screen;
   SDL_Surface		*nscreen;
+  SDL_Surface		*layout;
 
   screen = static_cast<SDL_Surface*>(this->_screen->getSurface());
   nscreen = SDL_SetVideoMode(winWidth, winHeight, 0, screen->flags);
-  if (nscreen == NULL)
+  layout = SDL_CreateRGBSurface(screen->flags, winWidth, winHeight, 32,
+				0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+  if (nscreen == NULL || layout == NULL)
     throw "Display screen resize failed";
   delete this->_screen;
+  delete this->_layout;
   this->_screen = new Surface(nscreen);
+  this->_layout = new Surface(layout);
   this->_winWidth = winWidth;
   this->_winHeight = winHeight;
   this->_map->BuildFrom(*(this->_screen));
+  this->_ipanel->setDst(this->_layout);
+  this->_ipanel->setPos(0, winHeight - this->_ipanel->getHeight());
+  this->_ipanel_win->setDst(this->_layout);
+  this->_ipanel_win->setPos(winWidth - this->_ipanel_win->getWidth(), winHeight - this->_ipanel_win->getHeight());
+  this->_tpanel->setDst(this->_layout);
 }
 
 /* Set display window caption */
@@ -339,10 +367,17 @@ void			Display::setWinCaption(std::string caption)
 /* Keyboard event handler */
 void			Display::keyboardEvent(unsigned int keysym)
 {
+  int			status;
+
   switch (keysym)
     {
     case SDLK_ESCAPE:
-      exit(0);
+      status = EV_DISPLAY_END;
+      this->Write((void*)(&status), sizeof(status));
+      break;
+    case SDLK_RETURN:
+      status = EV_DISPLAY_NEXTTURN;
+      this->Write((void*)(&status), sizeof(status));
       break;
     case SDLK_TAB:
       this->_map->ShowPrices();
@@ -397,7 +432,6 @@ void			Display::userEvent(unsigned int code, void *data)
   int			*i;
   EventCase		*c;
   EventPlayer		*p;
-  Font			*ft;
   SfcField		pos;
 
   switch (code)
@@ -419,25 +453,21 @@ void			Display::userEvent(unsigned int code, void *data)
       break;
     case EV_PLAYER:
       p = static_cast<EventPlayer*>(data);
-      ft = this->GetFont(FT_INFOS);
-      ft->setColor(0xFFFFFFFF);
-      ft->Text.str("");
-      ft->Text << "Player" << p->id << ": score["
-	       << std::setfill('0') << std::setw(4) << p->score
-	       << "] money[" << std::setfill('0') << std::setw(4) << p->money << "]";
-      pos.setPos(0, 16 * p->id + 16);
-      ft->Blit(*(this->_layout), pos);
+      this->_ipanel->UpdatePlayer(p->id, p->score, p->money);
       delete p;
       break;
     case EV_NEWTURN:
       i = (int*)data;
-      ft = this->GetFont(FT_INFOS);
-      ft->setColor(0xFFFFFFFF);
-      ft->Text.str("");
-      ft->Text << "Turn " << *i;
-      pos.setPos(0, 0);
-      ft->Blit(*(this->_layout), pos);
+      this->_tpanel->UpdateTurn(*i);
       delete i;
+      break;
+    case EV_WINNER:
+      p = static_cast<EventPlayer*>(data);
+      this->_ipanel_win->UpdatePlayer(p->id, p->score, p->money);
+      delete p;
+      break;
+    case EV_ENDGAME:
+      this->_ipanel_win->setVisible(true);
       break;
     }
 }

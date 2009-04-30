@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Wed Apr 22 14:21:10 2009 Hazgar
-// Last update Wed Apr 29 16:03:20 2009 user
+// Last update Thu Apr 30 11:36:19 2009 user
 //
 
 #ifndef EVENT_HPP_
@@ -17,7 +17,11 @@ typedef	enum
   EV_CASEPRICE,
   EV_CASEOWNER,
   EV_NEWTURN,
-  EV_PLAYER
+  EV_PLAYER,
+  EV_WINNER,
+  EV_ENDGAME,
+  EV_DISPLAY_NEXTTURN,
+  EV_DISPLAY_END
 }	t_userEvent;
 
 struct	EventCase

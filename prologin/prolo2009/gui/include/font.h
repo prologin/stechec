@@ -5,7 +5,7 @@
 ** Login   <user@epitech.net>
 ** 
 ** Started on  Tue Apr 28 14:15:47 2009 user
-** Last update Wed Apr 29 15:50:13 2009 user
+** Last update Thu Apr 30 14:24:48 2009 user
 */
 
 #ifndef FONT_H_
@@ -20,6 +20,7 @@ enum			FontID
   {
     FT_PRICES,
     FT_INFOS,
+    FT_INFOS2,
     FT_NONE
   };
 
@@ -46,6 +47,8 @@ class			Font
   unsigned int		getColor(void) const;
   void			*getSurface(void) const;
   void			Blit(Surface &dst, SfcField &pos);
+  int			getWidth(void) const;
+  int			getHeight(void) const;
 };
 
 #endif /* !FONT_H_ */

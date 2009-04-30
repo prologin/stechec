@@ -13,20 +13,6 @@ static void	exit_handler(int sig)
   exit(0);
 }
 
-/*int		main(void)
-{
-  Display	*dsp;
-  GameEngine	*ge;
-
-  signal(SIGINT, exit_handler);
-  dsp = Display::GetInstance();
-  dsp->setWinCaption("Test");
-  ge = GameEngine::GetInstance();
-  dsp->Run();
-  ge->Run();
-  return (0);
-}*/
-
 extern "C" {
 int		run(void* foo, void* api, void* client_cx)
 {

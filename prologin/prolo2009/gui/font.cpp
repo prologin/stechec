@@ -5,7 +5,7 @@
 // Login   <user@epitech.net>
 // 
 // Started on  Tue Apr 28 14:25:18 2009 user
-// Last update Wed Apr 29 18:56:21 2009 user
+// Last update Thu Apr 30 14:29:00 2009 user
 //
 
 #include <cstring>
@@ -94,5 +94,22 @@ void			Font::Blit(Surface &dst, SfcField &pos)
       this->_sfc = new Surface(sfc);
     }
   if (this->_sfc != NULL)
-    this->_sfc->Blit(dst, pos);
+    {
+      pos.setPos(pos.getPosX() - (this->_sfc->getWidth() >> 1), pos.getPosY());
+      this->_sfc->Blit(dst, pos);
+    }
+}
+
+int			Font::getWidth(void) const
+{
+  if (this->_sfc)
+    return (this->_sfc->getWidth());
+  return (0);
+}
+
+int			Font::getHeight(void) const
+{
+  if (this->_sfc)
+    return (this->_sfc->getHeight());
+  return (0);
 }

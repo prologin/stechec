@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Mar  6 15:46:04 2009 stephane2 lapie
-** Last update Fri Mar  6 16:29:38 2009 stephane2 lapie
+** Last update Thu Apr 30 10:55:24 2009 user
 */
 
 #ifndef THREAD_H_
@@ -14,19 +14,23 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_thread.h>
 
-class		Thread
+class			Thread
 {
  private:
-  SDL_Thread	*_thread;
+  SDL_Thread		*_thread;
+  int			_pipe[2];
 
  protected:
-  virtual void	Core(void) = 0;
+  virtual void		Core(void) = 0;
 
  public:
+  Thread(void);
   virtual ~Thread(void);
-  void		Run(void);
-  void		Stop(void);
-  friend int	LaunchThread(void *data);
+  void			Run(void);
+  void			Stop(void);
+  int			Read(void *buf, int size);
+  int			Write(void *buf, int size);
+  friend int		LaunchThread(void *data);
 };
 
 #endif /* !THREAD_H_ */

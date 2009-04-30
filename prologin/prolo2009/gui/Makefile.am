@@ -12,7 +12,10 @@ simcity_sdlvisu_la_SOURCES	= \
 		thread.cpp	\
 		gameengine.cpp	\
 		gamecase.cpp	\
-		font.cpp
+		font.cpp	\
+		infopanel.cpp	\
+		infopanel2.cpp	\
+		turnpanel.cpp
 
 simcity_sdlvisu_la_CXXFLAGS	=		\
 	-W -Wall -ansi $(SDL_CFLAGS)

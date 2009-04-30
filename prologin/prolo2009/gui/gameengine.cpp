@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 16:17:43 2009 stephane2 lapie
-// Last update Wed Apr 29 17:51:57 2009 user
+// Last update Thu Apr 30 11:38:09 2009 user
 //
 
 #include <cstdlib>
@@ -15,15 +15,14 @@
 #include "Api.hh"
 #include "ClientCx.hh"
 
+#include "display.h"
 #include "prologin.h"
-
 #include "gameengine.h"
 #include "event.hpp"
 
 extern void		*g_client_cx;
 extern void		*g_api;
 
-static int		run; // XXX Debian race condition patch
 #define GS_END 0xffff
 
 /* GameEngine instance (GameEngine is a singleton) */
@@ -45,7 +44,6 @@ static void		GameEngineCleanup(void)
 GameEngine::GameEngine(void)
 {
   atexit(GameEngineCleanup);
-  run = 0;
   std::cout << "Game engine init done" << std::endl;
 }
 
@@ -59,7 +57,6 @@ GameEngine::GameEngine(const GameEngine &right)
 GameEngine::~GameEngine(void)
 {
   std::cout << "Shutting down game engine...";
-  run = 0;
   std::cout << "done" << std::endl;
 }
 
@@ -91,14 +88,54 @@ GameEngine		*GameEngine::GetInstance(void)
 /* */
 void			GameEngine::Run(void)
 {
-  run = 1;
-  while (run && ((Api*)g_api)->getState() != GS_END)
+  int			winner, status;
+  Display		*dsp;
+  SDL_Event		ev;
+
+  dsp = Display::GetInstance();
+  while (((Api*)g_api)->getState() != GS_END)
     {
       this->RetrieveData();
-      sleep(2);
+      status = 0;
+      while (dsp->Read((void*)(&status), sizeof(status)))
+	{
+	  if (status == EV_DISPLAY_END)
+	    exit(0);
+	  else if (status == EV_DISPLAY_NEXTTURN)
+	    break;
+	}
       ((ClientCx*)g_client_cx)->setReady();
       while (((ClientCx*)g_client_cx)->process(true))
 	;
+    }
+  std::cout << "### GAME ENDED ###" << std::endl;
+  ev.type = SDL_USEREVENT;
+  ev.user.code = EV_ENDGAME;
+  SDL_PushEvent(&ev);
+  winner = -1;
+  for (int i = 0; i < (int)this->_player.size(); i++)
+    {
+      if (winner == -1 || this->_player[i].score > this->_player[winner].score)
+	winner = i;
+      else if (this->_player[i].score == this->_player[winner].score)
+	winner = -2;
+    }
+  ev.user.code = EV_WINNER;
+  if (winner == -2)
+    {
+      std::cout << "# Nobody won the game" << std::endl;
+      ev.user.data1 = new EventPlayer(-1, 0, 0);
+    }
+  else
+    {
+      std::cout << "# Player " << winner << " won the game" << std::endl;
+      ev.user.data1 = new EventPlayer(winner, this->_player[winner].score, this->_player[winner].money);
+    }
+  SDL_PushEvent(&ev);
+  while (dsp->Read((void*)(&status), sizeof(status)))
+    {
+      if (status == EV_DISPLAY_END)
+	exit(0);
     }
 }
 
@@ -112,6 +149,7 @@ void			GameEngine::RetrieveData(void)
   int			case_price;
   int			x, y, k;
   SDL_Event		ev;
+  Player		player;
 
   ev.type = SDL_USEREVENT;
   for (y = 0; y < MAP_HEIGHT; y++)
@@ -159,11 +197,14 @@ void			GameEngine::RetrieveData(void)
       SDL_PushEvent(&ev);
       for (x = 0; x < NB_PLAYERS; x++)
 	{
-	  if (score(x) == JOUEUR_INCORRECT)
+	  player.score = score(x);
+	  player.money = finances(x);
+	  if (player.score == JOUEUR_INCORRECT)
 	    continue;
 	  ev.user.code = EV_PLAYER;
-	  ev.user.data1 = new EventPlayer(x, score(x), finances(x));
+	  ev.user.data1 = new EventPlayer(x, player.score, player.money);
 	  SDL_PushEvent(&ev);
+	  this->_player[x] = player;
 	}
       last_game_turn = game_turn;
     }
