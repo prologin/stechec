@@ -59,6 +59,11 @@ int        ClientEntry::beforeNewTurn()
   g_->InitTemporaryData();
   g_->ComputeNonBlockingCells();
   g_->MakeChecks();
+
+
+  if (g_->mon_tour()) {
+    LOG1("My GUI id is %1", g_->getTeamId() + 1);
+}
   return 0;
 }
 

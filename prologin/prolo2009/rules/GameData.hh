@@ -109,6 +109,9 @@ public:
   int CoutConstructions(int routes, int maisons);
   bool did_auction_;
 
+  // Returns true iff it is the turn of the current player.
+  bool mon_tour();
+
   void ComputeNonBlockingCells();
   // Update functions, to be called before each turn.
   void InitTemporaryData();

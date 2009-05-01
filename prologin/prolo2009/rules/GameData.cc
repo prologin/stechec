@@ -363,6 +363,14 @@ static bool CanReachRoad(int x, int y, int forbiddenx, int forbiddeny, GameData 
   return false;
 }
 
+bool GameData::mon_tour() {
+  const bool t = GetCurrentPhase() == 2 ||
+    GetCurrentPlayer() == getTeamId();
+  if (!t) return false;
+  return GetCurrentPhase() != 3 ||
+    won_auction_ == getTeamId();
+}
+
 void GameData::ComputeNonBlockingCells() {
   INIT();
 

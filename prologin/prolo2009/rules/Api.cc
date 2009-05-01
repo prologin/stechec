@@ -235,12 +235,7 @@ int Api::cout_achat_route()
 
 bool Api::mon_tour()
 {
-  const bool t = g_->GetCurrentPhase() == 2 ||
-    g_->GetCurrentPlayer() == g_->getTeamId();
-  if (!t) return false;
-  return g_->GetCurrentPhase() != 3 ||
-    g_->won_auction_ == g_->getTeamId();
-	
+  return g_->mon_tour();
 }
 
 int Api::construire_route(int x, int y)

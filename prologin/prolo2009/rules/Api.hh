@@ -39,6 +39,12 @@
   if (m < 0 || m >= MAX_MONUMENTS) \
     return PAS_DE_MONUMENT;
 
+// Prevent from calling the Api in init_game()
+#define CHECK_NOT_BEFORE_GAME() \
+  if (g_->getCurrentTurn() == 0) \
+    return ACTION_INTERDITE;
+
+
 class Api: public StechecApi          
 {
 
