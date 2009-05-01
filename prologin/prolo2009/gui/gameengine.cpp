@@ -113,17 +113,22 @@ void			GameEngine::Run(void)
   ev.user.code = EV_ENDGAME;
   SDL_PushEvent(&ev);
   winner = -1;
+  int score;
+  int score_winner = 0;
   for (int i = 0; i < (int)this->_player.size(); i++)
     {
-      this->_player[i].score += this->_player[i].money;
+      score = this->_player[i].score + this->_player[i].money;
 
       ev.user.code = EV_PLAYER;
       ev.user.data1 = new EventPlayer(i, this->_player[i].score, this->_player[i].money, this->_player[i].bid);
       SDL_PushEvent(&ev);
 
-      if (winner == -1 || this->_player[i].score > this->_player[winner].score)
-	winner = i;
-      else if (this->_player[i].score == this->_player[winner].score)
+      if (winner == -1 || score > score_winner)
+	{
+	  winner = i;
+	  score_winner = score;
+	}
+      else if (score == score_winner)
 	winner = -2;
     }
   ev.user.code = EV_WINNER;
