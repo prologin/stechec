@@ -39,10 +39,10 @@ static MapCaseType	CaseType[] =
     {LD_MONUMENTS + MAX_MONUMENTS + 1	, SP_HOUSE2},
     {LD_MONUMENTS + MAX_MONUMENTS + 2	, SP_HOUSE3},
     {LD_MONUMENTS + MAX_MONUMENTS + 3	, SP_HOUSE4},
-    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS		, SP_RESERVED1},
-    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 1	, SP_RESERVED2},
-    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 2	, SP_RESERVED3},
-    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 3	, SP_RESERVED4},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 1	, SP_RESERVED1},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 2	, SP_RESERVED2},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 3	, SP_RESERVED3},
+    {LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 4	, SP_RESERVED4},
     {LD_EMPTY		, SP_NONE}
   };
 
@@ -146,7 +146,7 @@ void		DisplayMap::Refresh(void)
 	  }
 	else if (this->_case[map_case] == LD_RESERVED)
 	  {
-	    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + this->_case_owner[map_case];
+	    this->_case[map_case] = LD_MONUMENTS + MAX_MONUMENTS + NB_PLAYERS + 1 + this->_case_owner[map_case];
 	  }
 	if (this->_case[map_case] == LD_ROAD)
 	  {
