@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 16:17:43 2009 stephane2 lapie
-// Last update Fri May  1 09:22:54 2009 user
+// Last update Fri May  1 10:48:41 2009 user
 //
 
 #include <cstdlib>
@@ -115,6 +115,12 @@ void			GameEngine::Run(void)
   winner = -1;
   for (int i = 0; i < (int)this->_player.size(); i++)
     {
+      this->_player[i].score += this->_player[i].money;
+
+      ev.user.code = EV_PLAYER;
+      ev.user.data1 = new EventPlayer(i, this->_player[i].score, this->_player[i].money, this->_player[i].bid);
+      SDL_PushEvent(&ev);
+
       if (winner == -1 || this->_player[i].score > this->_player[winner].score)
 	winner = i;
       else if (this->_player[i].score == this->_player[winner].score)

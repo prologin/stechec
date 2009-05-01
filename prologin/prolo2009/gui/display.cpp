@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Fri May  1 09:25:30 2009 user
+// Last update Fri May  1 12:11:14 2009 user
 //
 
 #include <SDL_ttf.h>
@@ -56,15 +56,15 @@ static SpritesList	DisplaySprite[] =
     {{SP_MONUMENT1, "/opt/share/stechec/prolo2009/graphics/monument1.png", 3, 200, 0, true, 116, 99, {0,0}}, NULL},
     {{SP_MONUMENT2, "/opt/share/stechec/prolo2009/graphics/monument2.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT3, "/opt/share/stechec/prolo2009/graphics/monument3.png", 2, 600, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT4, "/opt/share/stechec/prolo2009/graphics/monument4.png", 2, 900, 0, true, 116, 232, {0,0}}, NULL},
+    {{SP_MONUMENT4, "/opt/share/stechec/prolo2009/graphics/monument4.png", 2, 800, 0, true, 116, 79, {0,0}}, NULL},
     {{SP_MONUMENT5, "/opt/share/stechec/prolo2009/graphics/monument5.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT6, "/opt/share/stechec/prolo2009/graphics/monument6.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT7, "/opt/share/stechec/prolo2009/graphics/monument7.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT8, "/opt/share/stechec/prolo2009/graphics/monument8.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT9, "/opt/share/stechec/prolo2009/graphics/monument9.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT10, "/opt/share/stechec/prolo2009/graphics/monument10.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT11, "/opt/share/stechec/prolo2009/graphics/monument11.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT12, "/opt/share/stechec/prolo2009/graphics/monument12.png", 1, 0, 0, true, 116, 221, {0,0}}, NULL},
+    {{SP_MONUMENT11, "/opt/share/stechec/prolo2009/graphics/monument11.png", 1, 0, 0, true, 116, 221, {0,0}}, NULL},
+    {{SP_MONUMENT12, "/opt/share/stechec/prolo2009/graphics/monument12.png", 2, 900, 0, true, 116, 232, {0,0}}, NULL},
     {{SP_MONUMENT13, "/opt/share/stechec/prolo2009/graphics/monument13.png", 4, 300, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT14, "/opt/share/stechec/prolo2009/graphics/monument14.png", 1, 0, 0, true, 116, 187, {0,0}}, NULL},
     {{SP_NONE, NULL, 0, 0, 0, false, 0, 0, {0,0}}, NULL}
