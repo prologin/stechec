@@ -573,7 +573,7 @@ sub result_server
     }
 
     # update champion's score (training or tournament)
-    my $sth_ch_sel = $dbh->prepare("SELECT id_champion FROM competiteur WHERE id_match = ?");
+    my $sth_ch_sel = $dbh->prepare("SELECT id_champion FROM competiteur WHERE id_match = ? AND id_team = ?");
     my $sth_ch;
     if ($m->{'is_tournament'}) {
         $sth_ch = $dbh->prepare("UPDATE champion SET score_tournament = score_tournament + ? WHERE id = ?");
@@ -581,7 +581,7 @@ sub result_server
         $sth_ch = $dbh->prepare("UPDATE champion SET score_training = score_training + ? WHERE id = ?");
     }
     foreach (@res) {
-        $sth_ch_sel->execute($id_match);
+        $sth_ch_sel->execute($id_match, $$_{'id'});
         my $row = $sth_ch_sel->fetchrow_hashref;
         $sth_ch->execute($$_{'score'}, $row->{'id_champion'});
     }
