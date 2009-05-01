@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Thu Feb 26 10:27:25 2009 Hazgar
-** Last update Thu Apr 30 16:02:34 2009 user
+** Last update Fri May  1 09:24:11 2009 user
 */
 
 #ifndef DISPLAY_H_
@@ -99,6 +99,7 @@ class			Display : public Thread
   Font			*GetFont(FontID id);
   void			setWinSize(unsigned int winWidth, unsigned int winHeight);
   void			setWinCaption(std::string caption);
+  void			setDisplayMotion(int x, int y);
 };
 
 #endif /* !DISPLAY_H_ */

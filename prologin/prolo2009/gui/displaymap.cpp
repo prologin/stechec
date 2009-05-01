@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Fri May  1 01:25:26 2009 user
+// Last update Fri May  1 09:43:29 2009 user
 //
 
 #include <SDL.h>
@@ -313,21 +313,38 @@ void		DisplayMap::setCase(int type, int x, int y)
 
   mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
   mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
-  sx = (MAP_WIDTH >> 1) - (mw >> 1) + 2;
-  sy = (MAP_HEIGHT >> 1) - (mh >> 1) + 2;
-  ex = sx + mw - 2;
-  ey = sy + mh - 2;
+  sx = (MAP_WIDTH >> 1) - (mw >> 1);
+  sy = (MAP_HEIGHT >> 1) - (mh >> 1);
+  ex = sx + mw - 1;
+  ey = sy + mh - 1;
   px = 0;
   py = 0;
-  if (!(x >= sx && x <= ex))
-    px = (abs(x - sx) * 100) / MAP_WIDTH;
-  if (!(y >= sy && y <= ey))
-    py = (abs(y - sy) * 100) / MAP_HEIGHT;
+  if (x <= sx)
+    {
+      px = (abs(x - sx) * 2) + mw + 4;
+      px = (int)(((float)px / MAP_WIDTH) * 100.0);
+    }
+  else if (x >= ex)
+    {
+      px = (abs(x - ex) * 2) + mw + 4;
+      px = (int)(((float)px / MAP_WIDTH) * 100.0);
+    }
+  if (y <= sy)
+    {
+      py = (abs(y - sy) * 2) + mh + 4;
+      py = (int)(((float)py / MAP_HEIGHT) * 100.0);
+    }
+  else if (y >= ey)
+    {
+      py = (abs(y - ey) * 2) + mh + 4;
+      py = (int)(((float)py / MAP_HEIGHT) * 100.0);
+    }
   if (px || py)
     {
-      px += (px % 2 ? 1 : 0);
-      py += (py % 2 ? 1 : 0);
-      this->_viewField += (py > px ? py : px);
+      this->_viewField = (py > px ? py : px);
+      px = (int)(MAP_WIDTH * (this->_viewField / 100.0));
+      this->_draw_pos[0] -= (((px - mw) >> 1) * this->_floor->getWidth());
+      Display::GetInstance()->setDisplayMotion(this->_draw_pos[0], this->_draw_pos[1]);
     }
   this->InitFloorSfc();
 }

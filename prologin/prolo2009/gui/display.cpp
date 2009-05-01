@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Fri May  1 06:24:58 2009 user
+// Last update Fri May  1 09:25:30 2009 user
 //
 
 #include <SDL_ttf.h>
@@ -66,7 +66,7 @@ static SpritesList	DisplaySprite[] =
     {{SP_MONUMENT11, "/opt/share/stechec/prolo2009/graphics/monument11.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
     {{SP_MONUMENT12, "/opt/share/stechec/prolo2009/graphics/monument12.png", 1, 0, 0, true, 116, 221, {0,0}}, NULL},
     {{SP_MONUMENT13, "/opt/share/stechec/prolo2009/graphics/monument13.png", 4, 300, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT14, "/opt/share/stechec/prolo2009/graphics/monument14.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT14, "/opt/share/stechec/prolo2009/graphics/monument14.png", 1, 0, 0, true, 116, 187, {0,0}}, NULL},
     {{SP_NONE, NULL, 0, 0, 0, false, 0, 0, {0,0}}, NULL}
   };
 
@@ -369,6 +369,13 @@ void			Display::setWinCaption(std::string caption)
 {
   SDL_WM_SetCaption(caption.c_str(), NULL);
   this->_winCaption = caption;
+}
+
+/* */
+void			Display::setDisplayMotion(int x, int y)
+{
+  this->_display_motion[0] = x;
+  this->_display_motion[1] = y;
 }
 
 /* Keyboard event handler */
