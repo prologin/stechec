@@ -5,7 +5,7 @@
 ** Login   <user@epitech.net>
 ** 
 ** Started on  Thu Apr 30 13:07:18 2009 user
-** Last update Thu Apr 30 13:07:49 2009 user
+** Last update Fri May  1 02:42:58 2009 user
 */
 
 #ifndef PLAYER_H_
@@ -15,6 +15,7 @@ struct			Player
 {
   int			score;
   int			money;
+  int			bid;
 };
 
 #endif /* !PLAYER_H_ */

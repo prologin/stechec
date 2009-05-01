@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 16:17:43 2009 stephane2 lapie
-// Last update Fri May  1 01:15:23 2009 user
+// Last update Fri May  1 02:48:57 2009 user
 //
 
 #include <cstdlib>
@@ -124,12 +124,12 @@ void			GameEngine::Run(void)
   if (winner == -2)
     {
       std::cout << "# Nobody won the game" << std::endl;
-      ev.user.data1 = new EventPlayer(-1, 0, 0);
+      ev.user.data1 = new EventPlayer(-1, 0, 0, 0);
     }
   else
     {
       std::cout << "# Player " << winner << " won the game" << std::endl;
-      ev.user.data1 = new EventPlayer(winner, this->_player[winner].score, this->_player[winner].money);
+      ev.user.data1 = new EventPlayer(winner, this->_player[winner].score, this->_player[winner].money, this->_player[winner].bid);
     }
   SDL_PushEvent(&ev);
   while (dsp->Read((void*)(&status), sizeof(status)))
@@ -195,10 +195,11 @@ void			GameEngine::RetrieveData(void)
 	{
 	  player.score = score(x);
 	  player.money = finances(x);
+	  player.bid = montant_encheres(x);
 	  if (player.score == JOUEUR_INCORRECT)
 	    continue;
 	  ev.user.code = EV_PLAYER;
-	  ev.user.data1 = new EventPlayer(x, player.score, player.money);
+	  ev.user.data1 = new EventPlayer(x, player.score, player.money, player.bid);
 	  SDL_PushEvent(&ev);
 	  this->_player[x] = player;
 	}

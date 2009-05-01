@@ -5,7 +5,7 @@
 // Login   <user@epitech.net>
 // 
 // Started on  Thu Apr 30 13:14:44 2009 user
-// Last update Thu Apr 30 16:06:26 2009 user
+// Last update Fri May  1 02:55:09 2009 user
 //
 
 #include "display.h"
@@ -23,10 +23,11 @@ InfoPanel::~InfoPanel(void)
 {
 }
 
-void		InfoPanel::UpdatePlayer(int id, int score, int money)
+void		InfoPanel::UpdatePlayer(int id, int score, int money, int bid)
 {
   this->_player_info[id].score = score;
   this->_player_info[id].money = money;
+  this->_player_info[id].bid = bid;
 }
 
 void		InfoPanel::Refresh(void)
@@ -53,7 +54,7 @@ void		InfoPanel::Refresh(void)
   for (i = 0; i < (int)this->_player_info.size(); i++)
     {
       x = this->_pos.getPosX();
-      y = this->_pos.getPosY() + 2 + i * infos->getHeight();
+      y = this->_pos.getPosY() + 6 + i * infos->getHeight();
       pos.setPos(x, y);
       infos->Blit(*(this->_dst), pos);
       
@@ -64,12 +65,17 @@ void		InfoPanel::Refresh(void)
       
       ft->Text.str("");
       ft->Text << this->_player_info[i].score;
-      pos.setPos(x + (infos->getWidth() >> 1) + 9, y + 23);
+      pos.setPos(x + (infos->getWidth() >> 1) + 9, y + 18);
       ft->Blit(*(this->_dst), pos);
 
       ft->Text.str("");
       ft->Text << this->_player_info[i].money;
-      pos.setPos(x + (infos->getWidth() >> 1) + 9, y + 43);
+      pos.setPos(x + (infos->getWidth() >> 1) + 9, y + 38);
+      ft->Blit(*(this->_dst), pos);
+
+      ft->Text.str("");
+      ft->Text << this->_player_info[i].bid;
+      pos.setPos(x + (infos->getWidth() >> 1) + 9, y + 58);
       ft->Blit(*(this->_dst), pos);
     }
 }

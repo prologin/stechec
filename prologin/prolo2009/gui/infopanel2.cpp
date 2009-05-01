@@ -5,7 +5,7 @@
 // Login   <user@epitech.net>
 // 
 // Started on  Thu Apr 30 13:14:44 2009 user
-// Last update Thu Apr 30 15:19:49 2009 user
+// Last update Fri May  1 02:48:04 2009 user
 //
 
 #include "display.h"
@@ -25,11 +25,12 @@ InfoPanel2::~InfoPanel2(void)
 {
 }
 
-void		InfoPanel2::UpdatePlayer(int id, int score, int money)
+void		InfoPanel2::UpdatePlayer(int id, int score, int money, int bid)
 {
   this->_player_id = id;
   this->_player.score = score;
   this->_player.money = money;
+  this->_player.money = bid;
 }
 
 void		InfoPanel2::Refresh(void)

@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Wed Apr 22 14:21:10 2009 Hazgar
-// Last update Thu Apr 30 11:36:19 2009 user
+// Last update Fri May  1 02:43:54 2009 user
 //
 
 #ifndef EVENT_HPP_
@@ -54,11 +54,13 @@ struct	EventPlayer
   int	id;
   int	score;
   int	money;
-  EventPlayer(int _id, int _score, int _money)
+  int	bid;
+  EventPlayer(int _id, int _score, int _money, int _bid)
   {
     this->id = _id;
     this->score = _score;
     this->money = _money;
+    this->bid = _bid;
   };
   ~EventPlayer(void) {};
   EventPlayer(const EventPlayer &right)
@@ -70,6 +72,7 @@ struct	EventPlayer
     this->id = right.id;
     this->score = right.score;
     this->money = right.money;
+    this->bid = right.bid;
     return (*this);
   };
 };

@@ -5,7 +5,7 @@
 ** Login   <user@epitech.net>
 ** 
 ** Started on  Thu Apr 30 13:09:42 2009 user
-** Last update Thu Apr 30 14:50:57 2009 user
+** Last update Fri May  1 06:05:51 2009 user
 */
 
 #ifndef INFOPANEL_H_
@@ -26,7 +26,7 @@ class			InfoPanel
  public:
   InfoPanel(Surface *src, Surface *dst);
   ~InfoPanel(void);
-  void			UpdatePlayer(int id, int score, int money);
+  void			UpdatePlayer(int id, int score, int money, int bid);
   void			Refresh(void);
   void			setDst(Surface *dst);
   void			setPos(unsigned int x, unsigned int y);

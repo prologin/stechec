@@ -5,7 +5,7 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Feb 27 11:21:32 2009 Hazgar
-** Last update Fri May  1 01:16:01 2009 user
+** Last update Fri May  1 03:15:44 2009 user
 */
 
 #ifndef SPRITE_H_
@@ -19,7 +19,6 @@ enum			SpriteID
   SP_HOUSE2,
   SP_HOUSE3,
   SP_HOUSE4,
-  SP_HOUSE5,
   SP_ROAD1,
   SP_ROAD2,
   SP_ROAD3,
