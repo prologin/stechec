@@ -46,7 +46,10 @@ int run(void* foo, void* api, void* client_cx)
       //      play_turn();  // Use that until prolo2008.
 
       // For prolo2009, we call different functions depending of the type of the turn:
-      if (mon_tour()) {
+      if (mon_tour() & 1) {
+	// Work-around because mon_tour() comes from a C++ Api that returns a
+	// bool, and it is considered here as returning an int, so the most
+	// significant 3-bytes are garbage.
 	int t = api_get_nb_team(api);
 	int nb_virtual_turns = 2 * t + 1;
 	if (tour % nb_virtual_turns < t)
