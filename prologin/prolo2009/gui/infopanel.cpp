@@ -58,11 +58,19 @@ void		InfoPanel::Refresh(void)
       pos.setPos(x, y);
       infos->Blit(*(this->_dst), pos);
       
+      if (i == 0)
+	ft2->setColor(0xFF0000FF);
+      else if (i == 1)
+	ft2->setColor(0xFFFF0000);
+      else
+	ft2->setColor(0xFF00FF00);
+
       ft2->Text.str("");
       ft2->Text << "PLAYER " << (i + 1);
       pos.setPos(x + (infos->getWidth() >> 1), y);
       ft2->Blit(*(this->_dst), pos);
-      
+      ft2->setColor(0xFFFFFFFF);
+
       ft->Text.str("");
       ft->Text << this->_player_info[i].score;
       pos.setPos(x + (infos->getWidth() >> 1) + 9, y + 18);
