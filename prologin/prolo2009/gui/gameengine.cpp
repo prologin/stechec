@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 16:17:43 2009 stephane2 lapie
-// Last update Fri May  1 10:48:41 2009 user
+// Last update Sat May  2 13:39:21 2009 user
 //
 
 #include <cstdlib>
@@ -38,6 +38,21 @@ static void		GameEngineCleanup(void)
 
   ne = GameEngine::GetInstance();
   delete ne;
+}
+
+/* SDL_PushEvent with timer to retry */
+static void		xSDL_PushEvent(SDL_Event *ev)
+{
+  int			i;
+
+  for (i = 0; i < 3; i++)
+    {
+      if (SDL_PushEvent(ev) != -1)
+	return ;
+      usleep(50);
+    }
+ std::cout << "SDL events fatal error" << std::endl;
+ exit(0);
 }
 
 /* */
@@ -111,7 +126,7 @@ void			GameEngine::Run(void)
   this->RetrieveData();
   ev.type = SDL_USEREVENT;
   ev.user.code = EV_ENDGAME;
-  SDL_PushEvent(&ev);
+  xSDL_PushEvent(&ev);
   winner = -1;
   int score;
   int score_winner = 0;
@@ -121,7 +136,7 @@ void			GameEngine::Run(void)
 
       ev.user.code = EV_PLAYER;
       ev.user.data1 = new EventPlayer(i, this->_player[i].score, this->_player[i].money, this->_player[i].bid);
-      SDL_PushEvent(&ev);
+      xSDL_PushEvent(&ev);
 
       if (winner == -1 || score > score_winner)
 	{
@@ -136,7 +151,7 @@ void			GameEngine::Run(void)
     ev.user.data1 = new EventPlayer(-1, 0, 0, 0);
   else
     ev.user.data1 = new EventPlayer(winner, this->_player[winner].score, this->_player[winner].money, this->_player[winner].bid);
-  SDL_PushEvent(&ev);
+  xSDL_PushEvent(&ev);
   while (dsp->Read((void*)(&status), sizeof(status)))
     {
       if (status == EV_DISPLAY_END)
@@ -164,29 +179,29 @@ void			GameEngine::RetrieveData(void)
 	case_type = (t_landscape)type_case(x, y);
 	if (case_type != this->_map[k].getType())
 	  {
-	    this->_map[k].setType(case_type);
 	    ev.user.code = EV_CASETYPE;
 	    if (case_type == LD_MONUMENT)
 	      ev.user.data1 = new EventCase(x, y, LD_MONUMENTS + type_monument(x, y));
 	    else
 	      ev.user.data1 = new EventCase(x, y, case_type);
-	    SDL_PushEvent(&ev);
+	    xSDL_PushEvent(&ev);
+	    this->_map[k].setType(case_type);
 	  }
 	case_owner = (t_owner)appartenance(x, y);
 	if (case_owner != this->_map[k].getOwner())
 	  {
-	    this->_map[k].setOwner(case_owner);
 	    ev.user.code = EV_CASEOWNER;
 	    ev.user.data1 = new EventCase(x, y, case_owner);
-	    SDL_PushEvent(&ev);
+	    xSDL_PushEvent(&ev);
+	    this->_map[k].setOwner(case_owner);
 	  }
 	case_price = valeur_case(x, y);
 	if (case_price != this->_map[k].getPrice())
 	  {
-	    this->_map[k].setPrice(case_price);
 	    ev.user.code = EV_CASEPRICE;
 	    ev.user.data1 = new EventCase(x, y, case_price);
-	    SDL_PushEvent(&ev);
+	    xSDL_PushEvent(&ev);
+	    this->_map[k].setPrice(case_price);
 	  }
       }
   game_turn = numero_tour();
@@ -195,7 +210,7 @@ void			GameEngine::RetrieveData(void)
       ev.user.code = EV_NEWTURN;
       ev.user.data1 = new int[1];
       *(int*)(ev.user.data1) = game_turn;
-      SDL_PushEvent(&ev);
+      xSDL_PushEvent(&ev);
       last_game_turn = game_turn;
     }
   for (x = 0; x < NB_PLAYERS; x++)
@@ -207,7 +222,23 @@ void			GameEngine::RetrieveData(void)
 	continue;
       ev.user.code = EV_PLAYER;
       ev.user.data1 = new EventPlayer(x, player.score, player.money, player.bid);
-      SDL_PushEvent(&ev);
+      xSDL_PushEvent(&ev);
       this->_player[x] = player;
     }
+  /* map dump */
+  /*
+  std::string color[] = {"[31m", "[32m", "[33m", "[37m"};
+  for (y = 0; y < MAP_HEIGHT; y++)
+    {
+      for (x = 0; x < MAP_WIDTH; x++)
+	{
+	  k = x + (y * MAP_WIDTH);
+	  if (this->_map[k].getType() == 0)
+	    printf(" ");
+	  else
+	    printf("%s%i", color[this->_map[k].getOwner()].c_str(), this->_map[k].getType());
+	}
+      printf("\n");
+    }
+  */
 }

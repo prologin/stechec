@@ -5,13 +5,13 @@
 ** Login   <lapie_t@epitech.net>
 ** 
 ** Started on  Fri Feb 27 09:55:25 2009 Hazgar
-** Last update Wed Apr 29 15:26:24 2009 user
+** Last update Sat May  2 12:49:18 2009 user
 */
 
 #ifndef GAME_H_
 # define GAME_H_
 
-# define MAP_SIZE	10100
+# define MAP_SIZE	10000
 # define MAP_WIDTH	100
 # define MAP_HEIGHT	100
 # define START_POSX	MAP_WIDTH / 2
@@ -35,6 +35,7 @@ typedef	enum
   OWN_PLAYER1,
   OWN_PLAYER2,
   OWN_TOWNHALL,
+  OWN_NOBODY
 }	t_owner;
 # define NB_PLAYERS	OWN_TOWNHALL
 

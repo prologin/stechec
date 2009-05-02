@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar 13 15:06:27 2009 Hazgar
-// Last update Fri May  1 09:43:29 2009 user
+// Last update Sat May  2 13:14:22 2009 user
 //
 
 #include <SDL.h>
@@ -84,7 +84,8 @@ DisplayMap::DisplayMap(const Surface &display, Surface *texture)
   this->_show_prices = false;
   memset(this->_case, LD_EMPTY, sizeof(this->_case));
   memset(this->_case_price, 0, sizeof(this->_case_price));
-  memset(this->_case_owner, 0, sizeof(this->_case_owner));
+  for (int i = 0; i < MAP_SIZE; i++)
+    this->_case_owner[i] = OWN_TOWNHALL;
   this->BuildFrom(display);
 }
 
@@ -310,7 +311,6 @@ void		DisplayMap::setCase(int type, int x, int y)
   int		sx, sy, ex, ey, mw, mh;
 
   this->_case[x + y * MAP_WIDTH] = type;
-
   mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
   mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
   sx = (MAP_WIDTH >> 1) - (mw >> 1);

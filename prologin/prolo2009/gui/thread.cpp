@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Fri Mar  6 15:52:42 2009 stephane2 lapie
-// Last update Thu Apr 30 10:55:18 2009 user
+// Last update Sat May  2 13:16:56 2009 user
 //
 
 #include <unistd.h>
@@ -30,6 +30,8 @@ Thread::Thread()
 Thread::~Thread()
 {
   this->Stop();
+  close(this->_pipe[0]);
+  close(this->_pipe[1]);
 }
 
 void		Thread::Run(void)
