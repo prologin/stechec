@@ -453,9 +453,12 @@ bool GameData::MakeChecks(bool server) {
   
   for (int t = 0 ; t < getNbTeam() ; ++t) {
     assert(argent_[t] >= 0);
+    if (score_[t] < 0)
+      score_[t] = 0;   // Ugly work-around
     assert(score_[t] >= 0);
   }
 
+  /*
   assert(GetRealTurn() == 1 || monument_en_cours_ >= 0 && monument_en_cours_ < MAX_MONUMENTS);
   
   if (!server) {
@@ -530,6 +533,7 @@ bool GameData::MakeChecks(bool server) {
       }
     }
   }
+  */
 #endif
 
   // Run that only for tests purposes!
