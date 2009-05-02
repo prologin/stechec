@@ -5,7 +5,7 @@
 // Login   <lapie_t@epitech.net>
 // 
 // Started on  Thu Feb 26 10:44:38 2009 Hazgar
-// Last update Sat May  2 13:11:27 2009 user
+// Last update Sat May  2 14:20:31 2009 user
 //
 
 #include <SDL_ttf.h>
@@ -261,14 +261,24 @@ void			Display::loadFonts(void)
 void			Display::Core(void)
 {
   int			status;
+  int			time[3];
   SfcField		scr_field;
   SDL_Event		ev;
   SDL_Surface		*screen;
+  //int			fps;
 
   scr_field.setSize(this->_screen->getWidth(), this->_screen->getHeight());
   screen = static_cast<SDL_Surface*>(this->_screen->getSurface());
+  time[0] = SDL_GetTicks();
+  /*time[2] = time[0];
+    fps = 0;*/
   while (1)
     {
+      /*if ((time[0] - time[2]) >= 1000)
+	{
+	  fps = 0;
+	  time[2] = SDL_GetTicks();
+	  }*/
       while (SDL_PollEvent(&ev))
 	{
 	  switch (ev.type)
@@ -300,6 +310,12 @@ void			Display::Core(void)
 	      break;
 	    }
 	}
+      time[1] = SDL_GetTicks();
+      if ((time[1] - time[0]) > 2)
+	{
+	  time[0] = SDL_GetTicks();
+	  continue;
+	}
       this->displayMotion();
       this->_tpanel->Refresh();
       this->_ipanel->Refresh();
@@ -307,6 +323,8 @@ void			Display::Core(void)
       this->_map->Blit(*(this->_screen), scr_field);
       this->_layout->Blit(*(this->_screen), scr_field);
       SDL_Flip(screen);
+      time[0] = SDL_GetTicks();
+      //fps++;
     }
 }
 

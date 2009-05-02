@@ -18,7 +18,7 @@ simcity_sdlvisu_la_SOURCES	= \
 		turnpanel.cpp
 
 simcity_sdlvisu_la_CXXFLAGS	=		\
-	-W -Wall -ansi $(SDL_CFLAGS)
+	-W -Wall -ansi $(SDL_CFLAGS) -O3
 
 simcity_sdlvisu_la_LDFLAGS	=		\
 	-module					\
