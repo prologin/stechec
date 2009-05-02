@@ -437,7 +437,7 @@ int Api::construire_monument(int x, int y)
     for (int j = x - portee ; j <= x + portee ; ++j) {
       if (i < 0 || j < 0 || i >= TAILLE_CARTE || j >= TAILLE_CARTE)
 	continue;
-      int &v = g_->valeurs_cases_[y][x];
+      int &v = g_->valeurs_cases_[i][j];
       const int old_house_val = ScoreConstructionDepuisValeurCase(v);
       v += prestige;
       if (g_->constructions_[i][j].first != MAISON)
