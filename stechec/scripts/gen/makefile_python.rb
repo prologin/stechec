@@ -22,6 +22,7 @@ OBJS 	= interface.o $(LIMEOBJ)
 RM 	= /bin/rm -f
 AUXFILES= prologin.py constants.py
 
+CFLAGS = -fPIC
 CXXFLAGS = -fPIC -W -Wall \\
    `python2.5-config --cflags` \\
    $(MY_CXXFLAGS)

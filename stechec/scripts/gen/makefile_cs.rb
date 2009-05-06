@@ -27,6 +27,7 @@ RM 	= /bin/rm -f
 # Files needed by champion.so (don't put variables here, they are not evalued)
 AUXFILES= prologin.dll
 
+CFLAGS = -fPIC
 CXXFLAGS = -fPIC -W -Wall \\
    `pkg-config --cflags glib-2.0` \\
    `pkg-config --cflags mono` \\

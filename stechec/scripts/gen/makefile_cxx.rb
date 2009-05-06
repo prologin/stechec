@@ -22,6 +22,7 @@ LIMEOBJ ?= ../includes/main.o
 OBJS 	= ${SRC:.cc=.o} $(LIMEOBJ)
 RM 	= /bin/rm -f
 
+CFLAGS = -fPIC
 CXXFLAGS  = -fPIC -Wall ${MY_CXXFLAGS}
 
 ##############################

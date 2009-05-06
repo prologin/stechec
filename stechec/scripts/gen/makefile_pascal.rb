@@ -23,7 +23,7 @@ OBJS 	  = ${SRC:.pas=.o}
 LIMEOBJ   ?= ../includes/main.o
 RM 	  = /bin/rm -f
 
-CFLAGS    = $(MY_CFLAGS)
+CFLAGS    = -fPIC $(MY_CFLAGS)
 
 ##############################
 # Basic Compile Instructions #

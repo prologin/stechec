@@ -18,64 +18,66 @@
 /* Display instance (Display is a singleton) */
 Display			*Display::_instance = NULL;
 
+#define DATA(p) (PKGDATADIR p)
+
 /* surfaces */
 static SurfacesList	DisplaySurface[] =
   {
-    {SFC_FLOOR, "/opt/share/stechec/prolo2009/graphics/floor.png", NULL},
-    {SFC_PANEL, "/opt/share/stechec/prolo2009/graphics/panel.png", NULL},
-    {SFC_PANEL_INFO, "/opt/share/stechec/prolo2009/graphics/player_infos.png", NULL},
-    {SFC_PANEL2, "/opt/share/stechec/prolo2009/graphics/panel1.png", NULL},
-    {SFC_PANEL_TOP, "/opt/share/stechec/prolo2009/graphics/panel_top.png", NULL},
-    {SFC_PRICE, "/opt/share/stechec/prolo2009/graphics/price.png", NULL},
+    {SFC_FLOOR, DATA("/graphics/floor.png"), NULL},
+    {SFC_PANEL, DATA("/graphics/panel.png"), NULL},
+    {SFC_PANEL_INFO, DATA("/graphics/player_infos.png"), NULL},
+    {SFC_PANEL2, DATA("/graphics/panel1.png"), NULL},
+    {SFC_PANEL_TOP, DATA("/graphics/panel_top.png"), NULL},
+    {SFC_PRICE, DATA("/graphics/price.png"), NULL},
     {SFC_NONE, NULL, NULL}
   };
 
 /* sprites */
 static SpritesList	DisplaySprite[] =
   {
-    {{SP_HOUSE1, "/opt/share/stechec/prolo2009/graphics/house1.png", 4, 900, 0, true, 116, 79, {0,0}}, NULL},
-    {{SP_HOUSE2, "/opt/share/stechec/prolo2009/graphics/house2.png", 4, 900, 0, true, 116, 79, {0,0}}, NULL},
-    {{SP_HOUSE3, "/opt/share/stechec/prolo2009/graphics/house3.png", 4, 900, 0, true, 116, 79, {0,0}}, NULL},
-    {{SP_HOUSE4, "/opt/share/stechec/prolo2009/graphics/house4.png", 4, 900, 0, true, 116, 79, {0,0}}, NULL},
-    {{SP_ROAD1, "/opt/share/stechec/prolo2009/graphics/road1.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD2, "/opt/share/stechec/prolo2009/graphics/road2.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD3, "/opt/share/stechec/prolo2009/graphics/road3.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD4, "/opt/share/stechec/prolo2009/graphics/road4.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD5, "/opt/share/stechec/prolo2009/graphics/road5.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD6, "/opt/share/stechec/prolo2009/graphics/road6.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD7, "/opt/share/stechec/prolo2009/graphics/road7.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD7, "/opt/share/stechec/prolo2009/graphics/road7.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD8, "/opt/share/stechec/prolo2009/graphics/road8.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD9, "/opt/share/stechec/prolo2009/graphics/road9.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD10, "/opt/share/stechec/prolo2009/graphics/road10.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_ROAD11, "/opt/share/stechec/prolo2009/graphics/road11.png", 1, 0, 0, true, 116, 61, {0,0}}, NULL},
-    {{SP_RESERVED1, "/opt/share/stechec/prolo2009/graphics/floor_res1.png", 1, 0, 0, true, 116, 67, {0,0}}, NULL},
-    {{SP_RESERVED2, "/opt/share/stechec/prolo2009/graphics/floor_res2.png", 1, 0, 0, true, 116, 67, {0,0}}, NULL},
-    {{SP_RESERVED3, "/opt/share/stechec/prolo2009/graphics/floor_res3.png", 1, 0, 0, true, 116, 67, {0,0}}, NULL},
-    {{SP_RESERVED4, "/opt/share/stechec/prolo2009/graphics/floor_res4.png", 1, 0, 0, true, 116, 67, {0,0}}, NULL},
-    {{SP_MONUMENT1, "/opt/share/stechec/prolo2009/graphics/monument1.png", 3, 200, 0, true, 116, 99, {0,0}}, NULL},
-    {{SP_MONUMENT2, "/opt/share/stechec/prolo2009/graphics/monument2.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT3, "/opt/share/stechec/prolo2009/graphics/monument3.png", 2, 600, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT4, "/opt/share/stechec/prolo2009/graphics/monument4.png", 2, 800, 0, true, 116, 79, {0,0}}, NULL},
-    {{SP_MONUMENT5, "/opt/share/stechec/prolo2009/graphics/monument5.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT6, "/opt/share/stechec/prolo2009/graphics/monument6.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT7, "/opt/share/stechec/prolo2009/graphics/monument7.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT8, "/opt/share/stechec/prolo2009/graphics/monument8.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT9, "/opt/share/stechec/prolo2009/graphics/monument9.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT10, "/opt/share/stechec/prolo2009/graphics/monument10.png", 1, 0, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT11, "/opt/share/stechec/prolo2009/graphics/monument11.png", 1, 0, 0, true, 116, 221, {0,0}}, NULL},
-    {{SP_MONUMENT12, "/opt/share/stechec/prolo2009/graphics/monument12.png", 2, 900, 0, true, 116, 232, {0,0}}, NULL},
-    {{SP_MONUMENT13, "/opt/share/stechec/prolo2009/graphics/monument13.png", 4, 300, 0, true, 116, 92, {0,0}}, NULL},
-    {{SP_MONUMENT14, "/opt/share/stechec/prolo2009/graphics/monument14.png", 1, 0, 0, true, 116, 187, {0,0}}, NULL},
+    {{SP_HOUSE1, DATA("/graphics/house1.png"), 4, 900, 0, true, 116, 79, {0,0}}, NULL},
+    {{SP_HOUSE2, DATA("/graphics/house2.png"), 4, 900, 0, true, 116, 79, {0,0}}, NULL},
+    {{SP_HOUSE3, DATA("/graphics/house3.png"), 4, 900, 0, true, 116, 79, {0,0}}, NULL},
+    {{SP_HOUSE4, DATA("/graphics/house4.png"), 4, 900, 0, true, 116, 79, {0,0}}, NULL},
+    {{SP_ROAD1, DATA("/graphics/road1.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD2, DATA("/graphics/road2.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD3, DATA("/graphics/road3.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD4, DATA("/graphics/road4.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD5, DATA("/graphics/road5.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD6, DATA("/graphics/road6.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD7, DATA("/graphics/road7.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD7, DATA("/graphics/road7.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD8, DATA("/graphics/road8.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD9, DATA("/graphics/road9.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD10, DATA("/graphics/road10.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_ROAD11, DATA("/graphics/road11.png"), 1, 0, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_RESERVED1, DATA("/graphics/floor_res1.png"), 1, 0, 0, true, 116, 67, {0,0}}, NULL},
+    {{SP_RESERVED2, DATA("/graphics/floor_res2.png"), 1, 0, 0, true, 116, 67, {0,0}}, NULL},
+    {{SP_RESERVED3, DATA("/graphics/floor_res3.png"), 1, 0, 0, true, 116, 67, {0,0}}, NULL},
+    {{SP_RESERVED4, DATA("/graphics/floor_res4.png"), 1, 0, 0, true, 116, 67, {0,0}}, NULL},
+    {{SP_MONUMENT1, DATA("/graphics/monument1.png"), 3, 200, 0, true, 116, 99, {0,0}}, NULL},
+    {{SP_MONUMENT2, DATA("/graphics/monument2.png"), 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT3, DATA("/graphics/monument3.png"), 2, 600, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT4, DATA("/graphics/monument4.png"), 2, 800, 0, true, 116, 79, {0,0}}, NULL},
+    {{SP_MONUMENT5, DATA("/graphics/monument5.png"), 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT6, DATA("/graphics/monument6.png"), 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT7, DATA("/graphics/monument7.png"), 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT8, DATA("/graphics/monument8.png"), 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT9, DATA("/graphics/monument9.png"), 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT10, DATA("/graphics/monument10.png"), 1, 0, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT11, DATA("/graphics/monument11.png"), 1, 0, 0, true, 116, 221, {0,0}}, NULL},
+    {{SP_MONUMENT12, DATA("/graphics/monument12.png"), 2, 900, 0, true, 116, 232, {0,0}}, NULL},
+    {{SP_MONUMENT13, DATA("/graphics/monument13.png"), 4, 300, 0, true, 116, 92, {0,0}}, NULL},
+    {{SP_MONUMENT14, DATA("/graphics/monument14.png"), 1, 0, 0, true, 116, 187, {0,0}}, NULL},
     {{SP_NONE, NULL, 0, 0, 0, false, 0, 0, {0,0}}, NULL}
   };
 
 /* fonts */
 static FontsList	DisplayFont[] =
   {
-    {FT_PRICES, 20, "/opt/share/stechec/prolo2009/graphics/arialbd.ttf", NULL},
-    {FT_INFOS, 16, "/opt/share/stechec/prolo2009/graphics/arial.ttf", NULL},
-    {FT_INFOS2, 18, "/opt/share/stechec/prolo2009/graphics/arialbd.ttf", NULL},
+    {FT_PRICES, 20, DATA("/graphics/arialbd.ttf"), NULL},
+    {FT_INFOS, 16, DATA("/graphics/arial.ttf"), NULL},
+    {FT_INFOS2, 18, DATA("/graphics/arialbd.ttf"), NULL},
     {FT_NONE, 0, NULL, NULL}
   };
 

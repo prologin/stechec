@@ -24,6 +24,7 @@ RM 	= /bin/rm -f
 
 # FIXME: how to get the real good path ?
 INCLUDES = -I/usr/lib/ruby/1.8/i486-linux/
+CFLAGS = -fPIC
 CXXFLAGS = -fPIC -W -Wall ${INCLUDES}
 LDFLAGS  = -lruby1.8
 

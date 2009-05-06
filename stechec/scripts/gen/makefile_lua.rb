@@ -23,6 +23,7 @@ LIMEOBJ ?= ../includes/main.o
 OBJS 	= interface.o $(LIMEOBJ)
 RM 	= /bin/rm -f
 
+CFLAGS = -fPIC
 CXXFLAGS = -fPIC -W -Wall \\
    $(shell pkg-config --cflags lua$(LUA_VER)) \\
    $(MY_CXXFLAGS)

@@ -24,6 +24,7 @@ LIMEOBJ  ?= ../includes/main.o
 OBJS     = $(SRC:.java=.o) $(LIMEOBJ)
 HEADER   = $(SRC:.java=.h)
 
+CFLAGS = -fPIC
 CXXFLAGS = -W -Wall -I. -fPIC -O2
 CXX      = g++
 CJ       = gcj
