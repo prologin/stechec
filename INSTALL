@@ -1,48 +1,48 @@
-DISCLAIMER: L'Ã©quipe de Prologin n'assurera *PAS* de support pour
-l'installation ou la configuration de Stechec. MÃªme en insistant,
-on vous le promet. Ã€ la limite, si vous avez un problÃ¨me,
-envoyez Ã§a Ã  delroth@gmail.com, mais soyez prÃ©venu que Ã§a sera
+DISCLAIMER: L'équipe de Prologin n'assurera *PAS* de support pour
+l'installation ou la configuration de Stechec. Même en insistant,
+on vous le promet. À la limite, si vous avez un problème,
+envoyez ça à delroth@gmail.com, mais soyez prévenu que ça sera
 en fonction de ma motivation.
 
 = Guide d'installation de stechec =
 
-== RÃ©cupÃ©rer les sources ==
+== Récupérer les sources ==
 
-Une tarball des sources de stechec est rÃ©cupÃ©rable Ã  l'adresse
+Une tarball des sources de stechec est récupérable à l'adresse
 suivante :
 
     http://delroth.alwaysdata.net/stechec/stechec-2009.tar.bz2
 
-DÃ©compressez cette archive dans un dossier, que je nommerai Ã 
-prÃ©sent SRCDIR.
+Décompressez cette archive dans un dossier, que je nommerai à
+présent SRCDIR.
 
 == Compilation ==
 
-Allez dans le rÃ©pertoire SRCDIR (`cd SRCDIR`). L'Ã©tape suivante
-est de gÃ©nÃ©rer le script de configuration du build system : pour
+Allez dans le répertoire SRCDIR (`cd SRCDIR`). L'étape suivante
+est de générer le script de configuration du build system : pour
 cela, lancez la commande suivante :
 
     ./bootstrap
 
-Ignorez les Ã©ventuels warning. Ce script a normalement gÃ©nÃ©rÃ© un
-script exÃ©cutable appelÃ© configure.
+Ignorez les éventuels warning. Ce script a normalement généré un
+script exécutable appelé configure.
 
-Il vous faut ensuite choisir le dossier oÃ¹ stechec sera installÃ©.
+Il vous faut ensuite choisir le dossier où stechec sera installé.
 Je vous conseille de le mettre dans sa propre arborescence dans
-par exemple `/opt/stechec` pour ne pas le mÃ©langer avec le reste
-du systÃ¨me. Nous nommerons le dossier oÃ¹ vous souhaitez
+par exemple `/opt/stechec` pour ne pas le mélanger avec le reste
+du système. Nous nommerons le dossier où vous souhaitez
 installer stechec PREFIX. Lancez la commande suivante pour
 configurer le build system :
 
     ./configure --disable-documentation --prefix=PREFIX
 
-Il est dÃ©conseillÃ© de compiler la documentation car elle est
-inutile, demande beaucoup de dÃ©pendances pas forcÃ¨ment installeÃ©s
-comme Doxygen ou LaTeX, et provoque des problÃ¨mes Ã  la
+Il est déconseillé de compiler la documentation car elle est
+inutile, demande beaucoup de dépendances pas forcèment installeés
+comme Doxygen ou LaTeX, et provoque des problèmes à la
 compilation.
 
-Si le script se termine bien, les derniÃ¨res lignes affichÃ©es
-ressembleront Ã  cela :
+Si le script se termine bien, les dernières lignes affichées
+ressembleront à cela :
 
      ---{ stechec 3.2.3 }---
 
@@ -56,12 +56,12 @@ ressembleront Ã  cela :
        Building with paragui:   no
        Generating doc:          no
 
-Si une erreur a eu lieu, cela vient probablement d'une dÃ©pendance
-manquante. Regardez le message d'erreur et dÃ©duisez-en la
-bibliothÃ¨que qu'il vous manque. Si elle semble installÃ©e,
-vÃ©rifiez ensuite que les paquets -dev contenant les fichiers
-de dÃ©veloppement le sont aussi. Enfin, regardez si la
-bibliothÃ¨que est installÃ©e dans un chemin standard : si non,
+Si une erreur a eu lieu, cela vient probablement d'une dépendance
+manquante. Regardez le message d'erreur et déduisez-en la
+bibliothèque qu'il vous manque. Si elle semble installée,
+vérifiez ensuite que les paquets -dev contenant les fichiers
+de développement le sont aussi. Enfin, regardez si la
+bibliothèque est installée dans un chemin standard : si non,
 renseignez son chemin avec les options --with-xxx=chemin du
 script configure (tapez `./configure --help` pour en obtenir la
 liste). Vous pouvez relancer le script configure autant de fois
@@ -69,8 +69,8 @@ que vous le souhaitez, profitez-en !
 
 Une fois la configuration faite sans erreurs, vous pouvez lancer
 la compilation avec la commande `make` puis prier pour qu'aucune
-erreur n'ait lieu. Si la compilation s'arrÃªte Ã  cause d'une
-erreur, vous n'avez pas de chance. Cette Ã©tape se termine
+erreur n'ait lieu. Si la compilation s'arrête à cause d'une
+erreur, vous n'avez pas de chance. Cette étape se termine
 normalement par `make` outputtant les lignes suivantes :
 
     make[3]: Leaving directory `SRCDIR/prologin'
@@ -80,13 +80,13 @@ normalement par `make` outputtant les lignes suivantes :
     make[2]: Leaving directory `SRCDIR'
     make[1]: Leaving directory `SRCDIR'
 
-== Installation des programmes fraichement compilÃ©s ==
+== Installation des programmes fraichement compilés ==
 
-Il suffit Ã  priori de lancer la commande `make install` qui
+Il suffit à priori de lancer la commande `make install` qui
 s'occupera de tout :) . N'oubliez pas de lancer cette commande
-avec les droits appropriÃ©s selon le PREFIX oÃ¹ vous installez
-Ã§a. Encore une fois, si Ã§a se termine correctement, les derniÃ¨res
-lignes affichÃ©es seront :
+avec les droits appropriés selon le PREFIX où vous installez
+ça. Encore une fois, si ça se termine correctement, les dernières
+lignes affichées seront :
 
     make[2]: Nothing to be done for `install-exec-am'.
     make[2]: Nothing to be done for `install-data-am'.
@@ -95,44 +95,44 @@ lignes affichÃ©es seront :
 
 == Test de l'interface graphique de visualisation ==
 
-Pour voir si l'installation a fonctionnÃ©, nous allons tester
+Pour voir si l'installation a fonctionné, nous allons tester
 l'interface de visualisation. Elle n'est accessible que si vous
-avez installÃ© stechec avec le support de la SDL (activÃ© par
-dÃ©faut) et nÃ©cessite un serveur X (je suppose que c'Ã©tait
-Ã©vident). Cette interface permet de tester vos champions et de
-voir en temps rÃ©el comment ils se comportent. Il nous deux
-Ã©lÃ©ments pour tester cela :
+avez installé stechec avec le support de la SDL (activé par
+défaut) et nécessite un serveur X (je suppose que c'était
+évident). Cette interface permet de tester vos champions et de
+voir en temps réel comment ils se comportent. Il nous deux
+éléments pour tester cela :
  * un champion
  * un fichier de configuration pour stechec
  * une map pour tester le jeu
 
 Avant tout, il faut configurer le PATH pour dire d'aller chercher
-les exÃ©cutables de stechec lÃ  oÃ¹ ils sont. Cela se fait trÃ¨s
+les exécutables de stechec là où ils sont. Cela se fait très
 simplement via une commande :
 
     export PATH="PREFIX:$PATH"
 
-En remplaÃ§ant PREFIX par le chemin qui va bien, comme d'habitude.
-Cette commande est Ã  lancer dans chaque console dans laquelle
-vous voudrez lancer une commande relative Ã  stechec. Vous pouvez
-Ã©galement rajouter cette commande dans le fichier de
+En remplaçant PREFIX par le chemin qui va bien, comme d'habitude.
+Cette commande est à lancer dans chaque console dans laquelle
+vous voudrez lancer une commande relative à stechec. Vous pouvez
+également rajouter cette commande dans le fichier de
 configuration de votre shell, comme `~/.bashrc` par exemple.
 
-Pour gÃ©nÃ©rer un squelette de champion, lancez ensuite la commande
+Pour générer un squelette de champion, lancez ensuite la commande
 suivante :
 
     generator player prolo2009 PLAYERDIR
 
-En remplacant PLAYERDIR par le chemin vers le dossier oÃ¹ vous
-souhaitez stocker votre champion. Le dossier a normalement Ã©tÃ©
-crÃ©Ã© et contient un sous-dossier pour chaque langage supportÃ©
+En remplacant PLAYERDIR par le chemin vers le dossier où vous
+souhaitez stocker votre champion. Le dossier a normalement été
+créé et contient un sous-dossier pour chaque langage supporté
 par stechec. Rentrez dans le sous-dossier `python` (juste pour
-tester, Ã  priori Ã§a marche dans les autres aussi) et lancez la
+tester, à priori ça marche dans les autres aussi) et lancez la
 compilation du champion avec un `make`. La compilation devrait
-bien se passer et vous devriez obtenir une bibliothÃ¨que nommÃ©e
-`champion.so` qui est votre champion compilÃ©.
+bien se passer et vous devriez obtenir une bibliothèque nommée
+`champion.so` qui est votre champion compilé.
 
-CrÃ©Ã©ons maintenant un fichier de configuration pour tester tout
+Crééons maintenant un fichier de configuration pour tester tout
 cela. Remplacez les chemins dans ce fichier de configuration
 d'exemple, que nous nommerons `config.ini` :
 
@@ -170,7 +170,7 @@ d'exemple, que nous nommerons `config.ini` :
     max_turn=14
     map=test.map
 
-Occupons nous maintenant du fichier test.map rÃ©fÃ©rencÃ© dans la
+Occupons nous maintenant du fichier test.map référencé dans la
 configuration. Mettez-y le contenu suivant :
 
     14
@@ -190,65 +190,65 @@ configuration. Mettez-y le contenu suivant :
     14
 
 Vous pouvez maintenant normalement tester l'interface graphique
-avec la commande `run config.ini`. Une fenÃªtre devrait s'ouvrir
-avec des choses dedans. Appuyez un nombre Ã©levÃ© de fois sur la
-touche entrÃ©e pour vÃ©rifier que les tours avancent bien. Si rien
-ne se passe, il y a probablement eu une erreur, qui est affichÃ©e
-dans la console depuis laquelle vous avez lancÃ© la commande. Si
+avec la commande `run config.ini`. Une fenêtre devrait s'ouvrir
+avec des choses dedans. Appuyez un nombre élevé de fois sur la
+touche entrée pour vérifier que les tours avancent bien. Si rien
+ne se passe, il y a probablement eu une erreur, qui est affichée
+dans la console depuis laquelle vous avez lancé la commande. Si
 cela marche, la partie client de stechec est correctement
-installÃ©e, fÃ©licitations :o) .
+installée, félicitations :o) .
 
 == Configuration de la partie serveur de stechec ==
 
-Cette partie serveur n'est nÃ©cessaire que si vous avez
-l'intention d'organiser des matchs automatisÃ©s entre diffÃ©rents
+Cette partie serveur n'est nécessaire que si vous avez
+l'intention d'organiser des matchs automatisés entre différents
 champions et que l'interface graphique ne suffit donc plus. Elle
 permet entre autre de lancer des classements avec des
 affrontements entre des centaines de champions. Par contre, elle
-est plus difficile Ã  installer que la partie standalone et
-nÃ©cessite pas mal d'autres dÃ©pendances.
+est plus difficile à installer que la partie standalone et
+nécessite pas mal d'autres dépendances.
 
-=== PrÃ©requis ===
+=== Prérequis ===
 
 Pour faire fonctionner la partie serveur de stechec, quelques
-prÃ©requis sont nÃ©cessaires :
- * Un serveur MySQL correctement installÃ© et acceptant les
+prérequis sont nécessaires :
+ * Un serveur MySQL correctement installé et acceptant les
    connexions en TCP ;
- * Un serveur Apache avec PHP5 et PHP-MySQL configurÃ© en
+ * Un serveur Apache avec PHP5 et PHP-MySQL configuré en
    `error_reporting = E_ALL & ~E_NOTICE`, `register_globals = On`
    , `open_basedir = ` et `safe_mode = Off` ;
- * Un dossier partagÃ© par tous les endroits oÃ¹ le lancement
+ * Un dossier partagé par tous les endroits où le lancement
    de matchs aura lieu + le serveur web pour y mettre les
    champions et les logs. Si vous comptez mettre stechec sur un
    seul serveur, un simple dossier suffira. Si vous comptez le
    distribuer sur plusieurs machines, il vous faudra un partage
-   NFS montÃ© au mÃªme endroit sur toutes les machines (ou un
-   partage sshfs, mais c'est pas du tout testÃ©) ;
- * Un groupe unix pour les comptes qui doivent accÃ¨der
+   NFS monté au même endroit sur toutes les machines (ou un
+   partage sshfs, mais c'est pas du tout testé) ;
+ * Un groupe unix pour les comptes qui doivent accèder
    aux fichiers communs. Faites en sorte que ce groupe ait le
-   mÃªme GID sur toutes les machines ! Rajoutez Ã  ce groupe
-   l'utilisateur utilisÃ© par Apache et votre utilisateur pour
-   que vous puissiez bidouiller plus facilement. Donnez Ã  ce
+   même GID sur toutes les machines ! Rajoutez à ce groupe
+   l'utilisateur utilisé par Apache et votre utilisateur pour
+   que vous puissiez bidouiller plus facilement. Donnez à ce
    groupe l'ownership du dossier commun et rendez ce dossier
-   commun lisible et Ã©crivable par les membres du groupe.
+   commun lisible et écrivable par les membres du groupe.
 
-Nous supposerons que l'utilisateur utilisÃ© par Apache est
+Nous supposerons que l'utilisateur utilisé par Apache est
 `www-data`, que le dossier racine du serveur web est `/var/www`,
-que le dossier partagÃ© est `/mnt/shared`, que le groupe unix est
-`stechec` et que le serveur MySQL se trouve sur un serveur nommÃ©
-`sqlserver` (qui peut Ãªtre localhost).
+que le dossier partagé est `/mnt/shared`, que le groupe unix est
+`stechec` et que le serveur MySQL se trouve sur un serveur nommé
+`sqlserver` (qui peut être localhost).
 
 === Importation de la base SQL ===
 
-Un dump de la base SQL, nommÃ©e `stechec`, se trouve dans le
+Un dump de la base SQL, nommée `stechec`, se trouve dans le
 dossier `SRCDIR/prologin/www` sous le nom de `stechec.sql`.
-Importez ce dump en exÃ©cutant la commande suivante :
+Importez ce dump en exécutant la commande suivante :
 
     mysql -h sqlserver -u root -p < stechec.sql
 
 MySQL vous demandera le password du compte root, donnez lui bien
-gentiment. Nous allons maintenant nous connecter pour crÃ©er un
-compte `stechec` qui a uniquement accÃ¨s Ã  la base que nous
+gentiment. Nous allons maintenant nous connecter pour créer un
+compte `stechec` qui a uniquement accès à la base que nous
 venons d'importer :
 
     $ mysql -h localhost -u root -p
@@ -269,46 +269,46 @@ venons d'importer :
 
 Remplacez bien entendu `sqlpass` par la valeur de votre choix.
 Pour la suite des explications, nous garderons ce password comme
-mot de passe SQL. La base SQL est maintenant prÃªte, passons Ã  la
-suite des opÃ©rations.
+mot de passe SQL. La base SQL est maintenant prête, passons à la
+suite des opérations.
 
 === Configuration du main server et des meta servers ===
 
 Un peu de vocabulaire stechecien d'abord :
  * Le main server est celui qui coordonne le lancement des
    matchs et qui communique avec le site et les meta servers ;
- * Le meta server est un noeud d'exÃ©cution des matchs qui va
-   rÃ©cupÃ©rer les donnÃ©es des champions dans le dossier commun
-   et lancer les matchs pour en donner le rÃ©sultat au main
+ * Le meta server est un noeud d'exécution des matchs qui va
+   récupérer les données des champions dans le dossier commun
+   et lancer les matchs pour en donner le résultat au main
    server. Il peut y en avoir autant que vous voulez, et plus il
-   y en a, plus les classements seront rapides Ã  effectuer.
+   y en a, plus les classements seront rapides à effectuer.
 
-Ils sont configurÃ©s tous deux via un fichier de configuration,
-placÃ© dans PREFIX/etc/stechec.yml (fichier lisible uniquement
-par le propriÃ©taire, mais de toute faÃ§on les serveurs doivent
-Ãªtre lancÃ©s obligatoirement en root). Dedans, quelques paramÃ¨tres
-sont Ã  modifier :
- * L'IP de la base de donnÃ©es, oÃ¹ vous pouvez mettre `sqlserv` Ã 
+Ils sont configurés tous deux via un fichier de configuration,
+placé dans PREFIX/etc/stechec.yml (fichier lisible uniquement
+par le propriétaire, mais de toute façon les serveurs doivent
+être lancés obligatoirement en root). Dedans, quelques paramètres
+sont à modifier :
+ * L'IP de la base de données, où vous pouvez mettre `sqlserv` à
    la place de `127.0.0.1` si le serveur MySQL est sur une autre
    machine ;
- * Le login / password de la base de donnÃ©es que vous avez rÃ©glÃ©s
+ * Le login / password de la base de données que vous avez réglés
    plus haut ;
  * Le `main_host` du `meta_server` qui est l'IP ou l'hostname du
    main server ;
- * Le `contest_path` qui doit Ãªtre l'emplacement du dossier
-   partagÃ© (en NFS ou pas, ne touchez _pas_ Ã  la mÃ©thode, c'est
-   trÃ¨s bien comme Ã§a).
+ * Le `contest_path` qui doit être l'emplacement du dossier
+   partagé (en NFS ou pas, ne touchez _pas_ à la méthode, c'est
+   très bien comme ça).
 
-Les autres paramÃ¨tres devraient Ãªtre corrects. Vous pouvez dÃ¨s
-maintenant lancer le main server lÃ  oÃ¹ il doit Ãªtre lancÃ© avec la
+Les autres paramètres devraient être corrects. Vous pouvez dès
+maintenant lancer le main server là où il doit être lancé avec la
 simplissime commande suivante (en root) :
 
     # main_server -c PREFIX/etc/stechec.yml
     [computer] init ok
     [match] init ok
 
-Vous pouvez Ã©galement lancer un meta server pour voir si Ã§a
-fonctionne bien (en root Ã©galement) :
+Vous pouvez également lancer un meta server pour voir si ça
+fonctionne bien (en root également) :
 
     # meta_server -c PREFIX/etc/stechec.yml
     meta_server: [cx] connected to main_server
@@ -319,21 +319,21 @@ Le main server devrait afficher ceci dans sa console :
     [computer] ping from IP:PORT, slot used: 0, total aval: 10
     [computer] check expire: 1 running computer
 
-Ã‡a, c'est fait. Laissez ces deux serveurs tourner pour continuer
+Ça, c'est fait. Laissez ces deux serveurs tourner pour continuer
 les tests du site web plus tard.
 
-=== GÃ©nÃ©ration des Makefile serveur pour la compilation ===
+=== Génération des Makefile serveur pour la compilation ===
 
-Et oui, les champions des candidats Ã©tant recompilÃ©s cÃ´tÃ© serveur
+Et oui, les champions des candidats étant recompilés côté serveur
 il faut bien entendu tout un jeu de Makefiles pour faire le
-boulot. Et Ã§a ne sont pas les mÃªmes que cÃ´tÃ© client, mais ils
-peuvent eux aussi Ãªtre gÃ©nÃ©rÃ©s de maniÃ¨re trÃ¨s aisÃ©e :
+boulot. Et ça ne sont pas les mêmes que côté client, mais ils
+peuvent eux aussi être générés de manière très aisée :
 
     generator server prolo2009 /mnt/shared/makefile
 
 N'oubliez bien entendu pas de remplacer 
 
-Une fois cette Ã©tape faite, vous pouvez passer Ã  l'installation
+Une fois cette étape faite, vous pouvez passer à l'installation
 du site web.
 
 === Installation du site web ===
@@ -341,27 +341,27 @@ du site web.
 Copiez le contenu de `SRCDIR/prologin/www` dans `/var/www`. Il
 faut ensuite modifier les deux fichiers de configuration
 importants :
- * Dans `/var/www/include/passwords.php`, rÃ¨glez l'hostname, le
+ * Dans `/var/www/include/passwords.php`, règlez l'hostname, le
    login et le password du serveur MySQL ;
- * Dans `/var/www/include/config.php`, rÃ¨glez le chemin vers le
+ * Dans `/var/www/include/config.php`, règlez le chemin vers le
    dossier commun.
 
-et accÃ©dez au serveur web via votre navigateur favori. Le
+et accédez au serveur web via votre navigateur favori. Le
 formulaire de connexion devrait normalement apparaitre. S'il est
-plein d'erreurs, vÃ©rifiez la configuration de PHP dans la partie
-PrÃ©requis. Deux utilisateurs sont crÃ©Ã©s par dÃ©faut :
+plein d'erreurs, vérifiez la configuration de PHP dans la partie
+Prérequis. Deux utilisateurs sont créés par défaut :
  * login: prolo / password: pass (organisateur)
  * login: cand / password: pass (candidat)
 
-Pour en rajouter d'autres, amusez vous avec la base de donnÃ©es.
+Pour en rajouter d'autres, amusez vous avec la base de données.
 
-Il faut maintenant, en temps qu'organisateur, crÃ©er un jeu pour
+Il faut maintenant, en temps qu'organisateur, créer un jeu pour
 les champions. Connectez vous avec le compte organisateur, puis
-cliquez sur Â« Jeux Â» dans le menu du haut, puis sur Â« CrÃ©er Â».
-Remplissez les champs indiquÃ©s de la maniÃ¨re suivante :
+cliquez sur « Jeux » dans le menu du haut, puis sur « Créer ».
+Remplissez les champs indiqués de la manière suivante :
  * Nom : Prologin 2009
- * Description : L'Ã©dition 2009 de Prologin
- * Nom du rÃ©pertoire : game
+ * Description : L'édition 2009 de Prologin
+ * Nom du répertoire : game
  * Nom de la lib : simcity
  * Nombre de champion max : 3
  * Server: argument constant : foo -map PREFIX/share/stechec/global.map -turn 15
@@ -369,30 +369,30 @@ Remplissez les champs indiquÃ©s de la maniÃ¨re suivante :
 Puis validez le formulaire :) .
 
 Copiez ensuite une map dans PREFIX/share/global.map (comme par
-exemple la map que je vous ai donnÃ© plus tÃ´t dans ce fichier).
+exemple la map que je vous ai donné plus tôt dans ce fichier).
 
-Choisissez ensuite le jeu que vous venez de crÃ©er dans la liste
+Choisissez ensuite le jeu que vous venez de créer dans la liste
 qui s'affiche dans le navigateur, et sur la page qui s'affiche,
-rÃ©glez le statut du projet sur Â« Valide Â», puis validez le
+réglez le statut du projet sur « Valide », puis validez le
 formulaire.
 
 Vous pouvez maintenant uploader la tarball d'un champion en
-allant dans le menu Â« Champion Â» et en ajoutant votre champion
+allant dans le menu « Champion » et en ajoutant votre champion
 comme vous l'avez fait pendant la finale (`make tar` dans le
 dossier du champion puis upload sur le site). Allez par exemple
-dans PLAYERDIR/python, faites `make tar` et crÃ©ez un champion
-sur le site en utilisant la tarball venant d'Ãªtre crÃ©ee dans le
+dans PLAYERDIR/python, faites `make tar` et créez un champion
+sur le site en utilisant la tarball venant d'être créee dans le
 dossier PLAYERDIR/python sous le nom de `prologin.tgz`. Attendez
 une dizaine de secondes et cliquez dans le menu sur la page
-Â« Champion Â». Le statut de votre champion devrait Ãªtre indiquÃ©
-comme Â« Compilable Â».
+« Champion ». Le statut de votre champion devrait être indiqué
+comme « Compilable ».
 
-LanÃ§ons maintenant un match de test. Allez sur la page Â« Match Â»
-et dans le champ Â« Champions participant Â», indiquez trois fois
-le numÃ©ro de votre champion (qui est dans le tableau juste en
-dessous du formulaire) sÃ©parÃ© par des :, comme par exemple
+Lançons maintenant un match de test. Allez sur la page « Match »
+et dans le champ « Champions participant », indiquez trois fois
+le numéro de votre champion (qui est dans le tableau juste en
+dessous du formulaire) séparé par des :, comme par exemple
 `1:1:1`. Attendez une nouvelle fois quelques secondes, et
-cliquez dans le menu sur la page Â« Match Â». L'Ã©tat du match
-devrait Ãªtre Â« RÃ©alisÃ© Â». Si tout cela marche, fÃ©licitations :
-votre stechec fonctionne correctement et vous pouvez dÃ¨s Ã 
-prÃ©sent vous amuser avec.
+cliquez dans le menu sur la page « Match ». L'état du match
+devrait être « Réalisé ». Si tout cela marche, félicitations :
+votre stechec fonctionne correctement et vous pouvez dès à
+présent vous amuser avec.
