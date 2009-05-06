@@ -195,7 +195,7 @@ avec des choses dedans. Appuyez un nombre élevé de fois sur la
 touche entrée pour vérifier que les tours avancent bien. Si rien
 ne se passe, il y a probablement eu une erreur, qui est affichée
 dans la console depuis laquelle vous avez lancé la commande. Si
-cela marche, la partie client de stechec est correctement
+cela marche, la partie standalone de stechec est correctement
 installée, félicitations :o) .
 
 == Configuration de la partie serveur de stechec ==
