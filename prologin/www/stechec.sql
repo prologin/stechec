@@ -21,7 +21,7 @@ CREATE TABLE `champion` (
   `status` tinyint(4) NOT NULL default '0',
   `level` tinyint(4) NOT NULL default '0',
   `score_training` int(11) NOT NULL default '0',
-  `score_tournament` int(11) NOT NULL default '0'
+  `score_tournament` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 
