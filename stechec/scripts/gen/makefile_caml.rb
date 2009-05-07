@@ -25,7 +25,7 @@ CINTOBJ  = interface.o $(LIMEOBJ)
 #####################
 # sorry, can't use ocamlopt, it doesn't work
 OCAMLC 	= ocamlc
-LIBS    = -L`ocamlc -where` -lcamlrun -lcurses -lm
+LIBS    = -L`ocamlc -where` -lcamlrun_shared -lcurses -lm
 GCC 	= gcc
 RM 	= /bin/rm -f
 
