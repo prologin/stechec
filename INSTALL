@@ -18,16 +18,7 @@ présent SRCDIR.
 
 == Compilation ==
 
-Allez dans le répertoire SRCDIR (`cd SRCDIR`). L'étape suivante
-est de générer le script de configuration du build system : pour
-cela, lancez la commande suivante :
-
-    ./bootstrap
-
-Ignorez les éventuels warning. Ce script a normalement généré un
-script exécutable appelé configure.
-
-Il vous faut ensuite choisir le dossier où stechec sera installé.
+Il vous d'abord ensuite choisir le dossier où stechec sera installé.
 Je vous conseille de le mettre dans sa propre arborescence dans
 par exemple `/opt/stechec` pour ne pas le mélanger avec le reste
 du système. Nous nommerons le dossier où vous souhaitez
