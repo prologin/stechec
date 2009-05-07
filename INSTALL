@@ -110,7 +110,7 @@ Avant tout, il faut configurer le PATH pour dire d'aller chercher
 les exécutables de stechec là où ils sont. Cela se fait très
 simplement via une commande :
 
-    export PATH="PREFIX:$PATH"
+    export PATH="PREFIX/bin:$PATH"
 
 En remplaçant PREFIX par le chemin qui va bien, comme d'habitude.
 Cette commande est à lancer dans chaque console dans laquelle
