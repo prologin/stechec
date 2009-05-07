@@ -59,7 +59,7 @@ CJH	 	= $(CROSS)gcjh
 OCAMLC 		= $(CROSS)ocamlc
 LD		= $(CROSS)ld
 
-OCAML_LIBS    = -L`ocamlc -where` -lcamlrun_shared -lcurses -lm
+OCAML_LIBS    = -L`ocamlc -where` -Wl,-R`ocamlc -where` -lcamlrun_shared -lcurses -lm
 OCAML_CFLAGS  = -O2 -I`ocamlc -where`
 
 
