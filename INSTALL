@@ -100,7 +100,7 @@ l'interface de visualisation. Elle n'est accessible que si vous
 avez installé stechec avec le support de la SDL (activé par
 défaut) et nécessite un serveur X (je suppose que c'était
 évident). Cette interface permet de tester vos champions et de
-voir en temps réel comment ils se comportent. Il nous deux
+voir en temps réel comment ils se comportent. Il nous faut trois
 éléments pour tester cela :
  * un champion
  * un fichier de configuration pour stechec
