@@ -17,7 +17,7 @@ class CSharpMakefile
 # Macro Definitions #
 #####################
 CXX 	= g++
-MCS	= gmcs </dev/null
+MCS	= MONO_SHARED_DIR=/tmp gmcs </dev/null # Mono need a writable directory for WAPI, and needs an stdin
 LIMEOBJ ?= ../includes/main.o
 OBJS 	= interface.o $(LIMEOBJ)
 CS	= $(SRC) api.cs
