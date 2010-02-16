@@ -1,0 +1,60 @@
+conf:
+  package_name: prolo2010
+  client_rule_lib: toons
+  server_rule_lib: toons
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: \subsection{Constantes}
+  - 
+    cst_name: TAILLE_DEPART
+    cst_val: 25
+    cst_comment: Taille de départ du terrain.
+
+structs:
+  - doc_extra: \subsection{Structures}
+  -
+    str_name: position
+    str_summary: Représente une position sur le terrain du jeu.
+    str_fields:
+      - [x, int, coordonnée X]
+      - [y, int, coordonnée Y]
+  -
+    str_name: infos_terrain
+    str_summary: Contient les informations sur le terrain du jeu.
+    str_fields:
+      - [taille, int, taille actuelle du terrain]
+      - [min_coord, int, coordonnée minimale en X ou en Y]
+      - [max_coord, int, coordonnée maximale en X ou en Y]
+
+enums:
+  - doc_extra: \subsection{Énumérations}
+  -
+    enum_name: erreur
+    enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action.
+    enum_fields:
+      - [ok, aucune erreur n'est survenue]
+      - [pas_une_unite, la position ne représente pas une unité]
+      - [pas_a_portee, la cible n'est pas à portée]
+      - [plus_de_pa, nombre maximal d'actions par tour dépassé]
+      - [deja_deplace, cette unité a déjà été déplacée]
+      - [deja_attaque, cette unité a déjà attaqué]
+      - [deja_spawn, une unité a déjà été spawn à ce tour]
+      - [pas_spawnable, cette unité n'est pas spawnable]
+      - [spawn_occupe, une unité est déjà présente sur le spawn]
+
+function:
+  - doc_extra: |
+     \subsection{Fonctions d'information}
+     Toutes ses fonctions peuvent renvoyer la constante HORS_TERRAIN quand
+     leurs arguments sont incorrects.
+     Ces fonctions (en incluant la fonction distance) prennent en comptent
+     toutes les actions que vous avez déjà effectuées au cours de votre phase
+     de tour de jeu.
+  -
+    fct_name: case_existe
+    fct_summary: Retourne un booléen représentant si la case existe. On considére qu'une case existe si ses coordonnées sont dans le terrain (on exclut dont les coordonnées négatives, inférieures à la coordonnée minimale et supérieures à la coordonnée maximale donnés par la fonction infos_carte.
+    fct_ret_type: bool
+    fct_arg:
+    - [pos, position, la position dont on veut tester l'existence]
