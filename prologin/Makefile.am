@@ -8,4 +8,5 @@ SUBDIRS += 					\
 	$(BUILD_prolo2006)			\
 	$(BUILD_prolo2007)			\
 	$(BUILD_prolo2008)			\
-	$(BUILD_prolo2009)
+	$(BUILD_prolo2009)			\
+	$(BUILD_prolo2010)
