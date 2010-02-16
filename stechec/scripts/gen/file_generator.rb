@@ -95,7 +95,7 @@ class CProto < FileGenerator
   def print_multiline_comment(str)
     return unless str
     @f.puts '/*!'
-    str.each {|s| @f.print '** ', s }
+    str.each_line {|s| @f.print '** ', s }
     @f.puts "", "*/"
   end
 

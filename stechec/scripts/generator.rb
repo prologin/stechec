@@ -48,7 +48,7 @@ end
 
 
 require 'yaml'
-require 'ftools'
+require 'fileutils'
 require 'pathname'
 require 'conf'
 
