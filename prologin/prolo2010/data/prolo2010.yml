@@ -17,12 +17,14 @@ structs:
   -
     str_name: position
     str_summary: Représente une position sur le terrain du jeu.
+    str_tuple: yes
     str_fields:
       - [x, int, coordonnée X]
       - [y, int, coordonnée Y]
   -
     str_name: infos_terrain
     str_summary: Contient les informations sur le terrain du jeu.
+    str_tuple: no
     str_fields:
       - [taille, int, taille actuelle du terrain]
       - [min_coord, int, coordonnée minimale en X ou en Y]
