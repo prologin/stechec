@@ -320,9 +320,10 @@ class CxxProto < CProto
   def print_empty_arg
   end
 
-  def cxx_proto(fn)
+  def cxx_proto(fn, name_prefix = "", modifiers = "")
     buf = ""
-    buf += cxx_type(fn.ret) + " " + "api_" + fn.name + "("
+    modifiers = modifiers + " " if modifiers != ""
+    buf += modifiers + cxx_type(fn.ret) + " " + prefix + fn.name + "("
     args = fn.args.map { |arg| "#{cxx_type(arg.type)} #{arg.name}" }
     buf += args.join(", ") + ")"
     buf
