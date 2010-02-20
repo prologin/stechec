@@ -197,18 +197,16 @@ to the script file : gen/" + script
         "fct_name" => "init_game"}, 
       {"fct_summary" => "Fonction appelee a la fin de la partie",
         "fct_name" => "end_game"},
-
-# Valid until prolo2008:
-#      {"fct_summary" => "Fonction appele a chaque tour", 
-#        "fct_name" => "play_turn"},
+      {"fct_summary" => "Fonction appele a chaque tour", 
+        "fct_name" => "play_turn"},
 
 # Only used for prolo2009:
-      {"fct_summary" => "Fonction appelee a chaque phase de jeu", 
-       "fct_name" => "jouer"},
-      {"fct_summary" => "Fonction appelee a chaque phase d'enchere", 
-       "fct_name" => "enchere"},
-      {"fct_summary" => "Fonction appelee a chaque phase de placement de monument", 
-       "fct_name" => "placement"},
+#      {"fct_summary" => "Fonction appelee a chaque phase de jeu", 
+#       "fct_name" => "jouer"},
+#      {"fct_summary" => "Fonction appelee a chaque phase d'enchere", 
+#       "fct_name" => "enchere"},
+#      {"fct_summary" => "Fonction appelee a chaque phase de placement de monument", 
+#       "fct_name" => "placement"},
     ].each do |x|
       x['fct_arg'] = [] unless x['fct_arg']
       x['fct_ret_type'] = 'void' unless x['fct_ret_type']
