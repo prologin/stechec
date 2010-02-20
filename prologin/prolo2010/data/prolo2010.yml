@@ -12,30 +12,30 @@ constant:
     cst_val: 25
     cst_comment: Taille de départ du terrain.
 
-structs:
+struct:
   - doc_extra: \subsection{Structures}
   -
     str_name: position
     str_summary: Représente une position sur le terrain du jeu.
     str_tuple: yes
-    str_fields:
+    str_field:
       - [x, int, coordonnée X]
       - [y, int, coordonnée Y]
   -
     str_name: infos_terrain
     str_summary: Contient les informations sur le terrain du jeu.
     str_tuple: no
-    str_fields:
+    str_field:
       - [taille, int, taille actuelle du terrain]
       - [min_coord, int, coordonnée minimale en X ou en Y]
       - [max_coord, int, coordonnée maximale en X ou en Y]
 
-enums:
+enum:
   - doc_extra: \subsection{Énumérations}
   -
     enum_name: erreur
     enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action.
-    enum_fields:
+    enum_field:
       - [ok, aucune erreur n'est survenue]
       - [pas_une_unite, la position ne représente pas une unité]
       - [pas_a_portee, la cible n'est pas à portée]
