@@ -18,7 +18,7 @@ class CxxFileGenerator < CxxProto
       @f.puts cxx_proto(fn, "", "static inline")
       @f.puts "{"
       @f.print "  "
-      unless fn.ret.is_simple? and fn.ret.name == "void"
+      unless fn.ret.is_nil?
         @f.print "return "
       end
      @f.print "api_", fn.name, "("
