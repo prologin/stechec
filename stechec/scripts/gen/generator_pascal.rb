@@ -12,14 +12,39 @@
 
 class PascalFileGenerator < FileGenerator
   def initialize
-    @lang = "pascal"
-    @types = {
-      'void' => '',
-      'int' => 'LongInt',
-      'bool' => 'LongBool'
-    }
+    super
+    @lang = "C++ (for pascal interface)"
   end
 
+  def conv_type(type)
+    if type.is_simple? and type.name = "bool"
+      "boolean"
+    else
+      type.name
+    end
+  end
+
+  def build_enums
+    for_each_enum do |x|
+      @f.puts "type #{x['enum_name']} =\n  (\n"
+      x['enum_field'].each do |f|
+        name = f[0].downcase
+        @f.print "    ", name, ", " 
+        print_comment (" <- "+ f[1])
+      end
+      @f.print "  );\n\n"
+    end
+  end
+  def build_structs
+    for_each_struct do |x|
+      @f.puts "type #{x['str_name']} =\n  record\n"
+      x['str_field'].each do |f|
+        @f.print "    #{f[0]} : #{f[1]}; "
+        print_comment (" <- " + f[2])
+      end
+      @f.print "  end;\n\n"
+    end
+  end
   def print_comment(str)
     @f.puts '{ ' + str + ' }' if str
   end
@@ -37,24 +62,19 @@ class PascalFileGenerator < FileGenerator
     @f.print " =  ", val, ";"
   end
 
-  def print_proto(name, ret_type, args)
-    if ret_type == nil
+  def print_proto(fn)
+    if fn.ret.is_nil?
       @f.print "procedure"
     else
       @f.print "function"
     end
-    @f.print " ", name, "("
-    if args != nil and args != []
-      lastelt = args.pop
-      args.each do |arg|
-        @f.print arg[0], " : ", conv_type(arg[1]), "; "
-      end
-      @f.print lastelt[0], " : ", conv_type(lastelt[1])
-      args.push(lastelt)
+    @f.print " ", fn.name
+    args = fn.args.map do |arg|
+      "#{arg.name} : #{ conv_type(arg.type) }"
     end
-    @f.print ")"
-    if ret_type != nil
-      @f.print " : ", conv_type(ret_type)
+    @f.print "(#{args.join("; ")})"
+    if not fn.ret.is_nil?
+      @f.print " : ", conv_type(fn.ret)
     end
     @f.print ";"
   end
@@ -87,8 +107,10 @@ include ../includes/makepascal
     print_banner "generator_pascal.rb"
     @f.puts "const\n"
     build_constants
-    for_each_fun do |x, y, z|
-      print_proto(x, y, z);
+    build_enums
+    build_structs
+    for_each_fun do |f|
+      print_proto(f);
       @f.puts " cdecl; external;"
     end
     @f.puts "implementation", "", "begin", "end."
@@ -99,19 +121,18 @@ include ../includes/makepascal
     #
     @f = File.open(@path + (@source_file + '.pas'), 'w')
     @f.puts "library champion;","", "uses prolo_interface;", ""
-    for_each_user_fun do |x, y, z|
-      print_proto(x, y, z)
+    for_each_user_fun do |f|
+      print_proto(f)
       @f.puts " cdecl; export;"
       @f.puts "begin", "\t(* fonction a completer *)", "end;"
     end
     @f.puts "", "exports"
-
-    # Valid until prolo2009
-    #@f.print ["init_game", "play_turn"].join(",\n")
-
-    # Valid for prolo2009
-    @f.print ["init_game", "end_game", "jouer", "enchere", "placement"].join(",\n")
-
+    v = false
+    for_each_user_fun false do |f|
+      if v then @f.print "," end
+      v = true
+      @f.print "  #{ f.name }"
+    end
     @f.print ";\n"
     @f.puts "", "begin", "end."
     @f.close

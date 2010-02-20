@@ -30,6 +30,14 @@ struct:
       - [min_coord, int, coordonnée minimale en X ou en Y]
       - [max_coord, int, coordonnée maximale en X ou en Y]
 
+  -
+    str_name: teststruct
+    str_summary: Une structure de test.
+    str_tuple: no
+    str_field:
+      - [err, erreur, une erreur]
+      - [errarr, erreur array, un tableau d'erreurs]
+      - [foolol, teststruct array, LOL c'est hard de le faire marcher]
 enum:
   - doc_extra: \subsection{Énumérations}
   -
@@ -60,3 +68,11 @@ function:
     fct_ret_type: bool
     fct_arg:
     - [pos, position, la position dont on veut tester l'existence]
+  -
+    fct_name: test_tableau
+    fct_summary: Prend un tableau en param
+    fct_ret_type: void
+    fct_arg:
+    - [test, int array, un tableau d'entiers]
+    - [test2, position array, une tableau de positions]
+    - [test3, teststruct array, un tableau de structures de test]
