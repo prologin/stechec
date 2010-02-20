@@ -66,15 +66,15 @@ def make_player
   end
 
   CFileGenerator.new.build
-  CSharpFileGenerator.new.build
-  CxxFileGenerator.new.build
-  PascalFileGenerator.new.build
-  CamlFileGenerator.new.build
-  JavaFileGenerator.new.build
-  HaskellFileGenerator.new.build
-  RubyFileGenerator.new.build
-  LuaFileGenerator.new.build
-  PythonFileGenerator.new.build
+#  CSharpFileGenerator.new.build
+#  CxxFileGenerator.new.build
+#  PascalFileGenerator.new.build
+#  CamlFileGenerator.new.build
+#  JavaFileGenerator.new.build
+#  HaskellFileGenerator.new.build
+#  RubyFileGenerator.new.build
+#  LuaFileGenerator.new.build
+#  PythonFileGenerator.new.build
 end
 
 
@@ -89,11 +89,11 @@ def make_includes
 
   # copy main.c and rules.ml into includes.
   if Pathname.new('files/main.c').exist?
-    File.copy 'files/main.c', install_path.to_s
-    File.copy 'files/rules.mk', install_path.to_s
+    FileUtils.cp 'files/main.c', install_path.to_s
+    FileUtils.cp 'files/rules.mk', install_path.to_s
   else
-    File.copy Pathname.new(PKGDATADIR) + 'files/main.c', install_path.to_s
-    File.copy Pathname.new(PKGDATADIR) + 'files/rules.mk', install_path.to_s
+    FileUtils.cp Pathname.new(PKGDATADIR) + 'files/main.c', install_path.to_s
+    FileUtils.cp Pathname.new(PKGDATADIR) + 'files/rules.mk', install_path.to_s
   end
 
   # these 4 are not needed anymore for client, it uses rules.mk
@@ -130,11 +130,11 @@ def make_server
 
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
-  File.cp((path + "main.c").to_s, (install_path + "stechec_lime.c").to_s)
-  File.cp((path + "forbidden_fun-c").to_s, install_path.to_s)
-  File.cp((path + "forbidden_fun-pascal").to_s, install_path.to_s)
-  File.cp((path + "forbidden_fun-java").to_s, install_path.to_s)
-  File.cp((path + "forbidden_fun-caml").to_s, install_path.to_s)
+  FileUtils.cp((path + "main.c").to_s, (install_path + "stechec_lime.c").to_s)
+  FileUtils.cp((path + "forbidden_fun-c").to_s, install_path.to_s)
+  FileUtils.cp((path + "forbidden_fun-pascal").to_s, install_path.to_s)
+  FileUtils.cp((path + "forbidden_fun-java").to_s, install_path.to_s)
+  FileUtils.cp((path + "forbidden_fun-caml").to_s, install_path.to_s)
 end
 
 # opens YAML file and parses it

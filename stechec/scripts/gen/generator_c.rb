@@ -13,24 +13,208 @@
 require "pathname"
 require "gen/file_generator"
 
-class CFileGenerator < CProto
+def c_type(type)
+  if type.is_simple? and type.name = "bool"
+    type.name = "int"
+    type
+  else
+    type
+  end
+end
 
-  def generate_header()
+def c_proto(fn)
+  # Returns the prototype of a C function
+  # WARNING: arrays are hard to handle in C...
+  buf = ""
+  if fn.ret.is_array?
+    rettype = "void"
+  else
+    rettype = c_type(fn.ret).name
+  end
+
+  buf += rettype + " " + fn.name + "("
+
+  # Handle arguments
+  args = []
+  fn.args.each do |arg|
+    if not arg.type.is_array?
+      type = c_type(arg.type)
+      args = args << "#{type.name} #{arg.name}"
+    else
+      args = args << "#{arg.type.type.name}* #{arg.name}_arr"
+      args = args << "size_t #{arg.name}_len"
+    end
+  end
+  if fn.ret.is_array?
+    args = args << "#{fn.ret.type.name}** ret_arr"
+    args = args << "size_t* ret_len"
+  end
+  if args.empty?
+    args = args << "void"
+  end
+  buf += args.join(", ")
+  buf + ")"
+end
+
+class CCxxFileGenerator < CxxProto
+  def initialize
+    super
+    @lang = "C++ (for C interface)"
+  end
+
+  def cxx_type(type)
+    # Returns the C++ type for the provided type.
+    # Only really useful for arrays.
+    if type.is_array?
+      "std::vector<#{type.type.name}>"
+    else
+      type.name
+    end
+  end
+
+  def cxx_proto(fn)
+    buf = ""
+    buf += cxx_type(fn.ret) + " " + "api_" + fn.name + "("
+    args = fn.args.map { |arg| "#{cxx_type(arg.type)} #{arg.name}" }
+    buf += args.join(", ") + ")"
+    buf
+  end
+
+  def generate_source
+    @f = File.open(@path + @source_file, 'w')
+    print_banner "generator_c.rb"
+    @f.puts <<-EOF
+#include "interface.hh"
+
+#include <cstring>
+
+// Utils
+template<typename T>
+void c_array_to_vector(T* tab, size_t len, std::vector<T>& vect)
+{
+  vect.reserve(len);
+  for (size_t i = 0; i < len; ++i)
+    vect.push_back(tab[i]);
+}
+
+extern "C" {
+EOF
+    for_each_fun do |fn|
+      @f.puts c_proto(fn)
+      @f.puts "{"
+      @f.print "  ", cxx_type(fn.ret), " ", "_retval;\n"
+
+      # Check if some of the arguments need conversion
+      fn.args.each do |arg|
+        if arg.type.is_array?
+          # Make a vector from the arr + len
+          arrname = arg.name + "_arr"
+          lenname = arg.name + "_len"
+          name = arg.name
+          @f.print "  ", cxx_type(arg.type), " ", name, ";\n"
+          @f.puts "c_array_to_vector(#{arrname}, #{lenname}, #{name});"
+        end
+      end
+
+      @f.print "  _retval = "
+      @f.print "api_", fn.name, "("
+      argnames = fn.args.map { |arg| arg.name }
+      @f.print argnames.join(", ")
+      @f.puts ");"
+
+      # Return if it is not an array, else convert
+      if not fn.ret.is_array?
+        @f.puts "  return _retval;"
+      else
+        # Return is in the two last args, "ret" and "ret_len"
+        # Put the size in ret_len
+        @f.puts "  *ret_len = _retval.size();"
+        # Allocate ret
+        ty = fn.ret.type.name
+        @f.puts "  *ret_arr = (#{ty}*)malloc((*ret_len) * sizeof(#{ty}));"
+        # Copy from the _retval vector
+        @f.puts "  memcpy(*ret_arr, &_retval[0], *ret_len);"
+        # Done !
+      end
+
+      @f.puts "}"
+    end
+    @f.puts "}"
+    @f.close
+  end
+
+  def generate_header
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_c.rb"
+    @f.puts "#ifndef INTERFACE_HH_", "# define INTERFACE_HH_"
+    @f.puts "", "# include <vector>", "# include <string>", ""
+    @f.puts 'extern "C" {'
+    @f.puts "# include \"#{$conf['conf']['player_filename']}.h\""
+    @f.puts "}", ""
+    for_each_fun do |fn|
+      @f.print cxx_proto(fn), ";\n"
+    end
+    @f.puts "#endif"
+    @f.close
+  end
+
+  def build
+    @path = Pathname.new($install_path) + "c"
+    @source_file = 'interface.cc'
+    @header_file = 'interface.hh'
+
+    generate_source
+    generate_header
+  end
+end
+
+class CFileGenerator < CProto
+  def build_enums
+    for_each_enum do |x|
+      @f.puts "typedef enum #{x['enum_name']} {"
+      x['enum_field'].each do |f|
+        name = f[0].upcase
+        @f.print "  ", name, ", "
+        @f.print "/* <- ", f[1], " */\n"
+      end
+      @f.print "} ", x['enum_name'], ";\n\n"
+    end
+  end
+
+  def build_structs
+    for_each_struct do |x|
+      @f.puts "typedef struct #{x['str_name']} {"
+      x['str_field'].each do |f|
+        @f.print "  #{f[1]} #{f[0]}; "
+        @f.print "/* <- ", f[2], " */\n"
+      end
+      @f.print "} ", x['str_name'], ";\n\n"
+    end
+  end
+
+  def generate_header
+    @f = File.open(@path + @header_file, 'w')
+    print_banner "generator_c.rb"
+    @f.puts "#include <stdlib.h>"
     build_constants
-    for_each_fun { |x, y, z| print_proto(x, y, z, "extern"); @f.puts ";" }
-    for_each_user_fun { |x, y, z| print_proto(x, y, z); @f.puts ";" }
+    build_enums
+    build_structs
+    for_each_fun do |f|
+      @f.print c_proto(f), ";\n"
+    end
+    for_each_user_fun do |f|
+      @f.print c_proto(f), ";\n"
+    end
     @f.close
   end
 
   def generate_source()
-    @f = File.open(@path + @source_file, 'w')
+    @f = File.open(@path + @user_file, 'w')
     print_banner "generator_c.rb"
     print_include @header_file
     @f.puts
-    for_each_user_fun do |x, y, z| 
-      print_proto(x, y, z)
+    for_each_user_fun do |f|
+      @f.print c_proto(f)
       print_body "  /* fonction a completer */"
     end
     @f.close
@@ -46,13 +230,13 @@ lib_TARGETS = #{target}
 
 # Tu peux rajouter des fichiers sources, headers, ou changer
 # des flags de compilation.
-#{target}-srcs = #{@source_file}
+#{target}-srcs = #{@user_file}
 #{target}-dists =
 #{target}-cflags = -ggdb3
 
 # Evite de toucher a ce qui suit
 #{target}-dists += #{@header_file}
-#{target}-srcs += ../includes/main.c
+#{target}-srcs += #{@source_file} ../includes/main.c
 include ../includes/rules.mk
     EOF
     @f.close
@@ -60,9 +244,12 @@ include ../includes/rules.mk
 
 
   def build()
+    CCxxFileGenerator.new.build
+
     @path = Pathname.new($install_path) + "c"
     @header_file = $conf['conf']['player_filename'] + '.h'
-    @source_file = $conf['conf']['player_filename'] + '.c'
+    @source_file = 'interface.cc'
+    @user_file = $conf['conf']['player_filename'] + '.c'
 
     generate_header
     generate_source

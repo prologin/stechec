@@ -10,7 +10,134 @@
 # Copyright (C) 2005, 2006 Prologin
 #
 
+class Type
+  attr_accessor :name
+
+  def is_simple?
+    false
+  end
+
+  def is_struct?
+    false
+  end
+
+  def is_enum?
+    false
+  end
+
+  def is_array?
+    false
+  end
+end
+
+class SimpleType < Type
+  def initialize(name)
+    @name = name
+  end
+
+  def is_simple?
+    true
+  end
+end
+
+class StructType < Type
+  attr_reader :conf
+
+  def initialize(conf)
+    @conf = conf
+    @name = conf['str_name']
+  end
+
+  def is_struct?
+    true
+  end
+end
+
+class EnumType < Type
+  attr_reader :conf
+
+  def initialize(conf)
+    @conf = conf
+    @name = conf['enum_name']
+  end
+
+  def is_enum?
+    true
+  end
+end
+
+class ArrayType < Type
+  attr_reader :type
+
+  def initialize(type)
+    @type = type
+  end
+
+  def is_array?
+    true
+  end
+end
+
+class FunctionArg
+  attr_reader :type
+  attr_reader :name
+  attr_reader :conf
+
+  def initialize(types, conf)
+    @conf = conf
+    @name = conf[0]
+    @type = types[conf[1]]
+  end
+end
+
+class Function
+  attr_reader :name
+  attr_reader :ret
+  attr_reader :args
+  attr_reader :conf
+
+  def initialize(types, conf)
+    @conf = conf
+    @name = conf['fct_name']
+    @ret = types[conf['fct_ret_type']]
+    if conf['fct_arg']
+      @args = conf['fct_arg'].map do |arg|
+        FunctionArg.new(types, arg)
+      end
+    else
+      @args = []
+    end
+  end
+end
+
+class TypesHash < Hash
+  def [](x)
+    m = x.match(/^([^ ]*) array$/)
+    if m
+      ArrayType.new super(m[1])
+    else
+      super(x)
+    end
+  end
+end
+
 class FileGenerator
+
+  def initialize
+    # Add required builtin types
+    @types = TypesHash.new
+    ['void', 'int', 'bool'].each do |x|
+      @types[x] = SimpleType.new x
+    end
+
+    $conf['struct'].each do |x|
+      @types[x['str_name']] = StructType.new x
+    end
+
+    $conf['enum'].each do |x|
+      @types[x['enum_name']] = EnumType.new x
+    end
+  end
 
   def print_banner(script)
     print_multiline_comment \
@@ -18,17 +145,6 @@ class FileGenerator
 modify it in a permanent way, please refer
 to the script file : gen/" + script
     @f.puts
-  end
-
-  def conv_type(val, table = @types)
-    if val == nil or val == ""
-      return table['void']
-    elsif table.has_key?(val)
-      return table[val]
-    else
-      print "Warning: type '", val, "' isn't specified for language "
-      print @lang, "\n"
-    end
   end
 
   def build_constants
@@ -40,11 +156,30 @@ to the script file : gen/" + script
     end
   end
 
+  def for_each_enum(print_comment = true, &block)
+    $conf['enum'].delete_if {|x| x['doc_extra'] }
+    $conf['enum'].each do |x|
+      print_multiline_comment(x['enum_summary']) if print_comment
+      block.call(x)
+      @f.puts
+    end
+  end
+
+  def for_each_struct(print_comment = true, &block)
+    $conf['struct'].delete_if {|x| x['doc_extra'] }
+    $conf['struct'].each do |x|
+      print_multiline_comment(x['str_summary']) if print_comment
+      block.call(x)
+      @f.puts
+    end
+  end
+
   def for_each_fun(print_comment = true, &block)
     $conf['function'].delete_if {|x| x['doc_extra'] }
     $conf['function'].each do |x|
+      fn = Function.new(@types, x)
       print_multiline_comment(x['fct_summary']) if print_comment
-      block.call(x['fct_name'], x['fct_ret_type'] , x['fct_arg'])
+      block.call(fn)
       @f.puts
     end
   end
@@ -67,8 +202,11 @@ to the script file : gen/" + script
       {"fct_summary" => "Fonction appelee a chaque phase de placement de monument", 
        "fct_name" => "placement"},
     ].each do |x|
+      x['fct_arg'] = [] unless x['fct_arg']
+      x['fct_ret_type'] = 'void' unless x['fct_ret_type']
+      fn = Function.new(@types, x)
       print_multiline_comment(x['fct_summary']) if print_comment
-      block.call(x['fct_name'], x['fct_ret_type'] , x['fct_arg'])
+      block.call(fn)
       @f.puts
     end
   end
@@ -80,12 +218,8 @@ end
 class CProto < FileGenerator
 
   def initialize
+    super
     @lang = "C"
-    @types = {
-      'void' => 'void',
-      'int' => 'int',
-      'bool' => 'int'
-    }
   end
 
   def print_comment(str)
@@ -115,10 +249,12 @@ class CProto < FileGenerator
 
   def print_proto(name, ret_type, args, ext = "", types = @types)
     ext = ext + " " if ext != ""
-    @f.print ext, conv_type(ret_type, types)
+    @f.print ext, @typehandler.ret(ret_type)
     @f.print " ", name, "("
     if args != nil and args != []
-      print_args = args.collect { |arg| conv_type(arg[1], types) + " " + arg[0] }
+      print_args = args.collect { |arg| 
+        @typehandler.arg(arg[1]) + " " + arg[0]
+      }
       @f.print print_args.join(", ")
     else
       print_empty_arg
@@ -134,7 +270,7 @@ class CProto < FileGenerator
   end
 
   def print_empty_arg
-    @f.print conv_type("void")
+    @f.print @typehandler.no_arg
   end
 end
 
@@ -142,12 +278,8 @@ end
 class CxxProto < CProto
 
   def initialize
+    super
     @lang = "C++"
-    @types = {
-      'void' => 'void',
-      'int' => 'int',
-      'bool' => 'bool'
-    }
   end
 
   def print_comment(str)
@@ -157,7 +289,7 @@ class CxxProto < CProto
   def print_multiline_comment(str)
     return unless str
     @f.puts '///'
-    str.each {|s| @f.print '// ', s }
+    str.each_line {|s| @f.print '// ', s }
     # @f.puts
     @f.puts "", "//"
   end
@@ -173,12 +305,8 @@ end
 class CSharpProto < CProto
 
   def initialize
+    super
     @lang = "CSharp"
-    @types = {
-      'void' => 'void',
-      'int' => 'int',
-      'bool' => 'bool'
-    }
   end
 
   def print_comment(str)
@@ -198,10 +326,12 @@ class CSharpProto < CProto
 
   def print_proto(name, ret_type, args, ext = "", types = @types)
     ext = ext + " " if ext != ""
-    @f.print ext, conv_type(ret_type, types)
+    @f.print ext, @typehandler.ret(ret_type)
     @f.print " ", name, "("
     if args != nil and args != []
-      print_args = args.collect { |arg| conv_type(arg[1], types) + " " + arg[0] }
+      print_args = args.collect {
+        |arg| @typehandler.arg(arg[1], arg[0])
+      }
       @f.print print_args.join(", ")
     else
       print_empty_arg
