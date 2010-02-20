@@ -28,6 +28,10 @@ class Type
   def is_array?
     false
   end
+
+  def is_nil?
+    false
+  end
 end
 
 class SimpleType < Type
@@ -37,6 +41,10 @@ class SimpleType < Type
 
   def is_simple?
     true
+  end
+
+  def is_nil?
+    @name == "void"
   end
 end
 
