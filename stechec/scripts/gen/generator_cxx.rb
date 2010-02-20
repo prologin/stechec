@@ -12,13 +12,35 @@
 
 class CxxFileGenerator < CxxProto
 
+  def build_inlines
+    for_each_fun do |fn|
+      @f.puts cxx_proto(fn, "api_", "extern") + ";"
+      @f.puts cxx_proto(fn, "", "static inline")
+      @f.puts "{"
+      @f.print "  "
+      unless fn.ret.is_simple? and fn.ret.name == "void"
+        @f.print "return "
+      end
+     @f.print "api_", fn.name, "("
+     args = fn.args.map { |arg| arg.name }
+     @f.print args.join(", "), ");\n"
+     @f.puts "}"
+     @f.puts
+    end
+  end
+
   def generate_header()
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_cxx.rb"
     build_constants
+    build_enums
+    build_structs
+    build_inlines
     @f.puts "", 'extern "C" {', ""
-    for_each_fun { |x, y, z| print_proto(x, y, z, "extern"); @f.puts ";" }
-    for_each_user_fun { |x, y, z| print_proto(x, y, z); @f.puts ";" }
+    for_each_user_fun do |fn|
+      @f.print cxx_proto(fn)
+      @f.puts ";"
+    end
     @f.puts "}"
     @f.close
   end
@@ -28,8 +50,8 @@ class CxxFileGenerator < CxxProto
     print_banner "generator_cxx.rb"
     print_include @header_file
     @f.puts
-    for_each_user_fun do |x, y, z| 
-      print_proto x, y, z
+    for_each_user_fun do |fn| 
+      @f.print cxx_proto(fn)
       print_body "  // fonction a completer"
     end
     @f.close
