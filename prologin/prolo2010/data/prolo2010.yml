@@ -37,7 +37,6 @@ struct:
     str_field:
       - [err, erreur, une erreur]
       - [errarr, erreur array, un tableau d'erreurs]
-      - [foolol, teststruct array, LOL c'est hard de le faire marcher]
 enum:
   - doc_extra: \subsection{Énumérations}
   -
