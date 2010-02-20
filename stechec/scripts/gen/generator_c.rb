@@ -62,24 +62,6 @@ class CCxxFileGenerator < CxxProto
     @lang = "C++ (for C interface)"
   end
 
-  def cxx_type(type)
-    # Returns the C++ type for the provided type.
-    # Only really useful for arrays.
-    if type.is_array?
-      "std::vector<#{type.type.name}>"
-    else
-      type.name
-    end
-  end
-
-  def cxx_proto(fn)
-    buf = ""
-    buf += cxx_type(fn.ret) + " " + "api_" + fn.name + "("
-    args = fn.args.map { |arg| "#{cxx_type(arg.type)} #{arg.name}" }
-    buf += args.join(", ") + ")"
-    buf
-  end
-
   def generate_source
     @f = File.open(@path + @source_file, 'w')
     print_banner "generator_c.rb"
@@ -169,29 +151,6 @@ EOF
 end
 
 class CFileGenerator < CProto
-  def build_enums
-    for_each_enum do |x|
-      @f.puts "typedef enum #{x['enum_name']} {"
-      x['enum_field'].each do |f|
-        name = f[0].upcase
-        @f.print "  ", name, ", "
-        @f.print "/* <- ", f[1], " */\n"
-      end
-      @f.print "} ", x['enum_name'], ";\n\n"
-    end
-  end
-
-  def build_structs
-    for_each_struct do |x|
-      @f.puts "typedef struct #{x['str_name']} {"
-      x['str_field'].each do |f|
-        @f.print "  #{f[1]} #{f[0]}; "
-        @f.print "/* <- ", f[2], " */\n"
-      end
-      @f.print "} ", x['str_name'], ";\n\n"
-    end
-  end
-
   def generate_header
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_c.rb"
