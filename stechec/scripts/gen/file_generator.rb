@@ -270,7 +270,7 @@ class CProto < FileGenerator
   end
 
   def print_empty_arg
-    @f.print @typehandler.no_arg
+    @f.print "void"
   end
 
   def build_enums
@@ -323,7 +323,7 @@ class CxxProto < CProto
   def cxx_proto(fn, name_prefix = "", modifiers = "")
     buf = ""
     modifiers = modifiers + " " if modifiers != ""
-    buf += modifiers + cxx_type(fn.ret) + " " + prefix + fn.name + "("
+    buf += modifiers + cxx_type(fn.ret) + " " + name_prefix + fn.name + "("
     args = fn.args.map { |arg| "#{cxx_type(arg.type)} #{arg.name}" }
     buf += args.join(", ") + ")"
     buf
