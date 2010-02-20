@@ -80,7 +80,7 @@ end
 
 class FunctionArg
   attr_reader :type
-  attr_reader :name
+  attr_accessor :name
   attr_reader :conf
 
   def initialize(types, conf)
@@ -249,11 +249,11 @@ class CProto < FileGenerator
 
   def print_proto(name, ret_type, args, ext = "", types = @types)
     ext = ext + " " if ext != ""
-    @f.print ext, @typehandler.ret(ret_type)
+    @f.print ext, ret_type
     @f.print " ", name, "("
     if args != nil and args != []
       print_args = args.collect { |arg| 
-        @typehandler.arg(arg[1]) + " " + arg[0]
+        arg[1] + " " + arg[0]
       }
       @f.print print_args.join(", ")
     else
@@ -271,6 +271,29 @@ class CProto < FileGenerator
 
   def print_empty_arg
     @f.print @typehandler.no_arg
+  end
+
+  def build_enums
+    for_each_enum do |x|
+      @f.puts "typedef enum #{x['enum_name']} {"
+      x['enum_field'].each do |f|
+        name = f[0].upcase
+        @f.print "  ", name, ", "
+        @f.print "/* <- ", f[1], " */\n"
+      end
+      @f.print "} ", x['enum_name'], ";\n\n"
+    end
+  end
+
+  def build_structs
+    for_each_struct do |x|
+      @f.puts "typedef struct #{x['str_name']} {"
+      x['str_field'].each do |f|
+        @f.print "  #{f[1]} #{f[0]}; "
+        @f.print "/* <- ", f[2], " */\n"
+      end
+      @f.print "} ", x['str_name'], ";\n\n"
+    end
   end
 end
 
@@ -295,6 +318,24 @@ class CxxProto < CProto
   end
 
   def print_empty_arg
+  end
+
+  def cxx_proto(fn)
+    buf = ""
+    buf += cxx_type(fn.ret) + " " + "api_" + fn.name + "("
+    args = fn.args.map { |arg| "#{cxx_type(arg.type)} #{arg.name}" }
+    buf += args.join(", ") + ")"
+    buf
+  end
+
+  def cxx_type(type)
+    # Returns the C++ type for the provided type.
+    # Only really useful for arrays.
+    if type.is_array?
+      "std::vector<#{type.type.name}>"
+    else
+      type.name
+    end
   end
 
 end
