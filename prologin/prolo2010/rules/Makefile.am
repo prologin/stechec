@@ -3,9 +3,21 @@ lib_LTLIBRARIES = toons.la
 toons_la_SOURCES =		\
 	Api.cc				\
 	Api.hh				\
+	Client.cc			\
+	Client.hh			\
+	ClientEntry.cc		\
+	ClientEntry.hh		\
+	ClientDiffer.cc		\
+	ClientDiffer.hh		\
 	Constant.hh			\
 	GameData.cc			\
 	GameData.hh			\
+	Server.cc			\
+	Server.hh			\
+	ServerResolver.cc	\
+	ServerResolver.hh	\
+	ServerEntry.cc		\
+	ServerEntry.hh		\
 	interface.cc
 
 toons_la_LDFLAGS = -module
