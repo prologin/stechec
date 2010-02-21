@@ -41,7 +41,7 @@ module PascalUtils
   def print_multiline_comment(str)
     return unless str
     @f.puts '{'
-    str.each {|s| @f.print "  ", s }
+    str.each_line {|s| @f.print "  ", s }
     @f.puts "\n}"
   end
 
@@ -190,16 +190,15 @@ EOF
 
       # Check if some of the arguments need conversion
       fn.args.each do |arg|
-        puts "#{arg}" # there is a bug here
         type = arg.type
         if type.is_array?
           cxx_type = cxx_type(type.type)
           lang_type = lang_type(type.type)
-          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx_array<#{lang_type}, #{cxx_type}>(#{name});"
+          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx_array<#{lang_type}, #{cxx_type}>(#{arg.name});"
         else
           cxx_type = cxx_type(type)
           lang_type = lang_type(type)
-          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx<#{lang_type}, #{cxx_type}>(#{name});"
+          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx<#{lang_type}, #{cxx_type}>(#{arg.name});"
         end
       end
 
