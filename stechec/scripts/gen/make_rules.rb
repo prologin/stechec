@@ -27,9 +27,9 @@ install_path.mkpath
 # Copie les quelques squelettes.
 %w[Api.cc Api.hh interface.cc Constant.hh].each do |x|
   if File.exist? 'files/' + x
-    File.copy 'files/' + x, install_path.to_s
+    FileUtils.cp 'files/' + x, install_path.to_s
   else
-    File.copy Pathname.new(PKGDATADIR) + 'files' + x, install_path.to_s
+    FileUtils.cp Pathname.new(PKGDATADIR) + 'files' + x, install_path.to_s
   end
 end
 
@@ -48,7 +48,7 @@ class CxxFileGenerator < CxxProto
 
   def fill_file_section(filename, &block)
     puts "Cook #{filename}..."
-    File.mv(filename, filename + ".tmp")
+    FileUtils.mv(filename, filename + ".tmp")
     File.open(filename + ".tmp" , 'r') do |fr|
       @f = File.new( filename, 'w')
       while s = fr.gets do
@@ -65,8 +65,8 @@ class CxxFileGenerator < CxxProto
 
   # Api.cc
   def print_cxx_api
-    for_each_fun do |x, y, z| 
-      print_proto("Api::" + x, y, z); 
+    for_each_fun do |fn|
+      @f.print cxx_proto(fn, "Api::")
       @f.puts "
 {
   return 0;
@@ -77,17 +77,17 @@ class CxxFileGenerator < CxxProto
 
   # interface.cc
   def print_interface
-    for_each_fun do |x, y, z| 
-      print_proto(x, y, z); 
+    for_each_fun do |fn| 
+      @f.print cxx_proto(fn)
       @f.print "
 {
-  return api->#{x}("
-      args = z
-      if args != nil and args != []
+  return api->#{fn.name}("
+      args = fn.args
+      if args != []
         args[0..-2].each do |arg|
-          @f.print arg[0], ", "
+          @f.print arg.name, ", "
         end
-        @f.print args[-1][0]
+        @f.print args[-1].name
       end
       @f.puts ");
 }"
@@ -96,8 +96,8 @@ class CxxFileGenerator < CxxProto
 
   # Api.hh
   def print_cxx_api_head
-    for_each_fun do |x, y, z| 
-      print_proto(x, y, z, "  "); 
+    for_each_fun do |fn|
+      @f.print cxx_proto(fn, "", "  ");
       @f.print ";"
     end
   end
