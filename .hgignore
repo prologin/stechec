@@ -34,5 +34,10 @@ prologin/web_meta/stechec.yml
 
 stechec/client/stechec
 stechec/scripts/{conf.rb,generator,run}
-stechec/sdl/test/{scroll,simple,text}
 stechec/server/stechec_server
+
+stechec/tools/test/{cx,pool}
+stechec/tools/xml_test/parse_{bad,formation,team}
+stechec/sdl/test/{scroll,simple,text}
+
+prologin/prolo2010/rules/prolo2010
