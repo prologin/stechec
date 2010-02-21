@@ -32,6 +32,8 @@ class CxxFileGenerator < CxxProto
   def generate_header()
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_cxx.rb"
+    @f.puts "#ifndef PROLOGIN_HH_", "# define PROLOGIN_HH_", ""
+    @f.puts "# include <vector>", ""
     build_constants
     build_enums
     build_structs
@@ -42,6 +44,7 @@ class CxxFileGenerator < CxxProto
       @f.puts ";"
     end
     @f.puts "}"
+    @f.puts "#endif"
     @f.close
   end
 
