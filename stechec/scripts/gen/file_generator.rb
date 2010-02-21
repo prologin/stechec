@@ -119,8 +119,8 @@ class Function
 end
 
 class TypesHash < Hash
-  def [](x)
-    m = x.match(/^([^ ]*) array$/)
+  def [](x) # returns Type
+    m = x.match(/^([^ ]*) array$/) # ml-like declaration to array
     if m
       ArrayType.new super(m[1])
     else
@@ -300,11 +300,14 @@ class CProto < FileGenerator
   end
 
   def build_structs
+    build_structs_generic do |field, type| "  #{conv_type(@types[type])} #{field};" end
+  end
+
+  def build_structs_generic(&show_field)
     for_each_struct do |x|
       @f.puts "typedef struct #{x['str_name']} {"
       x['str_field'].each do |f|
-        @f.print "  #{conv_type(@types[f[1]])} #{f[0]}; "
-        @f.print "/* <- ", f[2], " */\n"
+        @f.print "#{show_field.call(f[0], f[1])}  /* <- ", f[2], " */\n"
       end
       @f.print "} ", x['str_name'], ";\n\n"
     end
