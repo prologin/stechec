@@ -133,7 +133,7 @@ cmd_ocaml	= $(OCAMLC) $(_CAMLFLAGS) -c $< -o $@
 cmd_ocamlo	= $(OCAMLC) -output-obj $(_CAMLFLAGS) $^ -o $@
 
 ld_flags	= $(_LDFLAGS)
-cmd_ld_shared	= $(CC) $(filter %.o %.a,$^) $(ld_flags) -shared -o $@ $(_LDLIBS)
+cmd_ld_shared	= $(CXX) $(filter %.o %.a,$^) $(ld_flags) -shared -o $@ $(_LDLIBS)
 
 cmd_clean	= $(RM) $(_cleanfiles)
 cmd_distclean	= $(RM) $(_dcleanfiles)
