@@ -1,4 +1,5 @@
 # -*- Makefile.am -*-
 
 SUBDIRS =					\
-	data
+	data					\
+	rules

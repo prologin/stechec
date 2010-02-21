@@ -327,6 +327,7 @@ if test x$BUILD_prolo2010 != x; then
 AC_CONFIG_FILES([
   prologin/prolo2010/Makefile
   prologin/prolo2010/data/Makefile
+  prologin/prolo2010/rules/Makefile
 ])
 fi
 
