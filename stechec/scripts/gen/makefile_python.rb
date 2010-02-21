@@ -20,14 +20,14 @@ CXX 	= g++
 LIMEOBJ ?= ../includes/main.o
 OBJS 	= interface.o $(LIMEOBJ)
 RM 	= /bin/rm -f
-AUXFILES= prologin.py constants.py
+AUXFILES= api.py
 
 CFLAGS = -fPIC
 CXXFLAGS = -fPIC -W -Wall \\
-   `python2.5-config --cflags` \\
+   `python-config --cflags` \\
    $(MY_CXXFLAGS)
 
-LIBS = `python2.5-config --ldflags`
+LIBS = `python-config --ldflags`
 
 ##############################
 # Basic Compile Instructions #
@@ -49,7 +49,7 @@ distclean: clean
 \t$(RM) $(NAME) prologin.tgz
 
 tar:
-\ttar cvzf prologin.tgz constants.py interface.cc interface.hh $(SRC)
+\ttar cvzf prologin.tgz interface.cc interface.hh $(SRC) $(AUXFILES)
 EOF
   end
 
