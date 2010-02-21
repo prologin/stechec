@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2005, 2006 Prologin
+** Copyright (C) 2010 Prologin
 */
 
 #ifndef API_HH_
@@ -16,6 +16,7 @@
 # include <vector>
 
 # include <Contest.hh>
+# include "Constant.hh"
 # include "GameData.hh"
 
 /*!
