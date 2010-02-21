@@ -13,23 +13,164 @@
 require "pathname"
 
 # C generator with some Caml specificity
-class CamlCFileGenerator < CProto
+class CamlCFileGenerator < CxxProto
 
   def initialize
-    @lang = "C with Caml extension"
-    @types = {
-      'void' => 'void',
-      'int' => 'value',
-      'bool' => 'value'
-    }
+    super
+    @lang = "C++ with Caml extension"
   end
 
   def generate_header
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_caml.rb"
-    for_each_fun { |x, y, z| print_proto(x, y, z, "extern"); @f.puts ";" }
-    for_each_user_fun { |x, y, z| print_proto(x, y, z); @f.puts ";" }
+    print_include "vector", true
+    build_enums
+    build_structs
+    for_each_fun do |fn|
+      @f.print cxx_proto(fn, "api_"); @f.puts ";"
+    end
+    for_each_user_fun do |fn|
+      @f.print cxx_proto(fn, "", 'extern "C"'); @f.puts ";"
+    end
     @f.close
+  end
+
+  def proto(fn)
+    buf = "value ml_#{fn.name}("
+    args = fn.args.map do |arg|
+      "value #{arg.name}"
+    end
+    if args == []
+      args = ["value unit"]
+    end
+    buf + args.join(", ") + ")"
+  end
+
+  def build_common_wrappers
+    @f.puts <<-EOF
+template <typename Lang, typename Cxx>
+Lang cxx2lang(Cxx in)
+{
+  return in.__if_that_triggers_an_error_there_is_a_problem;
+}
+
+template <>
+value cxx2lang<value, int>(int in)
+{
+  return Val_int(in);
+}
+
+template <>
+value cxx2lang<value, bool>(bool in)
+{
+  return Val_int(in);
+}
+
+template <typename Cxx>
+value cxx2lang_array(const std::vector<Cxx>& in)
+{
+  size_t size = in.size();
+  if (size == 0)
+    return Atom(0);
+
+  value v = caml_alloc(size, 0);
+  for (int i = 0; i < size; ++i)
+    Field(v, i) = cxx2lang<value, Cxx>(in[i]);
+
+  return v;
+}
+
+template <typename Lang, typename Cxx>
+Cxx lang2cxx(Lang in)
+{
+  return in.__if_that_triggers_an_error_there_is_a_problem;
+}
+
+template <>
+int lang2cxx<value, int>(value in)
+{
+  return Int_val(in);
+}
+
+template <>
+bool lang2cxx<value, bool>(value in)
+{
+  return Int_val(in);
+}
+
+template <typename Cxx>
+std::vector<Cxx> lang2cxx_array(value in)
+{
+  std::vector<Cxx> out;
+  mlsize_t size = Wosize_val(in);
+
+  for (int i = 0; i < size; ++i)
+    out.push_back(lang2cxx<value, Cxx>(Field(in, i)));
+
+  return out;
+}
+EOF
+  end
+
+  def build_enum_wrappers(enum)
+    name = enum['enum_name']
+    @f.puts <<-EOF
+template <>
+value cxx2lang<value, #{name}>(#{name} in)
+{
+  return Val_int(in);
+}
+
+template <>
+#{name} lang2cxx<value, #{name}>(value in)
+{
+  return (#{name})Int_val(in);
+}
+EOF
+  end
+
+  def build_struct_wrappers(struct)
+    name = struct['str_name']
+    nfields = struct['str_field'].length
+    @f.puts "template <>"
+    @f.puts "value cxx2lang<value, const #{name}&>(const #{name}& in)"
+    @f.puts "{"
+    @f.puts "  value out = caml_alloc(#{nfields}, 0);"
+    i = 0
+    struct['str_field'].each do |f|
+      fn = f[0]
+      ft = @types[f[1]]
+      if ft.is_array?
+        @f.puts "  Field(out, #{i}) = cxx2lang_array(in.#{fn});"
+      else
+        ft = ft.name
+        @f.puts "  Field(out, #{i}) = cxx2lang<value, #{ft}>(in.#{fn});"
+      end
+      i += 1
+    end
+    @f.puts "  return out;"
+    @f.puts "}"
+    @f.puts
+
+    # OTHER WAY
+    @f.puts "template <>"
+    @f.puts "#{name} lang2cxx<value, #{name}>(value in)"
+    @f.puts "{"
+    @f.puts "  #{name} out;"
+    i = 0
+    struct['str_field'].each do |f|
+      fn = f[0]
+      ft = @types[f[1]]
+      if ft.is_array?
+        @f.puts "  out.#{fn} = lang2cxx_array<#{ft.type.name}>(Field(in, #{i}));"
+      else
+        ft = ft.name
+        @f.puts "  out.#{fn} = lang2cxx<value, #{ft}>(Field(in, #{i}));"
+      end
+      i += 1
+    end
+    @f.puts "  return out;"
+    @f.puts "}"
   end
 
   def generate_source
@@ -37,36 +178,68 @@ class CamlCFileGenerator < CProto
     print_banner "generator_caml.rb"
 
     # caml -> api glue
+    @f.puts 'extern "C" {'
     print_include "caml/mlvalues.h", true
     print_include "caml/callback.h", true
     print_include "caml/alloc.h", true
+    print_include "caml/memory.h", true
+    @f.puts "}"
     print_include @header_file
     @f.puts
 
-    for_each_fun do |name, ret_type, args| 
-      print_proto("ml_" + name, ret_type, args)
-      body = "  "
-      body = "return Val_int(" if ret_type and ret_type != "void"
-      body += name + "(" 
-      if args != nil and args != []
-        print_args = args.collect {|x| "Int_val(" + x[0] + ")" }
-        body += print_args.join ", "
-      end
-      body += ")" if ret_type && ret_type != "void"
-      body += ");"
+    build_common_wrappers
+    for_each_enum { |enum| build_enum_wrappers enum }
+    for_each_struct { |struct| build_struct_wrappers struct }
 
-      print_body body
+    for_each_fun do |fn|
+      @f.print proto(fn)
+      @f.puts "", "{"
+      args = fn.args
+      if args == [] then
+        args = [FunctionArg.new(@types, ["unit", "void"])]
+      end
+      @f.puts "  CAMLparam0();"
+      args.each do |arg|
+        @f.puts "  CAMLxparam1(#{arg.name});"
+      end
+      @f.puts
+      unless fn.ret.is_nil? then
+        @f.print "  CAMLreturn(("
+        if fn.ret.is_array? then
+          @f.print "cxx2lang_array<#{fn.ret.type.name}>("
+        else
+          @f.print "cxx2lang<value, #{fn.ret.name}>("
+        end
+      else
+        @f.print "  "
+      end
+      @f.print "api_", fn.name, "("
+      args = fn.args.map do |arg|
+        if arg.type.is_array? then
+          "lang2cxx_array<#{arg.type.type.name}>(#{arg.name})"
+        else
+          "lang2cxx<value, #{arg.type.name}>(#{arg.name})"
+        end
+      end
+      @f.print args.join(", ")
+      @f.print ")"
+      if fn.ret.is_nil? then
+        @f.puts ";"
+        @f.puts "  CAMLreturn(Val_unit);"
+      else
+        @f.puts ")));"
+      end
+      @f.puts "}"
     end
     
     # api -> caml glue
-    for_each_user_fun do |name, ret, args| 
-      print_proto(name, ret, args)
-      print_body "
-  static value *fib_closure = NULL;
+    for_each_user_fun do |fn|
+      @f.print cxx_proto(fn)
+      print_body "static value *closure = NULL;
 
-  if (fib_closure == NULL)
-    fib_closure = caml_named_value(\"ml_#{name}\");
-   callback(*fib_closure, Val_int(0));"
+  if (closure == NULL)
+    closure = caml_named_value(\"ml_#{fn.name}\");
+   callback(*closure, Val_unit);"
     
     end
     @f.close
@@ -74,8 +247,8 @@ class CamlCFileGenerator < CProto
 
   def build
     @path = Pathname.new($install_path) + "caml"
-    @header_file = 'interface.h'
-    @source_file = 'interface.c'
+    @header_file = 'interface.hh'
+    @source_file = 'interface.cc'
 
     generate_header
     generate_source
@@ -86,12 +259,18 @@ end
 
 class CamlFileGenerator < FileGenerator
   def initialize
-    @lang = "caml"
-    @types = {
-      'void' => 'unit',
-      'int' => 'int',
-      'bool' => 'bool'
-    }
+    super
+    @lang = "OCaml"
+  end
+
+  def conv_type(type)
+    if type.is_nil?
+      "unit"
+    elsif type.is_array?
+      "#{type.type.name} array"
+    else
+      type.name
+    end
   end
 
   def print_comment(str)
@@ -101,24 +280,53 @@ class CamlFileGenerator < FileGenerator
   def print_multiline_comment(str)
     return unless str
     @f.puts '(*'
-    str.each {|s| @f.print '** ', s }
+    str.each_line {|s| @f.print '** ', s }
     @f.puts "\n*)"
   end
 
   def print_constant(type, name, val)
-      @f.print 'let _', name, " = ", val, ";;\n"
+      @f.print 'let ', name.downcase, " = ", val, ";;\n"
   end
 
-  def print_proto(name, ret_type, args)
-    @f.print "external ", name, " : "
-    if args != nil and args != []
-      args.each do |arg|
-        @f.print conv_type(arg[1]), " -> "
+  def build_enums
+    for_each_enum do |e|
+      @f.puts "type #{e['enum_name']} ="
+      e['enum_field'].each do |f|
+        name = f[0].capitalize
+        @f.print "| ", name, " (* <- ", f[1], " *)\n"
+      end
+      @f.puts
+    end
+  end
+
+  def build_structs
+    for_each_struct do |s|
+      @f.print "type #{s['str_name']} = "
+      if s['str_tuple']
+        @f.print "("
+        args = s['str_field'].map { |f| f[1] }
+        @f.print args.join(" * ")
+        @f.puts ")"
+      else
+        @f.puts "{"
+        s['str_field'].each do |f|
+          @f.puts "  #{f[0]} : #{f[1]} ; (* <- #{f[2]} *)"
+        end
+        @f.puts "}"
+      end
+    end
+  end
+
+  def print_proto(fn)
+    @f.print "external ", fn.name, " : "
+    if fn.args != []
+      fn.args.each do |arg|
+        @f.print conv_type(arg.type), " -> "
       end
     else
       @f.print "unit -> "
     end
-    @f.print conv_type(ret_type), ' = "ml_', name, '";;'
+    @f.print conv_type(fn.ret), ' = "ml_', fn.name, '";;'
   end
   
   def generate_makefile
@@ -134,8 +342,8 @@ lib_TARGETS = #{target}
 #{target}-camlflags = -g
 
 # Evite de toucher a ce qui suit
-#{target}-dists = interface.h
-#{target}-srcs += interface.c ../includes/main.c
+#{target}-dists = interface.hh
+#{target}-srcs += interface.cc ../includes/main.c
 include ../includes/rules.mk
     EOF
     @f.close
@@ -157,7 +365,11 @@ include ../includes/rules.mk
 
     # protos
     build_constants
-    for_each_fun { |x, y, z| print_proto(x, y, z); @f.puts }
+    build_enums
+    build_structs
+    for_each_fun do |fn|
+      print_proto fn
+    end
 
     @f.close
 
@@ -171,15 +383,15 @@ include ../includes/rules.mk
 
     # function to be completed
     @f.puts
-    for_each_user_fun do |name, ret, args| 
-      @f.print "let ", name, " () =  (* Pose ton code ici *)\n"
+    for_each_user_fun do |fn|
+      @f.print "let ", fn.name, " () =  (* Pose ton code ici *)\n"
       @f.puts "  flush stderr; flush stdout;; (* Pour que vos sorties s'affichent *)"
     end
 
     # callback register
     print_comment "/!\\ Ne touche pas a ce qui suit /!\\"
-    for_each_user_fun(false) do |name, ret, args| 
-      @f.print 'Callback.register "ml_', name, '" ', name, ";;"
+    for_each_user_fun(false) do |fn| 
+      @f.print 'Callback.register "ml_', fn.name, '" ', fn.name, ";;"
     end
     @f.close
 

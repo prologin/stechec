@@ -67,8 +67,9 @@ def make_player
 
   CFileGenerator.new.build
 #  CSharpFileGenerator.new.build
-  PascalFileGenerator.new.build
+#  PascalFileGenerator.new.build
   CxxFileGenerator.new.build
+  CamlFileGenerator.new.build
 #  CamlFileGenerator.new.build
 #  JavaFileGenerator.new.build
 #  HaskellFileGenerator.new.build

@@ -76,6 +76,7 @@ define get_ocaml_objs
   ifneq ($$($(1)-camlobjs),)
     $(1)-objs := $(1)-caml.o $(value $(1)-objs)
     $(1)-cflags := $$($(1)-cflags) $$(OCAML_CFLAGS)
+    $(1)-cxxflags := $$($(1)-cxxflags) $$(OCAML_CFLAGS)
     $(1)-ldflags := $$($(1)-ldflags) $$(OCAML_LIBS)
   endif
   cleanfiles := $$($(1)-camlobjs) $$($(1)-camlobjs:.o=.cmo) $$($(1)-camlobjs:.o=.cmi) $$(cleanfiles)
