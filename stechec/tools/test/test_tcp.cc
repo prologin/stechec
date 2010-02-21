@@ -10,6 +10,9 @@
 ** Copyright (C) 2007 Prologin
 */
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <map>
 #include "logger/log.hh"
 #include "datatfs/TcpCx.hh"
