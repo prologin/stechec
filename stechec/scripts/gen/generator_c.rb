@@ -14,11 +14,10 @@ require "pathname"
 require "gen/file_generator"
 
 def c_type(type)
-  if type.is_simple? and type.name = "bool"
-    type.name = "int"
-    type
+  if type.is_simple? and type.name == "bool"
+    "int"
   else
-    type
+    type.name
   end
 end
 
@@ -29,7 +28,7 @@ def c_proto(fn)
   if fn.ret.is_array?
     rettype = "void"
   else
-    rettype = c_type(fn.ret).name
+    rettype = c_type(fn.ret)
   end
 
   buf += rettype + " " + fn.name + "("
@@ -39,7 +38,7 @@ def c_proto(fn)
   fn.args.each do |arg|
     if not arg.type.is_array?
       type = c_type(arg.type)
-      args = args << "#{type.name} #{arg.name}"
+      args = args << "#{type} #{arg.name}"
     else
       args = args << "#{arg.type.type.name}* #{arg.name}_arr"
       args = args << "size_t #{arg.name}_len"
