@@ -11,7 +11,7 @@
 #
 
 class Type
-  attr_accessor :name
+  attr_reader :name
 
   def is_simple?
     false
@@ -291,11 +291,19 @@ class CProto < FileGenerator
     end
   end
 
+  def conv_type(type)
+    if type.is_array?
+      "std::vector<#{type.type.name}>"
+    else
+      type.name
+    end
+  end
+
   def build_structs
     for_each_struct do |x|
       @f.puts "typedef struct #{x['str_name']} {"
       x['str_field'].each do |f|
-        @f.print "  #{f[1]} #{f[0]}; "
+        @f.print "  #{conv_type(@types[f[1]])} #{f[0]}; "
         @f.print "/* <- ", f[2], " */\n"
       end
       @f.print "} ", x['str_name'], ";\n\n"
