@@ -75,7 +75,7 @@ def make_player
 #  HaskellFileGenerator.new.build
 #  RubyFileGenerator.new.build
 #  LuaFileGenerator.new.build
-#  PythonFileGenerator.new.build
+  PythonFileGenerator.new.build
 end
 
 
