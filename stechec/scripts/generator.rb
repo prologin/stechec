@@ -52,7 +52,7 @@ require 'fileutils'
 require 'pathname'
 require 'conf'
 
-$languages = %w[c cs cxx pascal caml java haskell ruby lua python]
+$languages = %w[c cs cxx pascal caml java python]
 
 def make_player
   $languages.each do |x|
@@ -104,9 +104,9 @@ def make_includes
 #   CamlMakefile.new.build_client(install_path)
   CSharpMakefile.new.build_client(install_path)
   PascalMakefile.new.build_client(install_path)
-  HaskellMakefile.new.build_client(install_path)
-  RubyMakefile.new.build_client(install_path)
-  LuaMakefile.new.build_client(install_path)
+#  HaskellMakefile.new.build_client(install_path)
+#  RubyMakefile.new.build_client(install_path)
+#  LuaMakefile.new.build_client(install_path)
   PythonMakefile.new.build_client(install_path)
 end
 
@@ -125,8 +125,8 @@ def make_server
   JavaMakefile.new.build_metaserver(install_path)
   PascalMakefile.new.build_metaserver(install_path)
   CamlMakefile.new.build_metaserver(install_path)
-  HaskellMakefile.new.build_metaserver(install_path)
-  LuaMakefile.new.build_metaserver(install_path)
+ # HaskellMakefile.new.build_metaserver(install_path)
+ # LuaMakefile.new.build_metaserver(install_path)
   PythonMakefile.new.build_metaserver(install_path)
 
   # copy some used files
