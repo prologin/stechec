@@ -40,12 +40,6 @@ Dir.chdir(install_path)
 
 class CxxFileGenerator < CxxProto
 
-  # we do not need comment
-  def print_comment(str)
-  end
-  def print_multiline_comment(str)
-  end
-
   def fill_file_section(filename, &block)
     puts "Cook #{filename}..."
     FileUtils.mv(filename, filename + ".tmp")
@@ -69,7 +63,8 @@ class CxxFileGenerator < CxxProto
       @f.print cxx_proto(fn, "Api::")
       @f.puts "
 {
-  return 0;
+  // TODO
+  abort();
 }
 "
     end
@@ -79,9 +74,12 @@ class CxxFileGenerator < CxxProto
   def print_interface
     for_each_fun do |fn| 
       @f.print cxx_proto(fn)
-      @f.print "
-{
-  return api->#{fn.name}("
+      @f.puts "", "{"
+      @f.print "  "
+      unless fn.ret.is_nil? then
+        @f.print "return "
+      end
+      @f.print "api->#{fn.name}("
       args = fn.args
       if args != []
         args[0..-2].each do |arg|
@@ -105,6 +103,8 @@ class CxxFileGenerator < CxxProto
   # Constant.hh
   def print_cst
     build_constants
+    build_enums
+    build_structs
   end
 end
 

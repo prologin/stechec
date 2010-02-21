@@ -15,8 +15,4 @@
 // from Api.cc
 extern Api* api;
 
-extern "C" {
-
 // @@GEN_HERE@@
-
-}

@@ -13,6 +13,8 @@
 #ifndef API_HH_
 # define API_HH_
 
+# include <vector>
+
 # include <Contest.hh>
 # include "GameData.hh"
 
