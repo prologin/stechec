@@ -99,10 +99,11 @@ Lang cxx2lang(Cxx in)
 }
 
 template<>
-bool cxx2lang<bool, int>(int in)
+int cxx2lang<int, bool>(bool in)
 {
   return in;
 }
+
 template<>
 int cxx2lang<int, int>(int in)
 {
@@ -208,21 +209,17 @@ EOF
       @f.print argnames.join(", ")
       @f.puts ");"
 
-      # Return if it is not an array, else convert
-      if not fn.ret.is_array? then
-        if not fn.ret.is_nil? then
-          @f.puts "  return _retval;"
+      unless fn.ret.is_nil?
+        @f.print "  return "
+        if not fn.ret.is_array? then
+          ln = c_type(fn.ret)
+          cxx = cxx_type(fn.ret)
+          @f.puts "cxx2lang<#{ln}, #{cxx}>(_retval);"
+        else
+          ln = c_type(fn.ret.type)
+          cxx = cxx_type(fn.ret.type)
+          @f.puts "cxx2lang_array<#{ln}, #{cxx}>(ret_arr, ret_len, _retval);"
         end
-      else
-        # Return is in the two last args, "ret" and "ret_len"
-        # Put the size in ret_len
-        @f.puts "  *ret_len = _retval.size();"
-        # Allocate ret
-        ty = fn.ret.type.name
-        @f.puts "  *ret_arr = (#{ty}*)malloc((*ret_len) * sizeof(#{ty}));"
-        # Copy from the _retval vector
-        @f.puts "  memcpy(*ret_arr, &_retval[0], *ret_len);"
-        # Done !
       end
 
       @f.puts "}"
