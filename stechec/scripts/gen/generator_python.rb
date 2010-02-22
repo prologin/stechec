@@ -136,7 +136,7 @@ EOF
     name = str['str_name']
     nfields = str['str_field'].length
     @f.puts "template <>"
-    @f.puts "PyObject* cxx2lang<PyObject*, const #{name}&>(const #{name}& in)"
+    @f.puts "PyObject* cxx2lang<PyObject*, #{name}>(#{name} in)"
     @f.puts "{"
     @f.puts "  PyObject* tuple = PyTuple_New(#{nfields});"
     i = 0

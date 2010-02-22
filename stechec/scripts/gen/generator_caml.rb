@@ -133,7 +133,7 @@ EOF
     name = struct['str_name']
     nfields = struct['str_field'].length
     @f.puts "template <>"
-    @f.puts "value cxx2lang<value, const #{name}&>(const #{name}& in)"
+    @f.puts "value cxx2lang<value, #{name}>(#{name} in)"
     @f.puts "{"
     @f.puts "  value out = caml_alloc(#{nfields}, 0);"
     i = 0
