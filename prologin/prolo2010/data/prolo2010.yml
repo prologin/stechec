@@ -75,3 +75,9 @@ function:
     - [test, int array, un tableau d'entiers]
     - [test2, position array, une tableau de positions]
     - [test3, teststruct array, un tableau de structures de test]
+  -
+    fct_name: test_struct
+    fct_summary: Renvoie une structure
+    fct_ret_type: position
+    fct_arg:
+    - [test, position, une position]
