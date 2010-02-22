@@ -235,13 +235,21 @@ EOF
     # api -> caml glue
     for_each_user_fun do |fn|
       @f.print cxx_proto(fn)
-      print_body "static value *closure = NULL;
-
-  if (closure == NULL)
-    closure = caml_named_value(\"ml_#{fn.name}\");
-   callback(*closure, Val_unit);"
-    
+      @f.puts "", "{"
+      @f.puts "  static value *closure = NULL;"
+      @f.puts "  if (closure == NULL)"
+      @f.puts "    closure = caml_named_value(\"ml_#{fn.name}\");"
+      @f.puts "  value _ret = callback(*closure, Val_unit);"
+      if fn.ret.is_nil?
+        @f.puts "  return;"
+      elsif fn.ret.is_array?
+        @f.puts "  return lang2cxx_array<#{fn.ret.type.name}>(_ret);"
+      else
+        @f.puts "  return lang2cxx<value, #{fn.ret.name}>(_ret);"
+      end
+      @f.puts "}", ""
     end
+
     @f.close
   end
 
