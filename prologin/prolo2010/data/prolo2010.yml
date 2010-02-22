@@ -12,31 +12,6 @@ constant:
     cst_val: 25
     cst_comment: Taille de départ du terrain.
 
-struct:
-  - doc_extra: \subsection{Structures}
-  -
-    str_name: position
-    str_summary: Représente une position sur le terrain du jeu.
-    str_tuple: yes
-    str_field:
-      - [x, int, coordonnée X]
-      - [y, int, coordonnée Y]
-  -
-    str_name: infos_terrain
-    str_summary: Contient les informations sur le terrain du jeu.
-    str_tuple: no
-    str_field:
-      - [taille, int, taille actuelle du terrain]
-      - [min_coord, int, coordonnée minimale en X ou en Y]
-      - [max_coord, int, coordonnée maximale en X ou en Y]
-
-  -
-    str_name: teststruct
-    str_summary: Une structure de test.
-    str_tuple: no
-    str_field:
-      - [err, erreur, une erreur]
-      - [errarr, erreur array, un tableau d'erreurs]
 enum:
   - doc_extra: \subsection{Énumérations}
   -
@@ -52,6 +27,53 @@ enum:
       - [deja_spawn, une unité a déjà été spawn à ce tour]
       - [pas_spawnable, cette unité n'est pas spawnable]
       - [spawn_occupe, une unité est déjà présente sur le spawn]
+  -
+    enum_name: type_unite
+    enum_summary: Le type d'une unité sur le terrain
+    enum_field:
+      - [perroquet, 1 PA et portée de 1]
+      - [singe, 2 PA et portée de 3]
+      - [chat, 5 PA et portée de 1]
+      - [kangourou, 3 PA et portée de 2 (explose !)]
+
+struct:
+  - doc_extra: \subsection{Structures}
+  -
+    str_name: position
+    str_summary: Représente une position sur le terrain du jeu.
+    str_tuple: yes
+    str_field:
+      - [x, int, coordonnée X]
+      - [y, int, coordonnée Y]
+  -
+    str_name: taille_terrain
+    str_summary: Contient les informations sur la taille du terrain du jeu.
+    str_tuple: no
+    str_field:
+      - [taille, int, taille actuelle du terrain]
+      - [min_coord, int, coordonnée minimale en X ou en Y]
+      - [max_coord, int, coordonnée maximale en X ou en Y]
+  -
+    str_name: unite
+    str_summary: Représente une unité sur le terrain.
+    str_tuple: no
+    str_field:
+      - [pos, position, la position de l'unité]
+      - [ennemi, bool, vrai si l'unité appartient à l'ennemi]
+      - [type_unite_actuel, type_unite, "le type de l'unité, qui change si l'unité est déguisée"]
+      - [vrai_type_unite, type_unite, "le vrai type de l'unité (qui ne change pas lors du déguisement"]
+      - [ko, int, "une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité"]
+      - [pa, int, le nombre de PA restants à l'unité]
+      - [attaques, int, le nombre d'attaques restants à l'unité]
+  -
+    str_name: cartes
+    str_summary: Représente l'ensemble des cartes que vous pouvez utiliser.
+    str_tuple: no
+    str_field:
+      - [soin, int, le nombre de cartes « Quoi d'neuf docteur ? »]
+      - [deguisement, int, le nombre de cartes « Déguisement »]
+      - [banzai, int, le nombre de cartes « Banzaï »]
+      - [pacifisme, int, le nombre de cartes « Pacifisme »]
 
 function:
   - doc_extra: |
@@ -62,22 +84,63 @@ function:
      toutes les actions que vous avez déjà effectuées au cours de votre phase
      de tour de jeu.
   -
-    fct_name: case_existe
-    fct_summary: Retourne un booléen représentant si la case existe. On considére qu'une case existe si ses coordonnées sont dans le terrain (on exclut dont les coordonnées négatives, inférieures à la coordonnée minimale et supérieures à la coordonnée maximale donnés par la fonction infos_carte.
-    fct_ret_type: bool
-    fct_arg:
-    - [pos, position, la position dont on veut tester l'existence]
+    fct_name: mes_cartes
+    fct_summary: Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
+    fct_ret_type: cartes
+    fct_arg: []
   -
-    fct_name: test_tableau
-    fct_summary: Prend un tableau en param
-    fct_ret_type: void
-    fct_arg:
-    - [test, int array, un tableau d'entiers]
-    - [test2, position array, une tableau de positions]
-    - [test3, teststruct array, un tableau de structures de test]
+    fct_name: unites
+    fct_summary: Retourne la liste des unités actuellement en jeu.
+    fct_ret_type: unite array
+    fct_arg: []
   -
-    fct_name: test_struct
-    fct_summary: Renvoie une structure
-    fct_ret_type: position
+    fct_name: taille_terrain_actuelle
+    fct_summary: Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure \texttt{taille_terrain}.
+    fct_ret_type: taille_terrain
+    fct_arg: []
+
+  - doc_extra: |
+     \subsection{Fonctions d'utilisation des cartes}
+     Bla bla bla.
+  -
+    fct_name: soin
+    fct_summary: Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
+    fct_ret_type: erreur
     fct_arg:
-    - [test, position, une position]
+    - [cible, unite, l'unité à relever]
+  -
+    fct_name: deguisement
+    fct_summary: Utilise une carte « Déguisement » que vous avez dans votre main.
+    fct_ret_type: erreur
+    fct_arg:
+    - [cible, unite, l'unité à déguiser]
+    - [nouveau_type, type_unite, en quoi déguiser l'unité]
+  -
+    fct_name: banzai
+    fct_summary: Utilise une carte « Banzaï » que vous avez dans votre main.
+    fct_ret_type: erreur
+    fct_arg:
+    - [cible, unite, la cible de la carte]
+  -
+    fct_name: pacifisme
+    fct_summary: Utilise une carte « Pacifisme » que vous avez dans votre main.
+    fct_ret_type: erreur
+    fct_arg: []
+
+  - doc_extra: |
+     \subsection{Fonctions d'action}
+     Bla bla.
+  -
+    fct_name: deplacer
+    fct_summary: Déplace une unité vers une position à portée.
+    fct_ret_type: erreur
+    fct_arg:
+    - [cible, unite, l'unité à déplacer]
+    - [pos, position, la nouvelle position de l'unité]
+  -
+    fct_name: attaquer
+    fct_summary: Attaque une autre unité.
+    fct_ret_type: erreur
+    fct_arg:
+    - [attaquant, unite, l'unité qui attaque]
+    - [cible, unite, l'unité qui se fait attaquer]
