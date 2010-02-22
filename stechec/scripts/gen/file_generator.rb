@@ -182,9 +182,9 @@ to the script file : gen/" + script
     end
   end
 
-  def for_each_fun(print_comment = true, &block)
-    $conf['function'].delete_if {|x| x['doc_extra'] }
-    $conf['function'].each do |x|
+  def for_each_fun(print_comment = true, arr = 'function', &block)
+    $conf[arr].delete_if {|x| x['doc_extra'] }
+    $conf[arr].each do |x|
       fn = Function.new(@types, x)
       print_multiline_comment(x['fct_summary']) if print_comment
       block.call(fn)
@@ -193,28 +193,7 @@ to the script file : gen/" + script
   end
 
   def for_each_user_fun(print_comment = true, &block)
-    [ {"fct_summary" => "Fonction appelee au debut de la partie", 
-        "fct_name" => "init_game"}, 
-      {"fct_summary" => "Fonction appelee a la fin de la partie",
-        "fct_name" => "end_game"},
-      {"fct_summary" => "Fonction appele a chaque tour", 
-        "fct_name" => "play_turn"},
-
-# Only used for prolo2009:
-#      {"fct_summary" => "Fonction appelee a chaque phase de jeu", 
-#       "fct_name" => "jouer"},
-#      {"fct_summary" => "Fonction appelee a chaque phase d'enchere", 
-#       "fct_name" => "enchere"},
-#      {"fct_summary" => "Fonction appelee a chaque phase de placement de monument", 
-#       "fct_name" => "placement"},
-    ].each do |x|
-      x['fct_arg'] = [] unless x['fct_arg']
-      x['fct_ret_type'] = 'void' unless x['fct_ret_type']
-      fn = Function.new(@types, x)
-      print_multiline_comment(x['fct_summary']) if print_comment
-      block.call(fn)
-      @f.puts
-    end
+    for_each_fun(print_comment, 'user_function') { |fn| block.call(fn) }
   end
 
 end
