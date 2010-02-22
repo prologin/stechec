@@ -305,7 +305,7 @@ static void _init_python()
 /*
 ** Run a python function.
 */
-static void _call_python_function(const char* name)
+static PyObject* _call_python_function(const char* name)
 {
   static bool initialized = false;
 
@@ -328,7 +328,8 @@ static void _call_python_function(const char* name)
   }
   if (result == NULL && PyErr_Occurred())
     PyErr_Print();
-  Py_XDECREF(result);
+
+  return result;
 }
 
 /*
@@ -338,8 +339,21 @@ static void _call_python_function(const char* name)
 
     for_each_user_fun(false) do |fn|
       @f.print cxx_proto(fn, '', 'extern "C"')
-      print_body "  _call_python_function(\"" + fn.name + "\");"
-     end
+      @f.puts "", "{"
+      @f.puts "  PyObject* _retval = _call_python_function(\"#{fn.name}\");"
+      if fn.ret.is_nil? then
+        @f.puts "  Py_XDECREF(_retval);"
+      elsif fn.ret.is_array? then
+        @f.puts "  #{cxx_type(fn.ret)} ret = lang2cxx_array<#{cxx_type(fn.ret.type)}>(_retval);"
+        @f.puts "  Py_XDECREF(_retval);"
+        @f.puts "  return ret;"
+      else
+        @f.puts "  #{cxx_type(fn.ret)} ret = lang2cxx<PyObject*, #{cxx_type(fn.ret)}>(_retval);"
+        @f.puts "  Py_XDECREF(_retval);"
+        @f.puts "  return ret;"
+      end
+      @f.puts "}",""
+    end
 
     @f.close
   end
