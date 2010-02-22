@@ -19,7 +19,6 @@ enum:
     enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action.
     enum_field:
       - [ok, aucune erreur n'est survenue]
-      - [pas_une_unite, la position ne représente pas une unité]
       - [pas_a_portee, la cible n'est pas à portée]
       - [plus_de_pa, nombre maximal d'actions par tour dépassé]
       - [deja_deplace, cette unité a déjà été déplacée]
@@ -27,6 +26,8 @@ enum:
       - [deja_spawn, une unité a déjà été spawn à ce tour]
       - [pas_spawnable, cette unité n'est pas spawnable]
       - [spawn_occupe, une unité est déjà présente sur le spawn]
+      - [pas_a_moi, l'unité ciblée n'est pas à vous]
+      - [phase_cartes_terminee, vous ne pouvez plus poser de cartes car vous avez fait une action]
   -
     enum_name: type_unite
     enum_summary: Le type d'une unité sur le terrain
@@ -144,6 +145,17 @@ function:
     fct_arg:
     - [attaquant, unite, l'unité qui attaque]
     - [cible, unite, l'unité qui se fait attaquer]
+  -
+    fct_name: spawn
+    fct_summary: Fait apparaitre une unité sur la case de spawn.
+    fct_ret_type: erreur
+    fct_arg:
+    - [quoi, type_unite, l'unité à faire apparaitre]
+  -
+    fct_name: annuler
+    fct_summary: Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
+    fct_ret_type: bool
+    fct_arg: []
 
 user_function:
   -
