@@ -111,12 +111,12 @@ int cxx2lang<int, int>(int in)
 }
 
 template<typename Lang, typename Cxx>
-void cxx2lang_array(Lang* &tab, size_t &len, const std::vector<Cxx>& vect)
+void cxx2lang_array(Lang** tab, size_t* len, const std::vector<Cxx>& vect)
 {
-  len = vect.size();
-  tab = (Lang *)malloc(len * sizeof(Lang));
-  for (int i = 0; i < len; ++i)
-    tab[i] = cxx2lang<Lang, Cxx>(vect[i]);
+  *len = vect.size();
+  *tab = (Lang *)malloc((*len) * sizeof(Lang));
+  for (int i = 0; i < *len; ++i)
+    (*tab)[i] = cxx2lang<Lang, Cxx>(vect[i]);
 }
 EOF
     for_each_enum do |x|
@@ -210,12 +210,13 @@ EOF
       @f.puts ");"
 
       unless fn.ret.is_nil?
-        @f.print "  return "
         if not fn.ret.is_array? then
+          @f.print "  return "
           ln = c_type(fn.ret)
           cxx = cxx_type(fn.ret)
           @f.puts "cxx2lang<#{ln}, #{cxx}>(_retval);"
         else
+          @f.print "  "
           ln = c_type(fn.ret.type)
           cxx = cxx_type(fn.ret.type)
           @f.puts "cxx2lang_array<#{ln}, #{cxx}>(ret_arr, ret_len, _retval);"
@@ -254,6 +255,8 @@ EOF
         field = f[0]
         @f.puts(if type.is_array? then
                   "  std::vector<#{type.type.name}> #{field};"
+                elsif type.is_struct? then
+                  "  __internal__cxx__#{type.name} #{field};"
                 else
                   "  #{type.name} #{field}; "
                 end)
@@ -290,7 +293,7 @@ class CFileGenerator < CProto
       type = @types[type]
       if type.is_array? then
         "  size_t #{field}_len;\n  #{type.type.name} *#{field}_arr;"
-      else "  #{type.name} #{field};"
+      else "  #{c_type(type)} #{field};"
       end
     end
     for_each_fun do |f|
