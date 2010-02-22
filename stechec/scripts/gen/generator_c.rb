@@ -140,7 +140,7 @@ EOF
           else type_ = type
           end
           lang_type = c_type(type_)
-          if type_.is_struct? then cxx_type = "__internal__cxx__" + cxx_type(type_) else cxx_type = cxx_type(type_) end
+          cxx_type = cxx_type(type_)
           if type.is_array? then
             @f.puts "#{name_fun}_array<#{lang_type}, #{cxx_type}>(#{lang}.#{name}_arr, #{lang}.#{name}_len, #{cxx}.#{name});"
           else
