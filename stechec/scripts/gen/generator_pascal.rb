@@ -83,6 +83,8 @@ class PascalCxxFileGenerator < CxxFileGenerator
     @f.puts <<-EOF
 #include "interface.hh"
 
+#include <cstdlib>
+
 template<typename Lang, typename Cxx>
 Cxx lang2cxx(Lang in)
 {
@@ -101,8 +103,9 @@ bool lang2cxx<bool, bool>(bool in)
 }
 
 template<typename Lang, typename Cxx>
-std::vector<Cxx> vect lang2cxx_array(Lang *l)
+std::vector<Cxx> lang2cxx_array(Lang *l)
 {
+  std::vector<Cxx> vect;
   int len = *( ((int *)l) -1 );
   vect.reserve(len);
   for (size_t i = 0; i < len; ++i)
@@ -130,7 +133,7 @@ bool cxx2lang<bool, bool>(bool in)
 template<typename Lang, typename Cxx>
 Lang * cxx2lang_array(const std::vector<Cxx>& vect)
 {
-  len = vect.size(); 
+  size_t len = vect.size(); 
   int * tab = malloc(sizeof(int) + sizeof(Lang) * len);
   tab[0] = len;
   Lang * tabl = (Lang *)(tab + 1);
@@ -139,7 +142,6 @@ Lang * cxx2lang_array(const std::vector<Cxx>& vect)
   return tabl;
 }
 
-extern "C" {
 EOF
     for_each_enum do |x|
       name = x['enum_name']
@@ -183,6 +185,7 @@ EOF
       @f.puts " return out;"
       @f.puts "}"
     end
+    @f.puts "extern \"C\" {"
     for_each_fun do |fn|
       @f.puts c_proto(fn) # todo ...
       @f.puts "{"
@@ -234,12 +237,11 @@ EOF
     print_banner "generator_c.rb"
     @f.puts "#ifndef INTERFACE_HH_", "# define INTERFACE_HH_"
     @f.puts "", "# include <vector>", "# include <string>", ""
-    @f.puts 'extern "C" {'
-    @f.puts "# include \"#{$conf['conf']['player_filename']}.h\""
-    @f.puts "}", ""
+    build_constants
+    build_enums
+    build_structs
     for_each_fun do |fn|
-      proto = CxxProto.new
-      @f.print proto.cxx_proto(fn), ";\n"
+      @f.print cxx_proto(fn), ";\n"
     end
     @f.puts "#endif"
     @f.close
