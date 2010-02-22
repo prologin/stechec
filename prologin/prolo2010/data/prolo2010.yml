@@ -144,3 +144,25 @@ function:
     fct_arg:
     - [attaquant, unite, l'unité qui attaque]
     - [cible, unite, l'unité qui se fait attaquer]
+
+user_function:
+  -
+    fct_name: init_game
+    fct_summary: Fonction appellée au début de la partie.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: retirer_ko
+    fct_summary: Fonction appellée pour la phase de retrait de KO.
+    fct_ret_type: unite
+    fct_arg: []
+  -
+    fct_name: jouer
+    fct_summary: Fonction appellée pour la phase de jeu.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: end_game
+    fct_summary: Fonction appellée à la fin de la partie.
+    fct_ret_type: void
+    fct_arg: []
