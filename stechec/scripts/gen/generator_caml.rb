@@ -293,7 +293,7 @@ class CamlFileGenerator < FileGenerator
   end
 
   def print_constant(type, name, val)
-      @f.print 'let ', name.downcase, " = ", val, ";;\n"
+      @f.print 'let ', name.downcase, " = ", val, "\n"
   end
 
   def build_enums
@@ -334,7 +334,7 @@ class CamlFileGenerator < FileGenerator
     else
       @f.print "unit -> "
     end
-    @f.print conv_type(fn.ret), ' = "ml_', fn.name, '";;'
+    @f.print conv_type(fn.ret), ' = "ml_', fn.name, '"'
   end
   
   def generate_makefile
