@@ -10,17 +10,14 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#include "ClientDiffer.hh"
 
-// @@GEN_HERE@@
+ClientDiffer::ClientDiffer(GameData* game, Client* client)
+  : StechecClientDiffer(game, client)
+{
+}
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
-};
-
-#endif // !CONSTANT_HH_
+void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
+{
+  // TODO
+}

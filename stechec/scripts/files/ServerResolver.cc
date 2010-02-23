@@ -10,17 +10,15 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#include "ServerResolver.hh"
 
-// @@GEN_HERE@@
+ServerResolver::ServerResolver(GameData* game, Server* server)
+  : StechecServerResolver(game, server)
+{
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
-};
+}
 
-#endif // !CONSTANT_HH_
+void ServerResolver::ApplyResolver(CommandListRef cmdList[])
+{
+  // TODO
+}

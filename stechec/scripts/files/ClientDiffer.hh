@@ -10,17 +10,21 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#ifndef CLIENTDIFFER_HH_
+# define CLIENTDIFFER_HH_
 
-// @@GEN_HERE@@
+# include "Contest.hh"
+# include "GameData.hh"
+# include "Client.hh"
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
+class ClientDiffer : public StechecClientDiffer
+{
+public:
+  ClientDiffer(GameData* game, Client* client);
+
+  // Dispatcheur de paquets
+  virtual void ApplyDiff(const StechecPkt *com);
 };
 
-#endif // !CONSTANT_HH_
+#endif // !CLIENTDIFFER_HH_
+

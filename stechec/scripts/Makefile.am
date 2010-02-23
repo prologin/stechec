@@ -63,11 +63,28 @@ dist_bash_DATA =				\
 nobase_pkgdata_DATA =				\
 	files/main.c				\
 	files/rules.mk				\
-	files/interface.cc			\
 	files/Api.cc				\
 	files/Api.hh				\
-	files/bin2c.lua				\
+	files/Client.hh				\
+	files/Client.cc				\
+	files/ClientDiffer.hh				\
+	files/ClientDiffer.cc				\
+	files/ClientEntry.hh				\
+	files/ClientEntry.cc				\
 	files/Constant.hh			\
+	files/GameData.hh				\
+	files/GameData.cc				\
+	files/Makefile.am				\
+	files/Server.hh				\
+	files/Server.cc				\
+	files/ServerEntry.hh				\
+	files/ServerEntry.cc				\
+	files/ServerResolver.hh				\
+	files/ServerResolver.cc				\
+	files/interface.cc				\
+	files/check.cc				\
+	files/load_rules.cc				\
+	files/bin2c.lua				\
 	files/forbidden_fun-c			\
 	files/forbidden_fun-java		\
 	files/forbidden_fun-pascal		\

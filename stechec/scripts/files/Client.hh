@@ -10,17 +10,17 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#ifndef CLIENT_HH_
+# define CLIENT_HH_
 
-// @@GEN_HERE@@
+# include "Contest.hh"
+# include "Constant.hh"
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
+class Client : public StechecClient
+{
+public:
+  Client(GameData *g);
+  virtual ~Client() {}
 };
 
-#endif // !CONSTANT_HH_
+#endif // !CLIENT_HH_

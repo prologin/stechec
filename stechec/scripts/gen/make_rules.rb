@@ -25,7 +25,30 @@ install_path = Pathname.new($install_path) + package_name + "rules"
 install_path.mkpath
 
 # Copie les quelques squelettes.
-%w[Api.cc Api.hh interface.cc Constant.hh].each do |x|
+files = %w{
+  Api.cc
+  Api.hh
+  Client.cc
+  Client.hh
+  ClientDiffer.cc
+  ClientDiffer.hh
+  ClientEntry.cc
+  ClientEntry.hh
+  Constant.hh
+  GameData.cc
+  GameData.hh
+  Makefile.am
+  Server.cc
+  Server.hh
+  ServerEntry.cc
+  ServerEntry.hh
+  ServerResolver.cc
+  ServerResolver.hh
+  check.cc
+  interface.cc
+  load_rules.cc
+}
+files.each do |x|
   if File.exist? 'files/' + x
     FileUtils.cp 'files/' + x, install_path.to_s
   else
@@ -39,6 +62,16 @@ puts "Generating API files from YAML."
 Dir.chdir(install_path)
 
 class CxxFileGenerator < CxxProto
+  def replace(line)
+    replaces = {}
+    replaces['!!year!!'] = Date.today.year.to_s
+    replaces['!!package_name!!'] = $conf['conf']['package_name']
+    replaces['!!rule_lib!!'] = $conf['conf']['server_rule_lib']
+    replaces.each do |key, value|
+      line = line.sub(key, value)
+    end
+    line
+  end
 
   def fill_file_section(filename, &block)
     puts "Cook #{filename}..."
@@ -48,6 +81,23 @@ class CxxFileGenerator < CxxProto
       while s = fr.gets do
         if s =~ /@@GEN_HERE@@/ then
           block.call
+        else
+          @f.puts s
+        end
+      end
+      @f.close
+    end
+    File.unlink(filename + ".tmp")
+  end
+
+  def expand_variables(filename)
+    puts "Expanding #{filename}..."
+    FileUtils.mv(filename, filename + ".tmp")
+    File.open(filename + ".tmp" , 'r') do |fr|
+      @f = File.new( filename, 'w')
+      while s = fr.gets do
+        if s =~ /!!.*!!/ then
+          @f.puts(replace s)
         else
           @f.puts s
         end
@@ -108,7 +158,13 @@ class CxxFileGenerator < CxxProto
   end
 end
 
+def do_nothing
+end
+
 gen = CxxFileGenerator.new
+files.each do |fn|
+  gen.expand_variables(fn)
+end
 gen.fill_file_section("Api.cc") { gen.print_cxx_api }
 gen.fill_file_section("Api.hh") { gen.print_cxx_api_head }
 gen.fill_file_section("interface.cc") { gen.print_interface }

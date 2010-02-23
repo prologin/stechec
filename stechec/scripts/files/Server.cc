@@ -10,17 +10,12 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#include "Server.hh"
 
-// @@GEN_HERE@@
+#include "GameData.hh"
+#include "ServerEntry.hh"
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
-};
-
-#endif // !CONSTANT_HH_
+Server::Server(GameData* g)
+  : StechecServer(g)
+{
+}

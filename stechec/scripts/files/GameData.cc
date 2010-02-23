@@ -10,17 +10,22 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#include "GameData.hh"
+#include <ctime>
+#include <cstdlib>
 
-// @@GEN_HERE@@
+//todo, better, call Init() from BeforeNewGame, etc..
+#define INIT()					\
+  assert(initialized_);
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
-};
+GameData::GameData()
+{
+  srand(time(0));
 
-#endif // !CONSTANT_HH_
+  // TODO
+}
+
+void GameData::Init() {
+  // TODO
+  initialized_ = true;
+}

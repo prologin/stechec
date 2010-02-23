@@ -10,17 +10,15 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
-
-// @@GEN_HERE@@
-
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
+class ClientCx {
+ public:
+  bool process(bool = true);
 };
 
-#endif // !CONSTANT_HH_
+bool ClientCx::process(bool) { return true; }
+
+int main() {
+  ClientCx cx;
+  cx.process();
+  return 0;
+}

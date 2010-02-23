@@ -10,17 +10,9 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#include "GameData.hh"
+#include "Client.hh"
 
-// @@GEN_HERE@@
-
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
-};
-
-#endif // !CONSTANT_HH_
+Client::Client(GameData* g) : StechecClient(g)
+{
+}

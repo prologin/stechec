@@ -7,7 +7,7 @@
 ** The complete GNU General Public Licence Notice can be found as the
 ** `NOTICE' file in the root directory.
 **
-** Copyright (C) 2010 Prologin
+** Copyright (C) !!year!! Prologin
 */
 
 #ifndef API_HH_

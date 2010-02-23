@@ -10,17 +10,28 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#ifndef GAMEDATA_HH_
+# define GAMEDATA_HH_
 
-// @@GEN_HERE@@
+# include "Contest.hh"
+# include "Constant.hh"
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
+/*!
+** This class is meant to contain all data, accessible from
+** everywhere.
+*/
+class GameData: public StechecGameData
+{
+public:
+  GameData();
+  // Call this before everything else.
+  void Init();
+
+  // TODO
+
+private:
+  bool initialized_;
+
 };
 
-#endif // !CONSTANT_HH_
+#endif // !GAMEDATA_HH_

@@ -10,17 +10,18 @@
 ** Copyright (C) !!year!! Prologin
 */
 
-#ifndef CONSTANT_HH_
-# define CONSTANT_HH_
+#ifndef SERVER_HH_
+# define SERVER_HH_
 
-// @@GEN_HERE@@
+# include "Contest.hh"
+# include "GameData.hh"
 
-// Ids for message type.
-enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
-  LAST_MSG
+class Server : public StechecServer
+{
+public:
+  Server(GameData* g);
+  virtual ~Server() {}
+
 };
 
-#endif // !CONSTANT_HH_
+#endif // !SERVER_HH_
