@@ -360,10 +360,10 @@ class CSharpProto < CProto
 
   def conv_type(t)
     if t.is_array?
-      t.type.name + "[]"
+      conv_type(t.type) + "[]"
     else 
       if t.is_struct? or t.is_enum?
-        t.name.capitalize
+        camel_case(t.name)
       else
         t.name
       end
@@ -371,12 +371,12 @@ class CSharpProto < CProto
   end
 
   def print_constant(type, name, val)
-      @f.print "\tpublic const int ", name.downcase, " = ", val, ";\n"
+      @f.print "\tpublic const int ", name, " = ", val, ";\n"
   end
 
   def build_enums
     for_each_enum do |x|
-      @f.puts "\tpublic enum #{x['enum_name'].capitalize} {"
+      @f.puts "\tpublic enum #{camel_case(x['enum_name'])} {"
       x['enum_field'].each do |f|
         name = f[0].upcase
         @f.print "\t\t", name, ", "
@@ -400,7 +400,7 @@ class CSharpProto < CProto
 
   def build_structs_generic(&show_field)
     for_each_struct do |x|
-      @f.puts "\tstruct #{x['str_name'].capitalize} {"
+      @f.puts "\tstruct #{camel_case(x['str_name'])} {"
       x['str_field'].each do |f|
         @f.print "\t\tpublic #{show_field.call(f[0], f[1])} // <- ", f[2], "\n"
       end
