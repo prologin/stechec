@@ -11,3 +11,13 @@
 */
 
 #include "ClientDiffer.hh"
+
+ClientDiffer::ClientDiffer(GameData* game, Client* client)
+  : StechecClientDiffer(game, client)
+{
+}
+
+void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
+{
+  // TODO
+}

@@ -10,4 +10,64 @@
 ** Copyright (C) 2010 Prologin
 */
 
+#include "GameData.hh"
 #include "ServerEntry.hh"
+#include "misc/Conf.hh"
+
+ServerEntry::ServerEntry(GameData* game, Server* server,
+                         const ConfSection* cfg)
+  : StechecServerEntry(game, server, cfg)
+{
+}
+
+ServerEntry::~ServerEntry(void)
+{
+}
+
+
+int		ServerEntry::beforeGame(void)
+{
+
+  g_->Init();
+
+  // TODO
+  
+  return 0;
+}
+
+int         ServerEntry::initGame(void)
+{
+  // TODO
+  return 0;
+}
+
+int         ServerEntry::beforeNewTurn(void)
+{
+  // TODO
+  return 0;
+}
+
+int         ServerEntry::afterNewTurn(void)
+{
+  // TODO
+  return 0;
+}
+
+
+int         ServerEntry::afterGame(void)
+{
+  // TODO
+  return 0;
+}
+
+bool        ServerEntry::isMatchFinished(void)
+{
+  // TODO
+  return true;
+}
+
+int ServerEntry::getScore(int uid)
+{
+  // TODO
+  return 0;
+}

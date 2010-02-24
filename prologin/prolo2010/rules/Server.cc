@@ -11,3 +11,11 @@
 */
 
 #include "Server.hh"
+
+#include "GameData.hh"
+#include "ServerEntry.hh"
+
+Server::Server(GameData* g)
+  : StechecServer(g)
+{
+}

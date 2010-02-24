@@ -13,4 +13,28 @@
 #ifndef SERVERENTRY_HH_
 # define SERVERENTRY_HH_
 
-#endif
+# include "Contest.hh"
+# include "Server.hh"
+
+class ServerEntry : public StechecServerEntry
+{
+public:
+  ServerEntry(GameData* game, Server* server, const ConfSection* cfg);
+  virtual ~ServerEntry();
+
+  // Different entry pointg
+  virtual int	beforeGame();
+  virtual int	initGame();
+  virtual int	beforeNewTurn();
+  virtual int	afterNewTurn();
+  virtual int	afterGame();
+
+  // Indique la fin du jeu
+  virtual bool	isMatchFinished();
+
+  // Recupere le score, appele pour chaque joueur a la fin
+  // de la partie
+  virtual int	getScore(int uid);
+};
+
+#endif // !SERVERENTRY_HH_

@@ -13,4 +13,15 @@
 #ifndef SERVER_HH_
 # define SERVER_HH_
 
-#endif
+# include "Contest.hh"
+# include "GameData.hh"
+
+class Server : public StechecServer
+{
+public:
+  Server(GameData* g);
+  virtual ~Server() {}
+
+};
+
+#endif // !SERVER_HH_

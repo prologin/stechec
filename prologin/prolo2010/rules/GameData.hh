@@ -14,11 +14,24 @@
 # define GAMEDATA_HH_
 
 # include "Contest.hh"
+# include "Constant.hh"
 
-class GameData : public StechecGameData
+/*!
+** This class is meant to contain all data, accessible from
+** everywhere.
+*/
+class GameData: public StechecGameData
 {
 public:
   GameData();
+  // Call this before everything else.
+  void Init();
+
+  // TODO
+
+private:
+  bool initialized_;
+
 };
 
-#endif
+#endif // !GAMEDATA_HH_

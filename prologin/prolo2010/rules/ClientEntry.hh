@@ -13,4 +13,22 @@
 #ifndef CLIENTENTRY_HH_
 # define CLIENTENTRY_HH_
 
-#endif
+# include "Contest.hh"
+# include "ClientDiffer.hh"
+# include "Client.hh"
+
+class ClientEntry : public StechecClientEntry
+{
+public:
+
+  ClientEntry(GameData* game, ClientDiffer* diff, Client* client);
+
+  virtual int	beforeGame();
+  virtual int	initGame();
+  virtual int	beforeNewTurn();
+  virtual int	afterNewTurn();
+  virtual int	afterGame();
+};
+
+#endif // !CLIENTENTRY_HH_
+

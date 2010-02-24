@@ -10,4 +10,9 @@
 ** Copyright (C) 2010 Prologin
 */
 
+#include "GameData.hh"
 #include "Client.hh"
+
+Client::Client(GameData* g) : StechecClient(g)
+{
+}

@@ -13,4 +13,18 @@
 #ifndef CLIENTDIFFER_HH_
 # define CLIENTDIFFER_HH_
 
-#endif
+# include "Contest.hh"
+# include "GameData.hh"
+# include "Client.hh"
+
+class ClientDiffer : public StechecClientDiffer
+{
+public:
+  ClientDiffer(GameData* game, Client* client);
+
+  // Dispatcheur de paquets
+  virtual void ApplyDiff(const StechecPkt *com);
+};
+
+#endif // !CLIENTDIFFER_HH_
+

@@ -11,3 +11,14 @@
 */
 
 #include "ServerResolver.hh"
+
+ServerResolver::ServerResolver(GameData* game, Server* server)
+  : StechecServerResolver(game, server)
+{
+
+}
+
+void ServerResolver::ApplyResolver(CommandListRef cmdList[])
+{
+  // TODO
+}

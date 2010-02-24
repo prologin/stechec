@@ -11,7 +11,21 @@
 */
 
 #include "GameData.hh"
+#include <ctime>
+#include <cstdlib>
+
+//todo, better, call Init() from BeforeNewGame, etc..
+#define INIT()					\
+  assert(initialized_);
 
 GameData::GameData()
 {
+  srand(time(0));
+
+  // TODO
+}
+
+void GameData::Init() {
+  // TODO
+  initialized_ = true;
 }

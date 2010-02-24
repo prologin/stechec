@@ -22,4 +22,3 @@ int main() {
   cx.process();
   return 0;
 }
-

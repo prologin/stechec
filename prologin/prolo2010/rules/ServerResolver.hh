@@ -13,4 +13,14 @@
 #ifndef SERVERRESOLVER_HH_
 # define SERVERRESOLVER_HH_
 
-#endif
+# include "GameData.hh"
+# include "Server.hh"
+
+class ServerResolver : public StechecServerResolver
+{
+public:
+  ServerResolver(GameData* game, Server* server);
+  virtual void	ApplyResolver(CommandListRef cmdList[]);
+};
+
+#endif // !SERVERRESOLVER_HH_

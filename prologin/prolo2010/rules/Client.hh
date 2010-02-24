@@ -13,4 +13,14 @@
 #ifndef CLIENT_HH_
 # define CLIENT_HH_
 
-#endif
+# include "Contest.hh"
+# include "Constant.hh"
+
+class Client : public StechecClient
+{
+public:
+  Client(GameData *g);
+  virtual ~Client() {}
+};
+
+#endif // !CLIENT_HH_
