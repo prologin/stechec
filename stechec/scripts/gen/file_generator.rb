@@ -354,25 +354,22 @@ class CSharpProto < CProto
   def print_multiline_comment(str)
     return unless str
     @f.puts '///'
-    str.each {|s| @f.print '// ', s }
-    # @f.puts
-    @f.puts "", "//"
+    str.each_line {|s| @f.print '// ', s }
+    @f.puts '//'
   end
 
   def print_empty_arg
   end
 
-  def print_proto(name, ret_type, args, ext = "", types = @types)
+  def print_proto(fn, ext = "", types = @types)
     ext = ext + " " if ext != ""
-    @f.print ext, @typehandler.ret(ret_type)
-    @f.print " ", name, "("
-    if args != nil and args != []
-      print_args = args.collect {
-        |arg| @typehandler.arg(arg[1], arg[0])
+    @f.print ext, fn.ret.name
+    @f.print " ", fn.name, "("
+    if fn.args != nil and fn.args != []
+      print_args = fn.args.collect {
+        |arg| [arg.type.name, arg.name]
       }
       @f.print print_args.join(", ")
-    else
-      print_empty_arg
     end
     @f.print ")"
   end
