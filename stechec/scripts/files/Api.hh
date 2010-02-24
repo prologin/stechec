@@ -37,6 +37,9 @@ public:
 
   virtual ~Api() { }
 
+protected:
+  virtual void teamSwitched();
+
 public:
 
   // @@GEN_HERE@@

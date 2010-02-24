@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-lib_LTLIBRARIES = !!rule_lib!!''.la
+lib_LTLIBRARIES = !!rule_lib!!.la
 
 !!rule_lib!!_la_SOURCES =			\
 	Api.cc				\

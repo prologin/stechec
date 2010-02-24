@@ -19,3 +19,8 @@ Api* api;
 
 
 // @@GEN_HERE@@
+
+
+void Api::teamSwitched()
+{
+}
