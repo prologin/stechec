@@ -50,10 +50,6 @@ class CSharpCxxFileGenerator < CSharpProto
     @lang = "C++ (for C# interface)"
   end
 
-  def print_constant(type, name, val)
-      @f.print '                public const int ', name.downcase, ' = ', val, ";\n"
-  end
-
   def generate_header()
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_cs.rb"
@@ -102,20 +98,20 @@ private:
     @f.puts "using System.Runtime.InteropServices;", "using System.Runtime.CompilerServices;", ""
 
     @f.puts "namespace Prologin {"
-    @f.puts "\tclass API {"
 
     build_constants
+    build_enums
+    build_structs
 
-#    for_each_struct do |s|
-      
-
+    @f.puts "\tclass API {"
     for_each_fun do |fn|
       @f.puts "\t\t[MethodImplAttribute(MethodImplOptions.InternalCall)]"
       print_proto(fn, "\t\tpublic static extern");
       @f.puts ";"
     end
-
     @f.puts "\t}", "}"
+
+    @f.close
   end
 
   def generate_source()

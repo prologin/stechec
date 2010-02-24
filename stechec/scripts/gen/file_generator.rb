@@ -353,18 +353,65 @@ class CSharpProto < CProto
 
   def print_multiline_comment(str)
     return unless str
-    @f.puts '///'
-    str.each_line {|s| @f.print '// ', s }
-    @f.puts '//'
+    @f.puts "///"
+    str.each_line {|s| @f.print "// ", s }
+    @f.puts "\n///"
   end
 
-  def print_empty_arg
+  def conv_type(t)
+    if t.is_array?
+      t.type.name + "[]"
+    else 
+      if t.is_struct? or t.is_enum?
+        t.name.capitalize
+      else
+        t.name
+      end
+    end
+  end
+
+  def print_constant(type, name, val)
+      @f.print "\tpublic const int ", name.downcase, " = ", val, ";\n"
+  end
+
+  def build_enums
+    for_each_enum do |x|
+      @f.puts "\tpublic enum #{x['enum_name'].capitalize} {"
+      x['enum_field'].each do |f|
+        name = f[0].upcase
+        @f.print "\t\t", name, ", "
+        @f.print "// <- ", f[1], "\n"
+      end
+      @f.puts "\t}\n"
+    end
+  end
+
+  def camel_case(str)
+    strs = str.split("_")
+    strs.each { |s| s.capitalize! }
+    strs.join
+  end
+
+  def build_structs
+    build_structs_generic do |field, type|
+      "#{conv_type(@types[type])} #{camel_case(field)};"
+    end
+  end
+
+  def build_structs_generic(&show_field)
+    for_each_struct do |x|
+      @f.puts "\tstruct #{x['str_name'].capitalize} {"
+      x['str_field'].each do |f|
+        @f.print "\t\tpublic #{show_field.call(f[0], f[1])} // <- ", f[2], "\n"
+      end
+      @f.puts "\t}"
+    end
   end
 
   def print_proto(fn, ext = "", types = @types)
     ext = ext + " " if ext != ""
-    @f.print ext, fn.ret.name
-    @f.print " ", fn.name, "("
+    @f.print ext, conv_type(fn.ret)
+    @f.print " ", camel_case(fn.name), "("
     if fn.args != nil and fn.args != []
       print_args = fn.args.collect {
         |arg| [arg.type.name, arg.name]
