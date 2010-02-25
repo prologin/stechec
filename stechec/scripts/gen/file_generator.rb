@@ -353,26 +353,70 @@ class CSharpProto < CProto
 
   def print_multiline_comment(str)
     return unless str
-    @f.puts '///'
-    str.each {|s| @f.print '// ', s }
-    # @f.puts
-    @f.puts "", "//"
+    @f.puts "///"
+    str.each_line {|s| @f.print "// ", s }
+    @f.puts "\n///"
   end
 
-  def print_empty_arg
+  def conv_type(t)
+    if t.is_array?
+      conv_type(t.type) + "[]"
+    else 
+      if t.is_struct? or t.is_enum?
+        camel_case(t.name)
+      else
+        t.name
+      end
+    end
   end
 
-  def print_proto(name, ret_type, args, ext = "", types = @types)
+  def print_constant(type, name, val)
+      @f.print "\tpublic const int ", name, " = ", val, ";\n"
+  end
+
+  def build_enums
+    for_each_enum do |x|
+      @f.puts "\tpublic enum #{camel_case(x['enum_name'])} {"
+      x['enum_field'].each do |f|
+        name = f[0].upcase
+        @f.print "\t\t", name, ", "
+        @f.print "// <- ", f[1], "\n"
+      end
+      @f.puts "\t}\n"
+    end
+  end
+
+  def camel_case(str)
+    strs = str.split("_")
+    strs.each { |s| s.capitalize! }
+    strs.join
+  end
+
+  def build_structs
+    build_structs_generic do |field, type|
+      "#{conv_type(@types[type])} #{camel_case(field)};"
+    end
+  end
+
+  def build_structs_generic(&show_field)
+    for_each_struct do |x|
+      @f.puts "\tstruct #{camel_case(x['str_name'])} {"
+      x['str_field'].each do |f|
+        @f.print "\t\tpublic #{show_field.call(f[0], f[1])} // <- ", f[2], "\n"
+      end
+      @f.puts "\t}"
+    end
+  end
+
+  def print_proto(fn, ext = "", types = @types)
     ext = ext + " " if ext != ""
-    @f.print ext, @typehandler.ret(ret_type)
-    @f.print " ", name, "("
-    if args != nil and args != []
-      print_args = args.collect {
-        |arg| @typehandler.arg(arg[1], arg[0])
+    @f.print ext, conv_type(fn.ret)
+    @f.print " ", camel_case(fn.name), "("
+    if fn.args != nil and fn.args != []
+      print_args = fn.args.collect {
+        |arg| [arg.type.name, arg.name]
       }
       @f.print print_args.join(", ")
-    else
-      print_empty_arg
     end
     @f.print ")"
   end

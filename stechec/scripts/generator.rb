@@ -66,7 +66,7 @@ def make_player
   end
 
   CFileGenerator.new.build
-#  CSharpFileGenerator.new.build
+  CSharpFileGenerator.new.build
   PascalFileGenerator.new.build
   CxxFileGenerator.new.build
   CamlFileGenerator.new.build

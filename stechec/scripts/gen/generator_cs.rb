@@ -12,15 +12,42 @@
 
 require "gen/file_generator"
 
+def cs_proto(fn)
+  # Returns the prototype of a C function
+  # WARNING: arrays are hard to handle in C...
+  buf = ""
+  if fn.ret.is_array?
+    rettype = "void"
+  else
+    rettype = fn.ret.name
+  end
+
+  buf += "\t\tpublic " + rettype + " " + fn.name + "("
+
+  # Handle arguments
+  args = []
+  fn.args.each do |arg|
+    if not arg.type.is_array?
+      args = args << "#{arg.type} #{arg.name}"
+    else
+      args = args << "#{arg.type.type.name}[] #{arg.name}_arr"
+    end
+  end
+  if fn.ret.is_array?
+    args = args << "#{fn.ret.type.name}[] ret_arr"
+  end
+  if args.empty?
+    args = args << ""
+  end
+  buf += args.join(", ")
+  buf + ")\n"
+end
+
 # C++ generator, for C# interface
 class CSharpCxxFileGenerator < CSharpProto
   def initialize
     super
     @lang = "C++ (for C# interface)"
-  end
-
-  def print_constant(type, name, val)
-      @f.print '                public const int ', name, ' = ', val, ";\n"
   end
 
   def generate_header()
@@ -58,8 +85,8 @@ private:
     EOF
 
     @f.puts "", 'extern "C" {', ""
-    for_each_fun { |x, y, z| print_proto(x, y, z, "extern"); @f.puts ";" }
-    for_each_user_fun { |x, y, z| print_proto(x, y, z); @f.puts ";" }
+    for_each_fun { |fn| print_proto(fn, "extern"); @f.puts ";" }
+    for_each_user_fun { |fn| print_proto(fn); @f.puts ";" }
     @f.puts "}", "", "#endif // !INTERFACE_HH_"
     @f.close
   end
@@ -71,17 +98,20 @@ private:
     @f.puts "using System.Runtime.InteropServices;", "using System.Runtime.CompilerServices;", ""
 
     @f.puts "namespace Prologin {"
-    @f.puts "\tclass API {"
 
     build_constants
+    build_enums
+    build_structs
 
-    for_each_fun(false) do |name, type_ret, args|
+    @f.puts "\tclass API {"
+    for_each_fun do |fn|
       @f.puts "\t\t[MethodImplAttribute(MethodImplOptions.InternalCall)]"
-      print_proto(name, type_ret, args, "\t\tpublic static extern");
+      print_proto(fn, "\t\tpublic static extern");
       @f.puts ";"
     end
-
     @f.puts "\t}", "}"
+
+    @f.close
   end
 
   def generate_source()
@@ -129,8 +159,8 @@ CSharpInterface::CSharpInterface()
   const char* method_names[] = {
     EOF
 
-    for_each_user_fun(false) do |name, ret, args|
-      @f.print "  \"Prologin:", name, "\","
+    for_each_user_fun(false) do |fn|
+      @f.print "  \"Prologin:", fn.name, "\","
     end
     @f.puts <<-EOF
     NULL
@@ -150,8 +180,8 @@ CSharpInterface::CSharpInterface()
   // Register API functions as internal Mono functions
      EOF
 
-     for_each_fun(false) do |name, ret, args|
-       @f.print "  mono_add_internal_call(\"Prologin.API::" + name + "\", (const void*)" + name + ");"
+     for_each_fun(false) do |fn|
+       @f.print "  mono_add_internal_call(\"Prologin.API::" + fn.name + "\", (const void*)" + fn.name + ");"
      end
 
      @f.puts <<-EOF
@@ -187,9 +217,9 @@ void CSharpInterface::callCSharpMethod(const char* name)
 */
     EOF
 
-    for_each_user_fun(false) do |name, type_ret, args|
-      print_proto(name, type_ret, args, 'extern "C"')
-      print_body "  gl_csharp.callCSharpMethod(\"Prologin:" + name + "\");"
+    for_each_user_fun(false) do |fn|
+      print_proto(fn, 'extern "C"')
+      print_body "  gl_csharp.callCSharpMethod(\"Prologin:" + fn.name + "\");"
      end
     @f.close
   end
@@ -209,6 +239,7 @@ end
 
 class CSharpFileGenerator < FileGenerator
   def initialize
+    super
     @lang = "cs"
   end
 
@@ -218,7 +249,7 @@ class CSharpFileGenerator < FileGenerator
 
   def print_multiline_comment(str)
     return unless str
-    str.each {|s| @f.print '// ', s }
+    str.each_line {|s| @f.print '// ', s }
     @f.puts ""
   end
 
@@ -254,18 +285,14 @@ include ../includes/makecs
     # Required stuff to call C from C#
     @f.puts "using System.Runtime.InteropServices;", "using System;", ""
 
-    @f.puts "namespace Prologin {"
-    @f.puts "\tclass Prologin {"
+    @f.puts "namespace Prologin {", "\tclass Prologin {"
 
-    # User methods (play_turn, etc.)
-    for_each_user_fun do |name, ret, args|
-      @f.puts "\t\tstatic void " + name + "()", "\t\t{"
-      @f.puts "\t\t\t// Place ton code ici"
-      @f.puts "\t\t}"
+    for_each_user_fun(false) do |fn|
+      @f.print cs_proto(fn)
+      @f.puts "\t\t{", "\t\t\t// Place ton code ici", "\t\t}"
     end
 
-    @f.puts "\t}"
-    @f.puts "}"
+    @f.puts "\t}", "}"
     @f.close
 
     generate_makefile
