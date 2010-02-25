@@ -63,7 +63,7 @@ int         ServerEntry::afterGame(void)
 bool        ServerEntry::isMatchFinished(void)
 {
   // TODO
-  return true;
+  return false;
 }
 
 int ServerEntry::getScore(int uid)
