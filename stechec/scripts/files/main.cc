@@ -24,6 +24,9 @@ extern "C" void init_game();
 extern "C" void end_game();
 extern "C" void jouer();
 
+// prolo2010 specific : players do not execute simultaneously
+extern "C" bool api_mon_tour();
+
 // prolo2010 specific : the retirer_ko returns a structure on the stack
 struct unite
 {
@@ -49,12 +52,15 @@ extern "C" int run(void* foo, void* api, void* client_cx)
       if (api_state_is_end(api))
         break;
 
-      // prolo2010 specific : two successive phases with no server sync
-      unite u = retirer_ko();
-      if (!api_retirer_ko(u)) // Returns true if successful
-        abort();
+      if (api_mon_tour())
+      {
+        // prolo2010 specific : two successive phases with no server sync
+        unite u = retirer_ko();
+        if (!api_retirer_ko(u)) // Returns true if successful
+          abort();
 
-      jouer();
+        jouer();
+      }
 
       api_do_end_turn(api);
     }
