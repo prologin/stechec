@@ -18,6 +18,11 @@
 Api* api;
 
 
+Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
+{
+  api = this;
+}
+
 // @@GEN_HERE@@
 
 

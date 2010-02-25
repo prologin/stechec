@@ -31,9 +31,7 @@ class Api: public StechecApi
 
 public:
 
-  Api(GameData* gameData, Client* c) :
-    StechecApi(gameData, c)
-  { }
+  Api(GameData* gameData, Client* c);
 
   virtual ~Api() { }
 
