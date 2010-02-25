@@ -28,6 +28,7 @@ class PythonCxxFileGenerator < CxxProto
 
 # include <Python.h>
 # include <vector>
+# include <string>
 
     EOF
 
@@ -61,6 +62,12 @@ template <>
 PyObject* cxx2lang<PyObject*, bool>(bool in)
 {
   return PyBool_FromLong(in);
+}
+
+template <>
+PyObject* cxx2lang<PyObject*, std::string>(std::string in)
+{
+  return PyString_FromString(in.c_str());
 }
 
 template <typename Cxx>
@@ -99,6 +106,12 @@ template <>
 bool lang2cxx<PyObject*, bool>(PyObject* in)
 {
   return (bool)lang2cxx<PyObject*, int>(in);
+}
+
+template <>
+std::string lang2cxx<PyObject*, std::string>(PyObject* in)
+{
+  return std::string(PyString_AS_STRING(in));
 }
 
 template <typename Cxx>

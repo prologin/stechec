@@ -134,7 +134,7 @@ class FileGenerator
   def initialize
     # Add required builtin types
     @types = TypesHash.new
-    ['void', 'int', 'bool'].each do |x|
+    ['void', 'int', 'bool', 'string'].each do |x|
       @types[x] = SimpleType.new x
     end
 
@@ -273,6 +273,8 @@ class CProto < FileGenerator
   def conv_type(type)
     if type.is_array?
       "std::vector<#{type.type.name}>"
+    elsif type.name == "string"
+      "std::string"
     else
       type.name
     end
@@ -330,6 +332,8 @@ class CxxProto < CProto
     # Only really useful for arrays.
     if type.is_array?
       "std::vector<#{type.type.name}>"
+    elsif type.name == "string"
+      "std::string"
     else
       type.name
     end

@@ -24,6 +24,7 @@ class CamlCFileGenerator < CxxProto
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_caml.rb"
     print_include "vector", true
+    print_include "string", true
     build_enums
     build_structs
     for_each_fun do |fn|
@@ -66,6 +67,12 @@ value cxx2lang<value, bool>(bool in)
   return Val_int(in);
 }
 
+template <>
+value cxx2lang<value, std::string>(std::string in)
+{
+  return caml_copy_string(in.c_str());
+}
+
 template <typename Cxx>
 value cxx2lang_array(const std::vector<Cxx>& in)
 {
@@ -96,6 +103,12 @@ template <>
 bool lang2cxx<value, bool>(value in)
 {
   return Int_val(in);
+}
+
+template <>
+std::string lang2cxx<value, std::string>(value in)
+{
+  return std::string(String_val(in));
 }
 
 template <typename Cxx>
