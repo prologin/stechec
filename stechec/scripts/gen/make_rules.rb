@@ -123,7 +123,7 @@ class CxxFileGenerator < CxxProto
   # interface.cc
   def print_interface
     for_each_fun do |fn| 
-      @f.print cxx_proto(fn)
+      @f.print cxx_proto(fn, "api_", 'extern "C"')
       @f.puts "", "{"
       @f.print "  "
       unless fn.ret.is_nil? then
@@ -137,8 +137,7 @@ class CxxFileGenerator < CxxProto
         end
         @f.print args[-1].name
       end
-      @f.puts ");
-}"
+      @f.puts ");", "}"
     end
   end
 

@@ -18,7 +18,7 @@ extern Api* api;
 ///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
-cartes mes_cartes()
+extern "C" cartes api_mes_cartes()
 {
   return api->mes_cartes();
 }
@@ -26,7 +26,7 @@ cartes mes_cartes()
 ///
 // Retourne la liste des unités actuellement en jeu.
 //
-std::vector<unite> unites()
+extern "C" std::vector<unite> api_unites()
 {
   return api->unites();
 }
@@ -34,7 +34,7 @@ std::vector<unite> unites()
 ///
 // Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure \texttt{taille_terrain}.
 //
-taille_terrain taille_terrain_actuelle()
+extern "C" taille_terrain api_taille_terrain_actuelle()
 {
   return api->taille_terrain_actuelle();
 }
@@ -42,7 +42,7 @@ taille_terrain taille_terrain_actuelle()
 ///
 // Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
 //
-erreur soin(unite cible)
+extern "C" erreur api_soin(unite cible)
 {
   return api->soin(cible);
 }
@@ -50,7 +50,7 @@ erreur soin(unite cible)
 ///
 // Utilise une carte « Déguisement » que vous avez dans votre main.
 //
-erreur deguisement(unite cible, type_unite nouveau_type)
+extern "C" erreur api_deguisement(unite cible, type_unite nouveau_type)
 {
   return api->deguisement(cible, nouveau_type);
 }
@@ -58,7 +58,7 @@ erreur deguisement(unite cible, type_unite nouveau_type)
 ///
 // Utilise une carte « Banzaï » que vous avez dans votre main.
 //
-erreur banzai(unite cible)
+extern "C" erreur api_banzai(unite cible)
 {
   return api->banzai(cible);
 }
@@ -66,7 +66,7 @@ erreur banzai(unite cible)
 ///
 // Utilise une carte « Pacifisme » que vous avez dans votre main.
 //
-erreur pacifisme()
+extern "C" erreur api_pacifisme()
 {
   return api->pacifisme();
 }
@@ -74,7 +74,7 @@ erreur pacifisme()
 ///
 // Déplace une unité vers une position à portée.
 //
-erreur deplacer(unite cible, position pos)
+extern "C" erreur api_deplacer(unite cible, position pos)
 {
   return api->deplacer(cible, pos);
 }
@@ -82,7 +82,7 @@ erreur deplacer(unite cible, position pos)
 ///
 // Attaque une autre unité.
 //
-erreur attaquer(unite attaquant, unite cible)
+extern "C" erreur api_attaquer(unite attaquant, unite cible)
 {
   return api->attaquer(attaquant, cible);
 }
@@ -90,7 +90,7 @@ erreur attaquer(unite attaquant, unite cible)
 ///
 // Fait apparaitre une unité sur la case de spawn.
 //
-erreur spawn(type_unite quoi)
+extern "C" erreur api_spawn(type_unite quoi)
 {
   return api->spawn(quoi);
 }
@@ -98,7 +98,7 @@ erreur spawn(type_unite quoi)
 ///
 // Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
 //
-bool annuler()
+extern "C" bool api_annuler()
 {
   return api->annuler();
 }
