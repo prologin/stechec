@@ -29,3 +29,10 @@ void GameData::Init() {
   // TODO
   initialized_ = true;
 }
+
+bool GameData::mon_tour()
+{
+  unsigned int curr_player = (getCurrentTurn() - 1) % 2;
+  LOG2("curr_player = %1, team id = %2", curr_player, getTeamId());
+  return curr_player == getTeamId();
+}

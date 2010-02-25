@@ -24,6 +24,16 @@ bool Api::retirer_ko(unite u)
   return u.ko >= 0;
 }
 
+bool Api::mon_tour()
+{
+  return g_->mon_tour();
+}
+
+Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
+{
+  api = this;
+}
+
 ///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //

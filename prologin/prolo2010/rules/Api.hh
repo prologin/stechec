@@ -31,9 +31,7 @@ class Api: public StechecApi
 
 public:
 
-  Api(GameData* gameData, Client* c) :
-    StechecApi(gameData, c)
-  { }
+  Api(GameData* gameData, Client* c);
 
   virtual ~Api() { }
 
@@ -43,6 +41,7 @@ protected:
 public:
   // Internal API
   bool retirer_ko(unite u);
+  bool mon_tour();
 
 public:
 

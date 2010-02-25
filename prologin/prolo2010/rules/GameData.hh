@@ -27,7 +27,7 @@ public:
   // Call this before everything else.
   void Init();
 
-  // TODO
+  bool mon_tour();
 
 private:
   bool initialized_;
