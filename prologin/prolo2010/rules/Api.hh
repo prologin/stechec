@@ -41,6 +41,10 @@ protected:
   virtual void teamSwitched();
 
 public:
+  // Internal API
+  bool retirer_ko(unite u);
+
+public:
 
 ///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.

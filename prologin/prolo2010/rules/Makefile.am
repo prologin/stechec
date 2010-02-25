@@ -22,6 +22,7 @@ toons_la_SOURCES =			\
 	ServerEntry.cc			\
 	ServerEntry.hh			\
 	load_rules.cc			\
+	internal_interface.cc	\
 	interface.cc
 
 toons_la_LDFLAGS = -module

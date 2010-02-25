@@ -18,13 +18,19 @@
 Api* api;
 
 
+// Internal API
+bool Api::retirer_ko(unite u)
+{
+  return u.ko >= 0;
+}
+
 ///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
 cartes Api::mes_cartes()
 {
-  // TODO
-  abort();
+  static cartes c = { 1, 2, 3, 4 };
+  return c;
 }
 
 ///
@@ -32,8 +38,30 @@ cartes Api::mes_cartes()
 //
 std::vector<unite> Api::unites()
 {
-  // TODO
-  abort();
+  static unite u1 = {
+    { 1, 2 },
+    false,
+    CHAT,
+    SINGE,
+    2,
+    4,
+    6
+  };
+
+  static unite u2 = {
+    { 5, 6 },
+    true,
+    PERROQUET,
+    PERROQUET,
+    4,
+    2,
+    10
+  };
+
+  std::vector<unite> ret;
+  ret.push_back(u1);
+  ret.push_back(u2);
+  return ret;
 }
 
 ///
@@ -41,8 +69,13 @@ std::vector<unite> Api::unites()
 //
 taille_terrain Api::taille_terrain_actuelle()
 {
-  // TODO
-  abort();
+  static taille_terrain tt = {
+    25,
+    0,
+    25
+  };
+
+  return tt;
 }
 
 ///
@@ -50,8 +83,7 @@ taille_terrain Api::taille_terrain_actuelle()
 //
 erreur Api::soin(unite cible)
 {
-  // TODO
-  abort();
+  return OK;
 }
 
 ///
@@ -59,8 +91,7 @@ erreur Api::soin(unite cible)
 //
 erreur Api::deguisement(unite cible, type_unite nouveau_type)
 {
-  // TODO
-  abort();
+  return OK;
 }
 
 ///
@@ -68,8 +99,7 @@ erreur Api::deguisement(unite cible, type_unite nouveau_type)
 //
 erreur Api::banzai(unite cible)
 {
-  // TODO
-  abort();
+  return OK;
 }
 
 ///
@@ -77,8 +107,7 @@ erreur Api::banzai(unite cible)
 //
 erreur Api::pacifisme()
 {
-  // TODO
-  abort();
+  return OK;
 }
 
 ///
@@ -86,8 +115,7 @@ erreur Api::pacifisme()
 //
 erreur Api::deplacer(unite cible, position pos)
 {
-  // TODO
-  abort();
+  return OK;
 }
 
 ///
@@ -95,8 +123,7 @@ erreur Api::deplacer(unite cible, position pos)
 //
 erreur Api::attaquer(unite attaquant, unite cible)
 {
-  // TODO
-  abort();
+  return OK;
 }
 
 ///
@@ -104,8 +131,7 @@ erreur Api::attaquer(unite attaquant, unite cible)
 //
 erreur Api::spawn(type_unite quoi)
 {
-  // TODO
-  abort();
+  return OK;
 }
 
 ///
@@ -113,8 +139,7 @@ erreur Api::spawn(type_unite quoi)
 //
 bool Api::annuler()
 {
-  // TODO
-  abort();
+  return false;
 }
 
 
