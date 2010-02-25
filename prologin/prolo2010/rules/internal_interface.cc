@@ -19,3 +19,8 @@ extern "C" bool api_retirer_ko(unite u)
 {
   return api->retirer_ko(u);
 }
+
+extern "C" bool api_mon_tour()
+{
+  return api->mon_tour();
+}
