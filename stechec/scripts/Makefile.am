@@ -61,7 +61,7 @@ dist_bash_DATA =				\
 	xmlparser.awk
 
 nobase_pkgdata_DATA =				\
-	files/main.c				\
+	files/main.cc				\
 	files/rules.mk				\
 	files/Api.cc				\
 	files/Api.hh				\

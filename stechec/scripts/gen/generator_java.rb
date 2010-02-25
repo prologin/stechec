@@ -236,7 +236,7 @@ lib_TARGETS = #{target}
 
 # Evite de toucher a ce qui suit
 #{target}-dists = interface.hh
-#{target}-srcs += interface.cc ../includes/main.c
+#{target}-srcs += interface.cc ../includes/main.cc
 include ../includes/rules.mk
     EOF
     @f.close

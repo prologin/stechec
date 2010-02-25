@@ -76,7 +76,7 @@ lib_TARGETS = #{target}
 
 # Evite de toucher a ce qui suit
 #{target}-dists += #{@header_file}
-#{target}-srcs += ../includes/main.c
+#{target}-srcs += ../includes/main.cc
 include ../includes/rules.mk
     EOF
     @f.close

@@ -89,11 +89,11 @@ def make_includes
   install_path.mkpath
 
   # copy main.c and rules.ml into includes.
-  if Pathname.new('files/main.c').exist?
-    FileUtils.cp 'files/main.c', install_path.to_s
+  if Pathname.new('files/main.cc').exist?
+    FileUtils.cp 'files/main.cc', install_path.to_s
     FileUtils.cp 'files/rules.mk', install_path.to_s
   else
-    FileUtils.cp Pathname.new(PKGDATADIR) + 'files/main.c', install_path.to_s
+    FileUtils.cp Pathname.new(PKGDATADIR) + 'files/main.cc', install_path.to_s
     FileUtils.cp Pathname.new(PKGDATADIR) + 'files/rules.mk', install_path.to_s
   end
 
@@ -131,7 +131,7 @@ def make_server
 
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
-  FileUtils.cp((path + "main.c").to_s, (install_path + "stechec_lime.c").to_s)
+  FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_lime.cc").to_s)
   FileUtils.cp((path + "forbidden_fun-c").to_s, install_path.to_s)
   FileUtils.cp((path + "forbidden_fun-pascal").to_s, install_path.to_s)
   FileUtils.cp((path + "forbidden_fun-java").to_s, install_path.to_s)

@@ -333,7 +333,7 @@ lib_TARGETS = #{target}
 
 # Evite de toucher a ce qui suit
 #{target}-dists += #{@header_file}
-#{target}-srcs += #{@source_file} ../includes/main.c
+#{target}-srcs += #{@source_file} ../includes/main.cc
 include ../includes/rules.mk
     EOF
     @f.close
