@@ -13,11 +13,9 @@
 require "pathname"
 require "gen/file_generator"
 
-def c_type(type, arg = true)
+def c_type(type)
   if type.is_simple? and type.name == "bool"
     "int"
-  elsif type.is_simple? and type.name == "string"
-    (if arg then "const " else "" end) + "char*"
   else
     type.name
   end
@@ -30,7 +28,7 @@ def c_proto(fn)
   if fn.ret.is_array?
     rettype = "void"
   else
-    rettype = c_type(fn.ret, false)
+    rettype = c_type(fn.ret)
   end
 
   buf += rettype + " " + fn.name + "("
@@ -86,12 +84,6 @@ bool lang2cxx<int, bool>(int in)
   return in;
 }
 
-template<>
-std::string lang2cxx<const char*, std::string>(const char* in)
-{
-  return std::string(in);
-}
-
 template<typename Lang, typename Cxx>
 void lang2cxx_array(Lang* tab, size_t len, std::vector<Cxx>& vect)
 {
@@ -118,12 +110,6 @@ int cxx2lang<int, int>(int in)
   return in;
 }
 
-template<>
-char* cxx2lang<char*, std::string>(std::string in)
-{
-  return strdup(in.c_str());
-}
-
 template<typename Lang, typename Cxx>
 void cxx2lang_array(Lang** tab, size_t* len, const std::vector<Cxx>& vect)
 {
@@ -146,14 +132,14 @@ EOF
     end
 
     for_each_struct do |x|
-      def aux(fields, name_fun, lang, cxx, add_const)
+      def aux(fields, name_fun, lang, cxx)
         fields['str_field'].each do |f|
           name =f[0]
           type = @types[f[1]]
           if type.is_array? then type_ = type.type
           else type_ = type
           end
-          lang_type = c_type(type_, add_const)
+          lang_type = c_type(type_)
           cxx_type = cxx_type(type_)
           if type.is_array? then
             @f.puts "#{name_fun}_array<#{lang_type}, #{cxx_type}>(#{lang}.#{name}_arr, #{lang}.#{name}_len, #{cxx}.#{name});"
@@ -167,13 +153,13 @@ EOF
       @f.puts "template<>"
       @f.puts "#{cxx_name} lang2cxx<#{c_name}, #{cxx_name}>(#{c_name} in) {"
       @f.puts "#{cxx_name} out;"
-      aux(x, "lang2cxx", "in", "out", true)
+      aux(x, "lang2cxx", "in", "out")
       @f.puts " return out;"
       @f.puts "}"
       @f.puts "template<>"
       @f.puts "#{c_name} cxx2lang<#{c_name}, #{cxx_name}>(#{cxx_name} in) {"
       @f.puts "#{c_name} out;"
-      aux(x, "cxx2lang", "out", "in", false)
+      aux(x, "cxx2lang", "out", "in")
       @f.puts " return out;"
       @f.puts "}"
     end
@@ -245,8 +231,6 @@ EOF
   def cxx_type(t)
     if t.is_array? then
       "std::vector<#{cxx_type(t.type)}>"
-    elsif t.is_simple? and t.name == "string"
-      "std::string"
     elsif t.is_struct?
       "__internal__cxx__#{t.name}"
     else
@@ -257,7 +241,7 @@ EOF
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_c.rb"
     @f.puts "#ifndef INTERFACE_HH_", "# define INTERFACE_HH_"
-    @f.puts "", "# include <vector>", "# include <string>", "# include <cstring>", ""
+    @f.puts "", "# include <vector>", "# include <string>", ""
     @f.puts 'extern "C" {'
     @f.puts "# include \"#{$conf['conf']['player_filename']}.h\""
     @f.puts "}", ""
