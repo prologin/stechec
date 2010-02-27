@@ -21,12 +21,16 @@ def c_type(type)
   end
 end
 
-def c_proto(fn)
+def c_proto(fn, array_like_c = true)
   # Returns the prototype of a C function
   # WARNING: arrays are hard to handle in C...
   buf = ""
   if fn.ret.is_array?
-    rettype = "void"
+    if array_like_c then
+      rettype = "void"
+    else
+      rettype = "#{c_type(fn.ret.type)}*"
+    end
   else
     rettype = c_type(fn.ret)
   end
@@ -40,11 +44,15 @@ def c_proto(fn)
       type = c_type(arg.type)
       args = args << "#{type} #{arg.name}"
     else
-      args = args << "#{arg.type.type.name}* #{arg.name}_arr"
-      args = args << "size_t #{arg.name}_len"
+      if array_like_c then
+        args = args << "#{arg.type.type.name}* #{arg.name}_arr"
+        args = args << "size_t #{arg.name}_len"
+      else
+        args = args << "#{arg.type.type.name}* #{arg.name}"
+      end
     end
   end
-  if fn.ret.is_array?
+  if fn.ret.is_array? and array_like_c then
     args = args << "#{fn.ret.type.name}** ret_arr"
     args = args << "size_t* ret_len"
   end
@@ -228,15 +236,11 @@ EOF
     @f.puts "}"
     @f.close
   end
-  def cxx_type(t)
-    if t.is_array? then
-      "std::vector<#{cxx_type(t.type)}>"
-    elsif t.is_struct?
-      "__internal__cxx__#{t.name}"
-    else
-      t.name
-    end
+
+  def cxx_type(type)
+    cxx_type_for_pascal_and_c(type)
   end
+
   def generate_header
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_c.rb"
@@ -245,26 +249,7 @@ EOF
     @f.puts 'extern "C" {'
     @f.puts "# include \"#{$conf['conf']['player_filename']}.h\""
     @f.puts "}", ""
-
-    for_each_struct do |x|
-      c_name = x['str_name']
-      cxx_name = "__internal__cxx__#{c_name}"
-      @f.puts "typedef struct #{cxx_name} {"
-      x['str_field'].each do |f|
-        type = @types[f[1]]
-        field = f[0]
-        @f.puts(if type.is_array? then
-                  "  std::vector<#{type.type.name}> #{field};"
-                elsif type.is_struct? then
-                  "  __internal__cxx__#{type.name} #{field};"
-                else
-                  "  #{type.name} #{field}; "
-                end)
-      end
-      @f.print "} #{cxx_name};\n\n"
-  end
-
-
+    build_struct_for_pascal_and_c_to_cxx
     for_each_fun do |fn|
       @f.print cxx_proto(fn, "api_"), ";\n"
     end

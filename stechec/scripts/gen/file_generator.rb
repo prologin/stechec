@@ -291,10 +291,41 @@ class CProto < FileGenerator
       @f.print "} ", x['str_name'], ";\n\n"
     end
   end
+
+  def build_struct_for_pascal_and_c_to_cxx()
+    for_each_struct do |x|
+      c_name = x['str_name']
+      cxx_name = "__internal__cxx__#{c_name}"
+      @f.puts "typedef struct #{cxx_name} {"
+      x['str_field'].each do |f|
+        type = @types[f[1]]
+        field = f[0]
+        @f.puts(if type.is_array? then
+                  "  std::vector<#{type.type.name}> #{field};"
+                elsif type.is_struct? then
+                  "  __internal__cxx__#{type.name} #{field};"
+                else
+                  "  #{type.name} #{field}; "
+                end)
+      end
+      @f.print "} #{cxx_name};\n\n"
+    end
+  end
 end
 
 # A generic Cxx file generator (proto, ...)
 class CxxProto < CProto
+
+
+  def cxx_type_for_pascal_and_c(t)
+    if t.is_array? then
+      "std::vector<#{cxx_type(t.type)}>"
+    elsif t.is_struct?
+      "__internal__cxx__#{t.name}"
+    else
+      t.name
+    end
+  end
 
   def initialize
     super
@@ -407,7 +438,6 @@ class CSharpProto < CProto
       @f.puts "\t}"
     end
   end
-
   def print_proto(fn, ext = "", types = @types)
     ext = ext + " " if ext != ""
     @f.print ext, conv_type(fn.ret)

@@ -71,7 +71,7 @@ def make_player
   CxxFileGenerator.new.build
   CamlFileGenerator.new.build
 #  CamlFileGenerator.new.build
-#  JavaFileGenerator.new.build
+  JavaFileGenerator.new.build
 #  HaskellFileGenerator.new.build
 #  RubyFileGenerator.new.build
 #  LuaFileGenerator.new.build

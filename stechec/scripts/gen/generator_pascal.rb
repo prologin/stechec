@@ -12,15 +12,7 @@
 
 
 module PascalUtils
-  def cxx_type(type)
-    if type.is_array? then
-      "std::vector<#{cxx_type(type.type) }>"
-    else
-      type.name
-    end
-  end
-
-  def conv_type(type)
+  def conv_type(type, separray=' ')
     if type.is_simple? then
       {
         "bool" => "boolean",
@@ -28,21 +20,21 @@ module PascalUtils
       "void" => "void" # useless case
       }[type.name]
     elsif type.is_array? then
-      "array of #{ conv_type type.type }"
+      "array#{separray}of#{separray}#{ conv_type type.type }"
     else
       type.name
     end
   end
 
   def print_comment(str)
-    @f.puts '{ ' + str + ' }' if str
+    @f.puts '(* ' + str + ' *)' if str
   end
 
   def print_multiline_comment(str)
     return unless str
-    @f.puts '{'
+    @f.puts '(*'
     str.each_line {|s| @f.print "  ", s }
-    @f.puts "\n}"
+    @f.puts "\n*)"
   end
 
   def print_proto(fn)
@@ -53,11 +45,11 @@ module PascalUtils
     end
     @f.print " ", fn.name
     args = fn.args.map do |arg|
-      "#{arg.name} : #{ conv_type(arg.type) }"
+      "#{arg.name} : #{ conv_type(arg.type, "_") }"
     end
     @f.print "(#{args.join("; ")})"
     if not fn.ret.is_nil?
-      @f.print " : ", conv_type(fn.ret)
+      @f.print " : ", conv_type(fn.ret, "_")
     end
     @f.print ";"
   end
@@ -66,6 +58,17 @@ end
 
 class PascalCxxFileGenerator < CxxFileGenerator
 
+  def cxx_type(type)
+    cxx_type_for_pascal_and_c(type)
+  end
+  def c_type(type)
+    if type.is_array?
+    then
+      "#{type.type.name}*"
+    else
+      type.name
+    end
+  end
   def lang_type(type)
     if type.is_array? then "#{lang_type(type.type)}*"
     else type.name
@@ -114,7 +117,7 @@ return vect;
 }
 
 template<typename Lang, typename Cxx>
-Cxx cxx2lang(Lang in)
+Lang cxx2lang(Cxx in)
 {
   return in.err;
 }
@@ -134,7 +137,7 @@ template<typename Lang, typename Cxx>
 Lang * cxx2lang_array(const std::vector<Cxx>& vect)
 {
   size_t len = vect.size(); 
-  int * tab = malloc(sizeof(int) + sizeof(Lang) * len);
+  int * tab = (int *)malloc(sizeof(int) + sizeof(Lang) * len);
   tab[0] = len;
   Lang * tabl = (Lang *)(tab + 1);
   for (int i = 0; i < len; ++i)
@@ -163,7 +166,7 @@ EOF
           else type_ = type
           end
           lang_type = c_type(type_)
-          if type_.is_struct? then cxx_type = "__internal__cxx__" + cxx_type(type_) else cxx_type = cxx_type(type_) end
+          cxx_type = cxx_type(type_)
           if type.is_array? then
             name_fun = "#{name_fun}_array"
           end
@@ -187,7 +190,7 @@ EOF
     end
     @f.puts "extern \"C\" {"
     for_each_fun do |fn|
-      @f.puts c_proto(fn) # todo ...
+      @f.puts c_proto(fn, false)
       @f.puts "{"
       @f.print "  ", cxx_type(fn.ret), " ", "_retval;\n"
 
@@ -206,24 +209,26 @@ EOF
       end
 
       @f.print "  _retval = "
-      @f.print "api_", fn.name, "("
+      @f.print "api_", fn.name, "( "
+      if fn.args != [] then
+        @f.print "arg_"
+      end
       argnames = fn.args.map { |arg| arg.name }
-      @f.print argnames.join(", ")
-      @f.puts ");"
+      @f.print argnames.join(", arg_")
+      @f.puts " );"
 
       # Return if it is not an array, else convert
-      if not fn.ret.is_array?
-        @f.puts "  return _retval;"
-      else
-        # Return is in the two last args, "ret" and "ret_len"
-        # Put the size in ret_len
-        @f.puts "  *ret_len = _retval.size();"
-        # Allocate ret
-        ty = fn.ret.type.name
-        @f.puts "  *ret_arr = (#{ty}*)malloc((*ret_len) * sizeof(#{ty}));"
-        # Copy from the _retval vector
-        @f.puts "  memcpy(*ret_arr, &_retval[0], *ret_len);"
-        # Done !
+      unless fn.ret.is_nil?
+        if fn.ret.is_array?
+          suffix="_array"
+          t = fn.ret.type
+        else
+          suffix=""
+          t = fn.ret
+        end
+        ln = c_type(t)
+        cxx = cxx_type(t)
+        @f.puts "  return cxx2lang#{suffix}<#{ln}, #{cxx}>(_retval);"
       end
 
       @f.puts "}"
@@ -240,8 +245,9 @@ EOF
     build_constants
     build_enums
     build_structs
+    build_struct_for_pascal_and_c_to_cxx
     for_each_fun do |fn|
-      @f.print cxx_proto(fn), ";\n"
+      @f.print cxx_proto(fn, "api_"), ";\n"
     end
     @f.puts "#endif"
     @f.close
@@ -267,23 +273,27 @@ class PascalFileGenerator < FileGenerator
 
   def build_enums
     for_each_enum do |x|
-      @f.puts "type #{x['enum_name']} =\n  (\n"
+      name = x['enum_name']
+      @f.puts "type #{name} =\n  (\n"
       fields = x['enum_field'].map do |f|
-        name = f[0].downcase
-        "    #{ name } { <- #{ f[1] } }"
+        name_field = f[0].downcase
+        "    #{ name_field } { <- #{ f[1] } }"
       end
       @f.print "#{ fields.join(",\n") }\n  );\n\n"
+      @f.print "type array_of_#{name} = array of #{name};\n\n"
     end
   end
 
   def build_structs
     for_each_struct do |x|
-      @f.puts "type #{x['str_name']} =\n  record\n"
+      name =x['str_name']
+      @f.puts "type #{name} =\n  record\n"
       x['str_field'].each do |f|
         @f.print "    #{f[0]} : #{ conv_type(@types[f[1]]) }; "
         print_comment (" <- " + f[2])
       end
       @f.print "  end;\n\n"
+      @f.print "type array_of_#{name} = array of #{name};\n\n"
     end
   end
 
@@ -321,6 +331,10 @@ include ../includes/makepascal
     @f = File.open(@path + ('prolo_interface.pas'), 'w')
     @f.puts "unit prolo_interface;", "", "interface", ""
     print_banner "generator_pascal.rb"
+    @f.puts "
+type array_of_integer = array of integer;
+type array_of_boolean = array of boolean;
+"
     @f.puts "const\n"
     build_constants
     build_enums

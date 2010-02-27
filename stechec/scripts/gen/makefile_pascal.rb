@@ -16,7 +16,7 @@ class PascalMakefile
 #####################
 # Macro Definitions #
 #####################
-CC 	  = gcc
+CXX 	  = g++
 FPC       = fpc
 MAKE 	  = make
 OBJS 	  = ${SRC:.pas=.o}
@@ -33,7 +33,7 @@ CFLAGS    = -fPIC $(MY_CFLAGS)
 
 all: ${NAME}
 
-$(NAME): $(SRC) $(LIMEOBJ)
+$(NAME): interface.o $(SRC) $(LIMEOBJ)
 \t${FPC} -Cn prologin.pas ${CFLAGS} -o"${NAME}"
 #\tfpc, what a bullshit ! it doesn't want our ~2000 command line argument...
 #\tinstead, omit link phase, add options for ld in his script, then link.
