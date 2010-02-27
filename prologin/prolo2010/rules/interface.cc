@@ -12,8 +12,26 @@
 
 #include "Api.hh"
 
+#include <iostream>
+#include <vector>
+
 // from Api.cc
 extern Api* api;
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
+{
+  os << "[";
+  typename std::vector<T>::const_iterator it;
+  for (it = arr.begin(); it != arr.end(); ++it)
+  {
+    if (it != arr.begin())
+      os << ", ";
+    os << *it;
+  }
+  os << "]";
+  return os;
+}
 
 ///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
@@ -101,5 +119,131 @@ extern "C" erreur api_spawn(type_unite quoi)
 extern "C" bool api_annuler()
 {
   return api->annuler();
+}
+
+///
+// Affiche le contenu d'une valeur de type erreur
+//
+std::ostream& operator<<(std::ostream& os, erreur v)
+{
+  switch (v) {
+  case OK: os << "OK"; break;
+  case PAS_A_PORTEE: os << "PAS_A_PORTEE"; break;
+  case PLUS_DE_PA: os << "PLUS_DE_PA"; break;
+  case DEJA_DEPLACE: os << "DEJA_DEPLACE"; break;
+  case DEJA_ATTAQUE: os << "DEJA_ATTAQUE"; break;
+  case DEJA_SPAWN: os << "DEJA_SPAWN"; break;
+  case PAS_SPAWNABLE: os << "PAS_SPAWNABLE"; break;
+  case SPAWN_OCCUPE: os << "SPAWN_OCCUPE"; break;
+  case PAS_A_MOI: os << "PAS_A_MOI"; break;
+  case PHASE_CARTES_TERMINEE: os << "PHASE_CARTES_TERMINEE"; break;
+  }
+  return os;
+}
+extern "C" void api_afficher_erreur(erreur v)
+{
+  std::cerr << v << std::endl;
+}
+
+///
+// Affiche le contenu d'une valeur de type type_unite
+//
+std::ostream& operator<<(std::ostream& os, type_unite v)
+{
+  switch (v) {
+  case PERROQUET: os << "PERROQUET"; break;
+  case SINGE: os << "SINGE"; break;
+  case CHAT: os << "CHAT"; break;
+  case KANGOUROU: os << "KANGOUROU"; break;
+  }
+  return os;
+}
+extern "C" void api_afficher_type_unite(type_unite v)
+{
+  std::cerr << v << std::endl;
+}
+
+///
+// Affiche le contenu d'une valeur de type position
+//
+std::ostream& operator<<(std::ostream& os, position v)
+{
+  os << "{ ";
+  os << "x" << "=" << v.x;
+  os << ", ";
+  os << "y" << "=" << v.y;
+  os << " }";
+  return os;
+}
+extern "C" void api_afficher_position(position v)
+{
+  std::cerr << v << std::endl;
+}
+
+///
+// Affiche le contenu d'une valeur de type taille_terrain
+//
+std::ostream& operator<<(std::ostream& os, taille_terrain v)
+{
+  os << "{ ";
+  os << "taille" << "=" << v.taille;
+  os << ", ";
+  os << "min_coord" << "=" << v.min_coord;
+  os << ", ";
+  os << "max_coord" << "=" << v.max_coord;
+  os << " }";
+  return os;
+}
+extern "C" void api_afficher_taille_terrain(taille_terrain v)
+{
+  std::cerr << v << std::endl;
+}
+
+///
+// Affiche le contenu d'une valeur de type unite
+//
+std::ostream& operator<<(std::ostream& os, unite v)
+{
+  os << "{ ";
+  os << "pos" << "=" << v.pos;
+  os << ", ";
+  os << "ennemi" << "=" << v.ennemi;
+  os << ", ";
+  os << "type_unite_actuel" << "=" << v.type_unite_actuel;
+  os << ", ";
+  os << "vrai_type_unite" << "=" << v.vrai_type_unite;
+  os << ", ";
+  os << "ko" << "=" << v.ko;
+  os << ", ";
+  os << "pa" << "=" << v.pa;
+  os << ", ";
+  os << "attaques" << "=" << v.attaques;
+  os << " }";
+  return os;
+}
+extern "C" void api_afficher_unite(unite v)
+{
+  std::cerr << v << std::endl;
+}
+
+///
+// Affiche le contenu d'une valeur de type cartes
+//
+std::ostream& operator<<(std::ostream& os, cartes v)
+{
+  os << "{ ";
+  os << "soin" << "=" << v.soin;
+  os << ", ";
+  os << "deguisement" << "=" << v.deguisement;
+  os << ", ";
+  os << "banzai" << "=" << v.banzai;
+  os << ", ";
+  os << "pacifisme" << "=" << v.pacifisme;
+  os << " }";
+  return os;
+}
+extern "C" void api_afficher_cartes(cartes v)
+{
+  std::cerr << v << std::endl;
 }
 

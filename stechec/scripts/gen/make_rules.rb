@@ -123,21 +123,54 @@ class CxxFileGenerator < CxxProto
   # interface.cc
   def print_interface
     for_each_fun do |fn| 
-      @f.print cxx_proto(fn, "api_", 'extern "C"')
-      @f.puts "", "{"
-      @f.print "  "
-      unless fn.ret.is_nil? then
-        @f.print "return "
-      end
-      @f.print "api->#{fn.name}("
-      args = fn.args
-      if args != []
-        args[0..-2].each do |arg|
-          @f.print arg.name, ", "
+      if fn.dumps then
+        t = fn.dumps
+        @f.puts "std::ostream& operator<<(std::ostream& os, #{t.name} v)"
+        @f.puts "{"
+        if t.is_enum?
+          @f.puts "  switch (v) {"
+          t.conf['enum_field'].each do |f|
+            f = f[0].upcase
+            @f.puts "  case #{f}: os << \"#{f}\"; break;"
+          end
+          @f.puts "  }"
+        else
+          @f.puts "  os << \"{ \";"
+          t.conf['str_field'].each do |f|
+            if f != t.conf['str_field'][0]
+              @f.puts "  os << \", \";"
+            end
+            ty = @types[f[1]]
+            na = f[0]
+            @f.puts "  os << \"#{na}\" << \"=\" << v.#{na};"
+          end
+          @f.puts "  os << \" }\";"
         end
-        @f.print args[-1].name
+        @f.puts "  return os;"
+        @f.puts "}"
+
+        @f.print cxx_proto(fn, "api_", 'extern "C"')
+        @f.puts "", "{"
+        @f.puts "  std::cerr << v << std::endl;"
+        @f.puts "}"
+      else
+        @f.print cxx_proto(fn, "api_", 'extern "C"')
+        @f.puts "", "{"
+        @f.print "  "
+        unless fn.ret.is_nil? then
+          @f.print "return "
+        end
+        @f.print "api->#{fn.name}("
+        args = fn.args
+        if args != []
+          args[0..-2].each do |arg|
+            @f.print arg.name, ", "
+          end
+          @f.print args[-1].name
+        end
+        @f.puts ");"
+        @f.puts "}"
       end
-      @f.puts ");", "}"
     end
   end
 

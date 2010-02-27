@@ -103,8 +103,9 @@ class Function
   attr_reader :ret
   attr_reader :args
   attr_reader :conf
+  attr_reader :dumps
 
-  def initialize(types, conf)
+  def initialize(types, conf, dumps = nil)
     @conf = conf
     @name = conf['fct_name']
     @ret = types[conf['fct_ret_type']]
@@ -115,6 +116,7 @@ class Function
     else
       @args = []
     end
+    @dumps = dumps if dumps
   end
 end
 
@@ -138,12 +140,30 @@ class FileGenerator
       @types[x] = SimpleType.new x
     end
 
-    $conf['struct'].each do |x|
-      @types[x['str_name']] = StructType.new x
-    end
+    @dumpfuns = []
 
     $conf['enum'].each do |x|
+      next if x['doc_extra']
       @types[x['enum_name']] = EnumType.new x
+      h = Hash.new
+      h['fct_name'] = 'afficher_' + x['enum_name']
+      h['fct_summary'] = "Affiche le contenu d'une valeur de type #{x['enum_name']}"
+      h['fct_ret_type'] = "void"
+      h['fct_arg'] = [['v', x['enum_name'], 'la valeur a afficher']]
+      d = Function.new(@types, h, @types[x['enum_name']])
+      @dumpfuns = @dumpfuns.push(d)
+    end
+
+    $conf['struct'].each do |x|
+      next if x['doc_extra']
+      @types[x['str_name']] = StructType.new x
+      h = Hash.new
+      h['fct_name'] = 'afficher_' + x['str_name']
+      h['fct_summary'] = "Affiche le contenu d'une valeur de type #{x['str_name']}"
+      h['fct_ret_type'] = "void"
+      h['fct_arg'] = [['v', x['str_name'], 'la valeur a afficher']]
+      d = Function.new(@types, h, @types[x['str_name']])
+      @dumpfuns = @dumpfuns.push(d)
     end
   end
 
@@ -189,6 +209,13 @@ to the script file : gen/" + script
       print_multiline_comment(x['fct_summary']) if print_comment
       block.call(fn)
       @f.puts
+    end
+    if arr == 'function'
+      @dumpfuns.each do |f|
+        print_multiline_comment(f.conf['fct_summary']) if print_comment
+        block.call(f)
+        @f.puts
+      end
     end
   end
 
