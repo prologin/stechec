@@ -14,7 +14,7 @@ class CxxFileGenerator < CxxProto
 
   def build_inlines
     for_each_fun do |fn|
-      @f.puts cxx_proto(fn, "api_", "extern") + ";"
+      @f.puts cxx_proto(fn, "api_", "extern \"C\"") + ";"
       @f.puts cxx_proto(fn, "", "static inline")
       @f.puts "{"
       @f.print "  "
