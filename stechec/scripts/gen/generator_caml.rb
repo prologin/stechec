@@ -27,7 +27,7 @@ class CamlCFileGenerator < CxxProto
     build_enums
     build_structs
     for_each_fun do |fn|
-      @f.print cxx_proto(fn, "api_"); @f.puts ";"
+      @f.print cxx_proto(fn, "api_", 'extern "C"'); @f.puts ";"
     end
     for_each_user_fun do |fn|
       @f.print cxx_proto(fn, "", 'extern "C"'); @f.puts ";"
@@ -36,7 +36,7 @@ class CamlCFileGenerator < CxxProto
   end
 
   def proto(fn)
-    buf = "value ml_#{fn.name}("
+    buf = "extern \"C\" value ml_#{fn.name}("
     args = fn.args.map do |arg|
       "value #{arg.name}"
     end
