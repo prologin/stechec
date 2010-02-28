@@ -422,7 +422,7 @@ include ../includes/makepython
     for_each_struct do |x|
       @f.print x['str_name'], ' = namedtuple("', x['str_name'], '",', "\n"
       x['str_field'].each do |f|
-        @f.puts "    '#{f[0]}' # <- #{f[2]}"
+        @f.puts "    '#{f[0]} ' # <- #{f[2]}"
       end
       @f.puts ")", ""
     end
@@ -441,9 +441,9 @@ include ../includes/makepython
     ##  prologin.py file generating     ##
     ######################################
     @f = File.new(@path + @source_file, 'w')
+    @f.puts "# -*- coding: iso-8859-1 -*-"
     print_banner "generator_python.rb"
-
-    @f.puts "import api", ""
+    @f.puts "from api import *", ""
 
     for_each_user_fun do |fn|
       @f.puts "def " + fn.name + "():"
@@ -452,7 +452,7 @@ include ../includes/makepython
     @f.close
 
     @f = File.new(@path + "api.py", 'w')
-    @f.puts "# coding=iso-8859-1"
+    @f.puts "# -*- coding: iso-8859-1 -*-"
     @f.puts "from _api import *", ""
     build_constants
     build_enums
