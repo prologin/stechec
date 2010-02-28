@@ -251,7 +251,7 @@ EOF
     @f.puts "}", ""
     build_struct_for_pascal_and_c_to_cxx
     for_each_fun do |fn|
-      @f.print cxx_proto(fn, "api_"), ";\n"
+      @f.print cxx_proto(fn, "api_", 'extern "C"'), ";\n"
     end
     @f.puts "#endif"
     @f.close
