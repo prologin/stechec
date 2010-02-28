@@ -64,6 +64,8 @@ dist_bash_DATA =				\
 
 nobase_pkgdata_DATA =				\
 	files/main.cc				\
+	files/php_embed.c			\
+	files/php_embed.h			\
 	files/rules.mk				\
 	files/Api.cc				\
 	files/Api.hh				\

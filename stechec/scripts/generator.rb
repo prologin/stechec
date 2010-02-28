@@ -91,11 +91,18 @@ def make_includes
 
   # copy main.c and rules.ml into includes.
   if Pathname.new('files/main.cc').exist?
-    FileUtils.cp 'files/main.cc', install_path.to_s
-    FileUtils.cp 'files/rules.mk', install_path.to_s
+    p = ''
   else
-    FileUtils.cp Pathname.new(PKGDATADIR) + 'files/main.cc', install_path.to_s
-    FileUtils.cp Pathname.new(PKGDATADIR) + 'files/rules.mk', install_path.to_s
+    p = Pathname.new(PKGDATADIR)
+  end
+  files = [
+    'main.cc',
+    'rules.mk',
+    'php_embed.c',
+    'php_embed.h'
+  ]
+  files.each do |f|
+    FileUtils.cp p + 'files/' + f, install_path.to_s
   end
 
   # these 5 are not needed anymore for client, it uses rules.mk
