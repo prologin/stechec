@@ -28,7 +28,63 @@ class PhpFileGenerator < FileGenerator
     @lang = "php"
   end
 
+  def print_constant(type, name, val)
+    @f.puts "define('#{name}', #{val});"
+  end
+
+  def print_comment(str)
+    @f.puts '// ' + str if str
+  end
+
+  def print_multiline_comment(str)
+    return unless str
+    @f.puts '/*'
+    str.each_line { |s| @f.print ' * ', s }
+    @f.puts "", " */"
+  end
+
+  def build_user_fun_stubs
+    for_each_user_fun do |fn|
+      @f.print "function #{fn.name}("
+      args = fn.args.map { |a| a.name }
+      @f.print args.join(", ")
+      @f.puts ")", "{"
+      @f.puts "  /* Place ton code ici */"
+      @f.puts "}"
+    end
+  end
+
+  def build_enums
+    for_each_enum do |enum|
+      i = 0
+      enum['enum_field'].each do |f|
+        name = f[0].upcase
+        @f.puts "define('#{name}', #{i}); // #{f[1]}"
+        i += 1
+      end
+    end
+  end
+
   def build
-    # TODO
+    @path = Pathname.new($install_path) + "php"
+    @source_file = $conf['conf']['player_filename'] + '.php'
+
+    PhpCxxFileGenerator.new.build
+
+    @f = File.new(@path + @source_file, 'w')
+    @f.puts "<?php"
+    print_banner "generator_php.rb"
+    @f.puts "require('api.php');"
+    @f.puts ""
+    build_user_fun_stubs
+    @f.puts "?>"
+    @f.close
+
+    @f = File.new(@path + 'api.php', 'w')
+    @f.puts "<?php"
+    build_constants
+    build_enums
+    @f.puts "?>"
+    @f.close
   end
 end
