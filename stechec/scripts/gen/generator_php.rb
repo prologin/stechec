@@ -17,8 +17,49 @@ class PhpCxxFileGenerator < CxxProto
     @lang = "C++ (for PHP interface)"
   end
 
+  def generate_header
+    @f = File.open(@path + @header_file, 'w')
+    print_banner "generator_php.rb"
+
+    @f.puts <<-EOF
+#ifndef INTERFACE_HH_
+# define INTERFACE_HH_
+
+# include "../includes/php_embed.h"
+# include <vector>
+
+EOF
+    build_enums
+    build_structs
+
+    @f.puts "", 'extern "C" {', ""
+    for_each_fun do |fn|
+        @f.print cxx_proto(fn, "api_")
+        @f.puts ";"
+    end
+    @f.puts "}", "", "#endif // !INTERFACE_HH_"
+    @f.close
+  end
+
+  def generate_source
+    @f = File.open(@path + @source_file, 'w')
+    print_banner "generator_php.rb"
+
+    @f.puts <<-EOF
+#include "interface.hh"
+
+static void _init_php();
+EOF
+    @f.close
+  end
+
   def build
-    # TODO
+    @path = Pathname.new($install_path) + 'php'
+    @header_file = 'interface.hh'
+    @source_file = 'interface.cc'
+
+    generate_header
+    generate_source
   end
 end
 
