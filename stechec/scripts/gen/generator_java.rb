@@ -149,10 +149,14 @@ class JavaFileGenerator < FileGenerator
   def initialize
     super
     @lang = "java"
-    @types = {
+    @java_types = {
       'void' => 'void',
       'int' => 'int',
       'bool' => 'boolean'
+    }
+    @java_obj_types = {
+      'int' => 'Integer',
+      'bool' => 'Boolean'
     }
   end
 
@@ -172,19 +176,46 @@ class JavaFileGenerator < FileGenerator
   end
 
   # print a java prototype
-  def print_proto(prefix, name, ret_type, args)
+  def print_proto(prefix, f)
+    name = f.name
+    ret_type = f.ret
+    args = f.args
     @f.print prefix, " ", conv_java_type(ret_type), " ", name, "("
     if args != nil and args != []
-      args[0..-2].each do |arg|
-        @f.print conv_java_type(arg.type), " ", arg.name, ", "
+      str_args = args.map do |arg|
+        "#{conv_java_type(arg.type)} #{arg.name}"
       end
-      @f.print conv_java_type(args[-1].type), " ", conv_java_type(args[-1].name)
+      @f.print "#{ str_args.join(", ")}"
     end
     @f.print ")"
   end
 
   def conv_java_type(x)
-  end # TODO
+    if x.is_a?(String) then t = @types[x] else t = x end
+    conv_java_type_aux(t, false)
+  end
+  def conv_java_type_aux(t, in_generic)
+    if t.is_array?
+    then
+      "java.utils.ArrayList< #{ conv_java_type_aux(t.type, true) } >"
+    else
+      if t.is_struct? then
+        t.name.capitalize()
+      else
+        if t.is_simple? then
+          if in_generic then
+            conv = @java_obj_types
+          else
+            conv = @java_types
+          end
+          name = conv[t.name]
+          name.capitalize()
+        else
+          t.name.capitalize()
+        end
+      end
+    end
+  end
 
   def build
     @path = Pathname.new($install_path) + "java"
@@ -212,7 +243,7 @@ class JavaFileGenerator < FileGenerator
       @f.puts "protected enum #{name}{"
       x['enum_field'].each do |f|
         name = f[0].downcase
-        @f.puts "  #{name}, // <- #{f[1]}"
+        @f.puts "  #{name.capitalize()}, // <- #{f[1]}"
       end
       @f.puts "}"
     end
@@ -220,10 +251,7 @@ class JavaFileGenerator < FileGenerator
     @f.puts "public class Interface", "{"
     build_constants
     for_each_fun do |f|
-      n = f.name
-      ty = f.ret
-      args = f.args
-      print_proto("  public static native", n, conv_java_type(ty), args)
+      print_proto("  public static native", f)
       @f.puts ";"
     end
     @f.puts "}"
@@ -239,7 +267,7 @@ class JavaFileGenerator < FileGenerator
     @f.puts "public class #{@java_file} extends #{@java_interface}", "{"
     for_each_user_fun do |f|
       @f.print "  "
-      print_proto("public", f.name, f.ret, f.args)
+      print_proto("public", f)
       @f.puts "",
       "  {",
       "    // Place ton code ici",
