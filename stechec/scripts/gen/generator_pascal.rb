@@ -192,7 +192,9 @@ EOF
     for_each_fun do |fn|
       @f.puts c_proto(fn, false)
       @f.puts "{"
-      @f.print "  ", cxx_type(fn.ret), " ", "_retval;\n"
+      if not fn.ret.is_nil?
+      then @f.print "  ", cxx_type(fn.ret), " ", "_retval;\n"
+      end
 
       # Check if some of the arguments need conversion
       fn.args.each do |arg|
@@ -207,18 +209,16 @@ EOF
           @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx<#{lang_type}, #{cxx_type}>(#{arg.name});"
         end
       end
-
-      @f.print "  _retval = "
-      @f.print "api_", fn.name, "( "
-      if fn.args != [] then
-        @f.print "arg_"
-      end
-      argnames = fn.args.map { |arg| arg.name }
-      @f.print argnames.join(", arg_")
-      @f.puts " );"
-
-      # Return if it is not an array, else convert
-      unless fn.ret.is_nil?
+      if not fn.ret.is_nil? # todo : factoriser ca.
+      then
+        @f.print "  _retval = "
+        @f.print "api_", fn.name, "( "
+        if fn.args != [] then
+          @f.print "arg_"
+        end
+        argnames = fn.args.map { |arg| arg.name }
+        @f.print argnames.join(", arg_")
+        @f.puts " );"
         if fn.ret.is_array?
           suffix="_array"
           t = fn.ret.type
@@ -229,6 +229,14 @@ EOF
         ln = c_type(t)
         cxx = cxx_type(t)
         @f.puts "  return cxx2lang#{suffix}<#{ln}, #{cxx}>(_retval);"
+      else
+        @f.print "api_", fn.name, "( "
+        if fn.args != [] then
+          @f.print "arg_"
+        end
+        argnames = fn.args.map { |arg| arg.name }
+        @f.print argnames.join(", arg_")
+        @f.puts " );"
       end
 
       @f.puts "}"
