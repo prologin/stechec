@@ -167,6 +167,23 @@ class FileGenerator
     end
   end
 
+  def build_enums_int()
+    for_each_enum do |e|
+      name = e['enum_name']
+      fields = e['enum_field']
+      
+      @f.puts "const char *enum2string_#{name}[] = { #{(fields.map do |f| "\"#{f[0]}\"" end ).join(", ") } }; " 
+      @f.puts "#{name} string2int_#{name}(char * e){"
+      c = 0;
+      fields.each do |f|
+        name = f[0]
+        @f.puts "if (strcmp(\"#{name}\", e) == 0) return #{c};"
+        c = c + 1
+      end
+      @f.puts "  return -1;\n}"
+    end 
+  end
+
   def print_banner(script)
     print_multiline_comment \
 "This file has been generated, if you wish to
