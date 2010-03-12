@@ -25,7 +25,7 @@ class PhpCxxFileGenerator < CxxProto
 #ifndef INTERFACE_HH_
 # define INTERFACE_HH_
 
-# include "../includes/php_embed.h"
+# include <sapi/embed/php_embed.h>
 # include <vector>
 
 EOF
