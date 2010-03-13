@@ -36,8 +36,8 @@ class JavaCxxFileGenerator < CxxProto
     print_banner "generator_java.rb"
     build_constants
     @f.puts "", 'extern "C" {', ""
-    for_each_fun { |x, y, z| print_proto(x, y, z, "extern"); @f.puts ";" }
-    for_each_user_fun { |x, y, z| print_proto(x, y, z); @f.puts ";" }
+    for_each_fun { |f| @f.print cxx_proto(f, "", "extern \"C\""); @f.puts ";" }
+    for_each_user_fun { |f| @f.print cxx_proto(f, "", ""); @f.puts ";" }
     @f.puts "}"
     @f.close
   end
@@ -220,14 +220,18 @@ void setField(JNIEnv *env, jobject obj, jfieldID fid, jobject obj2){
       args = f.args
       @f.print cxx_proto(f, " Interface::")
       @f.puts "", "{"
-      @f.print "  "
-      @f.print "return" if type_ret && type_ret != "void"
-      @f.print "::", name, "("
+      args.each do |arg|
+        #todo types
+        langtype = native2jtype(arg.type)
+          cxxtype = cxx_type(arg.type)
+        @f.puts "#{cxxtype} arg_#{arg.name} = lang2cxx<#{langtype}, #{cxxtype}>(#{arg.name});"  #todo array
+      end
+      @f.print "api_", name, "("
       if args != []
         args[0..-2].each do |y|
-          @f.print y.name, ", "
+          @f.print "arg_",y.name, ", "
         end
-        @f.print args[-1].name
+        @f.print "arg_",args[-1].name
       end
       @f.puts ");", "}", ""
     end
@@ -439,7 +443,6 @@ class JavaFileGenerator < FileGenerator
 
 lib_TARGETS = #{target}
 
-# Tu peux rajouter des fichiers .ml ou changer les flags de g++
 #{target}-srcs = Interface.java Prologin.java
 #{target}-cxxflags = -I. -ggdb3
 
