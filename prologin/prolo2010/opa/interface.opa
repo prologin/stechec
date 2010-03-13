@@ -53,12 +53,12 @@ start(session : channel(msg_game) ) =
        acc ->
       // {x=x0; y=y0} = jQuery.offseti(jQs(tbl_jq))
       style=[{position={absolute}}, {left={px=x * dx /* + x0 */}}, {top={px=y * dy /*+ y0 */ }}]
-        <>{acc}<div style={style}>{
+        <><div style={style}>{
           toon_to_xhtml(false, toon.real_toon, toon.team)
-        }: {x}, {y}</div></>
+        }: {x}, {y}</div>{acc}</>
       ),
       board.board,
-      <div id="select"></div>)
+      <div id="select" style={[{position={absolute}}, {left={px=-1000}}, {top={px=-1000}}]}></div>)
     do [ {tbl_jq} <- board ]
     void
   //
@@ -173,7 +173,7 @@ start(session : channel(msg_game) ) =
   do Session.send(session, {register=s; key=client_key} : msg_game )
   do [#main <-
     <>
-    <div id="tbl" onclick={ click_on_board(event) }><div id="select"></div></div>
+    <div id="tbl" onclick={ click_on_board(event) }></div>
     <div id="right">
       <div id="info">Vous jouez les <span id="team"></span>, c'est aux <span id="toplay"></span> de jouer</div>
       <div class="bouton" id="attaque" onclick={Session.send(s, {attaque})} >{no_attaque_msg}</div>

@@ -58,7 +58,7 @@ display:none;
   width:{px(float_of_int(dx))};
   height:{px(float_of_int(dy))};
   background-color:#DEF;
-  border:5px solid #7AF;
+  opacity:0.5;
 }
 
 .bouton{

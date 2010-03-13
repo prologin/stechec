@@ -100,9 +100,17 @@ Rules = {{
   //
   toon_fold(f, acc0, board) =
     Map.fold( f, board.board, acc0 )
-  find_toon(prop, board) = toon_fold((_, toon, acc -> Option.map(some, acc) ? if prop(toon) then some(toon) else none ), none, board)
+  find_toon(prop, board) =
+    toon_fold(
+    (_, toon, acc ->
+      Option.map(some, acc) ? if prop(toon) then some(toon) else none
+    ), none, board)
   end_of_game(board) =
-    Option.map( ( | {sick={ko} ... } -> true | _ -> false ), find_toon( (t -> t.real_toon == titi), board )) ? false
+    // do jlog("end of game ?")
+    Option.map(
+      ( toon -> // do jlog("titi state : {sick_to_string(toon.sick)}")
+        match toon.sick with {ko} -> true _ -> false ),
+      find_toon( (t -> t.original_toon == titi), board )) ? false
   //
   n_units_moved(board)=
     Map.fold(
