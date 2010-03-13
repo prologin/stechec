@@ -1,0 +1,11 @@
+n'utiliser des modules qu'au toplvl.
+faire des sessions pour toute la com client server ou server client
+
+faire des fonctions qui prennent des types records plutot que des tuples
+le but est de faire des erreurs de types plus precises et de pouvoir ajouter des champs plus facilement
+
+faire un max de fonctions avec des folds, maps, filter, etc... ca fait du code court et simple
+
+faire le moins d'effets de bords possibles, et JAMAIS deux dans une expression simple comme : un appel de fonction, une creation de record, etc...
+
+ne PAS faire d'ordre superieur pour des fonctions decoupees entre le client et le serveur ou des fonctions bindes par des onclick : il est probable qu'elles soient mal generees.
