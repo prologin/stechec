@@ -121,7 +121,7 @@ lib_TARGETS = #{target}
 #{target}-dists += api.php interface.hh
 #{target}-srcs = interface.cc
 #{target}-cxxflags = -ggdb3 $(shell php-config --includes)
-#{target}-ldflags = $(shell php-config --libs --ldflags)
+#{target}-ldflags = -s $(shell php-config --libs --ldflags)
 
 include ../includes/rules.mk
 EOF
