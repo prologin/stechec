@@ -24,6 +24,7 @@ LIMEOBJ   ?= ../includes/main.o
 RM 	  = /bin/rm -f
 
 CFLAGS    = -fPIC $(MY_CFLAGS)
+CXXFLAGS  = -fPIC $(MY_CXXFLAGS)
 
 ##############################
 # Basic Compile Instructions #
@@ -37,8 +38,9 @@ $(NAME): interface.o $(SRC) $(LIMEOBJ)
 \t${FPC} -Cn prologin.pas ${CFLAGS} -o"${NAME}"
 #\tfpc, what a bullshit ! it doesn't want our ~2000 command line argument...
 #\tinstead, omit link phase, add options for ld in his script, then link.
-\t@sed -e 's!^/usr/bin/ld!& $(CHECK_CHEAT) $(LIMEOBJ) !' ./ppas.sh
-\t@sed -ie '/INPUT(/ a $(LIMEOBJ) ' ./link.res
+\t@sed -ie 's!^/usr/bin/ld!& $(CHECK_CHEAT) interface.o $(LIMEOBJ) !' ./ppas.sh
+#\t@sed -ie '/INPUT(/ a $(LIMEOBJ) ' ./link.res
+\t@sed -ie '/global:/ a run;' ./link.res
 \t@./ppas.sh
 \t@$(RM) ./ppas.sh ./link.res*
 \t\#@mv lib${NAME} ${NAME}

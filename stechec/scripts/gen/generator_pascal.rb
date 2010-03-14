@@ -16,7 +16,7 @@ module PascalUtils
     if type.is_simple? then
       {
         "bool" => "boolean",
-        "int"  => "integer",
+        "int"  => "cint",
       "void" => "void" # useless case
       }[type.name]
     elsif type.is_array? then
@@ -85,7 +85,7 @@ class PascalCxxFileGenerator < CxxFileGenerator
     print_banner "generator_pascal.rb"
     @f.puts <<-EOF
 #include "interface.hh"
-
+#include <stdio.h>
 #include <cstdlib>
 
 template<typename Lang, typename Cxx>
@@ -109,11 +109,11 @@ template<typename Lang, typename Cxx>
 std::vector<Cxx> lang2cxx_array(Lang *l)
 {
   std::vector<Cxx> vect;
-  int len = *( ((int *)l) -1 );
+  int len = fpc_dynarray_length(&l);
   vect.reserve(len);
   for (size_t i = 0; i < len; ++i)
     vect.push_back( lang2cxx<Lang, Cxx>(l[i]) );
-return vect;
+  return vect;
 }
 
 template<typename Lang, typename Cxx>
@@ -134,18 +134,33 @@ bool cxx2lang<bool, bool>(bool in)
 }
 
 template<typename Lang, typename Cxx>
-Lang * cxx2lang_array(const std::vector<Cxx>& vect)
+Lang * cxx2lang_array(const std::vector<Cxx>& vect, void *type_ptr)
 {
-  size_t len = vect.size(); 
-  int * tab = (int *)malloc(sizeof(int) + sizeof(Lang) * len);
-  tab[0] = len;
-  Lang * tabl = (Lang *)(tab + 1);
-  for (int i = 0; i < len; ++i)
-    tabl[i] = cxx2lang<Lang, Cxx>(vect[i]);
-  return tabl;
+  long len = vect.size();
+  Lang * tab = NULL;
+  fpc_dynarray_setlength(&tab, type_ptr, 1, &len);
+  for (int i = 0; i < len; ++i){
+    tab[i] = cxx2lang<Lang, Cxx>(vect[i]);
+  }
+  return tab;
+}
+extern "C"{
+  void fpc_dynarray_setlength(void *, void *, int, void *);
+  void fpc_dynarray_length(void *);
 }
 
 EOF
+
+    @f.puts "extern int INIT_PROLO_INTERFACE_ARRAY_OF_CINT;";
+    for_each_struct do |s|
+      type = s["str_name"]
+      @f.puts "extern int INIT_PROLO_INTERFACE_ARRAY_OF_#{type.upcase};"
+    end
+    for_each_enum do |s|
+      type = s["enum_name"]
+      @f.puts "extern int INIT_PROLO_INTERFACE_ARRAY_OF_#{type.upcase};"
+    end
+    
     for_each_enum do |x|
       name = x['enum_name']
       @f.puts "template<>"
@@ -168,9 +183,12 @@ EOF
           lang_type = c_type(type_)
           cxx_type = cxx_type(type_)
           if type.is_array? then
+            addon=", &INIT_PROLO_INTERFACE_ARRAY_OF_#{lang_type.upcase}"
             name_fun = "#{name_fun}_array"
+          else
+            addon=""
           end
-          @f.puts "out.#{name} = #{name_fun}<#{lang_type}, #{cxx_type}>(in.#{name});"
+          @f.puts "out.#{name} = #{name_fun}<#{lang_type}, #{cxx_type}>(in.#{name}#{addon});"
         end
       end
       c_name = x['str_name']
@@ -202,7 +220,7 @@ EOF
         if type.is_array?
           cxx_type = cxx_type(type.type)
           lang_type = lang_type(type.type)
-          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx_array<#{lang_type}, #{cxx_type}>(#{arg.name});"
+          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx_array<#{lang_type}, #{cxx_type}>(#{arg.name}, &INIT_PROLO_INTERFACE_ARRAY_OF_#{lang_type.upcase});"
         else
           cxx_type = cxx_type(type)
           lang_type = lang_type(type)
@@ -222,13 +240,17 @@ EOF
         if fn.ret.is_array?
           suffix="_array"
           t = fn.ret.type
+          ln = c_type(t)
+          cxx = cxx_type(t)
+          addon = ", &INIT_PROLO_INTERFACE_ARRAY_OF_#{ln.upcase}"
         else
+          addon = ""
           suffix=""
           t = fn.ret
+          ln = c_type(t)
+          cxx = cxx_type(t)
         end
-        ln = c_type(t)
-        cxx = cxx_type(t)
-        @f.puts "  return cxx2lang#{suffix}<#{ln}, #{cxx}>(_retval);"
+        @f.puts "  return cxx2lang#{suffix}<#{ln}, #{cxx}>(_retval#{addon});"
       else
         @f.print "api_", fn.name, "( "
         if fn.args != [] then
@@ -254,9 +276,11 @@ EOF
     build_enums
     build_structs
     build_struct_for_pascal_and_c_to_cxx
+    @f.puts 'extern "C" {'
     for_each_fun do |fn|
       @f.print cxx_proto(fn, "api_"), ";\n"
     end
+    @f.puts '}'
     @f.puts "#endif"
     @f.close
   end
@@ -337,10 +361,10 @@ include ../includes/makepascal
     # Generate c-interface file
     #
     @f = File.open(@path + ('prolo_interface.pas'), 'w')
-    @f.puts "unit prolo_interface;", "", "interface", ""
+    @f.puts "unit prolo_interface;", "interface", "uses CTypes;", ""
     print_banner "generator_pascal.rb"
     @f.puts "
-type array_of_integer = array of integer;
+type array_of_cint = array of cint;
 type array_of_boolean = array of boolean;
 "
     @f.puts "const\n"
