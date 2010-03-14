@@ -106,6 +106,28 @@ class PhpFileGenerator < FileGenerator
     end
   end
 
+  def generate_makefile
+    target = $conf['conf']['player_lib']
+    @f = File.open(@path + 'Makefile', 'w')
+    @f.print <<-EOF
+# -*- Makefile -*-
+
+lib_TARGETS = #{target}
+
+# Tu peux rajouter des fichiers sources ici
+#{target}-dists = #{@source_file}
+
+# Evite de toucher a ce qui suit
+#{target}-dists += api.php interface.hh
+#{target}-srcs = interface.cc
+#{target}-cxxflags = -ggdb3 $(shell php-config --includes)
+#{target}-ldflags = $(shell php-config --libs --ldflags)
+
+include ../includes/rules.mk
+EOF
+    @f.close
+  end
+
   def build
     @path = Pathname.new($install_path) + "php"
     @source_file = $conf['conf']['player_filename'] + '.php'
@@ -127,5 +149,7 @@ class PhpFileGenerator < FileGenerator
     build_enums
     @f.puts "?>"
     @f.close
+
+    generate_makefile
   end
 end
