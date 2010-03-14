@@ -80,9 +80,14 @@ start(session : channel(msg_game) ) =
     do [#infos <- toon_state_to_xhtml(toon) ]
     void
   get_diff_ko(pos) = {remove_ko=pos} : diff_board
-  click(optpos) =
+  click_toon((pos: coords), toon:toon_state) =
+    pa = (toon.pa, toon.pa)
+    (x, y) = Coords.add(pos, Coords.mult_e(pa, (-1, -1)) )
+    (w, h) = Coords.add( (1, 1), Coords.mult_e(pa, (2,2) ))
+    jQuery.setTypedCss([{left={px= x * dx}}, {top={px = y * dx}}, {width={px = w * dx}}, {height={px = h * dy}}], `$`("select"))
+  click(optpos : option(coords)) =
     (x, y) = optpos ? (-1000, -1000)
-    jQuery.setTypedCss([{left={px= x * dx}}, {top={px = y * dx}}], `$`("select"))
+    jQuery.setTypedCss([{left={px= x * dx}}, {top={px = y * dx}}, {width={px = dx}}, {height={px = dy}}], `$`("select"))
   s = Session.make_opt( // session client
     client_state_init,
     (state:client_state, msg ->
@@ -142,20 +147,20 @@ start(session : channel(msg_game) ) =
       | {click=pos1} ->
         if board.toplay != state.me then some(state) else
         do log("click : ({pos1.f1}, {pos1.f2})")
-        // todo show
         match state.click with
         | {some=pos0} ->
           do attaque(false)
           (acc, difflist, board, b) = try_add_to_difflist(Option.get(state.session), state.rules_acc, get_diff(state.attaque, pos0, pos1), state.difflist, state.board)
           do show(board)
           some( {state with difflist = difflist; click=none; attaque=if b then false else state.attaque; board=board; rules_acc=acc})
-        | {none} ->
-          do click(some(pos1))
-          match Rules.get_toon(pos1, state.board) with
-          | {none} ->
+        | {none=_} ->
+          match Rules.get_toon(pos1, state.board) : option(toon_state) with
+          | {none=_} ->
+            do click(none)
             do log("cliquez sur un toon !")
             some(state)
           | {some = toon} ->
+            do click_toon((pos1:coords), toon)
             do show_infos(toon)
             some( {state with click = some(pos1) })
           end
