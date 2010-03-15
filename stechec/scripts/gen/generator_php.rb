@@ -41,6 +41,13 @@ EOF
     @f.close
   end
 
+  def generate_fun(f)
+    @f.puts "PHP_FUNCTION(php_api_#{f.name})"
+    @f.puts "{"
+    @f.puts "    RETURN_NULL();"
+    @f.puts "}"
+  end
+
   def generate_source
     @f = File.open(@path + @source_file, 'w')
     print_banner "generator_php.rb"
@@ -52,8 +59,17 @@ static void _init_php();
 
 EOF
 
+    for_each_fun do |f|
+      generate_fun(f)
+    end
+
     @f.puts <<-EOF
 static function_entry module_functions_table[] = {
+EOF
+    for_each_fun(false) do |f|
+      @f.print "    PHP_FALIAS(#{f.name}, php_api_#{f.name}, NULL)"
+    end
+    @f.puts <<-EOF
     {NULL, NULL, NULL}
 };
 EOF
