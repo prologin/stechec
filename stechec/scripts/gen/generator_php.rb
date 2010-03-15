@@ -49,6 +49,46 @@ EOF
 #include "interface.hh"
 
 static void _init_php();
+
+EOF
+
+    @f.puts <<-EOF
+static function_entry module_functions_table[] = {
+    {NULL, NULL, NULL}
+};
+EOF
+
+    @f.puts <<-EOF
+static zend_module_entry api_module_entry = {
+    STANDARD_MODULE_HEADER,
+    "api",
+    module_functions_table,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    "1.0",
+    STANDARD_MODULE_PROPERTIES
+};
+
+static void _init_php()
+{
+    char* argv[] = { "#{$conf['conf']['player_lib']}", NULL };
+    char buffer[1024];
+    const char* path;
+    zend_file_handle script;
+
+    path = getenv("CHAMPION_PATH");
+    if (!path)
+        path = ".";
+
+    snprintf(buffer, 1024, "include('%s/%s.php');", path, "#{$conf['conf']['player_filename']}");
+
+    php_embed_init(1, argv PTSRMLS_CC);
+    zend_startup_module(&api_module_entry);
+    zend_eval_string(buffer, NULL, "PHP to Stechec interface");
+}
 EOF
     @f.close
   end
