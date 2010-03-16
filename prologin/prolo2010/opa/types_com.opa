@@ -98,7 +98,13 @@ type diff_board =
   {born:toon} /
   {remove_ko:coords} /
   {toon:coords; attack:coords}
-  /*todo cards*/
+/*todo cards*/
+
+xhtml_of_diff_board =
+| {from;to} -> <>{Coords.toXhtml(from)} -> {Coords.toXhtml(to)}</>
+| {born} -> <>+ {toon_to_string(born)}</>
+| {remove_ko} -> <>-ko:{Coords.toXhtml(remove_ko)}</>
+| {toon; attack} -> <>{Coords.toXhtml(toon)} attaque {Coords.toXhtml(attack)}</>
 
 // les messages envoyes au serveur
 type msg_game =

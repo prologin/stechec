@@ -80,14 +80,27 @@ start(session : channel(msg_game) ) =
     do [#infos <- toon_state_to_xhtml(toon) ]
     void
   get_diff_ko(pos) = {remove_ko=pos} : diff_board
-  click_toon((pos: coords), toon:toon_state) =
-    pa = (toon.pa, toon.pa)
+  click_toon((pos: coords), toon:toon_state, team) =
+    pa =
+      if team != toon.team || toon.sick != {ready_to_move}
+      then (0,0)
+      else (toon.pa, toon.pa)
     (x, y) = Coords.add(pos, Coords.mult_e(pa, (-1, -1)) )
     (w, h) = Coords.add( (1, 1), Coords.mult_e(pa, (2,2) ))
     jQuery.setTypedCss([{left={px= x * dx}}, {top={px = y * dx}}, {width={px = w * dx}}, {height={px = h * dy}}], `$`("select"))
   click(optpos : option(coords)) =
     (x, y) = optpos ? (-1000, -1000)
     jQuery.setTypedCss([{left={px= x * dx}}, {top={px = y * dx}}, {width={px = dx}}, {height={px = dy}}], `$`("select"))
+  show_diff(diff) =
+    xhtml =
+    <ul>{List.foldl(
+    (diff, acc ->
+    <>{acc}<li>{xhtml_of_diff_board(diff)}</li></>
+    ),
+    diff,
+    <></>)}</ul>
+    do [ #diffs <- xhtml]
+    void
   s = Session.make_opt( // session client
     client_state_init,
     (state:client_state, msg ->
@@ -114,6 +127,7 @@ start(session : channel(msg_game) ) =
         if board.toplay != state.me then some(state) else
         (acc, difflist, board, b) = try_add_to_difflist( Option.get(state.session), state.rules_acc, {born=toon}, state.difflist, state.board )
         do show(board)
+        do show_diff(difflist)
         some( {state with difflist = difflist; rules_acc = acc; board = board ; attaque = if b then false else state.attaque})
       | {board; me} ->
         do [
@@ -121,6 +135,7 @@ start(session : channel(msg_game) ) =
           #pieces <- pieces(Option.get(state.session), me),
           #team <- Team.team_to_string(me) ]
         do show(board)
+        do show_diff([])
         acc = Rules.initial_acc_verif(board)
         do log( if acc.st == {must_remove_ko} then "vous devez supprimer un point KO" else "vous pouvez jouer une carte ou bouger")
         some( {state with me = me; original_board = board; board = board ; difflist=[]; click=none; rules_acc = acc})
@@ -128,11 +143,13 @@ start(session : channel(msg_game) ) =
         if board.toplay != state.me then some(state) else
         do show(state.original_board)
         do attaque(false)
+        do show_diff([])
         some( {state with board = state.original_board; difflist = []; click = none; attaque = false; rules_acc = Rules.initial_acc_verif(board)})
       | {ok} ->
         if board.toplay != state.me then some(state) else
         do Session.send(session, {moves=List.rev(state.difflist); key=client_key}:msg_game)
         do attaque(false)
+        do show_diff([])
         some( {state with click = none; difflist = []; attaque = false})
       | {remove_ko} ->
         if board.toplay != state.me then some(state) else
@@ -140,6 +157,7 @@ start(session : channel(msg_game) ) =
         | {some = pos} ->
           (acc, difflist, board, b) = try_add_to_difflist(Option.get(state.session), state.rules_acc, get_diff_ko(pos), state.difflist, state.board)
           do show(board)
+          do show_diff(difflist)
           do click(none)
           some( {state with difflist = difflist; click=none; attaque=if b then false else state.attaque; board=board; rules_acc=acc})
         | {none} -> do log("aucune unite selectionnee.") some(state)
@@ -151,6 +169,7 @@ start(session : channel(msg_game) ) =
         | {some=pos0} ->
           do attaque(false)
           (acc, difflist, board, b) = try_add_to_difflist(Option.get(state.session), state.rules_acc, get_diff(state.attaque, pos0, pos1), state.difflist, state.board)
+          do show_diff(difflist)
           do show(board)
           some( {state with difflist = difflist; click=none; attaque=if b then false else state.attaque; board=board; rules_acc=acc})
         | {none=_} ->
@@ -160,7 +179,7 @@ start(session : channel(msg_game) ) =
             do log("cliquez sur un toon !")
             some(state)
           | {some = toon} ->
-            do click_toon((pos1:coords), toon)
+            do click_toon((pos1:coords), toon, state.me)
             do show_infos(toon)
             some( {state with click = some(pos1) })
           end
@@ -186,6 +205,7 @@ start(session : channel(msg_game) ) =
       <div class="bouton" id="ok" onclick={Session.send(s, {ok}:msg_game_client )} >valider</div>
       <div class="bouton" id="cancel" onclick={Session.send(s, {cancel}:msg_game_client )} >annuler</div>
       <div id="pieces"></div>
+      <div id="diffs"></div>
       <div id="log"></div>
       <div id="infos"></div>
     </div>
