@@ -415,7 +415,7 @@ end
 # A generic CSharp file generator (proto, ...)
 # We can inherit from CProto, as C# ressembles C, it works for now.
 # And I'm a bit lazy. :-)
-class CSharpProto < CProto
+class CSharpProto < CxxProto
 
   def initialize
     super
@@ -435,8 +435,8 @@ class CSharpProto < CProto
 
   def conv_type(t)
     if t.is_array?
-      conv_type(t.type) + "[]"
-    else 
+     "List<" + conv_type(t.type) + ">"
+    else
       if t.is_struct? or t.is_enum?
         camel_case(t.name)
       else
@@ -446,7 +446,7 @@ class CSharpProto < CProto
   end
 
   def print_constant(type, name, val)
-      @f.print "\tpublic const int ", name, " = ", val, ";\n"
+      @f.print "\t\tpublic const int ", name, " = ", val, ";\n"
   end
 
   def build_enums
@@ -482,13 +482,14 @@ class CSharpProto < CProto
       @f.puts "\t}"
     end
   end
+
   def print_proto(fn, ext = "", types = @types)
     ext = ext + " " if ext != ""
     @f.print ext, conv_type(fn.ret)
     @f.print " ", camel_case(fn.name), "("
     if fn.args != nil and fn.args != []
       print_args = fn.args.collect {
-        |arg| [arg.type.name, arg.name]
+        |arg| [camel_case(arg.type.name), arg.name].join(" ");
       }
       @f.print print_args.join(", ")
     end

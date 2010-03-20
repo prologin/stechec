@@ -12,6 +12,12 @@
 
 require "gen/file_generator"
 
+def camel_case(str)
+  strs = str.split("_")
+  strs.each { |s| s.capitalize! }
+  strs.join
+end
+
 def cs_proto(fn)
   # Returns the prototype of a C function
   # WARNING: arrays are hard to handle in C...
@@ -22,7 +28,11 @@ def cs_proto(fn)
     rettype = fn.ret.name
   end
 
-  buf += "\t\tpublic " + rettype + " " + fn.name + "("
+  if not fn.ret.is_simple?
+    rettype = camel_case(rettype)
+  end
+
+  buf += "\t\tpublic " + rettype + " " + camel_case(fn.name) + "("
 
   # Handle arguments
   args = []
@@ -85,8 +95,8 @@ private:
     EOF
 
     @f.puts "", 'extern "C" {', ""
-    for_each_fun { |fn| print_proto(fn, "extern"); @f.puts ";" }
-    for_each_user_fun { |fn| print_proto(fn); @f.puts ";" }
+    for_each_fun { |fn| @f.print cxx_proto(fn, "api_"); @f.puts ";" }
+    for_each_user_fun { |fn| @f.print cxx_proto(fn); @f.puts ";" }
     @f.puts "}", "", "#endif // !INTERFACE_HH_"
     @f.close
   end
@@ -95,15 +105,15 @@ private:
     @f = File.open(@path + @api_file, 'w')
     print_banner "generator_cs.rb"
 
-    @f.puts "using System.Runtime.InteropServices;", "using System.Runtime.CompilerServices;", ""
+    @f.puts "using System.Runtime.InteropServices;", "using System.Runtime.CompilerServices;", "using System.Collections.Generic;",""
 
     @f.puts "namespace Prologin {"
 
-    build_constants
     build_enums
     build_structs
 
     @f.puts "\tclass API {"
+    build_constants
     for_each_fun do |fn|
       @f.puts "\t\t[MethodImplAttribute(MethodImplOptions.InternalCall)]"
       print_proto(fn, "\t\tpublic static extern");
@@ -117,7 +127,7 @@ private:
   def generate_source()
     @f = File.open(@path + @source_file, 'w')
     print_banner "generator_cs.rb"
-    
+
     @f.puts <<-EOF
 #include "interface.hh"
 
@@ -217,10 +227,10 @@ void CSharpInterface::callCSharpMethod(const char* name)
 */
     EOF
 
-    for_each_user_fun(false) do |fn|
-      print_proto(fn, 'extern "C"')
-      print_body "  gl_csharp.callCSharpMethod(\"Prologin:" + fn.name + "\");"
-     end
+#    for_each_user_fun(false) do |fn|
+#      print_proto(fn, 'extern "C"')
+#      print_body "  gl_csharp.callCSharpMethod(\"Prologin:" + fn.name + "\");"
+#     end
     @f.close
   end
 
@@ -283,9 +293,9 @@ include ../includes/makecs
     @f = File.new(@path + @source_file, 'w')
     print_banner "generator_cs.rb"
     # Required stuff to call C from C#
-    @f.puts "using System.Runtime.InteropServices;", "using System;", ""
+    @f.puts  "using System;", "using System.Collections.Generic;", "using System.Runtime.InteropServices;", ""
 
-    @f.puts "namespace Prologin {", "\tclass Prologin {"
+    @f.puts "namespace Prologin {", "", "\tclass Prologin {", ""
 
     for_each_user_fun(false) do |fn|
       @f.print cs_proto(fn)
