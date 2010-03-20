@@ -94,6 +94,27 @@ EOF
     @f.puts "}"
   end
 
+  def generate_enum_wrappers(e)
+    name = e['enum_name']
+    @f.puts <<-EOF
+template <>
+zval* cxx2lang<zval*, #{name}>(#{name} in)
+{
+  return cxx2lang<zval*, int>((int)in);
+}
+
+template <>
+#{name} lang2cxx<zval*, #{name}>(zval* in)
+{
+  return (#{name})lang2cxx<zval*, int>(in);
+}
+EOF
+  end
+
+  def generate_struct_wrappers(s)
+    # TODO
+  end
+
   def generate_source
     @f = File.open(@path + @source_file, 'w')
     print_banner "generator_php.rb"
@@ -187,6 +208,14 @@ std::vector<Cxx> lang2cxx_array(zval* in)
     return out;
 }
 EOF
+
+    for_each_enum do |e|
+      generate_enum_wrappers(e)
+    end
+
+    for_each_struct do |s|
+      generate_struct_wrappers(s)
+    end
 
     for_each_fun do |f|
       generate_fun(f)
