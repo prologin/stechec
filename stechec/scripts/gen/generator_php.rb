@@ -25,6 +25,7 @@ class PhpCxxFileGenerator < CxxProto
 #ifndef INTERFACE_HH_
 # define INTERFACE_HH_
 
+# include <cstdlib>
 # include <sapi/embed/php_embed.h>
 # include <vector>
 
@@ -48,6 +49,50 @@ EOF
     @f.puts "}"
   end
 
+  def generate_user_fun(f)
+    @f.puts cxx_proto(f, "", 'extern "C"')
+    @f.puts "{"
+    @f.puts "    zval ret;"
+    @f.puts "    zval fname;"
+    if f.args.length > 0 then
+      @f.puts "    zval params[#{f.args.length}];"
+    end
+    @f.puts "    _init_php();"
+    @f.puts
+    @f.puts "    MAKE_STD_ZVAL(ret);"
+    @f.puts "    ZVAL_STRING(&fname, \"#{f.name}\", 0);"
+
+    i = 0
+    f.args.each do |a|
+      @f.puts "    params[#{i}] = cxx2lang<zval, #{cxx_type(a.type)}>(#{a.name});"
+      i += 1
+    end
+
+    p = if f.args.length != 0 then "params" else "NULL" end
+    @f.puts "    if (call_user_function(EG(function_table), NULL, &fname, ret, #{i}, #{p} TSRMLS_CC) == FAILURE)"
+    @f.puts "    {"
+    @f.puts "        abort();"
+    @f.puts "    }"
+
+    if not f.ret.is_nil? then
+      @f.puts "    #{cxx_type(f.ret)} cxxret = lang2cxx<zval, #{cxx_type(f.ret)}>(ret);"
+    elsif f.ret.is_array? then
+      @f.puts "    #{cxx_type(f.ret)} cxxret = lang2cxx_array<#{cxx_type(f.ret.type)}>(ret);"
+    end
+
+    @f.puts "    zval_dtor(ret);"
+    @f.puts "    zval_dtor(&fname);"
+    i = 0
+    f.args.each do |a|
+      @f.puts "    zval_dtor(params[#{i}]);"
+      i += 1
+    end
+    if not f.ret.is_nil?
+      @f.puts "    return cxxret;"
+    end
+    @f.puts "}"
+  end
+
   def generate_source
     @f = File.open(@path + @source_file, 'w')
     print_banner "generator_php.rb"
@@ -57,6 +102,89 @@ EOF
 
 static void _init_php();
 
+template <typename Lang, typename Cxx>
+Lang cxx2lang(Cxx in)
+{
+    return in.__if_that_triggers_an_error_there_is_a_problem;
+}
+
+template <>
+zval* cxx2lang<zval*, int>(int in)
+{
+    zval* x;
+    MAKE_STD_ZVAL(x);
+    ZVAL_LONG(x, in);
+    return x;
+}
+
+template <>
+zval* cxx2lang<zval*, bool>(bool in)
+{
+    zval* x;
+    MAKE_STD_ZVAL(x);
+    ZVAL_BOOL(x, in);
+    return x;
+}
+
+template <typename Cxx>
+zval* cxx2lang_array(const std::vector<Cxx>& in)
+{
+    zval* x;
+    MAKE_STD_ZVAL(x);
+    array_init(x);
+
+    size_t s = in.size();
+
+    for (size_t i = 0; i < s; ++i)
+      add_next_index_zval(x, cxx2lang<zval*, Cxx>(in[i]));
+
+    return x;
+}
+
+template <typename Lang, typename Cxx>
+Cxx lang2cxx(Lang in)
+{
+    return in.__if_that_triggers_an_error_there_is_a_problem;
+}
+
+template <>
+int lang2cxx<zval*, int>(zval* in)
+{
+    int r;
+    zend_vm_stack_push(in);
+    if (zend_parse_parameters(1 TSRMLS_CC, "l", &r) == FAILURE)
+        abort();
+    zend_vm_stack_pop();
+    return r;
+}
+
+template <>
+bool lang2cxx<zval*, bool>(zval* in)
+{
+    bool r;
+    zend_vm_stack_push(in);
+    if (zend_parse_parameters(1 TSRMLS_CC, "b", &r) == FAILURE)
+        abort();
+    zend_vm_stack_pop();
+    return r;
+}
+
+template <typename Cxx>
+std::vector<Cxx> lang2cxx_array(zval* in)
+{
+    HashTable* ht = Z_ARRVAL_P(in);
+    std::vector<Cxx> out;
+    size_t s = zend_hash_num_elements(ht);
+
+    for (size_t i = 0; i < s; ++i)
+    {
+        zval* v;
+        zend_hash_index_find(ht, i, &v);
+        out.push_back(lang2cxx<zval*, Cxx>(v));
+    }
+
+    return out;
+}
 EOF
 
     for_each_fun do |f|
@@ -90,6 +218,11 @@ static zend_module_entry api_module_entry = {
 
 static void _init_php()
 {
+    static int initialized = 0;
+    if (initialized)
+        return;
+    initialized = 1;
+
     char* argv[] = { "#{$conf['conf']['player_lib']}", NULL };
     char buffer[1024];
     const char* path;
@@ -105,7 +238,13 @@ static void _init_php()
     zend_startup_module(&api_module_entry);
     zend_eval_string(buffer, NULL, "PHP to Stechec interface");
 }
+
 EOF
+
+    for_each_user_fun do |f|
+      generate_user_fun(f)
+    end
+
     @f.close
   end
 
