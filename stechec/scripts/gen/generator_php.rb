@@ -52,36 +52,37 @@ EOF
   def generate_user_fun(f)
     @f.puts cxx_proto(f, "", 'extern "C"')
     @f.puts "{"
-    @f.puts "    zval ret;"
-    @f.puts "    zval fname;"
+    @f.puts "    zval* ret;"
+    @f.puts "    zval* fname;"
     if f.args.length > 0 then
-      @f.puts "    zval params[#{f.args.length}];"
+      @f.puts "    zval* params[#{f.args.length}];"
     end
     @f.puts "    _init_php();"
     @f.puts
     @f.puts "    MAKE_STD_ZVAL(ret);"
-    @f.puts "    ZVAL_STRING(&fname, \"#{f.name}\", 0);"
+    @f.puts "    MAKE_STD_ZVAL(fname);"
+    @f.puts "    ZVAL_STRING(fname, \"#{f.name}\", 0);"
 
     i = 0
     f.args.each do |a|
-      @f.puts "    params[#{i}] = cxx2lang<zval, #{cxx_type(a.type)}>(#{a.name});"
+      @f.puts "    params[#{i}] = cxx2lang<zval*, #{cxx_type(a.type)}>(#{a.name});"
       i += 1
     end
 
     p = if f.args.length != 0 then "params" else "NULL" end
-    @f.puts "    if (call_user_function(EG(function_table), NULL, &fname, ret, #{i}, #{p} TSRMLS_CC) == FAILURE)"
+    @f.puts "    if (call_user_function(EG(function_table), NULL, fname, ret, #{i}, #{p} TSRMLS_CC) == FAILURE)"
     @f.puts "    {"
     @f.puts "        abort();"
     @f.puts "    }"
 
     if not f.ret.is_nil? then
-      @f.puts "    #{cxx_type(f.ret)} cxxret = lang2cxx<zval, #{cxx_type(f.ret)}>(ret);"
+      @f.puts "    #{cxx_type(f.ret)} cxxret = lang2cxx<zval*, #{cxx_type(f.ret)}>(ret);"
     elsif f.ret.is_array? then
       @f.puts "    #{cxx_type(f.ret)} cxxret = lang2cxx_array<#{cxx_type(f.ret.type)}>(ret);"
     end
 
     @f.puts "    zval_dtor(ret);"
-    @f.puts "    zval_dtor(&fname);"
+    @f.puts "    zval_dtor(fname);"
     i = 0
     f.args.each do |a|
       @f.puts "    zval_dtor(params[#{i}]);"
