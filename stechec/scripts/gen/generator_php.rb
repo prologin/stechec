@@ -45,7 +45,49 @@ EOF
   def generate_fun(f)
     @f.puts "PHP_FUNCTION(php_api_#{f.name})"
     @f.puts "{"
-    @f.puts "    RETURN_NULL();"
+    if f.args.length != 0
+      f.args.each do |a|
+        @f.puts "    zval* _#{a.name};"
+      end
+      @f.puts
+      fs = "z" * f.args.length
+      @f.print "    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, \"#{fs}\", "
+      args = f.args.map { |a| "&_" + a.name }
+      @f.print args.join(", ")
+      @f.puts ") == FAILURE)"
+      @f.puts "    {"
+      @f.puts "        RETURN_NULL();"
+      @f.puts "    }"
+      @f.puts
+    end
+    @f.print "    "
+    unless f.ret.is_nil?
+      @f.print "zval* ret = "
+      if f.ret.is_array?
+        @f.print "cxx2lang_array("
+      else
+        @f.print "cxx2lang<zval*, #{f.ret.name}>("
+      end
+    end
+    @f.print "api_", f.name, "("
+    i = 0
+    f.args.each do |a|
+      if a.type.is_array? then
+        @f.print "lang2cxx_array<#{a.type.type.name}>("
+      else
+        @f.print "lang2cxx<zval*, #{a.type.name}>("
+      end
+      @f.print "_#{a.name})"
+      i += 1
+      @f.print ", " unless i == f.args.length
+    end
+    @f.print ")" unless f.ret.is_nil?
+    @f.puts ");"
+    if f.ret.is_nil?
+      @f.puts "    RETURN_NULL();"
+    else
+      @f.puts "    RETURN_ZVAL(ret, 0, 0);"
+    end
     @f.puts "}"
   end
 
@@ -214,23 +256,13 @@ Cxx lang2cxx(Lang in)
 template <>
 int lang2cxx<zval*, int>(zval* in)
 {
-    int r;
-    zend_vm_stack_push(in);
-    if (zend_parse_parameters(1 TSRMLS_CC, "l", &r) == FAILURE)
-        abort();
-    zend_vm_stack_pop();
-    return r;
+    return Z_LVAL_P(in);
 }
 
 template <>
 bool lang2cxx<zval*, bool>(zval* in)
 {
-    bool r;
-    zend_vm_stack_push(in);
-    if (zend_parse_parameters(1 TSRMLS_CC, "b", &r) == FAILURE)
-        abort();
-    zend_vm_stack_pop();
-    return r;
+    return Z_BVAL_P(in);
 }
 
 template <typename Cxx>
