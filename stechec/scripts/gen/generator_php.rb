@@ -100,19 +100,61 @@ EOF
 template <>
 zval* cxx2lang<zval*, #{name}>(#{name} in)
 {
-  return cxx2lang<zval*, int>((int)in);
+    return cxx2lang<zval*, int>((int)in);
 }
 
 template <>
 #{name} lang2cxx<zval*, #{name}>(zval* in)
 {
-  return (#{name})lang2cxx<zval*, int>(in);
+    return (#{name})lang2cxx<zval*, int>(in);
 }
 EOF
   end
 
   def generate_struct_wrappers(s)
-    # TODO
+    name = s['str_name']
+    @f.puts "template <>"
+    @f.puts "zval* cxx2lang<zval*, #{name}>(#{name} in)"
+    @f.puts "{"
+    @f.puts "    zval* ret;"
+    @f.puts "    MAKE_STD_ZVAL(ret);"
+    @f.puts "    array_init(ret);"
+    s['str_field'].each do |f|
+      n = f[0]
+      t = @types[f[1]]
+      @f.print "    add_assoc_zval(ret, \"#{n}\", "
+      if t.is_array?
+        @f.print "cxx2lang_array(in.#{n})"
+      else
+        @f.print "(cxx2lang<zval*, #{t.name}>(in.#{n}))"
+      end
+      @f.puts ");"
+    end
+    @f.puts "    return ret;"
+    @f.puts "}"
+    @f.puts
+
+    # OTHER WAY
+    @f.puts "template <>"
+    @f.puts "#{name} lang2cxx<zval*, #{name}>(zval* in)"
+    @f.puts "{"
+    @f.puts "    #{name} out;"
+    @f.puts "    zval* tmp;"
+    @f.puts "    HashTable* ht = Z_ARRVAL_P(in);"
+    s['str_field'].each do |f|
+      n = f[0]
+      t = @types[f[1]]
+      @f.puts "    zend_hash_find(ht, \"#{n}\", #{n.length}, (void**)&tmp);"
+      @f.print "    out.#{n} = "
+      if t.is_array? then
+        @f.print "lang2cxx_array<#{t.type.name}>(tmp)"
+      else
+        @f.print "lang2cxx<zval*, #{t.name}>(tmp)"
+      end
+      @f.puts ";"
+    end
+    @f.puts "    return out;"
+    @f.puts "}"
   end
 
   def generate_source
@@ -201,7 +243,7 @@ std::vector<Cxx> lang2cxx_array(zval* in)
     for (size_t i = 0; i < s; ++i)
     {
         zval* v;
-        zend_hash_index_find(ht, i, &v);
+        zend_hash_index_find(ht, i, (void**)&v);
         out.push_back(lang2cxx<zval*, Cxx>(v));
     }
 
