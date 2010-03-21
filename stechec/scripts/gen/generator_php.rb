@@ -61,7 +61,7 @@ EOF
     @f.puts
     @f.puts "    MAKE_STD_ZVAL(ret);"
     @f.puts "    MAKE_STD_ZVAL(fname);"
-    @f.puts "    ZVAL_STRING(fname, \"#{f.name}\", 0);"
+    @f.puts "    ZVAL_STRING(fname, \"#{f.name}\", 1);"
 
     i = 0
     f.args.each do |a|
@@ -81,11 +81,11 @@ EOF
       @f.puts "    #{cxx_type(f.ret)} cxxret = lang2cxx_array<#{cxx_type(f.ret.type)}>(ret);"
     end
 
-    @f.puts "    zval_dtor(ret);"
-    @f.puts "    zval_dtor(fname);"
+    @f.puts "    zval_ptr_dtor(&ret);"
+    @f.puts "    zval_ptr_dtor(&fname);"
     i = 0
     f.args.each do |a|
-      @f.puts "    zval_dtor(params[#{i}]);"
+      @f.puts "    zval_ptr_dtor(&params[#{i}]);"
       i += 1
     end
     if not f.ret.is_nil?
