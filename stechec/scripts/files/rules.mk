@@ -72,7 +72,8 @@ define get_objs
 endef
 
 define get_ocaml_objs
-  $(1)-camlobjs := $$(foreach s,$$(filter %.ml,$$($(1)-srcs)),$$(s:.ml=.o))
+  $(1)-mlsrcs := $$(filter %.ml,$$($(1)-srcs))
+  $(1)-camlobjs := $$(shell python ../includes/toposort.py $$($(1)-mlsrcs))
   ifneq ($$($(1)-camlobjs),)
     $(1)-objs := $(1)-caml.o $(value $(1)-objs)
     $(1)-cflags := $$($(1)-cflags) $$(OCAML_CFLAGS)

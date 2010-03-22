@@ -93,9 +93,11 @@ def make_includes
   if Pathname.new('files/main.cc').exist?
     FileUtils.cp 'files/main.cc', install_path.to_s
     FileUtils.cp 'files/rules.mk', install_path.to_s
+    FileUtils.cp 'files/toposort.py', install_path.to_s
   else
     FileUtils.cp Pathname.new(PKGDATADIR) + 'files/main.cc', install_path.to_s
     FileUtils.cp Pathname.new(PKGDATADIR) + 'files/rules.mk', install_path.to_s
+    FileUtils.cp Pathname.new(PKGDATADIR) + 'files/toposort.py', install_path.to_s
   end
 
   # these 5 are not needed anymore for client, it uses rules.mk

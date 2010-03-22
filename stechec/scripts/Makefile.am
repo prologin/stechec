@@ -65,6 +65,7 @@ dist_bash_DATA =				\
 nobase_pkgdata_DATA =				\
 	files/main.cc				\
 	files/rules.mk				\
+	files/toposort.py			\
 	files/Api.cc				\
 	files/Api.hh				\
 	files/Client.hh				\
