@@ -18,7 +18,7 @@ else
 	Q = @
 endif
 
-ifdef COLORS
+ifndef NOCOLORS
   quiet_cmd_cc		= [1;32mcc   $< -> $@[0m
   quiet_cmd_cxx		= [1;32mcxx  $< -> $@[0m
   quiet_cmd_java	= [1;34mjava $< -> $@[0m
