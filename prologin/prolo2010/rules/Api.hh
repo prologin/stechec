@@ -46,6 +46,10 @@ public:
 public:
 
 ///
+// Renvoie le numéro du tour actuel.
+//
+   int tour_actuel();
+///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
    cartes mes_cartes();

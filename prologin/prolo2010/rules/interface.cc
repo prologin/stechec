@@ -34,6 +34,14 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
 }
 
 ///
+// Renvoie le numéro du tour actuel.
+//
+extern "C" int api_tour_actuel()
+{
+  return api->tour_actuel();
+}
+
+///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
 extern "C" cartes api_mes_cartes()

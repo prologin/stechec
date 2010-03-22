@@ -85,6 +85,11 @@ function:
      toutes les actions que vous avez déjà effectuées au cours de votre phase
      de tour de jeu.
   -
+    fct_name: tour_actuel
+    fct_summary: Renvoie le numéro du tour actuel.
+    fct_ret_type: int
+    fct_arg: []
+  -
     fct_name: mes_cartes
     fct_summary: Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
     fct_ret_type: cartes

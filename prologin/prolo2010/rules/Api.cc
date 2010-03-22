@@ -35,6 +35,15 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 }
 
 ///
+// Renvoie le numéro du tour actuel.
+//
+int Api::tour_actuel()
+{
+  // TODO
+  abort();
+}
+
+///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
 cartes Api::mes_cartes()
