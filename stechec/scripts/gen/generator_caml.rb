@@ -354,7 +354,7 @@ lib_TARGETS = #{target}
 # Tu peux rajouter des fichiers .ml ou changer les flags de ocamlc
 # Les fichiers .mli correspondants seront automatiquement utilises si
 # existants.
-#{target}-srcs = api.ml #{@caml_file}
+#{target}-srcs = api.ml #{@caml_ml_file}
 #{target}-camlflags = -g
 
 # Evite de toucher a ce qui suit
