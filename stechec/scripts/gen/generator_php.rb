@@ -159,18 +159,20 @@ EOF
     @f.puts "zval* cxx2lang<zval*, #{name}>(#{name} in)"
     @f.puts "{"
     @f.puts "    zval* ret;"
+    @f.puts "    zval* tmp;"
     @f.puts "    MAKE_STD_ZVAL(ret);"
     @f.puts "    array_init(ret);"
     s['str_field'].each do |f|
       n = f[0]
       t = @types[f[1]]
-      @f.print "    add_assoc_zval(ret, \"#{n}\", "
+      @f.print "    tmp = "
       if t.is_array?
         @f.print "cxx2lang_array(in.#{n})"
       else
         @f.print "(cxx2lang<zval*, #{t.name}>(in.#{n}))"
       end
-      @f.puts ");"
+      @f.puts ";"
+      @f.puts "    add_assoc_zval(ret, \"#{n}\", tmp);"
     end
     @f.puts "    return ret;"
     @f.puts "}"
@@ -186,7 +188,8 @@ EOF
     s['str_field'].each do |f|
       n = f[0]
       t = @types[f[1]]
-      @f.puts "    zend_hash_find(ht, \"#{n}\", #{n.length}, (void**)&tmp);"
+      @f.puts "    zend_symtable_find(ht, \"#{n}\", #{n.length + 1}, (void**)&tmp);"
+      @f.puts "    tmp = (zval*)tmp->value.ht;"
       @f.print "    out.#{n} = "
       if t.is_array? then
         @f.print "lang2cxx_array<#{t.type.name}>(tmp)"
@@ -219,7 +222,7 @@ zval* cxx2lang<zval*, int>(int in)
 {
     zval* x;
     MAKE_STD_ZVAL(x);
-    ZVAL_LONG(x, in);
+    ZVAL_LONG(x, (long)in);
     return x;
 }
 
@@ -256,7 +259,7 @@ Cxx lang2cxx(Lang in)
 template <>
 int lang2cxx<zval*, int>(zval* in)
 {
-    return Z_LVAL_P(in);
+    return (int)Z_LVAL_P(in);
 }
 
 template <>
