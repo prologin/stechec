@@ -325,8 +325,13 @@ class CamlFileGenerator < FileGenerator
     end
   end
 
-  def print_proto(fn)
-    @f.print "external ", fn.name, " : "
+  def print_proto(fn, external = true)
+    if external
+      prefix = "external"
+    else
+      prefix = "val"
+    end
+    @f.print prefix, " ", fn.name, " : "
     if fn.args != []
       fn.args.each do |arg|
         @f.print conv_type(arg.type), " -> "
@@ -334,7 +339,8 @@ class CamlFileGenerator < FileGenerator
     else
       @f.print "unit -> "
     end
-    @f.print conv_type(fn.ret), ' = "ml_', fn.name, '"'
+    @f.print conv_type(fn.ret)
+    @f.print ' = "ml_', fn.name, '"' unless not external
   end
   
   def generate_makefile
@@ -346,6 +352,8 @@ class CamlFileGenerator < FileGenerator
 lib_TARGETS = #{target}
 
 # Tu peux rajouter des fichiers .ml ou changer les flags de ocamlc
+# Les fichiers .mli correspondants seront automatiquement utilises si
+# existants.
 #{target}-srcs = api.ml #{@caml_file}
 #{target}-camlflags = -g
 
@@ -359,7 +367,8 @@ include ../includes/rules.mk
 
   def build
     @path = Pathname.new($install_path) + "caml"
-    @caml_file = $conf['conf']['player_filename'] + '.ml'
+    @caml_ml_file = $conf['conf']['player_filename'] + '.ml'
+    @caml_mli_file = $conf['conf']['player_filename'] + '.mli'
     @caml_api_file = "api.ml"
 
     # Build C interface files
@@ -384,7 +393,7 @@ include ../includes/rules.mk
     #
     # Generate ml source file
     #
-    @f = File.open(@path + @caml_file, 'w')
+    @f = File.open(@path + @caml_ml_file, 'w')
     print_banner "generator_caml.rb"
 
     @f.puts "open Api;;", ""
@@ -400,6 +409,20 @@ include ../includes/rules.mk
     print_comment "/!\\ Ne touche pas a ce qui suit /!\\"
     for_each_user_fun(false) do |fn| 
       @f.print 'Callback.register "ml_', fn.name, '" ', fn.name, ";;"
+    end
+    @f.close
+
+    #
+    # Generate mli interface file
+    #
+    @f = File.open(@path + @caml_mli_file, 'w')
+    print_banner "generator_caml.rb"
+
+    @f.puts "open Api", ""
+
+    for_each_user_fun do |fn|
+      print_proto(fn, false)
+      @f.puts
     end
     @f.close
 
