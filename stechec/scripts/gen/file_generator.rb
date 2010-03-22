@@ -475,7 +475,7 @@ class CSharpProto < CxxProto
 
   def build_structs_generic(&show_field)
     for_each_struct do |x|
-      @f.puts "\tstruct #{camel_case(x['str_name'])} {"
+      @f.puts "\tclass #{camel_case(x['str_name'])} {"
       x['str_field'].each do |f|
         @f.print "\t\tpublic #{show_field.call(f[0], f[1])} // <- ", f[2], "\n"
       end
