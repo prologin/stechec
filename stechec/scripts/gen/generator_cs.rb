@@ -338,6 +338,19 @@ MonoObject* CSharpInterface::callCSharpMethod(const char* name)
       end
      end
 
+     for_each_fun(false) do |fn|
+       @f.print cxx_type(fn.ret) + " " + fn.name + "("
+       args = fn.args.map { |arg|
+           if arg.type.is_array? or arg.type.is_struct?
+             arg_type = "MonoObject*"
+           else
+             arg_type = cxx_type(arg.type)
+           end
+           "#{arg_type} #{arg.name}" }
+       @f.puts args.join(", ") + ")"
+       @f.puts "{}"
+     end
+
    @f.close
   end
 
