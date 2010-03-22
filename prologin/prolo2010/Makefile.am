@@ -2,4 +2,5 @@
 
 SUBDIRS =					\
 	data					\
+	jsdump					\
 	rules
