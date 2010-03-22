@@ -83,8 +83,8 @@ define get_ocaml_objs
   cleanfiles := $$($(1)-camlobjs) $$($(1)-camlobjs:.o=.cmo) $$($(1)-camlobjs:.o=.cmi) $$(cleanfiles)
 
   $(1)-caml.o: override _CAMLFLAGS = $$($(1)-camlflags)
-  $(1)-caml.o: $$($(1)-camlobjs:.o=.cmo)
-	$$(call cmd,ocamlo)
+  $(1)-caml.o: $$($(1)-camlobjs:.o=.cmi) $$($(1)-camlobjs:.o=.cmo)
+	  $$(call cmd,ocamlo)
 endef
 
 define get_jclass
@@ -131,7 +131,7 @@ cmd_java	= $(CJ) $(java_flags) -C $<
 cmd_javac	= $(CJ) $(java_flags) -c $< -o $@
 cmd_javai	= $(CJH) -classpath /usr/share/java/libgcj.jar:. $(@:.h=)
 cmd_ocaml	= $(OCAMLC) $(_CAMLFLAGS) -c $< -o $@
-cmd_ocamlo	= $(OCAMLC) -output-obj $(_CAMLFLAGS) $^ -o $@
+cmd_ocamlo	= $(OCAMLC) -output-obj $(_CAMLFLAGS) $(filter %.cmo,$^) -o $@
 
 ld_flags	= $(_LDFLAGS)
 cmd_ld_shared	= $(CXX) $(filter %.o %.a,$^) $(ld_flags) -shared -o $@ $(_LDLIBS)
@@ -196,7 +196,13 @@ distclean: clean
 %.h 	: %.class
 	$(call cmd,javai)
 
-%.cmo   : %.ml
+%.cmi   : %.mli
+	$(call cmd,ocaml)
+
+%.cmo   : %.ml %.mli %.cmi
+	$(call cmd,ocaml)
+
+%.cmi %.cmo   : %.ml
 	$(call cmd,ocaml)
 
 tar:
