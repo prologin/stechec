@@ -435,7 +435,7 @@ class CSharpProto < CxxProto
 
   def conv_type(t)
     if t.is_array?
-     "List<" + conv_type(t.type) + ">"
+      conv_type(t.type) + "[]"
     else
       if t.is_struct? or t.is_enum?
         camel_case(t.name)

@@ -163,35 +163,70 @@ template <>
 EOF
   end
 
-#TODO Finish it
-  def build_array()
+  def build_array(typex, tn)
+    if tn == "enum"
+        name = typex['enum_name']
+    else
+        if tn == "struct"
+            name = typex['str_name']
+        else
+            name = "" #OHNOES
+        end
+    end
     @f.puts <<-EOF
-template <class Cxx>
-MonoObject* cxx2lang_array(const std::vector< Cxx >& in)
+template <>
+MonoArray* cxx2lang< MonoArray*, std::vector<#{name}> >(std::vector<#{name}> in)
 {
-  size_t size = in.size();
+  gint32 size = in.size();
+  MonoClass* mcKlass = mono_class_from_name(gl_csharp.getImage(), "Prologin", \"#{camel_case(name)}\");
   if (size == 0)
-    return mono_array_new(_domain, "Prologin::");
+    return mono_array_new(gl_csharp.getDomain(), mcKlass, 0);
 
-  value v = caml_alloc(size, 0);
+  MonoArray * maArray = mono_array_new(gl_csharp.getDomain(), mcKlass, size);
   for (int i = 0; i < size; ++i)
-    Field(v, i) = cxx2lang< value, Cxx >(in[i]);
-
-  return v;
+    EOF
+    if tn == "struct"
+        @f.puts "\t\tmono_array_setref(maArray, i, (cxx2lang< MonoObject*, #{name} >(in[i])));"
+    else
+        @f.puts "\t\tmono_array_set(maArray, gint32, i, (cxx2lang< gint32, #{name} >(in[i])));"
+    end
+@f.puts <<-EOF
+  return maArray;
 }
 
-template <typename Cxx>
-std::vector< Cxx > lang2cxx_array(MonoArray* in)
+template <>
+std::vector<#{name}> lang2cxx< MonoArray*, std::vector<#{name}> >(MonoArray* in)
 {
-  std::vector< Cxx > out;
-  mlsize_t size = mono_array_length(in);
+  std::vector< #{name} > out;
+  gint32 size = mono_array_length(in);
 
   for (int i = 0; i < size; ++i)
-    out.push_back(lang2cxx< value, Cxx >(Field(in, i)));
-
+    EOF
+    if tn == "struct"
+        @f.puts "\t\tout.push_back(lang2cxx< MonoObject*, #{name} >(reinterpret_cast<MonoObject*>(mono_array_get(in, MonoObject*, i))));"
+    else
+        @f.puts "\t\tout.push_back(lang2cxx< gint32, #{name} >(mono_array_get(in, gint32, i)));"
+    end
+@f.puts <<-EOF
   return out;
 }
     EOF
+  end
+
+  def cmonotype(ft)
+    if ft.is_array?
+        "MonoArray*"
+    else
+        if ft.is_struct?
+            "MonoObject*"
+        else
+            if ft.is_nil?
+                "void"
+            else
+                "gint32"
+            end
+        end
+    end
   end
 
   def build_struct_wrappers(str)
@@ -227,16 +262,11 @@ std::vector< Cxx > lang2cxx_array(MonoArray* in)
     str['str_field'].each do |f|
       fn = f[0]
       ft = @types[f[1]]
-      if ft.is_array?
+      if ft.is_array? or ft.is_struct? then
         @f.puts  "  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, \"#{camel_case(fn)}\"), &field_out);"
-        @f.puts  "  out.#{fn} = lang2cxx_array< #{ft.type.name} >reinterpret_cast< MonoObject* >(field_out));"
+        @f.puts  "  out.#{fn} = lang2cxx< #{cmonotype(ft)}, #{ft.name} >(reinterpret_cast< #{cmonotype(ft)} >(field_out));"
       else
-        if ft.is_struct? then
-          @f.puts  "  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, \"#{camel_case(fn)}\"), &field_out);"
-          @f.puts  "  out.#{fn} = lang2cxx< MonoObject*, #{ft.name} >(reinterpret_cast< MonoObject* >(field_out));"
-        else
-          @f.puts  "  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, \"#{camel_case(fn)}\"), &out.#{fn});"
-        end
+        @f.puts  "  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, \"#{camel_case(fn)}\"), &out.#{fn});"
       end
     end
     @f.puts "  return out;"
@@ -275,14 +305,19 @@ std::vector< Cxx > lang2cxx_array(MonoArray* in)
 #include <iostream>
 #include <assert.h>
 #include <cstdlib>
+#include <cstring>
 
 CSharpInterface gl_csharp;
 
     EOF
     build_common_wrappers
-    for_each_enum { |e| build_enum_wrappers e }
+    for_each_enum   { |e| build_enum_wrappers e }
+
     for_each_struct { |s| build_struct_wrappers_inside s }
     for_each_struct { |s| build_struct_wrappers s }
+
+    for_each_enum   { |e| build_array(e,"enum") }
+    for_each_struct { |s| build_array(s,"struct") }
     build_helper_funcs
     @f.puts <<-EOF
 
@@ -379,33 +414,21 @@ MonoObject* CSharpInterface::callCSharpMethod(const char* name)
 
   def build_helper_funcs
      for_each_fun(false) do |fn|
-       @f.print get_csharp_template(fn.ret) + " " + fn.name + "("
+       @f.print cmonotype(fn.ret) + " " + fn.name + "("
        args = fn.args.map { |arg|
         arg_type = (arg.type.is_array? or arg.type.is_struct?) ? "MonoObject*" : cxx_type(arg.type)
         "#{arg_type} #{arg.name}" }
        @f.puts args.join(", ") + ")"
        @f.puts "{"
        @f.print "\t"
-       @f.print "return cxx2lang< #{get_csharp_template(fn.ret)}, #{cxx_type(fn.ret)} >(" if not fn.ret.is_nil?
+       @f.print "return cxx2lang< #{cmonotype(fn.ret)}, #{cxx_type(fn.ret)} >(" if not fn.ret.is_nil?
        @f.print "api_" + fn.name + "("
         args = fn.args.map { |arg|
-            "lang2cxx< " + get_csharp_template(arg.type) + ", #{cxx_type(arg.type)} >(#{arg.name})" }
+            "lang2cxx< " + cmonotype(arg.type) + ", #{cxx_type(arg.type)} >(#{arg.name})" }
        @f.print args.join(", ") + ")"
        @f.print ")" if not fn.ret.is_nil?
        @f.puts ";\n}"
      end
-  end
-
-  def get_csharp_template(type)
-    if type.is_array? or type.is_struct?
-      "MonoObject*"
-    else
-      if type.is_nil?
-        "void"
-      else
-        "gint32"
-      end
-    end
   end
 
   def build
