@@ -415,7 +415,7 @@ end
 # A generic CSharp file generator (proto, ...)
 # We can inherit from CProto, as C# ressembles C, it works for now.
 # And I'm a bit lazy. :-)
-class CSharpProto < CProto
+class CSharpProto < CxxProto
 
   def initialize
     super
@@ -436,7 +436,7 @@ class CSharpProto < CProto
   def conv_type(t)
     if t.is_array?
       conv_type(t.type) + "[]"
-    else 
+    else
       if t.is_struct? or t.is_enum?
         camel_case(t.name)
       else
@@ -446,7 +446,7 @@ class CSharpProto < CProto
   end
 
   def print_constant(type, name, val)
-      @f.print "\tpublic const int ", name, " = ", val, ";\n"
+      @f.print "\t\tpublic const int ", name, " = ", val, ";\n"
   end
 
   def build_enums
@@ -475,20 +475,26 @@ class CSharpProto < CProto
 
   def build_structs_generic(&show_field)
     for_each_struct do |x|
-      @f.puts "\tstruct #{camel_case(x['str_name'])} {"
+      @f.puts "\tclass #{camel_case(x['str_name'])} {"
+      @f.puts "\t\tpublic #{camel_case(x['str_name'])}() {"
+      x['str_field'].each do |f|
+        @f.puts "\t\t\t#{camel_case(f[0])} = new #{camel_case(f[1])}();\n" if @types[f[1]].is_struct? or @types[f[1]].is_array?
+      end
+      @f.puts "\t\t}"
       x['str_field'].each do |f|
         @f.print "\t\tpublic #{show_field.call(f[0], f[1])} // <- ", f[2], "\n"
       end
       @f.puts "\t}"
     end
   end
+
   def print_proto(fn, ext = "", types = @types)
     ext = ext + " " if ext != ""
     @f.print ext, conv_type(fn.ret)
     @f.print " ", camel_case(fn.name), "("
     if fn.args != nil and fn.args != []
       print_args = fn.args.collect {
-        |arg| [arg.type.name, arg.name]
+        |arg| [camel_case(arg.type.name), arg.name].join(" ");
       }
       @f.print print_args.join(", ")
     end
