@@ -39,8 +39,7 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 //
 int Api::tour_actuel()
 {
-  // TODO
-  abort();
+  return 42;
 }
 
 ///

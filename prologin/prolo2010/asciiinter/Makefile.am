@@ -3,7 +3,8 @@
 lib_LTLIBRARIES = toons_asciiinter.la
 
 toons_asciiinter_la_SOURCES = 	\
-	champion.cc					\
+	view.cc \
+	champion.cc \
 	main.cc
 
 INCLUDES = -I$(top_srcdir)/prologin/prolo2010/include
