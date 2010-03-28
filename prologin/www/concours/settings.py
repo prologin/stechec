@@ -1,4 +1,5 @@
 # Django settings for concours project.
+import os
 import os.path
 
 DEBUG = True
@@ -35,7 +36,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/var/www/media'
+MEDIA_ROOT = os.path.join(os.getcwd(), 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -77,10 +78,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.humanize',
     'concours.stechec',
-)
-
-SPECIAL_IPS = (
-    '80.248.219.123',
 )
 
 DATE_FORMAT = 'l j F'
