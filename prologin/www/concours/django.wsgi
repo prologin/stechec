@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.insert(0, '/var/www')
+sys.path.insert(0, '/srv/http')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'concours.settings'
 
 import django.core.handlers.wsgi
