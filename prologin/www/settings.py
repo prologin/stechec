@@ -86,14 +86,7 @@ SPECIAL_IPS = (
 DATE_FORMAT = 'l j F'
 TIME_FORMAT = 'H:i:s'
 
-LOGIN_URL = '/login/'
-PASSWD_CHARSET = 'qwertyuiopasdfghjkzxcvbnm123456789-|=+;<>'
-
-EMAIL_HOST = 'zcorrecteurs.fr'
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
-
-MASTER_SERVER = ('master', 3939)
+MASTER_SERVER = ('localhost', 3939)
 
 BASE_DIR = '/nfs/game'
 

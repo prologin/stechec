@@ -20,7 +20,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from concours.settings import SPECIAL_IPS, PASSWD_CHARSET, DEBUG, BASE_DIR, VIEWER_PATH
+from concours.settings import DEBUG, BASE_DIR, VIEWER_PATH
 from concours.stechec.forms import ChampionUploadForm, CreateMatchForm
 from concours.stechec.models import Champion, Competiteur, Match, Map
 from django.contrib.auth import login as _login, logout as _logout
@@ -96,26 +96,6 @@ def change_password(request):
 def logout(request):
     _logout(request)
     return render_to_response('logout-success.html')
-
-def inscription(request):
-    if not DEBUG and request.META['REMOTE_ADDR'] not in SPECIAL_IPS:
-        raise Http404
-    login = request.REQUEST['login']
-    password = generate_password()
-    user = User.objects.create_user(login, 'email-is-not-stocked@lol',
-                                    password)
-    user.save()
-    return HttpResponse(password)
-
-def desinscription(request):
-    if not DEBUG and request.META['REMOTE_ADDR'] not in SPECIAL_IPS:
-        raise Http404
-    login = request.REQUEST['login']
-    try:
-        User.objects.get(username=login).delete()
-        return HttpResponse('OK')
-    except:
-        return HttpResponse('KO')
 
 def all_champions(request):
     return list_detail.object_list(
