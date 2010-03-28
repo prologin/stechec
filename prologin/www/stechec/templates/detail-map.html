@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block "head" %}<link rel="stylesheet" href="/media/css/map_rendering.css" type="text/css" />{% endblock %}
+{% block "title" %}Détails de la carte - {{ map.titre }}{% endblock %}
+{% block "titleh1" %}Détails de la carte - {{ map.titre }}{% endblock %}
+
+{% block "content" %}
+<dl>
+    <dt>Titre</dt>
+    <dd>{{ map.titre }}</dd>
+    <dt>Auteur</dt>
+    <dd>{{ map.auteur }}</dd>
+</dl>
+{{ map.html|safe }}
+
+{% endblock %}
