@@ -358,7 +358,7 @@ CSharpInterface::CSharpInterface()
      EOF
 
      for_each_fun(false) do |fn|
-       @f.print "  mono_add_internal_call(\"Prologin.API::" + camel_case(fn.name) + "\", (const void*)" + fn.name + ");"
+       @f.print "  mono_add_internal_call(\"Prologin.Api::" + camel_case(fn.name) + "\", (const void*)" + fn.name + ");"
      end
 
      @f.puts <<-EOF
@@ -462,14 +462,14 @@ class CSharpFileGenerator < CSharpProto
     @f = File.open(@path + @api_file, 'w')
     print_banner "generator_cs.rb"
 
-    @f.puts "using System.Runtime.InteropServices;", "using System.Runtime.CompilerServices;", "using System.Collections.Generic;",""
+    @f.puts "using System.Runtime.CompilerServices;", ""
 
     @f.puts "namespace Prologin {"
 
     build_enums
     build_structs
 
-    @f.puts "\tclass API {"
+    @f.puts "\tclass Api {"
     build_constants
     for_each_fun do |fn|
       @f.puts "\t\t[MethodImplAttribute(MethodImplOptions.InternalCall)]"
@@ -514,7 +514,7 @@ include ../includes/makecs
     @f = File.new(@path + @source_file, 'w')
     print_banner "generator_cs.rb"
     # Required stuff to call C from C#
-    @f.puts  "using System;", "using System.Collections.Generic;", "using System.Runtime.InteropServices;", ""
+    @f.puts  "using System;", ""
 
     @f.puts "namespace Prologin {", "", "\tclass Prologin {", ""
 
