@@ -34,9 +34,12 @@ class JavaCxxFileGenerator < CxxProto
   def generate_header()
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_java.rb"
+    @f.puts "#include <vector>"
     build_constants
+    build_enums
+    build_structs
     @f.puts "", 'extern "C" {', ""
-    for_each_fun { |f| @f.print cxx_proto(f, "", "extern \"C\""); @f.puts ";" }
+    for_each_fun { |f| @f.print cxx_proto(f, "api_", ""); @f.puts ";" }
     for_each_user_fun { |f| @f.print cxx_proto(f, "", ""); @f.puts ";" }
     @f.puts "}"
     @f.close
@@ -246,21 +249,21 @@ struct JavaVm
   {
     using namespace java::lang;
     try
-      {
-	// create the virtual machine
-	JvCreateJavaVM(NULL);
-        // FIXME: grrrr
-	// GC_disable();
-	JvAttachCurrentThread(NULL, NULL);
-	c = new #{@java_file}();
-      }
+    {
+      // create the virtual machine
+      JvCreateJavaVM(NULL);
+      JvAttachCurrentThread(NULL, NULL);
+      // FIXME: grrrr
+      // GC_disable();
+      c = new #{@java_file}();
+    }
     catch (Throwable *t)
-      {
-	System::err->println(JvNewStringLatin1("Unhandled Java exception:"));
-	t->printStackTrace();
-      }
+    {
+      System::err->println(JvNewStringLatin1("Unhandled Java exception:"));
+      t->printStackTrace();
+    }
   }
-  
+
   ~JavaVm()
   {
     // destroy the virual machine
@@ -384,7 +387,6 @@ class JavaFileGenerator < FileGenerator
     ######################################
     @f = File.new(@path + (@java_interface + '.java'), 'w')
     print_banner "generator_java.rb"
-    @f.puts "package prologin.java;"
     for_each_struct do |x|
       name = x['str_name'].capitalize
       @f.puts "class #{name} {"
@@ -418,7 +420,6 @@ class JavaFileGenerator < FileGenerator
     #####################################
     @f = File.new(@path + (@java_file + '.java'), 'w')
     print_banner "generator_java.rb"
-    @f.puts "package prologin.java ;"
     # generate functions bodies
     @f.puts "public class #{@java_file} extends #{@java_interface}", "{"
     for_each_user_fun do |f|
