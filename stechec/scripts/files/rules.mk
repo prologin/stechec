@@ -89,15 +89,12 @@ endef
 
 define get_jclass
   src := $$(filter %.java,$$($(1)-srcs))
-  $(1)-objs := $$(foreach s,$$(src),$$(s:.java=.o)) $(value $(1)-objs)
-  $(1)-jclass := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.class))
-  $(1)-jheaders := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.h))
+  $(1)-objs := $(value $(1)-objs)
+  $(1)-jclass := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.class)) $$($(1)-jclassopt)
+  $(1)-jheaders := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.h)) $$(foreach s,$$($(1)-jclassopt),$$(s:.class=.h))
   cleanfiles := $$($(1)-jclass) $$($(1)-jheaders) $$(cleanfiles)
 
-  ifneq ($$(src),)
-    $(1)-ldflags := $$($(1)-ldflags) -lgcj
-  endif
-
+  cmd_ld_shared = $(CJ) $$($(1)-jclass) $$($(1)-objs) $(ld_flags) -shared -fPIC -o $(1).so $(_LDLIBS)
 
   $$($(1)-jheaders): $$($(1)-jclass)
   $$($(1)-objs): $$($(1)-jheaders)
@@ -189,9 +186,6 @@ distclean: clean
 
 %.class : %.java
 	$(call cmd,java)
-
-%.o 	: %.java
-	$(call cmd,javac)
 
 %.h 	: %.class
 	$(call cmd,javai)
