@@ -319,6 +319,7 @@ CSharpInterface gl_csharp;
     for_each_enum   { |e| build_array(e,"enum") }
     for_each_struct { |s| build_array(s,"struct") }
     build_helper_funcs
+    target = $conf['conf']['player_lib']
     @f.puts <<-EOF
 
 /*
@@ -330,11 +331,11 @@ CSharpInterface::CSharpInterface()
   std::string		champion;
 
   if (!champion_path)
-    champion = "./prologin.dll";
+    champion = "./#{target}-prologin.dll";
   else
   {
     champion = champion_path;
-    champion += "/prologin.dll";
+    champion += "/#{target}-prologin.dll";
   }
 
   _domain = mono_jit_init(champion.c_str());
@@ -482,15 +483,26 @@ class CSharpFileGenerator < CSharpProto
   end
 
   def generate_makefile
+    target = $conf['conf']['player_lib']
     @f = File.open(@path + "Makefile", 'w')
     @f.print <<-EOF
 # -*- Makefile -*-
-#
 
-SRC       = #{@source_file} # Ajoutez ici vos fichiers .cs
-NAME      = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-include ../includes/makecs
+# Tu peux rajouter des fichiers source ici
+#{target}-srcs = #{@source_file}
+
+# Evite de toucher a ce qui suit
+#{target}-dists = interface.hh #{target}-prologin.dll
+#{target}-srcs += api.cs interface.cc ../includes/main.cc
+#{target}-cxxflags = -fPIC \
+    $(shell pkg-config --cflags glib-2.0 mono)
+#{target}-ldflags = -lm \
+    $(shell pkg-config --libs glib-2.0 mono)
+#{target}-csflags = -target:library -nowarn:0169,0649
+
+include ../includes/rules.mk
     EOF
     @f.close
   end
