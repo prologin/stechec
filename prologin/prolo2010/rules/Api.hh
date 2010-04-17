@@ -18,6 +18,7 @@
 # include <Contest.hh>
 # include "Constant.hh"
 # include "GameData.hh"
+# include "Actions.hh"
 
 /*!
 ** Method of this call are called by the candidat, throught 'interface.cc'
@@ -26,6 +27,7 @@
 **  - access to the GameData class: _g
 **  - send message to the server: void SendToServer(struct s_com&)
 */
+
 class Api: public StechecApi          
 {
 
@@ -93,7 +95,11 @@ public:
 // Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
 //
    bool annuler();
+
 };
+
+#define ASSERT(c, err) \
+  if (!(c)) return (err)
 
 
 #endif /* !API_HH_ */

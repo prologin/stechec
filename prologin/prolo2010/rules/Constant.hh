@@ -93,9 +93,7 @@ typedef struct cartes {
 
 // Ids for message type.
 enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
+  MOVE = 0,
   LAST_MSG
 };
 
