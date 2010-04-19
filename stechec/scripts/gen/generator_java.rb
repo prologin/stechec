@@ -311,7 +311,7 @@ struct ProloginJavaVm javaVm;
 end
 
 
-class JavaFileGenerator < FileGenerator
+class JavaFileGenerator < JavaProto
   def initialize
     super
     @lang = "java"
@@ -326,59 +326,13 @@ class JavaFileGenerator < FileGenerator
     }
   end
 
-  def print_comment(str)
-    @f.puts '// ' + str if str
-  end
-
-  def print_multiline_comment(str)
-    return unless str
-    str.each_line {|s| @f.print '// ', s }
-    @f.puts ""
-  end
-
-  # print a constant
-  def print_constant(type, name, val)
-    @f.print '  public static final int ', name, ' = ', val, ";\n"
-  end
-
-  # print a java prototype
-  def print_proto(prefix, f)
-    name = f.name
-    ret_type = f.ret
-    args = f.args
-    @f.print prefix, " ", conv_java_type(ret_type), " ", name, "("
-    if args != nil and args != []
-      str_args = args.map do |arg|
-        "#{conv_java_type(arg.type)} #{arg.name}"
-      end
-      @f.print "#{ str_args.join(", ")}"
+  def name_to_type(str)
+    $conf['enum'].each do |x|
+       if str == x['enum_name']
+         return x
+       end
     end
-    @f.print ")"
-  end
-
-  def conv_java_type(x)
-    if x.is_a?(String) then t = @types[x] else t = x end
-    conv_java_type_aux(t, false)
-  end
-  def conv_java_type_aux(t, in_generic)
-    if t.is_array?
-    then
-      "#{ conv_java_type_aux(t.type, true) }[]"
-    else
-      if t.is_struct? then
-        t.name.capitalize()
-      else
-        if t.is_simple? then
-          if in_generic then
-            (@java_obj_types[t.name]).capitalize()
-          else
-            @java_types[t.name]
-          end
-        else
-          t.name.capitalize()
-        end
-      end
-    end
+    return nil #error
   end
 
   def build
@@ -397,7 +351,15 @@ class JavaFileGenerator < FileGenerator
       name = x['str_name'].capitalize
       @f.puts "class #{name} {"
       x["str_field"].each do |f|
-        @f.puts "  public #{conv_java_type(f[1])} #{f[0]}; // #{f[2]}"
+        @f.print "  public #{conv_java_type(f[1])} #{f[0]}"
+        if @types[f[1]].is_enum? then
+            name = name_to_type(f[1])['enum_field'][0][0].downcase
+            @f.print " = #{conv_java_type(f[1])}.#{name.capitalize()}";
+        end
+        if @types[f[1]].is_struct? then
+            @f.print " = new #{conv_java_type(f[1])}()";
+        end
+        @f.puts "; // #{f[2]}"
       end
       @f.puts "}"
     end
@@ -414,7 +376,7 @@ class JavaFileGenerator < FileGenerator
 
     @f.puts "public class Interface", "{"
     build_constants
-    for_each_fun do |f|
+    for_each_fun(true, 'function', '  ') do |f|
       print_proto("  public static native", f)
       @f.puts ";"
     end
@@ -428,7 +390,7 @@ class JavaFileGenerator < FileGenerator
     print_banner "generator_java.rb"
     # generate functions bodies
     @f.puts "public class #{@java_file} extends #{@java_interface}", "{"
-    for_each_user_fun do |f|
+    for_each_user_fun(true, '  ') do |f|
       @f.print "  "
       print_proto("public", f)
       @f.puts "",

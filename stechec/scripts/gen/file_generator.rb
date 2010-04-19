@@ -501,3 +501,103 @@ class CSharpProto < CxxProto
     @f.print ")"
   end
 end
+
+# A generic java file generator (proto, ...)
+# We use this to redefine few functions
+class JavaProto < FileGenerator
+
+  def initialize
+    super
+    @lang = "Java"
+  end
+
+  def print_comment(str, prestr = '')
+    @f.print prestr
+    @f.puts '// ' + str if str
+  end
+
+  def print_multiline_comment(str, prestr = '')
+    return unless str
+    str.each_line { |s|
+        @f.print prestr
+        @f.print '// ', s
+        }
+    @f.puts ""
+  end
+
+  def for_each_struct(print_comment = true, &block)
+    $conf['struct'].delete_if {|x| x['doc_extra'] }
+    $conf['struct'].each do |x|
+      print_multiline_comment(x['str_summary']) if print_comment
+      block.call(x)
+      @f.puts
+    end
+  end
+
+  def for_each_fun(print_comment = true, arr = 'function', prestr = '', &block)
+    $conf[arr].delete_if {|x| x['doc_extra'] }
+    $conf[arr].each do |x|
+      fn = Function.new(@types, x)
+      print_multiline_comment(x['fct_summary'], prestr) if print_comment
+      block.call(fn)
+      @f.puts
+    end
+    if arr == 'function'
+      @dumpfuns.each do |f|
+        print_multiline_comment(f.conf['fct_summary'], prestr) if print_comment
+        block.call(f)
+        @f.puts
+      end
+    end
+  end
+
+  def for_each_user_fun(print_comment = true, prestr = '', &block)
+    for_each_fun(print_comment, 'user_function', prestr) { |fn| block.call(fn) }
+  end
+
+  # print a constant
+  def print_constant(type, name, val)
+    @f.print '  public static final int ', name, ' = ', val, ";\n"
+  end
+
+  # print a java prototype
+  def print_proto(prefix, f)
+    name = f.name
+    ret_type = f.ret
+    args = f.args
+    @f.print prefix, " ", conv_java_type(ret_type), " ", name, "("
+    if args != nil and args != []
+      str_args = args.map do |arg|
+        "#{conv_java_type(arg.type)} #{arg.name}"
+      end
+      @f.print "#{ str_args.join(", ")}"
+    end
+    @f.print ")"
+  end
+
+  def conv_java_type(x)
+    if x.is_a?(String) then t = @types[x] else t = x end
+    conv_java_type_aux(t, false)
+  end
+
+  def conv_java_type_aux(t, in_generic)
+    if t.is_array?
+    then
+      "#{ conv_java_type_aux(t.type, true) }[]"
+    else
+      if t.is_struct? then
+        t.name.capitalize()
+      else
+        if t.is_simple? then
+          if in_generic then
+            (@java_obj_types[t.name]).capitalize()
+          else
+            @java_types[t.name]
+          end
+        else
+          t.name.capitalize()
+        end
+      end
+    end
+  end
+end
