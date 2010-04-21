@@ -26,7 +26,7 @@ void init_game()
 {
 }
 
-static char * string_of_type(type_unite t){
+static const char * string_of_type(type_unite t){
   switch(t){
   case PERROQUET: return "perroquet";
   case SINGE: return "singe";
