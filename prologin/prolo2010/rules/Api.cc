@@ -8,17 +8,32 @@
 ** `NOTICE' file in the root directory.
 **
 ** Copyright (C) 2010 Prologin
+** @author delroth
+** @author Maxime Audouin <maxime.audouin@mlstate.com>
 */
 
-#include <stdlib.h>
-
+#include <cstdlib>
+#include <vector>
 #include "Api.hh"
+#include <cmath>
+
+static inline int max(int a, int b){
+  return (a > b) ? a : b;
+}
+
+static inline int distance(position p1, position p2){
+  return max(
+	     abs(p1.x - p2.x),
+	     abs(p1.y - p2.y));
+}
+
+
 
 // global used in interface.cc
 Api* api;
 
 
-// Internal API
+// internal API
 bool Api::retirer_ko(unite u)
 {
   return u.ko >= 0;
@@ -29,17 +44,20 @@ bool Api::mon_tour()
   return g_->mon_tour();
 }
 
+// constructor
 Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 {
   api = this;
 }
+
+// user API
 
 ///
 // Renvoie le numéro du tour actuel.
 //
 int Api::tour_actuel()
 {
-  return 42;
+  return 42;  // todo
 }
 
 ///
@@ -47,8 +65,7 @@ int Api::tour_actuel()
 //
 cartes Api::mes_cartes()
 {
-  static cartes c = { 1, 2, 3, 4 };
-  return c;
+  return g_->get_cartes(g_->get_current_player());
 }
 
 ///
@@ -56,30 +73,7 @@ cartes Api::mes_cartes()
 //
 std::vector<unite> Api::unites()
 {
-  static unite u1 = {
-    { 1, 2 },
-    false,
-    CHAT,
-    SINGE,
-    2,
-    4,
-    6
-  };
-
-  static unite u2 = {
-    { 5, 6 },
-    true,
-    PERROQUET,
-    PERROQUET,
-    4,
-    2,
-    10
-  };
-
-  std::vector<unite> ret;
-  ret.push_back(u1);
-  ret.push_back(u2);
-  return ret;
+  return g_->get_unites();
 }
 
 ///
@@ -87,20 +81,19 @@ std::vector<unite> Api::unites()
 //
 taille_terrain Api::taille_terrain_actuelle()
 {
-  static taille_terrain tt = {
-    25,
-    0,
-    25
-  };
-
-  return tt;
+  return g_->get_tt();
 }
+
+#define PLAY_CARD \
+  ASSERT(g_->can_play_card(), PHASE_CARTES_TERMINEE);	\
+
 
 ///
 // Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
 //
 erreur Api::soin(unite cible)
 {
+  PLAY_CARD;
   return OK;
 }
 
@@ -109,6 +102,7 @@ erreur Api::soin(unite cible)
 //
 erreur Api::deguisement(unite cible, type_unite nouveau_type)
 {
+  PLAY_CARD;
   return OK;
 }
 
@@ -117,6 +111,7 @@ erreur Api::deguisement(unite cible, type_unite nouveau_type)
 //
 erreur Api::banzai(unite cible)
 {
+  PLAY_CARD;
   return OK;
 }
 
@@ -125,6 +120,7 @@ erreur Api::banzai(unite cible)
 //
 erreur Api::pacifisme()
 {
+  PLAY_CARD;
   return OK;
 }
 
@@ -133,6 +129,16 @@ erreur Api::pacifisme()
 //
 erreur Api::deplacer(unite cible, position pos)
 {
+  int indice = g_->indice_of(cible);
+  unite u = g_->get_unite(indice);
+  ASSERT(indice != -1, PAS_A_MOI); // todo
+  ASSERT(!u.ennemi, PAS_A_MOI);
+  int d = distance(pos, cible.pos);
+  ASSERT(u.pa >= d, PAS_A_PORTEE);
+  ASSERT(g_->can_active(indice), PLUS_DE_PA); // todo
+  Actions a;
+  a.deplacer(indice, pos, d);
+  g_->appliquer_action(a);
   return OK;
 }
 
@@ -141,7 +147,7 @@ erreur Api::deplacer(unite cible, position pos)
 //
 erreur Api::attaquer(unite attaquant, unite cible)
 {
-  return OK;
+  return OK; // todo
 }
 
 ///
@@ -149,6 +155,14 @@ erreur Api::attaquer(unite attaquant, unite cible)
 //
 erreur Api::spawn(type_unite quoi)
 {
+  position p = g_->spawn_pos();
+  int i =  g_->toon_at(p);
+  ASSERT(i == -1, SPAWN_OCCUPE);
+  ASSERT(quoi != PERROQUET, PAS_SPAWNABLE);
+  ASSERT(g_->nbr_toons(false) < 9, PAS_SPAWNABLE); // todo
+  Actions a;
+  a.spawn(quoi);
+  g_->appliquer_action(a);
   return OK;
 }
 
@@ -157,11 +171,13 @@ erreur Api::spawn(type_unite quoi)
 //
 bool Api::annuler()
 {
-  return false;
+  return g_->annuler();
 }
 
 
 
 void Api::teamSwitched()
 {
+  g_->team_switched();
 }
+
