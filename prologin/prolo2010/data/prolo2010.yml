@@ -19,6 +19,10 @@ constant:
     cst_name: TEMPS_RETRECISSEMENT
     cst_val: 5
     cst_comment: Le temps, en nombre de tours, entre deux rétrécissement du terrain.
+  -
+    cst_name: MAX_CARTES
+    cst_val: 2
+    cst_comment: Le nombre maximum en jeu de chaque carte.
 
 enum:
   - doc_extra: \subsection{Énumérations}
@@ -113,6 +117,12 @@ function:
     fct_ret_type: position
     fct_arg:
       - [ennemi, bool, spawn ennemi ou non]
+  -
+    fct_name: caracteristiques
+    fct_summary: Renvoie les caractéristiques d'un type d'unité.
+    fct_ret_type: caracs
+    fct_arg:
+      - [tu, type_unite, le type dont on veut les informations]
   -
     fct_name: mes_cartes
     fct_summary: Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
