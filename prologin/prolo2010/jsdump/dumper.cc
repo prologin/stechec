@@ -32,8 +32,48 @@ void afficher(cartes c){
     << "}";
 }
 
-void afficher(std::vector<unite> u){
+void afficher(position p){
+  std::cout
+    << "{"
+    << "x:" << p.x
+    << "y:" << p.y
+    <<"}";
+}
 
+void afficher(type_unite tu){
+  switch (tu){
+  case PERROQUET: std::cout << "perroquet"; break;
+  case SINGE: std::cout << "singe" ; break;
+  case CHAT: std::cout << "chat" ; break;
+  case KANGOUROU: std::cout << "kangourou"; break;
+  }
+}
+
+void afficher(unite u){
+  std::cout
+    << "{"
+    << "ennemi:" << u.ennemi
+    << "ko:" << u.ko
+    << "pa:" << u.pa
+    << "attaques:" << u.attaques
+    << "pos:" ;
+  afficher(u.pos);
+  std::cout << "type_unite_actuel:";
+  afficher(u.type_unite_actuel);
+  std::cout << "vrai_type_unite:";
+  afficher(u.type_unite_actuel);
+  std::cout
+    << "}";
+}
+
+void afficher(std::vector<unite> u){
+  std::cout << "[";
+  afficher(u[0]);
+  for (int i = 1; i < u.size(); i++){
+    std::cout << ",";
+    afficher(u[i]);
+  }
+  std::cout << "]";
 }
 
 void afficher(taille_terrain tt){
