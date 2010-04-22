@@ -212,6 +212,7 @@ bool GameData::annuler(){
     actions.pop_back();
 
     act->annuler(this);
+    delete act;
     return true;
   }
 }
