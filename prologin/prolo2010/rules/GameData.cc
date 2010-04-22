@@ -128,7 +128,7 @@ void GameData::reset_moves(){
 }
 
 int GameData::nbr_unites_activees(){
-  int out;
+  int out = 0;
   for (int i = 0; i < 18; i ++){
     out = deja_bougee[i] ? out + 1 : out;
   }
@@ -136,7 +136,7 @@ int GameData::nbr_unites_activees(){
 }
 
 int GameData::nbr_toons(bool e){
-  int nbr;
+  int nbr = 0;
   for (int i = 0, l = unites.size(); i < l ; i++){
     if (unites[i].ennemi == e ) nbr ++;
   }
@@ -201,6 +201,18 @@ void GameData::set_deja_bougee(int i){
 void GameData::appliquer_action(Action* a){
   actions.push_back(a);
   a->appliquer(this);
+}
+
+extern Api* api;
+void GameData::send_actions()
+{
+  for (std::vector<Action*>::iterator it = actions.begin();
+       it != actions.end(); ++it)
+  {
+    (*it)->envoyer(api);
+    delete *it;
+  }
+  actions.resize(0);
 }
 
 bool GameData::annuler(){

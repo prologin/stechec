@@ -71,6 +71,7 @@ public:
   // actions
   std::vector<Action*> actions;
   void appliquer_action(Action* act);
+  void send_actions();
   bool annuler();
 
   // data

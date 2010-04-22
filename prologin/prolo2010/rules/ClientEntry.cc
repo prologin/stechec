@@ -25,7 +25,6 @@ ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client)
 */
 int        ClientEntry::beforeGame()
 {
-  // TODO
   return 0;
 }
 
@@ -37,7 +36,6 @@ int        ClientEntry::beforeGame()
 
 int        ClientEntry::initGame()
 {
-  // TODO
   return 0;
 }
 
@@ -58,7 +56,7 @@ int        ClientEntry::beforeNewTurn()
 */
 int        ClientEntry::afterNewTurn()
 {
-  // TODO
+  g_->send_actions();
   return 0;
 }
 
@@ -68,6 +66,5 @@ int        ClientEntry::afterNewTurn()
 */
 int        ClientEntry::afterGame()
 {
-  // TODO
   return 0;
 }
