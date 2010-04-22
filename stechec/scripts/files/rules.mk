@@ -21,6 +21,7 @@ endif
 ifndef NOCOLORS
   quiet_cmd_cc		= [1;32mcc   $< -> $@[0m
   quiet_cmd_cxx		= [1;32mcxx  $< -> $@[0m
+  quiet_cmd_gmcs	= [1;34mcs   $^ -> $@[0m
   quiet_cmd_java	= [1;34mjava $< -> $@[0m
   quiet_cmd_javac	= [1;31mjava $< -> $@[0m
   quiet_cmd_javai	= [1;37mjint $< -> $@[0m
@@ -33,6 +34,7 @@ ifndef NOCOLORS
 else
   quiet_cmd_cc		= CC      $@
   quiet_cmd_cxx		= CXX     $@
+  quiet_cmd_gmcs	= CS      $@
   quiet_cmd_java	= JAVA    $@
   quiet_cmd_javac	= JAVAC   $@
   quiet_cmd_javai	= JAVAI   $@
@@ -53,6 +55,7 @@ cmd2 = $(if $($(quiet)cmd_$(1)),echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(
 
 CC		= $(CROSS)gcc
 CXX		= $(CROSS)g++
+GMCS    = MONO_SHARED_DIR=/tmp gmcs </dev/null
 CPP		= $(CROSS)cpp
 CJ       	= $(CROSS)gcj
 CJH	 	= $(CROSS)gcjh
@@ -89,20 +92,29 @@ endef
 
 define get_jclass
   src := $$(filter %.java,$$($(1)-srcs))
-  $(1)-objs := $$(foreach s,$$(src),$$(s:.java=.o)) $(value $(1)-objs)
-  $(1)-jclass := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.class))
-  $(1)-jheaders := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.h))
+  $(1)-objs := $(value $(1)-objs)
+  $(1)-jclass := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.class)) $$($(1)-jclassopt)
+  $(1)-jheaders := $$(foreach s,$$(filter %.java,$$($(1)-srcs)),$$(s:.java=.h)) $$(foreach s,$$($(1)-jclassopt),$$(s:.class=.h))
   cleanfiles := $$($(1)-jclass) $$($(1)-jheaders) $$(cleanfiles)
 
   ifneq ($$(src),)
-    $(1)-ldflags := $$($(1)-ldflags) -lgcj
+    cmd_ld_shared = $(CJ) $$($(1)-jclass) $$($(1)-objs) $(ld_flags) -shared -fPIC -o $(1).so $(_LDLIBS)
   endif
-
 
   $$($(1)-jheaders): $$($(1)-jclass)
   $$($(1)-objs): $$($(1)-jheaders)
 endef
 
+define get_csclass
+  src := $$(filter %.cs,$$($(1)-srcs))
+  ifneq ($$(src),)
+    _targets := $$(_targets) $(1)-prologin.dll
+
+$(1)-prologin.dll: $$(src)
+	$$(call cmd,gmcs)
+	$(Q)$(GMCS) -out:$$@ $$($(1)-csflags) $$^
+  endif
+endef
 
 define build_lib
   _obj := $$($(1)-objs)
@@ -148,6 +160,7 @@ $(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),c)))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),cc)))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_ocaml_objs,$(t))))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_jclass,$(t))))
+$(foreach t,$(lib_TARGETS),$(eval $(call get_csclass,$(t))))
 
 $(foreach t,$(lib_TARGETS),$(eval $(call build_lib,$(t))))
 
@@ -189,9 +202,6 @@ distclean: clean
 
 %.class : %.java
 	$(call cmd,java)
-
-%.o 	: %.java
-	$(call cmd,javac)
 
 %.h 	: %.class
 	$(call cmd,javai)
