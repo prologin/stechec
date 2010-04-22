@@ -31,6 +31,7 @@ public:
   virtual void appliquer(GameData* g) = 0;
   virtual void envoyer(Api* api) = 0;
   virtual void annuler(GameData* g) = 0;
+  virtual void verifier(GameData* g) = 0;
 
 protected:
   int player_;
@@ -47,6 +48,7 @@ public:
   virtual void appliquer(GameData* g);
   virtual void envoyer(Api* api);
   virtual void annuler(GameData* g);
+  virtual void verifier(GameData* g);
 
 protected:
   int unite_;
@@ -76,11 +78,12 @@ public:
 
   virtual void appliquer(GameData* g);
   virtual void annuler(GameData* g);
+  virtual void verifier(GameData* g);
 
 protected:
   Type type_carte_;
 
-  void add_to_carte_count(GameData* g, int increment);
+  void add_to_carte_count(GameData* g, int p, int increment);
 };
 
 class ActionDeguisement : public ActionCarte
@@ -97,6 +100,7 @@ public:
   virtual void appliquer(GameData* g);
   virtual void envoyer(Api* api);
   virtual void annuler(GameData* g);
+  virtual void verifier(GameData* g);
 
 protected:
   int unite_;
@@ -118,6 +122,7 @@ public:
   virtual void appliquer(GameData* g);
   virtual void envoyer(Api* api);
   virtual void annuler(GameData* g);
+  virtual void verifier(GameData* g);
 
 protected:
   int unite_;
@@ -137,6 +142,7 @@ public:
   virtual void appliquer(GameData* g);
   virtual void envoyer(Api* api);
   virtual void annuler(GameData* g);
+  virtual void verifier(GameData* g);
 
 protected:
   int unite_;
@@ -158,6 +164,7 @@ public:
   virtual void appliquer(GameData* g);
   virtual void envoyer(Api* api);
   virtual void annuler(GameData* g);
+  virtual void verifier(GameData* g);
 
 protected:
   std::vector<int> old_attaques_;

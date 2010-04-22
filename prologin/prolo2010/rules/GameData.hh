@@ -58,6 +58,7 @@ public:
   // rules
   position spawn_pos();
   position spawn_position(bool white);
+  caracs caracteristiques(type_unite u);
   int porte_attaque(const unite u);
   int pa(const type_unite u);
 
@@ -70,6 +71,7 @@ public:
   // actions
   std::vector<Action*> actions;
   void appliquer_action(Action* act);
+  void send_actions();
   bool annuler();
 
   // data
@@ -80,6 +82,9 @@ public:
   cartes players_cartes[2];
   taille_terrain tt;
   std::vector<unite> unites;
+
+  // server internal
+  std::vector<std::vector<int> > packets;
 
 private:
   bool initialized_;

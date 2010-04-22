@@ -75,7 +75,7 @@ void GameData::team_switched(){
   current_player = (current_player + 1 ) % 2;
   reset_moves(); // nobody has played;
   for (int i = 0, l = unites.size(); i < l ; i++){
-    unites[i].ennemi = !unites[i].ennemi; // team switch // todo ne pas avoir besoin de faire ca.
+    unites[i].ennemi = !unites[i].ennemi; // team switch
     reset_unite(unites[i], false); // reset action points
   }
   can_play_card = true;
@@ -110,7 +110,7 @@ void GameData::reset_unite(unite &u, bool reset_ko){
   u.type_unite_actuel = u.vrai_type_unite;
   if (reset_ko) u.ko = -1;
   u.attaques = 1;
-  u.pa = pa(u.vrai_type_unite);
+  u.pa = caracteristiques(u.vrai_type_unite).pa;
 }
 
 bool GameData::can_active(int i){
@@ -128,7 +128,7 @@ void GameData::reset_moves(){
 }
 
 int GameData::nbr_unites_activees(){
-  int out;
+  int out = 0;
   for (int i = 0; i < 18; i ++){
     out = deja_bougee[i] ? out + 1 : out;
   }
@@ -136,7 +136,7 @@ int GameData::nbr_unites_activees(){
 }
 
 int GameData::nbr_toons(bool e){
-  int nbr;
+  int nbr = 0;
   for (int i = 0, l = unites.size(); i < l ; i++){
     if (unites[i].ennemi == e ) nbr ++;
   }
@@ -181,40 +181,38 @@ position GameData::spawn_position(bool white){
   return r;
 }
 
-int GameData::porte_attaque(const unite u){
-  switch (u.type_unite_actuel){
-  case PERROQUET:
-    return 1;
-  case SINGE:
-    return 1;
-  case CHAT:
-    return 3;
-  case KANGOUROU:
-    return 2;
-  }
+caracs GameData::caracteristiques(type_unite tu)
+{
+  static caracs c[] = {
+    { 1, 1 },
+    { 2, 3 },
+    { 5, 1 },
+    { 3, 2 }
+  };
+
+  return c[tu];
 }
 
 void GameData::set_deja_bougee(int i){
   deja_bougee[i] = true;
 }
 
-int GameData::pa(const type_unite u){
-  switch ( u ){
-  case PERROQUET:
-    return 1;
-  case SINGE:
-    return 3;
-  case CHAT:
-    return 5;
-  case KANGOUROU:
-    return 2;
-  }
-}
-
 // actions
 void GameData::appliquer_action(Action* a){
   actions.push_back(a);
   a->appliquer(this);
+}
+
+extern Api* api;
+void GameData::send_actions()
+{
+  for (std::vector<Action*>::iterator it = actions.begin();
+       it != actions.end(); ++it)
+  {
+    (*it)->envoyer(api);
+    delete *it;
+  }
+  actions.resize(0);
 }
 
 bool GameData::annuler(){
@@ -226,6 +224,7 @@ bool GameData::annuler(){
     actions.pop_back();
 
     act->annuler(this);
+    delete act;
     return true;
   }
 }

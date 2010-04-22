@@ -12,6 +12,41 @@
 
 #include "Actions.hh"
 
+#ifdef ASSERT
+# undef ASSERT
+#endif
+
+#define ASSERT(cond, err) \
+  if (!(cond)) \
+    throw err;
+
+static unsigned int last_order_id = 0;
+
+static inline int max(int a, int b)
+{
+  return (a > b) ? a : b;
+}
+
+static inline int distance(position p1, position p2)
+{
+  return max(abs(p1.x - p2.x), abs(p1.y - p2.y));
+}
+
+void ActionDeplacer::verifier(GameData* g)
+{
+  ASSERT(unite_ >= 0, POSITION_INVALIDE);
+  ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
+  
+  unite& u = g->unites[unite_];
+  ASSERT(u.ko < 0, UNITE_KO);
+  ASSERT(!u.ennemi, PAS_A_MOI);
+
+  ASSERT(g->indice_at(dest_) == -1, CASE_OCCUPEE);
+
+  int dist = distance(u.pos, dest_);
+  ASSERT(u.pa >= dist, PLUS_DE_PA);
+}
+
 void ActionDeplacer::appliquer(GameData* g)
 {
   unite& u = g->unites[unite_];
@@ -39,23 +74,43 @@ void ActionDeplacer::annuler(GameData* g)
 void ActionDeplacer::envoyer(Api* api)
 {
   StechecPkt com(ACT_DEPLACER, -1);
-  com.Push(3, unite_, dest_.x, dest_.y);
+  com.Push(5, last_order_id++, player_, unite_, dest_.x, dest_.y);
   api->SendToServer(com);
+}
+
+void ActionCarte::verifier(GameData* g)
+{
+  ASSERT(g->can_play_card, PHASE_CARTES_TERMINEE);
+
+  cartes& c = g->players_cartes[player_];
+  int cnt;
+
+  switch (type_carte_)
+  {
+  case DEGUISEMENT: cnt = c.deguisement; break;
+  case BANZAI: cnt = c.banzai; break;
+  case PACIFISME: cnt = c.pacifisme; break;
+  case SOIN: cnt = c.soin; break;
+  }
+
+  ASSERT(cnt > 0, PLUS_DE_CARTES);
 }
 
 void ActionCarte::appliquer(GameData* g)
 {
-  add_to_carte_count(g, -1);
+  add_to_carte_count(g, player_, -1);
+  add_to_carte_count(g, player_ ^ 1, 1);
 }
 
 void ActionCarte::annuler(GameData* g)
 {
-  add_to_carte_count(g, 1);
+  add_to_carte_count(g, player_, 1);
+  add_to_carte_count(g, player_ ^ 1, -1);
 }
 
-void ActionCarte::add_to_carte_count(GameData* g, int increment)
+void ActionCarte::add_to_carte_count(GameData* g, int p, int increment)
 {
-  cartes& c = g->players_cartes[player_];
+  cartes& c = g->players_cartes[p];
 
   switch (type_carte_)
   {
@@ -64,6 +119,17 @@ void ActionCarte::add_to_carte_count(GameData* g, int increment)
   case PACIFISME: c.pacifisme += increment; break;
   case SOIN: c.soin += increment; break;
   }
+}
+
+void ActionDeguisement::verifier(GameData* g)
+{
+  ActionCarte::verifier(g);
+
+  ASSERT(unite_ >= 0, POSITION_INVALIDE);
+  ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
+
+  ASSERT(unite_ > PERROQUET, PAS_SPAWNABLE);
+  ASSERT(unite_ <= KANGOUROU, PAS_SPAWNABLE);
 }
 
 void ActionDeguisement::appliquer(GameData* g)
@@ -85,8 +151,16 @@ void ActionDeguisement::annuler(GameData* g)
 void ActionDeguisement::envoyer(Api* api)
 {
   StechecPkt com(ACT_DEGUISEMENT, -1);
-  com.Push(3, player_, unite_, nouveau_type_);
+  com.Push(4, last_order_id++, player_, unite_, nouveau_type_);
   api->SendToServer(com);
+}
+
+void ActionBanzai::verifier(GameData* g)
+{
+  ActionCarte::verifier(g);
+
+  ASSERT(unite_ >= 0, POSITION_INVALIDE);
+  ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 }
 
 void ActionBanzai::appliquer(GameData* g)
@@ -106,8 +180,16 @@ void ActionBanzai::annuler(GameData* g)
 void ActionBanzai::envoyer(Api* api)
 {
   StechecPkt com(ACT_BANZAI, -1);
-  com.Push(2, player_, unite_);
+  com.Push(3, last_order_id++, player_, unite_);
   api->SendToServer(com);
+}
+
+void ActionSoin::verifier(GameData* g)
+{
+  ActionCarte::verifier(g);
+
+  ASSERT(unite_ >= 0, POSITION_INVALIDE);
+  ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 }
 
 void ActionSoin::appliquer(GameData* g)
@@ -139,8 +221,13 @@ void ActionSoin::annuler(GameData* g)
 void ActionSoin::envoyer(Api* api)
 {
   StechecPkt com(ACT_SOIN, -1);
-  com.Push(2, player_, unite_);
+  com.Push(3, last_order_id++, player_, unite_);
   api->SendToServer(com);
+}
+
+void ActionPacifisme::verifier(GameData* g)
+{
+  ActionCarte::verifier(g);
 }
 
 void ActionPacifisme::appliquer(GameData* g)
@@ -177,6 +264,6 @@ void ActionPacifisme::annuler(GameData* g)
 void ActionPacifisme::envoyer(Api* api)
 {
   StechecPkt com(ACT_PACIFISME, -1);
-  com.Push(1, player_);
+  com.Push(2, last_order_id++, player_);
   api->SendToServer(com);
 }
