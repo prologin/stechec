@@ -10,22 +10,22 @@ namespace Prologin {
 
 		public void InitGame()
 		{
-			// Place ton code ici
 		}
 
 		public Position RetirerKo()
 		{
-return new Position();			// Place ton code ici
+            Unites[] t = Unites();
+            for (int i = 0; t.Length; i++)
+                if (!t[i].Ennemi)
+            return new Position();
 		}
 
 		public void Jouer()
 		{
-			// Place ton code ici
 		}
 
 		public void EndGame()
 		{
-			// Place ton code ici
 		}
 
 	}
