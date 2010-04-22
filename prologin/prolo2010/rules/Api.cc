@@ -86,14 +86,7 @@ position Api::pos_spawn(bool ennemi)
 //
 caracs Api::caracteristiques(type_unite tu)
 {
-  static caracs c[] = {
-    { 1, 1 },
-    { 2, 3 },
-    { 5, 1 },
-    { 3, 2 }
-  };
-
-  return c[tu];
+  return g_->caracteristiques(tu);
 }
 
 ///

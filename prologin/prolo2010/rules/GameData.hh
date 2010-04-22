@@ -58,6 +58,7 @@ public:
   // rules
   position spawn_pos();
   position spawn_position(bool white);
+  caracs caracteristiques(type_unite u);
   int porte_attaque(const unite u);
   int pa(const type_unite u);
 

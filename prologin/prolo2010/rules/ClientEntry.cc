@@ -48,7 +48,7 @@ int        ClientEntry::initGame()
 
 int        ClientEntry::beforeNewTurn()
 {
-  // TODO
+  g_->team_switched();
   return 0;
 }
 
