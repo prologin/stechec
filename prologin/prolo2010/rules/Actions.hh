@@ -13,37 +13,154 @@
 #ifndef ACTIONS_HH_
 # define ACTIONS_HH_
 
+# include "Api.hh"
 # include "Contest.hh"
 # include "Constant.hh"
+# include "GameData.hh"
 
-typedef enum {
-  e_deplacer = 0,
-  e_spawn,
-  e_attaquer,
+# include <map>
+# include <vector>
 
-  e_deguisement,
-  e_banzai,
-  e_pacifisme,
-  e_soin
-} action_e;
-
-class Actions
+class Action
 {
-public :
-  Actions();
-  void deguisement(int indice_unite, type_unite nouveau_type);
-  void banzai(int indice_unite);
-  void pacifisme();
-  void soin(int indice_unite);
+public:
+  Action(int player) : player_(player) {}
 
-  void deplacer(int indice_unite, position pos, int d);
-  void attaquer(int indice_attaquant, int indice_cible);
-  void spawn(type_unite quoi);
-  // private ?
-  action_e type;
-  int i1, i2, d;
-  position p;
-  type_unite tu;
+  virtual ~Action() {}
+
+  virtual void appliquer(GameData* g) = 0;
+  virtual void envoyer(Api* api) = 0;
+  virtual void annuler(GameData* g) = 0;
+
+protected:
+  int player_;
+};
+
+class ActionDeplacer : public Action
+{
+public:
+  ActionDeplacer(int player, int unite, position dest) :
+    Action(player), unite_(unite), dest_(dest)
+  {
+  }
+
+  virtual void appliquer(GameData* g);
+  virtual void envoyer(Api* api);
+  virtual void annuler(GameData* g);
+
+protected:
+  int unite_;
+  position dest_;
+
+  position old_pos_;
+  int old_nbr_unites_allowed_;
+};
+
+class ActionCarte : public Action
+{
+public:
+  enum Type
+  {
+    DEGUISEMENT = 0,
+    BANZAI,
+    PACIFISME,
+    SOIN
+  };
+
+  ActionCarte(int player, Type type_carte) :
+    Action(player), type_carte_(type_carte)
+  {
+  }
+
+  virtual ~ActionCarte() {}
+
+  virtual void appliquer(GameData* g);
+  virtual void annuler(GameData* g);
+
+protected:
+  Type type_carte_;
+
+  void add_to_carte_count(GameData* g, int increment);
+};
+
+class ActionDeguisement : public ActionCarte
+{
+public:
+  ActionDeguisement(int player, int unite, type_unite nouveau_type) :
+    ActionCarte(player, ActionCarte::DEGUISEMENT),
+    unite_(unite), nouveau_type_(nouveau_type)
+  {
+  }
+
+  virtual ~ActionDeguisement() {}
+  
+  virtual void appliquer(GameData* g);
+  virtual void envoyer(Api* api);
+  virtual void annuler(GameData* g);
+
+protected:
+  int unite_;
+  type_unite ancien_type_;
+  type_unite nouveau_type_;
+};
+
+class ActionBanzai : public ActionCarte
+{
+public:
+  ActionBanzai(int player, int unite) :
+    ActionCarte(player, ActionCarte::BANZAI),
+    unite_(unite)
+  {
+  }
+
+  virtual ~ActionBanzai() {}
+  
+  virtual void appliquer(GameData* g);
+  virtual void envoyer(Api* api);
+  virtual void annuler(GameData* g);
+
+protected:
+  int unite_;
+};
+
+class ActionSoin : public ActionCarte
+{
+public:
+  ActionSoin(int player, int unite) :
+    ActionCarte(player, ActionCarte::SOIN),
+    unite_(unite)
+  {
+  }
+
+  virtual ~ActionSoin() {}
+  
+  virtual void appliquer(GameData* g);
+  virtual void envoyer(Api* api);
+  virtual void annuler(GameData* g);
+
+protected:
+  int unite_;
+  int old_pa_;
+  int old_attaques_;
+  int old_ko_;
+};
+
+class ActionPacifisme : public ActionCarte
+{
+public:
+  ActionPacifisme(int player) :
+    ActionCarte(player, ActionCarte::PACIFISME)
+  {
+  }
+
+  virtual ~ActionPacifisme() {}
+  
+  virtual void appliquer(GameData* g);
+  virtual void envoyer(Api* api);
+  virtual void annuler(GameData* g);
+
+protected:
+  std::vector<int> old_attaques_;
 };
 
 #endif

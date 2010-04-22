@@ -17,20 +17,38 @@
 // Taille de départ du terrain.
 //
 # define TAILLE_DEPART             25
+//
+///
+// Le nombre maximal d'unités pouvant appartenir à une équipe.
+//
+# define NBR_MAX_UNITES            20
+
+///
+// Le temps, en nombre de tours, entre deux rétrécissement du terrain.
+//
+# define TEMPS_RETRECISSEMENT      5
+
+# define SPAWN_1_X                 12
+# define SPAWN_1_Y                 3
+# define SPAWN_2_X                 12
+# define SPAWN_2_Y                 22
 
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 typedef enum erreur {
   OK, /* <- aucune erreur n'est survenue */
+  POSITION_INVALIDE, /* <- la position spécifiée est invalide */
+  CASE_OCCUPEE, /* <- la case sur laquelle vous tentez de vous déplacer est occupée */
   PAS_A_PORTEE, /* <- la cible n'est pas à portée */
-  PLUS_DE_PA, /* <- nombre maximal d'actions par tour dépassé */
-  DEJA_DEPLACE, /* <- cette unité a déjà été déplacée */
+  UNITE_KO, /* <- l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO */
+  QUOTA_DEPASSE, /* <- nombre maximal d'unites */
+  PLUS_DE_PA, /* <- cette unité a réalisé toutes ses actions */
   DEJA_ATTAQUE, /* <- cette unité a déjà attaqué */
-  DEJA_SPAWN, /* <- une unité a déjà été spawn à ce tour */
   PAS_SPAWNABLE, /* <- cette unité n'est pas spawnable */
   SPAWN_OCCUPE, /* <- une unité est déjà présente sur le spawn */
   PAS_A_MOI, /* <- l'unité ciblée n'est pas à vous */
+  PLUS_DE_CARTES, /* <- il n'y a plus de cartes du type spécifié dans votre main */
   PHASE_CARTES_TERMINEE, /* <- vous ne pouvez plus poser de cartes car vous avez fait une action */
 } erreur;
 
@@ -66,6 +84,15 @@ typedef struct taille_terrain {
 
 
 ///
+// Donne les caractéristiques d'un type d'unité.
+//
+typedef struct caracs {
+  int pa;  /* <- nombre de points d'actions par tour */
+  int portee;  /* <- portée maximale de l'unité */
+} caracs;
+
+
+///
 // Représente une unité sur le terrain.
 //
 typedef struct unite {
@@ -90,10 +117,14 @@ typedef struct cartes {
 } cartes;
 
 
-
 // Ids for message type.
 enum e_com_type {
-  MOVE = 0,
+  ACT_DEGUISEMENT = 0,
+  ACT_BANZAI,
+  ACT_SOIN,
+  ACT_PACIFISME,
+  ACT_DEPLACER,
+  ACT_ATTAQUER,
   LAST_MSG
 };
 
