@@ -20,6 +20,8 @@
   if (!(cond)) \
     throw err;
 
+static unsigned int last_order_id = 0;
+
 static inline int max(int a, int b)
 {
   return (a > b) ? a : b;
@@ -72,7 +74,7 @@ void ActionDeplacer::annuler(GameData* g)
 void ActionDeplacer::envoyer(Api* api)
 {
   StechecPkt com(ACT_DEPLACER, -1);
-  com.Push(3, unite_, dest_.x, dest_.y);
+  com.Push(4, last_order_id++, unite_, dest_.x, dest_.y);
   api->SendToServer(com);
 }
 
@@ -149,7 +151,7 @@ void ActionDeguisement::annuler(GameData* g)
 void ActionDeguisement::envoyer(Api* api)
 {
   StechecPkt com(ACT_DEGUISEMENT, -1);
-  com.Push(3, player_, unite_, nouveau_type_);
+  com.Push(4, last_order_id++, player_, unite_, nouveau_type_);
   api->SendToServer(com);
 }
 
@@ -178,7 +180,7 @@ void ActionBanzai::annuler(GameData* g)
 void ActionBanzai::envoyer(Api* api)
 {
   StechecPkt com(ACT_BANZAI, -1);
-  com.Push(2, player_, unite_);
+  com.Push(3, last_order_id++, player_, unite_);
   api->SendToServer(com);
 }
 
@@ -219,7 +221,7 @@ void ActionSoin::annuler(GameData* g)
 void ActionSoin::envoyer(Api* api)
 {
   StechecPkt com(ACT_SOIN, -1);
-  com.Push(2, player_, unite_);
+  com.Push(3, last_order_id++, player_, unite_);
   api->SendToServer(com);
 }
 
@@ -262,6 +264,6 @@ void ActionPacifisme::annuler(GameData* g)
 void ActionPacifisme::envoyer(Api* api)
 {
   StechecPkt com(ACT_PACIFISME, -1);
-  com.Push(1, player_);
+  com.Push(2, last_order_id++, player_);
   api->SendToServer(com);
 }
