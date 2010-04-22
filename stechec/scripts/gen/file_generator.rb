@@ -494,7 +494,7 @@ class CSharpProto < CxxProto
     @f.print " ", camel_case(fn.name), "("
     if fn.args != nil and fn.args != []
       print_args = fn.args.collect {
-        |arg| [camel_case(arg.type.name), arg.name].join(" ");
+        |arg| [conv_type(arg.type), arg.name].join(" ");
       }
       @f.print print_args.join(", ")
     end
