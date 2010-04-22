@@ -96,17 +96,19 @@ void ActionCarte::verifier(GameData* g)
 
 void ActionCarte::appliquer(GameData* g)
 {
-  add_to_carte_count(g, -1);
+  add_to_carte_count(g, player_, -1);
+  add_to_carte_count(g, player_ ^ 1, 1);
 }
 
 void ActionCarte::annuler(GameData* g)
 {
-  add_to_carte_count(g, 1);
+  add_to_carte_count(g, player_, 1);
+  add_to_carte_count(g, player_ ^ 1, -1);
 }
 
-void ActionCarte::add_to_carte_count(GameData* g, int increment)
+void ActionCarte::add_to_carte_count(GameData* g, int p, int increment)
 {
-  cartes& c = g->players_cartes[player_];
+  cartes& c = g->players_cartes[p];
 
   switch (type_carte_)
   {

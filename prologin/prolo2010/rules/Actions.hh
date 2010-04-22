@@ -83,7 +83,7 @@ public:
 protected:
   Type type_carte_;
 
-  void add_to_carte_count(GameData* g, int increment);
+  void add_to_carte_count(GameData* g, int p, int increment);
 };
 
 class ActionDeguisement : public ActionCarte
