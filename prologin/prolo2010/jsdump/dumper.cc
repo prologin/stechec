@@ -10,6 +10,7 @@
 ** Copyright (C) 2010 Prologin
 */
 
+#include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
@@ -22,8 +23,64 @@ extern int api_state_is_playturn(void*);
 extern int client_cx_process(void*);
 extern int client_cx_set_ready(void*);
 
+void afficher(cartes c){
+  std::cout
+    << "{soin:" << c.soin
+    << "banzai:" << c.banzai
+    << "deguisement:" << c.deguisement
+    << "pacifisme:" << c.pacifisme
+    << "}";
+}
+
+void afficher(std::vector<unite> u){
+
+}
+
+void afficher(taille_terrain tt){
+  std::cout
+    << "{"
+    << "taille:" << tt.taille
+    << "min_coord:" << tt.min_coord
+    << "max_coord:" << tt.max_coord
+    <<"}";
+}
+
 void dump_current_state()
 {
+  std::vector<unite> u = unites();
+  int t = tour_actuel();
+  bool ennemi = t % 2 == 0;
+  if (ennemi)
+    for (int i = 0; i < u.size(); i++)
+      u[i].ennemi = ! u[i].ennemi;
+  taille_terrain taille = taille_terrain();
+  cartes c = cartes();
+  cartes c2;
+  c2.soin = MAX_CARTES - c.soin;
+  c2.deguisement = MAX_CARTES - c.deguisement;
+  c2.banzai = MAX_CARTES - c.banzai;
+  c2.pacifisme = c.pacifisme;
+  if (ennemi){
+    cartes c3 = c;
+    c = c2;
+    c2 = c3;
+  }
+  std::cout
+    << "{"
+    << "cards_white:";
+  afficher(c);
+  std::cout
+    << "cards_black:";
+  afficher(c2);
+  std::cout
+    << "taille_terrain:";
+  afficher(taille);
+  std::cout
+    << "unites:";
+  afficher(u);
+  std::cout
+    << "}"
+    << std::endl;;
 }
 
 int run(void* foo, void* api, void* client_cx)
