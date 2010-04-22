@@ -15,18 +15,36 @@
 # define TAILLE_DEPART             25
 
 ///
+// Le nombre maximal d'unités pouvant appartenir à une équipe.
+//
+# define NBR_MAX_UNITES            20
+
+///
+// Le temps, en nombre de tours, entre deux rétrécissement du terrain.
+//
+# define TEMPS_RETRECISSEMENT      5
+
+///
+// Le nombre maximum en jeu de chaque carte.
+//
+# define MAX_CARTES                2
+
+///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 typedef enum erreur {
   OK, /* <- aucune erreur n'est survenue */
+  POSITION_INVALIDE, /* <- la position spécifiée est invalide */
+  CASE_OCCUPEE, /* <- la case sur laquelle vous tentez de vous déplacer est occupée */
   PAS_A_PORTEE, /* <- la cible n'est pas à portée */
-  PLUS_DE_PA, /* <- nombre maximal d'actions par tour dépassé */
-  DEJA_DEPLACE, /* <- cette unité a déjà été déplacée */
+  UNITE_KO, /* <- l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO */
+  QUOTA_DEPASSE, /* <- nombre maximal d'unites */
+  PLUS_DE_PA, /* <- cette unité a réalisé toutes ses actions */
   DEJA_ATTAQUE, /* <- cette unité a déjà attaqué */
-  DEJA_SPAWN, /* <- une unité a déjà été spawn à ce tour */
   PAS_SPAWNABLE, /* <- cette unité n'est pas spawnable */
   SPAWN_OCCUPE, /* <- une unité est déjà présente sur le spawn */
   PAS_A_MOI, /* <- l'unité ciblée n'est pas à vous */
+  PLUS_DE_CARTES, /* <- il n'y a plus de cartes du type spécifié dans votre main */
   PHASE_CARTES_TERMINEE, /* <- vous ne pouvez plus poser de cartes car vous avez fait une action */
 } erreur;
 
@@ -59,6 +77,15 @@ typedef struct taille_terrain {
   int min_coord;  /* <- coordonnée minimale en X ou en Y */
   int max_coord;  /* <- coordonnée maximale en X ou en Y */
 } taille_terrain;
+
+
+///
+// Donne les caractéristiques d'un type d'unité.
+//
+typedef struct caracs {
+  int pa;  /* <- nombre de points d'actions par tour */
+  int portee;  /* <- portée maximale de l'unité */
+} caracs;
 
 
 ///
@@ -97,6 +124,26 @@ static inline int tour_actuel()
 
 
 ///
+// Renvoie la position du spawn (ennemi ou non).
+//
+extern "C" position api_pos_spawn(bool ennemi);
+static inline position pos_spawn(bool ennemi)
+{
+  return api_pos_spawn(ennemi);
+}
+
+
+///
+// Renvoie les caractéristiques d'un type d'unité.
+//
+extern "C" caracs api_caracteristiques(type_unite tu);
+static inline caracs caracteristiques(type_unite tu)
+{
+  return api_caracteristiques(tu);
+}
+
+
+///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
 extern "C" cartes api_mes_cartes();
@@ -129,8 +176,8 @@ static inline taille_terrain taille_terrain_actuelle()
 ///
 // Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
 //
-extern "C" erreur api_soin(unite cible);
-static inline erreur soin(unite cible)
+extern "C" erreur api_soin(position cible);
+static inline erreur soin(position cible)
 {
   return api_soin(cible);
 }
@@ -139,8 +186,8 @@ static inline erreur soin(unite cible)
 ///
 // Utilise une carte « Déguisement » que vous avez dans votre main.
 //
-extern "C" erreur api_deguisement(unite cible, type_unite nouveau_type);
-static inline erreur deguisement(unite cible, type_unite nouveau_type)
+extern "C" erreur api_deguisement(position cible, type_unite nouveau_type);
+static inline erreur deguisement(position cible, type_unite nouveau_type)
 {
   return api_deguisement(cible, nouveau_type);
 }
@@ -149,8 +196,8 @@ static inline erreur deguisement(unite cible, type_unite nouveau_type)
 ///
 // Utilise une carte « Banzaï » que vous avez dans votre main.
 //
-extern "C" erreur api_banzai(unite cible);
-static inline erreur banzai(unite cible)
+extern "C" erreur api_banzai(position cible);
+static inline erreur banzai(position cible)
 {
   return api_banzai(cible);
 }
@@ -169,18 +216,28 @@ static inline erreur pacifisme()
 ///
 // Déplace une unité vers une position à portée.
 //
-extern "C" erreur api_deplacer(unite cible, position pos);
-static inline erreur deplacer(unite cible, position pos)
+extern "C" erreur api_deplacer(position cible, position pos);
+static inline erreur deplacer(position cible, position pos)
 {
   return api_deplacer(cible, pos);
 }
 
 
 ///
+// Relève une unité n'ayant plus de tours KO.
+//
+extern "C" erreur api_relever(position cible);
+static inline erreur relever(position cible)
+{
+  return api_relever(cible);
+}
+
+
+///
 // Attaque une autre unité.
 //
-extern "C" erreur api_attaquer(unite attaquant, unite cible);
-static inline erreur attaquer(unite attaquant, unite cible)
+extern "C" erreur api_attaquer(position attaquant, position cible);
+static inline erreur attaquer(position attaquant, position cible)
 {
   return api_attaquer(attaquant, cible);
 }
@@ -247,6 +304,16 @@ static inline void afficher_taille_terrain(taille_terrain v)
 
 
 ///
+// Affiche le contenu d'une valeur de type caracs
+//
+extern "C" void api_afficher_caracs(caracs v);
+static inline void afficher_caracs(caracs v)
+{
+  api_afficher_caracs(v);
+}
+
+
+///
 // Affiche le contenu d'une valeur de type unite
 //
 extern "C" void api_afficher_unite(unite v);
@@ -277,7 +344,7 @@ void init_game();
 ///
 // Fonction appellée pour la phase de retrait de KO.
 //
-unite retirer_ko();
+position retirer_ko();
 
 ///
 // Fonction appellée pour la phase de jeu.
