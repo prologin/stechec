@@ -74,7 +74,7 @@ void ActionDeplacer::annuler(GameData* g)
 void ActionDeplacer::envoyer(Api* api)
 {
   StechecPkt com(ACT_DEPLACER, -1);
-  com.Push(4, last_order_id++, unite_, dest_.x, dest_.y);
+  com.Push(5, last_order_id++, player_, unite_, dest_.x, dest_.y);
   api->SendToServer(com);
 }
 

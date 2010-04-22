@@ -83,6 +83,9 @@ public:
   taille_terrain tt;
   std::vector<unite> unites;
 
+  // server internal
+  std::vector<std::vector<int> > packets;
+
 private:
   bool initialized_;
 };

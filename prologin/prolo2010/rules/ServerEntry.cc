@@ -29,45 +29,38 @@ int		ServerEntry::beforeGame(void)
 {
 
   g_->Init();
-
-  // TODO
   
   return 0;
 }
 
 int         ServerEntry::initGame(void)
 {
-  // TODO
   return 0;
 }
 
 int         ServerEntry::beforeNewTurn(void)
 {
-  // TODO
   return 0;
 }
 
 int         ServerEntry::afterNewTurn(void)
 {
-  // TODO
+  g_->team_switched();
   return 0;
 }
 
 
 int         ServerEntry::afterGame(void)
 {
-  // TODO
   return 0;
 }
 
 bool        ServerEntry::isMatchFinished(void)
 {
-  // TODO
   return false;
 }
 
 int ServerEntry::getScore(int uid)
 {
-  // TODO
   return 0;
 }
