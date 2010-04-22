@@ -17,15 +17,6 @@
 #include "Api.hh"
 #include <cmath>
 
-static inline int max(int a, int b){
-  return (a > b) ? a : b;
-}
-
-static inline int distance(position p1, position p2){
-  return max(
-	     abs(p1.x - p2.x),
-	     abs(p1.y - p2.y));
-}
 
 
 
@@ -113,6 +104,16 @@ taille_terrain Api::taille_terrain_actuelle()
   return g_->get_tt();
 }
 
+#define DO_ACTION(type, ...) \
+  try { \
+    Action* act = new type(__VA_ARGS__); \
+    act->verifier(g_); \
+    g_->appliquer_action(act); \
+    return OK; \
+  } catch (erreur err) { \
+    return err; \
+  }
+
 #define PLAY_CARD \
   ASSERT(g_->can_play_card, PHASE_CARTES_TERMINEE);	\
 
@@ -122,9 +123,7 @@ taille_terrain Api::taille_terrain_actuelle()
 //
 erreur Api::soin(position cible)
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionSoin(g_->get_current_player(), g_->indice_at(cible)));
-  return OK;
+  DO_ACTION(ActionSoin, g_->get_current_player(), g_->indice_at(cible));
 }
 
 ///
@@ -132,10 +131,8 @@ erreur Api::soin(position cible)
 //
 erreur Api::deguisement(position cible, type_unite nouveau_type)
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionDeguisement(g_->get_current_player(), g_->indice_at(cible),
-                                             nouveau_type));
-  return OK;
+  DO_ACTION(ActionDeguisement, g_->get_current_player(), g_->indice_at(cible),
+            nouveau_type);
 }
 
 ///
@@ -143,9 +140,7 @@ erreur Api::deguisement(position cible, type_unite nouveau_type)
 //
 erreur Api::banzai(position cible)
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionBanzai(g_->get_current_player(), g_->indice_at(cible)));
-  return OK;
+  DO_ACTION(ActionBanzai, g_->get_current_player(), g_->indice_at(cible));
 }
 
 ///
@@ -153,9 +148,7 @@ erreur Api::banzai(position cible)
 //
 erreur Api::pacifisme()
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionPacifisme(g_->get_current_player()));
-  return OK;
+  DO_ACTION(ActionPacifisme, g_->get_current_player());
 }
 
 ///
@@ -163,17 +156,8 @@ erreur Api::pacifisme()
 //
 erreur Api::deplacer(position cible, position pos)
 {
-  int indice = g_->indice_at(cible);
-  unite u = g_->get_unite(indice);
-  ASSERT(indice != -1, PAS_A_MOI); // todo
-  ASSERT(!u.ennemi, PAS_A_MOI);
-  int d = distance(pos, cible);
-  ASSERT(u.pa >= d, PAS_A_PORTEE);
-  ASSERT(g_->can_active(indice), PLUS_DE_PA); // todo
-
-  g_->appliquer_action(new ActionDeplacer(g_->get_current_player(), indice, pos));
-
-  return OK;
+  DO_ACTION(ActionDeplacer, g_->get_current_player(),
+            g_->indice_at(cible), pos);
 }
 
 ///
