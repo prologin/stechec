@@ -125,6 +125,8 @@ enum e_com_type {
   ACT_PACIFISME,
   ACT_DEPLACER,
   ACT_ATTAQUER,
+  ACT_SPAWN,
+  ACT_RELEVER,
   LAST_MSG
 };
 

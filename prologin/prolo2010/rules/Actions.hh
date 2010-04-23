@@ -37,6 +37,12 @@ protected:
   int player_;
 };
 
+#define ACTIONS \
+  virtual void appliquer(GameData* g); \
+  virtual void envoyer(Api* api); \
+  virtual void annuler(GameData* g); \
+  virtual void verifier(GameData* g);
+
 class ActionDeplacer : public Action
 {
 public:
@@ -45,10 +51,7 @@ public:
   {
   }
 
-  virtual void appliquer(GameData* g);
-  virtual void envoyer(Api* api);
-  virtual void annuler(GameData* g);
-  virtual void verifier(GameData* g);
+  ACTIONS
 
 protected:
   int unite_;
@@ -56,6 +59,22 @@ protected:
 
   position old_pos_;
   int old_nbr_unites_allowed_;
+};
+
+class ActionSpawn : public Action
+{
+public:
+  ActionSpawn(int player, type_unite tu) :
+    Action(player), tu_(tu)
+  {
+    p_.x = -1;
+  }
+ACTIONS
+protected :
+  type_unite tu_;
+  position p_;
+private :
+  void up_position(GameData* g);
 };
 
 class ActionCarte : public Action
@@ -97,10 +116,7 @@ public:
 
   virtual ~ActionDeguisement() {}
   
-  virtual void appliquer(GameData* g);
-  virtual void envoyer(Api* api);
-  virtual void annuler(GameData* g);
-  virtual void verifier(GameData* g);
+  ACTIONS
 
 protected:
   int unite_;
@@ -118,11 +134,8 @@ public:
   }
 
   virtual ~ActionBanzai() {}
-  
-  virtual void appliquer(GameData* g);
-  virtual void envoyer(Api* api);
-  virtual void annuler(GameData* g);
-  virtual void verifier(GameData* g);
+
+  ACTIONS
 
 protected:
   int unite_;
@@ -139,10 +152,7 @@ public:
 
   virtual ~ActionSoin() {}
   
-  virtual void appliquer(GameData* g);
-  virtual void envoyer(Api* api);
-  virtual void annuler(GameData* g);
-  virtual void verifier(GameData* g);
+  ACTIONS
 
 protected:
   int unite_;
@@ -161,10 +171,7 @@ public:
 
   virtual ~ActionPacifisme() {}
   
-  virtual void appliquer(GameData* g);
-  virtual void envoyer(Api* api);
-  virtual void annuler(GameData* g);
-  virtual void verifier(GameData* g);
+  ACTIONS
 
 protected:
   std::vector<int> old_attaques_;

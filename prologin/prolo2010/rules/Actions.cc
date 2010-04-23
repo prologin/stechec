@@ -32,6 +32,49 @@ static inline int distance(position p1, position p2)
   return max(abs(p1.x - p2.x), abs(p1.y - p2.y));
 }
 
+void ActionSpawn::up_position(GameData *g){
+  if (p_.x == -1) p_ = g->spawn_pos();
+}
+
+void ActionSpawn::verifier(GameData* g)
+{
+  up_position(g);
+  int i =  g->indice_at(p_);
+  ASSERT(i == -1, SPAWN_OCCUPE);
+  ASSERT(tu_ != PERROQUET, PAS_SPAWNABLE);
+  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES / 2, PAS_SPAWNABLE);
+}
+
+void ActionSpawn::appliquer(GameData *g)
+{
+  up_position(g);
+  {
+    unite u = {
+      p_,
+      false,
+      tu_,
+      tu_,
+      -1,
+      0,
+      0
+    };
+    g->deja_bougee[g->unites.size()] = true;
+    g->unites.push_back(u);
+  }
+}
+
+void ActionSpawn::annuler(GameData *g)
+{
+  g->unites.pop_back();
+}
+
+void ActionSpawn::envoyer(Api *api)
+{
+  StechecPkt com(ACT_SPAWN, -1);
+  com.Push(5, last_order_id++, player_, tu_);
+  api->SendToServer(com);
+}
+
 void ActionDeplacer::verifier(GameData* g)
 {
   ASSERT(unite_ >= 0, POSITION_INVALIDE);

@@ -183,15 +183,7 @@ erreur Api::attaquer(position attaquant, position cible)
 //
 erreur Api::spawn(type_unite quoi)
 {
-  position p = g_->spawn_pos();
-  int i =  g_->indice_at(p);
-  ASSERT(i == -1, SPAWN_OCCUPE);
-  ASSERT(quoi != PERROQUET, PAS_SPAWNABLE);
-  ASSERT(g_->nbr_toons(false) < 9, PAS_SPAWNABLE); // todo
-
-  /* TODO */
-
-  return OK;
+  DO_ACTION(ActionSpawn, g_->get_current_player(), quoi);
 }
 
 ///
