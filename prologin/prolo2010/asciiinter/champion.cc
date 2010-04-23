@@ -45,7 +45,7 @@ static type_unite unit_of_int(int i){
   }
 }
 
-unite retirer_ko()
+position retirer_ko()
 {
   view();
   printf("retirer ko :\n");
@@ -71,7 +71,7 @@ unite retirer_ko()
     }
   } while(bad);
   printf("fin retirer_ko;\n");
-  return u[n];
+  return u[n].pos;
 }
 
 unite choisir_unite(position p){
@@ -112,7 +112,7 @@ void jouer()
     fgets(buffer, 80, stdin);
     if (sscanf(buffer, "from (%d, %d) to (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
       if (contient_unite(from)){
-	afficher_erreur(deplacer(choisir_unite(from), to));
+	afficher_erreur(deplacer(from, to));
       }else{
 	printf("aucune unite ici !");
       }
