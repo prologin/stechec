@@ -11,6 +11,8 @@
 */
 
 #include <cstdlib>
+#include <prologin.hh>
+#include "champion.hh"
 
 /* These functions are defined in common stechec rules. */
 extern "C" int api_state_is_end(void*);
@@ -26,19 +28,6 @@ extern "C" void jouer();
 
 // prolo2010 specific : players do not execute simultaneously
 extern "C" bool api_mon_tour();
-
-// prolo2010 specific : the retirer_ko returns a structure on the stack
-struct unite
-{
-  struct { int x; int y; } pos;
-  bool ennemi;
-  int type_unite_actuel;
-  int vrai_type_unite;
-  int ko;
-  int pa;
-  int attaques;
-};
-extern "C" unite retirer_ko(); // In champion
 extern "C" bool api_retirer_ko(unite u); // In API
 
 extern "C" int run(void* foo, void* api, void* client_cx)
@@ -55,11 +44,11 @@ extern "C" int run(void* foo, void* api, void* client_cx)
       if (api_mon_tour())
       {
         // prolo2010 specific : two successive phases with no server sync
-        unite u = retirer_ko();
+        unite u = _retirer_ko();
         if (!api_retirer_ko(u)) // Returns true if successful
           abort();
 
-        jouer();
+        _jouer();
       }
 
       api_do_end_turn(api);
