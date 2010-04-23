@@ -69,17 +69,12 @@ public:
   ActionSpawn(int player, type_unite tu) :
     Action(player), tu_(tu)
   {
-    p_.x = -1;
   }
 
   ACTIONS
 
 protected :
   type_unite tu_;
-  position p_;
-
-private :
-  void up_position(GameData* g);
 };
 
 class ActionRelever : public Action

@@ -74,16 +74,10 @@ void ActionRelever::envoyer(Api *api)
   api->SendToServer(com);
 }
 
-
-void ActionSpawn::up_position(GameData *g)
-{
-  if (p_.x == -1) p_ = g->spawn_pos();
-}
-
 void ActionSpawn::verifier(GameData* g)
 {
-  up_position(g);
-  int i =  g->indice_at(p_);
+  position p = g->spawn_pos();
+  int i =  g->indice_at(p);
   ASSERT(i == -1, SPAWN_OCCUPE);
   ASSERT(tu_ != PERROQUET, PAS_SPAWNABLE);
   ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES / 2, PAS_SPAWNABLE);
@@ -91,11 +85,11 @@ void ActionSpawn::verifier(GameData* g)
 
 void ActionSpawn::appliquer(GameData *g)
 {
+  position p = g->spawn_pos();
   Action::appliquer(g);
-  up_position(g);
   {
     unite u = {
-      p_,
+      p,
       false,
       tu_,
       tu_,

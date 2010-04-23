@@ -165,7 +165,8 @@ erreur Api::deplacer(position cible, position pos)
 //
 erreur Api::relever(position cible)
 {
-  // TODO
+  int qui = g_->indice_at(cible);
+  DO_ACTION(ActionRelever, g_->get_current_player(), qui);
   return OK;
 }
 
