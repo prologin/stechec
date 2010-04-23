@@ -32,7 +32,51 @@ static inline int distance(position p1, position p2)
   return max(abs(p1.x - p2.x), abs(p1.y - p2.y));
 }
 
-void ActionSpawn::up_position(GameData *g){
+void Action::appliquer(GameData* g)
+{
+  can_play_card_ = g->can_play_card;
+  nbr_unites_allowed_ = g->nbr_unites_allowed;
+}
+
+void Action::annuler(GameData *g){
+  g->can_play_card = can_play_card_;
+  g->nbr_unites_allowed = nbr_unites_allowed_;
+}
+
+void ActionRelever::verifier(GameData* g)
+{
+  ASSERT(unite_ >= 0, POSITION_INVALIDE);
+  ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
+  unite& u = g->unites[unite_];
+  ASSERT(u.ko >= 0, UNITE_KO);
+  ASSERT(u.ko == 0, UNITE_DEBOUT);
+  ASSERT(!u.ennemi, PAS_A_MOI);
+  ASSERT(g->can_active(unite_), QUOTA_DEPASSE);
+}
+
+void ActionRelever::appliquer(GameData* g)
+{
+  Action::appliquer(g);
+  old_ko_ = g->unites[unite_].ko;
+  g->unites[unite_].ko = -1;
+}
+
+void ActionRelever::annuler(GameData* g)
+{
+  Action::annuler(g);
+  g->unites[unite_].ko = old_ko_;
+}
+
+void ActionRelever::envoyer(Api *api)
+{
+  StechecPkt com(ACT_RELEVER, -1);
+  com.Push(3, last_order_id++, player_, unite_);
+  api->SendToServer(com);
+}
+
+
+void ActionSpawn::up_position(GameData *g)
+{
   if (p_.x == -1) p_ = g->spawn_pos();
 }
 
@@ -47,6 +91,7 @@ void ActionSpawn::verifier(GameData* g)
 
 void ActionSpawn::appliquer(GameData *g)
 {
+  Action::appliquer(g);
   up_position(g);
   {
     unite u = {
@@ -65,13 +110,14 @@ void ActionSpawn::appliquer(GameData *g)
 
 void ActionSpawn::annuler(GameData *g)
 {
+  Action::annuler(g);
   g->unites.pop_back();
 }
 
 void ActionSpawn::envoyer(Api *api)
 {
   StechecPkt com(ACT_SPAWN, -1);
-  com.Push(5, last_order_id++, player_, tu_);
+  com.Push(3, last_order_id++, player_, tu_);
   api->SendToServer(com);
 }
 
@@ -88,10 +134,13 @@ void ActionDeplacer::verifier(GameData* g)
 
   int dist = distance(u.pos, dest_);
   ASSERT(u.pa >= dist, PLUS_DE_PA);
+
+  ASSERT(g->can_active(unite_), QUOTA_DEPASSE);
 }
 
 void ActionDeplacer::appliquer(GameData* g)
 {
+  Action::appliquer(g);
   unite& u = g->unites[unite_];
   
   old_nbr_unites_allowed_ = g->nbr_unites_allowed;
@@ -107,6 +156,7 @@ void ActionDeplacer::appliquer(GameData* g)
 
 void ActionDeplacer::annuler(GameData* g)
 {
+  Action::annuler(g);
   if (g->nbr_unites_allowed != old_nbr_unites_allowed_)
     g->deja_bougee[unite_] = false;
 

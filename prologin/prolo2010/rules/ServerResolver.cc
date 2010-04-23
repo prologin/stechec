@@ -41,6 +41,8 @@ static Action* act_from_pkt(int type, StechecPkt* pkt)
     return new ActionDeplacer(pkt->arg[1], pkt->arg[2], p);
   case ACT_SPAWN:
     return new ActionSpawn(pkt->arg[1], (type_unite)pkt->arg[2]);
+  case ACT_RELEVER:
+    return new ActionRelever(pkt->arg[1], pkt->arg[2]);
   default:
     LOG1("Unhandled action type : %1", type);
     abort();

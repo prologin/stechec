@@ -35,7 +35,6 @@ public:
   // Call this before everything else.
   void Init();
 
-  int nbr_unites_activees();
   int nbr_toons(bool ennemi);
 
   bool can_active(int i);

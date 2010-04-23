@@ -114,25 +114,17 @@ void GameData::reset_unite(unite &u, bool reset_ko){
 }
 
 bool GameData::can_active(int i){
-  bool s = deja_bougee[i];
-  deja_bougee[i] = true;
-  bool out = nbr_unites_activees() <= 3;
-  deja_bougee[i] = s;
-  return out;
+  if (deja_bougee[i]){
+    return nbr_unites_allowed >= 0;
+  } else {
+    return nbr_unites_allowed >= 1;
+  }
 }
 
 void GameData::reset_moves(){
   for (int i = 0; i < 18; i ++){
     deja_bougee[i] = false;
   }
-}
-
-int GameData::nbr_unites_activees(){
-  int out = 0;
-  for (int i = 0; i < 18; i ++){
-    out = deja_bougee[i] ? out + 1 : out;
-  }
-  return out;
 }
 
 int GameData::nbr_toons(bool e){

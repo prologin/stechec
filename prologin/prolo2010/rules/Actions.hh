@@ -28,13 +28,15 @@ public:
 
   virtual ~Action() {}
 
-  virtual void appliquer(GameData* g) = 0;
+  virtual void appliquer(GameData* g);
   virtual void envoyer(Api* api) = 0;
-  virtual void annuler(GameData* g) = 0;
+  virtual void annuler(GameData* g);
   virtual void verifier(GameData* g) = 0;
 
 protected:
   int player_;
+  bool can_play_card_;
+  int nbr_unites_allowed_;
 };
 
 #define ACTIONS \
@@ -69,13 +71,32 @@ public:
   {
     p_.x = -1;
   }
-ACTIONS
+
+  ACTIONS
+
 protected :
   type_unite tu_;
   position p_;
+
 private :
   void up_position(GameData* g);
 };
+
+class ActionRelever : public Action
+{
+public :
+  ActionRelever(int player, int unite) :
+    Action(player), unite_(unite)
+  {
+  }
+
+  ACTIONS
+
+protected :
+  int unite_;
+  int old_ko_;
+};
+
 
 class ActionCarte : public Action
 {
