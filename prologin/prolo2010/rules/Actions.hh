@@ -60,7 +60,6 @@ protected:
   position dest_;
 
   position old_pos_;
-  int old_nbr_unites_allowed_;
 };
 
 class ActionSpawn : public Action
@@ -75,6 +74,22 @@ public:
 
 protected :
   type_unite tu_;
+};
+
+class ActionAttaquer : public Action
+{
+public:
+  ActionAttaquer(int player, int attaquant, int victime) :
+    Action(player), attaquant_(attaquant), victime_(victime)
+  {
+  }
+
+  ACTIONS
+
+protected:
+  int attaquant_;
+  int victime_;
+
 };
 
 class ActionRelever : public Action
