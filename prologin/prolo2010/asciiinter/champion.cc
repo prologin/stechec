@@ -116,7 +116,7 @@ void jouer()
       }else{
 	printf("aucune unite ici !");
       }
-    }else if (strcmp(buffer, "spawn\n" == 0)){
+    }else if (strcmp(buffer, "spawn\n") == 0){
 	do{
 	  printf("1 pour perroquet\n2 pour singe\n 3 pour chat\n4 pour kangourou\n");
 	  fgets(buffer, 80, stdin);
