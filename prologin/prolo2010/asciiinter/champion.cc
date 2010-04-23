@@ -118,7 +118,7 @@ void jouer()
       }
     }else if (strcmp(buffer, "spawn\n") == 0){
 	do{
-	  printf("1 pour perroquet\n2 pour singe\n 3 pour chat\n4 pour kangourou\n");
+	  printf("1 pour perroquet\n2 pour singe\n3 pour chat\n4 pour kangourou\n");
 	  fgets(buffer, 80, stdin);
 	  if (sscanf(buffer, "%d", &n) != 1) n = 0; // bad value
 	} while (n < 1 || n > 4);
