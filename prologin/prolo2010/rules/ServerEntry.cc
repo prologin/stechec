@@ -27,9 +27,7 @@ ServerEntry::~ServerEntry(void)
 
 int		ServerEntry::beforeGame(void)
 {
-
   g_->Init();
-  
   return 0;
 }
 
@@ -43,8 +41,17 @@ int         ServerEntry::beforeNewTurn(void)
   return 0;
 }
 
+#define ARG2(a, i) a[(i)], a[(i) + 1]
+#define ARG4(a, i) ARG2(a, i), ARG2(a, i + 2)
+#define ARG8(a, i) ARG4(a, i), ARG4(a, i + 4)
 int         ServerEntry::afterNewTurn(void)
 {
+  // forward the actions
+  for (std::vector<std::vector<int> >::iterator it = g_->packets.begin();
+       it != g_->packets.end(); ++it)
+  {
+    SendToAll((*it)[0], -1, 8, ARG8((*it), 1));
+  }
   g_->team_switched();
   return 0;
 }
@@ -57,10 +64,43 @@ int         ServerEntry::afterGame(void)
 
 bool        ServerEntry::isMatchFinished(void)
 {
+  for (std::vector<unite>::iterator it = g_->unites.begin();
+       it != g_->unites.end(); ++it)
+  {
+    if (it->ko >= 0 && it->vrai_type_unite == PERROQUET)
+    {
+      return true;
+    }
+  }
+
   return false;
 }
 
 int ServerEntry::getScore(int uid)
 {
-  return 0;
+  bool moi_fail = false, ennemi_fail = false;
+  int mon_uid = g_->get_current_player();
+
+  for (std::vector<unite>::iterator it = g_->unites.begin();
+       it != g_->unites.end(); ++it)
+  {
+    if (it->ko >= 0 && it->vrai_type_unite == PERROQUET)
+    {
+      if (it->ennemi)
+        ennemi_fail = true;
+      else
+        moi_fail = true;
+    }
+  }
+
+  if (moi_fail && ennemi_fail)
+    return 0;
+
+  if (uid == mon_uid && moi_fail)
+    return 0;
+
+  if (uid != mon_uid && ennemi_fail)
+    return 0;
+
+  return 1;
 }

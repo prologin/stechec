@@ -421,3 +421,33 @@ void ActionPacifisme::envoyer(Api* api)
   com.Push(2, last_order_id++, player_);
   api->SendToServer(com);
 }
+
+Action* act_from_pkt(int type, const StechecPkt* pkt)
+{
+  struct position p;
+
+  switch(type)
+  {
+  case ACT_DEGUISEMENT:
+    return new ActionDeguisement(pkt->arg[1], pkt->arg[2], (type_unite)pkt->arg[3]);
+  case ACT_BANZAI:
+    return new ActionBanzai(pkt->arg[1], pkt->arg[2]);
+  case ACT_SOIN:
+    return new ActionSoin(pkt->arg[1], pkt->arg[2]);
+  case ACT_PACIFISME:
+    return new ActionPacifisme(pkt->arg[1]);
+  case ACT_DEPLACER:
+    p.x = pkt->arg[3];
+    p.y = pkt->arg[4];
+    return new ActionDeplacer(pkt->arg[1], pkt->arg[2], p);
+  case ACT_SPAWN:
+    return new ActionSpawn(pkt->arg[1], (type_unite)pkt->arg[2]);
+  case ACT_RELEVER:
+    return new ActionRelever(pkt->arg[1], pkt->arg[2]);
+  case ACT_ATTAQUER:
+    return new ActionAttaquer(pkt->arg[1], pkt->arg[2], pkt->arg[3]);
+  default:
+    LOG1("Unhandled action type : %1", type);
+    abort();
+  }
+}

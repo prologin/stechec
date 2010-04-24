@@ -208,4 +208,6 @@ protected:
   std::vector<int> old_attaques_;
 };
 
+Action* act_from_pkt(int type, const StechecPkt* pkt);
+
 #endif

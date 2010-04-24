@@ -21,36 +21,6 @@ ServerResolver::ServerResolver(GameData* game, Server* server)
 {
 }
 
-static Action* act_from_pkt(int type, StechecPkt* pkt)
-{
-  struct position p;
-
-  switch(type)
-  {
-  case ACT_DEGUISEMENT:
-    return new ActionDeguisement(pkt->arg[1], pkt->arg[2], (type_unite)pkt->arg[3]);
-  case ACT_BANZAI:
-    return new ActionBanzai(pkt->arg[1], pkt->arg[2]);
-  case ACT_SOIN:
-    return new ActionSoin(pkt->arg[1], pkt->arg[2]);
-  case ACT_PACIFISME:
-    return new ActionPacifisme(pkt->arg[1]);
-  case ACT_DEPLACER:
-    p.x = pkt->arg[3];
-    p.y = pkt->arg[4];
-    return new ActionDeplacer(pkt->arg[1], pkt->arg[2], p);
-  case ACT_SPAWN:
-    return new ActionSpawn(pkt->arg[1], (type_unite)pkt->arg[2]);
-  case ACT_RELEVER:
-    return new ActionRelever(pkt->arg[1], pkt->arg[2]);
-  case ACT_ATTAQUER:
-    return new ActionAttaquer(pkt->arg[1], pkt->arg[2], pkt->arg[3]);
-  default:
-    LOG1("Unhandled action type : %1", type);
-    abort();
-  }
-}
-
 typedef std::map<int, std::pair<int, StechecPkt*> > pktmap;
 void ServerResolver::ApplyResolver(CommandListRef cmdList[])
 {
@@ -77,7 +47,7 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
 
     g_->packets.push_back(data);
 
-    // apply the actions
+    // apply the action
     Action* act = act_from_pkt(it->second.first,
                                it->second.second);
     try {
