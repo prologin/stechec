@@ -57,8 +57,8 @@ GameData::GameData()
   reset_moves();
   can_play_card = true;
   nbr_unites_allowed = 3;
-  nbr_toons_spawn[0] = 0;
-  nbr_toons_spawn[1] = 0;
+  nbr_toons_spawn[0] = 1;
+  nbr_toons_spawn[1] = 1;
 }
 
 void GameData::Init() {
