@@ -60,6 +60,7 @@ public:
   caracs caracteristiques(type_unite u);
   int porte_attaque(const unite u);
   int pa(const type_unite u);
+  bool must_remove_ko();
 
   // side effects
   void team_switched();

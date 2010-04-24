@@ -135,6 +135,13 @@ int GameData::nbr_toons(bool e){
   return nbr;
 }
 
+int GameData::must_remove_ko(){
+  for (int i = 0, l = unites.size(); i < l ; i++){
+    if (unites[i].ennemi && unites[i].ko > 0 ) return true;
+  }
+  return false;
+}
+
 
 // accesseurs
 cartes GameData::get_cartes(int i){
