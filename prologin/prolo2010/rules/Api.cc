@@ -27,14 +27,7 @@ Api* api;
 // internal API
 bool Api::need_retirer_ko()
 {
-  for (std::vector<unite>::iterator it = g_->unites.begin();
-       it != g_->unites.end(); ++it)
-  {
-    if (it->ennemi && it->ko < 0)
-      return true;
-  }
-
-  return false;
+  return g_->must_remove_ko();
 }
 
 bool Api::retirer_ko(unite u)
@@ -60,7 +53,7 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 //
 int Api::tour_actuel()
 {
-  return g_->get_real_turn();;  // todo
+  return g_->get_real_turn();;  // TODO
 }
 
 ///
@@ -199,6 +192,9 @@ bool Api::annuler()
 
 void Api::teamSwitched()
 {
-  g_->team_switched();
 }
 
+void Api::sendActions()
+{
+g_->send_actions();
+}

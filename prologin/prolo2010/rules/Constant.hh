@@ -37,7 +37,7 @@
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 typedef enum erreur {
-  OK, /* <- aucune erreur n'est survenue */
+  OK=0, /* <- aucune erreur n'est survenue */
   POSITION_INVALIDE, /* <- la position spécifiée est invalide */
   CASE_OCCUPEE, /* <- la case sur laquelle vous tentez de vous déplacer est occupée */
   PAS_A_PORTEE, /* <- la cible n'est pas à portée */

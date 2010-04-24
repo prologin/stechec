@@ -38,6 +38,7 @@ int         ServerEntry::initGame(void)
 
 int         ServerEntry::beforeNewTurn(void)
 {
+  g_->team_switched();
   return 0;
 }
 
@@ -52,7 +53,6 @@ int         ServerEntry::afterNewTurn(void)
   {
     SendToAll((*it)[0], -1, 8, ARG8((*it), 1));
   }
-  g_->team_switched();
   return 0;
 }
 

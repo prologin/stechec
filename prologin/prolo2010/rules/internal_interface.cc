@@ -29,3 +29,8 @@ extern "C" bool api_mon_tour()
 {
   return api->mon_tour();
 }
+
+extern "C" void api_send_actions()
+{
+  return api->sendActions();
+}

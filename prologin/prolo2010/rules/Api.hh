@@ -45,7 +45,7 @@ public:
   bool need_retirer_ko();
   bool retirer_ko(unite u);
   bool mon_tour();
-
+  void sendActions();
 public:
 
 ///
