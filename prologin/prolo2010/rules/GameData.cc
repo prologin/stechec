@@ -57,6 +57,8 @@ GameData::GameData()
   reset_moves();
   can_play_card = true;
   nbr_unites_allowed = 3;
+  nbr_toons_spawn[0] = 0;
+  nbr_toons_spawn[1] = 0;
 }
 
 void GameData::Init() {
@@ -128,14 +130,11 @@ void GameData::reset_moves(){
 }
 
 int GameData::nbr_toons(bool e){
-  int nbr = 0;
-  for (int i = 0, l = unites.size(); i < l ; i++){
-    if (unites[i].ennemi == e ) nbr ++;
-  }
-  return nbr;
+  int player = (current_player + e) % 2;
+  return nbr_toons_spawn[player];
 }
 
-int GameData::must_remove_ko(){
+bool GameData::must_remove_ko(){
   for (int i = 0, l = unites.size(); i < l ; i++){
     if (unites[i].ennemi && unites[i].ko > 0 ) return true;
   }

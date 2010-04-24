@@ -168,12 +168,14 @@ void ActionSpawn::appliquer(GameData *g)
     g->deja_bougee[g->unites.size()] = true;
     g->unites.push_back(u);
   }
+  g->nbr_toons_spawn[player_]++;
 }
 
 void ActionSpawn::annuler(GameData *g)
 {
   Action::annuler(g);
   g->unites.pop_back();
+  g->nbr_toons_spawn[player_]--;
 }
 
 void ActionSpawn::envoyer(Api *api)

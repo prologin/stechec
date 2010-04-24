@@ -82,7 +82,7 @@ public:
   cartes players_cartes[2];
   taille_terrain tt;
   std::vector<unite> unites;
-
+  int nbr_toons_spawn[2];
   // server internal
   std::vector<std::vector<int> > packets;
 
