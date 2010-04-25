@@ -25,9 +25,9 @@ extern "C" int client_cx_set_ready(void*);
 
 void afficher(cartes c){
   std::cout
-    << "{soin:" << c.soin
-    << "banzai:" << c.banzai
-    << "deguisement:" << c.deguisement
+    << "{soin:" << c.soin << ", "
+    << "banzai:" << c.banzai << ", "
+    << "deguisement:" << c.deguisement << ", "
     << "pacifisme:" << c.pacifisme
     << "}";
 }
@@ -35,32 +35,34 @@ void afficher(cartes c){
 void afficher(position p){
   std::cout
     << "{"
-    << "x:" << p.x
+    << "x:" << p.x << ", "
     << "y:" << p.y
     <<"}";
 }
 
 void afficher(type_unite tu){
+  std::cout << "{";
   switch (tu){
   case PERROQUET: std::cout << "perroquet"; break;
   case SINGE: std::cout << "singe" ; break;
   case CHAT: std::cout << "chat" ; break;
   case KANGOUROU: std::cout << "kangourou"; break;
   }
+  std::cout << ":{}}";
 }
 
 void afficher(unite u){
   std::cout
     << "{"
-    << "ennemi:" << u.ennemi
-    << "ko:" << u.ko
-    << "pa:" << u.pa
-    << "attaques:" << u.attaques
+    << "ennemi:" << u.ennemi << ", "
+    << "ko:" << u.ko << ", "
+    << "pa:" << u.pa << ", "
+    << "attaques:" << u.attaques << ", "
     << "pos:" ;
   afficher(u.pos);
-  std::cout << "type_unite_actuel:";
+  std::cout << ", " << "type_unite_actuel:";
   afficher(u.type_unite_actuel);
-  std::cout << "vrai_type_unite:";
+  std::cout << ", " << "vrai_type_unite:";
   afficher(u.type_unite_actuel);
   std::cout
     << "}";
@@ -70,7 +72,7 @@ void afficher(std::vector<unite> u){
   std::cout << "[";
   afficher(u[0]);
   for (int i = 1; i < u.size(); i++){
-    std::cout << ",";
+    std::cout << ", ";
     afficher(u[i]);
   }
   std::cout << "]";
@@ -79,8 +81,8 @@ void afficher(std::vector<unite> u){
 void afficher(taille_terrain tt){
   std::cout
     << "{"
-    << "taille:" << tt.taille
-    << "min_coord:" << tt.min_coord
+    << "taille:" << tt.taille << ", "
+    << "min_coord:" << tt.min_coord << ", "
     << "max_coord:" << tt.max_coord
     <<"}";
 }
@@ -110,13 +112,13 @@ void dump_current_state()
     << "cards_white:";
   afficher(c);
   std::cout
-    << "cards_black:";
+    << ", " << "cards_black:";
   afficher(c2);
   std::cout
-    << "taille_terrain:";
+    << ", " << "taille_terrain:";
   afficher(taille);
   std::cout
-    << "unites:";
+    << ", " << "unites:";
   afficher(u);
   std::cout
     << "}"
