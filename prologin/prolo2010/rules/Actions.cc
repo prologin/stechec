@@ -27,6 +27,11 @@ static inline int max(int a, int b)
   return (a > b) ? a : b;
 }
 
+static inline int min(int a, int b)
+{
+  return (a < b) ? a : b;
+}
+
 static inline int distance(position p1, position p2)
 {
   return max(abs(p1.x - p2.x), abs(p1.y - p2.y));
@@ -34,8 +39,30 @@ static inline int distance(position p1, position p2)
 
 static int get_ko(type_unite a)
 {
-  int c[] = {1, 1, 1, 1}; // TODO
+  int c[] = {1, 5, 3, 2};
   return c[a];
+}
+
+bool operator==(position p1, position p2){
+  return p1.x == p2.x && p1.y == p2.y;
+}
+
+void ActionAttaquer::get_explosions(GameData *g, std::vector<unite *> &u, position p){
+  for (int i = 0, l = g->unites.size(); i < l ; i++){
+    if (g->unites[i].ko == -1 && distance(g->unites[i].pos, p) <= 2)
+      {
+	bool b = true;
+	for (int j = 0, l = u.size(); j < l ; j++){
+	  if (u[i]->pos == g->unites[i].pos) b = false;
+	}
+	if (b){
+	  u.push_back( & g->unites[i]);
+	  if (g->unites[i].type_unite_actuel == KANGOUROU){
+	    get_explosions(g, u, g->unites[i].pos);
+	  }
+	}
+      }
+  }
 }
 
 void ActionAttaquer::appliquer(GameData *g)
@@ -43,15 +70,22 @@ void ActionAttaquer::appliquer(GameData *g)
   unite& a = g->unites[attaquant_];
   unite& v = g->unites[victime_];
   type_unite tu = a.type_unite_actuel;
-  switch (tu){
-  case KANGOUROU :
-    // TODO
-    break;
-  default:
-    caracs c = g->caracteristiques(tu);
-    a.attaques -= 1;
+  a.attaques -= 1;
+  a.pa -= 1;
+  if (tu == KANGOUROU){
+    std::vector<unite *> explosions;
+    explosions.push_back( & g->unites[attaquant_] );
+    get_explosions(g, explosions, a.pos);
+    for (int j = 0, l = explosions.size(); j < l ; j++){
+      int mind = 5; // plus que 2
+      for (int k = 0, l = explosions.size(); k < l ; k++){
+	mind = min( mind, distance(explosions[k]->pos, explosions[j]->pos));
+      }
+      explosions[j]->ko = 2 - mind;
+    }
+    u_ = g->unites;
+  }else{
     v.ko = get_ko(tu);
-    
   }
 }
 
@@ -60,16 +94,16 @@ void ActionAttaquer::annuler(GameData *g)
 unite& a = g->unites[attaquant_];
   unite& v = g->unites[victime_];
   type_unite tu = a.type_unite_actuel;
+  if (g->nbr_unites_allowed != nbr_unites_allowed_)
+    g->deja_bougee[attaquant_] = false;
+  Action::annuler(g);
+  a.attaques += 1;
+  a.pa += 1;
   switch (tu){
   case KANGOUROU :
-    // TODO
+    g->unites = u_;
     break;
   default:
-    if (g->nbr_unites_allowed != nbr_unites_allowed_)
-      g->deja_bougee[attaquant_] = false;
-    Action::annuler(g);
-    caracs c = g->caracteristiques(tu);
-    a.attaques += 1;
     v.ko = -1;
   }
 }

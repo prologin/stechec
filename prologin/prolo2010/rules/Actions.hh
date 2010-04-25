@@ -87,8 +87,10 @@ public:
   ACTIONS
 
 protected:
+  void get_explosions(GameData *g, std::vector<unite*> &e, position p);
   int attaquant_;
   int victime_;
+  std::vector<unite> u_;
 
 };
 
