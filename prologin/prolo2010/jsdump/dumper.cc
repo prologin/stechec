@@ -17,11 +17,11 @@
 
 #include <prologin.hh>
 
-extern int api_state_is_end(void*);
-extern int api_state_is_playturn(void*);
+extern "C" int api_state_is_end(void*);
+extern "C" int api_state_is_playturn(void*);
 
-extern int client_cx_process(void*);
-extern int client_cx_set_ready(void*);
+extern "C" int client_cx_process(void*);
+extern "C" int client_cx_set_ready(void*);
 
 void afficher(cartes c){
   std::cout
@@ -123,7 +123,7 @@ void dump_current_state()
     << std::endl;;
 }
 
-int run(void* foo, void* api, void* client_cx)
+extern "C" int run(void* foo, void* api, void* client_cx)
 {
     int turn = -1;
     struct timespec st = { 0, 1000 };
@@ -139,8 +139,7 @@ int run(void* foo, void* api, void* client_cx)
         }
 
         client_cx_set_ready(client_cx);
-        while (client_cx_process(client_cx))
-            ;
+        while (client_cx_process(client_cx));
     }
     return 0;
 }
