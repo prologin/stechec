@@ -11,6 +11,18 @@ constant:
     cst_name: TAILLE_DEPART
     cst_val: 25
     cst_comment: Taille de départ du terrain.
+  -
+    cst_name: NBR_MAX_UNITES
+    cst_val: 20
+    cst_comment: Le nombre maximal d'unités pouvant appartenir à une équipe.
+  -
+    cst_name: TEMPS_RETRECISSEMENT
+    cst_val: 5
+    cst_comment: Le temps, en nombre de tours, entre deux rétrécissement du terrain.
+  -
+    cst_name: MAX_CARTES
+    cst_val: 2
+    cst_comment: Le nombre maximum en jeu de chaque carte.
 
 enum:
   - doc_extra: \subsection{Énumérations}
@@ -19,14 +31,18 @@ enum:
     enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action.
     enum_field:
       - [ok, aucune erreur n'est survenue]
+      - [position_invalide, la position spécifiée est invalide]
+      - [case_occupee, la case sur laquelle vous tentez de vous déplacer est occupée]
       - [pas_a_portee, la cible n'est pas à portée]
-      - [plus_de_pa, nombre maximal d'actions par tour dépassé]
-      - [deja_deplace, cette unité a déjà été déplacée]
+      - [unite_ko, l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO]
+      - [unite_debout, l'unité que vous essayez de relever est déjà debout]
+      - [quota_depasse, nombre maximal d'unites, de spawn ou de relevages par tour dépassé]
+      - [plus_de_pa, cette unité a réalisé toutes ses actions]
       - [deja_attaque, cette unité a déjà attaqué]
-      - [deja_spawn, une unité a déjà été spawn à ce tour]
       - [pas_spawnable, cette unité n'est pas spawnable]
       - [spawn_occupe, une unité est déjà présente sur le spawn]
       - [pas_a_moi, l'unité ciblée n'est pas à vous]
+      - [plus_de_cartes, il n'y a plus de cartes du type spécifié dans votre main]
       - [phase_cartes_terminee, vous ne pouvez plus poser de cartes car vous avez fait une action]
   -
     enum_name: type_unite
@@ -54,6 +70,13 @@ struct:
       - [taille, int, taille actuelle du terrain]
       - [min_coord, int, coordonnée minimale en X ou en Y]
       - [max_coord, int, coordonnée maximale en X ou en Y]
+  -
+    str_name: caracs
+    str_summary: Donne les caractéristiques d'un type d'unité.
+    str_tuple: no
+    str_field:
+      - [pa, int, nombre de points d'actions par tour]
+      - [portee, int, portée maximale de l'unité]
   -
     str_name: unite
     str_summary: Représente une unité sur le terrain.
@@ -85,6 +108,23 @@ function:
      toutes les actions que vous avez déjà effectuées au cours de votre phase
      de tour de jeu.
   -
+    fct_name: tour_actuel
+    fct_summary: Renvoie le numéro du tour actuel.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: pos_spawn
+    fct_summary: Renvoie la position du spawn (ennemi ou non).
+    fct_ret_type: position
+    fct_arg:
+      - [ennemi, bool, spawn ennemi ou non]
+  -
+    fct_name: caracteristiques
+    fct_summary: Renvoie les caractéristiques d'un type d'unité.
+    fct_ret_type: caracs
+    fct_arg:
+      - [tu, type_unite, le type dont on veut les informations]
+  -
     fct_name: mes_cartes
     fct_summary: Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
     fct_ret_type: cartes
@@ -108,20 +148,20 @@ function:
     fct_summary: Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, unite, l'unité à relever]
+    - [cible, position, l'unité à relever]
   -
     fct_name: deguisement
     fct_summary: Utilise une carte « Déguisement » que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, unite, l'unité à déguiser]
+    - [cible, position, l'unité à déguiser]
     - [nouveau_type, type_unite, en quoi déguiser l'unité]
   -
     fct_name: banzai
     fct_summary: Utilise une carte « Banzaï » que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, unite, la cible de la carte]
+    - [cible, position, la cible de la carte]
   -
     fct_name: pacifisme
     fct_summary: Utilise une carte « Pacifisme » que vous avez dans votre main.
@@ -136,15 +176,21 @@ function:
     fct_summary: Déplace une unité vers une position à portée.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, unite, l'unité à déplacer]
+    - [cible, position, l'unité à déplacer]
     - [pos, position, la nouvelle position de l'unité]
+  -
+    fct_name: relever
+    fct_summary: Relève une unité n'ayant plus de tours KO.
+    fct_ret_type: erreur
+    fct_arg:
+    - [cible, position, la position de l'unité à déplacer]
   -
     fct_name: attaquer
     fct_summary: Attaque une autre unité.
     fct_ret_type: erreur
     fct_arg:
-    - [attaquant, unite, l'unité qui attaque]
-    - [cible, unite, l'unité qui se fait attaquer]
+    - [attaquant, position, l'unité qui attaque]
+    - [cible, position, l'unité qui se fait attaquer]
   -
     fct_name: spawn
     fct_summary: Fait apparaitre une unité sur la case de spawn.
@@ -166,7 +212,7 @@ user_function:
   -
     fct_name: retirer_ko
     fct_summary: Fonction appellée pour la phase de retrait de KO.
-    fct_ret_type: unite
+    fct_ret_type: position
     fct_arg: []
   -
     fct_name: jouer

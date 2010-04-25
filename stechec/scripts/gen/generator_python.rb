@@ -390,17 +390,23 @@ class PythonFileGenerator < FileGenerator
   end
 
   def generate_makefile
+    target = $conf['conf']['player_lib']
     @f = File.open(@path + "Makefile", 'w')
     @f.print <<-EOF
 # -*- Makefile -*-
-#
 
-SRC       = #{@source_file} # Ajoutez ici vos fichiers .py
-NAME      = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-MY_CXXFLAGS = -ggdb3
+# Tu peux rajouter des fichiers source ici
+#{target}-dists = #{@source_file}
 
-include ../includes/makepython
+# Evite de toucher a ce qui suit
+#{target}-dists += api.py interface.hh
+#{target}-srcs = interface.cc ../includes/main.cc
+#{target}-cxxflags = -fPIC $(shell python-config --includes)
+#{target}-ldflags = -s $(shell python-config --ldflags)
+
+include ../includes/rules.mk
     EOF
     @f.close
   end

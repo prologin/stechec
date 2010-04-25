@@ -18,6 +18,7 @@
 # include <Contest.hh>
 # include "Constant.hh"
 # include "GameData.hh"
+# include "Actions.hh"
 
 /*!
 ** Method of this call are called by the candidat, throught 'interface.cc'
@@ -26,6 +27,7 @@
 **  - access to the GameData class: _g
 **  - send message to the server: void SendToServer(struct s_com&)
 */
+
 class Api: public StechecApi          
 {
 
@@ -40,11 +42,24 @@ protected:
 
 public:
   // Internal API
+  bool need_retirer_ko();
   bool retirer_ko(unite u);
   bool mon_tour();
-
+  void sendActions();
 public:
 
+///
+// Renvoie le numéro du tour actuel.
+//
+   int tour_actuel();
+///
+// Renvoie la position du spawn (ennemi ou non).
+//
+   position pos_spawn(bool ennemi);
+///
+// Renvoie les caractéristiques d'un type d'unité.
+//
+   caracs caracteristiques(type_unite tu);
 ///
 // Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
@@ -60,15 +75,15 @@ public:
 ///
 // Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
 //
-   erreur soin(unite cible);
+   erreur soin(position cible);
 ///
 // Utilise une carte « Déguisement » que vous avez dans votre main.
 //
-   erreur deguisement(unite cible, type_unite nouveau_type);
+   erreur deguisement(position cible, type_unite nouveau_type);
 ///
 // Utilise une carte « Banzaï » que vous avez dans votre main.
 //
-   erreur banzai(unite cible);
+   erreur banzai(position cible);
 ///
 // Utilise une carte « Pacifisme » que vous avez dans votre main.
 //
@@ -76,11 +91,15 @@ public:
 ///
 // Déplace une unité vers une position à portée.
 //
-   erreur deplacer(unite cible, position pos);
+   erreur deplacer(position cible, position pos);
+///
+// Relève une unité n'ayant plus de tours KO.
+//
+   erreur relever(position cible);
 ///
 // Attaque une autre unité.
 //
-   erreur attaquer(unite attaquant, unite cible);
+   erreur attaquer(position attaquant, position cible);
 ///
 // Fait apparaitre une unité sur la case de spawn.
 //
@@ -89,7 +108,11 @@ public:
 // Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
 //
    bool annuler();
+
 };
+
+#define ASSERT(c, err) \
+  if (!(c)) return (err)
 
 
 #endif /* !API_HH_ */

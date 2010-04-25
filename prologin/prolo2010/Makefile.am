@@ -2,4 +2,6 @@
 
 SUBDIRS =					\
 	data					\
+	jsdump					\
+	asciiinter				\
 	rules

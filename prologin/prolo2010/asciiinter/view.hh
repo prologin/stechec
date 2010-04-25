@@ -8,29 +8,7 @@
 ** `NOTICE' file in the root directory.
 **
 ** Copyright (C) 2010 Prologin
+** @author Maxime Audouin <maxime.audouin@mlstate.com>
 */
 
-#include "Api.hh"
-
-// from Api.cc
-extern Api* api;
-
-extern "C" bool api_need_retirer_ko()
-{
-  return api->need_retirer_ko();
-}
-
-extern "C" bool api_retirer_ko(unite u)
-{
-  return api->retirer_ko(u);
-}
-
-extern "C" bool api_mon_tour()
-{
-  return api->mon_tour();
-}
-
-extern "C" void api_send_actions()
-{
-  return api->sendActions();
-}
+void view(void);

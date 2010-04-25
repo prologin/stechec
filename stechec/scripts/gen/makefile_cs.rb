@@ -33,7 +33,7 @@ CXXFLAGS = -fPIC -W -Wall \\
    `pkg-config --cflags mono` \\
    $(MY_CXXFLAGS)
 
-MCSFLAGS = -target:library -nowarn:0169
+MCSFLAGS = -target:library -nowarn:0169,0649
 
 LIBS = `pkg-config --libs glib-2.0` `pkg-config --libs mono` -lm
 

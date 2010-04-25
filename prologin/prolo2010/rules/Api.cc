@@ -8,17 +8,28 @@
 ** `NOTICE' file in the root directory.
 **
 ** Copyright (C) 2010 Prologin
+** @author delroth
+** @author Maxime Audouin <maxime.audouin@mlstate.com>
 */
 
-#include <stdlib.h>
-
+#include <cstdlib>
+#include <vector>
 #include "Api.hh"
+#include <cmath>
+
+
+
 
 // global used in interface.cc
 Api* api;
 
 
-// Internal API
+// internal API
+bool Api::need_retirer_ko()
+{
+  return g_->must_remove_ko();
+}
+
 bool Api::retirer_ko(unite u)
 {
   return u.ko >= 0;
@@ -29,9 +40,37 @@ bool Api::mon_tour()
   return g_->mon_tour();
 }
 
+// constructor
 Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 {
   api = this;
+}
+
+// user API
+
+///
+// Renvoie le numéro du tour actuel.
+//
+int Api::tour_actuel()
+{
+  return g_->get_real_turn();;  // TODO
+}
+
+///
+// Renvoie la position du spawn (ennemi ou non).
+//
+position Api::pos_spawn(bool ennemi)
+{
+  // TODO
+  abort();
+}
+
+///
+// Renvoie les caractéristiques d'un type d'unité.
+//
+caracs Api::caracteristiques(type_unite tu)
+{
+  return g_->caracteristiques(tu);
 }
 
 ///
@@ -39,8 +78,7 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 //
 cartes Api::mes_cartes()
 {
-  static cartes c = { 1, 2, 3, 4 };
-  return c;
+  return g_->get_cartes(g_->get_current_player());
 }
 
 ///
@@ -48,30 +86,7 @@ cartes Api::mes_cartes()
 //
 std::vector<unite> Api::unites()
 {
-  static unite u1 = {
-    { 1, 2 },
-    false,
-    CHAT,
-    SINGE,
-    2,
-    4,
-    6
-  };
-
-  static unite u2 = {
-    { 5, 6 },
-    true,
-    PERROQUET,
-    PERROQUET,
-    4,
-    2,
-    10
-  };
-
-  std::vector<unite> ret;
-  ret.push_back(u1);
-  ret.push_back(u2);
-  return ret;
+  return g_->get_unites();
 }
 
 ///
@@ -79,37 +94,46 @@ std::vector<unite> Api::unites()
 //
 taille_terrain Api::taille_terrain_actuelle()
 {
-  static taille_terrain tt = {
-    25,
-    0,
-    25
-  };
-
-  return tt;
+  return g_->get_tt();
 }
+
+#define DO_ACTION(type, ...) \
+  try { \
+    Action* act = new type(__VA_ARGS__); \
+    act->verifier(g_); \
+    g_->appliquer_action(act); \
+    return OK; \
+  } catch (erreur err) { \
+    return err; \
+  }
+
+#define PLAY_CARD \
+  ASSERT(g_->can_play_card, PHASE_CARTES_TERMINEE);	\
+
 
 ///
 // Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
 //
-erreur Api::soin(unite cible)
+erreur Api::soin(position cible)
 {
-  return OK;
+  DO_ACTION(ActionSoin, g_->get_current_player(), g_->indice_at(cible));
 }
 
 ///
 // Utilise une carte « Déguisement » que vous avez dans votre main.
 //
-erreur Api::deguisement(unite cible, type_unite nouveau_type)
+erreur Api::deguisement(position cible, type_unite nouveau_type)
 {
-  return OK;
+  DO_ACTION(ActionDeguisement, g_->get_current_player(), g_->indice_at(cible),
+            nouveau_type);
 }
 
 ///
 // Utilise une carte « Banzaï » que vous avez dans votre main.
 //
-erreur Api::banzai(unite cible)
+erreur Api::banzai(position cible)
 {
-  return OK;
+  DO_ACTION(ActionBanzai, g_->get_current_player(), g_->indice_at(cible));
 }
 
 ///
@@ -117,22 +141,34 @@ erreur Api::banzai(unite cible)
 //
 erreur Api::pacifisme()
 {
-  return OK;
+  DO_ACTION(ActionPacifisme, g_->get_current_player());
 }
 
 ///
 // Déplace une unité vers une position à portée.
 //
-erreur Api::deplacer(unite cible, position pos)
+erreur Api::deplacer(position cible, position pos)
 {
+  DO_ACTION(ActionDeplacer, g_->get_current_player(),
+            g_->indice_at(cible), pos);
+}
+
+///
+// Relève une unité n'ayant plus de tours KO.
+//
+erreur Api::relever(position cible)
+{
+  int qui = g_->indice_at(cible);
+  DO_ACTION(ActionRelever, g_->get_current_player(), qui);
   return OK;
 }
 
 ///
 // Attaque une autre unité.
 //
-erreur Api::attaquer(unite attaquant, unite cible)
+erreur Api::attaquer(position attaquant, position cible)
 {
+ /* TODO */
   return OK;
 }
 
@@ -141,7 +177,7 @@ erreur Api::attaquer(unite attaquant, unite cible)
 //
 erreur Api::spawn(type_unite quoi)
 {
-  return OK;
+  DO_ACTION(ActionSpawn, g_->get_current_player(), quoi);
 }
 
 ///
@@ -149,11 +185,16 @@ erreur Api::spawn(type_unite quoi)
 //
 bool Api::annuler()
 {
-  return false;
+  return g_->annuler();
 }
 
 
 
 void Api::teamSwitched()
 {
+}
+
+void Api::sendActions()
+{
+g_->send_actions();
 }

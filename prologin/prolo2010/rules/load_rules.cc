@@ -75,7 +75,7 @@ extern "C" BaseRules* load_server_rules(ConfFile* cfg_file)
   ServerResolver*       resolver = new ServerResolver(data, server);
   ServerEntry*          serverEntryPoint = new ServerEntry(data, server, cfg);
 
-  unsigned int nb_team = 2; // TODO
+  unsigned int nb_team = 2;
 
   // Now create a SRules object, and give him all server objects.
   return new SRules(data, server, resolver, serverEntryPoint, nb_team, 1);

@@ -3,6 +3,8 @@
 lib_LTLIBRARIES = toons.la
 
 toons_la_SOURCES =			\
+	Actions.cc		\
+	Actions.hh		\
 	Api.cc				\
 	Api.hh				\
 	Client.cc			\
