@@ -17,15 +17,6 @@
 #include "Api.hh"
 #include <cmath>
 
-static inline int max(int a, int b){
-  return (a > b) ? a : b;
-}
-
-static inline int distance(position p1, position p2){
-  return max(
-	     abs(p1.x - p2.x),
-	     abs(p1.y - p2.y));
-}
 
 
 
@@ -36,14 +27,7 @@ Api* api;
 // internal API
 bool Api::need_retirer_ko()
 {
-  for (std::vector<unite>::iterator it = g_->unites.begin();
-       it != g_->unites.end(); ++it)
-  {
-    if (it->ennemi && it->ko < 0)
-      return true;
-  }
-
-  return false;
+  return g_->must_remove_ko();
 }
 
 bool Api::retirer_ko(unite u)
@@ -69,7 +53,7 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 //
 int Api::tour_actuel()
 {
-  return g_->get_real_turn();;  // todo
+  return g_->get_real_turn();;  // TODO
 }
 
 ///
@@ -86,14 +70,7 @@ position Api::pos_spawn(bool ennemi)
 //
 caracs Api::caracteristiques(type_unite tu)
 {
-  static caracs c[] = {
-    { 1, 1 },
-    { 2, 3 },
-    { 5, 1 },
-    { 3, 2 }
-  };
-
-  return c[tu];
+  return g_->caracteristiques(tu);
 }
 
 ///
@@ -120,6 +97,16 @@ taille_terrain Api::taille_terrain_actuelle()
   return g_->get_tt();
 }
 
+#define DO_ACTION(type, ...) \
+  try { \
+    Action* act = new type(__VA_ARGS__); \
+    act->verifier(g_); \
+    g_->appliquer_action(act); \
+    return OK; \
+  } catch (erreur err) { \
+    return err; \
+  }
+
 #define PLAY_CARD \
   ASSERT(g_->can_play_card, PHASE_CARTES_TERMINEE);	\
 
@@ -129,9 +116,7 @@ taille_terrain Api::taille_terrain_actuelle()
 //
 erreur Api::soin(position cible)
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionSoin(g_->get_current_player(), g_->indice_at(cible)));
-  return OK;
+  DO_ACTION(ActionSoin, g_->get_current_player(), g_->indice_at(cible));
 }
 
 ///
@@ -139,10 +124,8 @@ erreur Api::soin(position cible)
 //
 erreur Api::deguisement(position cible, type_unite nouveau_type)
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionDeguisement(g_->get_current_player(), g_->indice_at(cible),
-                                             nouveau_type));
-  return OK;
+  DO_ACTION(ActionDeguisement, g_->get_current_player(), g_->indice_at(cible),
+            nouveau_type);
 }
 
 ///
@@ -150,9 +133,7 @@ erreur Api::deguisement(position cible, type_unite nouveau_type)
 //
 erreur Api::banzai(position cible)
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionBanzai(g_->get_current_player(), g_->indice_at(cible)));
-  return OK;
+  DO_ACTION(ActionBanzai, g_->get_current_player(), g_->indice_at(cible));
 }
 
 ///
@@ -160,9 +141,7 @@ erreur Api::banzai(position cible)
 //
 erreur Api::pacifisme()
 {
-  PLAY_CARD;
-  g_->appliquer_action(new ActionPacifisme(g_->get_current_player()));
-  return OK;
+  DO_ACTION(ActionPacifisme, g_->get_current_player());
 }
 
 ///
@@ -170,17 +149,8 @@ erreur Api::pacifisme()
 //
 erreur Api::deplacer(position cible, position pos)
 {
-  int indice = g_->indice_at(cible);
-  unite u = g_->get_unite(indice);
-  ASSERT(indice != -1, PAS_A_MOI); // todo
-  ASSERT(!u.ennemi, PAS_A_MOI);
-  int d = distance(pos, cible);
-  ASSERT(u.pa >= d, PAS_A_PORTEE);
-  ASSERT(g_->can_active(indice), PLUS_DE_PA); // todo
-
-  g_->appliquer_action(new ActionDeplacer(g_->get_current_player(), indice, pos));
-
-  return OK;
+  DO_ACTION(ActionDeplacer, g_->get_current_player(),
+            g_->indice_at(cible), pos);
 }
 
 ///
@@ -188,7 +158,8 @@ erreur Api::deplacer(position cible, position pos)
 //
 erreur Api::relever(position cible)
 {
-  // TODO
+  int qui = g_->indice_at(cible);
+  DO_ACTION(ActionRelever, g_->get_current_player(), qui);
   return OK;
 }
 
@@ -206,15 +177,7 @@ erreur Api::attaquer(position attaquant, position cible)
 //
 erreur Api::spawn(type_unite quoi)
 {
-  position p = g_->spawn_pos();
-  int i =  g_->indice_at(p);
-  ASSERT(i == -1, SPAWN_OCCUPE);
-  ASSERT(quoi != PERROQUET, PAS_SPAWNABLE);
-  ASSERT(g_->nbr_toons(false) < 9, PAS_SPAWNABLE); // todo
-
-  /* TODO */
-
-  return OK;
+  DO_ACTION(ActionSpawn, g_->get_current_player(), quoi);
 }
 
 ///
@@ -229,6 +192,9 @@ bool Api::annuler()
 
 void Api::teamSwitched()
 {
-  g_->team_switched();
 }
 
+void Api::sendActions()
+{
+g_->send_actions();
+}

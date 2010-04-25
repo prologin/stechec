@@ -35,7 +35,6 @@ public:
   // Call this before everything else.
   void Init();
 
-  int nbr_unites_activees();
   int nbr_toons(bool ennemi);
 
   bool can_active(int i);
@@ -58,8 +57,10 @@ public:
   // rules
   position spawn_pos();
   position spawn_position(bool white);
+  caracs caracteristiques(type_unite u);
   int porte_attaque(const unite u);
   int pa(const type_unite u);
+  bool must_remove_ko();
 
   // side effects
   void team_switched();
@@ -70,6 +71,7 @@ public:
   // actions
   std::vector<Action*> actions;
   void appliquer_action(Action* act);
+  void send_actions();
   bool annuler();
 
   // data
@@ -80,6 +82,9 @@ public:
   cartes players_cartes[2];
   taille_terrain tt;
   std::vector<unite> unites;
+  int nbr_toons_spawn[2];
+  // server internal
+  std::vector<std::vector<int> > packets;
 
 private:
   bool initialized_;

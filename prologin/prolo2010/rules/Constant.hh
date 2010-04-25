@@ -37,11 +37,12 @@
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 typedef enum erreur {
-  OK, /* <- aucune erreur n'est survenue */
+  OK=0, /* <- aucune erreur n'est survenue */
   POSITION_INVALIDE, /* <- la position spécifiée est invalide */
   CASE_OCCUPEE, /* <- la case sur laquelle vous tentez de vous déplacer est occupée */
   PAS_A_PORTEE, /* <- la cible n'est pas à portée */
   UNITE_KO, /* <- l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO */
+  UNITE_DEBOUT,
   QUOTA_DEPASSE, /* <- nombre maximal d'unites */
   PLUS_DE_PA, /* <- cette unité a réalisé toutes ses actions */
   DEJA_ATTAQUE, /* <- cette unité a déjà attaqué */
@@ -125,6 +126,8 @@ enum e_com_type {
   ACT_PACIFISME,
   ACT_DEPLACER,
   ACT_ATTAQUER,
+  ACT_SPAWN,
+  ACT_RELEVER,
   LAST_MSG
 };
 
