@@ -80,18 +80,23 @@ static void show_map(std::vector<unite> units, taille_terrain size)
   flush();
   bool show = true;
   position p = { size.min_coord, size.min_coord };
-  for (int i = size.min_coord; i < size.max_coord; i ++){
+  for (int i = size.min_coord; i <= size.max_coord; i ++){
     printf("|%3d", i);
   }
   flush();
   std::cout << "\n";
+  if (s == 0)
+    {
+      std::cout << "no unit\n";
+      return;
+    }
   for (int i = 0; i < s ; i ++){
     unite u = units[i];
     while(p.x != u.pos.x || p.y != u.pos.y){
       if (show) std::cout << "|   ";
       flush();
       p.x ++;
-      if (p.x == size.max_coord){
+      if (p.x == size.max_coord + 1){
 	p.x = size.min_coord;
 	printf("%3d\n", p.y);
 	p.y ++;
@@ -103,11 +108,11 @@ static void show_map(std::vector<unite> units, taille_terrain size)
     show = false;
     flush();
   }
-  while(p.x != size.min_coord || p.y != size.max_coord){
+  while(p.x <= size.min_coord || p.y <= size.max_coord){
     if (show) std::cout << "|   ";
     p.x ++;
     flush();
-    if (p.x == size.max_coord){
+    if (p.x == size.max_coord + 1){
       p.x = size.min_coord;
       printf("%3d\n", p.y);
       p.y ++;
