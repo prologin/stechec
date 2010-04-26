@@ -20,10 +20,13 @@ ClientDiffer::ClientDiffer(GameData* game, Client* client)
 
 void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
 {
-  if (g_->mon_tour())
-    return;
-
-  Action* act = act_from_pkt(pkt->type, pkt);
-  act->appliquer(g_);
-  delete act;
+  if (pkt->type == RETRECIR){
+    g_->retrecissement();
+  }else{
+    if (g_->mon_tour())
+      return;
+    Action* act = act_from_pkt(pkt->type, pkt);
+    act->appliquer(g_);
+    delete act;
+  }
 }

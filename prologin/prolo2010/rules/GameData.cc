@@ -83,6 +83,46 @@ void GameData::team_switched(){
   can_play_card = true;
 }
 
+bool GameData::out_map(position p){
+  return
+    p.x < tt.min_coord || p.x > tt.max_coord ||
+    p.y < tt.min_coord || p.y > tt.max_coord
+    ;
+}
+
+void GameData::retrecissement(){
+
+  tt.taille -= 2;
+  tt.min_coord +=1;
+  tt.max_coord -= 1;
+  LOG3("tt = {size : %1, min : %2, max : %3} ", tt.taille, tt.min_coord, tt.max_coord);
+  int end = unites.size() - 1;
+  for (int i = 0; i <= end; i++){
+    if ( out_map(unites[i].pos)){
+      LOG3("switching (%1, %2) and (%4, %4) %5 <=> %6",
+	   unites[i].pos.x, unites[i].pos.y,
+	   unites[end].pos.x, unites[end].pos.y,
+	   i, end);
+      unite u = unites[i];
+      unites[i] = unites[end];
+      unites[end] = u;
+      end--;
+      LOG3("removing a unit... step 1 : (%1, %2)", u.pos.x, u.pos.y);
+      i --;
+    }else{
+      LOG3("unite (%1, %2) safe,", unites[i].pos.x, unites[i].pos.y);
+    }
+  }
+  for (int s = unites.size() - 1; s >= 0; s --){
+    if ( out_map(unites[s].pos)){
+       LOG3("removing a unit... step 2 : (%1, %2)", unites[s].pos.x, unites[s].pos.y);
+      unites.pop_back();
+    }else{
+      break;
+    }
+  }
+}
+
 int GameData::get_current_player(){
   return current_player;
 }
