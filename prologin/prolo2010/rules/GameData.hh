@@ -67,12 +67,15 @@ public:
   void reset_unite(unite &u, bool reset_ko);
   void set_deja_bougee(int i);
   void reset_moves();
+  bool out_map(position p);
 
   // actions
   std::vector<Action*> actions;
   void appliquer_action(Action* act);
   void send_actions();
   bool annuler();
+
+  void retrecissement();
 
   // data
   int current_player;

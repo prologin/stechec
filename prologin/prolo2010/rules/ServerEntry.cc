@@ -53,6 +53,12 @@ int         ServerEntry::afterNewTurn(void)
   {
     SendToAll((*it)[0], -1, 8, ARG8((*it), 1));
   }
+  if ( g_->getCurrentTurn() % ( TEMPS_RETRECISSEMENT * 2 ) == 0 )
+    {
+      g_->retrecissement();
+      StechecPkt com(RETRECIR, -1);
+      SendToAll(com);
+    }
   return 0;
 }
 
@@ -64,16 +70,22 @@ int         ServerEntry::afterGame(void)
 
 bool        ServerEntry::isMatchFinished(void)
 {
+  bool titi[2] = {false, false};
   for (std::vector<unite>::iterator it = g_->unites.begin();
        it != g_->unites.end(); ++it)
   {
-    if (it->ko >= 0 && it->vrai_type_unite == PERROQUET)
+    if (it->ko == -1 && it->vrai_type_unite == PERROQUET)
     {
-      return true;
+      titi[it->ennemi] = true;
     }
   }
-
-  return false;
+  if (titi[0]){
+    LOG3("isMatchFinished: je suis vivant");
+  }
+  if (titi[1]){
+    LOG3("isMatchFinished: il est vivant");
+  }
+  return ! (titi[0] && titi[1]);
 }
 
 int ServerEntry::getScore(int uid)

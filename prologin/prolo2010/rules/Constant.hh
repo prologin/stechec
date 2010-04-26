@@ -31,7 +31,7 @@
 # define SPAWN_1_X                 12
 # define SPAWN_1_Y                 3
 # define SPAWN_2_X                 12
-# define SPAWN_2_Y                 22
+# define SPAWN_2_Y                 21
 
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
@@ -128,6 +128,9 @@ enum e_com_type {
   ACT_ATTAQUER,
   ACT_SPAWN,
   ACT_RELEVER,
+
+  RETRECIR,
+
   LAST_MSG
 };
 
