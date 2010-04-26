@@ -72,7 +72,7 @@ renice 5 $$ > /dev/null
     fi
 
     cp $makefile_path/forb* .
-    cp $makefile_path/stechec_lime.c .
+    cp $makefile_path/stechec_lime.cc .
 
     # FIXME: cp's are kludge. new Makefile are better.
     makefile=Makefile-c
