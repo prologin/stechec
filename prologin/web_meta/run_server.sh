@@ -80,7 +80,7 @@ config_file=$tmp_dir/config.ini
 cat > $config_file <<EOF
 [client_3]
 rules=$contest_lib_name
-path=/usr/lib
+path=/opt/stechec
 library=${contest_lib_name}_jsview
 verbose=0
 spectator=1
@@ -91,6 +91,9 @@ game_uid=$game_id
 listen_port=$port
 nb_spectator=1
 verbose=2
+
+[$contest_lib_name]
+verbose=0
 EOF
 
 #
@@ -105,7 +108,7 @@ if [ $is_competition = "0" ]; then
     echo " * Start at: `date +%T`" >> $real_out_file
     echo >> $real_out_file
     ulimit -c 10000
-    (sleep 2; $stechec_install_path/bin/stechec --config=$config_file -i 5 >$real_log_file 2>>$real_out_file) &
+    (sleep 2; $stechec_install_path/bin/stechec --config=$config_file -i 3 >$real_log_file 2>>$real_out_file) &
     pid=$!
     $stechec_install_path/bin/stechec_server --config=$config_file > $tmp_out 2>> $real_out_file
     res=$?

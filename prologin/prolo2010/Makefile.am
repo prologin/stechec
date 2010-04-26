@@ -2,6 +2,6 @@
 
 SUBDIRS =					\
 	data					\
-	jsdump					\
+	jsview					\
 	asciiinter				\
 	rules
