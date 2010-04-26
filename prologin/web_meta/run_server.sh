@@ -78,10 +78,10 @@ out_file=$contest_path/$contest_dir_name/matchs/match_$game_id/server.out
 #
 config_file=$tmp_dir/config.ini
 cat > $config_file <<EOF
-[client_5]
-rules=sdz
+[client_3]
+rules=$contest_lib_name
 path=/usr/lib
-library=sdz_jsview
+library=${contest_lib_name}_jsview
 verbose=0
 spectator=1
 server_port=$port
@@ -91,9 +91,6 @@ game_uid=$game_id
 listen_port=$port
 nb_spectator=1
 verbose=2
-
-[$contest_lib_name]
-map=$map
 EOF
 
 #
