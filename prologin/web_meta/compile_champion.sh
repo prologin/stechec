@@ -33,13 +33,13 @@ champion_id=$4
 source "`dirname $0`/meta_cx.sh" "$config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
-champion_path="$contest_path/$contest_name/private/candidat_$candidat_id/"
+champion_path="$contest_path/$contest_name/private/candidat_$candidat_id/champion_$champion_id"
 makefile_path="$contest_path/makefile"
 
-champion_tarball="$champion_path/champion_$champion_id.tgz"
-champion_final_lib="$champion_path/champion_$champion_id.so"
-champion_final_log="$champion_path/champion_$champion_id.log"
-champion_final_code="$champion_path/champion_$champion_id.code"
+champion_tarball="$champion_path/champion.tgz"
+champion_final_lib="$champion_path/champion.so"
+champion_final_log="$champion_path/champion.log"
+champion_final_code="$champion_path/champion.code"
 
 res=0
 
@@ -72,7 +72,7 @@ renice 5 $$ > /dev/null
     fi
 
     cp $makefile_path/forb* .
-    cp $makefile_path/stechec_lime.c .
+    cp $makefile_path/stechec_lime.cc .
 
     # FIXME: cp's are kludge. new Makefile are better.
     makefile=Makefile-c
@@ -84,6 +84,8 @@ renice 5 $$ > /dev/null
     [ "`echo *.lua`" != "*.lua" ] && makefile=Makefile-lua
     [ "`echo *.cs`" != "*.cs" ] && makefile=Makefile-cs
     [ "`echo *.py`" != "*.py" ] && makefile=Makefile-python
+    [ "`echo *.js`" != "*.js" ] && makefile=Makefile-js
+    [ "`echo *.php`" != "*.php" ] && makefile=Makefile-php
 
     lang=`echo $makefile | sed 's/^Makefile-//'` 
     echo "* Compile champion, language \"$lang\" detected."

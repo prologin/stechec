@@ -87,5 +87,6 @@ fi
 
 upload_file $real_log $champion_log
 
+cat $real_log
 rm -rf $tmp_rep
 exit $res

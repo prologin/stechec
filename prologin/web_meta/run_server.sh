@@ -69,7 +69,7 @@ done
 source "`dirname $0`/meta_cx.sh" "$config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
-log_file=$contest_path/$contest_dir_name/matchs/match_$game_id/visio
+log_file=$contest_path/$contest_dir_name/viewer/match_$game_id.json
 out_file=$contest_path/$contest_dir_name/matchs/match_$game_id/server.out
 
 
@@ -78,16 +78,22 @@ out_file=$contest_path/$contest_dir_name/matchs/match_$game_id/server.out
 #
 config_file=$tmp_dir/config.ini
 cat > $config_file <<EOF
+[client_3]
+rules=$contest_lib_name
+path=/opt/stechec/lib
+library=${contest_lib_name}_jsview
+verbose=0
+spectator=1
+server_port=$port
+game_uid=$game_id
+
 [server]
 listen_port=$port
-log=$real_log_file
+nb_spectator=1
 verbose=2
 
 [$contest_lib_name]
-max_turn=$max_turn
-nb_player=$nb_champion_instance
-nb_team=$nb_team
-map=$map
+verbose=0
 EOF
 
 #
@@ -102,15 +108,19 @@ if [ $is_competition = "0" ]; then
     echo " * Start at: `date +%T`" >> $real_out_file
     echo >> $real_out_file
     ulimit -c 10000
+    (sleep 2; $stechec_install_path/bin/stechec --config=$config_file -i 3 >$real_log_file 2>>$real_out_file) &
+    pid=$!
     $stechec_install_path/bin/stechec_server --config=$config_file > $tmp_out 2>> $real_out_file
     res=$?
+    sleep 2;
+    [ -d "/proc/$pid" ] && kill $pid
     sed -i -e 's/\[[01];3[0-9]m//g;s/\[0m//g' $real_out_file
     echo >> $real_out_file
     echo " * End at: `date +%T`" >> $real_out_file
     echo " * Server exited with return code: $res" >> $real_out_file
     if [ -s $tmp_out ]; then
         echo >> $real_out_file
-    	echo "Dumping standart output:" >> $real_out_file
+    	echo "Dumping standard output:" >> $real_out_file
     	cat $tmp_out >> $real_out_file
         # meta_server need it on stdout for match result.
     	cat $tmp_out
@@ -119,9 +129,13 @@ if [ $is_competition = "0" ]; then
     # Now upload log and visio files.
     # FIXME: make it no-NFS aware.
     mkdir -p $contest_path/$contest_dir_name/matchs/match_$game_id
+    chmod 777 $contest_path/$contest_dir_name/matchs/match_$game_id
 
     upload_file $real_out_file $out_file
     upload_file $real_log_file $log_file
+
+    # If not yet done, sorry, but I must kill you.
+    kill -9 $pid
 
 else
     #
