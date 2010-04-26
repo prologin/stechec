@@ -52,7 +52,10 @@ static void show_toon(unite u){
   case KANGOUROU: name = "k"; break;
   default: assert(false);
   }
-  std::cout << "|" << color << u.ko <<  name << u.pa << end_color;
+  if (u.ko != -1)
+    std::cout << "|" << color << u.ko <<  name << u.pa << end_color;
+  else
+    std::cout << "|" << color << " " <<  name << u.pa << end_color;
 }
 
 static void flush(){

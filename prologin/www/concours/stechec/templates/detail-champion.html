@@ -1,0 +1,35 @@
+
+{% extends "base.html" %}
+
+{% block "title" %}Détails du champion - {{ champion.nom }}{% endblock %}
+{% block "titleh1" %}Détails du champion - {{ champion.nom }}{% endblock %}
+{% block "head" %}
+<script type="text/javascript" src="/media/js/jquery.js"></script>
+<script type="text/javascript" src="/media/js/animatedcollapse.js"></script>
+<script type="text/javascript">
+animatedcollapse.init();
+</script>
+{% endblock %}
+
+{% block "content" %}
+
+
+<dl>
+    <dt>Nom</dt>
+    <dd>{{ champion.nom }}</dd>
+    <dt>Auteur</dt>
+    <dd>{{ champion.auteur }}</dd>
+    <dt>État</dt>
+    <dd>{{ champion.statut_string }}</dd>
+    <dt>Commentaire</dt>
+    <dd>{{ champion.comment|linebreaksbr }}</dd>
+</dl>
+
+{% if champion.log_compilation and can_see_log %}
+<p><a href="#" rel="toggle[log]">Afficher/cacher le log de compilation</a></p>
+<pre id="log">{{ champion.log_compilation }}</pre>
+<script type="text/javascript">
+animatedcollapse.addDiv('log', 'hide=1');
+</script>
+{% endif %}
+{% endblock %}
