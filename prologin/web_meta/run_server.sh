@@ -80,7 +80,7 @@ config_file=$tmp_dir/config.ini
 cat > $config_file <<EOF
 [client_3]
 rules=$contest_lib_name
-path=/opt/stechec
+path=/opt/stechec/lib
 library=${contest_lib_name}_jsview
 verbose=0
 spectator=1
