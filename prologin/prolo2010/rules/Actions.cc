@@ -47,7 +47,7 @@ bool operator==(position p1, position p2){
   return p1.x == p2.x && p1.y == p2.y;
 }
 
-void ActionAttaquer::get_explosions(GameData *g, std::vector<unite *> &u, position p){
+void get_explosions(GameData *g, std::vector<unite *> &u, position p){
   for (int i = 0, l = g->unites.size(); i < l ; i++){
     if (g->unites[i].ko == -1 && distance(g->unites[i].pos, p) <= 2)
       {
@@ -65,47 +65,58 @@ void ActionAttaquer::get_explosions(GameData *g, std::vector<unite *> &u, positi
   }
 }
 
+static void kangourou(GameData *g, position pos, int attaquant_){
+  std::vector<unite *> explosions;
+  explosions.push_back( & g->unites[attaquant_] );
+  get_explosions(g, explosions, pos);
+  for (int j = 0, l = explosions.size(); j < l ; j++){
+    int mind = 5; // plus que 2
+    for (int k = 0, l = explosions.size(); k < l ; k++){
+      mind = min( mind, distance(explosions[k]->pos, explosions[j]->pos));
+    }
+    explosions[j]->ko = 2 - mind;
+  }
+}
+
 void ActionAttaquer::appliquer(GameData *g)
 {
   unite& a = g->unites[attaquant_];
   unite& v = g->unites[victime_];
   type_unite tu = a.type_unite_actuel;
-  a.attaques -= 1;
-  a.pa -= 1;
-  if (tu == KANGOUROU){
-    std::vector<unite *> explosions;
-    explosions.push_back( & g->unites[attaquant_] );
-    get_explosions(g, explosions, a.pos);
-    for (int j = 0, l = explosions.size(); j < l ; j++){
-      int mind = 5; // plus que 2
-      for (int k = 0, l = explosions.size(); k < l ; k++){
-	mind = min( mind, distance(explosions[k]->pos, explosions[j]->pos));
-      }
-      explosions[j]->ko = 2 - mind;
-    }
-    u_ = g->unites;
+  if (a.attaques_gratuites){
+    a.attaques_gratuites --;
+    gratuite = true;
   }else{
-    v.ko = get_ko(tu);
+    a.attaques -= 1;
+    a.pa -= 1;
+  }
+
+  if (!g->deja_bougee[attaquant_])
+  {
+    g->nbr_unites_allowed -= 1;
+    g->deja_bougee[attaquant_] = true;
+  }
+
+  if (tu == KANGOUROU){
+    u_ = g->unites;
+    kangourou(g, a.pos, attaquant_);
+  }else{
+    if (v.type_unite_actuel){
+      u_ = g->unites;
+      kangourou(g, v.pos, victime_);
+    }else{
+      v.ko = get_ko(tu);
+    }
   }
 }
 
 void ActionAttaquer::annuler(GameData *g)
 {
-unite& a = g->unites[attaquant_];
-  unite& v = g->unites[victime_];
-  type_unite tu = a.type_unite_actuel;
   if (g->nbr_unites_allowed != nbr_unites_allowed_)
     g->deja_bougee[attaquant_] = false;
   Action::annuler(g);
-  a.attaques += 1;
-  a.pa += 1;
-  switch (tu){
-  case KANGOUROU :
-    g->unites = u_;
-    break;
-  default:
-    v.ko = -1;
-  }
+  g->unites = u_;
+   
 }
 
 void ActionAttaquer::verifier(GameData *g)
@@ -122,7 +133,8 @@ void ActionAttaquer::verifier(GameData *g)
   ASSERT(!a.ennemi, PAS_A_MOI);
   // ASSERT(v.ennemi, UNITE_KO); // TODO ajouter : UNITE_A_MOI
   ASSERT(a.pa >= 1, PLUS_DE_PA);
-  ASSERT(a.attaques >+ 1, QUOTA_DEPASSE); // todo ajouter : PEUT_PLUS_ATTAQUER
+  
+  ASSERT(a.attaques_gratuites != 0 || a.attaques >= 1, QUOTA_DEPASSE); // todo ajouter : PEUT_PLUS_ATTAQUER
 }
 
 void ActionAttaquer::envoyer(Api * api)
