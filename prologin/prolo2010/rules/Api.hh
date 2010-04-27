@@ -48,6 +48,9 @@ public:
   void sendActions();
 public:
 
+  int nombre_pc();
+  int nombre_unites_spawnees(bool e);
+
 ///
 // Renvoie le numéro du tour actuel.
 //

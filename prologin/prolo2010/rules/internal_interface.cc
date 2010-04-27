@@ -15,6 +15,14 @@
 // from Api.cc
 extern Api* api;
 
+extern "C" int api_nombre_pc(){
+  return api->nombre_pc();
+}
+
+extern "C" int nombre_unites_spawnees(bool e){
+  return api->nombre_unites_spawnees(e);
+}
+
 extern "C" bool api_need_retirer_ko()
 {
   return api->need_retirer_ko();

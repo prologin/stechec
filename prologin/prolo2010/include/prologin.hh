@@ -100,6 +100,7 @@ typedef struct unite {
   int ko;  /* <- une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité */
   int pa;  /* <- le nombre de PA restants à l'unité */
   int attaques;  /* <- le nombre d'attaques restants à l'unité */
+  int attaques_gratuites;
 } unite;
 
 

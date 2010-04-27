@@ -80,16 +80,16 @@ class ActionAttaquer : public Action
 {
 public:
   ActionAttaquer(int player, int attaquant, int victime) :
-    Action(player), attaquant_(attaquant), victime_(victime)
+    Action(player), attaquant_(attaquant), victime_(victime), gratuite(false)
   {
   }
 
   ACTIONS
 
 protected:
-  void get_explosions(GameData *g, std::vector<unite*> &e, position p);
   int attaquant_;
   int victime_;
+  bool gratuite;
   std::vector<unite> u_;
 
 };
