@@ -20,10 +20,6 @@
 require "gen/file_generator.rb"
 
 install_path = Pathname.new($install_path)
-if Dir[install_path] == []
-  puts install_path + " doesn't exist"
-  exit 1
-end
 
 # fake IO stream for print_proto
 class FakeIO
