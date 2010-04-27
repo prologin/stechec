@@ -108,16 +108,17 @@ function:
      Ces fonctions (en incluant la fonction distance) prennent en comptent
      toutes les actions que vous avez déjà effectuées au cours de votre phase
      de tour de jeu.
-
-  - fct_name: nombre_pc
-    fct_summary: Renvoie le nombre de points de commndements
+  -
+    fct_name: nombre_pc
+    fct_summary: Renvoie le nombre de points de commandements.
     fct_ret_type: int
     fct_arg: []
-
-  - fct_name: nombre_unites_spawnees
-    fct_summary: Renvoie le nombre d'unités spawnées
+  -
+    fct_name: nombre_unites_spawnees
+    fct_summary: Renvoie le nombre d'unités spawnées.
     fct_ret_type: int
-    fct_arg: [ennemi, bool, ennemi ou non]
+    fct_arg:
+      - [ennemi, bool, ennemi ou non]
   -
     fct_name: tour_actuel
     fct_summary: Renvoie le numéro du tour actuel.
