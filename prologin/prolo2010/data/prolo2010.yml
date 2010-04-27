@@ -102,11 +102,6 @@ struct:
 function:
   - doc_extra: |
      \subsection{Fonctions d'information}
-     Toutes ses fonctions peuvent renvoyer la constante HORS_TERRAIN quand
-     leurs arguments sont incorrects.
-     Ces fonctions (en incluant la fonction distance) prennent en comptent
-     toutes les actions que vous avez déjà effectuées au cours de votre phase
-     de tour de jeu.
   -
     fct_name: tour_actuel
     fct_summary: Renvoie le numéro du tour actuel.
@@ -142,7 +137,6 @@ function:
 
   - doc_extra: |
      \subsection{Fonctions d'utilisation des cartes}
-     Bla bla bla.
   -
     fct_name: soin
     fct_summary: Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
@@ -170,7 +164,6 @@ function:
 
   - doc_extra: |
      \subsection{Fonctions d'action}
-     Bla bla.
   -
     fct_name: deplacer
     fct_summary: Déplace une unité vers une position à portée.
