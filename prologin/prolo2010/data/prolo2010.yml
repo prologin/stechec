@@ -89,6 +89,7 @@ struct:
       - [ko, int, "une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité"]
       - [pa, int, le nombre de PA restants à l'unité]
       - [attaques, int, le nombre d'attaques restants à l'unité]
+      - [attaques_gratuites, int, le nombre d'attaques gratuites (voir la partie banzai)]
   -
     str_name: cartes
     str_summary: Représente l'ensemble des cartes que vous pouvez utiliser.
@@ -107,6 +108,17 @@ function:
      Ces fonctions (en incluant la fonction distance) prennent en comptent
      toutes les actions que vous avez déjà effectuées au cours de votre phase
      de tour de jeu.
+  -
+    fct_name: nombre_pc
+    fct_summary: Renvoie le nombre de points de commandements.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: nombre_unites_spawnees
+    fct_summary: Renvoie le nombre d'unités spawnées.
+    fct_ret_type: int
+    fct_arg:
+      - [ennemi, bool, ennemi ou non]
   -
     fct_name: tour_actuel
     fct_summary: Renvoie le numéro du tour actuel.

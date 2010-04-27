@@ -221,7 +221,7 @@ position GameData::spawn_position(bool white){
 
 caracs GameData::caracteristiques(type_unite tu)
 {
-  static caracs c[] = { // TODO ko
+  static caracs c[] = {
     { 1, 1 },
     { 2, 3 },
     { 5, 1 },
