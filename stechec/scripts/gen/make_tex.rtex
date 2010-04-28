@@ -20,10 +20,6 @@
 require "gen/file_generator.rb"
 
 install_path = Pathname.new($install_path)
-if Dir[install_path] == []
-  puts install_path + " doesn't exist"
-  exit 1
-end
 
 # fake IO stream for print_proto
 class FakeIO
@@ -74,8 +70,8 @@ end
 %>
 
 %%
-%% Ce fichier a été généré avec gen/make_tex.rtex
-%% Ne faites pas l'autiste, ne le modifiez pas directement !
+%% Ce fichier a ete genere avec gen/make_tex.rtex
+%% Ne faites pas l'autiste, ne le modifiez pas directement 
 %%
 
 <%
@@ -95,6 +91,57 @@ $conf["constant"].each do |f|
 
 <%
    end
+end
+%>
+
+<%
+$conf["enum"].each do |e|
+    next if make_doc e
+%>
+
+\functitle{<%= esc(e['enum_name']) %>} \\
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & <%= esc(e['enum_summary']) %> \\
+Valeurs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    <% e['enum_field'].each do |f| %>
+        \textsl{<%= esc(f[0].upcase) %>}~: & <%= esc(f[1]) %> \\
+    <% end %>
+\end{tabular} \\
+\end{tabular}
+
+<%
+end
+%>
+
+<%
+$conf["struct"].each do |s|
+    next if make_doc s
+%>
+
+\functitle{<%= esc(s['str_name']) %>}
+
+\begin{lst-c++}
+struct <%= s['str_name'] %> {<% s['str_field'].each do |f| %>
+    <%= f[1] %> <%= f[0] %>;<% end %>
+};
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & <%= esc(s['str_summary']) %> \\
+Champs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    <% s['str_field'].each do |f| %>
+        \textsl{<%= esc(f[0]) %>}~: & <%= esc(f[2]) %> \\
+    <% end %>
+\end{tabular} \\
+\end{tabular}
+
+<%
 end
 %>
 

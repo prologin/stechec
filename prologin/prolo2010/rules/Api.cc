@@ -48,6 +48,15 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 
 // user API
 
+int Api::nombre_pc(){
+  return 1; // todo
+}
+
+int Api::nombre_unites_spawnees(bool ennemi){
+  int e = ennemi?g_->current_player:((1 + g_->current_player)%2);
+  return g_->nbr_toons_spawn[e];
+}
+
 ///
 // Renvoie le numéro du tour actuel.
 //
@@ -61,8 +70,7 @@ int Api::tour_actuel()
 //
 position Api::pos_spawn(bool ennemi)
 {
-  // TODO
-  abort();
+  return g_->spawn_position(ennemi);
 }
 
 ///
@@ -168,7 +176,9 @@ erreur Api::relever(position cible)
 //
 erreur Api::attaquer(position attaquant, position cible)
 {
- /* TODO */
+  DO_ACTION(ActionAttaquer, g_->get_current_player(),
+	    g_->indice_at(attaquant),
+	    g_->indice_at(cible));
   return OK;
 }
 

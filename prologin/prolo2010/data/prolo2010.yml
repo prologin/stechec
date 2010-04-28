@@ -10,106 +10,113 @@ constant:
   - 
     cst_name: TAILLE_DEPART
     cst_val: 25
-    cst_comment: Taille de départ du terrain.
+    cst_comment: Taille de dÃ©part du terrain.
   -
     cst_name: NBR_MAX_UNITES
     cst_val: 20
-    cst_comment: Le nombre maximal d'unités pouvant appartenir à une équipe.
+    cst_comment: Le nombre maximal d'unitÃ©s pouvant appartenir Ã  une Ã©quipe.
   -
     cst_name: TEMPS_RETRECISSEMENT
     cst_val: 5
-    cst_comment: Le temps, en nombre de tours, entre deux rétrécissement du terrain.
+    cst_comment: Le temps, en nombre de tours, entre deux rÃ©trÃ©cissement du terrain.
   -
     cst_name: MAX_CARTES
     cst_val: 2
     cst_comment: Le nombre maximum en jeu de chaque carte.
 
 enum:
-  - doc_extra: \subsection{Énumérations}
+  - doc_extra: \subsection{Ã‰numÃ©rations}
   -
     enum_name: erreur
-    enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action.
+    enum_summary: Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action.
     enum_field:
       - [ok, aucune erreur n'est survenue]
-      - [position_invalide, la position spécifiée est invalide]
-      - [case_occupee, la case sur laquelle vous tentez de vous déplacer est occupée]
-      - [pas_a_portee, la cible n'est pas à portée]
-      - [unite_ko, l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO]
-      - [unite_debout, l'unité que vous essayez de relever est déjà debout]
-      - [quota_depasse, nombre maximal d'unites, de spawn ou de relevages par tour dépassé]
-      - [plus_de_pa, cette unité a réalisé toutes ses actions]
-      - [deja_attaque, cette unité a déjà attaqué]
-      - [pas_spawnable, cette unité n'est pas spawnable]
-      - [spawn_occupe, une unité est déjà présente sur le spawn]
-      - [pas_a_moi, l'unité ciblée n'est pas à vous]
-      - [plus_de_cartes, il n'y a plus de cartes du type spécifié dans votre main]
+      - [position_invalide, la position spÃ©cifiÃ©e est invalide]
+      - [case_occupee, la case sur laquelle vous tentez de vous dÃ©placer est occupÃ©e]
+      - [pas_a_portee, la cible n'est pas Ã  portÃ©e]
+      - [unite_ko, l'unitÃ© que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO]
+      - [unite_debout, l'unitÃ© que vous essayez de relever est dÃ©jÃ  debout]
+      - [quota_depasse, nombre maximal d'unites, de spawn ou de relevages par tour dÃ©passÃ©]
+      - [plus_de_pa, cette unitÃ© a rÃ©alisÃ© toutes ses actions]
+      - [deja_attaque, cette unitÃ© a dÃ©jÃ  attaquÃ©]
+      - [pas_spawnable, cette unitÃ© n'est pas spawnable]
+      - [spawn_occupe, une unitÃ© est dÃ©jÃ  prÃ©sente sur le spawn]
+      - [pas_a_moi, l'unitÃ© ciblÃ©e n'est pas Ã  vous]
+      - [plus_de_cartes, il n'y a plus de cartes du type spÃ©cifiÃ© dans votre main]
       - [phase_cartes_terminee, vous ne pouvez plus poser de cartes car vous avez fait une action]
   -
     enum_name: type_unite
-    enum_summary: Le type d'une unité sur le terrain
+    enum_summary: Le type d'une unitÃ© sur le terrain
     enum_field:
-      - [perroquet, 1 PA et portée de 1]
-      - [singe, 2 PA et portée de 3]
-      - [chat, 5 PA et portée de 1]
-      - [kangourou, 3 PA et portée de 2 (explose !)]
+      - [perroquet, 1 PA et portÃ©e de 1]
+      - [singe, 2 PA et portÃ©e de 3]
+      - [chat, 5 PA et portÃ©e de 1]
+      - [kangourou, 3 PA et portÃ©e de 2 (explose !)]
 
 struct:
   - doc_extra: \subsection{Structures}
   -
     str_name: position
-    str_summary: Représente une position sur le terrain du jeu.
+    str_summary: ReprÃ©sente une position sur le terrain du jeu.
     str_tuple: yes
     str_field:
-      - [x, int, coordonnée X]
-      - [y, int, coordonnée Y]
+      - [x, int, coordonnÃ©e X]
+      - [y, int, coordonnÃ©e Y]
   -
     str_name: taille_terrain
     str_summary: Contient les informations sur la taille du terrain du jeu.
     str_tuple: no
     str_field:
       - [taille, int, taille actuelle du terrain]
-      - [min_coord, int, coordonnée minimale en X ou en Y]
-      - [max_coord, int, coordonnée maximale en X ou en Y]
+      - [min_coord, int, coordonnÃ©e minimale en X ou en Y]
+      - [max_coord, int, coordonnÃ©e maximale en X ou en Y]
   -
     str_name: caracs
-    str_summary: Donne les caractéristiques d'un type d'unité.
+    str_summary: Donne les caractÃ©ristiques d'un type d'unitÃ©.
     str_tuple: no
     str_field:
       - [pa, int, nombre de points d'actions par tour]
-      - [portee, int, portée maximale de l'unité]
+      - [portee, int, portÃ©e maximale de l'unitÃ©]
   -
     str_name: unite
-    str_summary: Représente une unité sur le terrain.
+    str_summary: ReprÃ©sente une unitÃ© sur le terrain.
     str_tuple: no
     str_field:
-      - [pos, position, la position de l'unité]
-      - [ennemi, bool, vrai si l'unité appartient à l'ennemi]
-      - [type_unite_actuel, type_unite, "le type de l'unité, qui change si l'unité est déguisée"]
-      - [vrai_type_unite, type_unite, "le vrai type de l'unité (qui ne change pas lors du déguisement"]
-      - [ko, int, "une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité"]
-      - [pa, int, le nombre de PA restants à l'unité]
-      - [attaques, int, le nombre d'attaques restants à l'unité]
+      - [pos, position, la position de l'unitÃ©]
+      - [ennemi, bool, vrai si l'unitÃ© appartient Ã  l'ennemi]
+      - [type_unite_actuel, type_unite, "le type de l'unitÃ©, qui change si l'unitÃ© est dÃ©guisÃ©e"]
+      - [vrai_type_unite, type_unite, "le vrai type de l'unitÃ© (qui ne change pas lors du dÃ©guisement"]
+      - [ko, int, "une valeur nÃ©gative si l'unitÃ© n'est pas KO, sinon le nombre de marqueurs KO sur l'unitÃ©"]
+      - [pa, int, le nombre de PA restants Ã  l'unitÃ©]
+      - [attaques, int, le nombre d'attaques restants Ã  l'unitÃ©]
+      - [attaques_gratuites, int, le nombre d'attaques gratuites (voir la partie banzai)]
   -
     str_name: cartes
-    str_summary: Représente l'ensemble des cartes que vous pouvez utiliser.
+    str_summary: ReprÃ©sente l'ensemble des cartes que vous pouvez utiliser.
     str_tuple: no
     str_field:
-      - [soin, int, le nombre de cartes « Quoi d'neuf docteur ? »]
-      - [deguisement, int, le nombre de cartes « Déguisement »]
-      - [banzai, int, le nombre de cartes « Banzaï »]
-      - [pacifisme, int, le nombre de cartes « Pacifisme »]
+      - [soin, int, le nombre de cartes Â« Quoi d'neuf docteur ? Â»]
+      - [deguisement, int, le nombre de cartes Â« DÃ©guisement Â»]
+      - [banzai, int, le nombre de cartes Â« BanzaÃ¯ Â»]
+      - [pacifisme, int, le nombre de cartes Â« Pacifisme Â»]
 
 function:
   - doc_extra: |
      \subsection{Fonctions d'information}
-     Toutes ses fonctions peuvent renvoyer la constante HORS_TERRAIN quand
-     leurs arguments sont incorrects.
-     Ces fonctions (en incluant la fonction distance) prennent en comptent
-     toutes les actions que vous avez déjà effectuées au cours de votre phase
-     de tour de jeu.
+  -
+    fct_name: nombre_pc
+    fct_summary: Renvoie le nombre de points de commandements.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: nombre_unites_spawnees
+    fct_summary: Renvoie le nombre d'unitÃ©s spawnÃ©es.
+    fct_ret_type: int
+    fct_arg:
+      - [ennemi, bool, ennemi ou non]
   -
     fct_name: tour_actuel
-    fct_summary: Renvoie le numéro du tour actuel.
+    fct_summary: Renvoie le numÃ©ro du tour actuel.
     fct_ret_type: int
     fct_arg: []
   -
@@ -120,7 +127,7 @@ function:
       - [ennemi, bool, spawn ennemi ou non]
   -
     fct_name: caracteristiques
-    fct_summary: Renvoie les caractéristiques d'un type d'unité.
+    fct_summary: Renvoie les caractÃ©ristiques d'un type d'unitÃ©.
     fct_ret_type: caracs
     fct_arg:
       - [tu, type_unite, le type dont on veut les informations]
@@ -131,96 +138,94 @@ function:
     fct_arg: []
   -
     fct_name: unites
-    fct_summary: Retourne la liste des unités actuellement en jeu.
+    fct_summary: Retourne la liste des unitÃ©s actuellement en jeu.
     fct_ret_type: unite array
     fct_arg: []
   -
     fct_name: taille_terrain_actuelle
-    fct_summary: Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure \texttt{taille_terrain}.
+    fct_summary: Retourne la taille actuelle du terrain et les coordonnÃ©es min/max dans une structure \texttt{taille_terrain}.
     fct_ret_type: taille_terrain
     fct_arg: []
 
   - doc_extra: |
      \subsection{Fonctions d'utilisation des cartes}
-     Bla bla bla.
   -
     fct_name: soin
-    fct_summary: Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
+    fct_summary: Utilise une carte Â« Quoi d'neuf docteur ? Â» que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, position, l'unité à relever]
+    - [cible, position, l'unitÃ© Ã  relever]
   -
     fct_name: deguisement
-    fct_summary: Utilise une carte « Déguisement » que vous avez dans votre main.
+    fct_summary: Utilise une carte Â« DÃ©guisement Â» que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, position, l'unité à déguiser]
-    - [nouveau_type, type_unite, en quoi déguiser l'unité]
+    - [cible, position, l'unitÃ© Ã  dÃ©guiser]
+    - [nouveau_type, type_unite, en quoi dÃ©guiser l'unitÃ©]
   -
     fct_name: banzai
-    fct_summary: Utilise une carte « Banzaï » que vous avez dans votre main.
+    fct_summary: Utilise une carte Â« BanzaÃ¯ Â» que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
     - [cible, position, la cible de la carte]
   -
     fct_name: pacifisme
-    fct_summary: Utilise une carte « Pacifisme » que vous avez dans votre main.
+    fct_summary: Utilise une carte Â« Pacifisme Â» que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg: []
 
   - doc_extra: |
      \subsection{Fonctions d'action}
-     Bla bla.
   -
     fct_name: deplacer
-    fct_summary: Déplace une unité vers une position à portée.
+    fct_summary: DÃ©place une unitÃ© vers une position Ã  portÃ©e.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, position, l'unité à déplacer]
-    - [pos, position, la nouvelle position de l'unité]
+    - [cible, position, l'unitÃ© Ã  dÃ©placer]
+    - [pos, position, la nouvelle position de l'unitÃ©]
   -
     fct_name: relever
-    fct_summary: Relève une unité n'ayant plus de tours KO.
+    fct_summary: RelÃ¨ve une unitÃ© n'ayant plus de tours KO.
     fct_ret_type: erreur
     fct_arg:
-    - [cible, position, la position de l'unité à déplacer]
+    - [cible, position, la position de l'unitÃ© Ã  dÃ©placer]
   -
     fct_name: attaquer
-    fct_summary: Attaque une autre unité.
+    fct_summary: Attaque une autre unitÃ©.
     fct_ret_type: erreur
     fct_arg:
-    - [attaquant, position, l'unité qui attaque]
-    - [cible, position, l'unité qui se fait attaquer]
+    - [attaquant, position, l'unitÃ© qui attaque]
+    - [cible, position, l'unitÃ© qui se fait attaquer]
   -
     fct_name: spawn
-    fct_summary: Fait apparaitre une unité sur la case de spawn.
+    fct_summary: Fait apparaitre une unitÃ© sur la case de spawn.
     fct_ret_type: erreur
     fct_arg:
-    - [quoi, type_unite, l'unité à faire apparaitre]
+    - [quoi, type_unite, l'unitÃ© Ã  faire apparaitre]
   -
     fct_name: annuler
-    fct_summary: Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
+    fct_summary: Annule l'effet de la derniÃ¨re action et remet le jeu dans l'Ã©tat prÃ©cÃ©dent.
     fct_ret_type: bool
     fct_arg: []
 
 user_function:
   -
     fct_name: init_game
-    fct_summary: Fonction appellée au début de la partie.
+    fct_summary: Fonction appellÃ©e au dÃ©but de la partie.
     fct_ret_type: void
     fct_arg: []
   -
     fct_name: retirer_ko
-    fct_summary: Fonction appellée pour la phase de retrait de KO.
+    fct_summary: Fonction appellÃ©e pour la phase de retrait de KO.
     fct_ret_type: position
     fct_arg: []
   -
     fct_name: jouer
-    fct_summary: Fonction appellée pour la phase de jeu.
+    fct_summary: Fonction appellÃ©e pour la phase de jeu.
     fct_ret_type: void
     fct_arg: []
   -
     fct_name: end_game
-    fct_summary: Fonction appellée à la fin de la partie.
+    fct_summary: Fonction appellÃ©e Ã  la fin de la partie.
     fct_ret_type: void
     fct_arg: []
