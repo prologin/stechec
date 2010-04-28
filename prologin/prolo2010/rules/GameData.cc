@@ -81,6 +81,7 @@ void GameData::team_switched(){
     reset_unite(unites[i], false); // reset action points
   }
   can_play_card = true;
+  nbr_unites_allowed = 3;
 }
 
 bool GameData::out_map(position p){
