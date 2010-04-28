@@ -173,6 +173,7 @@ _dist		:= $(foreach t,$(lib_TARGETS),$($(t)-dists) $(filter-out ../%,$($(t)-srcs
 _deps		:= $(foreach f,$(_objs),$(dir $(f)).$(notdir $(f)).d)
 _cleanfiles	:= $(cleanfiles) $(_objs) $(_deps)
 _dcleanfiles	:= $(_targets) prologin.tgz
+_run_reqs   := $(_targets) $(foreach t,$(lib_TARGETS),$($(t)-dists))
 
 # ==============================================================================
 # rules
@@ -198,6 +199,9 @@ distclean: clean
 			break; \
 		fi; \
 	done
+
+list-run-reqs:
+	@echo "$(_run_reqs)"
 
 %.o: %.c
 	$(call cmd,cc)
