@@ -39,8 +39,9 @@ static inline int distance(position p1, position p2)
 
 static int get_ko(type_unite a)
 {
-  int c[] = {1, 5, 3, 2};
-  return c[a];
+  /*  int c[] = {1, 5, 3, 2};
+      return c[a]; */
+  return 3;
 }
 
 bool operator==(position p1, position p2){
@@ -53,7 +54,7 @@ void get_explosions(GameData *g, std::vector<unite *> &u, position p){
       {
 	bool b = true;
 	for (int j = 0, l = u.size(); j < l ; j++){
-	  if (u[i]->pos == g->unites[i].pos) b = false;
+	  if (u[j]->pos == g->unites[i].pos) b = false;
 	}
 	if (b){
 	  u.push_back( & g->unites[i]);
@@ -83,6 +84,8 @@ void ActionAttaquer::appliquer(GameData *g)
   unite& a = g->unites[attaquant_];
   unite& v = g->unites[victime_];
   type_unite tu = a.type_unite_actuel;
+  Action::appliquer(g);
+  u_ = g->unites;
   if (a.attaques_gratuites){
     a.attaques_gratuites --;
     gratuite = true;
@@ -98,11 +101,9 @@ void ActionAttaquer::appliquer(GameData *g)
   }
 
   if (tu == KANGOUROU){
-    u_ = g->unites;
     kangourou(g, a.pos, attaquant_);
   }else{
     if (v.type_unite_actuel){
-      u_ = g->unites;
       kangourou(g, v.pos, victime_);
     }else{
       v.ko = get_ko(tu);
