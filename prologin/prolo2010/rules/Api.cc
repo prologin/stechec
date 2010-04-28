@@ -124,6 +124,7 @@ taille_terrain Api::taille_terrain_actuelle()
 //
 erreur Api::soin(position cible)
 {
+  LOG3("soin : (%1, %2)", cible.x, cible.y);
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionSoin, g_->get_current_player(), g_->indice_at(cible));
   return OK;
@@ -168,6 +169,7 @@ erreur Api::pacifisme()
 //
 erreur Api::deplacer(position cible, position pos)
 {
+  LOG3("deplacer: (%1, %2) (%3, %4)",  cible.x, cible.y, pos.x, pos.y);
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionDeplacer, g_->get_current_player(),
             g_->indice_at(cible), pos);
