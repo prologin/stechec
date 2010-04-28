@@ -267,7 +267,10 @@ void ActionDeplacer::appliquer(GameData* g)
 void ActionDeplacer::annuler(GameData* g)
 {
   if (g->nbr_unites_allowed != nbr_unites_allowed_)
+  {
     g->deja_bougee[unite_] = false;
+    g->nbr_unites_allowed += 1;
+  }
   Action::annuler(g);
   g->unites[unite_].pos = old_pos_;
 }
