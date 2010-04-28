@@ -53,7 +53,7 @@ int         ServerEntry::afterNewTurn(void)
   {
     SendToAll((*it)[0], -1, 8, ARG8((*it), 1));
   }
-  if ( g_->getCurrentTurn() % ( TEMPS_RETRECISSEMENT * 2 ) == 0 )
+  if ( ( g_->getCurrentTurn() / 2 ) % TEMPS_RETRECISSEMENT == 0 && ( g_->getCurrentTurn() / 2 ) > 0 )
     {
       g_->retrecissement();
       StechecPkt com(RETRECIR, -1);
