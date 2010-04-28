@@ -134,6 +134,7 @@ erreur Api::soin(position cible)
 //
 erreur Api::deguisement(position cible, type_unite nouveau_type)
 {
+  LOG3("cible : (%1, %2) type : %3", cible.x, cible.y, nouveau_type);
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionDeguisement, g_->get_current_player(), g_->indice_at(cible),
             nouveau_type);
@@ -145,6 +146,7 @@ erreur Api::deguisement(position cible, type_unite nouveau_type)
 //
 erreur Api::banzai(position cible)
 {
+  LOG3("banzai : (%1, %2)", cible.x, cible.y);
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionBanzai, g_->get_current_player(), g_->indice_at(cible));
   return OK;
@@ -155,6 +157,7 @@ erreur Api::banzai(position cible)
 //
 erreur Api::pacifisme()
 {
+  LOG3("pacifisme");
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionPacifisme, g_->get_current_player());
   return OK;
@@ -176,6 +179,7 @@ erreur Api::deplacer(position cible, position pos)
 //
 erreur Api::relever(position cible)
 {
+  LOG3("relever : (%1, %2)", cible.x, cible.y);
   int qui = g_->indice_at(cible);
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionRelever, g_->get_current_player(), qui);
@@ -187,6 +191,7 @@ erreur Api::relever(position cible)
 //
 erreur Api::attaquer(position attaquant, position cible)
 {
+  LOG3("attaquer: (%1, %2) (%3, %4)", attaquant.x, attaquant.y, cible.x, cible.y);
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionAttaquer, g_->get_current_player(),
 	    g_->indice_at(attaquant),
@@ -199,6 +204,7 @@ erreur Api::attaquer(position attaquant, position cible)
 //
 erreur Api::spawn(type_unite quoi)
 {
+  LOG3("spawn %1", quoi);
   g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionSpawn, g_->get_current_player(), quoi);
   return OK;
@@ -209,6 +215,7 @@ erreur Api::spawn(type_unite quoi)
 //
 bool Api::annuler()
 {
+  LOG3("annuler");
   bool out = g_->annuler();
   g_->check(__FILE__, __LINE__);
   return out;
