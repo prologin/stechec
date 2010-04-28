@@ -130,7 +130,7 @@ void jouer()
       }
     }else if (strcmp(buffer, "spawn\n") == 0){
       n = choix_unite();
-      afficher_erreur(spawn(unit_of_int(n)));
+      afficher_erreur(renfort(unit_of_int(n)));
     }else if (strcmp(buffer, "end\n") == 0){
       break;
     }else if (strcmp(buffer, "annuler\n") == 0){

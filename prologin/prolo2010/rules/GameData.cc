@@ -81,6 +81,7 @@ void GameData::team_switched(){
     reset_unite(unites[i], false); // reset action points
   }
   can_play_card = true;
+  nbr_unites_allowed = 3;
 }
 
 bool GameData::out_map(position p){
@@ -152,7 +153,8 @@ void GameData::reset_unite(unite &u, bool reset_ko){
   u.type_unite_actuel = u.vrai_type_unite;
   if (reset_ko) u.ko = -1;
   u.attaques = 1;
-  u.pa = caracteristiques(u.vrai_type_unite).pa;
+  u.pa = caracteristiques(u.vrai_type_unite).pa_init;
+  u.attaques_gratuites = 0;
 }
 
 bool GameData::can_active(int i){

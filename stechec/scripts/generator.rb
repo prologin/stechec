@@ -100,14 +100,14 @@ def make_includes
     FileUtils.cp Pathname.new(PKGDATADIR) + 'files/toposort.py', install_path.to_s
   end
 
-  # these 6 are not needed anymore for client, it uses rules.mk
+  # these 7 are not needed anymore for client, it uses rules.mk
 #   CMakefile.new.build_client(install_path)
 #   CxxMakefile.new.build_client(install_path)
 #   JavaMakefile.new.build_client(install_path)
 #   CamlMakefile.new.build_client(install_path)
 #   PhpMakefile.new.build_client(install_path)
 #   PythonMakefile.new.build_client(install_path)
-  CSharpMakefile.new.build_client(install_path)
+#   CSharpMakefile.new.build_client(install_path)
   PascalMakefile.new.build_client(install_path)
 #  HaskellMakefile.new.build_client(install_path)
 #  RubyMakefile.new.build_client(install_path)

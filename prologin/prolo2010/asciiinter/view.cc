@@ -34,7 +34,7 @@ static void show_carte(int number, std::string txt)
 
 static void show_cartes(cartes c)
 {
-  show_carte(c.soin, "soin");
+  show_carte(c.potion, "potion");
   show_carte(c.deguisement, "deguisement");
   show_carte(c.pacifisme, "pacifisme");
   show_carte(c.banzai, "banzai");
