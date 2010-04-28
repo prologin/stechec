@@ -75,7 +75,7 @@ struct:
     str_summary: Donne les caractéristiques d'un type d'unité.
     str_tuple: no
     str_field:
-      - [pa, int, nombre de points d'actions par tour]
+      - [pa_init, int, nombre de points d'actions par tour]
       - [portee, int, portée maximale de l'unité]
   -
     str_name: unite
