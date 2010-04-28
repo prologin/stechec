@@ -85,7 +85,7 @@ struct:
       - [pos, position, la position de l'unité]
       - [ennemi, bool, vrai si l'unité appartient à l'ennemi]
       - [type_unite_actuel, type_unite, "le type de l'unité, qui change si l'unité est déguisée"]
-      - [vrai_type_unite, type_unite, "le vrai type de l'unité (qui ne change pas lors du déguisement"]
+      - [vrai_type_unite, type_unite, "le vrai type de l'unité (qui ne change pas lors du déguisement)"]
       - [ko, int, "une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité"]
       - [pa, int, le nombre de PA restants à l'unité]
       - [attaques, int, le nombre d'attaques restants à l'unité]
@@ -95,7 +95,7 @@ struct:
     str_summary: Représente l'ensemble des cartes que vous pouvez utiliser.
     str_tuple: no
     str_field:
-      - [soin, int, le nombre de cartes « Quoi d'neuf docteur ? »]
+      - [soin, int, le nombre de cartes « Soin »]
       - [deguisement, int, le nombre de cartes « Déguisement »]
       - [banzai, int, le nombre de cartes « Banzaï »]
       - [pacifisme, int, le nombre de cartes « Pacifisme »]
@@ -133,7 +133,7 @@ function:
       - [tu, type_unite, le type dont on veut les informations]
   -
     fct_name: mes_cartes
-    fct_summary: Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
+    fct_summary: Retourne une structure "cartes" contenant les informations sur les cartes que vous avez en main.
     fct_ret_type: cartes
     fct_arg: []
   -
@@ -143,7 +143,7 @@ function:
     fct_arg: []
   -
     fct_name: taille_terrain_actuelle
-    fct_summary: Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure \texttt{taille_terrain}.
+    fct_summary: Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
     fct_ret_type: taille_terrain
     fct_arg: []
 
@@ -151,7 +151,7 @@ function:
      \subsection{Fonctions d'utilisation des cartes}
   -
     fct_name: soin
-    fct_summary: Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
+    fct_summary: Utilise une carte « Soin » que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
     - [cible, position, l'unité à relever]
@@ -185,7 +185,7 @@ function:
     - [pos, position, la nouvelle position de l'unité]
   -
     fct_name: relever
-    fct_summary: Relève une unité n'ayant plus de tours KO.
+    fct_summary: Relève une unité n'ayant plus de marqueurs de KO.
     fct_ret_type: erreur
     fct_arg:
     - [cible, position, la position de l'unité à déplacer]
@@ -204,7 +204,7 @@ function:
     - [quoi, type_unite, l'unité à faire apparaitre]
   -
     fct_name: annuler
-    fct_summary: Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
+    fct_summary: Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
     fct_ret_type: bool
     fct_arg: []
 
