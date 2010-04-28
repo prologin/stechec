@@ -7,4 +7,5 @@ Coords = {{
   add( (a, b), (c, d) ) = (a + c, b + d) 
   mult_e( (a, b), (c, d)) = (a  * c, b * d)
   pos(a, b) = (a, b) : coords
+  toXhtml((x, y)) = <>({x}, {y})</>
 }}
