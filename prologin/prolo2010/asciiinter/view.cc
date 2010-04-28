@@ -27,8 +27,12 @@ static void show_carte(int number, std::string txt)
   if (number)
     {
       std::cout << "vous avez " << number
-		<< " carte" << pluriel
+		<< " carte " << pluriel
 		<< "de " << txt << "\n";
+    }
+  else
+    {
+      std::cout << "vous n'avez plus de " << txt << "\n";
     }
 }
 
@@ -125,7 +129,7 @@ static void show_map(std::vector<unite> units, taille_terrain size)
 
 void view(void)
 {
-  std::cout << "tour actuel : " << tour_actuel() << "_n";
+  std::cout << "tour actuel : " << tour_actuel() << "\n";
   cartes c = mes_cartes();
   show_cartes(c);
   taille_terrain size = taille_terrain_actuelle();

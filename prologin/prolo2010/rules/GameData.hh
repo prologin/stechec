@@ -34,6 +34,7 @@ public:
 
   // Call this before everything else.
   void Init();
+  void check();
 
   int nbr_toons(bool ennemi);
 
@@ -81,7 +82,7 @@ public:
   int current_player;
   int nbr_unites_allowed;
   bool can_play_card;
-  bool deja_bougee[NBR_MAX_UNITES];
+  bool deja_bougee[NBR_MAX_UNITES * 2];
   cartes players_cartes[2];
   taille_terrain tt;
   std::vector<unite> unites;

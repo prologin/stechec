@@ -155,7 +155,7 @@ void jouer()
 	  scanf("(%d, %d)\n", &p.x, &p.y);
 	  switch(n){
 	  case 2: afficher_erreur(banzai(p)); break;
-	  case 3: afficher_erreur(soin(p)); break;
+	  case 3: afficher_erreur(potion(p)); break;
 	  case 4:
 	    afficher_erreur(deguisement(p, unit_of_int(choix_unite()))); break;
 	  }

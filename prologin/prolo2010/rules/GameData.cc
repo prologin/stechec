@@ -18,6 +18,10 @@
 #define INIT()					\
   assert(initialized_);
 
+#define CHECK \
+  LOG3("players_cartes[0] = {%2, %3, %4, %5} %6", players_cartes[0].potion, players_cartes[0].deguisement, players_cartes[0].banzai, players_cartes[0].pacifisme, __LINE__ ); \
+  LOG3("players_cartes[1] = {%2, %3, %4, %5} %6", players_cartes[1].potion, players_cartes[1].deguisement, players_cartes[1].banzai, players_cartes[1].pacifisme, __LINE__ );
+
 GameData::GameData()
 {
   srand(time(0));
@@ -47,14 +51,18 @@ GameData::GameData()
   };
   current_player = 0;
   {
-    cartes init_cartes = {1,1,1,1};
-    players_cartes[0] = init_cartes ;
-    players_cartes[1] = init_cartes ;
+    cartes c = {1,2,3,4};
+    LOG3("cartes = {%2, %3, %4, %5}", c.potion, c.deguisement, c.banzai, c.pacifisme);
+  
+    players_cartes[0] = c ;
+    players_cartes[1] = c ;
   }
   tt.taille = TAILLE_DEPART;
   tt.min_coord = 0;
   tt.max_coord = TAILLE_DEPART - 1;
+  CHECK
   reset_moves();
+  CHECK
   can_play_card = true;
   nbr_unites_allowed = 3;
   nbr_toons_spawn[0] = 1;
@@ -166,7 +174,7 @@ bool GameData::can_active(int i){
 }
 
 void GameData::reset_moves(){
-  for (int i = 0; i < 18; i ++){
+  for (int i = 0; i < NBR_MAX_UNITES; i ++){
     deja_bougee[i] = false;
   }
 }
@@ -186,7 +194,9 @@ bool GameData::must_remove_ko(){
 
 // accesseurs
 cartes GameData::get_cartes(int i){
-  return players_cartes[i];
+  cartes c = players_cartes[i];
+  LOG3("get_cartes(%1) = {%2, %3, %4, %5}", i, c.potion, c.deguisement, c.banzai, c.pacifisme);
+  return c;
 }
 
 taille_terrain GameData::get_tt(){
