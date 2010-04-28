@@ -200,6 +200,24 @@ EOF
     @f.puts "static PyObject* p_#{fn.name}(PyObject* self, PyObject* args)"
     @f.puts "{"
     @f.puts "  (void)self;"
+    fs = "O" * fn.args.length
+    i = 0
+    fn.args.each do |a|
+      @f.puts "PyObject* a#{i};"
+      i += 1
+    end
+    @f.print "  if (!PyArg_ParseTuple(args, \"#{fs}\""
+    @f.print ", " if fn.args.length != 0
+    i = 0
+    names = fn.args.map do |a|
+      s = "&a#{i}"
+      i += 1
+      s
+    end
+    @f.print names.join(", ")
+    @f.puts ")) {"
+    @f.puts "    return NULL;"
+    @f.puts "  }"
     @f.print "  "
     @f.puts "  try {"
     unless fn.ret.is_nil?
@@ -218,7 +236,7 @@ EOF
       else
         @f.print "lang2cxx<PyObject*, #{a.type.name}>("
       end
-      @f.print "PyTuple_GET_ITEM(args, #{i}))"
+      @f.print "a#{i})"
       i += 1
       @f.print ", " unless i == fn.args.length
     end
