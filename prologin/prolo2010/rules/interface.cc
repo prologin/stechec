@@ -44,9 +44,14 @@ extern "C" int api_tour_actuel()
 ///
 // Renvoie la position du spawn (ennemi ou non).
 //
-extern "C" position api_pos_spawn(bool ennemi)
+extern "C" position api_pos_renfort(bool ennemi)
 {
   return api->pos_spawn(ennemi);
+}
+
+extern "C" int nombre_unites(bool ennemi)
+{
+  return api->nombre_unites_spawnees(ennemi);
 }
 
 ///
@@ -84,7 +89,7 @@ extern "C" taille_terrain api_taille_terrain_actuelle()
 ///
 // Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
 //
-extern "C" erreur api_soin(position cible)
+extern "C" erreur api_potion(position cible)
 {
   return api->soin(cible);
 }
@@ -140,7 +145,7 @@ extern "C" erreur api_attaquer(position attaquant, position cible)
 ///
 // Fait apparaitre une unité sur la case de spawn.
 //
-extern "C" erreur api_spawn(type_unite quoi)
+extern "C" erreur api_renfort(type_unite quoi)
 {
   return api->spawn(quoi);
 }
