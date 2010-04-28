@@ -66,7 +66,7 @@ static void flush(){
 static void show_map(std::vector<unite> units, taille_terrain size)
 {
   int s = units.size();
-  std::cout << "\e[2J";
+  //std::cout << "\e[2J";
   for (int i=0; i < s ; i ++){
     for (int j = i + 1; j < s; j ++){
       if (units[i].pos.y > units[j].pos.y ||

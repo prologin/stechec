@@ -133,8 +133,16 @@ void jouer()
       afficher_erreur(spawn(unit_of_int(n)));
     }else if (strcmp(buffer, "end\n") == 0){
       break;
+    }else if (strcmp(buffer, "annuler\n") == 0){
+      if (annuler()){
+	printf("OK\n");
+      }else{
+	printf("pas d'actions a annuler\n");
+      }
     }else if (sscanf(buffer, "(%d, %d) a (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
       afficher_erreur(attaquer(from, to));
+    }else if (strcmp(buffer, "show\n") == 0){
+      view();
     }else if (strcmp(buffer, "card\n") == 0) {
       printf("1 pacifisme ; 2 banzai ; 3 soin ; 4 deguisement");
       if (sscanf(buffer, "%d", &n) != 1) continue; // bad value
@@ -153,6 +161,8 @@ void jouer()
 	  }
 	}
       }
+    }else{
+      printf("mauvais format\n");
     }
   } while(true);
   printf("fin jouer;\n");
