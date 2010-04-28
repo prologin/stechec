@@ -13,7 +13,7 @@ constant:
     cst_comment: Taille de départ du terrain.
   -
     cst_name: NBR_MAX_UNITES
-    cst_val: 20
+    cst_val: 10
     cst_comment: Le nombre maximal d'unités pouvant appartenir à une équipe.
   -
     cst_name: TEMPS_RETRECISSEMENT

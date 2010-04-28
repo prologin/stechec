@@ -195,7 +195,7 @@ void ActionSpawn::verifier(GameData* g)
   int i =  g->indice_at(p);
   ASSERT(i == -1, SPAWN_OCCUPE);
   ASSERT(tu_ != PERROQUET, PAS_SPAWNABLE);
-  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES / 2, PAS_SPAWNABLE);
+  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES, PAS_SPAWNABLE);
 }
 
 void ActionSpawn::appliquer(GameData *g)
