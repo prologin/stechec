@@ -18,9 +18,25 @@
 #define INIT()					\
   assert(initialized_);
 
-#define CHECK \
-  LOG3("players_cartes[0] = {%2, %3, %4, %5} %6", players_cartes[0].potion, players_cartes[0].deguisement, players_cartes[0].banzai, players_cartes[0].pacifisme, __LINE__ ); \
-  LOG3("players_cartes[1] = {%2, %3, %4, %5} %6", players_cartes[1].potion, players_cartes[1].deguisement, players_cartes[1].banzai, players_cartes[1].pacifisme, __LINE__ );
+void GameData::check(const char * file, int line){
+  LOG3("%1:%2", file, line );
+  LOG3("current_player:%1", current_player );
+  LOG3("unites_allowed : %1", nbr_unites_allowed);
+  LOG3("can_play_card : %1", can_play_card);
+  LOG3("nbr_toons_spawn: %1 %2", nbr_toons_spawn[0], nbr_toons_spawn[1]);
+  for(int i = 0; i < NBR_MAX_UNITES * 2; i ++)
+    LOG3("deja_bouge[%1] = %2", i, deja_bougee[i]);
+  for(int i = 0; i < unites.size(); i ++)
+    LOG3("unite[%1] = {pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types=(%8, %9)}",
+	 i, unites[i].pos.x, unites[i].pos.y,
+	 unites[i].ko, unites[i].pa, unites[i].attaques, unites[i].attaques_gratuites,
+	 unites[i].type_unite_actuel,
+	 unites[i].vrai_type_unite);
+  LOG3("players_cartes[0] = {%2, %3, %4, %5}", players_cartes[0].potion, players_cartes[0].deguisement, players_cartes[0].banzai, players_cartes[0].pacifisme);
+  LOG3("players_cartes[1] = {%2, %3, %4, %5}", players_cartes[1].potion, players_cartes[1].deguisement, players_cartes[1].banzai, players_cartes[1].pacifisme);
+}
+
+#define CHECK check(__FILE__, __LINE__);
 
 GameData::GameData()
 {

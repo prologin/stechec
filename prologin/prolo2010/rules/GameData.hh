@@ -36,6 +36,8 @@ public:
   void Init();
   void check();
 
+  void check(const char * file, int line);
+
   int nbr_toons(bool ennemi);
 
   bool can_active(int i);
@@ -87,7 +89,7 @@ public:
   taille_terrain tt;
   std::vector<unite> unites;
   int nbr_toons_spawn[2];
-  // server internal
+  // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
   std::vector<std::vector<int> > packets;
 
 private:
