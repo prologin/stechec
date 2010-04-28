@@ -23,7 +23,7 @@ namespace Prologin {
             foreach (Unite item in t)
                 if (!item.Ennemi)
                     return item.Pos;
-            return new Exception(); //Should not trigger
+            throw new Exception(); //Should not trigger
 		}
 
         Unite getPosUnite(Position a)
@@ -36,9 +36,8 @@ namespace Prologin {
             throw new Exception(); //No unit
         }
 
-        Position minDistPost(Position a, Position b, Position, Position goalPos)
+        Position minDistPos(Position a, Position b, Position goalPos)
         {
-            Position tmp;
             int distA = Math.Abs(goalPos.X - a.X) + Math.Abs(goalPos.Y - a.Y);
             int distB = Math.Abs(goalPos.X - b.X) + Math.Abs(goalPos.Y - b.Y);
 
@@ -59,19 +58,26 @@ namespace Prologin {
             {
                 Spawn(TypeUnite.CHAT);      //Accessible au prochain tour
             }
-            Unite uTiti;
+
+            Unite uTiti = new Unite(); //prevent warning
             foreach (Unite item in t)
                 if (item.Ennemi && item.VraiTypeUnite == TypeUnite.PERROQUET)
                 {
                     uTiti = item;
                     break;
                 }
-            Unite min;
+
             if (t.Length > 0)
             {
+                Unite min;
+                Position minPos;
                 min = t[0];
-//                foreach (Unite item in t)
-//                if
+                foreach (Unite item in t)
+                    if (item.VraiTypeUnite == item.TypeUniteActuel && item.TypeUniteActuel == TypeUnite.CHAT && !item.Ennemi)
+                    {
+                        minPos = minDistPos(min.Pos, item.Pos, uTiti.Pos);
+                        min = getPosUnite(minPos); //Should not thrown error
+                    }
             }
 		}
 
