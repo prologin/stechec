@@ -247,6 +247,8 @@ void ActionDeplacer::verifier(GameData* g)
   ASSERT(u.pa >= dist, PLUS_DE_PA);
 
   ASSERT(g->can_active(unite_), QUOTA_DEPASSE);
+
+  ASSERT(!g->out_map(dest_), POSITION_INVALIDE);
 }
 
 void ActionDeplacer::appliquer(GameData* g)
