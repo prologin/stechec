@@ -21,7 +21,7 @@
 ///
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
 //
-# define NBR_MAX_UNITES            20
+# define NBR_MAX_UNITES            10
 
 ///
 // Le temps, en nombre de tours, entre deux rétrécissement du terrain.
