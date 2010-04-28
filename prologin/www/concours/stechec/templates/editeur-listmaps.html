@@ -1,0 +1,8 @@
+{% for map in maps %}
+{% ifchanged map.auteur %}
+    {% if not forloop.first %}</optgroup>{% endif %}
+    <optgroup label="{{ map.auteur }}">
+{% endifchanged %}
+<option value="{{ map.id }}"{% if map.officielle %} class="award"{% endif %}>{{ map.titre }}</option>
+{% if forloop.last %}</optgroup>{% endif %}
+{% endfor %}

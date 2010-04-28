@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block "head" %}
+<link rel="stylesheet" href="/media/css/map_rendering.css" type="text/css" />
+<link rel="stylesheet" href="/media/css/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="/media/css/editeur.css" type="text/css" />
+{% endblock %}
+
+{% block "title" %}Éditeur de map{% endblock %}
+{% block "titleh1" %}Éditeur de map{% endblock %}
+
+{% block "content" %}
+<div id="edit_tabs">
+    <ul>
+        <li><a href="#tabs-1">Ouvrir</a></li>
+        <li><a href="#tabs-2">Éditer</a></li>
+        <li><a href="#tabs-3">Sauvegarder</a></li>
+    </ul>
+	<div id="tabs-1">
+        <div class="leftcol">
+            <textarea id="rawtt" cols="25" rows="25"></textarea>
+        </div>
+        
+        <div class="tabcenter">
+            <h3>Charger une carte du site</h3>
+            <div id="reload_sel"></div> 
+            <select id="selopen" class="mapselect"></select> <button id="bt_loadfromsite">Charger</button>
+
+            <h3>Charger une carte depuis le cookie</h3>
+            <button id="bt_loadfromcookie">Charger</button>
+
+            <h3>Charger une carte depuis ce texte</h3>
+            <button id="bt_loadfromraw">Charger</button>
+        </div>
+    </div>
+	<div id="tabs-2">
+        <div id="toolbar" class="ui-corner-all"><!-- class="ui-widget-header ui-helper-clearfix ui-corner-all">-->
+			<div id="blocks" class="tbar">
+				<div class="label">Blocs</div>
+				<div class="tbitem" title="Mur" id="b_wall"></div>
+				<div class="tbitem" title="Caisse" id="b_soft"></div>
+				<div class="tbitem" title="Générateur de mèche" id="b_mesh"></div>
+				<div class="tbitem" title="Vide" id="b_empty"></div>
+				<div class="tbitem" title="Joueur A" id="b_p1"></div>
+				<div class="tbitem" title="Joueur B" id="b_p2"></div>
+				<div class="tbitem" title="Joueur C" id="b_p3"></div>
+				<div class="tbitem" title="Joueur D" id="b_p4"></div>
+			</div>
+			<div id="tools" class="tbar">
+				<div class="label">Outils</div>
+				<div class="tbitem" id="t_brush" title="Outil pinceau"></div>
+				<div class="tbitem" id="t_rect" title="Outil rectangle"></div>
+            </div>
+			<div id="actions" class="tbar">
+				<div class="label">Actions</div>
+				<!--<div class="tbitem" id="a_undo" title="Annuler"></div>
+                <div class="tbitem" id="a_redo" title="Refaire"></div>-->
+				<div class="tbitem" id="a_empty" title="Effacer tout"></div>
+				<div class="tbitem" id="a_grid" title="Afficher/cacher la grille"></div>
+            </div>
+		</div>
+        <div id="map"></div>
+        <div id="tips">
+            Maintenez les touches Shift et/ou Ctrl pour verrouiller une direction de tracé (X ou Y).<br />
+            La molette de la souris permet de changer de bloc rapidement.
+        </div>
+    </div>
+    <div id="tabs-3">
+        <div class="leftcol">
+            <!-- textarea will be moved here when switching to this tab -->
+        </div>
+        
+        <div class="tabcenter">
+            <div id="log">
+                <h3>Journal</h3>
+                <ul></ul>
+            </div>
+            
+            <h3>Syntaxe</h3>
+            
+            <p>Murs, blocs incassables : #</p>
+            <p>Caisses : $</p>
+            <p>Générateurs de mèches : +</p>
+            <p>Spawns des champions : A, B, C et D</p>
+            <p>Les espaces crééent du vide. Faites un retour à la ligne à la fin de chaque ligne (ne comptez pas sur la césure automatique de la zone de texte).</p>
+
+            <h3>Sauver la carte</h3>
+            <p>Dans le site : <button id="bt_savetosite">Sauver</button></p>
+            <p>Dans un cookie : <button id="bt_savetocookie">Sauver</button></p>
+        </div>
+    </div>
+</div>  
+<script type="text/javascript" src="/media/js/jquery.js"></script>
+<script type="text/javascript" src="/media/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/media/js/jquery-wheel.js"></script>
+<script type="text/javascript" src="/media/js/map_rendering_vars.js"></script>
+<script type="text/javascript" src="/media/js/editeur.js"></script>
+{% endblock %}

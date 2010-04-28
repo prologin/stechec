@@ -1,0 +1,52 @@
+
+{% extends "base.html" %}
+
+{% block "title" %}Toutes les cartes{% endblock %}
+{% block "titleh1" %}Toutes les cartes{% endblock %}
+
+{% block "content" %}
+
+<p class="intro">
+    Voici la liste de tous les cartes crées par les utilisateurs à l'aide de l'éditeur.
+</p>
+<div class="information">
+    Notez que seules les cartes indiquées comme officielles ici-même seront jouées pendant les tournois. Les autres sont
+    toutefois disponible pour les matches d'entrainement.
+</div>
+
+{% if is_paginated %}
+<p class="pagination">
+{% for page in paginator.page_range %}
+{% ifequal page_obj.number page %}
+    <span>{{ page }}</span>
+{% else %}
+    <a href="/maps/all/?page={{ page }}">{{ page }}</a>
+{% endifequal %}
+{% endfor %}
+</p>
+{% endif %}
+<table>
+    <thead>
+        <tr>
+            <th>Numéro</th>
+            <th>Officielle</th>
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Visualiser</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for map in map_list %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+            <td>{{ map.id }}</td>
+            <td>{% if map.officielle %}<img src="/media/img/award_gold.png" alt="Oui" />{% else %}Non{% endif %}</td>
+            <td>{{ map.titre }}</td>
+            <td>{{ map.auteur }}</td>
+            <td><a href="{{ map.get_absolute_url }}">Visualiser</a> - <a href="/editeur/#open-{{ map.id}}">Ouvrir dans l'éditeur</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Il n'y a encore aucune map.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

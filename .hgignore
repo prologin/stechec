@@ -23,6 +23,7 @@ Makefile.in
 *.Po
 *.o
 *.Plo
+*.pyc
 
 .libs/*
 
