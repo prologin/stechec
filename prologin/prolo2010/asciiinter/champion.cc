@@ -122,7 +122,7 @@ void jouer()
 	  fgets(buffer, 80, stdin);
 	  if (sscanf(buffer, "%d", &n) != 1) n = 0; // bad value
 	} while (n < 1 || n > 4);
-        afficher_erreur(spawn(unit_of_int(n)));
+        afficher_erreur(renfort(unit_of_int(n)));
     }else if (strcmp(buffer, "end\n") == 0){
       break;
     }

@@ -33,6 +33,13 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
   return os;
 }
 
+extern "C" int nombre_unites_spawnees(bool e){
+  return api->nombre_unites_spawnees(e);
+}
+
+extern "C" int api_nombre_pc(){
+  return api->nombre_pc();
+}
 ///
 // Renvoie le numéro du tour actuel.
 //
@@ -49,7 +56,7 @@ extern "C" position api_pos_renfort(bool ennemi)
   return api->pos_spawn(ennemi);
 }
 
-extern "C" int nombre_unites(bool ennemi)
+extern "C" int api_nombre_unites(bool ennemi)
 {
   return api->nombre_unites_spawnees(ennemi);
 }
@@ -172,8 +179,8 @@ std::ostream& operator<<(std::ostream& os, erreur v)
   case QUOTA_DEPASSE: os << "QUOTA_DEPASSE"; break;
   case PLUS_DE_PA: os << "PLUS_DE_PA"; break;
   case DEJA_ATTAQUE: os << "DEJA_ATTAQUE"; break;
-  case PAS_SPAWNABLE: os << "PAS_SPAWNABLE"; break;
-  case SPAWN_OCCUPE: os << "SPAWN_OCCUPE"; break;
+  case UNITE_INTERDITE: os << "UNITE_INTERDITE"; break;
+  case RENFORT_IMPOSSIBLE: os << "RENFORT_IMPOSSIBLE"; break;
   case PAS_A_MOI: os << "PAS_A_MOI"; break;
   case PLUS_DE_CARTES: os << "PLUS_DE_CARTES"; break;
   case PHASE_CARTES_TERMINEE: os << "PHASE_CARTES_TERMINEE"; break;
@@ -245,7 +252,7 @@ extern "C" void api_afficher_taille_terrain(taille_terrain v)
 std::ostream& operator<<(std::ostream& os, caracs v)
 {
   os << "{ ";
-  os << "pa" << "=" << v.pa;
+  os << "pa_init" << "=" << v.pa_init;
   os << ", ";
   os << "portee" << "=" << v.portee;
   os << " }";
@@ -289,7 +296,7 @@ extern "C" void api_afficher_unite(unite v)
 std::ostream& operator<<(std::ostream& os, cartes v)
 {
   os << "{ ";
-  os << "soin" << "=" << v.soin;
+  os << "potion" << "=" << v.potion;
   os << ", ";
   os << "deguisement" << "=" << v.deguisement;
   os << ", ";

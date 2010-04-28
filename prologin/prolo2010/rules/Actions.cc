@@ -193,9 +193,9 @@ void ActionSpawn::verifier(GameData* g)
 {
   position p = g->spawn_pos();
   int i =  g->indice_at(p);
-  ASSERT(i == -1, SPAWN_OCCUPE);
-  ASSERT(tu_ != PERROQUET, PAS_SPAWNABLE);
-  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES, PAS_SPAWNABLE);
+  ASSERT(i == -1, RENFORT_IMPOSSIBLE);
+  ASSERT(tu_ != PERROQUET, UNITE_INTERDITE);
+  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES,QUOTA_DEPASSE);
 }
 
 void ActionSpawn::appliquer(GameData *g)
@@ -296,7 +296,7 @@ void ActionCarte::verifier(GameData* g)
   case DEGUISEMENT: cnt = c.deguisement; break;
   case BANZAI: cnt = c.banzai; break;
   case PACIFISME: cnt = c.pacifisme; break;
-  case SOIN: cnt = c.soin; break;
+  case SOIN: cnt = c.potion; break;
   }
 
   ASSERT(cnt > 0, PLUS_DE_CARTES);
@@ -323,7 +323,7 @@ void ActionCarte::add_to_carte_count(GameData* g, int p, int increment)
   case DEGUISEMENT: c.deguisement += increment; break;
   case BANZAI: c.banzai += increment; break;
   case PACIFISME: c.pacifisme += increment; break;
-  case SOIN: c.soin += increment; break;
+  case SOIN: c.potion += increment; break;
   }
 }
 
@@ -334,8 +334,8 @@ void ActionDeguisement::verifier(GameData* g)
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 
-  ASSERT(unite_ > PERROQUET, PAS_SPAWNABLE);
-  ASSERT(unite_ <= KANGOUROU, PAS_SPAWNABLE);
+  ASSERT(unite_ > PERROQUET, RENFORT_IMPOSSIBLE); // TODO
+  ASSERT(unite_ <= KANGOUROU, RENFORT_IMPOSSIBLE);
 }
 
 void ActionDeguisement::appliquer(GameData* g)
