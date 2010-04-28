@@ -124,7 +124,9 @@ taille_terrain Api::taille_terrain_actuelle()
 //
 erreur Api::soin(position cible)
 {
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionSoin, g_->get_current_player(), g_->indice_at(cible));
+  return OK;
 }
 
 ///
@@ -132,8 +134,10 @@ erreur Api::soin(position cible)
 //
 erreur Api::deguisement(position cible, type_unite nouveau_type)
 {
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionDeguisement, g_->get_current_player(), g_->indice_at(cible),
             nouveau_type);
+  return OK;
 }
 
 ///
@@ -141,7 +145,9 @@ erreur Api::deguisement(position cible, type_unite nouveau_type)
 //
 erreur Api::banzai(position cible)
 {
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionBanzai, g_->get_current_player(), g_->indice_at(cible));
+  return OK;
 }
 
 ///
@@ -149,7 +155,9 @@ erreur Api::banzai(position cible)
 //
 erreur Api::pacifisme()
 {
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionPacifisme, g_->get_current_player());
+  return OK;
 }
 
 ///
@@ -157,8 +165,10 @@ erreur Api::pacifisme()
 //
 erreur Api::deplacer(position cible, position pos)
 {
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionDeplacer, g_->get_current_player(),
             g_->indice_at(cible), pos);
+  return OK;
 }
 
 ///
@@ -167,6 +177,7 @@ erreur Api::deplacer(position cible, position pos)
 erreur Api::relever(position cible)
 {
   int qui = g_->indice_at(cible);
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionRelever, g_->get_current_player(), qui);
   return OK;
 }
@@ -176,6 +187,7 @@ erreur Api::relever(position cible)
 //
 erreur Api::attaquer(position attaquant, position cible)
 {
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionAttaquer, g_->get_current_player(),
 	    g_->indice_at(attaquant),
 	    g_->indice_at(cible));
@@ -187,7 +199,9 @@ erreur Api::attaquer(position attaquant, position cible)
 //
 erreur Api::spawn(type_unite quoi)
 {
+  g_->check(__FILE__, __LINE__);
   DO_ACTION(ActionSpawn, g_->get_current_player(), quoi);
+  return OK;
 }
 
 ///
@@ -195,7 +209,9 @@ erreur Api::spawn(type_unite quoi)
 //
 bool Api::annuler()
 {
-  return g_->annuler();
+  bool out = g_->annuler();
+  g_->check(__FILE__, __LINE__);
+  return out;
 }
 
 
