@@ -36,7 +36,7 @@ enum:
       - [pas_a_portee, la cible n'est pas à portée]
       - [unite_ko, l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO]
       - [unite_debout, l'unité que vous essayez de relever est déjà debout]
-      - [quota_depasse, nombre maximal d'unites, de spawn ou de relevages par tour dépassé]
+      - [quota_depasse, "nombre maximal d'unites, de spawn ou de relevages par tour dépassé"]
       - [plus_de_pa, cette unité a réalisé toutes ses actions]
       - [deja_attaque, cette unité a déjà attaqué]
       - [pas_spawnable, cette unité n'est pas spawnable]
