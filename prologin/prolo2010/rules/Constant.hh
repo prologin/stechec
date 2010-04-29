@@ -130,6 +130,8 @@ enum e_com_type {
   ACT_SPAWN,
   ACT_RELEVER,
 
+  RETIRER_KO,
+
   RETRECIR,
 
   LAST_MSG

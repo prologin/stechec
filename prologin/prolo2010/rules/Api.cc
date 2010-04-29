@@ -93,9 +93,17 @@ bool Api::need_retirer_ko()
   return g_->must_remove_ko();
 }
 
-bool Api::retirer_ko(unite u)
+bool Api::retirer_ko(position p)
 {
-  return u.ko >= 0;
+  int indice = g_->indice_at(p);
+  if (g_->retirer_ko(indice)) {
+    StechecPkt com(RETIRER_KO, -1);
+    com.Push(1, indice);
+    SendToServer(com);
+    return true;
+  }else{
+    return false;
+  }
 }
 
 bool Api::mon_tour()

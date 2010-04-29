@@ -79,7 +79,7 @@ public:
   bool annuler();
 
   void retrecissement();
-
+  bool retirer_ko(int i);
   // data
   int current_player;
   int nbr_unites_allowed;
