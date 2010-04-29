@@ -144,15 +144,21 @@ void jouer()
     }else if (strcmp(buffer, "show\n") == 0){
       view();
     }else if (strcmp(buffer, "card\n") == 0) {
-      printf("1 pacifisme ; 2 banzai ; 3 soin ; 4 deguisement");
-      if (sscanf(buffer, "%d", &n) != 1) continue; // bad value
+      printf("1 pacifisme ; 2 banzai ; 3 soin ; 4 deguisement\n");
+      do{
+	fgets(buffer, 80, stdin);
+	if (sscanf(buffer, "%d\n", &n) == 1) break;
+      } while (true);
       switch (n) {
       case 1: afficher_erreur(pacifisme()); break;
       default:
 	{
 	  position p;
 	  printf("entrez une position\n");
-	  scanf("(%d, %d)\n", &p.x, &p.y);
+	  do{
+	    fgets(buffer, 80, stdin);
+	    if (scanf("(%d, %d)\n", &p.x, &p.y) == 2) break;
+	  } while(true);
 	  switch(n){
 	  case 2: afficher_erreur(banzai(p)); break;
 	  case 3: afficher_erreur(potion(p)); break;
