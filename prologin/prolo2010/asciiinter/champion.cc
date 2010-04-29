@@ -122,13 +122,32 @@ void jouer()
   do{
     char buffer[80];
     fgets(buffer, 80, stdin);
+    printf("entrez une action. (ou help pour savoir comment les entrer)\n");
     if (sscanf(buffer, "move (%d, %d) (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
       if (contient_unite(from)){
 	afficher_erreur(deplacer(from, to));
       }else{
 	printf("aucune unite ici !");
       }
-    }else if (strcmp(buffer, "spawn\n") == 0){
+    }else if (strcmp(buffer, "help\n") == 0){
+      printf("usasge :\n");
+      printf("move (X, Y) (X, Y)\n");
+      printf("  permet de se deplacer\n");
+      printf("renfort\n");
+      printf("  permet de faire apparaitre une unite\n");
+      printf("end\n");
+      printf("  permet de terminer le tour et de laisser jouer votre adversaire\n");
+      printf("card\n");
+      printf("  permet de jouer une carte\n");
+      printf("(X, Y) a (X, Y)\n");
+      printf("  permet d'attaquer\n");
+      printf("show\n");
+      printf("  permet d'afficher l'etat de la map\n");
+      printf("annuler\n");
+      printf("  permet d'annuler la derniere action.\n");
+      printf(" ---- pour plus d'infos, contactez un orga\n");
+      printf("\n");
+    }else if (strcmp(buffer, "renfort\n") == 0){
       n = choix_unite();
       afficher_erreur(renfort(unit_of_int(n)));
     }else if (strcmp(buffer, "end\n") == 0){
