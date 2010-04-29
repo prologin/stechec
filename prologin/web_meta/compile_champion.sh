@@ -81,16 +81,14 @@ renice 5 $$ > /dev/null
     [ "`echo *.pas`" != "*.pas" ] && makefile=Makefile-pascal &&  cp $contest_path/$contest_name/compil/prolo_interface.pas .
     [ "`echo *.java`" != "*.java" ] && makefile=Makefile-java
     [ "`echo *.ml`" != "*.ml" ] && makefile=Makefile-caml  && cp $contest_path/$contest_name/compil/api.ml .
-    [ "`echo *.lua`" != "*.lua" ] && makefile=Makefile-lua
     [ "`echo *.cs`" != "*.cs" ] && makefile=Makefile-cs
     [ "`echo *.py`" != "*.py" ] && makefile=Makefile-python
-    [ "`echo *.js`" != "*.js" ] && makefile=Makefile-js
     [ "`echo *.php`" != "*.php" ] && makefile=Makefile-php
 
     lang=`echo $makefile | sed 's/^Makefile-//'` 
     echo "* Compile champion, language \"$lang\" detected."
     echo "------8<----------------------"
-    make -f $makefile_path/$makefile distclean all
+    make -f $makefile_path/$makefile MFPATH=$makefile_path distclean all
     res=$?
     echo "------>8----------------------"
     echo
@@ -105,7 +103,7 @@ renice 5 $$ > /dev/null
     echo "OK"
     echo ""
 
-    aux_files=$(< $makefile_path/$makefile grep -E "^AUXFILES[ \t]*=" 2>/dev/null | head -1 | cut -d '=' -f 2)
+    aux_files=$(make -f $makefile_path/$makefile MFPATH=$makefile_path list-run-reqs)
 
     for f in $aux_files ; do
         upload_file $f $champion_path/
