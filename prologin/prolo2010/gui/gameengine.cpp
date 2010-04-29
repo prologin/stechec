@@ -59,6 +59,7 @@ static void		xSDL_PushEvent(SDL_Event *ev)
 GameEngine::GameEngine(void)
 {
   atexit(GameEngineCleanup);
+  memset(this->_unit_remind, 0, sizeof(this->_unit_remind));
   std::cout << "Game engine init done" << std::endl;
 }
 
@@ -164,6 +165,7 @@ void			GameEngine::RetrieveData(void)
   int			game_turn;
   SDL_Event		ev;
   Player		player;
+  taille_terrain	map_size;
 
   ev.type = SDL_USEREVENT;
 
@@ -177,6 +179,12 @@ void			GameEngine::RetrieveData(void)
       last_game_turn = game_turn;
     }
 
+  map_size = taille_terrain_actuelle();
+  ev.user.code = EV_MAPSIZE;
+  ev.user.data1 = new int[1];
+  *(int*)(ev.user.data1) = map_size.taille * 100 / MAP_SIZE;
+  xSDL_PushEvent(&ev);
+
   player.cards = mes_cartes();
   player.units = unites();
   ev.user.code = EV_PLAYER;
@@ -186,10 +194,37 @@ void			GameEngine::RetrieveData(void)
   int size = player.units.size();
   for (int i = 0; i < size; i++)
     {
-      /* check units remind */
       ev.user.code = EV_CASETYPE;
-      ev.user.data1 = new EventCase(player.units[i].pos.x, player.units[i].pos.y, player.units[i]);
-      //      this->_unit_remind[player.units[i].pos.x + player.units[i].pos.y * MAP_WIDTH].push_back(/* ID */);
+      for (int j = 0; j < MAP_SIZE; ++j)
+	if (this->_unit_remind[j] == 1)//player.units[i].id)
+	  {
+	    int x = j % MAP_WIDTH;
+	    int y = j / MAP_HEIGHT;
+	    if (player.units[i].pos.x == x && player.units[i].pos.y > y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE0);
+	    else if (player.units[i].pos.x == x && player.units[i].pos.y < y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE1);
+	    else if (player.units[i].pos.x > x && player.units[i].pos.y == y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE2);
+	    else if (player.units[i].pos.x < x && player.units[i].pos.y == y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE3);
+	    else if (player.units[i].pos.x > x && player.units[i].pos.y > y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE4);
+	    else if (player.units[i].pos.x > x && player.units[i].pos.y < y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE5);
+	    else if (player.units[i].pos.x < x && player.units[i].pos.y < y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE6);
+	    else if (player.units[i].pos.x < x && player.units[i].pos.y > y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE7);
+	    xSDL_PushEvent(&ev);
+	  }
+      if (player.units[i].ko >= 0)
+	{
+	  ev.user.data1 = new EventCase(player.units[i].pos.x, player.units[i].pos.y, LD_KO0 + player.units[i].ko);
+	  xSDL_PushEvent(&ev);
+	}
+      ev.user.data1 = new EventCase(player.units[i].pos.x, player.units[i].pos.y, player.units[i].type_unite_actuel);
       xSDL_PushEvent(&ev);
+      this->_unit_remind[player.units[i].pos.x + player.units[i].pos.y * MAP_WIDTH] = 1; /* TODO */
     }
 }

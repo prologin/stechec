@@ -17,7 +17,7 @@
 ///
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
 //
-# define NBR_MAX_UNITES            10
+# define NBR_MAX_UNITES            20
 
 ///
 // Le temps, en nombre de tours, entre deux rétrécissement du terrain.
@@ -38,12 +38,12 @@ typedef enum erreur {
   CASE_OCCUPEE, /* <- la case sur laquelle vous tentez de vous déplacer est occupée */
   PAS_A_PORTEE, /* <- la cible n'est pas à portée */
   UNITE_KO, /* <- l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO */
-  UNITE_DEBOUT, /* <- l'unité que vous essayez de relever est déjà debout */
-  QUOTA_DEPASSE, /* <- nombre maximal d'unites, de spawn ou de relevages par tour dépassé */
+  UNITE_DEBOUT,
+  QUOTA_DEPASSE, /* <- nombre maximal d'unites */
   PLUS_DE_PA, /* <- cette unité a réalisé toutes ses actions */
   DEJA_ATTAQUE, /* <- cette unité a déjà attaqué */
-  UNITE_INTERDITE, /* <- cette unité ne peut pas être amenée en renfort */
-  RENFORT_IMPOSSIBLE, /* <- une unité est déjà présente sur le spawn */
+  PAS_SPAWNABLE, /* <- cette unité n'est pas spawnable */
+  SPAWN_OCCUPE, /* <- une unité est déjà présente sur le spawn */
   PAS_A_MOI, /* <- l'unité ciblée n'est pas à vous */
   PLUS_DE_CARTES, /* <- il n'y a plus de cartes du type spécifié dans votre main */
   PHASE_CARTES_TERMINEE, /* <- vous ne pouvez plus poser de cartes car vous avez fait une action */
@@ -84,7 +84,7 @@ typedef struct taille_terrain {
 // Donne les caractéristiques d'un type d'unité.
 //
 typedef struct caracs {
-  int pa_init;  /* <- nombre de points d'actions par tour */
+  int pa;  /* <- nombre de points d'actions par tour */
   int portee;  /* <- portée maximale de l'unité */
 } caracs;
 
@@ -96,11 +96,11 @@ typedef struct unite {
   position pos;  /* <- la position de l'unité */
   bool ennemi;  /* <- vrai si l'unité appartient à l'ennemi */
   type_unite type_unite_actuel;  /* <- le type de l'unité, qui change si l'unité est déguisée */
-  type_unite vrai_type_unite;  /* <- le vrai type de l'unité (qui ne change pas lors du déguisement) */
+  type_unite vrai_type_unite;  /* <- le vrai type de l'unité (qui ne change pas lors du déguisement */
   int ko;  /* <- une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité */
   int pa;  /* <- le nombre de PA restants à l'unité */
   int attaques;  /* <- le nombre d'attaques restants à l'unité */
-  int attaques_gratuites;  /* <- le nombre d'attaques gratuites (voir la partie banzai) */
+  int attaques_gratuites;
 } unite;
 
 
@@ -108,31 +108,11 @@ typedef struct unite {
 // Représente l'ensemble des cartes que vous pouvez utiliser.
 //
 typedef struct cartes {
-  int potion;  /* <- le nombre de cartes « Potion magique » */
+  int soin;  /* <- le nombre de cartes « Quoi d'neuf docteur ? » */
   int deguisement;  /* <- le nombre de cartes « Déguisement » */
   int banzai;  /* <- le nombre de cartes « Banzaï » */
   int pacifisme;  /* <- le nombre de cartes « Pacifisme » */
 } cartes;
-
-
-///
-// Renvoie le nombre de points de commandements.
-//
-extern "C" int api_nombre_pc();
-static inline int nombre_pc()
-{
-  return api_nombre_pc();
-}
-
-
-///
-// Renvoie le nombre d'unités en jeu.
-//
-extern "C" int api_nombre_unites(bool ennemi);
-static inline int nombre_unites(bool ennemi)
-{
-  return api_nombre_unites(ennemi);
-}
 
 
 ///
@@ -148,10 +128,10 @@ static inline int tour_actuel()
 ///
 // Renvoie la position du spawn (ennemi ou non).
 //
-extern "C" position api_pos_renfort(bool ennemi);
-static inline position pos_renfort(bool ennemi)
+extern "C" position api_pos_spawn(bool ennemi);
+static inline position pos_spawn(bool ennemi)
 {
-  return api_pos_renfort(ennemi);
+  return api_pos_spawn(ennemi);
 }
 
 
@@ -166,7 +146,7 @@ static inline caracs caracteristiques(type_unite tu)
 
 
 ///
-// Retourne une structure "cartes" contenant les informations sur les cartes que vous avez en main.
+// Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
 //
 extern "C" cartes api_mes_cartes();
 static inline cartes mes_cartes()
@@ -186,7 +166,7 @@ static inline std::vector<unite> unites()
 
 
 ///
-// Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
+// Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure \texttt{taille_terrain}.
 //
 extern "C" taille_terrain api_taille_terrain_actuelle();
 static inline taille_terrain taille_terrain_actuelle()
@@ -196,12 +176,12 @@ static inline taille_terrain taille_terrain_actuelle()
 
 
 ///
-// Utilise une carte « Potion magique » que vous avez dans votre main.
+// Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
 //
-extern "C" erreur api_potion(position cible);
-static inline erreur potion(position cible)
+extern "C" erreur api_soin(position cible);
+static inline erreur soin(position cible)
 {
-  return api_potion(cible);
+  return api_soin(cible);
 }
 
 
@@ -246,7 +226,7 @@ static inline erreur deplacer(position cible, position pos)
 
 
 ///
-// Relève une unité n'ayant plus de marqueurs de KO.
+// Relève une unité n'ayant plus de tours KO.
 //
 extern "C" erreur api_relever(position cible);
 static inline erreur relever(position cible)
@@ -268,15 +248,15 @@ static inline erreur attaquer(position attaquant, position cible)
 ///
 // Fait apparaitre une unité sur la case de spawn.
 //
-extern "C" erreur api_renfort(type_unite quoi);
-static inline erreur renfort(type_unite quoi)
+extern "C" erreur api_spawn(type_unite quoi);
+static inline erreur spawn(type_unite quoi)
 {
-  return api_renfort(quoi);
+  return api_spawn(quoi);
 }
 
 
 ///
-// Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
+// Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
 //
 extern "C" bool api_annuler();
 static inline bool annuler()

@@ -113,7 +113,6 @@ void ActionAttaquer::appliquer(GameData *g)
 
 void ActionAttaquer::annuler(GameData *g)
 {
-  LOG3("annule une attaque");
   if (g->nbr_unites_allowed != nbr_unites_allowed_)
     g->deja_bougee[attaquant_] = false;
   Action::annuler(g);
@@ -153,7 +152,6 @@ void Action::appliquer(GameData* g)
 }
 
 void Action::annuler(GameData *g){
-  LOG3("annule une action abstraite");
   g->can_play_card = can_play_card_;
   g->nbr_unites_allowed = nbr_unites_allowed_;
 }
@@ -178,7 +176,6 @@ void ActionRelever::appliquer(GameData* g)
 
 void ActionRelever::annuler(GameData* g)
 {
-  LOG3("annule un relever");
   if (g->nbr_unites_allowed != nbr_unites_allowed_)
     g->deja_bougee[unite_] = false;
   Action::annuler(g);
@@ -196,9 +193,9 @@ void ActionSpawn::verifier(GameData* g)
 {
   position p = g->spawn_pos();
   int i =  g->indice_at(p);
-  ASSERT(i == -1, RENFORT_IMPOSSIBLE);
-  ASSERT(tu_ != PERROQUET, UNITE_INTERDITE);
-  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES,QUOTA_DEPASSE);
+  ASSERT(i == -1, SPAWN_OCCUPE);
+  ASSERT(tu_ != PERROQUET, PAS_SPAWNABLE);
+  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES, PAS_SPAWNABLE);
 }
 
 void ActionSpawn::appliquer(GameData *g)
@@ -223,11 +220,9 @@ void ActionSpawn::appliquer(GameData *g)
 
 void ActionSpawn::annuler(GameData *g)
 {
-  LOG3("annule un spawn");
   Action::annuler(g);
   g->unites.pop_back();
   g->nbr_toons_spawn[player_]--;
-  g->deja_bougee[g->unites.size()] = false;
 }
 
 void ActionSpawn::envoyer(Api *api)
@@ -269,19 +264,16 @@ void ActionDeplacer::appliquer(GameData* g)
 
   old_pos_ = u.pos;
   u.pos = dest_;
-  u.pa -= distance(old_pos_, dest_);
 }
 
 void ActionDeplacer::annuler(GameData* g)
 {
-  LOG3("annule un deplacer");
   if (g->nbr_unites_allowed != nbr_unites_allowed_)
   {
     g->deja_bougee[unite_] = false;
     g->nbr_unites_allowed += 1;
   }
   Action::annuler(g);
-  g->unites[unite_].pa += distance(old_pos_, g->unites[unite_].pos);
   g->unites[unite_].pos = old_pos_;
 }
 
@@ -304,7 +296,7 @@ void ActionCarte::verifier(GameData* g)
   case DEGUISEMENT: cnt = c.deguisement; break;
   case BANZAI: cnt = c.banzai; break;
   case PACIFISME: cnt = c.pacifisme; break;
-  case SOIN: cnt = c.potion; break;
+  case SOIN: cnt = c.soin; break;
   }
 
   ASSERT(cnt > 0, PLUS_DE_CARTES);
@@ -318,7 +310,6 @@ void ActionCarte::appliquer(GameData* g)
 
 void ActionCarte::annuler(GameData* g)
 {
-  LOG3("annule une carte");
   add_to_carte_count(g, player_, 1);
   add_to_carte_count(g, player_ ^ 1, -1);
 }
@@ -332,7 +323,7 @@ void ActionCarte::add_to_carte_count(GameData* g, int p, int increment)
   case DEGUISEMENT: c.deguisement += increment; break;
   case BANZAI: c.banzai += increment; break;
   case PACIFISME: c.pacifisme += increment; break;
-  case SOIN: c.potion += increment; break;
+  case SOIN: c.soin += increment; break;
   }
 }
 
@@ -343,8 +334,8 @@ void ActionDeguisement::verifier(GameData* g)
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 
-  ASSERT(unite_ > PERROQUET, RENFORT_IMPOSSIBLE); // TODO
-  ASSERT(unite_ <= KANGOUROU, RENFORT_IMPOSSIBLE);
+  ASSERT(unite_ > PERROQUET, PAS_SPAWNABLE);
+  ASSERT(unite_ <= KANGOUROU, PAS_SPAWNABLE);
 }
 
 void ActionDeguisement::appliquer(GameData* g)
@@ -358,7 +349,7 @@ void ActionDeguisement::appliquer(GameData* g)
 void ActionDeguisement::annuler(GameData* g)
 {
   ActionCarte::annuler(g);
-  LOG3("annule un deguisement");
+
   unite& u = g->unites[unite_];
   u.type_unite_actuel = ancien_type_;
 }
@@ -387,8 +378,8 @@ void ActionBanzai::appliquer(GameData* g)
 void ActionBanzai::annuler(GameData* g)
 {
   ActionCarte::annuler(g);
-  LOG3("annule un banzaii");
-  g->unites[unite_].attaques_gratuites -= 1;
+
+  g->unites[unite_].attaques -= 1;
 }
 
 void ActionBanzai::envoyer(Api* api)
@@ -424,7 +415,7 @@ void ActionSoin::appliquer(GameData* g)
 void ActionSoin::annuler(GameData* g)
 {
   ActionCarte::annuler(g);
-  LOG3("annule un soin");
+
   unite& u = g->unites[unite_];
 
   u.pa = old_pa_;
@@ -465,7 +456,7 @@ void ActionPacifisme::annuler(GameData* g)
 {
   int i = 0;
   ActionCarte::annuler(g);
-  LOG3("annule un pacifisme");
+
   for (std::vector<int>::const_iterator it = old_attaques_.begin();
        it != old_attaques_.end(); ++it, ++i)
   {

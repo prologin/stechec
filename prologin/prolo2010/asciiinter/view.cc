@@ -27,18 +27,14 @@ static void show_carte(int number, std::string txt)
   if (number)
     {
       std::cout << "vous avez " << number
-		<< " carte " << pluriel
+		<< " carte" << pluriel
 		<< "de " << txt << "\n";
-    }
-  else
-    {
-      std::cout << "vous n'avez plus de " << txt << "\n";
     }
 }
 
 static void show_cartes(cartes c)
 {
-  show_carte(c.potion, "potion");
+  show_carte(c.soin, "soin");
   show_carte(c.deguisement, "deguisement");
   show_carte(c.pacifisme, "pacifisme");
   show_carte(c.banzai, "banzai");
@@ -70,7 +66,7 @@ static void flush(){
 static void show_map(std::vector<unite> units, taille_terrain size)
 {
   int s = units.size();
-  //std::cout << "\e[2J";
+  std::cout << "\e[2J";
   for (int i=0; i < s ; i ++){
     for (int j = i + 1; j < s; j ++){
       if (units[i].pos.y > units[j].pos.y ||
@@ -84,23 +80,18 @@ static void show_map(std::vector<unite> units, taille_terrain size)
   flush();
   bool show = true;
   position p = { size.min_coord, size.min_coord };
-  for (int i = size.min_coord; i <= size.max_coord; i ++){
+  for (int i = size.min_coord; i < size.max_coord; i ++){
     printf("|%3d", i);
   }
   flush();
   std::cout << "\n";
-  if (s == 0)
-    {
-      std::cout << "no unit\n";
-      return;
-    }
   for (int i = 0; i < s ; i ++){
     unite u = units[i];
     while(p.x != u.pos.x || p.y != u.pos.y){
       if (show) std::cout << "|   ";
       flush();
       p.x ++;
-      if (p.x == size.max_coord + 1){
+      if (p.x == size.max_coord){
 	p.x = size.min_coord;
 	printf("%3d\n", p.y);
 	p.y ++;
@@ -112,11 +103,11 @@ static void show_map(std::vector<unite> units, taille_terrain size)
     show = false;
     flush();
   }
-  while(p.x <= size.min_coord || p.y <= size.max_coord){
+  while(p.x != size.min_coord || p.y != size.max_coord){
     if (show) std::cout << "|   ";
     p.x ++;
     flush();
-    if (p.x == size.max_coord + 1){
+    if (p.x == size.max_coord){
       p.x = size.min_coord;
       printf("%3d\n", p.y);
       p.y ++;
@@ -129,7 +120,7 @@ static void show_map(std::vector<unite> units, taille_terrain size)
 
 void view(void)
 {
-  std::cout << "tour actuel : " << tour_actuel() << "\n";
+  std::cout << "tour actuel : " << tour_actuel() << "_n";
   cartes c = mes_cartes();
   show_cartes(c);
   taille_terrain size = taille_terrain_actuelle();

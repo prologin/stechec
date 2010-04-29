@@ -38,6 +38,14 @@ static SpritesList	DisplaySprite[] =
     {{SP_KO1, DATA("/graphics/ko1.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
     {{SP_KO2, DATA("/graphics/ko2.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
     {{SP_KO3, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE0, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE1, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE2, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE3, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE4, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE5, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE6, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE7, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
     {{SP_NONE, NULL, 0, 0, 0, false, 0, 0, {0,0}}, NULL}
   };
 
@@ -421,9 +429,7 @@ void			Display::userEvent(unsigned int code, void *data)
     case EV_CASETYPE:
       c = static_cast<EventCase*>(data);
       printf("%i %i\n", c->x, c->y);
-      if (c->data.ko >= 0)
-	this->_map->setCase(LD_KO0 + c->data.ko, c->x, c->y);
-      this->_map->setCase(c->data.type_unite_actuel, c->x, c->y);
+      this->_map->setCase(c->data, c->x, c->y);
       delete c;
       break;
     case EV_PLAYER:
