@@ -255,6 +255,8 @@ def dispatch_server_result(server, args):
         mobj = SCORE_RE.match(line)
         if mobj is not None:
             idp, score, fail, l = mobj.groups()
+            if fail != -1:
+                score = -1
             scores.append((score, results[int(idp)][0]))
 
     cur = db.cursor()
