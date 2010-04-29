@@ -25,8 +25,10 @@ lib_TARGETS = #{target}
 # Evite de toucher a ce qui suit
 #{target}-dists += api.py interface.hh
 #{target}-srcs = interface.cc stechec_lime.cc
-#{target}-cxxflags = -fPIC $(shell python-config --includes)
-#{target}-ldflags = -s $(shell python-config --ldflags)
+
+pc = $(shell [ which python-config >/dev/null 2>&1 && echo python-config || echo python2.5-config)
+#{target}-cxxflags = -fPIC $(shell $(pc) --includes)
+#{target}-ldflags = -s $(shell $(pc) --ldflags)
 
 V=1
 include $(MFPATH)/rules.mk
