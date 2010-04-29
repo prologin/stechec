@@ -34,6 +34,9 @@ public:
 
   // Call this before everything else.
   void Init();
+  void check();
+
+  void check(const char * file, int line);
 
   int nbr_toons(bool ennemi);
 
@@ -81,12 +84,12 @@ public:
   int current_player;
   int nbr_unites_allowed;
   bool can_play_card;
-  bool deja_bougee[NBR_MAX_UNITES];
+  bool deja_bougee[NBR_MAX_UNITES * 2];
   cartes players_cartes[2];
   taille_terrain tt;
   std::vector<unite> unites;
   int nbr_toons_spawn[2];
-  // server internal
+  // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
   std::vector<std::vector<int> > packets;
 
 private:

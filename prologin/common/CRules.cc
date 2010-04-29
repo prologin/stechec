@@ -165,8 +165,10 @@ void CRules::msgBeforeTurn(const MsgBeforeTurn*)
   
   data_->current_turn_++;
 
-  LOG2("================== Turn %1 ==================",
-       data_->getCurrentTurn());
+  int turn = (data_->current_turn_ + 1)/ 2;
+  int player = (data_->current_turn_ - 1) % 2;
+  LOG2("================== Turn %1, player %2 ==================",
+       turn, player);
 
   int r = client_entry_->beforeNewTurn();
   if (!afterHook(r, "beforeNewTurn"))
