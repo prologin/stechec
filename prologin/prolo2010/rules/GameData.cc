@@ -101,6 +101,15 @@ bool GameData::mon_tour()
   return curr_player == getTeamId();
 }
 
+bool GameData::retirer_ko(int indice){
+  if ( unites[indice].ko > 0 && unites[indice].ennemi){
+    unites[indice].ko --;
+    return true;
+  }else{
+    return false;
+  }
+}
+
 void GameData::team_switched(){
   current_player = (current_player + 1 ) % 2;
   reset_moves(); // nobody has played;

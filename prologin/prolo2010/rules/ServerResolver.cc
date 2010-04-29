@@ -46,16 +46,23 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       data.push_back(it->second.second->arg[i]);
 
     g_->packets.push_back(data);
-
-    // apply the action
-    Action* act = act_from_pkt(it->second.first,
-                               it->second.second);
-    try {
-      act->verifier(g_);
-      g_->appliquer_action(act);
-    } catch (erreur err) {
-      LOG1("Action error : %1", err);
+    switch (it->second.first){
+    case RETIRER_KO:
+      g_->retirer_ko( it->second.second->arg[0]);
+      break;
+    case RETRECIR:
       abort();
+    default:
+      // apply the action
+      Action* act = act_from_pkt(it->second.first,
+				 it->second.second);
+      try {
+	act->verifier(g_);
+	g_->appliquer_action(act);
+      } catch (erreur err) {
+	LOG1("Action error : %1", err);
+	abort();
+      }
     }
   }
 }

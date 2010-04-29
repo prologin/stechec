@@ -43,7 +43,7 @@ protected:
 public:
   // Internal API
   bool need_retirer_ko();
-  bool retirer_ko(unite u);
+  bool retirer_ko(position u);
   bool mon_tour();
   void sendActions();
 public:
