@@ -11,67 +11,25 @@
 #
 
 class PythonMakefile
-  def initialize
-    @makefile = <<EOF
-#####################
-# Macro Definitions #
-#####################
-CXX 	= g++
-LIMEOBJ ?= ../includes/main.o
-OBJS 	= interface.o $(LIMEOBJ)
-RM 	= /bin/rm -f
-AUXFILES= api.py
-
-CFLAGS = -fPIC
-CXXFLAGS = -fPIC -W -Wall \\
-   `python-config --cflags` \\
-   $(MY_CXXFLAGS)
-
-LIBS = `python-config --ldflags`
-
-##############################
-# Basic Compile Instructions #
-##############################
-
-all: $(NAME)
-
-interface.o : interface.cc interface.hh
-
-$(NAME): $(OBJS)
-\t$(CXX) #{TARGET_GCC_LINK} $(OBJS) $(LIBS) -o $(NAME) $(CHECK_CHEAT)
-\t@echo Finished
-
-clean:
-\t@echo "Cleaning..."
-\t$(RM) $(OBJS) *~ *.pyc #*#
-
-distclean: clean
-\t$(RM) $(NAME) prologin.tgz
-
-tar:
-\ttar cvzf prologin.tgz interface.cc interface.hh $(SRC) $(AUXFILES)
-EOF
-  end
-
-  def build_client(path)
-    f = File.new(path + "makepython", 'w')
-    f.puts "# -*- Makefile -*-"
-    f.print @makefile
-    f.close
-  end
-
   def build_metaserver(path)
-    f = File.new(path + "Makefile-python", 'w')
+    target = $conf['conf']['player_lib']
+    f = File.open(path + "Makefile", 'w')
     f.print <<-EOF
 # -*- Makefile -*-
 
-SRC	  = $(wildcard *.py)
-NAME      = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-LIMEOBJ	  = stechec_lime.o
+# Tu peux rajouter des fichiers source ici
+#{target}-dists = $(wildcard *.py)
 
+# Evite de toucher a ce qui suit
+#{target}-dists += api.py interface.hh
+#{target}-srcs = interface.cc stechec_lime.cc
+#{target}-cxxflags = -fPIC $(shell python-config --includes)
+#{target}-ldflags = -s $(shell python-config --ldflags)
+
+include ../includes/rules.mk
     EOF
-    f.print @makefile
     f.close
   end
 
