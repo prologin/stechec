@@ -69,6 +69,7 @@ namespace Prologin {
 		public int Pa; // <- le nombre de PA restants à l'unité
 		public int Attaques; // <- le nombre d'attaques restants à l'unité
 		public int AttaquesGratuites; // <- le nombre d'attaques gratuites (voir la partie banzai)
+		public int Id; // <- l'identifiant unique de l'unité
 	}
 
 // Représente l'ensemble des cartes que vous pouvez utiliser.

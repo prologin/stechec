@@ -27,11 +27,11 @@ void GameData::check(const char * file, int line){
   for(int i = 0; i < NBR_MAX_UNITES * 2; i ++)
     LOG3("deja_bouge[%1] = %2", i, deja_bougee[i]);
   for(int i = 0; i < unites.size(); i ++)
-    LOG3("unite[%1] = {pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types=(%8, %9)}",
+    LOG3("unite[%1] = {id:%10, pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types=(%8, %9)}",
 	 i, unites[i].pos.x, unites[i].pos.y,
 	 unites[i].ko, unites[i].pa, unites[i].attaques, unites[i].attaques_gratuites,
 	 unites[i].type_unite_actuel,
-	 unites[i].vrai_type_unite);
+	 unites[i].vrai_type_unite, unites[i].id);
   LOG3("players_cartes[0] = {%2, %3, %4, %5}", players_cartes[0].potion, players_cartes[0].deguisement, players_cartes[0].banzai, players_cartes[0].pacifisme);
   LOG3("players_cartes[1] = {%2, %3, %4, %5}", players_cartes[1].potion, players_cartes[1].deguisement, players_cartes[1].banzai, players_cartes[1].pacifisme);
 }
@@ -49,6 +49,8 @@ GameData::GameData()
       PERROQUET,
       0,
       0,
+      0,
+      0,
       0
     };
     unite u2 = {
@@ -58,7 +60,9 @@ GameData::GameData()
       PERROQUET,
       0,
       0,
-      0
+      0,
+      0,
+      1
     };
     reset_unite(u1, true);
     reset_unite(u2, true);

@@ -149,6 +149,8 @@ void cxx2lang(unite in, MonoObject* moObj = NULL)
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Attaques"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.attaques_gratuites));
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "AttaquesGratuites"), &arg);
+  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.id));
+  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Id"), &arg);
 }
 
 ///
@@ -282,6 +284,8 @@ MonoObject* cxx2lang< MonoObject*, unite >(unite in)
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Attaques"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.attaques_gratuites));
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "AttaquesGratuites"), &arg);
+  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.id));
+  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Id"), &arg);
   return moObj;
 }
 template <>
@@ -300,6 +304,7 @@ unite lang2cxx< MonoObject*, unite >(MonoObject* in)
   mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Pa"), &out.pa);
   mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Attaques"), &out.attaques);
   mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "AttaquesGratuites"), &out.attaques_gratuites);
+  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Id"), &out.id);
   return out;
 }
 

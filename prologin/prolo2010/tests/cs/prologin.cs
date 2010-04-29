@@ -62,6 +62,8 @@ namespace Prologin {
 		public void Jouer()
 		{
             Unite[] tmpu = Unites();
+            foreach (Unite item in tmpu)
+                    AfficherUnite(item);
             Unite uTiti = new Unite();    //Prevent warning
             foreach (Unite item in tmpu)
                 if (item.Ennemi && item.VraiTypeUnite == TypeUnite.PERROQUET)

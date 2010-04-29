@@ -101,6 +101,7 @@ typedef struct unite {
   int pa;  /* <- le nombre de PA restants à l'unité */
   int attaques;  /* <- le nombre d'attaques restants à l'unité */
   int attaques_gratuites;  /* <- le nombre d'attaques gratuites (voir la partie banzai) */
+  int id;
 } unite;
 
 
