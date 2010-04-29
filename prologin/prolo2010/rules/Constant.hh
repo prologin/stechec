@@ -105,6 +105,7 @@ typedef struct unite {
   int pa;  /* <- le nombre de PA restants à l'unité */
   int attaques;  /* <- le nombre d'attaques restants à l'unité */
   int attaques_gratuites;
+  int id;  /* <- l'identifiant unique de l'unité */
 } unite;
 
 ///

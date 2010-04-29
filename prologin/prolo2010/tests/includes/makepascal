@@ -1,0 +1,43 @@
+# -*- Makefile -*-
+#####################
+# Macro Definitions #
+#####################
+CXX 	  = g++
+FPC       = fpc
+MAKE 	  = make
+OBJS 	  = ${SRC:.pas=.o}
+LIMEOBJ   ?= ../includes/main.o
+RM 	  = /bin/rm -f
+
+CFLAGS    = -fPIC $(MY_CFLAGS)
+CXXFLAGS  = -fPIC $(MY_CXXFLAGS)
+
+##############################
+# Basic Compile Instructions #
+##############################
+
+.SUFFIXES: .pas
+
+all: ${NAME}
+
+$(NAME): interface.o $(SRC) $(LIMEOBJ)
+	${FPC} -Cn prologin.pas ${CFLAGS} -o"${NAME}"
+#	fpc, what a bullshit ! it doesn't want our ~2000 command line argument...
+#	instead, omit link phase, add options for ld in his script, then link.
+	@sed -ie 's!^/usr/bin/ld!& $(CHECK_CHEAT) interface.o $(LIMEOBJ) !' ./ppas.sh
+#	@sed -ie '/INPUT(/ a $(LIMEOBJ) ' ./link.res
+	@sed -ie '/global:/ a run;' ./link.res
+	@./ppas.sh
+	@$(RM) ./ppas.sh ./link.res*
+	#@mv lib${NAME} ${NAME}
+	@echo Finished
+
+clean:
+	@echo "Cleaning..."
+	${RM} *.o *.ppu *~ #*#
+
+distclean: clean
+	${RM} ${NAME} prologin.tgz
+
+tar:
+	tar cvzf prologin.tgz prolo_interface.pas $(SRC)

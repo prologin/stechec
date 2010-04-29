@@ -206,6 +206,7 @@ void ActionSpawn::appliquer(GameData *g)
   position p = g->spawn_pos();
   Action::appliquer(g);
   {
+    static int id_ = 2;
     unite u = {
       p,
       false,
@@ -213,8 +214,11 @@ void ActionSpawn::appliquer(GameData *g)
       tu_,
       -1,
       0,
-      0
+      0,
+      0,
+      id_
     };
+    id_++;
     g->deja_bougee[g->unites.size()] = true;
     g->unites.push_back(u);
   }

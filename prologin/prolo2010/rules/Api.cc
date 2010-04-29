@@ -42,7 +42,8 @@ bool operator==(unite u1, unite u2){
     u1.ko == u2.ko &&
     u1.pa == u2.pa &&
     u1.attaques == u2.attaques &&
-    u1.attaques_gratuites == u2.attaques_gratuites;
+    u1.attaques_gratuites == u2.attaques_gratuites &&
+    u1.id == u2.id;
 }
 
 bool operator==(GameData p1, GameData p2){

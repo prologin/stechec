@@ -269,6 +269,8 @@ extern "C" void api_afficher_caracs(caracs v)
 std::ostream& operator<<(std::ostream& os, unite v)
 {
   os << "{ ";
+  os << "id" << "=" << v.id;
+  os << ", ";
   os << "pos" << "=" << v.pos;
   os << ", ";
   os << "ennemi" << "=" << v.ennemi;
