@@ -18,6 +18,26 @@
 #define INIT()					\
   assert(initialized_);
 
+void GameData::check(const char * file, int line){
+  LOG3("%1:%2", file, line );
+  LOG3("current_player:%1", current_player );
+  LOG3("unites_allowed : %1", nbr_unites_allowed);
+  LOG3("can_play_card : %1", can_play_card);
+  LOG3("nbr_toons_spawn: %1 %2", nbr_toons_spawn[0], nbr_toons_spawn[1]);
+  for(int i = 0; i < NBR_MAX_UNITES * 2; i ++)
+    LOG3("deja_bouge[%1] = %2", i, deja_bougee[i]);
+  for(int i = 0; i < unites.size(); i ++)
+    LOG3("unite[%1] = {pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types=(%8, %9)}",
+	 i, unites[i].pos.x, unites[i].pos.y,
+	 unites[i].ko, unites[i].pa, unites[i].attaques, unites[i].attaques_gratuites,
+	 unites[i].type_unite_actuel,
+	 unites[i].vrai_type_unite);
+  LOG3("players_cartes[0] = {%2, %3, %4, %5}", players_cartes[0].potion, players_cartes[0].deguisement, players_cartes[0].banzai, players_cartes[0].pacifisme);
+  LOG3("players_cartes[1] = {%2, %3, %4, %5}", players_cartes[1].potion, players_cartes[1].deguisement, players_cartes[1].banzai, players_cartes[1].pacifisme);
+}
+
+#define CHECK check(__FILE__, __LINE__);
+
 GameData::GameData()
 {
   srand(time(0));
@@ -47,14 +67,18 @@ GameData::GameData()
   };
   current_player = 0;
   {
-    cartes init_cartes = {1,1,1,1};
-    players_cartes[0] = init_cartes ;
-    players_cartes[1] = init_cartes ;
+    cartes c = {1,2,3,4};
+    LOG3("cartes = {%2, %3, %4, %5}", c.potion, c.deguisement, c.banzai, c.pacifisme);
+  
+    players_cartes[0] = c ;
+    players_cartes[1] = c ;
   }
   tt.taille = TAILLE_DEPART;
   tt.min_coord = 0;
   tt.max_coord = TAILLE_DEPART - 1;
+  CHECK
   reset_moves();
+  CHECK
   can_play_card = true;
   nbr_unites_allowed = 3;
   nbr_toons_spawn[0] = 1;
@@ -81,6 +105,7 @@ void GameData::team_switched(){
     reset_unite(unites[i], false); // reset action points
   }
   can_play_card = true;
+  nbr_unites_allowed = 3;
 }
 
 bool GameData::out_map(position p){
@@ -152,7 +177,8 @@ void GameData::reset_unite(unite &u, bool reset_ko){
   u.type_unite_actuel = u.vrai_type_unite;
   if (reset_ko) u.ko = -1;
   u.attaques = 1;
-  u.pa = caracteristiques(u.vrai_type_unite).pa;
+  u.pa = caracteristiques(u.vrai_type_unite).pa_init;
+  u.attaques_gratuites = 0;
 }
 
 bool GameData::can_active(int i){
@@ -164,7 +190,7 @@ bool GameData::can_active(int i){
 }
 
 void GameData::reset_moves(){
-  for (int i = 0; i < 18; i ++){
+  for (int i = 0; i < NBR_MAX_UNITES * 2; i ++){
     deja_bougee[i] = false;
   }
 }
@@ -184,7 +210,9 @@ bool GameData::must_remove_ko(){
 
 // accesseurs
 cartes GameData::get_cartes(int i){
-  return players_cartes[i];
+  cartes c = players_cartes[i];
+  LOG3("get_cartes(%1) = {%2, %3, %4, %5}", i, c.potion, c.deguisement, c.banzai, c.pacifisme);
+  return c;
 }
 
 taille_terrain GameData::get_tt(){
@@ -254,13 +282,15 @@ void GameData::send_actions()
 }
 
 bool GameData::annuler(){
-  if (actions.empty())
+  if (actions.empty()){
+    LOG3("annuler : empty stack");
     return false;
+  }
   else
   {
     Action* act = actions.back();
     actions.pop_back();
-
+    LOG3("annuler : process...");
     act->annuler(this);
     delete act;
     return true;

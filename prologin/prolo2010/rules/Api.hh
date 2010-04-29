@@ -111,6 +111,9 @@ public:
 // Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
 //
    bool annuler();
+#ifdef DEBUG
+  std::vector<GameData> check;
+#endif
 
 };
 
