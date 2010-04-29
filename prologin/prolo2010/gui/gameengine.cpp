@@ -116,7 +116,10 @@ void			GameEngine::Run(void)
       while (dsp->Read((void*)(&status), sizeof(status)))
 	{
 	  if (status == EV_DISPLAY_END)
-	    exit(0);
+	    {
+	      delete dsp;
+	      exit(0);
+	    }
 	  else if (status == EV_DISPLAY_NEXTTURN)
 	    break;
 	}
@@ -129,32 +132,14 @@ void			GameEngine::Run(void)
   ev.user.code = EV_ENDGAME;
   xSDL_PushEvent(&ev);
   winner = -1;
-  /*for (int i = 0; i < (int)this->_player.size(); i++)
-    {
-      score = this->_player[i].score + this->_player[i].money;
-
-      ev.user.code = EV_PLAYER;
-      ev.user.data1 = new EventPlayer(i, this->_player[i].score, this->_player[i].money, this->_player[i].bid);
-      xSDL_PushEvent(&ev);
-
-      if (winner == -1 || score > score_winner)
-	{
-	  winner = i;
-	  score_winner = score;
-	}
-      else if (score == score_winner)
-	winner = -2;
-	}*/
-  /*ev.user.code = EV_WINNER;
-    if (winner == -2)
-    ev.user.data1 = new EventPlayer(-1, 0, 0, 0);
-  else
-    ev.user.data1 = new EventPlayer(winner, this->_player[winner].score, this->_player[winner].money, this->_player[winner].bid);
-    xSDL_PushEvent(&ev);*/
   while (dsp->Read((void*)(&status), sizeof(status)))
     {
       if (status == EV_DISPLAY_END)
-	exit(0);
+	{
+	  dsp->Stop();
+	  delete dsp;
+	  exit(0);
+	}
     }
 }
 
@@ -201,21 +186,21 @@ void			GameEngine::RetrieveData(void)
 	    int x = j % MAP_WIDTH;
 	    int y = j / MAP_HEIGHT;
 	    ev.user.data1 = NULL;
-	    if (player.units[i].pos.x == x && player.units[i].pos.y > y)
+	    if (player.units[i].pos.x == x && player.units[i].pos.y < y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE0);
-	    else if (player.units[i].pos.x == x && player.units[i].pos.y < y)
+	    else if (player.units[i].pos.x == x && player.units[i].pos.y > y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE1);
-	    else if (player.units[i].pos.x > x && player.units[i].pos.y == y)
-	      ev.user.data1 = new EventCase(x, y, LD_MOVE2);
 	    else if (player.units[i].pos.x < x && player.units[i].pos.y == y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE2);
+	    else if (player.units[i].pos.x > x && player.units[i].pos.y == y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE3);
-	    else if (player.units[i].pos.x > x && player.units[i].pos.y > y)
-	      ev.user.data1 = new EventCase(x, y, LD_MOVE4);
-	    else if (player.units[i].pos.x > x && player.units[i].pos.y < y)
-	      ev.user.data1 = new EventCase(x, y, LD_MOVE5);
 	    else if (player.units[i].pos.x < x && player.units[i].pos.y < y)
-	      ev.user.data1 = new EventCase(x, y, LD_MOVE6);
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE4);
 	    else if (player.units[i].pos.x < x && player.units[i].pos.y > y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE5);
+	    else if (player.units[i].pos.x > x && player.units[i].pos.y > y)
+	      ev.user.data1 = new EventCase(x, y, LD_MOVE6);
+	    else if (player.units[i].pos.x > x && player.units[i].pos.y < y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE7);
 	    if (ev.user.data1 != NULL)
 	      xSDL_PushEvent(&ev);

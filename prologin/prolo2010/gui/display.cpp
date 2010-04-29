@@ -38,14 +38,14 @@ static SpritesList	DisplaySprite[] =
     {{SP_KO1, DATA("/graphics/ko1.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
     {{SP_KO2, DATA("/graphics/ko2.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
     {{SP_KO3, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE0, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE1, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE2, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE3, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE4, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE5, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE6, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
-    {{SP_MOVE7, DATA("/graphics/ko3.png"), 1, 900, 0, true, 116, 116, {0,0}}, NULL},
+    {{SP_MOVE0, DATA("/graphics/mv0.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_MOVE1, DATA("/graphics/mv1.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_MOVE2, DATA("/graphics/mv2.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_MOVE3, DATA("/graphics/mv3.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_MOVE4, DATA("/graphics/mv4.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_MOVE5, DATA("/graphics/mv5.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_MOVE6, DATA("/graphics/mv6.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
+    {{SP_MOVE7, DATA("/graphics/mv7.png"), 1, 900, 0, true, 116, 61, {0,0}}, NULL},
     {{SP_NONE, NULL, 0, 0, 0, false, 0, 0, {0,0}}, NULL}
   };
 
@@ -58,18 +58,6 @@ static FontsList	DisplayFont[] =
     {FT_NONE, 0, NULL, NULL}
   };
 
-/*
-** This function will be called at program exits to correctly
-** shutdown the display.
-*/
-static void		DisplayCleanup(void)
-{
-  Display		*dsp;
-
-  dsp = Display::GetInstance();
-  delete dsp;
-}
-
 /* Display constructor. Init SDL and display window */
 Display::Display(unsigned int winWidth, unsigned int winHeight)
   : Thread::Thread(), _winCaption("")
@@ -77,7 +65,6 @@ Display::Display(unsigned int winWidth, unsigned int winHeight)
   SDL_Surface	*screen;
   SDL_Surface	*layout;
 
-  atexit(DisplayCleanup);
   if (SDL_Init(SDL_INIT_VIDEO) == -1 || TTF_Init() == -1)
     throw "Display init failed";
   screen = SDL_SetVideoMode(winWidth, winHeight, 32, SDL_RESIZABLE | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_HWACCEL
@@ -128,10 +115,13 @@ Display::Display(const Display &right)
 Display::~Display()
 {
   std::cout << "Shutting down display engine...";
+  /* Thread should be stopped but SDL issues */
+  /* this->Stop(); */
+  SDL_Quit();
+
   delete this->_screen;
   delete this->_layout;
   delete this->_map;
-  SDL_Quit();
   std::cout << "done" << std::endl;
 }
 
@@ -428,12 +418,10 @@ void			Display::userEvent(unsigned int code, void *data)
     {
     case EV_CASETYPE:
       c = static_cast<EventCase*>(data);
-      printf("# %i %i\n", c->x, c->y);
       this->_map->setCase(c->data, c->x, c->y);
       delete c;
       break;
     case EV_MAPSIZE:
-      printf("$ %i\n", *((int*)data));
       this->_map->setViewField(*((int*)data));
       delete c;
       break;
