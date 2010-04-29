@@ -204,7 +204,7 @@ let try_escape unite ennemis =
 (* send_bipbips :: unites array -> unit *)
 let send_bipbips units =
   let titi_ennemi = get_titi units true in
-  let lst = focus_titi units titi_ennemi
+  let lst = focus_titi units titi_ennemi in
   let rec helper = function
     | [] -> ()
     | (u, pos)::xs ->
