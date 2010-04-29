@@ -43,26 +43,28 @@ namespace Prologin {
 
         Position minDistPos(Position a, Position b, Position goalPos)
         {
-            if (distPos(goalPos, a) > distPos(goalPos, b))
-                return b;
+            Position re = new Position();
 
-            return a;
+            if (distPos(goalPos, a) > distPos(goalPos, b))
+            {
+                re.X = b.X;
+                re.Y = b.Y;
+            }
+            else
+            {
+                re.X = a.X;
+                re.Y = a.Y;
+            }
+
+            return re;
         }
 
 		public void Jouer()
 		{
-            Unite[] t = Unites();
-            try
-            {
-                getPosUnite(PosRenfort(false));
-            }
-            catch
-            {
-                Renfort(TypeUnite.CHAT);      //Will be available next turn
-            }
+            Unite[] tmpu = Unites();
 
             Unite uTiti = new Unite();    //Prevent warning
-            foreach (Unite item in t)
+            foreach (Unite item in tmpu)
                 if (item.Ennemi && item.VraiTypeUnite == TypeUnite.PERROQUET)
                 {
                     uTiti = item;
@@ -71,23 +73,37 @@ namespace Prologin {
             bool MADE_ACTIONS = true;
             while (NombrePc() > 0 && MADE_ACTIONS)
             {
+                    Unite[] t = Unites();
+                    Console.WriteLine("--------------------------------");
                     MADE_ACTIONS = false;
                     if (t.Length > 0)
                     {
                         Unite min = null;
                         foreach (Unite item in t)
+{
+        AfficherUnite(item);
                             if (!item.Ennemi && item.VraiTypeUnite == item.TypeUniteActuel &&
                                  item.TypeUniteActuel == TypeUnite.CHAT && item.Ko < 0 && item.Pa > 0)
                                 if (min != null)
+                                    try{
+                                    AfficherPosition(min.Pos);
                                     min = getPosUnite(minDistPos(min.Pos, item.Pos, uTiti.Pos));  //Seeking the closest cat to ennemy's titi
+                                    }catch{Console.Write("::");AfficherPosition(minDistPos(min.Pos, item.Pos, uTiti.Pos));AfficherPosition(item.Pos);}
                                 else
                                     min = item;
+}
+//                        if (min != null)
+//                            AfficherUnite(min);
+//                        else
+//                            Console.WriteLine(NombrePc());
                         if (min != null)
                             if (distPos(min.Pos, uTiti.Pos) == 1 && Attaquer(min.Pos, uTiti.Pos) == Erreur.OK)
                                 break;  //We wone
                             else    //We have to move our cat to the closest position to titi
                             {
-                                Position closest = min.Pos;
+                                Position closest = new Position();
+                                closest.X = min.Pos.X;
+                                closest.Y = min.Pos.Y;
                                 TailleTerrain mapbound = TailleTerrainActuelle();
                                 int minx = (min.Pos.X - min.Pa) >= mapbound.MinCoord ? min.Pos.X - min.Pa : mapbound.MinCoord;
                                 int minyI = (min.Pos.Y - min.Pa) >= mapbound.MinCoord ? min.Pos.Y - min.Pa : mapbound.MinCoord;
@@ -109,9 +125,30 @@ namespace Prologin {
                                             closest = minDistPos(closest, tmppos, uTiti.Pos);
                                         }
                                     }
-                                AfficherErreur(Deplacer(min.Pos, closest));
+                                Erreur ret = Deplacer(min.Pos, closest);
+                                AfficherErreur(ret);
+                                if (ret != Erreur.OK)
+                                    AfficherPosition(closest);
+                                else
+                                    MADE_ACTIONS = true;
                             }
                     }
+            }
+            try
+            {
+                Unite uniteonspawn = getPosUnite(PosRenfort(false));
+                if (uniteonspawn.VraiTypeUnite == TypeUnite.PERROQUET)
+                {
+                    Position newpos = new Position();
+                    newpos.X = uniteonspawn.Pos.X;
+                    newpos.Y = uniteonspawn.Pos.Y;
+                    newpos.X--;
+                    Deplacer(uniteonspawn.Pos, newpos);
+                }
+            }
+            catch
+            {
+                Renfort(TypeUnite.CHAT);      //Will be available next turn
             }
 		}
 
