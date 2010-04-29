@@ -49,7 +49,7 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 // user API
 
 int Api::nombre_pc(){
-  return 1; // todo
+  return g_->nbr_unites_allowed;
 }
 
 int Api::nombre_unites_spawnees(bool ennemi){
