@@ -25,7 +25,7 @@ extern "C" int client_cx_set_ready(void*);
 
 void afficher(cartes c){
   std::cout
-    << "{soin:" << c.soin << ", "
+    << "{potion:" << c.potion << ", "
     << "banzai:" << c.banzai << ", "
     << "deguisement:" << c.deguisement << ", "
     << "pacifisme:" << c.pacifisme
@@ -98,7 +98,7 @@ void dump_current_state()
   taille_terrain taille = taille_terrain();
   cartes c = cartes();
   cartes c2;
-  c2.soin = MAX_CARTES - c.soin;
+  c2.potion = MAX_CARTES - c.potion;
   c2.deguisement = MAX_CARTES - c.deguisement;
   c2.banzai = MAX_CARTES - c.banzai;
   c2.pacifisme = c.pacifisme;
