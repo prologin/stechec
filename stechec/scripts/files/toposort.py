@@ -11,7 +11,7 @@
 #
 # Copyright (C) 2010 Prologin
 
-import commands
+import subprocess
 import sys
 
 def fname_to_mod(fname):
@@ -51,9 +51,12 @@ def toposort(deps):
 
 if __name__ == '__main__':
     files = sys.argv[1:]
-    quoted_files = ('"%s"' % f for f in files)
-    cmdline = "ocamldep -modules %s" % ' '.join(quoted_files)
-    raw_deps = commands.getoutput(cmdline).split('\n')
+    pipe = subprocess.Popen(["ocamldep", "-modules"] + files,
+                            stdout=subprocess.PIPE)
+    out = pipe.communicate()[0]
+    if pipe.returncode != 0:
+        sys.exit(pipe.returncode)
+    raw_deps = out.split('\n')
     deps = parse_deps(raw_deps)
     order = toposort(deps)
     print ' '.join(m + '.o' for m in order)

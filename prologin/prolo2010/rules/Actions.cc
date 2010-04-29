@@ -39,8 +39,9 @@ static inline int distance(position p1, position p2)
 
 static int get_ko(type_unite a)
 {
-  int c[] = {1, 5, 3, 2};
-  return c[a];
+  /*  int c[] = {1, 5, 3, 2};
+      return c[a]; */
+  return 3;
 }
 
 bool operator==(position p1, position p2){
@@ -53,7 +54,7 @@ void get_explosions(GameData *g, std::vector<unite *> &u, position p){
       {
 	bool b = true;
 	for (int j = 0, l = u.size(); j < l ; j++){
-	  if (u[i]->pos == g->unites[i].pos) b = false;
+	  if (u[j]->pos == g->unites[i].pos) b = false;
 	}
 	if (b){
 	  u.push_back( & g->unites[i]);
@@ -83,6 +84,8 @@ void ActionAttaquer::appliquer(GameData *g)
   unite& a = g->unites[attaquant_];
   unite& v = g->unites[victime_];
   type_unite tu = a.type_unite_actuel;
+  Action::appliquer(g);
+  u_ = g->unites;
   if (a.attaques_gratuites){
     a.attaques_gratuites --;
     gratuite = true;
@@ -98,11 +101,9 @@ void ActionAttaquer::appliquer(GameData *g)
   }
 
   if (tu == KANGOUROU){
-    u_ = g->unites;
     kangourou(g, a.pos, attaquant_);
   }else{
     if (v.type_unite_actuel){
-      u_ = g->unites;
       kangourou(g, v.pos, victime_);
     }else{
       v.ko = get_ko(tu);
@@ -192,9 +193,9 @@ void ActionSpawn::verifier(GameData* g)
 {
   position p = g->spawn_pos();
   int i =  g->indice_at(p);
-  ASSERT(i == -1, SPAWN_OCCUPE);
-  ASSERT(tu_ != PERROQUET, PAS_SPAWNABLE);
-  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES / 2, PAS_SPAWNABLE);
+  ASSERT(i == -1, RENFORT_IMPOSSIBLE);
+  ASSERT(tu_ != PERROQUET, UNITE_INTERDITE);
+  ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES,QUOTA_DEPASSE);
 }
 
 void ActionSpawn::appliquer(GameData *g)
@@ -246,6 +247,8 @@ void ActionDeplacer::verifier(GameData* g)
   ASSERT(u.pa >= dist, PLUS_DE_PA);
 
   ASSERT(g->can_active(unite_), QUOTA_DEPASSE);
+
+  ASSERT(!g->out_map(dest_), POSITION_INVALIDE);
 }
 
 void ActionDeplacer::appliquer(GameData* g)
@@ -266,7 +269,10 @@ void ActionDeplacer::appliquer(GameData* g)
 void ActionDeplacer::annuler(GameData* g)
 {
   if (g->nbr_unites_allowed != nbr_unites_allowed_)
+  {
     g->deja_bougee[unite_] = false;
+    g->nbr_unites_allowed += 1;
+  }
   Action::annuler(g);
   g->unites[unite_].pos = old_pos_;
 }
@@ -290,7 +296,7 @@ void ActionCarte::verifier(GameData* g)
   case DEGUISEMENT: cnt = c.deguisement; break;
   case BANZAI: cnt = c.banzai; break;
   case PACIFISME: cnt = c.pacifisme; break;
-  case SOIN: cnt = c.soin; break;
+  case SOIN: cnt = c.potion; break;
   }
 
   ASSERT(cnt > 0, PLUS_DE_CARTES);
@@ -317,7 +323,7 @@ void ActionCarte::add_to_carte_count(GameData* g, int p, int increment)
   case DEGUISEMENT: c.deguisement += increment; break;
   case BANZAI: c.banzai += increment; break;
   case PACIFISME: c.pacifisme += increment; break;
-  case SOIN: c.soin += increment; break;
+  case SOIN: c.potion += increment; break;
   }
 }
 
@@ -328,8 +334,8 @@ void ActionDeguisement::verifier(GameData* g)
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 
-  ASSERT(unite_ > PERROQUET, PAS_SPAWNABLE);
-  ASSERT(unite_ <= KANGOUROU, PAS_SPAWNABLE);
+  ASSERT(unite_ > PERROQUET, RENFORT_IMPOSSIBLE); // TODO
+  ASSERT(unite_ <= KANGOUROU, RENFORT_IMPOSSIBLE);
 }
 
 void ActionDeguisement::appliquer(GameData* g)

@@ -49,6 +49,8 @@ endif
 cmd = $(if $($(quiet)cmd_$(1)),@echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(cmd_$(1))
 cmd2 = $(if $($(quiet)cmd_$(1)),echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(cmd_$(1))
 
+exists = $(if $(shell test -e $(1) && echo exists),$(1),)
+
 # ==============================================================================
 # build environment
 # ==============================================================================
@@ -84,6 +86,9 @@ define get_ocaml_objs
     $(1)-ldflags := $$($(1)-ldflags) $$(OCAML_LIBS)
   endif
   cleanfiles := $$($(1)-camlobjs) $$($(1)-camlobjs:.o=.cmo) $$($(1)-camlobjs:.o=.cmi) $$(cleanfiles)
+
+  $(1)-mlisrcs := $$($(1)-mlsrcs:.ml=.mli)
+  $(1)-dists := $$($(1)-dists) $$(foreach mli,$$($(1)-mlisrcs),$$(call exists,$$(mli)))
 
   $(1)-caml.o: override _CAMLFLAGS = $$($(1)-camlflags)
   $(1)-caml.o: $$($(1)-camlobjs:.o=.cmi) $$($(1)-camlobjs:.o=.cmo)
