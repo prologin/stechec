@@ -219,20 +219,15 @@ def new_match(request):
         form = CreateMatchForm(request.POST)
     else:
         form = CreateMatchForm()
-
-    form.fields['map'].choices = [
-            (auteur, [(map.id, map) for map in maps]) for auteur, maps in
-            groupby(Map.objects.order_by('auteur__username', 'titre'), lambda map: map.auteur)]
     
     if form.is_valid():
         match = Match(
-                map=form.cleaned_data['map'],
                 statut=STATUT_MATCH_INDEFINI,
                 createur=request.user)
         
         match.save()
 
-        for i in xrange(1, 5):
+        for i in xrange(1, 3):
             comp = Competiteur(champion=form.cleaned_data['champion_%d' % i], match=match)
             comp.save()
         

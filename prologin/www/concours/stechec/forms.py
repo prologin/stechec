@@ -58,15 +58,3 @@ class ChampionField(forms.Field):
 class CreateMatchForm(forms.Form):
     champion_1 = ChampionField(label='Premier champion')
     champion_2 = ChampionField(label='Deuxième champion')
-    champion_3 = ChampionField(label='Troisième champion')
-    champion_4 = ChampionField(label='Quatrième champion')
-    map = forms.ChoiceField(label='Carte', widget=MapSelect(attrs={'class' : 'mapselect'}))
-
-    def clean_map(self):
-        try:
-            value = Map.objects.get(id=self.cleaned_data['map'])
-        except Map.DoesNotExist:
-            raise ValidationError(u"Cette carte n'existe pas.")
-
-        return value
-

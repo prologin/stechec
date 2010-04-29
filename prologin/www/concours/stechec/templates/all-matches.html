@@ -38,7 +38,6 @@
             <td>{{ match.createur }}</td>
             <td>{{ match.statut_string }}</td>
             <td>{{ match.date|naturalday }} à {{ match.date|time }}</td>
-            <td><a href="{{ match.map.get_absolute_url }}">{{ match.map }}</a></td>
             <td>
                 {% if match.is_termine %}
                 <a href="/matches/{{ match.id }}/view/">Voir le match</a> - 
