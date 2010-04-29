@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block "title" %}Tous les matches{% endblock %}
+{% block "titleh1" %}Tous les matches{% endblock %}
+
+{% block "content" %}
+
+<p class="intro">
+    Voici la liste de tous les matches classés du plus récent au plus ancien.
+</p>
+{% if is_paginated %}
+<p class="pagination">
+{% for page in paginator.page_range %}
+{% ifequal page_obj.number page %}
+    {{ page }}
+{% else %}
+    <a href="/matches/all/?page={{ page }}">{{ page }}</a>
+{% endifequal %}
+{% endfor %}
+</p>
+{% endif %}
+<table>
+    <thead>
+        <tr>
+            <th>Numéro</th>
+            <th>Créateur</th>
+            <th>État</th>
+            <th>Date &amp; heure</th>
+            <th>Carte</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for match in match_list %}
+        <tr class="{% cycle "row1" "row2" %}">
+            <td>{{ match.id }}</td>
+            <td>{{ match.createur }}</td>
+            <td>{{ match.statut_string }}</td>
+            <td>{{ match.date|naturalday }} à {{ match.date|time }}</td>
+            <td><a href="{{ match.map.get_absolute_url }}">{{ match.map }}</a></td>
+            <td>
+                {% if match.is_termine %}
+                <a href="/matches/{{ match.id }}/view/">Voir le match</a> - 
+                {% endif %}
+                
+                <a href="{{ match.get_absolute_url }}">Détails</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">Il n'y a encore de matches.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

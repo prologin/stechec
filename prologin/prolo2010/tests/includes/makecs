@@ -1,0 +1,49 @@
+# -*- Makefile -*-
+#####################
+# Macro Definitions #
+#####################
+CXX 	= g++
+MCS	= MONO_SHARED_DIR=/tmp gmcs </dev/null # Mono need a writable directory for WAPI, and needs an stdin
+LIMEOBJ ?= ../includes/main.o
+OBJS 	= interface.o $(LIMEOBJ)
+CS	= $(SRC) api.cs
+CHAMPION= prologin.dll
+RM 	= /bin/rm -f
+
+# Files needed by champion.so (don't put variables here, they are not evalued)
+AUXFILES= prologin.dll
+
+CFLAGS = -fPIC
+CXXFLAGS = -fPIC -W -Wall \
+   `pkg-config --cflags glib-2.0` \
+   `pkg-config --cflags mono` \
+   $(MY_CXXFLAGS)
+
+MCSFLAGS = -target:library -nowarn:0169,0649
+
+LIBS = `pkg-config --libs glib-2.0` `pkg-config --libs mono` -lm
+
+##############################
+# Basic Compile Instructions #
+##############################
+
+all: $(NAME) $(CHAMPION)
+
+interface.o : interface.cc interface.hh
+
+$(NAME): $(OBJS)
+	$(CXX) -shared $(OBJS) $(LIBS) -o $(NAME) $(CHECK_CHEAT)
+	@echo Finished
+
+$(CHAMPION): $(CS)
+	$(MCS) -out:$(CHAMPION) $(MCSFLAGS) $(CS)
+
+clean:
+	@echo "Cleaning..."
+	$(RM) $(OBJS) *~ #*#
+
+distclean: clean
+	$(RM) $(CHAMPION) $(NAME) prologin.tgz
+
+tar:
+	tar cvzf prologin.tgz interface.cc interface.hh $(CS)

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load my_timesince %}
+
+{% block "title" %}Liste des machines{% endblock %}
+{% block "titleh1" %}Liste des machines{% endblock %}
+{% block "head" %}<link rel="stylesheet" href="/media/css/jquery-ui.css" type="text/css" />{% endblock %}
+
+{% block "content" %}
+<p class="intro">
+    Voici la liste des machines qui servent au lancement de vos matches
+    et à la compilation de vos champions, avec leur pourcentage d'utilisation.
+</p>
+<table>
+    <thead>
+        <tr>
+            <th>IP et port</th>
+            <th>Dernier ping</th>
+            <th>Slots utilisés</th>
+            <th>Utilisation</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for ip, port, statut, ping, slots, usage in machines %}
+        <tr class="{% cycle "row1" "row2" %}">
+            <td><strong>{{ ip }}</strong>:{{ port }}</td>
+            <td>il y a {{ ping|my_timesince }}</td>
+            <td>{{ slots }}</td>
+            <td>
+                <div class="ui-progressbar ui-widget ui-widget-content ui-corner-all pbar" title="{{ usage }} %">
+                    <div class="ui-progressbar-value ui-widget-header ui-corner-left" style="width: {{ usage }}%;"></div>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
