@@ -330,6 +330,7 @@ AC_CONFIG_FILES([
   prologin/prolo2010/rules/Makefile
   prologin/prolo2010/jsdump/Makefile
   prologin/prolo2010/asciiinter/Makefile
+  prologin/prolo2010/gui/Makefile
 ])
 fi
 
