@@ -17,6 +17,8 @@ class CSharpMakefile
     f.print <<-EOF
 # -*- Makefile -*-
 
+lib_TARGETS = #{target}
+
 #{target}-srcs = $(wildcard *.cs)
 
 #{target}-dists = interface.hh
