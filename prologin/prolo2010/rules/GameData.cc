@@ -25,13 +25,14 @@ void GameData::check(const char * file, int line){
   LOG3("can_play_card : %1", can_play_card);
   LOG3("nbr_toons_spawn: %1 %2", nbr_toons_spawn[0], nbr_toons_spawn[1]);
   for(int i = 0; i < NBR_MAX_UNITES * 2; i ++)
-    LOG3("deja_bouge[%1] = %2", i, deja_bougee[i]);
+    LOG5("deja_bouge[%1] = %2", i, deja_bougee[i]);
   for(int i = 0; i < unites.size(); i ++)
-    LOG3("unite[%1] = {pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types:(%8, %9), id:%10}",
+    LOG4("unite[%1] = {pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types:(%8, %9), id:%10}",
 	 i, unites[i].pos.x, unites[i].pos.y,
 	 unites[i].ko, unites[i].pa, unites[i].attaques, unites[i].attaques_gratuites,
 	 unites[i].type_unite_actuel,
 	 unites[i].vrai_type_unite, unites[i].id);
+  LOG3("tt = {size:%1, min:%2, max%3}", tt.taille, tt.min_coord, tt.max_coord);
   LOG3("players_cartes[0] = {%2, %3, %4, %5}", players_cartes[0].potion, players_cartes[0].deguisement, players_cartes[0].banzai, players_cartes[0].pacifisme);
   LOG3("players_cartes[1] = {%2, %3, %4, %5}", players_cartes[1].potion, players_cartes[1].deguisement, players_cartes[1].banzai, players_cartes[1].pacifisme);
 }
