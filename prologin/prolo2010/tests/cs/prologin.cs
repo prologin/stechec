@@ -62,7 +62,6 @@ namespace Prologin {
 		public void Jouer()
 		{
             Unite[] tmpu = Unites();
-
             Unite uTiti = new Unite();    //Prevent warning
             foreach (Unite item in tmpu)
                 if (item.Ennemi && item.VraiTypeUnite == TypeUnite.PERROQUET)
@@ -74,28 +73,18 @@ namespace Prologin {
             while (NombrePc() > 0 && MADE_ACTIONS)
             {
                     Unite[] t = Unites();
-                    Console.WriteLine("--------------------------------");
                     MADE_ACTIONS = false;
                     if (t.Length > 0)
                     {
                         Unite min = null;
                         foreach (Unite item in t)
-{
-        AfficherUnite(item);
                             if (!item.Ennemi && item.VraiTypeUnite == item.TypeUniteActuel &&
                                  item.TypeUniteActuel == TypeUnite.CHAT && item.Ko < 0 && item.Pa > 0)
                                 if (min != null)
-                                    try{
-                                    AfficherPosition(min.Pos);
                                     min = getPosUnite(minDistPos(min.Pos, item.Pos, uTiti.Pos));  //Seeking the closest cat to ennemy's titi
-                                    }catch{Console.Write("::");AfficherPosition(minDistPos(min.Pos, item.Pos, uTiti.Pos));AfficherPosition(item.Pos);}
                                 else
                                     min = item;
-}
-//                        if (min != null)
-//                            AfficherUnite(min);
-//                        else
-//                            Console.WriteLine(NombrePc());
+
                         if (min != null)
                             if (distPos(min.Pos, uTiti.Pos) == 1 && Attaquer(min.Pos, uTiti.Pos) == Erreur.OK)
                                 break;  //We wone
@@ -125,12 +114,8 @@ namespace Prologin {
                                             closest = minDistPos(closest, tmppos, uTiti.Pos);
                                         }
                                     }
-                                Erreur ret = Deplacer(min.Pos, closest);
-                                AfficherErreur(ret);
-                                if (ret != Erreur.OK)
-                                    AfficherPosition(closest);
-                                else
-                                    MADE_ACTIONS = true;
+                                Deplacer(min.Pos, closest);
+                                MADE_ACTIONS = true;
                             }
                     }
             }
