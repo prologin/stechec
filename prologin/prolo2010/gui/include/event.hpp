@@ -13,13 +13,12 @@
 
 # include <vector>
 
-
+# include "Constant.hh"
 
 typedef	enum
 {
   EV_CASETYPE,
   EV_NEWTURN,
-  EV_MAPSIZE,
   EV_PLAYER,
   EV_WINNER,
   EV_ENDGAME,
@@ -31,8 +30,8 @@ struct	EventCase
 {
   int	x;
   int	y;
-  int	data;
-  EventCase(int _x, int _y, int _data)
+  unite	data;
+  EventCase(int _x, int _y, unite _data)
   {
     this->x = _x;
     this->y = _y;

@@ -11,6 +11,7 @@
 #ifndef GAMEENGINE_H_
 # define GAMEENGINE_H_
 
+# include <vector>
 # include "player.h"
 # include "game.h"
 
@@ -23,7 +24,7 @@ class			GameEngine
   GameEngine		&operator=(const GameEngine &right);
   void			RetrieveData(void);
   static GameEngine	*_instance;
-  int			_unit_remind[MAP_SIZE];
+  std::vector<int>	_unit_remind[MAP_SIZE];
 
  public:
   ~GameEngine(void);

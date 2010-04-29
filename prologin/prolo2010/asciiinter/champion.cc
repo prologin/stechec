@@ -92,6 +92,18 @@ bool contient_unite(position p){
   return false;
 }
 
+int choix_unite(void)
+{
+  int n = 0;
+  char buffer[80];
+  do{
+    printf("1 pour perroquet\n2 pour singe\n3 pour chat\n4 pour kangourou\n");
+    fgets(buffer, 80, stdin);
+    if (sscanf(buffer, "%d", &n) != 1) n = 0; // bad value
+  } while (n < 1 || n > 4);
+  return n;
+}
+
 void jouer()
 {
   view();
@@ -110,21 +122,53 @@ void jouer()
   do{
     char buffer[80];
     fgets(buffer, 80, stdin);
-    if (sscanf(buffer, "from (%d, %d) to (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
+    if (sscanf(buffer, "move (%d, %d) (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
       if (contient_unite(from)){
 	afficher_erreur(deplacer(from, to));
       }else{
 	printf("aucune unite ici !");
       }
     }else if (strcmp(buffer, "spawn\n") == 0){
-	do{
-	  printf("1 pour perroquet\n2 pour singe\n3 pour chat\n4 pour kangourou\n");
-	  fgets(buffer, 80, stdin);
-	  if (sscanf(buffer, "%d", &n) != 1) n = 0; // bad value
-	} while (n < 1 || n > 4);
-        afficher_erreur(spawn(unit_of_int(n)));
+      n = choix_unite();
+      afficher_erreur(renfort(unit_of_int(n)));
     }else if (strcmp(buffer, "end\n") == 0){
       break;
+    }else if (strcmp(buffer, "annuler\n") == 0){
+      if (annuler()){
+	printf("OK\n");
+      }else{
+	printf("pas d'actions a annuler\n");
+      }
+    }else if (sscanf(buffer, "(%d, %d) a (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
+      afficher_erreur(attaquer(from, to));
+    }else if (strcmp(buffer, "show\n") == 0){
+      view();
+    }else if (strcmp(buffer, "card\n") == 0) {
+      printf("1 pacifisme ; 2 banzai ; 3 soin ; 4 deguisement\n");
+      do{
+	fgets(buffer, 80, stdin);
+	if (sscanf(buffer, "%d\n", &n) == 1) break;
+      } while (true);
+      switch (n) {
+      case 1: afficher_erreur(pacifisme()); break;
+      default:
+	{
+	  position p;
+	  printf("entrez une position\n");
+	  do{
+	    fgets(buffer, 80, stdin);
+	    if (scanf("(%d, %d)\n", &p.x, &p.y) == 2) break;
+	  } while(true);
+	  switch(n){
+	  case 2: afficher_erreur(banzai(p)); break;
+	  case 3: afficher_erreur(potion(p)); break;
+	  case 4:
+	    afficher_erreur(deguisement(p, unit_of_int(choix_unite()))); break;
+	  }
+	}
+      }
+    }else{
+      printf("mauvais format\n");
     }
   } while(true);
   printf("fin jouer;\n");

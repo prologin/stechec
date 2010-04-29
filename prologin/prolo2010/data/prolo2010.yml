@@ -39,8 +39,8 @@ enum:
       - [quota_depasse, "nombre maximal d'unites, de spawn ou de relevages par tour dépassé"]
       - [plus_de_pa, cette unité a réalisé toutes ses actions]
       - [deja_attaque, cette unité a déjà attaqué]
-      - [pas_spawnable, cette unité n'est pas spawnable]
-      - [spawn_occupe, une unité est déjà présente sur le spawn]
+      - [unite_interdite, cette unité ne peut pas être amenée en renfort]
+      - [renfort_impossible, une unité est déjà présente sur le spawn]
       - [pas_a_moi, l'unité ciblée n'est pas à vous]
       - [plus_de_cartes, il n'y a plus de cartes du type spécifié dans votre main]
       - [phase_cartes_terminee, vous ne pouvez plus poser de cartes car vous avez fait une action]
@@ -95,7 +95,7 @@ struct:
     str_summary: Représente l'ensemble des cartes que vous pouvez utiliser.
     str_tuple: no
     str_field:
-      - [soin, int, le nombre de cartes « Soin »]
+      - [potion, int, le nombre de cartes « Potion magique »]
       - [deguisement, int, le nombre de cartes « Déguisement »]
       - [banzai, int, le nombre de cartes « Banzaï »]
       - [pacifisme, int, le nombre de cartes « Pacifisme »]
@@ -109,8 +109,8 @@ function:
     fct_ret_type: int
     fct_arg: []
   -
-    fct_name: nombre_unites_spawnees
-    fct_summary: Renvoie le nombre d'unités spawnées.
+    fct_name: nombre_unites
+    fct_summary: Renvoie le nombre d'unités en jeu.
     fct_ret_type: int
     fct_arg:
       - [ennemi, bool, ennemi ou non]
@@ -120,7 +120,7 @@ function:
     fct_ret_type: int
     fct_arg: []
   -
-    fct_name: pos_spawn
+    fct_name: pos_renfort
     fct_summary: Renvoie la position du spawn (ennemi ou non).
     fct_ret_type: position
     fct_arg:
@@ -150,8 +150,8 @@ function:
   - doc_extra: |
      \subsection{Fonctions d'utilisation des cartes}
   -
-    fct_name: soin
-    fct_summary: Utilise une carte « Soin » que vous avez dans votre main.
+    fct_name: potion
+    fct_summary: Utilise une carte « Potion magique » que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
     - [cible, position, l'unité à relever]
@@ -197,7 +197,7 @@ function:
     - [attaquant, position, l'unité qui attaque]
     - [cible, position, l'unité qui se fait attaquer]
   -
-    fct_name: spawn
+    fct_name: renfort
     fct_summary: Fait apparaitre une unité sur la case de spawn.
     fct_ret_type: erreur
     fct_arg:

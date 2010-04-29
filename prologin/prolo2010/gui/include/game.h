@@ -11,9 +11,9 @@
 #ifndef GAME_H_
 # define GAME_H_
 
-# define MAP_SIZE	625
-# define MAP_WIDTH	25
-# define MAP_HEIGHT	25
+# define MAP_SIZE	361
+# define MAP_WIDTH	19
+# define MAP_HEIGHT	19
 # define START_POSX	MAP_WIDTH / 2
 # define START_POSY	MAP_HEIGHT / 2
 
@@ -28,14 +28,6 @@ typedef	enum
   LD_KO1,
   LD_KO2,
   LD_KO3,
-  LD_MOVE0,
-  LD_MOVE1,
-  LD_MOVE2,
-  LD_MOVE3,
-  LD_MOVE4,
-  LD_MOVE5,
-  LD_MOVE6,
-  LD_MOVE7,
   LD_EMPTY
 }	t_landscape;
 

@@ -23,14 +23,6 @@ enum			SpriteID
   SP_KO1,
   SP_KO2,
   SP_KO3,
-  SP_MOVE0,
-  SP_MOVE1,
-  SP_MOVE2,
-  SP_MOVE3,
-  SP_MOVE4,
-  SP_MOVE5,
-  SP_MOVE6,
-  SP_MOVE7,
   SP_NONE
 };
 
