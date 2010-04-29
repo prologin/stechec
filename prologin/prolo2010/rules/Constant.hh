@@ -10,6 +10,8 @@
 ** Copyright (C) 2010 Prologin
 */
 
+#define DEBUG
+
 #ifndef CONSTANT_HH_
 # define CONSTANT_HH_
 
@@ -21,7 +23,7 @@
 ///
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
 //
-# define NBR_MAX_UNITES            20
+# define NBR_MAX_UNITES            10
 
 ///
 // Le temps, en nombre de tours, entre deux rétrécissement du terrain.
@@ -37,22 +39,21 @@
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 typedef enum erreur {
-  OK=0, /* <- aucune erreur n'est survenue */
+  OK, /* <- aucune erreur n'est survenue */
   POSITION_INVALIDE, /* <- la position spécifiée est invalide */
   CASE_OCCUPEE, /* <- la case sur laquelle vous tentez de vous déplacer est occupée */
   PAS_A_PORTEE, /* <- la cible n'est pas à portée */
   UNITE_KO, /* <- l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO */
-  UNITE_DEBOUT,
-  QUOTA_DEPASSE, /* <- nombre maximal d'unites */
+  UNITE_DEBOUT, /* <- l'unité que vous essayez de relever est déjà debout */
+  QUOTA_DEPASSE, /* <- nombre maximal d'unites, de spawn ou de relevages par tour dépassé */
   PLUS_DE_PA, /* <- cette unité a réalisé toutes ses actions */
   DEJA_ATTAQUE, /* <- cette unité a déjà attaqué */
-  PAS_SPAWNABLE, /* <- cette unité n'est pas spawnable */
-  SPAWN_OCCUPE, /* <- une unité est déjà présente sur le spawn */
+  UNITE_INTERDITE, /* <- cette unité ne peut pas être amenée en renfort */
+  RENFORT_IMPOSSIBLE, /* <- une unité est déjà présente sur le spawn */
   PAS_A_MOI, /* <- l'unité ciblée n'est pas à vous */
   PLUS_DE_CARTES, /* <- il n'y a plus de cartes du type spécifié dans votre main */
   PHASE_CARTES_TERMINEE, /* <- vous ne pouvez plus poser de cartes car vous avez fait une action */
 } erreur;
-
 
 ///
 // Le type d'une unité sur le terrain
@@ -83,12 +84,11 @@ typedef struct taille_terrain {
   int max_coord;  /* <- coordonnée maximale en X ou en Y */
 } taille_terrain;
 
-
 ///
 // Donne les caractéristiques d'un type d'unité.
 //
 typedef struct caracs {
-  int pa;  /* <- nombre de points d'actions par tour */
+  int pa_init;  /* <- nombre de points d'actions par tour */
   int portee;  /* <- portée maximale de l'unité */
 } caracs;
 
@@ -107,12 +107,11 @@ typedef struct unite {
   int attaques_gratuites;
 } unite;
 
-
 ///
 // Représente l'ensemble des cartes que vous pouvez utiliser.
 //
 typedef struct cartes {
-  int soin;  /* <- le nombre de cartes « Quoi d'neuf docteur ? » */
+  int potion;  /* <- le nombre de cartes « Potion magique » */
   int deguisement;  /* <- le nombre de cartes « Déguisement » */
   int banzai;  /* <- le nombre de cartes « Banzaï » */
   int pacifisme;  /* <- le nombre de cartes « Pacifisme » */

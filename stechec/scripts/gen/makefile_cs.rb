@@ -11,78 +11,27 @@
 #
 
 class CSharpMakefile
-  def initialize
-    @makefile = <<EOF
-#####################
-# Macro Definitions #
-#####################
-CXX 	= g++
-MCS	= MONO_SHARED_DIR=/tmp gmcs </dev/null # Mono need a writable directory for WAPI, and needs an stdin
-LIMEOBJ ?= ../includes/main.o
-OBJS 	= interface.o $(LIMEOBJ)
-CS	= $(SRC) api.cs
-CHAMPION= prologin.dll
-RM 	= /bin/rm -f
-
-# Files needed by champion.so (don't put variables here, they are not evalued)
-AUXFILES= prologin.dll
-
-CFLAGS = -fPIC
-CXXFLAGS = -fPIC -W -Wall \\
-   `pkg-config --cflags glib-2.0` \\
-   `pkg-config --cflags mono` \\
-   $(MY_CXXFLAGS)
-
-MCSFLAGS = -target:library -nowarn:0169,0649
-
-LIBS = `pkg-config --libs glib-2.0` `pkg-config --libs mono` -lm
-
-##############################
-# Basic Compile Instructions #
-##############################
-
-all: $(NAME) $(CHAMPION)
-
-interface.o : interface.cc interface.hh
-
-$(NAME): $(OBJS)
-\t$(CXX) #{TARGET_GCC_LINK} $(OBJS) $(LIBS) -o $(NAME) $(CHECK_CHEAT)
-\t@echo Finished
-
-$(CHAMPION): $(CS)
-\t$(MCS) -out:$(CHAMPION) $(MCSFLAGS) $(CS)
-
-clean:
-\t@echo "Cleaning..."
-\t$(RM) $(OBJS) *~ #*#
-
-distclean: clean
-\t$(RM) $(CHAMPION) $(NAME) prologin.tgz
-
-tar:
-\ttar cvzf prologin.tgz interface.cc interface.hh $(CS)
-EOF
-  end
-
-  def build_client(path)
-    f = File.new(path + "makecs", 'w')
-    f.puts "# -*- Makefile -*-"
-    f.print @makefile
-    f.close
-  end
-
   def build_metaserver(path)
     f = File.new(path + "Makefile-cs", 'w')
+    target = $conf['conf']['player_lib']
     f.print <<-EOF
 # -*- Makefile -*-
 
-SRC	  = $(wildcard *.cs)
-NAME      = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-LIMEOBJ     = stechec_lime.o
+#{target}-srcs = $(wildcard *.cs)
 
+#{target}-dists = interface.hh
+#{target}-srcs += api.cs interface.cc stechec_lime.cc
+#{target}-cxxflags = -fPIC \
+    $(shell pkg-config --cflags glib-2.0 mono)
+#{target}-ldflags = -lm \
+    $(shell pkg-config --libs glib-2.0 mono)
+#{target}-csflags = -target:library -nowarn:0169,0649
+
+V=1
+include $(MFPATH)/rules.mk
     EOF
-    f.print @makefile
     f.close
   end
 

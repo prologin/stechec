@@ -88,8 +88,7 @@ int lang2cxx<PyObject*, int>(PyObject* in)
   if (out == -1)
     if (PyErr_Occurred())
     {
-      PyErr_Print();
-      abort();
+      throw 42;
     }
 
   return out;
@@ -104,6 +103,12 @@ bool lang2cxx<PyObject*, bool>(PyObject* in)
 template <typename Cxx>
 std::vector<Cxx> lang2cxx_array(PyObject* in)
 {
+  if (!PyList_Check(in))
+  {
+    PyErr_SetString(PyExc_TypeError, "a list is required");
+    throw 42;
+  }
+
   std::vector<Cxx> out;
   unsigned int size = PyList_Size(in);
 
@@ -155,9 +160,11 @@ EOF
     @f.puts "  PyObject* name = PyString_FromString(\"#{name}\");"
     @f.puts "  PyObject* cstr = PyObject_GetAttr(py_module, name);"
     @f.puts "  Py_DECREF(name);"
+    @f.puts "  if (cstr == NULL) throw 42;"
     @f.puts "  PyObject* ret = PyObject_CallObject(cstr, tuple);"
     @f.puts "  Py_DECREF(cstr);"
     @f.puts "  Py_DECREF(tuple);"
+    @f.puts "  if (ret == NULL) throw 42;"
     @f.puts "  return ret;"
     @f.puts "}"
     @f.puts
@@ -173,6 +180,8 @@ EOF
       fn = f[0]
       ft = @types[f[1]]
       @f.puts "  i = cxx2lang<PyObject*, int>(#{i});"
+      @f.puts "  i = PyObject_GetItem(in, i);"
+      @f.puts "  if (i == NULL) throw 42;"
       @f.print "  out.#{fn} = "
       if ft.is_array?
         @f.print "lang2cxx_array<#{ft.type.name}>("
@@ -191,7 +200,26 @@ EOF
     @f.puts "static PyObject* p_#{fn.name}(PyObject* self, PyObject* args)"
     @f.puts "{"
     @f.puts "  (void)self;"
+    fs = "O" * fn.args.length
+    i = 0
+    fn.args.each do |a|
+      @f.puts "PyObject* a#{i};"
+      i += 1
+    end
+    @f.print "  if (!PyArg_ParseTuple(args, \"#{fs}\""
+    @f.print ", " if fn.args.length != 0
+    i = 0
+    names = fn.args.map do |a|
+      s = "&a#{i}"
+      i += 1
+      s
+    end
+    @f.print names.join(", ")
+    @f.puts ")) {"
+    @f.puts "    return NULL;"
+    @f.puts "  }"
     @f.print "  "
+    @f.puts "  try {"
     unless fn.ret.is_nil?
       @f.print "return "
       if fn.ret.is_array?
@@ -208,7 +236,7 @@ EOF
       else
         @f.print "lang2cxx<PyObject*, #{a.type.name}>("
       end
-      @f.print "PyTuple_GET_ITEM(args, #{i}))"
+      @f.print "a#{i})"
       i += 1
       @f.print ", " unless i == fn.args.length
     end
@@ -217,6 +245,7 @@ EOF
     if fn.ret.is_nil?
       @f.puts "  Py_INCREF(Py_None);", "  return Py_None;"
     end
+    @f.puts "  } catch (...) { return NULL; }"
     @f.puts "}"
   end
 
@@ -341,6 +370,8 @@ static PyObject* _call_python_function(const char* name)
       @f.print cxx_proto(fn, '', 'extern "C"')
       @f.puts "", "{"
       @f.puts "  PyObject* _retval = _call_python_function(\"#{fn.name}\");"
+      @f.puts "  if (!_retval && PyErr_Occurred()) { PyErr_Print(); abort(); }"
+      @f.puts "  try {"
       if fn.ret.is_nil? then
         @f.puts "  Py_XDECREF(_retval);"
       elsif fn.ret.is_array? then
@@ -352,6 +383,7 @@ static PyObject* _call_python_function(const char* name)
         @f.puts "  Py_XDECREF(_retval);"
         @f.puts "  return ret;"
       end
+      @f.puts "  } catch (...) { PyErr_Print(); abort(); }"
       @f.puts "}",""
     end
 

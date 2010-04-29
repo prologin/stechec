@@ -6,6 +6,9 @@
 # Copyright (C) 2007 Prologin.
 #
 
+# Path of the Makefile, relative to where it was included from.
+MFPATH ?= ../includes
+
 # ==============================================================================
 # verbose settings
 # ==============================================================================
@@ -49,6 +52,8 @@ endif
 cmd = $(if $($(quiet)cmd_$(1)),@echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(cmd_$(1))
 cmd2 = $(if $($(quiet)cmd_$(1)),echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(cmd_$(1))
 
+exists = $(if $(shell test -e $(1) && echo exists),$(1),)
+
 # ==============================================================================
 # build environment
 # ==============================================================================
@@ -76,7 +81,7 @@ endef
 
 define get_ocaml_objs
   $(1)-mlsrcs := $$(filter %.ml,$$($(1)-srcs))
-  $(1)-camlobjs := $$(shell python ../includes/toposort.py $$($(1)-mlsrcs))
+  $(1)-camlobjs := $$(shell python $(MFPATH)/toposort.py $$($(1)-mlsrcs))
   ifneq ($$($(1)-camlobjs),)
     $(1)-objs := $(1)-caml.o $(value $(1)-objs)
     $(1)-cflags := $$($(1)-cflags) $$(OCAML_CFLAGS)
@@ -84,6 +89,9 @@ define get_ocaml_objs
     $(1)-ldflags := $$($(1)-ldflags) $$(OCAML_LIBS)
   endif
   cleanfiles := $$($(1)-camlobjs) $$($(1)-camlobjs:.o=.cmo) $$($(1)-camlobjs:.o=.cmi) $$(cleanfiles)
+
+  $(1)-mlisrcs := $$($(1)-mlsrcs:.ml=.mli)
+  $(1)-dists := $$($(1)-dists) $$(foreach mli,$$($(1)-mlisrcs),$$(call exists,$$(mli)))
 
   $(1)-caml.o: override _CAMLFLAGS = $$($(1)-camlflags)
   $(1)-caml.o: $$($(1)-camlobjs:.o=.cmi) $$($(1)-camlobjs:.o=.cmo)
@@ -168,6 +176,7 @@ _dist		:= $(foreach t,$(lib_TARGETS),$($(t)-dists) $(filter-out ../%,$($(t)-srcs
 _deps		:= $(foreach f,$(_objs),$(dir $(f)).$(notdir $(f)).d)
 _cleanfiles	:= $(cleanfiles) $(_objs) $(_deps)
 _dcleanfiles	:= $(_targets) prologin.tgz
+_run_reqs   := $(_targets) $(foreach t,$(lib_TARGETS),$($(t)-dists))
 
 # ==============================================================================
 # rules
@@ -193,6 +202,9 @@ distclean: clean
 			break; \
 		fi; \
 	done
+
+list-run-reqs:
+	@echo "$(_run_reqs)"
 
 %.o: %.c
 	$(call cmd,cc)

@@ -13,7 +13,7 @@ constant:
     cst_comment: Taille de départ du terrain.
   -
     cst_name: NBR_MAX_UNITES
-    cst_val: 20
+    cst_val: 10
     cst_comment: Le nombre maximal d'unités pouvant appartenir à une équipe.
   -
     cst_name: TEMPS_RETRECISSEMENT
@@ -36,11 +36,11 @@ enum:
       - [pas_a_portee, la cible n'est pas à portée]
       - [unite_ko, l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO]
       - [unite_debout, l'unité que vous essayez de relever est déjà debout]
-      - [quota_depasse, nombre maximal d'unites, de spawn ou de relevages par tour dépassé]
+      - [quota_depasse, "nombre maximal d'unites, de spawn ou de relevages par tour dépassé"]
       - [plus_de_pa, cette unité a réalisé toutes ses actions]
       - [deja_attaque, cette unité a déjà attaqué]
-      - [pas_spawnable, cette unité n'est pas spawnable]
-      - [spawn_occupe, une unité est déjà présente sur le spawn]
+      - [unite_interdite, cette unité ne peut pas être amenée en renfort]
+      - [renfort_impossible, une unité est déjà présente sur le spawn]
       - [pas_a_moi, l'unité ciblée n'est pas à vous]
       - [plus_de_cartes, il n'y a plus de cartes du type spécifié dans votre main]
       - [phase_cartes_terminee, vous ne pouvez plus poser de cartes car vous avez fait une action]
@@ -75,7 +75,7 @@ struct:
     str_summary: Donne les caractéristiques d'un type d'unité.
     str_tuple: no
     str_field:
-      - [pa, int, nombre de points d'actions par tour]
+      - [pa_init, int, nombre de points d'actions par tour]
       - [portee, int, portée maximale de l'unité]
   -
     str_name: unite
@@ -85,7 +85,7 @@ struct:
       - [pos, position, la position de l'unité]
       - [ennemi, bool, vrai si l'unité appartient à l'ennemi]
       - [type_unite_actuel, type_unite, "le type de l'unité, qui change si l'unité est déguisée"]
-      - [vrai_type_unite, type_unite, "le vrai type de l'unité (qui ne change pas lors du déguisement"]
+      - [vrai_type_unite, type_unite, "le vrai type de l'unité (qui ne change pas lors du déguisement)"]
       - [ko, int, "une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité"]
       - [pa, int, le nombre de PA restants à l'unité]
       - [attaques, int, le nombre d'attaques restants à l'unité]
@@ -95,7 +95,7 @@ struct:
     str_summary: Représente l'ensemble des cartes que vous pouvez utiliser.
     str_tuple: no
     str_field:
-      - [soin, int, le nombre de cartes « Quoi d'neuf docteur ? »]
+      - [potion, int, le nombre de cartes « Potion magique »]
       - [deguisement, int, le nombre de cartes « Déguisement »]
       - [banzai, int, le nombre de cartes « Banzaï »]
       - [pacifisme, int, le nombre de cartes « Pacifisme »]
@@ -109,8 +109,8 @@ function:
     fct_ret_type: int
     fct_arg: []
   -
-    fct_name: nombre_unites_spawnees
-    fct_summary: Renvoie le nombre d'unités spawnées.
+    fct_name: nombre_unites
+    fct_summary: Renvoie le nombre d'unités en jeu.
     fct_ret_type: int
     fct_arg:
       - [ennemi, bool, ennemi ou non]
@@ -120,7 +120,7 @@ function:
     fct_ret_type: int
     fct_arg: []
   -
-    fct_name: pos_spawn
+    fct_name: pos_renfort
     fct_summary: Renvoie la position du spawn (ennemi ou non).
     fct_ret_type: position
     fct_arg:
@@ -133,7 +133,7 @@ function:
       - [tu, type_unite, le type dont on veut les informations]
   -
     fct_name: mes_cartes
-    fct_summary: Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
+    fct_summary: Retourne une structure "cartes" contenant les informations sur les cartes que vous avez en main.
     fct_ret_type: cartes
     fct_arg: []
   -
@@ -143,15 +143,15 @@ function:
     fct_arg: []
   -
     fct_name: taille_terrain_actuelle
-    fct_summary: Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure \texttt{taille_terrain}.
+    fct_summary: Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
     fct_ret_type: taille_terrain
     fct_arg: []
 
   - doc_extra: |
      \subsection{Fonctions d'utilisation des cartes}
   -
-    fct_name: soin
-    fct_summary: Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
+    fct_name: potion
+    fct_summary: Utilise une carte « Potion magique » que vous avez dans votre main.
     fct_ret_type: erreur
     fct_arg:
     - [cible, position, l'unité à relever]
@@ -185,7 +185,7 @@ function:
     - [pos, position, la nouvelle position de l'unité]
   -
     fct_name: relever
-    fct_summary: Relève une unité n'ayant plus de tours KO.
+    fct_summary: Relève une unité n'ayant plus de marqueurs de KO.
     fct_ret_type: erreur
     fct_arg:
     - [cible, position, la position de l'unité à déplacer]
@@ -197,14 +197,14 @@ function:
     - [attaquant, position, l'unité qui attaque]
     - [cible, position, l'unité qui se fait attaquer]
   -
-    fct_name: spawn
+    fct_name: renfort
     fct_summary: Fait apparaitre une unité sur la case de spawn.
     fct_ret_type: erreur
     fct_arg:
     - [quoi, type_unite, l'unité à faire apparaitre]
   -
     fct_name: annuler
-    fct_summary: Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
+    fct_summary: Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
     fct_ret_type: bool
     fct_arg: []
 

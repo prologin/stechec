@@ -61,6 +61,7 @@ EOF
       @f.puts
     end
     @f.print "    "
+    @f.puts "    try {"
     unless f.ret.is_nil?
       @f.print "zval* ret = "
       if f.ret.is_array?
@@ -88,6 +89,7 @@ EOF
     else
       @f.puts "    RETURN_ZVAL(ret, 0, 0);"
     end
+    @f.puts "    } catch (...) { RETURN_NULL(); }"
     @f.puts "}"
   end
 
@@ -183,6 +185,10 @@ EOF
     @f.puts "#{name} lang2cxx<zval*, #{name}>(zval* in)"
     @f.puts "{"
     @f.puts "    #{name} out;"
+    @f.puts "    if (in->type != IS_ARRAY) {"
+    @f.puts "        zend_error(E_WARNING, \"parameter is not a structure\");"
+    @f.puts "        throw 42;"
+    @f.puts "    }"
     @f.puts "    zval* tmp;"
     @f.puts "    HashTable* ht = Z_ARRVAL_P(in);"
     s['str_field'].each do |f|
