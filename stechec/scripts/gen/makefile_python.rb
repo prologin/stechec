@@ -13,7 +13,7 @@
 class PythonMakefile
   def build_metaserver(path)
     target = $conf['conf']['player_lib']
-    f = File.open(path + "Makefile", 'w')
+    f = File.open(path + "Makefile-python", 'w')
     f.print <<-EOF
 # -*- Makefile -*-
 
@@ -28,7 +28,8 @@ lib_TARGETS = #{target}
 #{target}-cxxflags = -fPIC $(shell python-config --includes)
 #{target}-ldflags = -s $(shell python-config --ldflags)
 
-include ../includes/rules.mk
+V=1
+include $(MFPATH)/rules.mk
     EOF
     f.close
   end

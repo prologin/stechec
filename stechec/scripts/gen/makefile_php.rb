@@ -28,6 +28,7 @@ lib_TARGETS = #{target}
 #{target}-cxxflags = -fPIC $(shell php-config --includes) -Wno-write-strings
 #{target}-ldflags = -s $(shell php-config --libs --ldflags) -lphp5
 
+V=1
 include $(MFPATH)/rules.mk
 EOF
     f.close
