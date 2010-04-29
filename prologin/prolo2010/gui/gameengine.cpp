@@ -59,7 +59,7 @@ static void		xSDL_PushEvent(SDL_Event *ev)
 GameEngine::GameEngine(void)
 {
   atexit(GameEngineCleanup);
-  memset(this->_unit_remind, 0, sizeof(this->_unit_remind));
+  memset(this->_unit_remind, 0xFF, sizeof(this->_unit_remind));
   std::cout << "Game engine init done" << std::endl;
 }
 
@@ -196,11 +196,12 @@ void			GameEngine::RetrieveData(void)
     {
       ev.user.code = EV_CASETYPE;
       for (int j = 0; j < MAP_SIZE; ++j)
-	if (this->_unit_remind[j] == 1)//player.units[i].id)
+	if (this->_unit_remind[j] == player.units[i].id)
 	  {
 	    int x = j % MAP_WIDTH;
 	    int y = j / MAP_HEIGHT;
-	    /*	    if (player.units[i].pos.x == x && player.units[i].pos.y > y)
+	    ev.user.data1 = NULL;
+	    if (player.units[i].pos.x == x && player.units[i].pos.y > y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE0);
 	    else if (player.units[i].pos.x == x && player.units[i].pos.y < y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE1);
@@ -216,7 +217,8 @@ void			GameEngine::RetrieveData(void)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE6);
 	    else if (player.units[i].pos.x < x && player.units[i].pos.y > y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE7);
-	      xSDL_PushEvent(&ev);*/
+	    if (ev.user.data1 != NULL)
+	      xSDL_PushEvent(&ev);
 	  }
       if (player.units[i].ko >= 0)
 	{
@@ -225,6 +227,6 @@ void			GameEngine::RetrieveData(void)
 	}
       ev.user.data1 = new EventCase(player.units[i].pos.x, player.units[i].pos.y, player.units[i].type_unite_actuel);
       xSDL_PushEvent(&ev);
-      this->_unit_remind[player.units[i].pos.x + player.units[i].pos.y * MAP_WIDTH] = 1; /* TODO */
+      this->_unit_remind[player.units[i].pos.x + player.units[i].pos.y * MAP_WIDTH] = player.units[i].id;
     }
 }
