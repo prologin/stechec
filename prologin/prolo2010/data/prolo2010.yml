@@ -82,7 +82,6 @@ struct:
     str_summary: Représente une unité sur le terrain.
     str_tuple: no
     str_field:
-      - [id, int, "l'identifiant unique de l'unité"]
       - [pos, position, la position de l'unité]
       - [ennemi, bool, vrai si l'unité appartient à l'ennemi]
       - [type_unite_actuel, type_unite, "le type de l'unité, qui change si l'unité est déguisée"]
@@ -91,6 +90,7 @@ struct:
       - [pa, int, le nombre de PA restants à l'unité]
       - [attaques, int, le nombre d'attaques restants à l'unité]
       - [attaques_gratuites, int, le nombre d'attaques gratuites (voir la partie banzai)]
+      - [id, int, "l'identifiant unique de l'unité"]
   -
     str_name: cartes
     str_summary: Représente l'ensemble des cartes que vous pouvez utiliser.
