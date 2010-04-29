@@ -190,7 +190,7 @@ bool GameData::can_active(int i){
 }
 
 void GameData::reset_moves(){
-  for (int i = 0; i < NBR_MAX_UNITES; i ++){
+  for (int i = 0; i < NBR_MAX_UNITES * 2; i ++){
     deja_bougee[i] = false;
   }
 }
@@ -282,13 +282,15 @@ void GameData::send_actions()
 }
 
 bool GameData::annuler(){
-  if (actions.empty())
+  if (actions.empty()){
+    LOG3("annuler : empty stack");
     return false;
+  }
   else
   {
     Action* act = actions.back();
     actions.pop_back();
-
+    LOG3("annuler : process...");
     act->annuler(this);
     delete act;
     return true;
