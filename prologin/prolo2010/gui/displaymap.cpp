@@ -29,6 +29,14 @@ static MapCaseType	CaseType[] =
     {LD_KO1		, SP_KO1},
     {LD_KO2		, SP_KO2},
     {LD_KO3		, SP_KO3},
+    {LD_MOVE0		, SP_MOVE0},
+    {LD_MOVE1		, SP_MOVE1},
+    {LD_MOVE2		, SP_MOVE2},
+    {LD_MOVE3		, SP_MOVE3},
+    {LD_MOVE4		, SP_MOVE4},
+    {LD_MOVE5		, SP_MOVE5},
+    {LD_MOVE6		, SP_MOVE6},
+    {LD_MOVE7		, SP_MOVE7},
     {LD_EMPTY		, SP_NONE}
   };
 
@@ -201,41 +209,6 @@ void		DisplayMap::setCase(int type, int x, int y)
 
   if ((x >= 0 && x < MAP_WIDTH) && (y >= 0 && y < MAP_HEIGHT))
     this->_case[x + y * MAP_WIDTH].push_back(type);
-  /*  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
-  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
-  sx = (MAP_WIDTH >> 1) - (mw >> 1);
-  sy = (MAP_HEIGHT >> 1) - (mh >> 1);
-  ex = sx + mw - 1;
-  ey = sy + mh - 1;
-  px = 0;
-  py = 0;
-  if (x <= sx)
-    {
-      px = (abs(x - sx) * 2) + mw + 4;
-      px = (int)(((float)px / MAP_WIDTH) * 100.0);
-    }
-  else if (x >= ex)
-    {
-      px = (abs(x - ex) * 2) + mw + 4;
-      px = (int)(((float)px / MAP_WIDTH) * 100.0);
-    }
-  if (y <= sy)
-    {
-      py = (abs(y - sy) * 2) + mh + 4;
-      py = (int)(((float)py / MAP_HEIGHT) * 100.0);
-    }
-  else if (y >= ey)
-    {
-      py = (abs(y - ey) * 2) + mh + 4;
-      py = (int)(((float)py / MAP_HEIGHT) * 100.0);
-    }
-  if (px || py)
-    {
-      this->_viewField = (py > px ? py : px);
-      px = (int)(MAP_WIDTH * (this->_viewField / 100.0));
-      this->_draw_pos[0] -= (((px - mw) >> 1) * this->_floor->getWidth());
-      Display::GetInstance()->setDisplayMotion(this->_draw_pos[0], this->_draw_pos[1]);
-      }*/
   this->InitFloorSfc();
 }
 
