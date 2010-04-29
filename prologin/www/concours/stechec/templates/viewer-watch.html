@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block "head" %}
+<link rel="stylesheet" href="/media/css/map_rendering.css" type="text/css" />
+<link rel="stylesheet" href="/media/css/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="/media/css/viewer.css" type="text/css" />
+<script type="text/javascript">
+    var MATCH_ID = {{ match.id }};
+    var NB_FRAMES = {{ turn_count }};
+    var INITIAL_FRAME = {{ initial_frame|safe }};
+</script>
+{% endblock %}
+
+{% block "title" %}Lecture d'un match - #{{ match.id }}{% endblock %}
+{% block "titleh1" %}Lecture d'un match - #{{ match.id }}{% endblock %}
+
+{% block "content" %}
+<p class="intro">Lecture du match #{{ match.id }} du {{ match.date|date }} à {{ match.date|time }}.</p>
+<div id="desc_champion"> 
+    {% for competiteur in competiteurs %}
+    <div class="p{{ forloop.counter }}"></div><p>{{ competiteur.champion }}</p>
+    {% endfor %}
+</div>
+
+<div id="viewer_overall">
+<div id="viewer_bar">
+    <div id="cont">
+        <div id="top"><div id="time_slider"></div></div>
+        <div id="bot">
+            <div id="i_cache" title="Cache chargé"></div>
+            <div id="i_time" title="Position"></div>
+            <ul id="but">
+                <li id="first"><a title="Premier tour"></a></li>
+                <li id="previous"><a title="Tour précédent"></a></li>
+                <li id="play"><a title="Lecture automatique"></a></li>
+                <li id="next"><a title="Tour suivant"></a></li>
+                <li id="last"><a title="Dernier tour"></a></li>
+                <li id="options"><a title="Souriez, vous êtes owné !"></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="viewer_wrap">
+    <div id="msg" style="display: none;">Fin du match !</div>
+    <div id="map"></div>
+</div>
+</div>
+
+<script type="text/javascript" src="/media/js/jquery.js"></script>
+<script type="text/javascript" src="/media/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/media/js/map_rendering_vars.js"></script>
+<script type="text/javascript" src="/media/js/viewer.js"></script>
+{% endblock %}

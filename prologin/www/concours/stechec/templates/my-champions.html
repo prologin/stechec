@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block "title" %}Mes champions{% endblock %}
+{% block "titleh1" %}Mes champions{% endblock %}
+
+{% block "content" %}
+
+<p class="intro">
+    Voici la liste de vos champions.
+</p>
+{% if is_paginated %}
+<p class="pagination">
+{% for page in paginator.page_range %}
+{% ifequal page_obj.number page %}
+    {{ page }}
+{% else %}
+    <a href="/champions/my/?page={{ page }}">{{ page }}</a>
+{% endifequal %}
+{% endfor %}
+</p>
+{% endif %}
+<table>
+    <thead>
+        <tr>
+            <th>Numéro</th>
+            <th>Nom</th>
+            <th>État</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if champion_list %}
+        {% for champion in champion_list %}
+        <tr class="{% cycle "row1" "row2" %}">
+            <td>{{ champion.id }}</td>
+            <td>{{ champion.nom }}</td>
+            <td><span class="{{ champion.statut_class }}">{{ champion.statut_string }}</span></td>
+            <td><a href="{{ champion.get_absolute_url }}">Détails</a> - <a href="/champions/edit/{{ champion.id }}/">Modifier</a> - <a href="/champions/delete/{{ champion.id }}/">Supprimer</a></td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr><td colspan="8">Vous n'avez encore aucun champion.</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

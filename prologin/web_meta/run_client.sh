@@ -51,20 +51,21 @@ ip_server=$9
 # Python is so slow that we can't implement  time limits.
 # We just use a big one to detect infinite loops in clients.
 # 60000ms = 1mn
-time_limit=5000
-reserve_time=0
+time_limit=0
+reserve_time=120000
 memory_limit=100000
-log_limit=256
+log_limit=1024
 
 # load config and transfert methods.
 source "`dirname $0`/meta_cx.sh" "$config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
-champion_path="$contest_path/$contest_dir_name/private/candidat_$candidat_id/champion_$champion_id.so"
+champion_path="$contest_path/$contest_dir_name/private/candidat_$candidat_id/champion_$champion_id/champion.so"
 out_file="$contest_path/$contest_dir_name/matchs/match_$game_id/client_$competiteur_id.out"
 
 # FIXME: and with ssh ?
 mkdir -p $contest_path/$contest_dir_name/matchs/match_$game_id
+chmod 777 $contest_path/$contest_dir_name/matchs/match_$game_id
 
 #
 # Open log file, if requested
@@ -98,7 +99,7 @@ cat > $config_file <<EOF
 [client_${team_id}]
 rules=$contest_lib_name
 path=$champion_path
-library=$champion_library
+library=champion
 server_host=$ip_server
 server_port=$port
 game_uid=$game_id

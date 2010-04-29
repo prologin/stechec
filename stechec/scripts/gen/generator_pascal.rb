@@ -345,6 +345,7 @@ class PascalFileGenerator < FileGenerator
 SRC       = #{@source_file}.pas # Ajoutez ici vos fichiers .pas
 NAME      = #{$conf['conf']['player_lib']}.so
 MY_CFLAGS =
+AUXFILES  = interface.cc interface.hh
 
 include ../includes/makepascal
     EOF

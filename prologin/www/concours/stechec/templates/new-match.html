@@ -1,0 +1,16 @@
+
+{% extends "base.html" %}
+
+{% block "title" %}Lancer un match{% endblock %}
+{% block "titleh1" %}Lancer un match{% endblock %}
+
+{% block "content" %}
+
+<p class="intro">Cette page permet de lancer un match entre plusieurs champions, qu'ils soient de vous ou des autres partcipants.<p>
+
+<form action="/matches/new/" method="post">
+    <p>Entrez le numéro d'un champion à faire partcipier dans chacun des champs ci-dessous.</p>
+    {{ form.as_p }}
+    <p><input type="submit" value="Valider"/></p>
+</form>
+{% endblock %}

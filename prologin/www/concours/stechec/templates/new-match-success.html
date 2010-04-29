@@ -1,0 +1,12 @@
+
+{% extends "base.html" %}
+
+{% block "title" %}Création réussie{% endblock %}
+{% block "titleh1" %}Création réussie{% endblock %}
+
+{% block "content" %}
+<p class="intro">
+La création du match a réussi, il va être exécuté par nos serveurs puis son état passera à « Terminé » d'ici quelques minutes.<br />
+<a href="/matches/{{ match.id }}/">Voir le match</a>
+</p>
+{% endblock %}

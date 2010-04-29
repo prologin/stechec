@@ -275,3 +275,9 @@ extern "C" int client_cx_process(void* ptr)
     return 1;
   return 0;
 }
+
+extern "C" void client_cx_set_ready(void* ptr)
+{
+  ClientCx* client_cx = reinterpret_cast<ClientCx*>(ptr);
+  client_cx->setReady();
+}

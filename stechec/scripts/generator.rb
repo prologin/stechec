@@ -141,6 +141,8 @@ def make_server
   FileUtils.cp((path + "forbidden_fun-pascal").to_s, install_path.to_s)
   FileUtils.cp((path + "forbidden_fun-java").to_s, install_path.to_s)
   FileUtils.cp((path + "forbidden_fun-caml").to_s, install_path.to_s)
+  FileUtils.cp((path + "toposort.py").to_s, install_path.to_s)
+  FileUtils.cp((path + "rules.mk").to_s, install_path.to_s)
 end
 
 # opens YAML file and parses it

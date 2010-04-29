@@ -1,0 +1,202 @@
+/**
+ * Main style sheet
+ * Author: Zopieux
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Trebuchet MS',Verdana,Tahoma,sans-serif;
+    font-size: 0.8em;
+}
+
+a, a:visited {
+    color: #069;
+    text-decoration: none;
+}
+a:hover {
+    color: #960;
+}
+
+#header {
+    background: url('../img/back.png') repeat-x left top;
+    height: 98px;
+}
+#header #logo {
+    background: url('../img/head.png') no-repeat left top;
+    height: 90px;
+    width: 302px;
+    float: left;
+}
+#header h1 {
+    line-height: 90px;
+    padding-right: 30px;
+    color: #fff;
+    font-size: 2em;
+    text-align: right;
+}
+
+#menu {
+    margin-left: 8px;
+    float: left;
+    width: 200px;
+}
+
+#menu div.block {
+    border-right: 1px solid #f09000;
+    border-bottom: 1px solid #f09000;
+    -moz-border-radius-bottomright: 6px;
+    -webkit-border-bottom-right-radius: 6px;
+    padding: 6px;
+    margin: 8px 15px 0 0;
+}
+
+#menu div.block h1 {
+    font-size: 1.5em;
+    color: #f09000;
+}
+
+#menu div.block ul {
+    list-style-type: none;
+    margin-left: 10px;
+}
+
+#menu div.block li {
+    list-style-image: none;
+}
+
+#content {
+    margin: 8px 10px 8px 210px;
+}
+
+#footer {
+    clear: both;
+    color: gray;
+    font-size: 0.7em;
+    text-align: center;
+    margin: 8px 20px;
+}
+
+#content p {
+    margin: 2px 0;
+    padding: 0;
+    text-align: justify;
+}
+#content p.intro {
+    margin-bottom: 8px !important;
+}
+
+/* Forms */
+form {
+    border: 1px solid #9c512c;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    margin: 0;
+    padding: 6px  10px;
+}
+
+label {
+    float: left;
+    width: 130px;
+    font-weight: bold;
+    text-align: right;
+    margin: 4px;
+}
+
+input, select, button, textarea {
+    margin: 4px;
+    border: 1px solid #777;
+    background: url('../img/form.png') repeat-x #fff;
+    font-family: 'Trebuchet MS',Verdana,Tahoma,sans-serif;
+    font-size: 1em;
+}
+button, input[type=submit] {
+    padding: 0 6px;
+    height: 22px;
+    line-height: 22px;
+}
+input[type=text], input[type=password], input[type=file] {
+    width: 180px;
+    height: 22px;
+    line-height: 22px;
+}
+input:focus, select:focus, textarea:focus {
+    border: 1px solid #333;
+}
+
+#content ul.errorlist {
+    margin-left: 120px; /* 130 + 4*2 + 4 */
+    color: #c55;
+    list-style-type: none;
+}
+#content ul.errorlist li {
+    background: url('../img/err.png') no-repeat left center;
+    padding-left: 20px;
+}
+
+/* TABLES */
+table {
+    border-collapse: collapse;
+    width: 98%;
+    margin: 10px 6px;
+    border: 1px solid #ccc;
+}
+thead th, tfoot td {
+    background: url('../admin-media/img/admin/nav-bg.gif') repeat-x;
+    border-bottom: 1px solid #ddd;
+    color: #444;
+    text-align: left;
+    padding: 1px 4px;
+}
+td, th {
+    padding: 3px;
+    vertical-align: top;
+    border-bottom: 1px solid #eee;
+    border-left: 1px solid #eee;
+}
+
+.row1 { background-color: #fff; }
+.row2 { background-color: #fef3ed; }
+
+/* PAGINATION */
+p.pagination {
+    background: url('../img/page.png') no-repeat;
+    background-position: 3px center;
+    padding: 1px 8px 1px 28px !important;
+    text-align: left !important;
+    display: block;
+    /*border: 1px dotted #ddd;*/
+    margin: 12px 0 !important;
+}
+
+/* MISC */
+dl {
+    margin: 10px 0;
+}
+dt {
+    font-weight: bold;
+}
+dd {
+    padding-left: 20px;
+}
+
+#content ul {
+    margin: 4px 10px;
+    padding: 0 0 0 20px;
+}
+#content ul li {
+    margin: 1px;
+    padding: 0;
+}
+
+/* SPECIFIC */
+div.pbar {
+    height: 18px;
+}
+
+#edit_tabs {
+    float: left;
+}
