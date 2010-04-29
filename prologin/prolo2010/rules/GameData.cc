@@ -43,7 +43,7 @@ GameData::GameData()
   srand(time(0));
   {
     unite u1 = {
-      spawn_position(true),
+      spawn_pos(),
       false,
       PERROQUET,
       PERROQUET,
@@ -52,7 +52,7 @@ GameData::GameData()
       0
     };
     unite u2 = {
-      spawn_position(false),
+      spawn_pos(),
       true,
       PERROQUET,
       PERROQUET,
