@@ -386,7 +386,7 @@ void ActionBanzai::annuler(GameData* g)
 {
   ActionCarte::annuler(g);
   LOG3("annule un banzaii");
-  g->unites[unite_].attaques -= 1;
+  g->unites[unite_].attaques_gratuites -= 1;
 }
 
 void ActionBanzai::envoyer(Api* api)
