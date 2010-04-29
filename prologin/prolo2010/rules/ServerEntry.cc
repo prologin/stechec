@@ -96,16 +96,16 @@ int ServerEntry::getScore(int uid)
   for (std::vector<unite>::iterator it = g_->unites.begin();
        it != g_->unites.end(); ++it)
     if (it->ko == -1 && it->vrai_type_unite == PERROQUET)
-      if (it->ennemi)
-        if (uid != mon_uid)
-           moi_fail = false;
+      if (uid != mon_uid)
+        if (!it->ennemi)
+          ennemi_fail = false;
         else
-           ennemi_fail = false;
+          moi_fail = false;
       else
-        if (uid != mon_uid)
-           ennemi_fail = false;
+        if (it->ennemi)
+          ennemi_fail = false;
         else
-           moi_fail = false;
+          moi_fail = false;
 
   if (moi_fail && ennemi_fail)
     return 0;
