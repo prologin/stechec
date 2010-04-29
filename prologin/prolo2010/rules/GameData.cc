@@ -41,7 +41,7 @@ void GameData::check(const char * file, int line){
 
 GameData::GameData()
 {
-  current_player = 0; // must be before filling vector unites
+  current_player = 1; // must be before filling vector unites
   srand(time(0));
   {
     unite u1 = {

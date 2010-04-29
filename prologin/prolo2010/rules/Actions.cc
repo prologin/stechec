@@ -245,6 +245,11 @@ void ActionDeplacer::verifier(GameData* g)
 {
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
+  ASSERT(dest_.x >= g->tt.min_coord &&
+	 dest_.x <= g->tt.max_coord &&
+	 dest_.y >= g->tt.min_coord &&
+	 dest_.y <= g->tt.max_coord
+	 , POSITION_INVALIDE)
   
   unite& u = g->unites[unite_];
   ASSERT(u.ko < 0, UNITE_KO);
