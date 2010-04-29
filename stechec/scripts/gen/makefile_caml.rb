@@ -29,7 +29,6 @@ lib_TARGETS = #{target}
 V=1
 include $(MFPATH)/rules.mk
     EOF
-    f.print @makefile
     f.close
   end
 
