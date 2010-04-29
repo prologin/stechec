@@ -482,6 +482,11 @@ include ../includes/rules.mk
     @f.puts "# -*- coding: iso-8859-1 -*-"
     print_banner "generator_python.rb"
     @f.puts "from api import *", ""
+    @f.puts "try:"
+    @f.puts "    import psyco"
+    @f.puts "    psyco.full()"
+    @f.puts "except:"
+    @f.puts "    pass"
 
     for_each_user_fun do |fn|
       @f.puts "def " + fn.name + "():"
