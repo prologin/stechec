@@ -269,6 +269,7 @@ void ActionDeplacer::appliquer(GameData* g)
 
   old_pos_ = u.pos;
   u.pos = dest_;
+  u.pa -= distance(old_pos_, dest_);
 }
 
 void ActionDeplacer::annuler(GameData* g)
@@ -280,6 +281,7 @@ void ActionDeplacer::annuler(GameData* g)
     g->nbr_unites_allowed += 1;
   }
   Action::annuler(g);
+  g->unites[unite_].pa += distance(old_pos_, g->unites[unite_].pos);
   g->unites[unite_].pos = old_pos_;
 }
 
