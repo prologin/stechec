@@ -60,7 +60,7 @@ extern "C" int run(void* foo, void* api, void* client_cx)
         // prolo2010 specific : two successive phases with no server sync
         if (api_need_retirer_ko())
 	  {
-	    unite u = retirer_ko();
+	    position u = retirer_ko();
 	    if (!api_retirer_ko(u)) // Returns true if successful
 	      abort();
 	  }
