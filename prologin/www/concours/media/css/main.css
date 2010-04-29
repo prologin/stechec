@@ -26,6 +26,7 @@ a:hover {
     height: 98px;
 }
 #header #logo {
+    margin-left: 10px;
     background: url('../img/head.png') no-repeat left top;
     height: 90px;
     width: 302px;

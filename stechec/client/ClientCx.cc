@@ -117,6 +117,7 @@ void    ClientCx::setReady()
   if (cx_ == NULL)
     {
       WARN("You are not connected! connect first.");
+      exit(0);
       return;
     }
   LOG5("Send `CX_READY' (from client_id: %1)", team_id_);
@@ -274,4 +275,10 @@ extern "C" int client_cx_process(void* ptr)
   if (client_cx->process(true))
     return 1;
   return 0;
+}
+
+extern "C" void client_cx_set_ready(void* ptr)
+{
+  ClientCx* client_cx = reinterpret_cast<ClientCx*>(ptr);
+  client_cx->setReady();
 }

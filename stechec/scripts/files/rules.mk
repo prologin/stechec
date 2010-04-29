@@ -6,6 +6,9 @@
 # Copyright (C) 2007 Prologin.
 #
 
+# Path of the Makefile, relative to where it was included from.
+MFPATH ?= ../includes
+
 # ==============================================================================
 # verbose settings
 # ==============================================================================
@@ -78,7 +81,7 @@ endef
 
 define get_ocaml_objs
   $(1)-mlsrcs := $$(filter %.ml,$$($(1)-srcs))
-  $(1)-camlobjs := $$(shell python ../includes/toposort.py $$($(1)-mlsrcs))
+  $(1)-camlobjs := $$(shell python $(MFPATH)/toposort.py $$($(1)-mlsrcs))
   ifneq ($$($(1)-camlobjs),)
     $(1)-objs := $(1)-caml.o $(value $(1)-objs)
     $(1)-cflags := $$($(1)-cflags) $$(OCAML_CFLAGS)
@@ -173,6 +176,7 @@ _dist		:= $(foreach t,$(lib_TARGETS),$($(t)-dists) $(filter-out ../%,$($(t)-srcs
 _deps		:= $(foreach f,$(_objs),$(dir $(f)).$(notdir $(f)).d)
 _cleanfiles	:= $(cleanfiles) $(_objs) $(_deps)
 _dcleanfiles	:= $(_targets) prologin.tgz
+_run_reqs   := $(_targets) $(foreach t,$(lib_TARGETS),$($(t)-dists))
 
 # ==============================================================================
 # rules
@@ -198,6 +202,9 @@ distclean: clean
 			break; \
 		fi; \
 	done
+
+list-run-reqs:
+	@echo "$(_run_reqs)"
 
 %.o: %.c
 	$(call cmd,cc)

@@ -154,7 +154,7 @@ class Tournoi(models.Model):
 
 class Match(models.Model):
     createur = models.ForeignKey(authmodels.User)
-    map = models.ForeignKey(Map)
+    map = models.ForeignKey(Map, null=True)
     tournoi = models.ForeignKey(Tournoi, null=True)
     statut = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)

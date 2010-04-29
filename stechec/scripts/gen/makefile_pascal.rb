@@ -38,7 +38,7 @@ $(NAME): interface.o $(SRC) $(LIMEOBJ)
 \t${FPC} -Cn prologin.pas ${CFLAGS} -o"${NAME}"
 #\tfpc, what a bullshit ! it doesn't want our ~2000 command line argument...
 #\tinstead, omit link phase, add options for ld in his script, then link.
-\t@sed -ie 's!^/usr/bin/ld!& $(CHECK_CHEAT) interface.o $(LIMEOBJ) !' ./ppas.sh
+\t@sed -ie 's!^/usr/bin/ld!& interface.o $(LIMEOBJ) !' ./ppas.sh
 #\t@sed -ie '/INPUT(/ a $(LIMEOBJ) ' ./link.res
 \t@sed -ie '/global:/ a run;' ./link.res
 \t@./ppas.sh
@@ -54,7 +54,7 @@ distclean: clean
 \t${RM} ${NAME} #{$conf['conf']['player_filename']}.tgz
 
 tar:
-\ttar cvzf #{$conf['conf']['player_filename']}.tgz prolo_interface.pas $(SRC)
+\ttar cvzf #{$conf['conf']['player_filename']}.tgz prolo_interface.pas $(SRC) $(AUXFILES)
 EOF
 
   end
@@ -76,6 +76,9 @@ NAME      = #{$conf['conf']['player_lib']}.so
 
 CHECK_CHEAT = `while read i; do echo -wrap $$i; done < forbidden_fun-pascal`
 LIMEOBJ = stechec_lime.o
+
+list-run-reqs:
+\t@true
 
     EOF
     f.print @makefile

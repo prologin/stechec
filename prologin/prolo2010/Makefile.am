@@ -3,6 +3,6 @@
 SUBDIRS =					\
 	data					\
 	gui					\
-	jsdump					\
+	jsview					\
 	asciiinter				\
 	rules

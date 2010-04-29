@@ -11,75 +11,24 @@
 #
 
 class CamlMakefile
-  def initialize
-    @makefile = <<EOF
-###########################
-# C Interface Definitions #
-###########################
-CAMLOBJS = api.cmo $(SRC:.ml=.cmo)
-LIMEOBJ  ?= ../includes/main.o
-CINTOBJ  = interface.o $(LIMEOBJ)
-
-#####################
-# Macro Definitions #
-#####################
-# sorry, can't use ocamlopt, it doesn't work
-OCAMLC 	= ocamlc
-LIBS    = -L`ocamlc -where` -Wl,-R`ocamlc -where` -lcamlrun_shared -lcurses -lm
-GCC 	= gcc
-RM 	= /bin/rm -f
-
-CFLAGS  = -fPIC -O2 -I`ocamlc -where`
-
-##############################
-# Basic Compile Instructions #
-##############################
-.SUFFIXES: .ml
-
-all: $(NAME)
-
-$(NAME): prolocaml.o $(CINTOBJ)
-\t$(GCC) #{TARGET_GCC_LINK} prolocaml.o $(CINTOBJ) $(LIBS) -o $(NAME) $(CHECK_CHEAT)
-\t@echo Finished
-
-clean:
-\t@echo "Cleaning..."
-\t$(RM) *.o *.cm* *~ \#*\#
-
-distclean: clean
-\t$(RM) $(NAME) #{$conf['conf']['player_filename']}.tgz
-
-tar:
-\t@tar cvzf #{$conf['conf']['player_filename']}.tgz api.ml $(SRC) interface.{c,h}
-
-prolocaml.o : $(CAMLOBJS)
-\t$(OCAMLC) $(CAMLFLAGS) -output-obj -o $@ $(CAMLOBJS)
-
-%.cmo   : %.ml
-\t$(OCAMLC) $(CAMLFLAGS) -c -o $@ $<
-EOF
-  end
-
-  def build_client(path)
-    f = File.new(path + "makecaml", 'w')
-    f.puts "# -*- Makefile -*-"  
-    f.print @makefile
-    f.close
-  end
-
   def build_metaserver(path)
     f = File.new(path + "Makefile-caml", 'w')
+    target = $conf['conf']['player_lib']
     f.print <<-EOF
 # -*- Makefile -*-
 
-SRC       = $(wildcard *.ml)
-NAME      = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-CHECK_CHEAT = `while read i; do echo -Wl,-wrap -Wl,$$i; done < forbidden_fun-caml`
-LIMEOBJ   = stechec_lime.o
+#{target}-srcs = $(wildcard *.ml)
+#{target}-camlflags = -g
 
+# Evite de toucher a ce qui suit
+#{target}-dists = interface.hh
+#{target}-srcs += interface.cc stechec_lime.cc
+
+V=1
+include $(MFPATH)/rules.mk
     EOF
-    f.print @makefile
     f.close
   end
 
