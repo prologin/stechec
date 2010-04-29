@@ -27,7 +27,7 @@ void GameData::check(const char * file, int line){
   for(int i = 0; i < NBR_MAX_UNITES * 2; i ++)
     LOG3("deja_bouge[%1] = %2", i, deja_bougee[i]);
   for(int i = 0; i < unites.size(); i ++)
-    LOG3("unite[%1] = {id:%10, pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types=(%8, %9)}",
+    LOG3("unite[%1] = {pos: {x:%2, y:%3}, ko:%4, pa:%5, attaques:%6, attaques_gratuites:%7, types:(%8, %9), id:%10}",
 	 i, unites[i].pos.x, unites[i].pos.y,
 	 unites[i].ko, unites[i].pa, unites[i].attaques, unites[i].attaques_gratuites,
 	 unites[i].type_unite_actuel,
@@ -40,10 +40,11 @@ void GameData::check(const char * file, int line){
 
 GameData::GameData()
 {
+  current_player = 0; // must be before filling vector unites
   srand(time(0));
   {
     unite u1 = {
-      spawn_pos(),
+      spawn_position(false),
       false,
       PERROQUET,
       PERROQUET,
@@ -54,7 +55,7 @@ GameData::GameData()
       0
     };
     unite u2 = {
-      spawn_pos(),
+      spawn_position(true),
       true,
       PERROQUET,
       PERROQUET,
@@ -69,7 +70,6 @@ GameData::GameData()
     unites.push_back(u1);
     unites.push_back(u2);
   };
-  current_player = 0;
   {
     cartes c = {1,2,3,4};
     LOG3("cartes = {%2, %3, %4, %5}", c.potion, c.deguisement, c.banzai, c.pacifisme);
@@ -214,6 +214,10 @@ bool GameData::must_remove_ko(){
 
 // accesseurs
 cartes GameData::get_cartes(int i){
+#ifdef DEBUG
+  position p = spawn_pos();
+  LOG3("spawn position = %1, %2", p.x, p.y);
+#endif
   cartes c = players_cartes[i];
   LOG3("get_cartes(%1) = {%2, %3, %4, %5}", i, c.potion, c.deguisement, c.banzai, c.pacifisme);
   return c;
