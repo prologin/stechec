@@ -54,11 +54,11 @@ namespace Prologin {
             Unite[] t = Unites();
             try
             {
-                getPosUnite(PosSpawn(false));
+                getPosUnite(PosRenfort(false));
             }
             catch
             {
-                Spawn(TypeUnite.CHAT);      //Will be available next turn
+                Renfort(TypeUnite.CHAT);      //Will be available next turn
             }
 
             Unite uTiti = new Unite();    //Prevent warning

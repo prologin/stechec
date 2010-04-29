@@ -160,8 +160,8 @@ void cxx2lang(cartes in, MonoObject* moObj = NULL)
   MonoClass*  mcKlass  = mono_class_from_name(gl_csharp.getImage(), "Prologin", "Cartes");
   if (!moObj) moObj    = mono_object_new(gl_csharp.getDomain(), mcKlass);
   mono_runtime_object_init(moObj);
-  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.soin));
-  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Soin"), &arg);
+  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.potion));
+  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Potion"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.deguisement));
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Deguisement"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.banzai));
@@ -313,8 +313,8 @@ MonoObject* cxx2lang< MonoObject*, cartes >(cartes in)
   MonoClass*  mcKlass  = mono_class_from_name(gl_csharp.getImage(), "Prologin", "Cartes");
   MonoObject* moObj    = mono_object_new(gl_csharp.getDomain(), mcKlass);
   mono_runtime_object_init(moObj);
-  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.soin));
-  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Soin"), &arg);
+  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.potion));
+  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Potion"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.deguisement));
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Deguisement"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.banzai));
@@ -330,7 +330,7 @@ cartes lang2cxx< MonoObject*, cartes >(MonoObject* in)
   void*      field_out;
   MonoClass* mcKlass = mono_class_from_name(gl_csharp.getImage(), "Prologin", "Cartes");
   (void)field_out;
-  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Soin"), &out.soin);
+  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Potion"), &out.potion);
   mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Deguisement"), &out.deguisement);
   mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Banzai"), &out.banzai);
   mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Pacifisme"), &out.pacifisme);
@@ -538,9 +538,9 @@ gint32 nombre_pc()
 	return cxx2lang< gint32, int >(api_nombre_pc());
 }
 
-gint32 nombre_unites_spawnees(bool ennemi)
+gint32 nombre_unites(bool ennemi)
 {
-	return cxx2lang< gint32, int >(api_nombre_unites_spawnees(lang2cxx< gint32, bool >(ennemi)));
+	return cxx2lang< gint32, int >(api_nombre_unites(lang2cxx< gint32, bool >(ennemi)));
 }
 
 gint32 tour_actuel()
@@ -548,9 +548,9 @@ gint32 tour_actuel()
 	return cxx2lang< gint32, int >(api_tour_actuel());
 }
 
-MonoObject* pos_spawn(bool ennemi)
+MonoObject* pos_renfort(bool ennemi)
 {
-	return cxx2lang< MonoObject*, position >(api_pos_spawn(lang2cxx< gint32, bool >(ennemi)));
+	return cxx2lang< MonoObject*, position >(api_pos_renfort(lang2cxx< gint32, bool >(ennemi)));
 }
 
 MonoObject* caracteristiques(type_unite tu)
@@ -573,9 +573,9 @@ MonoObject* taille_terrain_actuelle()
 	return cxx2lang< MonoObject*, taille_terrain >(api_taille_terrain_actuelle());
 }
 
-gint32 soin(MonoObject* cible)
+gint32 potion(MonoObject* cible)
 {
-	return cxx2lang< gint32, erreur >(api_soin(lang2cxx< MonoObject*, position >(cible)));
+	return cxx2lang< gint32, erreur >(api_potion(lang2cxx< MonoObject*, position >(cible)));
 }
 
 gint32 deguisement(MonoObject* cible, type_unite nouveau_type)
@@ -608,9 +608,9 @@ gint32 attaquer(MonoObject* attaquant, MonoObject* cible)
 	return cxx2lang< gint32, erreur >(api_attaquer(lang2cxx< MonoObject*, position >(attaquant), lang2cxx< MonoObject*, position >(cible)));
 }
 
-gint32 spawn(type_unite quoi)
+gint32 renfort(type_unite quoi)
 {
-	return cxx2lang< gint32, erreur >(api_spawn(lang2cxx< gint32, type_unite >(quoi)));
+	return cxx2lang< gint32, erreur >(api_renfort(lang2cxx< gint32, type_unite >(quoi)));
 }
 
 gint32 annuler()
@@ -689,21 +689,21 @@ CSharpInterface::CSharpInterface()
 
   // Register API functions as internal Mono functions
   mono_add_internal_call("Prologin.Api::NombrePc", (const void*)nombre_pc);
-  mono_add_internal_call("Prologin.Api::NombreUnitesSpawnees", (const void*)nombre_unites_spawnees);
+  mono_add_internal_call("Prologin.Api::NombreUnites", (const void*)nombre_unites);
   mono_add_internal_call("Prologin.Api::TourActuel", (const void*)tour_actuel);
-  mono_add_internal_call("Prologin.Api::PosSpawn", (const void*)pos_spawn);
+  mono_add_internal_call("Prologin.Api::PosRenfort", (const void*)pos_renfort);
   mono_add_internal_call("Prologin.Api::Caracteristiques", (const void*)caracteristiques);
   mono_add_internal_call("Prologin.Api::MesCartes", (const void*)mes_cartes);
   mono_add_internal_call("Prologin.Api::Unites", (const void*)unites);
   mono_add_internal_call("Prologin.Api::TailleTerrainActuelle", (const void*)taille_terrain_actuelle);
-  mono_add_internal_call("Prologin.Api::Soin", (const void*)soin);
+  mono_add_internal_call("Prologin.Api::Potion", (const void*)potion);
   mono_add_internal_call("Prologin.Api::Deguisement", (const void*)deguisement);
   mono_add_internal_call("Prologin.Api::Banzai", (const void*)banzai);
   mono_add_internal_call("Prologin.Api::Pacifisme", (const void*)pacifisme);
   mono_add_internal_call("Prologin.Api::Deplacer", (const void*)deplacer);
   mono_add_internal_call("Prologin.Api::Relever", (const void*)relever);
   mono_add_internal_call("Prologin.Api::Attaquer", (const void*)attaquer);
-  mono_add_internal_call("Prologin.Api::Spawn", (const void*)spawn);
+  mono_add_internal_call("Prologin.Api::Renfort", (const void*)renfort);
   mono_add_internal_call("Prologin.Api::Annuler", (const void*)annuler);
   mono_add_internal_call("Prologin.Api::AfficherErreur", (const void*)afficher_erreur);
   mono_add_internal_call("Prologin.Api::AfficherTypeUnite", (const void*)afficher_type_unite);

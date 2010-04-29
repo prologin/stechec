@@ -13,11 +13,11 @@ namespace Prologin {
 		PAS_A_PORTEE, // <- la cible n'est pas à portée
 		UNITE_KO, // <- l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO
 		UNITE_DEBOUT, // <- l'unité que vous essayez de relever est déjà debout
-		QUOTA_DEPASSE, // <- nombre maximal d'unites
+		QUOTA_DEPASSE, // <- nombre maximal d'unites, de spawn ou de relevages par tour dépassé
 		PLUS_DE_PA, // <- cette unité a réalisé toutes ses actions
 		DEJA_ATTAQUE, // <- cette unité a déjà attaqué
-		PAS_SPAWNABLE, // <- cette unité n'est pas spawnable
-		SPAWN_OCCUPE, // <- une unité est déjà présente sur le spawn
+		UNITE_INTERDITE, // <- cette unité ne peut pas être amenée en renfort
+		RENFORT_IMPOSSIBLE, // <- une unité est déjà présente sur le spawn
 		PAS_A_MOI, // <- l'unité ciblée n'est pas à vous
 		PLUS_DE_CARTES, // <- il n'y a plus de cartes du type spécifié dans votre main
 		PHASE_CARTES_TERMINEE, // <- vous ne pouvez plus poser de cartes car vous avez fait une action
@@ -64,7 +64,7 @@ namespace Prologin {
 		public Position Pos; // <- la position de l'unité
 		public bool Ennemi; // <- vrai si l'unité appartient à l'ennemi
 		public TypeUnite TypeUniteActuel; // <- le type de l'unité, qui change si l'unité est déguisée
-		public TypeUnite VraiTypeUnite; // <- le vrai type de l'unité (qui ne change pas lors du déguisement
+		public TypeUnite VraiTypeUnite; // <- le vrai type de l'unité (qui ne change pas lors du déguisement)
 		public int Ko; // <- une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité
 		public int Pa; // <- le nombre de PA restants à l'unité
 		public int Attaques; // <- le nombre d'attaques restants à l'unité
@@ -75,7 +75,7 @@ namespace Prologin {
 	class Cartes {
 		public Cartes() {
 		}
-		public int Soin; // <- le nombre de cartes « Quoi d'neuf docteur ? »
+		public int Potion; // <- le nombre de cartes « Potion magique »
 		public int Deguisement; // <- le nombre de cartes « Déguisement »
 		public int Banzai; // <- le nombre de cartes « Banzaï »
 		public int Pacifisme; // <- le nombre de cartes « Pacifisme »
@@ -86,7 +86,7 @@ namespace Prologin {
 		public const int TAILLE_DEPART = 25;
 
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
-		public const int NBR_MAX_UNITES = 20;
+		public const int NBR_MAX_UNITES = 10;
 
 // Le temps, en nombre de tours, entre deux rétrécissement du terrain.
 		public const int TEMPS_RETRECISSEMENT = 5;
@@ -98,9 +98,9 @@ namespace Prologin {
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern int NombrePc();
 
-// Renvoie le nombre d'unités spawnées.
+// Renvoie le nombre d'unités en jeu.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public static extern int NombreUnitesSpawnees(bool ennemi);
+		public static extern int NombreUnites(bool ennemi);
 
 // Renvoie le numéro du tour actuel.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -108,13 +108,13 @@ namespace Prologin {
 
 // Renvoie la position du spawn (ennemi ou non).
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public static extern Position PosSpawn(bool ennemi);
+		public static extern Position PosRenfort(bool ennemi);
 
 // Renvoie les caractéristiques d'un type d'unité.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Caracs Caracteristiques(TypeUnite tu);
 
-// Retourne une structure \texttt{cartes} contenant les informations sur les cartes que vous avez en main.
+// Retourne une structure "cartes" contenant les informations sur les cartes que vous avez en main.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Cartes MesCartes();
 
@@ -122,13 +122,13 @@ namespace Prologin {
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Unite[] Unites();
 
-// Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure \texttt{taille_terrain}.
+// Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern TailleTerrain TailleTerrainActuelle();
 
-// Utilise une carte « Quoi d'neuf docteur ? » que vous avez dans votre main.
+// Utilise une carte « Potion magique » que vous avez dans votre main.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public static extern Erreur Soin(Position cible);
+		public static extern Erreur Potion(Position cible);
 
 // Utilise une carte « Déguisement » que vous avez dans votre main.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -146,7 +146,7 @@ namespace Prologin {
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Deplacer(Position cible, Position pos);
 
-// Relève une unité n'ayant plus de tours KO.
+// Relève une unité n'ayant plus de marqueurs de KO.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Relever(Position cible);
 
@@ -156,9 +156,9 @@ namespace Prologin {
 
 // Fait apparaitre une unité sur la case de spawn.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public static extern Erreur Spawn(TypeUnite quoi);
+		public static extern Erreur Renfort(TypeUnite quoi);
 
-// Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
+// Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern bool Annuler();
 
