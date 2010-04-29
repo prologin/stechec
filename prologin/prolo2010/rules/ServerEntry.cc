@@ -90,27 +90,27 @@ bool        ServerEntry::isMatchFinished(void)
 
 int ServerEntry::getScore(int uid)
 {
-  bool moi_fail = true, ennemi_fail = true;
+  bool moi_fail = false, ennemi_fail = false;
   int mon_uid = g_->get_current_player();
 
   for (std::vector<unite>::iterator it = g_->unites.begin();
        it != g_->unites.end(); ++it)
     if (it->ko == -1 && it->vrai_type_unite == PERROQUET)
-      if (it->ennemi)
-        if (uid != mon_uid)
-           moi_fail = false;
+      if (uid != mon_uid)
+        if (!it->ennemi)
+          moi_fail = true;
         else
-           ennemi_fail = false;
+          ennemi_fail = true;
       else
-        if (uid != mon_uid)
-           ennemi_fail = false;
+        if (it->ennemi)
+          moi_fail = true;
         else
-           moi_fail = false;
+          ennemi_fail = true;
 
-  if (moi_fail && ennemi_fail)
+  if (!moi_fail && !ennemi_fail)
     return 0;
 
-  if (moi_fail)
+  if (!moi_fail)
     return 0;
 
   return 1; //otherwise ennemi_fail
