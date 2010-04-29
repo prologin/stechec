@@ -26,11 +26,10 @@ let retirer_ko () =
 
 (* seq :: int -> int -> int list *)
 let seq start stop =
-  let f, debut, fin = 
-    if start > stop then ((-), stop, start) else ((+), stop, start) in
+  let f = (if start > stop then (+) else (-)) in
   let rec helper f acc i =
-    if i < debut then acc else helper f (i::acc) (f i 1)
-  in helper f [] fin;;
+    if i = start then (i::acc) else helper f (i::acc) (f i 1)
+  in helper f [] stop;;
 
 (* cart_prod :: 'a list -> 'b list -> ('a * 'b) list *)
 let cart_prod l1 l2 =
@@ -69,38 +68,47 @@ let choose_u2s unites =
 (* -------------------------------------------------------------------------- *)
 (* try_move :: unite -> erreur *)
 let try_move u =
-  if u.ko > 0 then Unite_ko
+  if u.ko >= 0 then Unite_ko
   else if u.ennemi then Pas_a_moi
   else
     let rec lst = get_range u.pos u.pa
     and pick_first = function
       | [] -> Case_occupee
-      | x::xs ->
-          match deplacer u.pos x with
+      | pos::xs ->
+          match deplacer u.pos pos with
             | Ok -> Ok
-            | _ -> pick_first xs
-    in pick_first lst;;
+            | a -> afficher_erreur a; pick_first xs
+    in pick_first lst
 
 (* free_spawn :: unites array -> erreur *)
 let free_spawn unites map =
   let (sx, sy) = pos_renfort false in
-  match map.(sx).(sy) with
+  try match map.(sx).(sy) with
     | None -> Ok
     | Some u2move ->
         match try_move u2move with
           | Case_occupee -> Renfort_impossible
           | otherwise -> otherwise
+  with _ -> print_endline "le spawn est hors de la map";
+    print_int sx; print_string " - "; print_int sy;
+    Renfort_impossible
 (* -------------------------------------------------------------------------- *)
 
 (* build_map :: unite array -> unite option array array *)
 let build_map unites =
-  let tta = taille_terrain_actuelle () in
-  let a = make_matrix tta.taille tta.taille None in
-    iter (fun u -> let (x,y) = u.pos in a.(x).(y) <- Some u) unites;
+  let tta = taille_depart in
+(*  print_string "------------------ TAILLE TERRAIN --------------------"; *)
+(*  print_newline (); *)
+(*  print_int tta.taille; print_newline (); *)
+(*  print_int tta.min_coord; print_newline (); *)
+(*  print_int tta.max_coord; print_newline (); *)
+  let a = make_matrix tta tta None in
+    iter (fun u -> let (x,y) = u.pos in
+            try a.(x).(y) <- Some u with _ -> print_endline "WAT") unites;
     a
 
 let rec neighbours acc map = function
-  | [] -> []
+  | [] -> acc
   | (x,y)::tail ->
       match map.(x).(y) with
         | None -> neighbours acc map tail
@@ -156,7 +164,7 @@ let rec do_the_job = function
           | Ok -> (match attaquer new_pos target.pos with 
                      | Ok -> do_the_job tail
                      | a -> a)
-          | a -> a
+          | a -> afficher_erreur a; a
 
 (* get_titi :: unite array -> bool -> unite *)
 let get_titi units bool =
@@ -212,7 +220,7 @@ let send_bipbips units =
           | Ok | Case_occupee -> 
               ignore (attaquer pos titi_ennemi.pos);
               helper xs
-          | _ -> ()
+          | erreur -> afficher_erreur erreur
   in helper lst
 
 let rec abort_and_escape u ennemis = function
@@ -220,7 +228,10 @@ let rec abort_and_escape u ennemis = function
   | false ->
       match try_escape u ennemis with
         | None -> ()
-        | Some new_pos -> ignore (deplacer u.pos new_pos)
+        | Some new_pos -> 
+            match deplacer u.pos new_pos with
+              | Ok -> ()
+              | a -> afficher_erreur a
 
 (* protect_titi :: (unite * unite list) list -> unite list -> unite -> unit *)
 let protect_titi stack ennemis titi =
@@ -243,16 +254,24 @@ let jouer () =
   let units = unites () in
   let map = build_map units in
   let stack = get_status units map in
-    (if is_empty stack then
+  let nb_bros = fold_left (fun a u -> if u.ennemi then a else a + 1) 0 units in
+    (if (is_empty stack && nb_bros > 3) then
        if (mes_cartes ()).pacifisme > 0 then
          ignore (pacifisme ()));
 
-    let nb_bros = fold_left (fun a u -> if u.ennemi then a else a + 1) 0 units in
     if nb_bros < nbr_max_unites then
       (match free_spawn units map with
         | Ok -> ignore (renfort (choose_u2s units))
-        | Renfort_impossible -> ()
-        | otherwise -> afficher_erreur otherwise);
+        | otherwise -> 
+            afficher_erreur otherwise;
+            flush stdout;
+            print_string "SPAWN OCCUPE PAR: ";
+            flush stdout;
+            let x,y = pos_renfort false in
+            match map.(x).(y) with
+              | None -> print_endline "rien"
+              | Some un -> afficher_unite un
+        );
 
     (* Si personne n'est en danger et qu'on ne peut attaquer personne, on
      * envoit les Bipbips en direction du titi adverse *)
@@ -263,15 +282,14 @@ let jouer () =
       (* Si titi est en danger *)
       let is_titi u = u.vrai_type_unite = Perroquet in
       let maybe_titi = List.filter (fun (u,_) -> is_titi u) stack in
-      if maybe_titi <> [] then
-        let [(titi, ennemis)] = maybe_titi in protect_titi stack ennemis titi
-
-      else
-        (match List.partition (fun (u,_) -> u.vrai_type_unite = Singe) stack with
-          (* Cas où la défense est safe, on s'occupe d'attaquer *)
-          | ([], rest) -> () (* FIXME *)
-          (* Il y'a des ennemis dans la zone défensive *)
-          | (elmers, rest) -> ()); (* FIXME *)
+        match maybe_titi with
+          | (titi, ennemis)::_ -> protect_titi stack ennemis titi
+          | [] ->
+            (match List.partition (fun (u,_) -> u.vrai_type_unite = Singe) stack with
+              (* Cas où la défense est safe, on s'occupe d'attaquer *)
+              | ([], rest) -> () (* FIXME *)
+              (* Il y'a des ennemis dans la zone défensive *)
+              | (elmers, rest) -> ()); (* FIXME *)
   flush stderr; flush stdout;;
 
 (*
