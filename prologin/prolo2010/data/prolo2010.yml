@@ -82,6 +82,7 @@ struct:
     str_summary: Représente une unité sur le terrain.
     str_tuple: no
     str_field:
+      - [id, int, "l'identifiant unique de l'unité"]
       - [pos, position, la position de l'unité]
       - [ennemi, bool, vrai si l'unité appartient à l'ennemi]
       - [type_unite_actuel, type_unite, "le type de l'unité, qui change si l'unité est déguisée"]
