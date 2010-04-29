@@ -182,7 +182,7 @@ void			GameEngine::RetrieveData(void)
   map_size = taille_terrain_actuelle();
   ev.user.code = EV_MAPSIZE;
   ev.user.data1 = new int[1];
-  *(int*)(ev.user.data1) = map_size.taille * 100 / MAP_SIZE;
+  *(int*)(ev.user.data1) = MAP_WIDTH - map_size.taille;
   xSDL_PushEvent(&ev);
 
   player.cards = mes_cartes();
@@ -200,7 +200,7 @@ void			GameEngine::RetrieveData(void)
 	  {
 	    int x = j % MAP_WIDTH;
 	    int y = j / MAP_HEIGHT;
-	    if (player.units[i].pos.x == x && player.units[i].pos.y > y)
+	    /*	    if (player.units[i].pos.x == x && player.units[i].pos.y > y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE0);
 	    else if (player.units[i].pos.x == x && player.units[i].pos.y < y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE1);
@@ -216,7 +216,7 @@ void			GameEngine::RetrieveData(void)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE6);
 	    else if (player.units[i].pos.x < x && player.units[i].pos.y > y)
 	      ev.user.data1 = new EventCase(x, y, LD_MOVE7);
-	    xSDL_PushEvent(&ev);
+	      xSDL_PushEvent(&ev);*/
 	  }
       if (player.units[i].ko >= 0)
 	{

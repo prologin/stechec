@@ -45,7 +45,7 @@ DisplayMap::DisplayMap(const Surface &display, Surface *texture)
   this->_floor = texture;
   this->_zoom = 0;
   this->_oldZoom = 0;
-  this->_viewField = 100;
+  this->_viewField = 0;
   this->_zsfc = NULL;
   this->_draw_pos[0] = 0;
   this->_draw_pos[1] = 0;
@@ -91,8 +91,8 @@ void			DisplayMap::Refresh(void)
   pos.setSize(this->_sfc->getWidth(), this->_sfc->getHeight());
   this->_floor_sfc->Blit(*(this->_sfc), pos);
 
-  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
-  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
+  mw = MAP_WIDTH - this->_viewField;
+  mh = MAP_HEIGHT - this->_viewField;
   x = (MAP_WIDTH >> 1) - (mw >> 1);
   y = (MAP_HEIGHT >> 1) - (mh >> 1);
   scope_start = x + y * MAP_WIDTH;
@@ -117,7 +117,7 @@ void			DisplayMap::Refresh(void)
 	    y += this->_draw_pos[1];
 	    while (!(sprites.empty()))
 	      {
-		int ys = y - sprites.back()->getFieldHeight() - this->_floor->getHeight();
+		int ys = y - sprites.back()->getFieldHeight() + this->_floor->getHeight();
 		pos.setPos(x, ys);
 		sprites.back()->action();
 		sprites.back()->Blit(*(this->_sfc), pos);
@@ -137,8 +137,8 @@ void		DisplayMap::InitFloorSfc(void)
   if (this->_floor == NULL)
     return ;
   SDL_FillRect((SDL_Surface*)(this->_floor_sfc->getSurface()), NULL, 0x0);
-  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
-  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
+  mw = MAP_WIDTH - this->_viewField;
+  mh = MAP_HEIGHT - this->_viewField;
   for (i = 0; i < mh; i++)
     for (j = 0; j < mw; j++)
       {
@@ -223,7 +223,7 @@ int		DisplayMap::GetRealWidth(void) const
 {
   int		mw, z;
 
-  mw = (int)(MAP_WIDTH * (this->_viewField / 100.0));
+  mw = MAP_WIDTH - this->_viewField;
   z = (int)(this->_floor->getWidth() * (this->_zoom / 100.0));
   mw = mw * (this->_floor->getWidth() + z);
   return (mw);
@@ -233,7 +233,7 @@ int		DisplayMap::GetRealHeight(void) const
 {
   int		mh, z;
 
-  mh = (int)(MAP_HEIGHT * (this->_viewField / 100.0));
+  mh = MAP_HEIGHT - this->_viewField;
   z = (int)(this->_floor->getHeight() * (this->_zoom / 100.0));
   mh = mh * (this->_floor->getHeight() + z);
   return (mh);

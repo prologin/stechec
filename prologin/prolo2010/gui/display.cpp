@@ -428,8 +428,13 @@ void			Display::userEvent(unsigned int code, void *data)
     {
     case EV_CASETYPE:
       c = static_cast<EventCase*>(data);
-      printf("%i %i\n", c->x, c->y);
+      printf("# %i %i\n", c->x, c->y);
       this->_map->setCase(c->data, c->x, c->y);
+      delete c;
+      break;
+    case EV_MAPSIZE:
+      printf("$ %i\n", *((int*)data));
+      this->_map->setViewField(*((int*)data));
       delete c;
       break;
     case EV_PLAYER:
