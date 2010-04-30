@@ -62,14 +62,23 @@ let get_titi units bool =
     !a
 
 let best_pos bro target =
-  let caracs = caracteristiques bro.type_unite_actuel in
   let (distx, disty) = target.pos -- bro.pos in
   let aux dist pos_init =
-    let op = (if dist > 0 then (+) else (-)) in
-      if (abs dist) < caracs.pa_init then
+    if dist < 0 then
+      if (abs dist) <= bro.pa then
+        pos_init + dist + 1
+      else
+        pos_init - bro.pa
+    else
+      if dist <= bro.pa then
+        pos_init + dist - 1
+      else
+        pos_init + bro.pa
+(*    let op = (if dist > 0 then (+) else (-)) in
+      if (abs dist) <= bro.pa then
         op (op pos_init (abs dist)) (-1)
       else
-        op dist (caracs.pa_init - 1)
+        op (abs dist) (bro.pa - 1)*)
   in (aux distx (fst bro.pos), aux disty (snd bro.pos))
 
 (* count :: type_unite -> bool -> unite array -> int *)
@@ -196,8 +205,8 @@ let rec choose already_chosen lst =
   
 (* focus_titi :: unite array -> unite -> (unite * pos) list *)
 let focus_titi units titi =
-  let comp (d1, u1) (d2, u2) = d1 - d2 + u1.pa - u2.pa in
-  let bros = List.filter (fun u -> not u.ennemi) (to_list units) in
+  let comp (d1, u1) (d2, u2) = (-1) * (d1 - d2 + u1.pa - u2.pa) in
+  let bros = List.filter (fun u -> not u.ennemi && u.pa > 0) (to_list units) in
   let u_with_d =
     List.map
       (fun u -> ((fst u.pos) - (fst titi.pos) + (snd u.pos) - (snd titi.pos), u)) 
@@ -224,11 +233,12 @@ let send_bipbips units =
   let rec helper = function
     | [] -> ()
     | (u, pos)::xs ->
-        print_endline "OKER OKER";
+        flush stdout; afficher_unite u; flush stdout;
         match deplacer u.pos pos with
           | Ok | Case_occupee -> 
               ignore (attaquer pos titi_ennemi.pos);
               helper xs
+          | Plus_de_pa -> afficher_erreur Plus_de_pa; helper xs
           | erreur -> afficher_erreur erreur
   in helper lst
 
