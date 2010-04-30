@@ -356,8 +356,8 @@ void ActionDeguisement::verifier(GameData* g)
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 
-  ASSERT(unite_ > PERROQUET, RENFORT_IMPOSSIBLE); // TODO
-  ASSERT(unite_ <= KANGOUROU, RENFORT_IMPOSSIBLE);
+  ASSERT(nouveau_type_ > PERROQUET, RENFORT_IMPOSSIBLE); // TODO
+  ASSERT(nouveau_type_ <= KANGOUROU, RENFORT_IMPOSSIBLE);
 }
 
 void ActionDeguisement::appliquer(GameData* g)
