@@ -70,10 +70,11 @@ static void kangourou(GameData *g, position pos, int attaquant_){
   get_explosions(g, explosions, pos);
   for (int j = 0, l = explosions.size(); j < l ; j++){
     int mind = 5; // plus que 2
-    for (int k = 0, l = explosions.size(); k < l ; k++){
-      mind = std::min( mind, distance(explosions[k]->pos, explosions[j]->pos));
+    for (int k = 0; k < l ; k++){
+      if (explosions[k]->type_unite_actuel == KANGOUROU)
+	mind = std::min( mind, distance(explosions[k]->pos, explosions[j]->pos));
     }
-    explosions[j]->ko = 2 - mind;
+    explosions[j]->ko = 3 - mind;
   }
 }
 
