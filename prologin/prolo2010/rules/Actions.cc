@@ -132,8 +132,9 @@ void ActionAttaquer::verifier(GameData *g)
   ASSERT(a.ko == -1, UNITE_KO);
   ASSERT(v.ko == -1, UNITE_KO);
   ASSERT(!a.ennemi, PAS_A_MOI);
-  // ASSERT(v.ennemi, UNITE_KO); // TODO ajouter : UNITE_A_MOI
-  ASSERT(a.pa >= 1, PLUS_DE_PA);
+  // Si les points d'action sont epuises, on doit pouvoir attaquer si on a une
+  // attaque gratuite.
+  ASSERT(a.pa + a.attaques_gratuites >= 1, PLUS_DE_PA);
   
   ASSERT(a.attaques_gratuites != 0 || a.attaques >= 1, QUOTA_DEPASSE); // todo ajouter : PEUT_PLUS_ATTAQUER
 }
