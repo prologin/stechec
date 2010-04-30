@@ -20,7 +20,7 @@
   if (!(cond)) \
     throw err;
 
-static unsigned int last_order_id = 0;
+static unsigned int last_order_id = 1;
 
 static inline int max(int a, int b)
 {
