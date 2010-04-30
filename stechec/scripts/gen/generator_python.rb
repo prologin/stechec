@@ -188,7 +188,7 @@ EOF
       else
         @f.print "lang2cxx<PyObject*, #{ft.name}>("
       end
-      @f.print "PyObject_GetItem(in, i));\n"
+      @f.print "i);\n"
       @f.puts "  Py_DECREF(i);"
       i += 1
     end
