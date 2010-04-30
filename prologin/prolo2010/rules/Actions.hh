@@ -154,6 +154,7 @@ public:
 protected:
   int unite_;
   type_unite ancien_type_;  // initialized when the action is actually applied.
+  int old_pa_;
   type_unite nouveau_type_;
 };
 

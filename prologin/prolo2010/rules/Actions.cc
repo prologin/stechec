@@ -363,9 +363,10 @@ void ActionDeguisement::verifier(GameData* g)
 void ActionDeguisement::appliquer(GameData* g)
 {
   ActionCarte::appliquer(g);
-
-  ancien_type_ = g->unites[unite_].type_unite_actuel; // TODO: 
+  ancien_type_ = g->unites[unite_].type_unite_actuel; // TODO:
+  old_pa_ = g->unites[unite_].pa;
   g->unites[unite_].type_unite_actuel = nouveau_type_;
+  g->unites[unite_].pa = g->caracteristiques(nouveau_type_).pa_init;
 };
 
 void ActionDeguisement::annuler(GameData* g)
@@ -374,6 +375,7 @@ void ActionDeguisement::annuler(GameData* g)
   LOG3("annule un deguisement");
   unite& u = g->unites[unite_];
   u.type_unite_actuel = ancien_type_;
+  u.pa = old_pa_;
 }
 
 void ActionDeguisement::envoyer(Api* api)
