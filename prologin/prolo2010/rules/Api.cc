@@ -96,7 +96,7 @@ bool Api::need_retirer_ko()
 bool Api::retirer_ko(position p)
 {
   int indice = g_->indice_at(p);
-  if (g_->retirer_ko(indice)) {
+  if (indice == -1 || g_->retirer_ko(indice)) {
     StechecPkt com(RETIRER_KO, -1);
     com.Push(2, 0, indice);
     SendToServer(com);
@@ -133,7 +133,7 @@ int Api::nombre_unites_spawnees(bool ennemi){
 //
 int Api::tour_actuel()
 {
-  return g_->get_real_turn();;  // TODO
+  return g_->get_real_turn();;
 }
 
 ///
@@ -177,6 +177,7 @@ taille_terrain Api::taille_terrain_actuelle()
 }
 
 #define DO_ACTION(type, ...) \
+  if (g_->can_play) { \
   try { \
     Action* act = new type(__VA_ARGS__); \
     act->verifier(g_); \
@@ -184,7 +185,7 @@ taille_terrain Api::taille_terrain_actuelle()
     return OK; \
   } catch (erreur err) { \
     return err; \
-  }
+  } }else abort();
 
 #define PLAY_CARD \
   ASSERT(g_->can_play_card, PHASE_CARTES_TERMINEE);	\

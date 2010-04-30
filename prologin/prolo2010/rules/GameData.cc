@@ -41,6 +41,7 @@ void GameData::check(const char * file, int line){
 
 GameData::GameData()
 {
+  can_play = false;
   current_player = 1; // must be before filling vector unites
   srand(time(0));
   {
@@ -112,6 +113,7 @@ bool GameData::retirer_ko(int indice){
 }
 
 void GameData::team_switched(){
+  can_play = true;
   current_player = (current_player + 1 ) % 2;
   reset_moves(); // nobody has played;
   for (int i = 0, l = unites.size(); i < l ; i++){

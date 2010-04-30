@@ -91,7 +91,7 @@ public:
   int nbr_toons_spawn[2];
   // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
   std::vector<std::vector<int> > packets;
-
+  bool can_play;
 private:
   bool initialized_;
 };
