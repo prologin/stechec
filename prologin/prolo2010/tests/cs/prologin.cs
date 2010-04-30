@@ -114,8 +114,11 @@ namespace Prologin {
                                             closest = minDistPos(closest, tmppos, uTiti.Pos);
                                         }
                                     }
-                                Deplacer(min.Pos, closest);
-                                MADE_ACTIONS = true;
+                                if (!cmpPos(min.Pos, closest))
+                                {
+                                        Deplacer(min.Pos, closest);
+                                        MADE_ACTIONS = true;
+                                }
                             }
                     }
             }
