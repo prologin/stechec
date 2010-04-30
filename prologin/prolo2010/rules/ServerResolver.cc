@@ -37,6 +37,14 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
 
   g_->packets.resize(0);
   g_->packets.reserve(packets.size());
+
+
+  for (pktmap::iterator it = packets.begin();
+       it != packets.end(); ++it)
+    {
+      LOG3("MUST DO action : %1",  it->second.second->type );
+    }
+
   for (pktmap::iterator it = packets.begin();
        it != packets.end(); ++it)
   {
@@ -50,7 +58,7 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
     switch (it->second.first){
     case RETIRER_KO:
       LOG3("retirer ko message");
-      g_->retirer_ko( it->second.second->arg[0]);
+      g_->retirer_ko( it->second.second->arg[1]);
       break;
     case RETRECIR:
       abort();
@@ -59,7 +67,7 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       Action* act = act_from_pkt(it->second.first,
 				 it->second.second);
       try {
-	LOG3("action : %1",  it->second.second->arg[0] );
+	LOG3("action : %1",  it->second.second->type );
 	act->verifier(g_);
 	g_->appliquer_action(act);
       } catch (erreur err) {
