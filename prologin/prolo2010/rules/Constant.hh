@@ -30,9 +30,9 @@
 //
 # define TEMPS_RETRECISSEMENT      5
 
-# define SPAWN_1_X                 12
+# define SPAWN_1_X                 9
 # define SPAWN_1_Y                 3
-# define SPAWN_2_X                 12
+# define SPAWN_2_X                 9
 # define SPAWN_2_Y                 15
 
 ///
