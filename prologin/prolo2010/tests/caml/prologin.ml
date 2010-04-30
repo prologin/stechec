@@ -16,12 +16,12 @@ let init_game () =
 
 (* Fonction appellée pour la phase de retrait de KO. *)
 let retirer_ko () =
-  let get_ennemis = fold_left (fun a u -> if u.ennemi then a else u::a) []
+  let get_ennemis_ko = fold_left (fun a u -> if u.ennemi && u.ko > 0 then u::a else a) []
   and mycomp u1 u2 = 
     if u1.ko = u2.ko then 0
-    else if u1.ko > u2.ko then -1
-    else 1
-  in let ue_list = get_ennemis (unites ())
+    else if u1.ko > u2.ko then 1
+    else (-1)
+  in let ue_list = get_ennemis_ko (unites ())
   in (List.hd (List.sort mycomp ue_list)).pos;;
 
 (* seq :: int -> int -> int list *)
@@ -67,7 +67,7 @@ let best_pos bro target =
   let aux dist pos_init =
     let op = (if dist > 0 then (+) else (-)) in
       if (abs dist) < caracs.pa_init then
-        op (op pos_init dist) (-1)
+        op (op pos_init (abs dist)) (-1)
       else
         op dist (caracs.pa_init - 1)
   in (aux distx (fst bro.pos), aux disty (snd bro.pos))
@@ -224,6 +224,7 @@ let send_bipbips units =
   let rec helper = function
     | [] -> ()
     | (u, pos)::xs ->
+        print_endline "OKER OKER";
         match deplacer u.pos pos with
           | Ok | Case_occupee -> 
               ignore (attaquer pos titi_ennemi.pos);
@@ -298,10 +299,14 @@ let jouer () =
         | otherwise -> afficher_erreur otherwise;
         );
 
+    print_string "Il reste : "; print_int (nombre_pc ());
+    print_endline " points de commandement.";
+
     (* Si personne n'est en danger et qu'on ne peut attaquer personne, on
      * envoit les Bipbips en direction du titi adverse *)
     if is_empty stack then
-      send_bipbips units
+      (print_endline "C ISSI";
+      send_bipbips units)
 
     else
       (* Si titi est en danger *)
