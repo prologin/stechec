@@ -18,7 +18,7 @@
 ///
 // Taille de départ du terrain.
 //
-# define TAILLE_DEPART             25
+# define TAILLE_DEPART             19
 
 ///
 // Le nombre maximal d'unités pouvant appartenir à une équipe.

@@ -18,7 +18,7 @@
 ///
 // Taille de départ du terrain.
 //
-# define TAILLE_DEPART             25
+# define TAILLE_DEPART             19
 //
 ///
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
@@ -33,7 +33,7 @@
 # define SPAWN_1_X                 12
 # define SPAWN_1_Y                 3
 # define SPAWN_2_X                 12
-# define SPAWN_2_Y                 21
+# define SPAWN_2_Y                 15
 
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.

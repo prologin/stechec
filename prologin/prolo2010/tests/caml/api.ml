@@ -7,7 +7,7 @@
 (*
 ** Taille de départ du terrain.
 *)
-let taille_depart = 25
+let taille_depart = 19
 
 (*
 ** Le nombre maximal d'unités pouvant appartenir à une équipe.

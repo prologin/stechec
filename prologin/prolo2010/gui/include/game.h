@@ -11,9 +11,9 @@
 #ifndef GAME_H_
 # define GAME_H_
 
-# define MAP_SIZE	625
-# define MAP_WIDTH	25
-# define MAP_HEIGHT	25
+# define MAP_SIZE	361
+# define MAP_WIDTH	19
+# define MAP_HEIGHT	19
 # define START_POSX	MAP_WIDTH / 2
 # define START_POSY	MAP_HEIGHT / 2
 
