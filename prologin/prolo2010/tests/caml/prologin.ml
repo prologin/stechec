@@ -248,6 +248,29 @@ let protect_titi stack ennemis titi =
   in if do_the_job def_target <> Ok then
     abort_and_escape titi ennemis true
 
+let organize_defense elmers_and_cie =
+  let dist u1 u2 =
+    let (distx, disty) = u1.pos -- u2.pos in
+    let bd, sd = (max distx disty), (min distx disty) in
+       2*bd - sd
+  in let my_comp (_, e1, d2titi1) (_, e2, d2titi2) =
+    if e1.type_unite_actuel = e2.type_unite_actuel then
+      if d2titi1 = d2titi2 then 0
+      else if d2titi1 > d2titi2 then 1
+      else (-1)
+    else
+      if e1.type_unite_actuel = Kangourou then 1
+      else if e2.type_unite_actuel = Kangourou then (-1)
+      else if e1.type_unite_actuel = Singe then 1
+      else if e2.type_unite_actuel = Singe then (-1)
+      else if d2titi1 = d2titi2 then 0
+      else if d2titi1 > d2titi2 then 1
+      else (-1)
+  in let pairs = List.map
+    (fun (elm, ennemis) -> List.map (fun e -> (elm, e, dist e titi)) ennemis)
+    elmers_and_cie in
+  let sorted = List.sort my_comp pairs in
+
 (* Fonction appellée pour la phase de jeu. *)
 let jouer () =
   let is_empty = function [] -> true | _ -> false in

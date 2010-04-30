@@ -436,7 +436,7 @@ lib_TARGETS = #{target}
 #{target}-dists += api.py interface.hh
 #{target}-srcs = interface.cc ../includes/main.cc
 
-pc = $(shell [ which python-config >/dev/null 2>&1 && echo python-config || echo python2.5-config)
+pc = $(shell which python-config >/dev/null 2>&1 && echo python-config || echo python2.5-config)
 #{target}-cxxflags = -fPIC $(shell $(pc) --includes)
 #{target}-ldflags = -s $(shell $(pc) --ldflags)
 
