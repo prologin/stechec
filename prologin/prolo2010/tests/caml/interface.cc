@@ -74,7 +74,7 @@ std::vector<Cxx> lang2cxx_array(value in)
   return out;
 }
 ///
-// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action.
+// Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 template <>
 value cxx2lang<value, erreur>(erreur in)
@@ -89,7 +89,7 @@ erreur lang2cxx<value, erreur>(value in)
 }
 
 ///
-// Le type d'une unitÃ© sur le terrain
+// Le type d'une unité sur le terrain
 //
 template <>
 value cxx2lang<value, type_unite>(type_unite in)
@@ -104,7 +104,7 @@ type_unite lang2cxx<value, type_unite>(value in)
 }
 
 ///
-// ReprÃ©sente une position sur le terrain du jeu.
+// Représente une position sur le terrain du jeu.
 //
 template <>
 value cxx2lang<value, position>(position in)
@@ -148,7 +148,7 @@ taille_terrain lang2cxx<value, taille_terrain>(value in)
 }
 
 ///
-// Donne les caractÃ©ristiques d'un type d'unitÃ©.
+// Donne les caractéristiques d'un type d'unité.
 //
 template <>
 value cxx2lang<value, caracs>(caracs in)
@@ -169,7 +169,7 @@ caracs lang2cxx<value, caracs>(value in)
 }
 
 ///
-// ReprÃ©sente une unitÃ© sur le terrain.
+// Représente une unité sur le terrain.
 //
 template <>
 value cxx2lang<value, unite>(unite in)
@@ -204,7 +204,7 @@ unite lang2cxx<value, unite>(value in)
 }
 
 ///
-// ReprÃ©sente l'ensemble des cartes que vous pouvez utiliser.
+// Représente l'ensemble des cartes que vous pouvez utiliser.
 //
 template <>
 value cxx2lang<value, cartes>(cartes in)
@@ -240,7 +240,7 @@ extern "C" value ml_nombre_pc(value unit)
 }
 
 ///
-// Renvoie le nombre d'unitÃ©s en jeu.
+// Renvoie le nombre d'unités en jeu.
 //
 extern "C" value ml_nombre_unites(value ennemi)
 {
@@ -251,7 +251,7 @@ extern "C" value ml_nombre_unites(value ennemi)
 }
 
 ///
-// Renvoie le numÃ©ro du tour actuel.
+// Renvoie le numéro du tour actuel.
 //
 extern "C" value ml_tour_actuel(value unit)
 {
@@ -273,7 +273,7 @@ extern "C" value ml_pos_renfort(value ennemi)
 }
 
 ///
-// Renvoie les caractÃ©ristiques d'un type d'unitÃ©.
+// Renvoie les caractéristiques d'un type d'unité.
 //
 extern "C" value ml_caracteristiques(value tu)
 {
@@ -295,7 +295,7 @@ extern "C" value ml_mes_cartes(value unit)
 }
 
 ///
-// Retourne la liste des unitÃ©s actuellement en jeu.
+// Retourne la liste des unités actuellement en jeu.
 //
 extern "C" value ml_unites(value unit)
 {
@@ -306,7 +306,7 @@ extern "C" value ml_unites(value unit)
 }
 
 ///
-// Retourne la taille actuelle du terrain et les coordonnÃ©es min/max dans une structure "taille_terrain".
+// Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
 //
 extern "C" value ml_taille_terrain_actuelle(value unit)
 {
@@ -317,7 +317,7 @@ extern "C" value ml_taille_terrain_actuelle(value unit)
 }
 
 ///
-// Utilise une carte Â« Potion magique Â» que vous avez dans votre main.
+// Utilise une carte « Potion magique » que vous avez dans votre main.
 //
 extern "C" value ml_potion(value cible)
 {
@@ -328,7 +328,7 @@ extern "C" value ml_potion(value cible)
 }
 
 ///
-// Utilise une carte Â« DÃ©guisement Â» que vous avez dans votre main.
+// Utilise une carte « Déguisement » que vous avez dans votre main.
 //
 extern "C" value ml_deguisement(value cible, value nouveau_type)
 {
@@ -340,7 +340,7 @@ extern "C" value ml_deguisement(value cible, value nouveau_type)
 }
 
 ///
-// Utilise une carte Â« BanzaÃ¯ Â» que vous avez dans votre main.
+// Utilise une carte « Banzaï » que vous avez dans votre main.
 //
 extern "C" value ml_banzai(value cible)
 {
@@ -351,7 +351,7 @@ extern "C" value ml_banzai(value cible)
 }
 
 ///
-// Utilise une carte Â« Pacifisme Â» que vous avez dans votre main.
+// Utilise une carte « Pacifisme » que vous avez dans votre main.
 //
 extern "C" value ml_pacifisme(value unit)
 {
@@ -362,7 +362,7 @@ extern "C" value ml_pacifisme(value unit)
 }
 
 ///
-// DÃ©place une unitÃ© vers une position Ã  portÃ©e.
+// Déplace une unité vers une position à portée.
 //
 extern "C" value ml_deplacer(value cible, value pos)
 {
@@ -374,7 +374,7 @@ extern "C" value ml_deplacer(value cible, value pos)
 }
 
 ///
-// RelÃ¨ve une unitÃ© n'ayant plus de marqueurs de KO.
+// Relève une unité n'ayant plus de marqueurs de KO.
 //
 extern "C" value ml_relever(value cible)
 {
@@ -385,7 +385,7 @@ extern "C" value ml_relever(value cible)
 }
 
 ///
-// Attaque une autre unitÃ©.
+// Attaque une autre unité.
 //
 extern "C" value ml_attaquer(value attaquant, value cible)
 {
@@ -397,7 +397,7 @@ extern "C" value ml_attaquer(value attaquant, value cible)
 }
 
 ///
-// Fait apparaitre une unitÃ© sur la case de spawn.
+// Fait apparaitre une unité sur la case de spawn.
 //
 extern "C" value ml_renfort(value quoi)
 {
@@ -408,7 +408,7 @@ extern "C" value ml_renfort(value quoi)
 }
 
 ///
-// Annule l'effet de la derniÃ¨re action et remet le jeu dans l'Ã©tat prÃ©cÃ©dent. Renvoie false s'il n'y a rien Ã  annuler, true sinon.
+// Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
 //
 extern "C" value ml_annuler(value unit)
 {
@@ -503,7 +503,7 @@ extern "C" value ml_afficher_cartes(value v)
 }
 
 ///
-// Fonction appellÃ©e au dÃ©but de la partie.
+// Fonction appellée au début de la partie.
 //
 void init_game()
 {
@@ -516,7 +516,7 @@ void init_game()
 
 
 ///
-// Fonction appellÃ©e pour la phase de retrait de KO.
+// Fonction appellée pour la phase de retrait de KO.
 //
 position retirer_ko()
 {
@@ -529,7 +529,7 @@ position retirer_ko()
 
 
 ///
-// Fonction appellÃ©e pour la phase de jeu.
+// Fonction appellée pour la phase de jeu.
 //
 void jouer()
 {
@@ -542,7 +542,7 @@ void jouer()
 
 
 ///
-// Fonction appellÃ©e Ã  la fin de la partie.
+// Fonction appellée à la fin de la partie.
 //
 void end_game()
 {

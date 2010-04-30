@@ -60,8 +60,8 @@ let choose_u2s unites =
   and nb_my_elm = count Singe false unites
   in if nb_bb_adv > (2 * nb_my_elm) then
     Singe
-  else if (count Chat false unites) > (nbr_max_unites / 2) then
-    Kangourou
+(*  else if (count Chat false unites) > (nbr_max_unites / 2) then
+    Kangourou *)
   else
     Chat
 
@@ -262,15 +262,7 @@ let jouer () =
     if nb_bros < nbr_max_unites then
       (match free_spawn units map with
         | Ok -> ignore (renfort (choose_u2s units))
-        | otherwise -> 
-            afficher_erreur otherwise;
-            flush stdout;
-            print_string "SPAWN OCCUPE PAR: ";
-            flush stdout;
-            let x,y = pos_renfort false in
-            match map.(x).(y) with
-              | None -> print_endline "rien"
-              | Some un -> afficher_unite un
+        | otherwise -> afficher_erreur otherwise;
         );
 
     (* Si personne n'est en danger et qu'on ne peut attaquer personne, on
