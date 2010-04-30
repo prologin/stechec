@@ -9,7 +9,7 @@ constant:
   - doc_extra: \subsection{Constantes}
   - 
     cst_name: TAILLE_DEPART
-    cst_val: 25
+    cst_val: 19
     cst_comment: Taille de départ du terrain.
   -
     cst_name: NBR_MAX_UNITES

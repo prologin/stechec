@@ -71,7 +71,7 @@ enum Type_unite{
 public class Interface
 {
 // Taille de départ du terrain.
-  public static final int TAILLE_DEPART = 25;
+  public static final int TAILLE_DEPART = 19;
 
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
   public static final int NBR_MAX_UNITES = 10;
