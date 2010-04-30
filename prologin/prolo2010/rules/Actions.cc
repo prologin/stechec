@@ -44,6 +44,13 @@ static int get_ko(type_unite a)
   return 3;
 }
 
+#define ASSERT_POSITION(dest_, err)			\
+  ASSERT(dest_.x >= g->tt.min_coord && \
+	 dest_.x <= g->tt.max_coord && \
+	 dest_.y >= g->tt.min_coord && \
+	 dest_.y <= g->tt.max_coord \
+  , err)
+
 bool operator==(position p1, position p2){
   return p1.x == p2.x && p1.y == p2.y;
 }
@@ -196,6 +203,7 @@ void ActionRelever::envoyer(Api *api)
 void ActionSpawn::verifier(GameData* g)
 {
   position p = g->spawn_pos();
+  ASSERT_POSITION(p, RENFORT_IMPOSSIBLE)
   int i =  g->indice_at(p);
   ASSERT(i == -1, RENFORT_IMPOSSIBLE);
   ASSERT(tu_ != PERROQUET, UNITE_INTERDITE);
@@ -246,11 +254,7 @@ void ActionDeplacer::verifier(GameData* g)
 {
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
-  ASSERT(dest_.x >= g->tt.min_coord &&
-	 dest_.x <= g->tt.max_coord &&
-	 dest_.y >= g->tt.min_coord &&
-	 dest_.y <= g->tt.max_coord
-	 , POSITION_INVALIDE)
+  ASSERT_POSITION(dest_, POSITION_INVALIDE)
   
   unite& u = g->unites[unite_];
   ASSERT(u.ko < 0, UNITE_KO);
