@@ -63,6 +63,7 @@ typedef enum type_unite {
   SINGE, /* <- 2 PA et portée de 3 */
   CHAT, /* <- 5 PA et portée de 1 */
   KANGOUROU, /* <- 3 PA et portée de 2 (explose !) */
+  DERNIERE_UNITE, /* Unite virtuelle utilisee pour verifier qu'un type est valide */
 } type_unite;
 
 
