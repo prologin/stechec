@@ -78,6 +78,7 @@ renice 5 $$ > /dev/null
     makefile=Makefile-c
     [ "`echo *.cc`" != "*.cc" ] && makefile=Makefile-cxx
     [ "`echo *.cpp`" != "*.cpp" ] && makefile=Makefile-cxx
+    [ "`echo *.c`" != "*.c" ] && makefile=Makefile-c
     [ "`echo *.pas`" != "*.pas" ] && makefile=Makefile-pascal
     [ "`echo *.java`" != "*.java" ] && makefile=Makefile-java
     [ "`echo *.ml`" != "*.ml" ] && makefile=Makefile-caml
