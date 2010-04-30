@@ -7,22 +7,22 @@
 open Api
 
 (*
-** Fonction appellÃ©e au dÃ©but de la partie.
+** Fonction appellée au début de la partie.
 *)
 val init_game : unit -> unit
 
 (*
-** Fonction appellÃ©e pour la phase de retrait de KO.
+** Fonction appellée pour la phase de retrait de KO.
 *)
 val retirer_ko : unit -> position
 
 (*
-** Fonction appellÃ©e pour la phase de jeu.
+** Fonction appellée pour la phase de jeu.
 *)
 val jouer : unit -> unit
 
 (*
-** Fonction appellÃ©e Ã  la fin de la partie.
+** Fonction appellée à la fin de la partie.
 *)
 val end_game : unit -> unit
 
