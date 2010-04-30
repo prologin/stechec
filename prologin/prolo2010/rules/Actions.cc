@@ -467,8 +467,8 @@ void ActionPacifisme::appliquer(GameData* g)
        it != g->unites.end(); ++it)
   {
     old_attaques_.push_back(it->attaques);
-    if (it->ennemi)
-      it->attaques = 0;
+    if (!it->ennemi)
+      it->attaques = 0;  // Disallow attacks from our side.
   }
 
   g->nbr_unites_allowed += 1;
