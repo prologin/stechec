@@ -152,7 +152,7 @@ caracs Api::caracteristiques(type_unite tu)
                  // variable is in the range.
   if (tuu < 0 || tuu >= DERNIERE_UNITE) {
     caracs dummy; dummy.pa_init = -1; dummy.portee = -1;
-    return dummy.
+    return dummy;
   }
   return g_->caracteristiques(tu);
 }
