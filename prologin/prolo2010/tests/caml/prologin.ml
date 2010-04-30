@@ -135,11 +135,6 @@ let free_spawn unites map =
 (* build_map :: unite array -> unite option array array *)
 let build_map unites =
   let tta = taille_depart in
-(*  print_string "------------------ TAILLE TERRAIN --------------------"; *)
-(*  print_newline (); *)
-(*  print_int tta.taille; print_newline (); *)
-(*  print_int tta.min_coord; print_newline (); *)
-(*  print_int tta.max_coord; print_newline (); *)
   let a = make_matrix tta tta None in
     iter (fun u -> let (x,y) = u.pos in
             try a.(x).(y) <- Some u with _ -> print_endline "WAT") unites;
@@ -151,15 +146,7 @@ let rec neighbours acc map = function
       try match map.(x).(y) with
         | None -> neighbours acc map tail
         | Some u -> neighbours (u::acc) map tail
-      with _ -> 
-        let tta = taille_terrain_actuelle () in
-        (flush stdout;
-        print_int (length map); print_string " "; print_int (length map.(0));
-        print_int tta.taille; print_newline ();
-        print_int tta.min_coord; print_newline ();
-        print_int tta.max_coord; print_newline ();
-        flush stdout;
-        afficher_position (x,y); acc)
+      with _ -> acc
 
 (* is_in_range :: pos -> unite -> bool *)
 let is_in_range pos u =
@@ -242,7 +229,6 @@ let send_bipbips units =
   let rec helper = function
     | [] -> ()
     | (u, pos)::xs ->
-        flush stdout; afficher_unite u; flush stdout;
         match deplacer u.pos pos with
           | Ok | Case_occupee -> 
               ignore (attaquer pos titi_ennemi.pos);
@@ -339,7 +325,7 @@ let jouer () =
 
     else
       match organize_rush units stack with
-        | Ok -> flush stdout; print_endline "C'EST GAGNE!"; flush stdout
+        | Ok -> ()
         | _ ->
           (* Si titi est en danger *)
           let is_titi u = u.vrai_type_unite = Perroquet in
