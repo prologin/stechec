@@ -199,6 +199,13 @@ void ActionSpawn::verifier(GameData* g)
   int i =  g->indice_at(p);
   ASSERT(i == -1, RENFORT_IMPOSSIBLE);
   ASSERT(tu_ != PERROQUET, UNITE_INTERDITE);
+  // Using an int and not directly the enum tu_ is MANDATORY to really check
+  // that it is within the allowed range for a unit. Otherwise, the compiler can
+  // optimize things and is allowed to assume that a type_unite is always within
+  // the allowed range for the enumeration.
+  int tu = tu_;
+  ASSERT(tu >= 0, UNITE_INTERDITE);
+  ASSERT(tu < DERNIERE_UNITE, UNITE_INTERDITE);
   ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES,QUOTA_DEPASSE);
 }
 
