@@ -217,6 +217,11 @@ struct ProloginJavaVm
       JvAttachCurrentThread(NULL, NULL);
       // FIXME: grrrr
       // GC_disable();
+      EOF
+    $conf['enum'].each do |x|
+      @f.puts "      JvInitClass(&::#{x['enum_name'].capitalize}::class$);"
+    end
+    @f.puts <<-EOF
       c = new #{@java_file}();
     }
     catch (Throwable *t)
