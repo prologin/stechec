@@ -166,6 +166,7 @@ _targets	:= $(foreach l,$(lib_TARGETS),$(l).so)
 
 $(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),c)))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),cc)))
+$(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),cpp)))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_ocaml_objs,$(t))))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_jclass,$(t))))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_csclass,$(t))))
@@ -210,6 +211,9 @@ list-run-reqs:
 	$(call cmd,cc)
 
 %.o: %.cc
+	$(call cmd,cxx)
+
+%.o: %.cpp
 	$(call cmd,cxx)
 
 %.class : %.java
