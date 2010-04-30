@@ -72,7 +72,7 @@ GameData::GameData()
     unites.push_back(u2);
   };
   {
-    cartes c = {1,2,3,4};
+    cartes c = {1,1, 1, 1};
     LOG3("cartes = {%2, %3, %4, %5}", c.potion, c.deguisement, c.banzai, c.pacifisme);
   
     players_cartes[0] = c ;

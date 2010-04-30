@@ -103,7 +103,7 @@ void ActionAttaquer::appliquer(GameData *g)
   if (tu == KANGOUROU){
     kangourou(g, a.pos, attaquant_);
   }else{
-    if (v.type_unite_actuel){
+    if (v.type_unite_actuel == KANGOUROU){
       kangourou(g, v.pos, victime_);
     }else{
       v.ko = get_ko(tu);
