@@ -19,8 +19,8 @@ let retirer_ko () =
   let get_ennemis_ko = fold_left (fun a u -> if u.ennemi && u.ko > 0 then u::a else a) []
   and mycomp u1 u2 = 
     if u1.ko = u2.ko then 0
-    else if u1.ko > u2.ko then 1
-    else (-1)
+    else if u1.ko > u2.ko then (-1)
+    else 1
   in let ue_list = get_ennemis_ko (unites ())
   in (List.hd (List.sort mycomp ue_list)).pos;;
 
@@ -148,9 +148,18 @@ let build_map unites =
 let rec neighbours acc map = function
   | [] -> acc
   | (x,y)::tail ->
-      match map.(x).(y) with
+      try match map.(x).(y) with
         | None -> neighbours acc map tail
         | Some u -> neighbours (u::acc) map tail
+      with _ -> 
+        let tta = taille_terrain_actuelle () in
+        (flush stdout;
+        print_int (length map); print_string " "; print_int (length map.(0));
+        print_int tta.taille; print_newline ();
+        print_int tta.min_coord; print_newline ();
+        print_int tta.max_coord; print_newline ();
+        flush stdout;
+        afficher_position (x,y); acc)
 
 (* is_in_range :: pos -> unite -> bool *)
 let is_in_range pos u =
@@ -278,10 +287,10 @@ let organize_defense elmers_and_cie titi =
       else if d2titi1 > d2titi2 then 1
       else (-1)
     else
-      if e1.type_unite_actuel = Kangourou then 1
-      else if e2.type_unite_actuel = Kangourou then (-1)
-      else if e1.type_unite_actuel = Singe then 1
-      else if e2.type_unite_actuel = Singe then (-1)
+      if e1.type_unite_actuel = Kangourou then (-1)
+      else if e2.type_unite_actuel = Kangourou then 1
+      else if e1.type_unite_actuel = Singe then (-1)
+      else if e2.type_unite_actuel = Singe then 1
       else if d2titi1 = d2titi2 then 0
       else if d2titi1 > d2titi2 then 1
       else (-1)
@@ -290,6 +299,20 @@ let organize_defense elmers_and_cie titi =
     elmers_and_cie) in
   let sorted = List.sort my_comp pairs in
     afficher_erreur (do_the_job (List.map (fun (a,b,_) -> (a,b)) sorted))
+
+(* let organize_attack unites tuple_list =*)
+  
+
+(* organize_rush :: unite array -> (unite * unite list) list -> erreur *)
+let organize_rush unites tuple_list =
+  let titi_ennemi = get_titi unites true in
+  let rec track_titi acc = function
+    | [] -> acc
+    | (u, elst)::tail when not (List.mem titi_ennemi elst) -> track_titi acc tail
+    | (u, _)::tail -> track_titi ((u, titi_ennemi)::acc) tail
+  in match track_titi [] tuple_list with
+    | [] -> Pas_a_portee
+    | lst -> do_the_job lst
 
 (* Fonction appellée pour la phase de jeu. *)
 let jouer () =
@@ -309,27 +332,31 @@ let jouer () =
         | otherwise -> afficher_erreur otherwise;
         );
 
-    print_string "Il reste : "; print_int (nombre_pc ());
-    print_endline " points de commandement.";
-
     (* Si personne n'est en danger et qu'on ne peut attaquer personne, on
      * envoit les Bipbips en direction du titi adverse *)
     if is_empty stack then
-      (print_endline "C ISSI";
-      send_bipbips units)
+      send_bipbips units
 
     else
-      (* Si titi est en danger *)
-      let is_titi u = u.vrai_type_unite = Perroquet in
-      let maybe_titi = List.filter (fun (u,_) -> is_titi u) stack in
-        match maybe_titi with
-          | (titi, ennemis)::_ -> protect_titi stack ennemis titi
-          | [] ->
-            (match List.partition (fun (u,_) -> u.vrai_type_unite = Singe) stack with
-              (* Cas où la défense est safe, on s'occupe d'attaquer *)
-              | ([], rest) -> () (* FIXME *)
-              (* Il y'a des ennemis dans la zone défensive *)
-              | (elmers, rest) -> organize_defense elmers my_titi); (* FIXME *)
+      match organize_rush units stack with
+        | Ok -> flush stdout; print_endline "C'EST GAGNE!"; flush stdout
+        | _ ->
+          (* Si titi est en danger *)
+          let is_titi u = u.vrai_type_unite = Perroquet in
+          let maybe_titi = List.filter (fun (u,_) -> is_titi u) stack in
+            match maybe_titi with
+              | (titi, ennemis)::_ -> protect_titi stack ennemis titi
+              | [] ->
+                (match List.partition (fun (u,_) -> u.vrai_type_unite = Singe) stack with
+                  (* Cas où la défense est safe, on s'occupe d'attaquer *)
+                  | ([], rest) -> organize_defense rest (get_titi units true)
+                  (* Il y'a des ennemis dans la zone défensive *)
+                  | (elmers, rest) -> 
+                      organize_defense elmers my_titi;
+                      if nombre_pc () > 0 then
+                        organize_defense rest (get_titi units true) (*
+                        organize_attack rest*)
+                  );
   flush stderr; flush stdout;;
 
 (*
