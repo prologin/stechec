@@ -356,17 +356,17 @@ void ActionDeguisement::verifier(GameData* g)
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 
-  ASSERT(unite_ > PERROQUET, RENFORT_IMPOSSIBLE); // TODO
-  ASSERT(unite_ <= KANGOUROU, RENFORT_IMPOSSIBLE);
+  ASSERT(nouveau_type_ >= PERROQUET, RENFORT_IMPOSSIBLE);
+  ASSERT(nouveau_type_ < DERNIERE_UNITE, RENFORT_IMPOSSIBLE);
 }
 
 void ActionDeguisement::appliquer(GameData* g)
 {
   ActionCarte::appliquer(g);
 
-  ancien_type_ = g->unites[unite_].type_unite_actuel;
+  ancien_type_ = g->unites[unite_].type_unite_actuel; // TODO: 
   g->unites[unite_].type_unite_actuel = nouveau_type_;
-}
+};
 
 void ActionDeguisement::annuler(GameData* g)
 {

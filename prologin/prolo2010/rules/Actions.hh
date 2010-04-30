@@ -153,7 +153,7 @@ public:
 
 protected:
   int unite_;
-  type_unite ancien_type_;
+  type_unite ancien_type_;  // initialized when the action is actually applied.
   type_unite nouveau_type_;
 };
 
