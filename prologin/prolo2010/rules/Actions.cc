@@ -102,8 +102,8 @@ void ActionAttaquer::appliquer(GameData *g)
     kangourou(g, a.pos, attaquant_);
   }else{
     if (v.type_unite_actuel == KANGOUROU){
-      kangourou(g, v.pos, victime_);
-    }else{
+      kangourou(g, v.pos, victime_);  // Explosion en chaine.
+    }else{    
       v.ko = get_ko(tu);
     }
   }
@@ -121,7 +121,6 @@ void ActionAttaquer::annuler(GameData *g)
 
 void ActionAttaquer::verifier(GameData *g)
 {
-
   ASSERT(attaquant_ >= 0, POSITION_INVALIDE);
   ASSERT(attaquant_ < g->get_unites().size(), POSITION_INVALIDE);
   ASSERT(victime_ >= 0, POSITION_INVALIDE);
@@ -137,6 +136,8 @@ void ActionAttaquer::verifier(GameData *g)
   ASSERT(a.pa + a.attaques_gratuites >= 1, PLUS_DE_PA);
   
   ASSERT(a.attaques_gratuites != 0 || a.attaques >= 1, QUOTA_DEPASSE); // todo ajouter : PEUT_PLUS_ATTAQUER
+  const int d = distance(a.pos, v.pos);
+  ASSERT(d <= g->caracteristiques(a.type_unite_actuel).portee, PAS_A_PORTEE);
 }
 
 void ActionAttaquer::envoyer(Api * api)
