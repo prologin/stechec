@@ -15,7 +15,7 @@ const
 (*
   Taille de départ du terrain.
 *)
-	TAILLE_DEPART             =  25;
+	TAILLE_DEPART             =  19;
 (*
   Le nombre maximal d'unités pouvant appartenir à une équipe.
 *)

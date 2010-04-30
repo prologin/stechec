@@ -168,7 +168,7 @@ int GameData::get_current_player(){
 
 int GameData::get_real_turn()
 {
-  return getCurrentTurn() / 2;
+  return (getCurrentTurn() - 1) / 2;
 }
 
 // utils functions

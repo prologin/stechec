@@ -18,7 +18,7 @@
 ///
 // Taille de départ du terrain.
 //
-# define TAILLE_DEPART             25
+# define TAILLE_DEPART             19
 //
 ///
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
@@ -30,10 +30,10 @@
 //
 # define TEMPS_RETRECISSEMENT      5
 
-# define SPAWN_1_X                 12
+# define SPAWN_1_X                 9
 # define SPAWN_1_Y                 3
-# define SPAWN_2_X                 12
-# define SPAWN_2_Y                 21
+# define SPAWN_2_X                 9
+# define SPAWN_2_Y                 15
 
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
@@ -63,6 +63,7 @@ typedef enum type_unite {
   SINGE, /* <- 2 PA et portée de 3 */
   CHAT, /* <- 5 PA et portée de 1 */
   KANGOUROU, /* <- 3 PA et portée de 2 (explose !) */
+  DERNIERE_UNITE, /* Unite virtuelle utilisee pour verifier qu'un type est valide */
 } type_unite;
 
 

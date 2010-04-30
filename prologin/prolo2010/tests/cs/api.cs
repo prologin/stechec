@@ -84,7 +84,7 @@ namespace Prologin {
 
 	class Api {
 // Taille de départ du terrain.
-		public const int TAILLE_DEPART = 25;
+		public const int TAILLE_DEPART = 19;
 
 // Le nombre maximal d'unités pouvant appartenir à une équipe.
 		public const int NBR_MAX_UNITES = 10;

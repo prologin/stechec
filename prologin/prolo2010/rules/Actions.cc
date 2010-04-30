@@ -11,6 +11,7 @@
 */
 
 #include "Actions.hh"
+#include <algorithm>
 
 #ifdef ASSERT
 # undef ASSERT
@@ -22,19 +23,9 @@
 
 static unsigned int last_order_id = 1;
 
-static inline int max(int a, int b)
-{
-  return (a > b) ? a : b;
-}
-
-static inline int min(int a, int b)
-{
-  return (a < b) ? a : b;
-}
-
 static inline int distance(position p1, position p2)
 {
-  return max(abs(p1.x - p2.x), abs(p1.y - p2.y));
+  return std::max(abs(p1.x - p2.x), abs(p1.y - p2.y));
 }
 
 static int get_ko(type_unite a)
@@ -73,7 +64,7 @@ static void kangourou(GameData *g, position pos, int attaquant_){
   for (int j = 0, l = explosions.size(); j < l ; j++){
     int mind = 5; // plus que 2
     for (int k = 0, l = explosions.size(); k < l ; k++){
-      mind = min( mind, distance(explosions[k]->pos, explosions[j]->pos));
+      mind = std::min( mind, distance(explosions[k]->pos, explosions[j]->pos));
     }
     explosions[j]->ko = 2 - mind;
   }
@@ -199,6 +190,13 @@ void ActionSpawn::verifier(GameData* g)
   int i =  g->indice_at(p);
   ASSERT(i == -1, RENFORT_IMPOSSIBLE);
   ASSERT(tu_ != PERROQUET, UNITE_INTERDITE);
+  // Using an int and not directly the enum tu_ is MANDATORY to really check
+  // that it is within the allowed range for a unit. Otherwise, the compiler can
+  // optimize things and is allowed to assume that a type_unite is always within
+  // the allowed range for the enumeration.
+  int tu = tu_;
+  ASSERT(tu >= 0, UNITE_INTERDITE);
+  ASSERT(tu < DERNIERE_UNITE, UNITE_INTERDITE);
   ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES,QUOTA_DEPASSE);
 }
 
