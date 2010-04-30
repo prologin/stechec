@@ -10,8 +10,6 @@
 ** Copyright (C) 2010 Prologin
 */
 
-#define DEBUG
-
 #ifndef CONSTANT_HH_
 # define CONSTANT_HH_
 
