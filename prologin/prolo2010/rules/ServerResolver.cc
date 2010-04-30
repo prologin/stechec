@@ -46,8 +46,10 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       data.push_back(it->second.second->arg[i]);
 
     g_->packets.push_back(data);
+
     switch (it->second.first){
     case RETIRER_KO:
+      LOG3("retirer ko message");
       g_->retirer_ko( it->second.second->arg[0]);
       break;
     case RETRECIR:
@@ -57,9 +59,11 @@ void ServerResolver::ApplyResolver(CommandListRef cmdList[])
       Action* act = act_from_pkt(it->second.first,
 				 it->second.second);
       try {
+	LOG3("action : %1",  it->second.second->arg[0] );
 	act->verifier(g_);
 	g_->appliquer_action(act);
       } catch (erreur err) {
+	g_->check(__FILE__, __LINE__);
 	LOG1("Action error : %1", err);
 	abort();
       }

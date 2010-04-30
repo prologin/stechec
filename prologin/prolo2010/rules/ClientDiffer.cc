@@ -23,7 +23,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
   if (pkt->type == RETRECIR){
     g_->retrecissement();
   }else if (pkt->type == RETIRER_KO){
-    g_->retirer_ko(pkt->arg[0]); // must return true...
+    if (!g_->mon_tour()) g_->retirer_ko(pkt->arg[0]); // must return true...
   }else{
     if (g_->mon_tour())
       return;

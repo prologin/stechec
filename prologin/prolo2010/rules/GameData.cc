@@ -103,8 +103,10 @@ bool GameData::mon_tour()
 bool GameData::retirer_ko(int indice){
   if ( unites[indice].ko > 0 && unites[indice].ennemi){
     unites[indice].ko --;
+    LOG3("retirer ko %1", indice);
     return true;
   }else{
+    LOG3("PAS retirer ko %1", indice);
     return false;
   }
 }

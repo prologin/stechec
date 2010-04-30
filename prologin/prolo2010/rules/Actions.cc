@@ -132,6 +132,7 @@ void ActionAttaquer::verifier(GameData *g)
   unite& a = g->unites[attaquant_];
   unite& v = g->unites[victime_];
   ASSERT(a.ko == -1, UNITE_KO);
+  ASSERT(v.ko == -1, UNITE_KO);
   ASSERT(!a.ennemi, PAS_A_MOI);
   // ASSERT(v.ennemi, UNITE_KO); // TODO ajouter : UNITE_A_MOI
   ASSERT(a.pa >= 1, PLUS_DE_PA);
