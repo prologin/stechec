@@ -50,6 +50,28 @@ let get_range (x,y) pa =
 
 exception Cant_move;;
 
+let (--) (x,y) (a,b) = (x-a, y-b)
+
+(* get_titi :: unite array -> bool -> unite *)
+let get_titi units bool =
+  let a = ref units.(0) in
+    iter
+      (fun u -> 
+        if u.vrai_type_unite = Perroquet && u.ennemi = bool then
+          a := u) units;
+    !a
+
+let best_pos bro target =
+  let caracs = caracteristiques bro.type_unite_actuel in
+  let (distx, disty) = target.pos -- bro.pos in
+  let aux dist pos_init =
+    let op = (if dist > 0 then (+) else (-)) in
+      if (abs dist) < caracs.pa_init then
+        op (op pos_init dist) (-1)
+      else
+        op dist (caracs.pa_init - 1)
+  in (aux distx (fst bro.pos), aux disty (snd bro.pos))
+
 (* count :: type_unite -> bool -> unite array -> int *)
 let count tu team =
   fold_left (fun a u -> a + (if u.ennemi = team && u.vrai_type_unite = tu then 1 else 0)) 0
@@ -67,18 +89,25 @@ let choose_u2s unites =
 
 (* -------------------------------------------------------------------------- *)
 (* try_move :: unite -> erreur *)
-let try_move u =
+let try_move u units =
   if u.ko >= 0 then Unite_ko
   else if u.ennemi then Pas_a_moi
   else
-    let rec lst = get_range u.pos u.pa
+    let (x, y) = best_pos u (get_titi units true) in
+    let comp (x1, y1) (x2, y2) =
+      let d1 = abs (x - x1 + y - y1)
+      and d2 = abs (x - x2 + y - y2) in
+        if d1 < d2 then (-1)
+        else if d1 = d2 then 0
+        else 1
+    in let rec lst = get_range u.pos u.pa
     and pick_first = function
       | [] -> Case_occupee
       | pos::xs ->
           match deplacer u.pos pos with
             | Ok -> Ok
             | a -> afficher_erreur a; pick_first xs
-    in pick_first lst
+    in pick_first (List.sort comp lst)
 
 (* free_spawn :: unites array -> erreur *)
 let free_spawn unites map =
@@ -86,7 +115,7 @@ let free_spawn unites map =
   try match map.(sx).(sy) with
     | None -> Ok
     | Some u2move ->
-        match try_move u2move with
+        match try_move u2move unites with
           | Case_occupee -> Renfort_impossible
           | otherwise -> otherwise
   with _ -> print_endline "le spawn est hors de la map";
@@ -142,18 +171,6 @@ let get_status unites map =
               | lst -> s := (u, lst)::!s) unites;
     !s
 
-let (--) (x,y) (a,b) = (x-a, y-b)
-
-let best_pos bro target =
-  let caracs = caracteristiques bro.type_unite_actuel in
-  let (distx, disty) = target.pos -- bro.pos in
-  let aux dist pos_init =
-    let op = (if dist > 0 then (+) else (-)) in
-      if (abs dist) < caracs.pa_init then
-        op (op pos_init dist) (-1)
-      else
-        op dist (caracs.pa_init - 1)
-  in (aux distx (fst bro.pos), aux disty (snd bro.pos))
 
 
 let rec do_the_job = function
@@ -165,15 +182,6 @@ let rec do_the_job = function
                      | Ok -> do_the_job tail
                      | a -> a)
           | a -> afficher_erreur a; a
-
-(* get_titi :: unite array -> bool -> unite *)
-let get_titi units bool =
-  let a = ref units.(0) in
-    iter
-      (fun u -> 
-        if u.vrai_type_unite = Perroquet && u.ennemi = bool then
-          a := u) units;
-    !a
 
 (* choose -> ('a * 'b) list -> ('a * 'c) list -> 'a option *)
 let rec choose already_chosen lst =
