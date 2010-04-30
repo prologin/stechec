@@ -124,8 +124,7 @@ int Api::nombre_pc(){
 }
 
 int Api::nombre_unites_spawnees(bool ennemi){
-  int e = ennemi?g_->current_player:((1 + g_->current_player)%2);
-  return g_->nbr_toons_spawn[e];
+  return g_->nbr_toons(ennemi);
 }
 
 ///
