@@ -199,8 +199,13 @@ EOF
         args = [FunctionArg.new(@types, ["unit", "void"])]
       end
       @f.puts "  CAMLparam0();"
-      args.each do |arg|
-        @f.puts "  CAMLxparam1(#{arg.name});"
+      if args.length
+        @f.print "  CAMLxparam"
+        @f.print args.length
+        @f.print "("
+        an = args.map { |x| x.name }
+        @f.print an.join(", ")
+        @f.print ");"
       end
       @f.puts
       unless fn.ret.is_nil? then
