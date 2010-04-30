@@ -248,7 +248,7 @@ let protect_titi stack ennemis titi =
   in if do_the_job def_target <> Ok then
     abort_and_escape titi ennemis true
 
-let organize_defense elmers_and_cie =
+let organize_defense elmers_and_cie titi =
   let dist u1 u2 =
     let (distx, disty) = u1.pos -- u2.pos in
     let bd, sd = (max distx disty), (min distx disty) in
@@ -266,16 +266,18 @@ let organize_defense elmers_and_cie =
       else if d2titi1 = d2titi2 then 0
       else if d2titi1 > d2titi2 then 1
       else (-1)
-  in let pairs = List.map
+  in let pairs = List.concat (List.map
     (fun (elm, ennemis) -> List.map (fun e -> (elm, e, dist e titi)) ennemis)
-    elmers_and_cie in
+    elmers_and_cie) in
   let sorted = List.sort my_comp pairs in
+    afficher_erreur (do_the_job (List.map (fun (a,b,_) -> (a,b)) sorted))
 
 (* Fonction appellée pour la phase de jeu. *)
 let jouer () =
   let is_empty = function [] -> true | _ -> false in
   let units = unites () in
   let map = build_map units in
+  let my_titi = get_titi units false in
   let stack = get_status units map in
   let nb_bros = fold_left (fun a u -> if u.ennemi then a else a + 1) 0 units in
     (if (is_empty stack && nb_bros > 3) then
@@ -304,7 +306,7 @@ let jouer () =
               (* Cas où la défense est safe, on s'occupe d'attaquer *)
               | ([], rest) -> () (* FIXME *)
               (* Il y'a des ennemis dans la zone défensive *)
-              | (elmers, rest) -> ()); (* FIXME *)
+              | (elmers, rest) -> organize_defense elmers my_titi); (* FIXME *)
   flush stderr; flush stdout;;
 
 (*
