@@ -248,7 +248,7 @@ unite GameData::get_unite(int i){
 
 position GameData::spawn_pos()
 {
-  return spawn_position(current_player == 0);
+  return spawn_position(false);
 }
 
 position GameData::spawn_position(bool ennemi){
