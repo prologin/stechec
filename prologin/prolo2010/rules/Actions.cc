@@ -127,8 +127,8 @@ void ActionAttaquer::verifier(GameData *g)
   ASSERT(victime_ >= 0, POSITION_INVALIDE);
   ASSERT(victime_ < g->get_unites().size(), POSITION_INVALIDE);
 
-  unite& a = g->unites[attaquant_];
-  unite& v = g->unites[victime_];
+  const unite& a = g->unites[attaquant_];
+  const unite& v = g->unites[victime_];
   ASSERT(a.ko == -1, UNITE_KO);
   ASSERT(v.ko == -1, UNITE_KO);
   ASSERT(!a.ennemi, PAS_A_MOI);
@@ -161,7 +161,7 @@ void ActionRelever::verifier(GameData* g)
 {
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
-  unite& u = g->unites[unite_];
+  const unite& u = g->unites[unite_];
   ASSERT(u.ko >= 0, UNITE_KO);
   ASSERT(u.ko == 0, UNITE_DEBOUT);
   ASSERT(!u.ennemi, PAS_A_MOI);
@@ -252,7 +252,7 @@ void ActionDeplacer::verifier(GameData* g)
 {
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
-  ASSERT_POSITION(dest_, POSITION_INVALIDE)
+  ASSERT_POSITION(dest_, POSITION_INVALIDE);
   
   unite& u = g->unites[unite_];
   ASSERT(u.ko < 0, UNITE_KO);
@@ -308,7 +308,7 @@ void ActionCarte::verifier(GameData* g)
 {
   ASSERT(g->can_play_card, PHASE_CARTES_TERMINEE);
 
-  cartes& c = g->players_cartes[player_];
+  const cartes& c = g->players_cartes[player_];
   int cnt;
 
   switch (type_carte_)
