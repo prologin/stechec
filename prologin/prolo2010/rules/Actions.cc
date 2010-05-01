@@ -244,7 +244,6 @@ void ActionSpawn::annuler(GameData *g)
   Action::annuler(g);
   g->unites.pop_back();
   g->nbr_toons_spawn[player_]--;
-  g->nbr_unites_allowed += 1;
   g->deja_bougee[g->unites.size()] = false;
 }
 
