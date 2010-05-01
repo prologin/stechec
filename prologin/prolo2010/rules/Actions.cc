@@ -369,7 +369,8 @@ void ActionDeguisement::appliquer(GameData* g)
   ancien_type_ = g->unites[unite_].type_unite_actuel; // TODO:
   old_pa_ = g->unites[unite_].pa;
   g->unites[unite_].type_unite_actuel = nouveau_type_;
-  g->unites[unite_].pa = g->caracteristiques(nouveau_type_).pa_init;
+  if (g->unites[unite_].pa)
+    g->unites[unite_].pa = g->caracteristiques(nouveau_type_).pa_init;
 };
 
 void ActionDeguisement::annuler(GameData* g)
