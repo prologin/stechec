@@ -95,7 +95,7 @@ void dump_current_state()
   if (ennemi)
     for (int i = 0; i < u.size(); i++)
       u[i].ennemi = ! u[i].ennemi;
-  taille_terrain taille = taille_terrain();
+  taille_terrain taille = taille_terrain_actuelle();
   cartes c = mes_cartes();
   cartes c2;
   c2.potion = MAX_CARTES - c.potion;
