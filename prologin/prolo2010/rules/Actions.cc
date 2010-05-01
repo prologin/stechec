@@ -230,6 +230,7 @@ void ActionSpawn::appliquer(GameData *g)
     };
     id_++;
     g->deja_bougee[g->unites.size()] = true;
+    g->nbr_unites_allowed -= 1;
     g->unites.push_back(u);
   }
   g->nbr_toons_spawn[player_]++;
