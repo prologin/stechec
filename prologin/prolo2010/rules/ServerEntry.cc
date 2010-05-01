@@ -56,7 +56,7 @@ int         ServerEntry::afterNewTurn(void)
   if (
       g_->get_real_turn() % TEMPS_RETRECISSEMENT == 0 &&
       g_->get_real_turn() != 0 &&
-      g_->getCurrentTurn() % 2 == 0
+      (g_->getCurrentTurn() + 1)% 2
       )
     {
       g_->retrecissement();
