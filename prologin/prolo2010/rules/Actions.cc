@@ -435,7 +435,7 @@ void ActionSoin::appliquer(GameData* g)
 
   u.pa = 0;
   u.attaques = 0;
-  u.ko = 0;
+  u.ko = -1;
 }
 
 void ActionSoin::annuler(GameData* g)
