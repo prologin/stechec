@@ -20,7 +20,7 @@ class JavaMakefile
 
 lib_TARGETS = #{target}
 
-#{target}-srcs = $(wildcard *.java)
+#{target}-srcs = Interface.java Prologin.java $(wildcard *.java)
 #{target}-cxxflags = -I. -ggdb3
 
 # Evite de toucher a ce qui suit
