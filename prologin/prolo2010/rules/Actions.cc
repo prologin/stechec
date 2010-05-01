@@ -359,6 +359,8 @@ void ActionDeguisement::verifier(GameData* g)
   ASSERT(unite_ >= 0, POSITION_INVALIDE);
   ASSERT(unite_ < g->get_unites().size(), POSITION_INVALIDE);
 
+  ASSERT(!g->unites[unite_].ennemi, PAS_A_MOI);
+
   ASSERT(nouveau_type_ >= PERROQUET, RENFORT_IMPOSSIBLE);
   ASSERT(nouveau_type_ < DERNIERE_UNITE, RENFORT_IMPOSSIBLE);
 }
