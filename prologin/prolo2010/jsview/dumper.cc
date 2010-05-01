@@ -96,12 +96,12 @@ void dump_current_state()
     for (int i = 0; i < u.size(); i++)
       u[i].ennemi = ! u[i].ennemi;
   taille_terrain taille = taille_terrain();
-  cartes c = cartes();
+  cartes c = mes_cartes();
   cartes c2;
   c2.potion = MAX_CARTES - c.potion;
   c2.deguisement = MAX_CARTES - c.deguisement;
   c2.banzai = MAX_CARTES - c.banzai;
-  c2.pacifisme = c.pacifisme;
+  c2.pacifisme = MAX_CARTES - c.pacifisme;
   if (ennemi){
     cartes c3 = c;
     c = c2;
