@@ -96,7 +96,7 @@ bool Api::need_retirer_ko()
 bool Api::retirer_ko(position p)
 {
   int indice = g_->indice_at(p);
-  if (indice == -1 || g_->retirer_ko(indice)) {
+  if (indice != -1 && g_->retirer_ko(indice)) {
     StechecPkt com(RETIRER_KO, -1);
     com.Push(2, 0, indice);
     SendToServer(com);

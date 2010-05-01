@@ -107,7 +107,7 @@ bool GameData::retirer_ko(int indice){
     LOG3("retirer ko %1", indice);
     return true;
   }else{
-    LOG3("PAS retirer ko %1", indice);
+    LOG1("PAS retirer ko %1", indice);
     return false;
   }
 }
