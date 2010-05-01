@@ -51,8 +51,8 @@ ip_server=$9
 # Python is so slow that we can't implement  time limits.
 # We just use a big one to detect infinite loops in clients.
 # 60000ms = 1mn
-time_limit=0
-reserve_time=120000
+time_limit=15
+reserve_time=60000
 memory_limit=100000
 log_limit=1024
 

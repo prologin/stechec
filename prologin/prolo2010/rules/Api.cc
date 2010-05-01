@@ -148,6 +148,12 @@ position Api::pos_spawn(bool ennemi)
 //
 caracs Api::caracteristiques(type_unite tu)
 {
+  int tuu = tu;  // necessary, otherwise the compiler can assume the eunm
+                 // variable is in the range.
+  if (tuu < 0 || tuu >= DERNIERE_UNITE) {
+    caracs dummy; dummy.pa_init = -1; dummy.portee = -1;
+    return dummy;
+  }
   return g_->caracteristiques(tu);
 }
 
