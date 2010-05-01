@@ -99,7 +99,7 @@ void    NutsBarrier::setConfigLimits(const ConfSection& cfg)
   int reserve = cfg.getValue<int>("time_reserve");
   if (reserve < 0)
     reserve = 0;
-  if (time > 10)
+  if (time > 10 || reserve > 10)
     setTimeLimitValue(time, reserve);
 
   int mem = cfg.getValue<int>("memory");
