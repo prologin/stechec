@@ -145,6 +145,8 @@ void jouer()
       printf("  permet d'afficher l'etat de la map\n");
       printf("annuler\n");
       printf("  permet d'annuler la derniere action.\n");
+      printf("relever (X, Y)\n");
+      printf("  permet de relever une unite.\n");
       printf(" ---- pour plus d'infos, contactez un orga\n");
       printf("\n");
     }else if (strcmp(buffer, "renfort\n") == 0){
@@ -158,6 +160,8 @@ void jouer()
       }else{
 	printf("pas d'actions a annuler\n");
       }
+    }else if (sscanf(buffer, "relever (%d, %d)\n", &from.x, &from.y) == 4){
+      afficher_erreur(relever(from));
     }else if (sscanf(buffer, "(%d, %d) a (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
       afficher_erreur(attaquer(from, to));
     }else if (strcmp(buffer, "show\n") == 0){
