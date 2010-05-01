@@ -209,6 +209,8 @@ void ActionSpawn::verifier(GameData* g)
   ASSERT(tu >= 0, UNITE_INTERDITE);
   ASSERT(tu < DERNIERE_UNITE, UNITE_INTERDITE);
   ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES,QUOTA_DEPASSE);
+
+  ASSERT(g->nbr_unites_allowed > 0, QUOTA_DEPASSE);
 }
 
 void ActionSpawn::appliquer(GameData *g)
@@ -242,6 +244,7 @@ void ActionSpawn::annuler(GameData *g)
   Action::annuler(g);
   g->unites.pop_back();
   g->nbr_toons_spawn[player_]--;
+  g->nbr_unites_allowed += 1;
   g->deja_bougee[g->unites.size()] = false;
 }
 
