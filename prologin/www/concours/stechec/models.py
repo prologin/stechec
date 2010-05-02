@@ -97,19 +97,12 @@ class Map(models.Model):
 
     raw = property(get_raw, set_raw)
 
-    @property
-    def html(self):
-        from concours.stechec.utils import map_to_html
-        return map_to_html(self.raw)
-
     def get_absolute_url(self):
         return '/maps/%d/' % self.id
 
     class Meta:
         verbose_name = 'carte'
         ordering = ['-officielle', 'id']
-
-admin.site.register(Map)
 
 class Champion(models.Model):
     auteur = models.ForeignKey(authmodels.User)
@@ -143,14 +136,22 @@ class Champion(models.Model):
         
         try:
             fd = file(CHAMPION_LOG_PATH % (self.auteur.id, self.id))
-            return fd.read()
-        except:
-            return ''
-
-admin.site.register(Champion)
+            return fd.read().decode('iso-8859-15')
+        except Exception, e:
+            return str(e)
 
 class Tournoi(models.Model):
-    pass
+    date = models.DateTimeField(auto_now_add=True)
+
+    def get_absolute_url(self):
+        return u'/tournois/%d/' % self.id
+
+class ParticipantTournoi(models.Model):
+    user = models.ForeignKey(authmodels.User)
+    champion = models.ForeignKey(Champion)
+    tournoi = models.ForeignKey(Tournoi, related_name="participants")
+    score = models.IntegerField()
+    indice = models.IntegerField()
 
 class Match(models.Model):
     createur = models.ForeignKey(authmodels.User)
@@ -208,8 +209,6 @@ class Match(models.Model):
         verbose_name_plural = "matches"
         ordering = ['statut', '-id']
 
-admin.site.register(Match)
-
 class Competiteur(models.Model):
     match = models.ForeignKey(Match)
     champion = models.ForeignKey(Champion)
@@ -232,5 +231,3 @@ class Competiteur(models.Model):
 
     class Meta:
         ordering = ['-score']
-admin.site.register(Competiteur)
-

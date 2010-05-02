@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from concours.settings import DEBUG, BASE_DIR, VIEWER_PATH
 from concours.stechec.forms import ChampionUploadForm, CreateMatchForm
-from concours.stechec.models import Champion, Competiteur, Match, Map
+from concours.stechec.models import Champion, Competiteur, Match, Map, Tournoi
 from django.contrib.auth import login as _login, logout as _logout
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.models import User
@@ -245,7 +245,7 @@ def all_matches(request):
             queryset=Match.objects.all(),
             template_object_name='match',
             template_name='all-matches.html',
-            paginate_by=25
+            paginate_by=250
     )
 
 @login_required
@@ -295,11 +295,10 @@ def viewer_watch(request, match_id):
     turn_count = fd.read().count('\n') + 1
     return render_to_response('viewer-watch.html')
 
-def viewer_json_delta(request, match_id, first_turn_id, second_turn_id):
+def viewer_json(request, match_id, turn_id):
     try:
         match_id = int(match_id)
-        first_turn_id = int(first_turn_id)
-        second_turn_id = int(second_turn_id)
+        turn_id = int(turn_id)
         
         json = os.path.join(VIEWER_PATH % match_id)
         fd = file(json)
@@ -307,42 +306,15 @@ def viewer_json_delta(request, match_id, first_turn_id, second_turn_id):
     except Exception, e:
         raise Http404
     
-    if first_turn_id < 0 or second_turn_id <= 0:
+    if turn_id < 0:
         raise Http404
 
-    fd.readline()
+    fd.readline() # timestamp
 
-    first_turn = ''
-    second_turn = ''
-    line = ''
-
-    if first_turn_id == 0:
-        first_turn_id = -1
-        first_turn = "{m:%r,b:[],e:[]}" % (25*25*' ')
-
-    while True:
-        if first_turn_id == 0:
-            first_turn = line
-            first_turn_id = -1
-        
-        elif second_turn_id == 0:
-            second_turn = line
-            second_turn_id = -1
-
-        if first_turn_id == -1 and second_turn_id == -1:
-            break
-
-        line = fd.readline()
-        
-        if first_turn_id > 0:
-            first_turn_id -= 1
-        
-        if second_turn_id > 0:
-            second_turn_id -= 1
+    for i in xrange(turn_id):
+        fd.readline()
     
-    from concours.stechec.utils import compute_diff
-    diff = compute_diff(first_turn, second_turn)
-    return HttpResponse(diff)
+    return HttpResponse(fd.readline())
 
 def editeur(request):
     return render_to_response('editeur.html')
@@ -384,3 +356,17 @@ def editeur_save(request):
 
 def editeur_open(request, map_id):
     return HttpResponse(get_object_or_404(Map, id=map_id).raw, mimetype='text/plain')
+
+def all_tournois(request):
+    return list_detail.object_list(
+        request,
+        queryset=Tournoi.objects.all(),
+        template_object_name='tournoi',
+        template_name='all-tournois.html',
+        paginate_by=25
+    )
+
+def detail_tournoi(request, tournoi_id):
+    tournoi = get_object_or_404(Tournoi, id=tournoi_id)
+    participants = tournoi.participants.order_by('-score')
+    return render_to_response('detail-tournoi.html')

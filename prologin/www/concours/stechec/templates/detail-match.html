@@ -30,6 +30,7 @@ animatedcollapse.init();
 <h2>Participants</h2>
 <table>
     <tr>
+        <th>UID</th>
         <th>ID</th>
         <th>Champion</th>
         <th>Score</th>
@@ -39,6 +40,7 @@ animatedcollapse.init();
     {% for competiteur in match.competiteur_set.all %}
     <tr>
         <td>{{ competiteur.id|substract:match.competiteur__id__min }}</td>
+        <td>{{ competiteur.champion.id }}</td>
         <td>{{ competiteur.champion }}</td>
         {% if match.is_termine %}
             <td>{{ competiteur.score }}</td>

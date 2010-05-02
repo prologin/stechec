@@ -1,10 +1,9 @@
 /**
- * viewer2.js - Javascript script for the viewer module, improved
+ * viewer.js - Javascript script for the viewer module
  * By Zopieux
  */
 
-// STIME is delay between two played frames; DTIME is delay between two downloaded frames
-var PLAYING = false, OFRAME = 0, FRAME = 0, CACHE_D = [], TEXTUED = [], EMPTYME = [], TID, DID, STIME = 400, DTIME = 10, PBS = false, DLING = 2, DLED;
+var PLAYING = false, TURN_ID = 0, CACHE = {}, TID, STIME = 300, PBS = false;
 
 function setTime(time) {
     $('#i_time').text(time + '/' + NB_FRAMES);
@@ -17,112 +16,93 @@ function turnTimer(time, func) {
         TID = setTimeout(func, time);
 }
 
-function download(before, after, done) {
-    $.getJSON('/viewer/json/' + MATCH_ID + '/' + before + '/' + after, done);
+function getTurn(turn_id, onready) {
+    $.getJSON('/viewer/json/' + MATCH_ID + '/' + turn_id, onready);
 }
-
-function cacheFirstNull() {
-    for(var f=1; f < NB_FRAMES; f++)
-        if(getCache(f-1, f) == null) return f;
-    return f;
-}
-function countCache() {
-    var count = 0;
-    for(var y=0; y < CACHE_D.length; y++) {
-        if(CACHE_D[y] == null) continue;
-        for(var x=0; x < CACHE_D[y].length; x++) {
-            if(CACHE_D[y][x] != null) count++;
-        }
-    }
-    return count;
-}
-
-function dlFrame(before, after) {
-    clearTimeout(DID);
-    if(before && after) {
-        download(before, after, function(data) {
-            var sli = this.url.split('/');
-            setCache(sli[4], sli[5], data);
-            drawMap(data);
-            DID = setTimeout(dlFrame, DTIME);
-        });
-    } else {
-        // cache
-        if(DLING > 1 && (DLING == NB_FRAMES+1 || getCache(DLING-1, DLING) != null)) {
-            var firstNull = cacheFirstNull();
-            if(firstNull == NB_FRAMES) { clearTimeout(DID); return; }
-            DLING = firstNull;
-        }
-        download(DLING-1, DLING, function(data) {
-            var sli = this.url.split('/');
-            setCache(sli[4], sli[5], data);
-            DLING ++;
-            $('#i_cache').text(Math.round(countCache()/NB_FRAMES*100) + '%');
-            DID = setTimeout(dlFrame, DTIME); // pourquoi attendre ? :D
+function startCache(turn) {
+    if(turn in CACHE && turn < NB_FRAMES)
+        startCache(turn+1);
+    else {
+        getTurn(turn, function(data) {
+            CACHE[turn] = data;
+            $('#i_cache').text(Math.round((Object.size(CACHE)/NB_FRAMES*100)) + '%');
+            if(TURN_ID == turn)
+                drawMap(data);
+            //startCache(turn+1);
         });
     }
 }
 
-function setCache(before, after, data) {
-    if(CACHE_D[before] == null) CACHE_D[before] = [];
-    if(CACHE_D[before][after] == null)
-        CACHE_D[before][after] = data;
-}
-function getCache(before, after) {
-    if(before == 0 && after == 1) // first frame from HTML
-        return INITIAL_FRAME;
-    if(CACHE_D[before] == null || CACHE_D[before][after] == null)
-        return null;
-    return CACHE_D[before][after];
+function setPixel(x, y, kind, text, bkgrclr) {
+    PIXELS[y][x] = kind;
+    var id = $('#p_' + x + '_' + y);
+    if(kind != null) id.css('background-position', COORDS[kind]);
+    if(text != null) id.text(text);
+    if(bkgrclr != null) id.css('background-color', bkgrclr);
 }
 
-function updateMap(before, after) {
-    if(FRAME < 1 || FRAME > NB_FRAMES) return;
-    var cached = getCache(before, after);
-    if(cached == null)
-        dlFrame(before, after);
-    else
-        drawMap(cached);
-}
-
-function drawMap(diff) {
-    if(diff.m != null) { // from HTML
-        var cells = diff.m, bombs = diff.b, meches = diff.e;
-        for(var y = 0; y < CONF.sizey; y++) {
-            for(var x = 0; x < CONF.sizex; x++) {
-                PIXELS[y][x].css('background-position', COORDS[GRAMMAR[cells.substr((y*25+x), 1)]]);
-            }
+var g_b = true;
+function drawMap(step) {
+    $('#map div.cell').text('');
+    minc = step.taille_terrain.min_coord;
+    maxc = step.taille_terrain.max_coord;
+    for (var y = 0; y < CONF.sizey; y++)
+        for (var x = 0; x < CONF.sizex; x++)
+        {
+            t = 'empty';
+            if (x < minc || x > maxc || y < minc || y > maxc)
+                t = 'nonexistant';
+            setPixel(x, y, t, '', 'white');
         }
-    } else {
-        var diffs = diff[0], bombs = diff[1], meches = diff[2];
-        //var clone = $('#map').clone();
-        for(d in diffs) {
-            var h = diffs[d];
-            PIXELS[h[1]][h[0]].css('background-position', COORDS[TYPE2CHAR[h[2]]]);
+    for (var u in step.unites)
+    {
+    	u = step.unites[u];
+    	t = u.vrai_type_unite;
+    	if (t.perroquet) t = 'perroquet';
+    	else if (t.chat) t = 'chat';
+    	else if (t.singe) t = 'singe';
+    	else t = 'kangourou';
+
+        s = '';
+        if (g_b == u.ennemi) s += '1 ';
+        else s += '2 ';
+
+    	if (u.ko != -1)
+            s += u.ko + 'KO';
+
+
+        setPixel(u.pos.x, u.pos.y, t, s, '#FFAAAA');
+    }
+    g_b = !g_b;
+    /*
+    var rows = data.m.split('|');
+    for(var y = 0; y < rows.length; y ++) {
+        for(var x = 0; x < rows[y].length; x ++) {
+            var cha = GRAMMAR[rows[y].substring(x, x+1) || ' '];
+            setPixel(x, y, cha, null);
         }
     }
-    for(t in TEXTUED)
-        TEXTUED[t].text('');
-    TEXTUED = [];
-    for(e in EMPTYME)
-        EMPTYME[e].css('background-position', COORDS['empty']);
-    EMPTYME = [];
-    for(b in bombs) {
-        var h = bombs[b];
-        PIXELS[h[1]][h[0]].css('background-position', COORDS['bomb']).text(h[2]);
-        TEXTUED.push(PIXELS[h[1]][h[0]]);
-        EMPTYME.push(PIXELS[h[1]][h[0]]);
+    for(var bomb in data.b) {
+        var b = data.b[bomb];
+        setPixel(b[0], b[1], 'bomb', b[2]);
     }
-    for(m in meches) {
-        var h = meches[m];
-        PIXELS[h[1]][h[0]].text(h[2]);
-        TEXTUED.push(PIXELS[h[1]][h[0]]);
+    for(var meche in data.e) {
+        var m = data.e[meche];
+        setPixel(m[0], m[1], null, m[2]);
     }
-    if(PLAYING)
-        turnTimer(STIME, function() { toFrame(1, false); });
+    */
 }
 
-function playPause(pp) {
+function loadMap() {
+    if(TURN_ID < 0 || TURN_ID > NB_FRAMES) return false;
+    if(TURN_ID in CACHE)
+        drawMap(CACHE[TURN_ID]);
+    else {
+        startCache(TURN_ID);
+    }
+}
+
+function playPauseMatch(pp) {
     if(pp != null) PLAYING = !pp;
     if(PLAYING) {
         turnTimer(false);
@@ -130,56 +110,54 @@ function playPause(pp) {
         $('#play').removeClass('pause');
         $('div.ui-slider-range').removeClass('slider-working');
     } else {
-        if(FRAME == NB_FRAMES)
-            return;
+        if(TURN_ID == NB_FRAMES)
+            return false;
         PLAYING = true;
         $('#play').addClass('pause');
         $('div.ui-slider-range').addClass('slider-working');
-        turnTimer(1, function() { toFrame(0, false); });
+        turnTimer(1, function() { toTurn(0, false); });
     }
 }
 
-function toFrame(index, absolute) {
-    if((absolute && (index < 1 || index > NB_FRAMES || index == FRAME)) || (!absolute && (FRAME+index < 1 || FRAME+index > NB_FRAMES)))
-        return;
-    OFRAME = FRAME;
-    FRAME = (absolute) ? index : FRAME + index;
-    setTime(FRAME);
-    updateMap(OFRAME, FRAME);
-    $('#time_slider').slider('value', FRAME);
+function toTurn(index, absolute) {
+    if((absolute && (index < 0 || index > NB_FRAMES)) || (!absolute && (TURN_ID+index < 0 || TURN_ID+index > NB_FRAMES)))
+        return false;
+    TURN_ID = (absolute) ? index : TURN_ID + index;
+    setTime(TURN_ID);
+    $('#time_slider').slider('value', TURN_ID);
+    loadMap();
     if(PLAYING) {
-        if((absolute && index > NB_FRAMES) || (!absolute && FRAME+index > NB_FRAMES)) {
-            $('#viewer_wrap #msg').fadeIn();
-            playPause(false); // stop
-            return;
-        }
+        if((absolute && index > NB_FRAMES) || (!absolute && TURN_ID+index > NB_FRAMES)) {
+            playPauseMatch(false); // stop
+            return false;
+        } else
+            turnTimer(STIME, function() { toTurn(1, false); });
     }
-    if(absolute && index > 1) DLING = index;
 }
 
 $(document).ready(function() {
 
-$.extend($.ui.slider.defaults, {range: 'min'});
-
 PIXELS = [];
 
-$('#viewer_wrap #msg').hide().click(function() { $(this).fadeOut('def'); });
+$.extend($.ui.slider.defaults, {range: 'min'});
 
-$('#play').click(function() { playPause(null) });
-$('#first').click(function() { playPause(false); toFrame(1, true); });
-$('#next').click(function() { playPause(false); toFrame(1, false); });
-$('#previous').click(function() { playPause(false); toFrame(-1, false); });
-$('#last').click(function() { playPause(false); toFrame(NB_FRAMES, true); });
-$('#time_slider').slider({value: 1, min: 1, max: NB_FRAMES, step: 1, animate: true, stop: function(ev, ui) {
-    toFrame(ui.value, true);
-    if(PBS) { PBS = false; playPause(true); turnTimer(false); }
+$('#play').click(function() { playPauseMatch(null) });
+$('#first').click(function() { playPauseMatch(false); toTurn(1, true); });
+$('#next').click(function() { playPauseMatch(false); toTurn(1, false); });
+$('#previous').click(function() { playPauseMatch(false); toTurn(-1, false); });
+$('#last').click(function() { playPauseMatch(false); toTurn(NB_FRAMES, true); });
+$('#time_slider').slider({value: 0, min: 0, max: NB_FRAMES, step: 1, animate: true, stop: function(ev, ui) {
+    toTurn(ui.value, true);
+    if(PBS) {
+        PBD = false;
+        playPauseMatch(true);
+    }
 }, slide: function(ev, ui) {
     setTime(ui.value);
-}, start: function(ev, ui) {
-    if(PLAYING) { playPause(false); PBS = true; }
+    if(PLAYING) PBS = true;
+    playPauseMatch(false);
 }});
 
-var clone = $('#map').clone();
 for(var y = 0; y < CONF.sizey; y ++) {
     var row = $('<div class="row"></div>');
     var pixrow = [];
@@ -188,22 +166,13 @@ for(var y = 0; y < CONF.sizey; y ++) {
         cell.attr('id', 'p_' + x + '_' + y);
         cell.css('background-position', COORDS['empty']);
         row.append(cell);
-        pixrow.push(cell);
+        pixrow.push('empty');
     }
     PIXELS.push(pixrow);
-    clone.append(row);
-}
-$('#map').replaceWith(clone);
-
-var href = window.location.hash.split('-'), gotoFrame = 1;
-if(href.length == 2 && href[1] != '') {
-    var gotoF = parseInt(href[1]);
-    if(!isNaN(gotoF) && gotoF > 0 && gotoF <= NB_FRAMES)
-        gotoFrame = gotoF;
+    $('#map').append(row);
 }
 
-toFrame(1, true);
-if(gotoFrame != 1) toFrame(gotoFrame, true);
-dlFrame();
+startCache(0);
+//toTurn(1, true);
 
 });

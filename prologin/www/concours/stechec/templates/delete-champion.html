@@ -5,7 +5,7 @@
 {% block "titleh1" %}Supprimer un champion - {{ champion.nom }}{% endblock %}
 
 {% block "content" %}
-    <form method="post" action"/champions/delete/{{ champion.id }}/">
+    <form method="post" action="/champions/delete/{{ champion.id }}/">
         <p>Êtes-vous sûr de vouloir supprimer le champion <strong>{{ champion.nom }}</strong> ?</p>
         <input type="submit" value="Valider" />
     </form>
