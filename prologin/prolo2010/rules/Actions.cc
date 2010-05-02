@@ -209,6 +209,8 @@ void ActionSpawn::verifier(GameData* g)
   ASSERT(tu >= 0, UNITE_INTERDITE);
   ASSERT(tu < DERNIERE_UNITE, UNITE_INTERDITE);
   ASSERT(g->nbr_toons(false) < NBR_MAX_UNITES,QUOTA_DEPASSE);
+
+  ASSERT(g->nbr_unites_allowed > 0, QUOTA_DEPASSE);
 }
 
 void ActionSpawn::appliquer(GameData *g)
@@ -371,7 +373,8 @@ void ActionDeguisement::appliquer(GameData* g)
   ancien_type_ = g->unites[unite_].type_unite_actuel; // TODO:
   old_pa_ = g->unites[unite_].pa;
   g->unites[unite_].type_unite_actuel = nouveau_type_;
-  g->unites[unite_].pa = g->caracteristiques(nouveau_type_).pa_init;
+  if (g->unites[unite_].pa)
+    g->unites[unite_].pa = g->caracteristiques(nouveau_type_).pa_init;
 };
 
 void ActionDeguisement::annuler(GameData* g)
