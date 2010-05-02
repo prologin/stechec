@@ -73,7 +73,9 @@ value cxx2lang_array(const std::vector<Cxx>& in)
   if (size == 0)
     return Atom(0);
 
-  value v = caml_alloc(size, 0);
+  CAMLlocal1(v);
+
+  v = caml_alloc(size, 0);
   for (int i = 0; i < size; ++i)
     Field(v, i) = cxx2lang<value, Cxx>(in[i]);
 
@@ -135,7 +137,7 @@ EOF
     @f.puts "template <>"
     @f.puts "value cxx2lang<value, #{name}>(#{name} in)"
     @f.puts "{"
-    @f.puts "  value out = caml_alloc(#{nfields}, 0);"
+    @f.puts "  value out = caml_alloc(#{nfields}, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?"
     i = 0
     struct['str_field'].each do |f|
       fn = f[0]
@@ -244,7 +246,7 @@ EOF
       @f.puts "  static value *closure = NULL;"
       @f.puts "  if (closure == NULL)"
       @f.puts "    closure = caml_named_value(\"ml_#{fn.name}\");"
-      @f.puts "  value _ret = callback(*closure, Val_unit);"
+      @f.puts "  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?""
       if fn.ret.is_nil?
         @f.puts "  return;"
       elsif fn.ret.is_array?
