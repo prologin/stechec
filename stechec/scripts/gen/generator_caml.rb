@@ -238,7 +238,7 @@ EOF
       end
       @f.puts "}"
     end
-    
+
     # api -> caml glue
     for_each_user_fun do |fn|
       @f.print cxx_proto(fn)
