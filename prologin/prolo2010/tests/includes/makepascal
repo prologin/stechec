@@ -24,7 +24,7 @@ $(NAME): interface.o $(SRC) $(LIMEOBJ)
 	${FPC} -Cn prologin.pas ${CFLAGS} -o"${NAME}"
 #	fpc, what a bullshit ! it doesn't want our ~2000 command line argument...
 #	instead, omit link phase, add options for ld in his script, then link.
-	@sed -ie 's!^/usr/bin/ld!& $(CHECK_CHEAT) interface.o $(LIMEOBJ) !' ./ppas.sh
+	@sed -ie 's!^/usr/bin/ld!& interface.o $(LIMEOBJ) !' ./ppas.sh
 #	@sed -ie '/INPUT(/ a $(LIMEOBJ) ' ./link.res
 	@sed -ie '/global:/ a run;' ./link.res
 	@./ppas.sh
@@ -40,4 +40,4 @@ distclean: clean
 	${RM} ${NAME} prologin.tgz
 
 tar:
-	tar cvzf prologin.tgz prolo_interface.pas $(SRC)
+	tar cvzf prologin.tgz prolo_interface.pas $(SRC) $(AUXFILES)

@@ -11,7 +11,6 @@
 */
 
 #include <cstdlib>
-
 /* These functions are defined in common stechec rules. */
 extern "C" int api_state_is_end(void*);
 extern "C" int api_state_is_playturn(void*);
@@ -28,18 +27,10 @@ extern "C" void jouer();
 extern "C" bool api_mon_tour();
 
 // prolo2010 specific : the retirer_ko returns a structure on the stack
-struct unite
-{
-  struct { int x; int y; } pos;
-  bool ennemi;
-  int type_unite_actuel;
-  int vrai_type_unite;
-  int ko;
-  int pa;
-  int attaques;
-};
-extern "C" unite retirer_ko(); // In champion
-extern "C" bool api_retirer_ko(unite u); // In API
+typedef struct { int x; int y; } position;
+
+extern "C" position retirer_ko(); // In champion
+extern "C" bool api_retirer_ko(position u); // In API
 
 extern "C" int api_send_actions();
 extern "C" bool api_need_retirer_ko(); // In API
@@ -60,7 +51,7 @@ extern "C" int run(void* foo, void* api, void* client_cx)
         // prolo2010 specific : two successive phases with no server sync
         if (api_need_retirer_ko())
 	  {
-	    unite u = retirer_ko();
+	    position u = retirer_ko();
 	    if (!api_retirer_ko(u)) // Returns true if successful
 	      abort();
 	  }

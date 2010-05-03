@@ -346,6 +346,8 @@ struct ProloginJavaVm
       JvAttachCurrentThread(NULL, NULL);
       // FIXME: grrrr
       // GC_disable();
+      JvInitClass(&::Erreur::class$);
+      JvInitClass(&::Type_unite::class$);
       c = new Prologin();
     }
     catch (Throwable *t)
