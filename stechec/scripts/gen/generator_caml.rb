@@ -245,8 +245,8 @@ EOF
       @f.puts "", "{"
       @f.puts "  static value *closure = NULL;"
       @f.puts "  if (closure == NULL)"
-      @f.puts "    closure = caml_named_value(\"ml_#{fn.name}\");"
-      @f.puts "  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?""
+      @f.puts "    closure = caml_named_value(\"ml_#{fn.name}\"); "
+      @f.puts "  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?"
       if fn.ret.is_nil?
         @f.puts "  return;"
       elsif fn.ret.is_array?
