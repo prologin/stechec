@@ -1,0 +1,8 @@
+ne modifiez pas vos extentions de fichiers, ni vos noms de fichiers de maniere generale.
+
+pour compiler, tapez make
+
+pour les langages comme python ou php, le fait de compiler n'indique pas que votre fichier
+est correct, si vous codez mal,
+il se peut que le fichier php fasse une parse error dans stechec.
+

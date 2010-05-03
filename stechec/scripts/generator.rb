@@ -84,11 +84,11 @@ def make_includes
   $languages.each do |x|
     require "gen/makefile_" + x
   end
-
   # create directory
   install_path = Pathname.new($install_path) + "includes"
   install_path.mkpath
 
+  FileUtils.cp Pathname.new(PKGDATADIR) + 'files/README', 'README'
   # copy main.c and rules.ml into includes.
   if Pathname.new('files/main.cc').exist?
     FileUtils.cp 'files/main.cc', install_path.to_s
@@ -133,6 +133,8 @@ def make_server
  # LuaMakefile.new.build_metaserver(install_path)
   PythonMakefile.new.build_metaserver(install_path)
   PhpMakefile.new.build_metaserver(install_path)
+  PhpObjMakefile.new.build_metaserver(install_path)
+
 
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
