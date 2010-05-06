@@ -26,7 +26,6 @@ ifndef NOCOLORS
   quiet_cmd_cxx		= [1;32mcxx  $< -> $@[0m
   quiet_cmd_gmcs	= [1;34mcs   $^ -> $@[0m
   quiet_cmd_java	= [1;34mjava $< -> $@[0m
-  quiet_cmd_javac	= [1;31mjava $< -> $@[0m
   quiet_cmd_javai	= [1;37mjint $< -> $@[0m
   quiet_cmd_ocaml	= [1;33mcaml $< -> $@[0m
   quiet_cmd_ocamlo	= [1;33mcaml $< -> $@[0m
@@ -39,7 +38,6 @@ else
   quiet_cmd_cxx		= CXX     $@
   quiet_cmd_gmcs	= CS      $@
   quiet_cmd_java	= JAVA    $@
-  quiet_cmd_javac	= JAVAC   $@
   quiet_cmd_javai	= JAVAI   $@
   quiet_cmd_ocaml	= OCAML   $@
   quiet_cmd_ocamlo	= OCAML   $@
@@ -106,6 +104,7 @@ define get_jclass
   cleanfiles := $$($(1)-jclass) $$($(1)-jheaders) $$(cleanfiles)
 
   ifneq ($$(src),)
+    $(1)-deps := $$($(1)-jclass) $$($(1)-objs)
     cmd_ld_shared = $(CJ) $$($(1)-jclass) $$($(1)-objs) $(ld_flags) -shared -fPIC -o $(1).so $(_LDLIBS)
   endif
 
@@ -148,7 +147,6 @@ cpp_flags	= $(_CPPFLAGS)
 cmd_cc		= $(CC) $(c_flags) $(cpp_flags) -fPIC -c $< -o $@
 cmd_cxx		= $(CXX) $(cxx_flags) $(cpp_flags) -fPIC -c $< -o $@
 cmd_java	= $(CJ) $(java_flags) -C $<
-cmd_javac	= $(CJ) $(java_flags) -c $< -o $@
 cmd_javai	= $(CJH) -classpath /usr/share/java/libgcj.jar:. $(@:.h=)
 cmd_ocaml	= $(OCAMLC) $(_CAMLFLAGS) -c $< -o $@
 cmd_ocamlo	= $(OCAMLC) -output-obj $(_CAMLFLAGS) $(filter %.cmo,$^) -o $@
@@ -221,6 +219,7 @@ list-run-reqs:
 
 %.h 	: %.class
 	$(call cmd,javai)
+	@touch $@
 
 %.cmi   : %.mli
 	$(call cmd,ocaml)
