@@ -6,6 +6,9 @@
 # Copyright (C) 2007 Prologin.
 #
 
+# Path of the Makefile, relative to where it was included from.
+MFPATH ?= ../includes
+
 # ==============================================================================
 # verbose settings
 # ==============================================================================
@@ -23,7 +26,6 @@ ifndef NOCOLORS
   quiet_cmd_cxx		= [1;32mcxx  $< -> $@[0m
   quiet_cmd_gmcs	= [1;34mcs   $^ -> $@[0m
   quiet_cmd_java	= [1;34mjava $< -> $@[0m
-  quiet_cmd_javac	= [1;31mjava $< -> $@[0m
   quiet_cmd_javai	= [1;37mjint $< -> $@[0m
   quiet_cmd_ocaml	= [1;33mcaml $< -> $@[0m
   quiet_cmd_ocamlo	= [1;33mcaml $< -> $@[0m
@@ -36,7 +38,6 @@ else
   quiet_cmd_cxx		= CXX     $@
   quiet_cmd_gmcs	= CS      $@
   quiet_cmd_java	= JAVA    $@
-  quiet_cmd_javac	= JAVAC   $@
   quiet_cmd_javai	= JAVAI   $@
   quiet_cmd_ocaml	= OCAML   $@
   quiet_cmd_ocamlo	= OCAML   $@
@@ -48,6 +49,8 @@ endif
 
 cmd = $(if $($(quiet)cmd_$(1)),@echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(cmd_$(1))
 cmd2 = $(if $($(quiet)cmd_$(1)),echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(cmd_$(1))
+
+exists = $(if $(shell test -e $(1) && echo exists),$(1),)
 
 # ==============================================================================
 # build environment
@@ -76,7 +79,7 @@ endef
 
 define get_ocaml_objs
   $(1)-mlsrcs := $$(filter %.ml,$$($(1)-srcs))
-  $(1)-camlobjs := $$(shell python ../includes/toposort.py $$($(1)-mlsrcs))
+  $(1)-camlobjs := $$(shell python $(MFPATH)/toposort.py $$($(1)-mlsrcs))
   ifneq ($$($(1)-camlobjs),)
     $(1)-objs := $(1)-caml.o $(value $(1)-objs)
     $(1)-cflags := $$($(1)-cflags) $$(OCAML_CFLAGS)
@@ -84,6 +87,9 @@ define get_ocaml_objs
     $(1)-ldflags := $$($(1)-ldflags) $$(OCAML_LIBS)
   endif
   cleanfiles := $$($(1)-camlobjs) $$($(1)-camlobjs:.o=.cmo) $$($(1)-camlobjs:.o=.cmi) $$(cleanfiles)
+
+  $(1)-mlisrcs := $$($(1)-mlsrcs:.ml=.mli)
+  $(1)-dists := $$($(1)-dists) $$(foreach mli,$$($(1)-mlisrcs),$$(call exists,$$(mli)))
 
   $(1)-caml.o: override _CAMLFLAGS = $$($(1)-camlflags)
   $(1)-caml.o: $$($(1)-camlobjs:.o=.cmi) $$($(1)-camlobjs:.o=.cmo)
@@ -98,6 +104,7 @@ define get_jclass
   cleanfiles := $$($(1)-jclass) $$($(1)-jheaders) $$(cleanfiles)
 
   ifneq ($$(src),)
+    $(1)-deps := $$($(1)-jclass) $$($(1)-objs)
     cmd_ld_shared = $(CJ) $$($(1)-jclass) $$($(1)-objs) $(ld_flags) -shared -fPIC -o $(1).so $(_LDLIBS)
   endif
 
@@ -140,7 +147,6 @@ cpp_flags	= $(_CPPFLAGS)
 cmd_cc		= $(CC) $(c_flags) $(cpp_flags) -fPIC -c $< -o $@
 cmd_cxx		= $(CXX) $(cxx_flags) $(cpp_flags) -fPIC -c $< -o $@
 cmd_java	= $(CJ) $(java_flags) -C $<
-cmd_javac	= $(CJ) $(java_flags) -c $< -o $@
 cmd_javai	= $(CJH) -classpath /usr/share/java/libgcj.jar:. $(@:.h=)
 cmd_ocaml	= $(OCAMLC) $(_CAMLFLAGS) -c $< -o $@
 cmd_ocamlo	= $(OCAMLC) -output-obj $(_CAMLFLAGS) $(filter %.cmo,$^) -o $@
@@ -158,6 +164,7 @@ _targets	:= $(foreach l,$(lib_TARGETS),$(l).so)
 
 $(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),c)))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),cc)))
+$(foreach t,$(lib_TARGETS),$(eval $(call get_objs,$(t),cpp)))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_ocaml_objs,$(t))))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_jclass,$(t))))
 $(foreach t,$(lib_TARGETS),$(eval $(call get_csclass,$(t))))
@@ -168,6 +175,7 @@ _dist		:= $(foreach t,$(lib_TARGETS),$($(t)-dists) $(filter-out ../%,$($(t)-srcs
 _deps		:= $(foreach f,$(_objs),$(dir $(f)).$(notdir $(f)).d)
 _cleanfiles	:= $(cleanfiles) $(_objs) $(_deps)
 _dcleanfiles	:= $(_targets) prologin.tgz
+_run_reqs   := $(_targets) $(foreach t,$(lib_TARGETS),$($(t)-dists))
 
 # ==============================================================================
 # rules
@@ -194,10 +202,16 @@ distclean: clean
 		fi; \
 	done
 
+list-run-reqs:
+	@echo "$(_run_reqs)"
+
 %.o: %.c
 	$(call cmd,cc)
 
 %.o: %.cc
+	$(call cmd,cxx)
+
+%.o: %.cpp
 	$(call cmd,cxx)
 
 %.class : %.java
@@ -205,6 +219,7 @@ distclean: clean
 
 %.h 	: %.class
 	$(call cmd,javai)
+	@touch $@
 
 %.cmi   : %.mli
 	$(call cmd,ocaml)

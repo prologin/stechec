@@ -11,64 +11,23 @@
 #
 
 class CMakefile
-  def initialize
-    @makefile = <<-EOF
-#####################
-# Macro Definitions #
-#####################
-CC 	= gcc
-MAKE 	= make
-LIMEOBJ ?= ../includes/main.o
-OBJS 	= ${SRC:.c=.o} $(LIMEOBJ)
-RM 	= /bin/rm -f
-
-CFLAGS  = -fPIC -W -Wall ${MY_CFLAGS}
-
-##############################
-# Basic Compile Instructions #
-##############################
-
-all: ${NAME}
-
-${NAME}: $(INCL) ${OBJS}
-\t${CC} #{TARGET_GCC_LINK} ${OBJS} -o ${NAME} $(CHECK_CHEAT)
-\t@echo Finished
-
-clean:
-\t@echo "Cleaning..."
-\t${RM} ${OBJS} *~ \#*\#
-
-distclean: clean
-\t${RM} ${NAME} #{$conf['conf']['player_filename']}.tgz
-
-tar:
-\ttar cvzf #{$conf['conf']['player_filename']}.tgz $(SRC) *.h
-EOF
-  end
-
-  def build_client(path)
-    f = File.new(path + "makec", 'w')
-    f.puts "# -*- Makefile -*-"
-    f.print @makefile
-    f.close
-  end
-
   def build_metaserver(path)
     f = File.new(path + "Makefile-c", 'w')
+    target = $conf['conf']['player_lib']
     f.print <<-EOF
 # -*- Makefile -*-
 
-INCL      = $(wildcard *.h)
-SRC       = $(wildcard *.c)
-NAME      = #{$conf['conf']['player_lib']}.so
+lib_TARGETS = #{target}
 
-MY_CFLAGS = -O2
+#{target}-srcs = $(wildcard *.c)
+#{target}-cflags = -ggdb3 -Wall -Wextra
 
-CHECK_CHEAT = `while read i; do echo -Wl,"--wrap=$$i"; done < forbidden_fun-c`
-LIMEOBJ   = 
+# Evite de toucher a ce qui suit
+#{target}-srcs += interface.cc stechec_lime.cc
 
+V=1
+include $(MFPATH)/rules.mk
     EOF
-    f.print @makefile
     f.close
   end
 

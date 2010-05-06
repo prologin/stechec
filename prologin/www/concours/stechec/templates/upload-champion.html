@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block "title" %}Uploader un champion{% endblock %}
+{% block "titleh1" %}Uploader un champion{% endblock %}
+
+{% block "content" %}
+<p class="intro">
+</p>
+
+<form action="" method="post" enctype="multipart/form-data">
+    {{ form.as_p }}
+    <p><input type="submit" value="Uploader"/></p>
+</form>
+{% endblock %}

@@ -1,0 +1,24 @@
+#map { 
+    float: left;
+    height: 608px; 
+    width: 608px; 
+    margin-top: 20px;
+    margin-bottom: 50px;
+    border: 2px solid #444; 
+    background-color: #DEDEDE;
+} 
+
+#map .row { 
+    clear: left; 
+} 
+ 
+#map .cell { 
+    height: 32px; 
+    width: 32px; 
+    font-size: 14px;
+    color: #000;
+    float: left; 
+    margin: 0; 
+    background-image: url('../img/sprites.png'); 
+    background-repeat: no-repeat; 
+} 

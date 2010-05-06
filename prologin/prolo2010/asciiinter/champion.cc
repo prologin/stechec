@@ -45,7 +45,7 @@ static type_unite unit_of_int(int i){
   }
 }
 
-unite _retirer_ko()
+position retirer_ko()
 {
   view();
   printf("retirer ko :\n");
@@ -71,7 +71,7 @@ unite _retirer_ko()
     }
   } while(bad);
   printf("fin retirer_ko;\n");
-  return u[n];
+  return u[n].pos;
 }
 
 unite choisir_unite(position p){
@@ -92,6 +92,18 @@ bool contient_unite(position p){
   return false;
 }
 
+int choix_unite(void)
+{
+  int n = 0;
+  char buffer[80];
+  do{
+    printf("1 pour perroquet\n2 pour singe\n3 pour chat\n4 pour kangourou\n");
+    fgets(buffer, 80, stdin);
+    if (sscanf(buffer, "%d", &n) != 1) n = 0; // bad value
+  } while (n < 1 || n > 4);
+  return n;
+}
+
 void jouer()
 {
   view();
@@ -110,21 +122,76 @@ void jouer()
   do{
     char buffer[80];
     fgets(buffer, 80, stdin);
-    if (sscanf(buffer, "from (%d, %d) to (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
+    printf("entrez une action. (ou help pour savoir comment les entrer)\n");
+    if (sscanf(buffer, "move (%d, %d) (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
       if (contient_unite(from)){
 	afficher_erreur(deplacer(from, to));
       }else{
 	printf("aucune unite ici !");
       }
-    }else if (strcmp(buffer, "spawn\n" == 0)){
-	do{
-	  printf("1 pour perroquet\n2 pour singe\n 3 pour chat\n4 pour kangourou\n");
-	  fgets(buffer, 80, stdin);
-	  if (sscanf(buffer, "%d", &n) != 1) n = 0; // bad value
-	} while (n < 1 || n > 4);
-        afficher_erreur(spawn(unit_of_int(n)));
+    }else if (strcmp(buffer, "help\n") == 0){
+      printf("usasge :\n");
+      printf("move (X, Y) (X, Y)\n");
+      printf("  permet de se deplacer\n");
+      printf("renfort\n");
+      printf("  permet de faire apparaitre une unite\n");
+      printf("end\n");
+      printf("  permet de terminer le tour et de laisser jouer votre adversaire\n");
+      printf("card\n");
+      printf("  permet de jouer une carte\n");
+      printf("(X, Y) a (X, Y)\n");
+      printf("  permet d'attaquer\n");
+      printf("show\n");
+      printf("  permet d'afficher l'etat de la map\n");
+      printf("annuler\n");
+      printf("  permet d'annuler la derniere action.\n");
+      printf("relever (X, Y)\n");
+      printf("  permet de relever une unite.\n");
+      printf(" ---- pour plus d'infos, contactez un orga\n");
+      printf("\n");
+    }else if (strcmp(buffer, "renfort\n") == 0){
+      n = choix_unite();
+      afficher_erreur(renfort(unit_of_int(n)));
     }else if (strcmp(buffer, "end\n") == 0){
       break;
+    }else if (strcmp(buffer, "annuler\n") == 0){
+      if (annuler()){
+	printf("OK\n");
+      }else{
+	printf("pas d'actions a annuler\n");
+      }
+    }else if (sscanf(buffer, "relever (%d, %d)\n", &from.x, &from.y) == 4){
+      afficher_erreur(relever(from));
+    }else if (sscanf(buffer, "(%d, %d) a (%d, %d)\n", &from.x, &from.y, &to.x, &to.y) == 4){
+      afficher_erreur(attaquer(from, to));
+    }else if (strcmp(buffer, "show\n") == 0){
+      view();
+    }else if (strcmp(buffer, "card\n") == 0) {
+      printf("1 pacifisme ; 2 banzai ; 3 soin ; 4 deguisement\n");
+      do{
+	fgets(buffer, 80, stdin);
+	if (sscanf(buffer, "%d\n", &n) == 1) break;
+      } while (true);
+      switch (n) {
+      case 1: afficher_erreur(pacifisme()); break;
+      default:
+	{
+	  position p;
+	  printf("entrez une position\n");
+	  do{
+	    fgets(buffer, 80, stdin);
+	    if (scanf("(%d, %d)\n", &p.x, &p.y) == 2) break;
+	  } while(true);
+	  switch(n){
+	  case 2: afficher_erreur(banzai(p)); break;
+	  case 3: afficher_erreur(potion(p)); break;
+	  case 4:
+	    afficher_erreur(deguisement(p, unit_of_int(choix_unite()))); break;
+	  }
+	}
+      }
+    }else{
+      printf("mauvais format\n");
     }
   } while(true);
   printf("fin jouer;\n");

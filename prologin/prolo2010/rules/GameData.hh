@@ -34,8 +34,10 @@ public:
 
   // Call this before everything else.
   void Init();
+  void check();
 
-  int nbr_unites_activees();
+  void check(const char * file, int line);
+
   int nbr_toons(bool ennemi);
 
   bool can_active(int i);
@@ -58,29 +60,38 @@ public:
   // rules
   position spawn_pos();
   position spawn_position(bool white);
+  caracs caracteristiques(type_unite u);
   int porte_attaque(const unite u);
   int pa(const type_unite u);
+  bool must_remove_ko();
 
   // side effects
   void team_switched();
   void reset_unite(unite &u, bool reset_ko);
   void set_deja_bougee(int i);
   void reset_moves();
+  bool out_map(position p);
 
   // actions
   std::vector<Action*> actions;
   void appliquer_action(Action* act);
+  void send_actions();
   bool annuler();
 
+  void retrecissement();
+  bool retirer_ko(int i);
   // data
   int current_player;
   int nbr_unites_allowed;
   bool can_play_card;
-  bool deja_bougee[NBR_MAX_UNITES];
+  bool deja_bougee[NBR_MAX_UNITES * 2];
   cartes players_cartes[2];
   taille_terrain tt;
   std::vector<unite> unites;
-
+  int nbr_toons_spawn[2];
+  // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
+  std::vector<std::vector<int> > packets;
+  bool can_play;
 private:
   bool initialized_;
 };

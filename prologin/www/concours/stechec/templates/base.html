@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <title>Prologin - {% block "title" %}{% endblock %}</title>
+
+        <link rel="stylesheet" title="Main" href="/media/css/main.css" type="text/css" media="screen"/>
+        {% block "head" %}{% endblock %}
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">&nbsp;</div>
+            <h1>{% block "titleh1" %}{% endblock %}</h1>
+        </div>
+        <div id="menu">
+            <div class="block">
+                <h1>Champions</h1>
+                <ul>
+                    {% if user.is_authenticated %}
+                    <li><a href="/champions/my/">Mes champions</a></li>
+                    <li><a href="/champions/upload/">Envoyer un champion</a></li>
+                    {% endif %}
+                    <li><a href="/champions/all/">Tous les champions</a></li>
+                </ul>
+            </div>
+            <div class="block">
+                <h1>Matches</h1>
+                <ul>
+                    {% if user.is_authenticated %}
+                    <li><a href="/matches/my/">Mes matches</a></li>
+                    <li><a href="/matches/new/">Lancer un match</a></li>
+                    {% endif %}
+                    <li><a href="/matches/all/">Tous les matches</a></li>
+                    <li><a href="/status/">Statut des serveurs</a></li>
+                </ul>
+            </div>
+            <div class="block">
+                <h1>Tournois</h1>
+                <ul>
+                    <li><a href="/tournois/all/">Tous les tournois</a></li>
+                </ul>
+            </div>
+            
+            {% comment %}
+            <div class="block">
+                <h1>Cartes</h1>
+                <ul>
+                    <li><a href="/editeur/">Éditeur</a></li>
+                    <li><a href="/maps/all/">Liste des cartes</a></li>
+                </ul>
+            </div>
+            {% endcomment %}
+            
+            <div class="block">
+                <h1>Mon compte</h1>
+                <ul>
+                    {% if user.is_authenticated %}
+                    {% comment %}
+                    <li><a href="/password/change/">Changer mon mot de passe</a></li>
+                    {% endcomment %}
+                    <li><a href="/logout/">Déconnexion</a></li>
+                    {% else %}
+                    <li><a href="/login/">Connexion</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+          
+            <div class="block">
+                <h1>Liens relatifs</h1>
+                <ul>
+                    <li><a href="http://doc/">Documentation des langages</a></li>
+                    <li><a href="http://wiki/">Wiki de documentation</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="content">
+            {% block "content" %}{% endblock %}
+        </div>
+    </body>
+</html>

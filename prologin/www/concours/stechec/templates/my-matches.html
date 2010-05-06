@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block "title" %}Mes matches{% endblock %}
+{% block "titleh1" %}Mes matches{% endblock %}
+
+{% block "content" %}
+
+<p class="intro">
+    Voici la liste de tous les matches que vous avez créé.
+</p>
+{% if is_paginated %}
+<p class="pagination">
+{% for page in paginator.page_range %}
+{% ifequal page_obj.number page %}
+    {{ page }}
+{% else %}
+    <a href="/matches/my/?page={{ page }}">{{ page }}</a>
+{% endifequal %}
+{% endfor %}
+</p>
+{% endif %}
+<table>
+    <thead>
+        <tr>
+            <th>Numéro</th>
+            <th>État</th>
+            <th>Date &amp; heure</th>
+            <th>Carte</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for match in match_list %}
+        <tr class="{% cycle "row1" "row2" %}">
+            <td>{{ match.id }}</td>
+            <td>{{ match.statut_string }}</td>
+            <td>{{ match.date|naturalday }} à {{ match.date|time }}</td>
+            <td>
+                {% if match.is_termine %}
+                <a href="/matches/{{ match.id }}/view/">Voir le match</a> -
+                {% endif %}
+                
+                <a href="{{ match.get_absolute_url }}">Détails</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">Vous n'avez pas encore créé de match.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

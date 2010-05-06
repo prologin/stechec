@@ -1,0 +1,102 @@
+/**
+ * viewer CSS
+ * By Zopieux
+ */
+
+#viewer_wrap {
+    width: 612px;
+    height: 612px;
+    margin: 0 auto;
+}
+#viewer_wrap #msg {
+    position: relative;
+    top: 50%;
+    text-align: center;
+    border: 2px solid #f09000;
+    background: #fff;
+    color: #000;
+    font-size: 1.3em;
+    width: 60%;
+    height: 23px;
+    line-height: 23px;
+    left: 20%; /* 100-80 / 2 */
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}
+
+#viewer_bar {
+    width: 300px;
+    height: 40px;
+    border: 2px solid #aaa;
+    background: #fafafa;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin: 0 auto;
+}
+#viewer_bar #cont {
+    width: 300px;
+    margin: 0 auto;
+}
+#viewer_bar #time_cont {
+    padding-top: 6px;
+}
+
+#viewer_bar #top {
+    margin: 5px auto;
+    width: 270px;
+}
+#viewer_bar #but {
+    width: 145px;
+    margin: 0 auto;
+}
+
+#viewer_bar #i_time, #viewer_bar #i_cache {
+    width: 30px;
+    font-size: 0.8em;
+    margin: 4px 8px;
+}
+#viewer_bar #i_time {
+    float: left;
+}
+#viewer_bar #i_cache {
+    float: right;
+    text-align: right;
+}
+
+#viewer_bar ul {
+    list-style-type: none;
+}
+
+#viewer_bar ul li {
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin: 0 3px;
+    margin-top: 2px;
+    background-image: url('../img/viewer_bar.png');
+}
+
+#viewer_bar li#first { background-position: 0 0; }
+#viewer_bar li#first:hover { background-position: 0 -16px; }
+#viewer_bar li#previous { background-position: -16px 0; }
+#viewer_bar li#previous:hover { background-position: -16px -16px; }
+#viewer_bar li#play { background-position: -32px 0; }
+#viewer_bar li#play:hover { background-position: -32px -16px; }
+#viewer_bar li.pause { background-position: -48px 0 !important; }
+#viewer_bar li.pause:hover { background-position: -48px -16px !important; }
+#viewer_bar li#next { background-position: -64px 0; }
+#viewer_bar li#next:hover { background-position: -64px -16px; }
+#viewer_bar li#last { background-position: -80px 0; }
+#viewer_bar li#last:hover { background-position: -80px -16px; }
+#viewer_bar li#options { background-position: -96px 0; margin-left: 16px;}
+#viewer_bar li#options:hover { background-position: -96px -16px;}
+
+.ui-slider-horizontal {
+    height: 6px !important;
+}
+.ui-slider .ui-slider-handle {
+    height: 12px !important;
+}
+.slider-working {
+    background: url('../css/images/pbar-ani.gif') repeat-x #f6a828 !important;
+}

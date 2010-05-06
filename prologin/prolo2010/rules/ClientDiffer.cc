@@ -10,6 +10,7 @@
 ** Copyright (C) 2010 Prologin
 */
 
+#include "Actions.hh"
 #include "ClientDiffer.hh"
 
 ClientDiffer::ClientDiffer(GameData* game, Client* client)
@@ -19,5 +20,15 @@ ClientDiffer::ClientDiffer(GameData* game, Client* client)
 
 void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
 {
-  // TODO
+  if (pkt->type == RETRECIR){
+    g_->retrecissement();
+  }else if (pkt->type == RETIRER_KO){
+    if (!g_->mon_tour()) g_->retirer_ko(pkt->arg[1]); // must return true...
+  }else{
+    if (g_->mon_tour())
+      return;
+    Action* act = act_from_pkt(pkt->type, pkt);
+    act->appliquer(g_);
+    delete act;
+  }
 }

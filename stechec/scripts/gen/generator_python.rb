@@ -88,8 +88,7 @@ int lang2cxx<PyObject*, int>(PyObject* in)
   if (out == -1)
     if (PyErr_Occurred())
     {
-      PyErr_Print();
-      abort();
+      throw 42;
     }
 
   return out;
@@ -104,6 +103,12 @@ bool lang2cxx<PyObject*, bool>(PyObject* in)
 template <typename Cxx>
 std::vector<Cxx> lang2cxx_array(PyObject* in)
 {
+  if (!PyList_Check(in))
+  {
+    PyErr_SetString(PyExc_TypeError, "a list is required");
+    throw 42;
+  }
+
   std::vector<Cxx> out;
   unsigned int size = PyList_Size(in);
 
@@ -155,9 +160,11 @@ EOF
     @f.puts "  PyObject* name = PyString_FromString(\"#{name}\");"
     @f.puts "  PyObject* cstr = PyObject_GetAttr(py_module, name);"
     @f.puts "  Py_DECREF(name);"
+    @f.puts "  if (cstr == NULL) throw 42;"
     @f.puts "  PyObject* ret = PyObject_CallObject(cstr, tuple);"
     @f.puts "  Py_DECREF(cstr);"
     @f.puts "  Py_DECREF(tuple);"
+    @f.puts "  if (ret == NULL) throw 42;"
     @f.puts "  return ret;"
     @f.puts "}"
     @f.puts
@@ -173,13 +180,15 @@ EOF
       fn = f[0]
       ft = @types[f[1]]
       @f.puts "  i = cxx2lang<PyObject*, int>(#{i});"
+      @f.puts "  i = PyObject_GetItem(in, i);"
+      @f.puts "  if (i == NULL) throw 42;"
       @f.print "  out.#{fn} = "
       if ft.is_array?
         @f.print "lang2cxx_array<#{ft.type.name}>("
       else
         @f.print "lang2cxx<PyObject*, #{ft.name}>("
       end
-      @f.print "PyObject_GetItem(in, i));\n"
+      @f.print "i);\n"
       @f.puts "  Py_DECREF(i);"
       i += 1
     end
@@ -191,7 +200,26 @@ EOF
     @f.puts "static PyObject* p_#{fn.name}(PyObject* self, PyObject* args)"
     @f.puts "{"
     @f.puts "  (void)self;"
+    fs = "O" * fn.args.length
+    i = 0
+    fn.args.each do |a|
+      @f.puts "PyObject* a#{i};"
+      i += 1
+    end
+    @f.print "  if (!PyArg_ParseTuple(args, \"#{fs}\""
+    @f.print ", " if fn.args.length != 0
+    i = 0
+    names = fn.args.map do |a|
+      s = "&a#{i}"
+      i += 1
+      s
+    end
+    @f.print names.join(", ")
+    @f.puts ")) {"
+    @f.puts "    return NULL;"
+    @f.puts "  }"
     @f.print "  "
+    @f.puts "  try {"
     unless fn.ret.is_nil?
       @f.print "return "
       if fn.ret.is_array?
@@ -208,7 +236,7 @@ EOF
       else
         @f.print "lang2cxx<PyObject*, #{a.type.name}>("
       end
-      @f.print "PyTuple_GET_ITEM(args, #{i}))"
+      @f.print "a#{i})"
       i += 1
       @f.print ", " unless i == fn.args.length
     end
@@ -217,6 +245,7 @@ EOF
     if fn.ret.is_nil?
       @f.puts "  Py_INCREF(Py_None);", "  return Py_None;"
     end
+    @f.puts "  } catch (...) { return NULL; }"
     @f.puts "}"
   end
 
@@ -341,6 +370,8 @@ static PyObject* _call_python_function(const char* name)
       @f.print cxx_proto(fn, '', 'extern "C"')
       @f.puts "", "{"
       @f.puts "  PyObject* _retval = _call_python_function(\"#{fn.name}\");"
+      @f.puts "  if (!_retval && PyErr_Occurred()) { PyErr_Print(); abort(); }"
+      @f.puts "  try {"
       if fn.ret.is_nil? then
         @f.puts "  Py_XDECREF(_retval);"
       elsif fn.ret.is_array? then
@@ -352,6 +383,7 @@ static PyObject* _call_python_function(const char* name)
         @f.puts "  Py_XDECREF(_retval);"
         @f.puts "  return ret;"
       end
+      @f.puts "  } catch (...) { PyErr_Print(); abort(); }"
       @f.puts "}",""
     end
 
@@ -403,8 +435,10 @@ lib_TARGETS = #{target}
 # Evite de toucher a ce qui suit
 #{target}-dists += api.py interface.hh
 #{target}-srcs = interface.cc ../includes/main.cc
-#{target}-cxxflags = -fPIC $(shell python-config --includes)
-#{target}-ldflags = -s $(shell python-config --ldflags)
+
+pc = $(shell which python-config >/dev/null 2>&1 && echo python-config || echo python2.5-config)
+#{target}-cxxflags = -fPIC $(shell $(pc) --includes)
+#{target}-ldflags = -s $(shell $(pc) --ldflags)
 
 include ../includes/rules.mk
     EOF
@@ -424,7 +458,112 @@ include ../includes/rules.mk
   end
 
   def build_structs
-    @f.puts "from collections import namedtuple", ""
+    @f.print <<-EOF
+try:
+    from collections import namedtuple
+except ImportError:
+    from operator import itemgetter as _itemgetter
+    from keyword import iskeyword as _iskeyword
+    import sys as _sys
+
+    def namedtuple(typename, field_names, verbose=False):
+        """Returns a new subclass of tuple with named fields.
+
+        >>> Point = namedtuple('Point', 'x y')
+        >>> Point.__doc__                   # docstring for the new class
+        'Point(x, y)'
+        >>> p = Point(11, y=22)             # instantiate with positional args or keywords
+        >>> p[0] + p[1]                     # indexable like a plain tuple
+        33
+        >>> x, y = p                        # unpack like a regular tuple
+        >>> x, y
+        (11, 22)
+        >>> p.x + p.y                       # fields also accessable by name
+        33
+        >>> d = p._asdict()                 # convert to a dictionary
+        >>> d['x']
+        11
+        >>> Point(**d)                      # convert from a dictionary
+        Point(x=11, y=22)
+        >>> p._replace(x=100)               # _replace() is like str.replace() but targets named fields
+        Point(x=100, y=22)
+
+        """
+
+        # Parse and validate the field names.  Validation serves two purposes,
+        # generating informative error messages and preventing template injection attacks.
+        if isinstance(field_names, basestring):
+            field_names = field_names.replace(',', ' ').split() # names separated by whitespace and/or commas
+        field_names = tuple(map(str, field_names))
+        for name in (typename,) + field_names:
+            if not all(c.isalnum() or c=='_' for c in name):
+                raise ValueError('Type names and field names can only contain alphanumeric characters and underscores: %r' % name)
+            if _iskeyword(name):
+                raise ValueError('Type names and field names cannot be a keyword: %r' % name)
+            if name[0].isdigit():
+                raise ValueError('Type names and field names cannot start with a number: %r' % name)
+        seen_names = set()
+        for name in field_names:
+            if name.startswith('_'):
+                raise ValueError('Field names cannot start with an underscore: %r' % name)
+            if name in seen_names:
+                raise ValueError('Encountered duplicate field name: %r' % name)
+            seen_names.add(name)
+
+        # Create and fill-in the class template
+        numfields = len(field_names)
+        argtxt = repr(field_names).replace("'", "")[1:-1]   # tuple repr without parens or quotes
+        reprtxt = ', '.join('%s=%%r' % name for name in field_names)
+        dicttxt = ', '.join('%r: t[%d]' % (name, pos) for pos, name in enumerate(field_names))
+        template = '''class %(typename)s(tuple):
+        '%(typename)s(%(argtxt)s)' \\n
+        __slots__ = () \\n
+        _fields = %(field_names)r \\n
+        def __new__(_cls, %(argtxt)s):
+            return _tuple.__new__(_cls, (%(argtxt)s)) \\n
+        @classmethod
+        def _make(cls, iterable, new=tuple.__new__, len=len):
+            'Make a new %(typename)s object from a sequence or iterable'
+            result = new(cls, iterable)
+            if len(result) != %(numfields)d:
+                raise TypeError('Expected %(numfields)d arguments, got %%d' %% len(result))
+            return result \\n
+        def __repr__(self):
+            return '%(typename)s(%(reprtxt)s)' %% self \\n
+        def _asdict(t):
+            'Return a new dict which maps field names to their values'
+            return {%(dicttxt)s} \\n
+        def _replace(_self, **kwds):
+            'Return a new %(typename)s object replacing specified fields with new values'
+            result = _self._make(map(kwds.pop, %(field_names)r, _self))
+            if kwds:
+                raise ValueError('Got unexpected field names: %%r' %% kwds.keys())
+            return result \\n
+        def __getnewargs__(self):
+            return tuple(self) \\n\\n''' % locals()
+        for i, name in enumerate(field_names):
+            template += '        %s = _property(_itemgetter(%d))\\n' % (name, i)
+        if verbose:
+            print template
+
+        # Execute the template string in a temporary namespace and
+        # support tracing utilities by setting a value for frame.f_globals['__name__']
+        namespace = dict(_itemgetter=_itemgetter, __name__='namedtuple_%s' % typename,
+                         _property=property, _tuple=tuple)
+        try:
+            exec template in namespace
+        except SyntaxError, e:
+            raise SyntaxError(e.message + ':\\n' + template)
+        result = namespace[typename]
+
+        # For pickling to work, the __module__ variable needs to be set to the frame
+        # where the named tuple is created.  Bypass this step in enviroments where
+        # sys._getframe is not defined (Jython for example).
+        if hasattr(_sys, '_getframe'):
+            result.__module__ = _sys._getframe(1).f_globals.get('__name__', '__main__')
+
+        return result
+EOF
     for_each_struct do |x|
       @f.print x['str_name'], ' = namedtuple("', x['str_name'], '",', "\n"
       x['str_field'].each do |f|
@@ -450,6 +589,11 @@ include ../includes/rules.mk
     @f.puts "# -*- coding: iso-8859-1 -*-"
     print_banner "generator_python.rb"
     @f.puts "from api import *", ""
+    @f.puts "try:"
+    @f.puts "    import psyco"
+    @f.puts "    psyco.full()"
+    @f.puts "except:"
+    @f.puts "    pass"
 
     for_each_user_fun do |fn|
       @f.puts "def " + fn.name + "():"

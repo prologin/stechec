@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load substract %}
+
+{% block "title" %}Détails du match - #{{ match.id }}{% endblock %}
+{% block "titleh1" %}Détails du match - #{{ match.id }}{% endblock %}
+{% block "head" %}
+<script type="text/javascript" src="/media/js/jquery.js"></script>
+<script type="text/javascript" src="/media/js/animatedcollapse.js"></script>
+<script type="text/javascript">
+animatedcollapse.init();
+</script>
+{% endblock %}
+
+{% block "content" %}
+<dl>
+    <dt>Numéro</dt>
+    <dd>{{ match.id }}</dd>
+    
+    <dt>Créateur</dt>
+    <dd>{{ match.createur }}</dd>
+
+    <dt>État</dt>
+    <dd>{{ match.statut_string }}</dd>
+    
+    <dt>Date &amp; heure</dt>
+    <dd>{{ match.date|naturalday }} à {{ match.date|time }}</dd>
+</dl>
+
+<h2>Participants</h2>
+<table>
+    <tr>
+        <th>UID</th>
+        <th>ID</th>
+        <th>Champion</th>
+        <th>Score</th>
+        <th>Log</th>
+    </tr>
+
+    {% for competiteur in match.competiteur_set.all %}
+    <tr>
+        <td>{{ competiteur.id|substract:match.competiteur__id__min }}</td>
+        <td>{{ competiteur.champion.id }}</td>
+        <td>{{ competiteur.champion }}</td>
+        {% if match.is_termine %}
+            <td>{{ competiteur.score }}</td>
+            <td>
+                {% ifequal competiteur.champion.auteur request.user %}
+                <div class="log">
+                    <p><a href="#" rel="toggle[log_{{ competiteur.id }}]">Afficher / cacher le log</a></p>
+                    <pre id="log_{{ competiteur.id }}">{{ competiteur.log }}</pre>
+                    
+                </div>
+                
+                <script type="text/javascript">
+                animatedcollapse.addDiv('log_{{ competiteur.id }}', 'hide=1');
+                </script>
+                
+                {% else %}
+                -
+                {% endifequal %}
+            </td>
+        {% else %}
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+{% if match.is_termine %}
+<p>
+    <a href="/matches/{{ match.id }}/view/">Voir le match à l'aide de JavaScript</a>
+</p>
+{% if request.user.is_staff %}
+
+<div class="log">
+<p><a href="#" rel="toggle[log]">Afficher/cacher le log du match</a></p>
+
+<pre id="log">{{ match.log }}</pre>
+</div>
+
+<script type="text/javascript">
+animatedcollapse.addDiv('log', 'hide=1');
+</script>
+
+{% endif %}
+{% endif %}
+
+{% endblock %}

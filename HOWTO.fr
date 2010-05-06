@@ -1,0 +1,31 @@
+- Lancer le classement final
+  cd /var/www/concours
+  python tournoi.py
+
+Si des matches ne veulent pas se terminer au bout de deux minutes, relancer le main_server :
+  screen -dr main_server
+    Ctrl+C
+  screen -AdmS main_server ./main_server -c /etc/stechec.yml
+
+Une fois termine, tout est dans la DB. Utiliser http://stechec/ pour voir ca en forme.
+
+Virer les logins qui n'ont pas à être là (prologin par exemple) !
+
+- SQL : statuts de la table stechec_match (base stechec) :
+
+	STATUT_CHAMPION_NOUVEAU = 0
+	STATUT_CHAMPION_COMPILATION = 1
+	STATUT_CHAMPION_VALIDE = 2
+	STATUT_CHAMPION_ERREUR = 3
+
+	STATUT_MATCH_INDEFINI = 0
+	STATUT_MATCH_NOUVEAU = 1
+	STATUT_MATCH_ENCOURS = 2
+	STATUT_MATCH_TERMINE = 3
+
+- Si les logs ne s'affichent plus :
+  ssh nfs02
+  cd /export/home/goinfre/stechec-data
+  mv matchs matchs.2
+
+- Attention au manque de place ! On y arrive vite ! Virer en priorite les vieux logs (matchs.1).

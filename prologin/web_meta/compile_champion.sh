@@ -33,13 +33,13 @@ champion_id=$4
 source "`dirname $0`/meta_cx.sh" "$config_meta"
 [ $? -ne 0 ] && echo "Error: can't find configuration file in: `dirname $0`/meta_cx.sh" && exit 12
 
-champion_path="$contest_path/$contest_name/private/candidat_$candidat_id/"
+champion_path="$contest_path/$contest_name/private/candidat_$candidat_id/champion_$champion_id"
 makefile_path="$contest_path/makefile"
 
-champion_tarball="$champion_path/champion_$champion_id.tgz"
-champion_final_lib="$champion_path/champion_$champion_id.so"
-champion_final_log="$champion_path/champion_$champion_id.log"
-champion_final_code="$champion_path/champion_$champion_id.code"
+champion_tarball="$champion_path/champion.tgz"
+champion_final_lib="$champion_path/champion.so"
+champion_final_log="$champion_path/champion.log"
+champion_final_code="$champion_path/champion.code"
 
 res=0
 
@@ -72,23 +72,24 @@ renice 5 $$ > /dev/null
     fi
 
     cp $makefile_path/forb* .
-    cp $makefile_path/stechec_lime.c .
+    cp $makefile_path/stechec_lime.cc .
 
     # FIXME: cp's are kludge. new Makefile are better.
     makefile=Makefile-c
     [ "`echo *.cc`" != "*.cc" ] && makefile=Makefile-cxx
     [ "`echo *.cpp`" != "*.cpp" ] && makefile=Makefile-cxx
-    [ "`echo *.pas`" != "*.pas" ] && makefile=Makefile-pascal &&  cp $contest_path/$contest_name/compil/prolo_interface.pas .
+    [ "`echo *.c`" != "*.c" ] && makefile=Makefile-c
+    [ "`echo *.pas`" != "*.pas" ] && makefile=Makefile-pascal
     [ "`echo *.java`" != "*.java" ] && makefile=Makefile-java
-    [ "`echo *.ml`" != "*.ml" ] && makefile=Makefile-caml  && cp $contest_path/$contest_name/compil/api.ml .
-    [ "`echo *.lua`" != "*.lua" ] && makefile=Makefile-lua
+    [ "`echo *.ml`" != "*.ml" ] && makefile=Makefile-caml
     [ "`echo *.cs`" != "*.cs" ] && makefile=Makefile-cs
     [ "`echo *.py`" != "*.py" ] && makefile=Makefile-python
+    [ "`echo *.php`" != "*.php" ] && makefile=Makefile-php
 
     lang=`echo $makefile | sed 's/^Makefile-//'` 
     echo "* Compile champion, language \"$lang\" detected."
     echo "------8<----------------------"
-    make -f $makefile_path/$makefile distclean all
+    make -f $makefile_path/$makefile MFPATH=$makefile_path distclean all
     res=$?
     echo "------>8----------------------"
     echo
@@ -103,7 +104,7 @@ renice 5 $$ > /dev/null
     echo "OK"
     echo ""
 
-    aux_files=$(< $makefile_path/$makefile grep -E "^AUXFILES[ \t]*=" 2>/dev/null | head -1 | cut -d '=' -f 2)
+    aux_files=$(make -f $makefile_path/$makefile MFPATH=$makefile_path list-run-reqs)
 
     for f in $aux_files ; do
         upload_file $f $champion_path/

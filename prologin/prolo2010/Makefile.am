@@ -2,6 +2,10 @@
 
 SUBDIRS =					\
 	data					\
-	jsdump					\
+	jsview					\
 	asciiinter				\
 	rules
+
+if HAVE_SDL
+  SUBDIRS += gui
+endif

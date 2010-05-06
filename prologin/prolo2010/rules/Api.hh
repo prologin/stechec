@@ -43,10 +43,13 @@ protected:
 public:
   // Internal API
   bool need_retirer_ko();
-  bool retirer_ko(unite u);
+  bool retirer_ko(position u);
   bool mon_tour();
-
+  void sendActions();
 public:
+
+  int nombre_pc();
+  int nombre_unites_spawnees(bool e);
 
 ///
 // Renvoie le numéro du tour actuel.
@@ -108,6 +111,9 @@ public:
 // Annule l'effet de la dernière action et remet le jeu dans l'état précédent.
 //
    bool annuler();
+#ifdef DEBUG
+  std::vector<GameData> check;
+#endif
 
 };
 

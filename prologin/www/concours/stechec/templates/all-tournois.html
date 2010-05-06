@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block "title" %}Tous les tournois{% endblock %}
+{% block "titleh1" %}Tous les tournois{% endblock %}
+
+{% block "content" %}
+<p class="intro">
+  Voici la liste de tous les tournois du concours.
+</p>
+{% if is_paginated %}
+<p class="pagination">
+{% for page in paginator.page_range %}
+{% ifequal page_obj.number page %}
+    {{ page }}
+{% else %}
+    <a href="/tournois/all/?page={{ page }}">{{ page }}</a>
+{% endifequal %}
+{% endfor %}
+</p>
+{% endif %}
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tournoi in tournoi_list %}
+        <tr class="{% cycle "row1" "row2" %}">
+            <td><a href="{{ tournoi.get_absolute_url }}">{{ tournoi.date }}</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">Il n'y a encore aucun tournoi inscrit.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

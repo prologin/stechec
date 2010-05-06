@@ -20,7 +20,7 @@ extern "C" bool api_need_retirer_ko()
   return api->need_retirer_ko();
 }
 
-extern "C" bool api_retirer_ko(unite u)
+extern "C" bool api_retirer_ko(position u)
 {
   return api->retirer_ko(u);
 }
@@ -28,4 +28,9 @@ extern "C" bool api_retirer_ko(unite u)
 extern "C" bool api_mon_tour()
 {
   return api->mon_tour();
+}
+
+extern "C" void api_send_actions()
+{
+  return api->sendActions();
 }

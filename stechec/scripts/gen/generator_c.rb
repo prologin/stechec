@@ -188,7 +188,7 @@ EOF
           arrname = arg.name + "_arr"
           lenname = arg.name + "_len"
           name = arg.name
-          lang_type = arg.type.type.name
+          lang_type = c_type(arg.type.type)
           cxx_type = arg.type.type
           if cxx_type.is_struct? then
             cxx_type = "__internal__cxx__#{cxx_type.name}"
@@ -199,7 +199,7 @@ EOF
           @f.puts "  lang2cxx_array<#{lang_type}, #{cxx_type}>(#{arrname}, #{lenname}, param_#{name});"
         else
           name = arg.name
-          lang_type = arg.type.name
+          lang_type = c_type(arg.type)
           cxx_type = arg.type
           if cxx_type.is_struct? then
             cxx_type = "__internal__cxx__#{cxx_type.name}"

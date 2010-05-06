@@ -189,6 +189,20 @@ dans la console depuis laquelle vous avez lancé la commande. Si
 cela marche, la partie standalone de stechec est correctement
 installée, félicitations :o) .
 
+
+== pour installer php et pouvoir compiler des champions php
+telechargez les sources d'un php sur php.net (un recent de preference)
+decompressez
+allez dans le dossier en question et faites en su :
+./configure --enable-embed=shared
+make install
+
+ca devrait fonctionner.
+
+
+CETTE PARTIE N'EST PROBABLEMENT PLUS VALABLE DEPUIS 2010
+
+
 == Configuration de la partie serveur de stechec ==
 
 Cette partie serveur n'est nécessaire que si vous avez
@@ -205,9 +219,6 @@ Pour faire fonctionner la partie serveur de stechec, quelques
 prérequis sont nécessaires :
  * Un serveur MySQL correctement installé et acceptant les
    connexions en TCP ;
- * Un serveur Apache avec PHP5 et PHP-MySQL configuré en
-   `error_reporting = E_ALL & ~E_NOTICE`, `register_globals = On`
-   , `open_basedir = ` et `safe_mode = Off` ;
  * Un dossier partagé par tous les endroits où le lancement
    de matchs aura lieu + le serveur web pour y mettre les
    champions et les logs. Si vous comptez mettre stechec sur un
@@ -326,64 +337,3 @@ N'oubliez bien entendu pas de remplacer
 
 Une fois cette étape faite, vous pouvez passer à l'installation
 du site web.
-
-=== Installation du site web ===
-
-Copiez le contenu de `SRCDIR/prologin/www` dans `/var/www`. Il
-faut ensuite modifier les deux fichiers de configuration
-importants :
- * Dans `/var/www/include/passwords.php`, règlez l'hostname, le
-   login et le password du serveur MySQL ;
- * Dans `/var/www/include/config.php`, règlez le chemin vers le
-   dossier commun.
-
-et accédez au serveur web via votre navigateur favori. Le
-formulaire de connexion devrait normalement apparaitre. S'il est
-plein d'erreurs, vérifiez la configuration de PHP dans la partie
-Prérequis. Deux utilisateurs sont créés par défaut :
- * login: prolo / password: pass (organisateur)
- * login: cand / password: pass (candidat)
-
-Pour en rajouter d'autres, amusez vous avec la base de données.
-
-Il faut maintenant, en temps qu'organisateur, créer un jeu pour
-les champions. Connectez vous avec le compte organisateur, puis
-cliquez sur « Jeux » dans le menu du haut, puis sur « Créer ».
-Remplissez les champs indiqués de la manière suivante :
- * Nom : Prologin 2009
- * Description : L'édition 2009 de Prologin
- * Nom du répertoire : game
- * Nom de la lib : simcity
- * Nombre de champion max : 3
- * Server: argument constant : foo -map PREFIX/share/stechec/global.map -turn 15
-
-Puis validez le formulaire :) .
-
-Copiez ensuite une map dans PREFIX/share/global.map (comme par
-exemple la map que je vous ai donné plus tôt dans ce fichier).
-
-Choisissez ensuite le jeu que vous venez de créer dans la liste
-qui s'affiche dans le navigateur, et sur la page qui s'affiche,
-réglez le statut du projet sur « Valide », puis validez le
-formulaire.
-
-Vous pouvez maintenant uploader la tarball d'un champion en
-allant dans le menu « Champion » et en ajoutant votre champion
-comme vous l'avez fait pendant la finale (`make tar` dans le
-dossier du champion puis upload sur le site). Allez par exemple
-dans PLAYERDIR/python, faites `make tar` et créez un champion
-sur le site en utilisant la tarball venant d'être créee dans le
-dossier PLAYERDIR/python sous le nom de `prologin.tgz`. Attendez
-une dizaine de secondes et cliquez dans le menu sur la page
-« Champion ». Le statut de votre champion devrait être indiqué
-comme « Compilable ».
-
-Lançons maintenant un match de test. Allez sur la page « Match »
-et dans le champ « Champions participant », indiquez trois fois
-le numéro de votre champion (qui est dans le tableau juste en
-dessous du formulaire) séparé par des :, comme par exemple
-`1:1:1`. Attendez une nouvelle fois quelques secondes, et
-cliquez dans le menu sur la page « Match ». L'état du match
-devrait être « Réalisé ». Si tout cela marche, félicitations :
-votre stechec fonctionne correctement et vous pouvez dès à
-présent vous amuser avec.

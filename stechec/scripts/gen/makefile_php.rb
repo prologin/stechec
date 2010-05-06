@@ -12,6 +12,25 @@
 
 class PhpMakefile
   def build_metaserver(path)
-    # TODO
+    target = $conf['conf']['player_lib']
+    f = File.open(path + 'Makefile-php', 'w')
+    f.print <<-EOF
+# -*- Makefile -*-
+
+lib_TARGETS = #{target}
+
+# Tu peux rajouter des fichiers sources ici
+#{target}-dists = $(wildcard *.php)
+
+# Evite de toucher a ce qui suit
+#{target}-dists += api.php interface.hh
+#{target}-srcs = interface.cc stechec_lime.cc
+#{target}-cxxflags = -fPIC $(shell php-config --includes) -Wno-write-strings
+#{target}-ldflags = -s $(shell php-config --libs --ldflags) -lphp5
+
+V=1
+include $(MFPATH)/rules.mk
+EOF
+    f.close
   end
 end
