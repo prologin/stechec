@@ -35,4 +35,4 @@ regen python/interface.hh
 regen python/Makefile
 
 
-rm -rf tmp
+#rm -rf tmp
