@@ -16,7 +16,7 @@ require "gen/file_generator"
 class RubyCxxFileGenerator < CxxProto
   def initialize
     super
-    @lang = "C++ (for java interface)"
+    @lang = "C++ (for ruby interface)"
     @rb_types = {
       'void' => 'VALUE',
       'int' => 'VALUE',
@@ -46,18 +46,17 @@ VALUE my_rb_eval_string(VALUE str)
 "
 
     # create callbacks
-    for_each_fun(false) do |name, type_ret, args|
-      print_proto name, type_ret, args, "extern"
-      @f.puts ";"
-
-      print_proto 'rb_' + name, type_ret, args, '', @rb_types
-
+    for_each_fun(false) do |fn|
+      name = fn.name
+      type_ret = fn.ret
+      args = fn.args
+      @f.puts cxx_proto fn, "rb_", 'extern "C"'
       s_args = ""
-      if args != nil
+      if args != []
         args[0..-2].each do |y|
-          s_args += "FIX2INT(" + y[0] + "), "
+          s_args += "FIX2INT(" + y.name + "), "
         end
-        s_args += "FIX2INT(" + args[-1][0] + ")"
+        s_args += "FIX2INT(" + args[-1].name + ")"
       end
       print_body "  return INT2FIX(#{name}(#{s_args}));"
     end
@@ -72,9 +71,11 @@ struct RubyVm
 "
 
     # configure callbacks in the Ruby environment
-    $conf['function'].each do |x|
-      l = x['fct_arg'] ? x['fct_arg'].nitems : 0
-      @f.puts "    rb_define_global_function(\"#{x['fct_name']}\", (VALUE(*)(...))(rb_#{x['fct_name']}), #{l});"
+    for_each_fun do |x|
+      args = x.args
+      fct_name = x.name
+      l = args ? args.nitems : 0
+      @f.puts "    rb_define_global_function(\"rb_#{fct_name}\", (VALUE(*)(...))(rb_#{fct_name}), #{l});"
     end
 
     @f.puts "
@@ -113,8 +114,11 @@ struct RubyVm
 "
   
     @f.puts "extern \"C\" {"
-    for_each_user_fun do |name, ret, args| 
-      print_proto(name, ret, args)
+    for_each_user_fun do |fn|
+      name = fn.name
+      ret = fn.ret
+      args = fn.args
+      @f.print cxx_proto(fn)
       print_body "  int status;
   rb_protect(my_rb_eval_string, (VALUE) \"game.#{name}\", &status);
   if (status)
