@@ -14,6 +14,7 @@ require "gen/file_generator"
 
 # C++ generator, for java-interface
 class RubyCxxFileGenerator < CxxProto
+
   def initialize
     super
     @lang = "C++ (for ruby interface)"
@@ -50,7 +51,8 @@ VALUE my_rb_eval_string(VALUE str)
       name = fn.name
       type_ret = fn.ret
       args = fn.args
-      @f.puts cxx_proto fn, "rb_", 'extern "C"'
+      args_str = (args.map do |arg| "VALUE #{arg.name}" end).join ', '
+      @f.print "VALUE rb_#{name}(#{args_str}){"
       s_args = ""
       if args != []
         args[0..-2].each do |y|
