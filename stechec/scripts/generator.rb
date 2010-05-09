@@ -136,7 +136,7 @@ def make_server
   PythonMakefile.new.build_metaserver(install_path)
   PhpMakefile.new.build_metaserver(install_path)
   PrologMakefile.new.build_metaserver(install_path)
-
+  RubyMakefile.new.build_metaserver(install_path)
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
   FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_lime.cc").to_s)

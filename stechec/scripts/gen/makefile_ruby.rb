@@ -13,20 +13,19 @@
 
 class RubyMakefile
   def initialize
-    @makefile = <<-EOF
+    version=""
+    @makefile = "
 #####################
 # Macro Definitions #
 #####################
+
 CXX 	= g++
 SRC     = interface.cc
 OBJS 	= ${SRC:.cc=.o}
 RM 	= /bin/rm -f
-
-# FIXME: how to get the real good path ?
-INCLUDES = -I/usr/lib/ruby/1.8/i486-linux/
-CFLAGS = -fPIC
-CXXFLAGS = -fPIC -W -Wall ${INCLUDES}
-LDFLAGS  = -lruby1.8
+INCLUDES = -I/usr/local/include/ruby-1.9.1 -I/usr/local/include/ruby-1.9.1/x86_64-linux
+CXXFLAGS = -fPIC -W -Wall $(shell ruby#{version} -rrbconfig -e \"print Config::CONFIG['CFLAGS']\" ) ${INCLUDES}
+LDFLAGS  = $(shell ruby#{version} -rrbconfig -e \"print Config::CONFIG['LDFLAGS']\" )
 
 ##############################
 # Basic Compile Instructions #
@@ -39,7 +38,7 @@ ${NAME}: ${OBJS}
 \t@echo Finished
 
 clean:
-\t@echo "Cleaning..."
+\t@echo \"Cleaning...\"
 \t${RM} ${OBJS} *~ \#*\#
 
 distclean: clean
@@ -47,7 +46,8 @@ distclean: clean
 
 tar:
 \ttar cvzf #{$conf['conf']['player_filename']}.tgz $(SRC) *.rb
-EOF
+"
+
   end
 
   def build_client(path)
