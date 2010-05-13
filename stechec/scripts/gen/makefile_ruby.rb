@@ -20,12 +20,12 @@ class RubyMakefile
 #####################
 
 CXX 	= g++
-SRC     = interface.cc
+SRC     = interface.cc ../includes/main.cc
 OBJS 	= ${SRC:.cc=.o}
 RM 	= /bin/rm -f
 INCLUDES = -I/usr/local/include/ruby-1.9.1 -I/usr/local/include/ruby-1.9.1/x86_64-linux
 CXXFLAGS = -fPIC -W -Wall $(shell ruby#{version} -rrbconfig -e \"print Config::CONFIG['CFLAGS']\" ) ${INCLUDES}
-LDFLAGS  = $(shell ruby#{version} -rrbconfig -e \"print Config::CONFIG['LDFLAGS']\" )
+LDFLAGS  = -lruby $(shell ruby#{version} -rrbconfig -e \"print Config::CONFIG['LDFLAGS']\" )
 
 ##############################
 # Basic Compile Instructions #

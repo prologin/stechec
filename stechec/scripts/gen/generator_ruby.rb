@@ -49,15 +49,12 @@ class RubyCxxFileGenerator < CxxProto
     print_include "ruby.h", true
     print_include "vector", true
     print_include "interface.hh"
+   print_include "iostream", true
 @f.puts "
+
 /*
 ** execute 'str', protected from possible exception, ...
 */
-VALUE my_rb_eval_string(VALUE str)
-{
-  rb_eval_string((const char*) str);
-  return T_NIL;
-}
 
 template<typename Cxx>
 VALUE cxx2lang(Cxx in)
@@ -166,21 +163,21 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
       @f.puts "VALUE cxx2lang<#{type}>(#{type} in)\n{"
       args = s['str_field'].map do |f|
         name =f[0]
-        type = @types[f[1]]
-        if type.is_array? then
-          type = type.type.name
+        type0 = @types[f[1]]
+        if type0.is_array? then
+          type1 = type0.type.name
           fun = '_array'
         else
-          type = type.name
+          type1 = type0.name
           fun = ''
         end
-        o = "cxx2lang#{fun}<#{type}>(in.#{name})"
+        o = "cxx2lang#{fun}<#{type1}>(in.#{name})"
       end
       @f.puts "  VALUE argv[] = {#{args.join ', '}};"
       @f.puts "  int argc = #{args.size };"
-      @f.puts "  ID class_id = rb_intern(\"#{type}\");"
-      @f.puts "  VALUE class_ = rb_const_get(rb_cObject, class_id);"
-      @f.puts "  VALUE out = rb_class_new_instance(argc, argv, class_);"
+      # @f.puts "  ID class_id = rb_intern(\"#{type}\");"
+      # @f.puts "  VALUE class_ = rb_const_get(rb_cObject, class_id);"
+      @f.puts "  VALUE out = rb_funcall2(rb_path2class(\"#{type.capitalize()}\"), rb_intern(\"new\"), argc, argv);"
       @f.puts "  return out;"
       @f.puts "}"
 
@@ -218,13 +215,9 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
         print_body "  return #{ret_fun_name}(#{out});"
       end
     end
-
-    @f.puts "
-
-struct RubyVm
-{
-  void loadCallback()
-  { 
+@f.puts "
+void loadCallback()
+{ 
 "
 
     # configure callbacks in the Ruby environment
@@ -232,46 +225,26 @@ struct RubyVm
       args = x.args
       fct_name = x.name
       l = args ? args.nitems : 0
-      @f.puts "    rb_define_global_function(\"rb_#{fct_name}\", (VALUE(*)(...))(rb_#{fct_name}), #{l});"
+      @f.puts "    rb_define_global_function(\"#{fct_name}\", (VALUE(*)(...))(rb_#{fct_name}), #{l});"
     end
 
     @f.puts "
-  }
+}
 
-  RubyVm()
-  {
-    int status;
-    RUBY_INIT_STACK;
-    // load ruby and evaluate candidat's file
-    ruby_init();
-    ruby_init_loadpath();
-
+void init(){
+  static bool initialized = false;
+  if (!initialized){
+    initialized = true;
+    std::cout << \"init...\" << std::endl;
     char* file = \"#{$conf['conf']['player_filename']}.rb\";
-    ruby_script(file);
-    void* node = rb_load_file(file);
-    status = ruby_run_node(node);
-    if (status)
-    {
-      fprintf(stderr, \"failed to load ruby code (%d)\\n\", status);
-      exit(1);
-    }
-    rb_protect(my_rb_eval_string, (VALUE) \"game = Prologin.new\", &status);
-    if (status)
-    {
-      fprintf(stderr, \"error while instantiating Prologin class\\n\");
-      exit(1);
-    }
+    int status;
+    ruby_init();
+    ruby_init_loadpath ();
     loadCallback();
+    rb_load_protect(rb_str_new2(file), 0, &status);
+    std::cout << \"status = \" << status << std::endl;
   }
-
-  ~RubyVm()
-  {
-    // finalize (don't seem to work well)
-    int status = 0;
-    status = ruby_cleanup(status);
-    ruby_finalize();
-  }
-} rubyVm;
+}
 
 "
   
@@ -281,8 +254,11 @@ struct RubyVm
       ret = fn.ret
       args = fn.args
       @f.print cxx_proto(fn)
-      print_body "  int status;
-  rb_protect(my_rb_eval_string, (VALUE) \"game.#{name}\", &status);
+      print_body "
+  init();
+  int status;
+  printf(\"calling ruby function: #{name}\\n\");
+  rb_eval_string(\"#{name}()\" );
   if (status)
     fprintf(stderr, \"error while calling ruby function: #{name} (%d)\\n\", status);
 "
@@ -328,7 +304,10 @@ class RubyFileGenerator < CProto
     build_constants
     for_each_struct do |s|
       args = s['str_field'].map do |f| f[0] end
-      @f.puts "def #{s['str_name']}"
+      @f.puts "class #{s['str_name'].capitalize()}"
+      s['str_field'].each do |f|
+        @f.puts "    attr_reader :#{f[0]} # #{f[1]}"
+      end
       @f.puts "  def initialize(#{args.join ', '})"
       s['str_field'].each do |f|
         @f.puts "    @#{f[0]} = #{f[0]}"
@@ -347,11 +326,11 @@ class RubyFileGenerator < CProto
     print_banner "generator_ruby.rb"
     @f.puts "require '#{@ruby_constant_file}'"
     @f.puts
-    @f.puts "class Prologin"
-    for_each_user_fun(false) do |name, type_ret, args|
-      @f.print "  def ", name, "\n", "    # fonction a completer\n", "  end\n" 
+    for_each_user_fun(false) do |fn|
+      name = fn.name
+      args = fn.args.map do |a| a[0] end
+      @f.print "def ", name, "(#{args.join ', '})\n", "  # fonction a completer\n", "end\n" 
     end
-    @f.puts "end"
     @f.close
   end
 
