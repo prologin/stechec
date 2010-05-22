@@ -115,6 +115,12 @@ Out cxx2lang(Cxx in)
 }
 
 template <>
+MonoString* cxx2lang<MonoString*, std::string>(std::string in)
+{
+  return mono_string_new (gl_csharp.getDomain(), in.c_str());
+}
+
+template <>
 gint32 cxx2lang< gint32, int >(int in)
 {
   return (gint32)in;
@@ -130,6 +136,12 @@ template < class Out, class Cxx >
 Cxx lang2cxx(Out in)
 {
   return (Cxx)in;
+}
+
+template <>
+std::string lang2cxx< MonoString*, std::string >(MonoString* in)
+{
+  return mono_string_to_utf8(in);
 }
 
 template <>
@@ -222,6 +234,8 @@ std::vector<#{name}> lang2cxx< MonoArray*, std::vector<#{name}> >(MonoArray* in)
         else
             if ft.is_nil?
                 "void"
+            elsif ft.name == "string"
+                "MonoString*"
             else
                 "gint32"
             end
@@ -417,7 +431,7 @@ MonoObject* CSharpInterface::callCSharpMethod(const char* name)
      for_each_fun(false) do |fn|
        @f.print cmonotype(fn.ret) + " " + fn.name + "("
        args = fn.args.map { |arg|
-        arg_type = (arg.type.is_array? or arg.type.is_struct?) ? "MonoObject*" : cxx_type(arg.type)
+        arg_type = (arg.type.is_array? or arg.type.is_struct?) ? "MonoObject*" : (arg.type.name == "string" ? "MonoString*" :  cxx_type(arg.type))
         "#{arg_type} #{arg.name}" }
        @f.puts args.join(", ") + ")"
        @f.puts "{"

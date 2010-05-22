@@ -19,6 +19,8 @@ class JavaCxxFileGenerator < CxxProto
     # Only really useful for arrays.
     if type.is_array?
       type.type.name
+    elsif type.name == "string"
+      "std::string"
     else
       type.name
     end
@@ -30,7 +32,8 @@ class JavaCxxFileGenerator < CxxProto
         {
           "bool" => "jboolean",
           "int" => "jint",
-          "long" => "jlong"
+          "long" => "jlong",
+          "string"=> "java::lang::String*"
         }[t.name]
       else
         "void"
@@ -54,6 +57,8 @@ class JavaCxxFileGenerator < CxxProto
     print_banner "generator_java.rb"
     @f.puts "#include <vector>"
     @f.puts "#include <java/util/ArrayList.h>"
+    @f.puts "#include <string>"
+   @f.puts "#include <java/lang/String.h>"
     $conf['struct'].each do |x|
         @f.puts "#include \"#{x['str_name'].capitalize}.h\""
     end
@@ -101,6 +106,18 @@ int lang2cxx<jint, int>(jint in)
 {
   return in;
 }
+
+template<>
+std::string lang2cxx<java::lang::String*, std::string>(java::lang::String *in)
+{
+  size_t len = in->length();
+  jchar *c = _Jv_GetStringChars(in);
+  std::string s((char *)c, len);
+  for (int i = 0; i < len; i++){
+    s[i] = c[i];
+  }
+  return s;
+}
 template<>
 bool lang2cxx<jboolean, bool>(jboolean in)
 {
@@ -124,6 +141,13 @@ jboolean cxx2lang<jboolean, bool>(bool in)
   return in;
 }
 
+
+template<>
+java::lang::String* cxx2lang<java::lang::String*, std::string>(std::string in)
+{
+  jstring s = _Jv_NewStringLatin1(in.c_str(), in.length());
+  return s;
+}
 "
     for_each_enum do |e|
       name = e['enum_name']

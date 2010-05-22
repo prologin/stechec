@@ -34,6 +34,7 @@ class CxxFileGenerator < CxxProto
     print_banner "generator_cxx.rb"
     @f.puts "#ifndef PROLOGIN_HH_", "# define PROLOGIN_HH_", ""
     @f.puts "# include <vector>", ""
+    @f.puts "# include <string>", ""
     build_constants
     build_enums
     build_structs

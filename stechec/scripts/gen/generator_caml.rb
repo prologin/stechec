@@ -24,6 +24,7 @@ class CamlCFileGenerator < CxxProto
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_caml.rb"
     print_include "vector", true
+    print_include "string", true
     build_enums
     build_structs
     for_each_fun do |fn|
@@ -60,6 +61,16 @@ value cxx2lang<value, int>(int in)
   return Val_int(in);
 }
 
+template<>
+value cxx2lang<value, std::string>(std::string in)
+{
+  size_t l = in.length();
+  char * out = (char *) malloc(l + 1);
+  for (int i = 0; i < l; i++) out[i] = in[i];
+  out[l] = 0;
+  return caml_copy_string(out);
+}
+
 template <>
 value cxx2lang<value, bool>(bool in)
 {
@@ -86,6 +97,12 @@ template <typename Lang, typename Cxx>
 Cxx lang2cxx(Lang in)
 {
   return in.__if_that_triggers_an_error_there_is_a_problem;
+}
+
+template<>
+std::string lang2cxx<value, std::string>(value in)
+{
+  return String_val(in);
 }
 
 template <>
@@ -213,9 +230,9 @@ EOF
       unless fn.ret.is_nil? then
         @f.print "  CAMLreturn(("
         if fn.ret.is_array? then
-          @f.print "cxx2lang_array<#{fn.ret.type.name}>("
+          @f.print "cxx2lang_array<#{cxx_type(fn.ret.type)}>("
         else
-          @f.print "cxx2lang<value, #{fn.ret.name}>("
+          @f.print "cxx2lang<value, #{cxx_type(fn.ret)}>("
         end
       else
         @f.print "  "
@@ -223,9 +240,9 @@ EOF
       @f.print "api_", fn.name, "("
       args = fn.args.map do |arg|
         if arg.type.is_array? then
-          "lang2cxx_array<#{arg.type.type.name}>(#{arg.name})"
+          "lang2cxx_array<#{cxx_type(arg.type.type)}>(#{arg.name})"
         else
-          "lang2cxx<value, #{arg.type.name}>(#{arg.name})"
+          "lang2cxx<value, #{cxx_type(arg.type)}>(#{arg.name})"
         end
       end
       @f.print args.join(", ")
@@ -250,9 +267,9 @@ EOF
       if fn.ret.is_nil?
         @f.puts "  return;"
       elsif fn.ret.is_array?
-        @f.puts "  return lang2cxx_array<#{fn.ret.type.name}>(_ret);"
+        @f.puts "  return lang2cxx_array<#{cxx_type(fn.ret.type)}>(_ret);"
       else
-        @f.puts "  return lang2cxx<value, #{fn.ret.name}>(_ret);"
+        @f.puts "  return lang2cxx<value, #{cxx_type(fn.ret)}>(_ret);"
       end
       @f.puts "}", ""
     end

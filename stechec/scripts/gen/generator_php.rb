@@ -28,6 +28,8 @@ class PhpCxxFileGenerator < CxxProto
 # include <cstdlib>
 # include <sapi/embed/php_embed.h>
 # include <vector>
+# include <string>
+
 
 EOF
     build_enums
@@ -67,16 +69,16 @@ EOF
       if f.ret.is_array?
         @f.print "cxx2lang_array("
       else
-        @f.print "cxx2lang<zval*, #{f.ret.name}>("
+        @f.print "cxx2lang<zval*, #{cxx_type(f.ret)}>("
       end
     end
     @f.print "api_", f.name, "("
     i = 0
     f.args.each do |a|
       if a.type.is_array? then
-        @f.print "lang2cxx_array<#{a.type.type.name}>("
+        @f.print "lang2cxx_array<#{cxx_type(a.type.type)}>("
       else
-        @f.print "lang2cxx<zval*, #{a.type.name}>("
+        @f.print "lang2cxx<zval*, #{cxx_type(a.type)}>("
       end
       @f.print "_#{a.name})"
       i += 1
@@ -241,6 +243,15 @@ zval* cxx2lang<zval*, bool>(bool in)
     return x;
 }
 
+template <>
+zval* cxx2lang<zval*, std::string>(std::string in)
+{
+    zval* x;
+    MAKE_STD_ZVAL(x);
+    ZVAL_STRINGL(x, in.c_str(), in.length(), true);
+    return x;
+}
+
 template <typename Cxx>
 zval* cxx2lang_array(const std::vector<Cxx>& in)
 {
@@ -272,6 +283,12 @@ template <>
 bool lang2cxx<zval*, bool>(zval* in)
 {
     return Z_BVAL_P(in);
+}
+
+template <>
+std::string lang2cxx<zval*, std::string>(zval* in)
+{
+    return in->value.str.val;
 }
 
 template <typename Cxx>

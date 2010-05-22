@@ -17,10 +17,13 @@ module PascalUtils
       {
         "bool" => "boolean",
         "int"  => "cint",
+        "string" => "pchar",
       "void" => "void" # useless case
       }[type.name]
     elsif type.is_array? then
       "array#{separray}of#{separray}#{ conv_type type.type }"
+    elsif type.name == "string"
+      "char*"
     else
       type.name
     end
@@ -57,20 +60,18 @@ module PascalUtils
 end
 
 class PascalCxxFileGenerator < CxxFileGenerator
-
+  def c_type(type)
+    if type.name == "string" then "char*"
+    elsif type.name == "bool" then "bool"
+    else g_c_type(type)
+    end
+  end
   def cxx_type(type)
     cxx_type_for_pascal_and_c(type)
   end
-  def c_type(type)
-    if type.is_array?
-    then
-      "#{type.type.name}*"
-    else
-      type.name
-    end
-  end
   def lang_type(type)
     if type.is_array? then "#{lang_type(type.type)}*"
+    elsif type.name == "string" then "char*"
     else type.name
     end
   end
@@ -85,7 +86,7 @@ class PascalCxxFileGenerator < CxxFileGenerator
     print_banner "generator_pascal.rb"
     @f.puts <<-EOF
 #include "interface.hh"
-#include <stdio.h>
+#include <cstdio>
 #include <cstdlib>
 
 template<typename Lang, typename Cxx>
@@ -105,6 +106,12 @@ bool lang2cxx<bool, bool>(bool in)
   return in;
 }
 
+template<>
+std::string lang2cxx<char*, std::string>(char * in)
+{
+  return in;
+}
+
 template<typename Lang, typename Cxx>
 std::vector<Cxx> lang2cxx_array(Lang *l)
 {
@@ -120,6 +127,16 @@ template<typename Lang, typename Cxx>
 Lang cxx2lang(Cxx in)
 {
   return in.err;
+}
+
+template<>
+char *cxx2lang<char*, std::string>(std::string in)
+{
+  size_t l = in.length();
+  char * out = (char *) malloc(l + 1);
+  for (int i = 0; i < l; i++) out[i] = in[i];
+  out[l] = 0;
+  return out;
 }
 
 template<>
