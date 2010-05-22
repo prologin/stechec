@@ -5,7 +5,7 @@
 //
 
 #include "interface.hh"
-#include <stdio.h>
+#include <cstdio>
 #include <cstdlib>
 
 template<typename Lang, typename Cxx>
@@ -25,6 +25,12 @@ bool lang2cxx<bool, bool>(bool in)
   return in;
 }
 
+template<>
+std::string lang2cxx<char*, std::string>(char * in)
+{
+  return in;
+}
+
 template<typename Lang, typename Cxx>
 std::vector<Cxx> lang2cxx_array(Lang *l)
 {
@@ -40,6 +46,16 @@ template<typename Lang, typename Cxx>
 Lang cxx2lang(Cxx in)
 {
   return in.err;
+}
+
+template<>
+char *cxx2lang<char*, std::string>(std::string in)
+{
+  size_t l = in.length();
+  char * out = (char *) malloc(l + 1);
+  for (int i = 0; i < l; i++) out[i] = in[i];
+  out[l] = 0;
+  return out;
 }
 
 template<>

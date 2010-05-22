@@ -6,6 +6,8 @@
 
 #include <vector>
 #include <java/util/ArrayList.h>
+#include <string>
+#include <java/lang/String.h>
 #include "Position.h"
 #include "Taille_terrain.h"
 #include "Caracs.h"

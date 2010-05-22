@@ -224,7 +224,7 @@ void loadCallback()
     for_each_fun do |x|
       args = x.args
       fct_name = x.name
-      l = args ? args.nitems : 0
+      l = args ? args.length() : 0
       @f.puts "    rb_define_global_function(\"#{fct_name}\", (VALUE(*)(...))(rb_#{fct_name}), #{l});"
     end
 
@@ -286,7 +286,7 @@ class RubyFileGenerator < CProto
 
   def print_multiline_comment(str)
     return unless str
-    str.each {|s| @f.print '# ', s }
+    str.each_line {|s| @f.print '# ', s }
     @f.puts ""
   end
 

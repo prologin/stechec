@@ -14,6 +14,7 @@ extern "C" {
 # include "prologin.h"
 }
 
+typedef std::string std_string;
 ///
 // Représente une position sur le terrain du jeu.
 //

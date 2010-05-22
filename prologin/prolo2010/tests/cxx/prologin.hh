@@ -9,6 +9,8 @@
 
 # include <vector>
 
+# include <string>
+
 ///
 // Taille de départ du terrain.
 //
