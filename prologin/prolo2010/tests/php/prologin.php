@@ -33,7 +33,8 @@ function retirer_ko()
  */
 function jouer()
 {
-  afficher_unite(unites()[0]);
+  $u = unites();
+  afficher_unite($u[0]);
 }
 
 /*
