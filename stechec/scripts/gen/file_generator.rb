@@ -96,12 +96,13 @@ class FunctionArg
     @name = conf[0]
     @type = types[conf[1]]
   end
+
 end
 
 class Function
-  attr_reader :name
-  attr_reader :ret
-  attr_reader :args
+  attr_accessor :name
+  attr_accessor :ret
+  attr_accessor :args
   attr_reader :conf
   attr_reader :dumps
 

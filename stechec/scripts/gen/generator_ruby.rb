@@ -18,11 +18,10 @@ class RubyCxxFileGenerator < CxxProto
   def initialize
     super
     @lang = "C++ (for ruby interface)"
-    @rb_types = {
-      'void' => 'VALUE',
-      'int' => 'VALUE',
-      'bool' => 'VALUE'
-    }
+    @rb_types = TypesHash.new
+    [ 'void', 'int', 'bool', 'VALUE' ].each do |x|
+        @rb_types[x] = SimpleType.new "VALUE"
+    end
   end
 
   def generate_header
@@ -49,12 +48,18 @@ class RubyCxxFileGenerator < CxxProto
     print_include "ruby.h", true
     print_include "vector", true
     print_include "interface.hh"
-   print_include "iostream", true
+    print_include "iostream", true
 @f.puts "
 
 /*
 ** execute 'str', protected from possible exception, ...
 */
+
+void TYPEERR(char *t, VALUE in) {
+  char err_str[256];
+  sprintf(err_str, \"erreur de types : %s expected, got : 0x%02x.\\n\", t, TYPE(in));
+  rb_fatal( err_str);
+}
 
 template<typename Cxx>
 VALUE cxx2lang(Cxx in)
@@ -69,6 +74,7 @@ Cxx lang2cxx(VALUE in)
 template<>
 int lang2cxx<int>(VALUE in)
 {
+  if (TYPE(in) != T_FIXNUM) TYPEERR(\"integer\", in);
   return FIX2INT(in);
 }
 
@@ -81,6 +87,8 @@ bool lang2cxx<bool>(VALUE in)
 template<typename Cxx>
 std::vector<Cxx> lang2cxx_array(VALUE *l)
 {
+  if (TYPE(*l) != T_ARRAY) TYPEERR(\"array\", l);
+
   VALUE *tab = RARRAY_LEN(l);
   int len = RARRAY_PTR(l);
   std::vector<Cxx> vect;
@@ -120,11 +128,14 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
 
       @f.puts "template<>"
       @f.puts "#{ty} lang2cxx<#{ty}>(VALUE in)\n{"
-      @f.puts "char* v = RSTRING_PTR(in);"
+      @f.puts "if (TYPE(in) != T_STRING) TYPEERR(\"#{ty}\", in);"
+      @f.puts "  char* v = RSTRING_PTR(in);"
       fields.each do |f|
         @f.puts "  if (strcmp(v, \"#{f[0]}\") == 0)"
         @f.puts "      return #{f[0].upcase};"
       end
+      @f.puts "  abort();"
+      @f.puts "  TYPEERR(\"#{ty}\", in);"
       @f.puts "}\n"
 
       @f.puts "template<>"
@@ -134,7 +145,9 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
         @f.puts "    case #{f[0].upcase}:"
         @f.puts "      return rb_str_new(\"#{f[0]}\", #{f[0].length});"
       end
-      @f.puts "  }\n}\n"
+      @f.puts "  }
+  abort();
+}\n"
     end
 
 
@@ -142,6 +155,7 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
       type = s["str_name"]
       @f.puts "template<>"
       @f.puts "#{type} lang2cxx<#{type}>(VALUE in)\n{"
+      @f.puts "  if (TYPE(in) != T_OBJECT) TYPEERR(\"#{type}\", in);"
       @f.puts "  #{type} out ;"
       s['str_field'].each do |f|
         name =f[0]
@@ -175,8 +189,6 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
       end
       @f.puts "  VALUE argv[] = {#{args.join ', '}};"
       @f.puts "  int argc = #{args.size };"
-      # @f.puts "  ID class_id = rb_intern(\"#{type}\");"
-      # @f.puts "  VALUE class_ = rb_const_get(rb_cObject, class_id);"
       @f.puts "  VALUE out = rb_funcall2(rb_path2class(\"#{type.capitalize()}\"), rb_intern(\"new\"), argc, argv);"
       @f.puts "  return out;"
       @f.puts "}"
@@ -188,7 +200,8 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
       type_ret = fn.ret
       args = fn.args
       args_str = (args.map do |arg| "VALUE #{arg.name}" end).join ', '
-      @f.print "VALUE rb_#{name}(#{args_str})"
+      if args == [] then virgule = "" else virgule = ", " end
+      @f.print "static VALUE rb_#{name}(VALUE self#{virgule}#{args_str})"
       s_args = ""
       if args != []
         args_str = args.map do |y|
@@ -198,13 +211,13 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
             arr = ''
           end
           fun_name = "lang2cxx#{arr}<#{y.type.name}>"
-          fun_name+"(" + y.name + ")"
+          fun_name+"( " + y.name + " ) "
         end
         s_args = args_str.join ', '
       end
       out = "api_#{name}(#{s_args})"
       if type_ret.is_nil? then
-        print_body out+";"
+        print_body out+";\n  return Qnil;"
       else
         if type_ret.is_array? then
           arr = '_array'
@@ -225,7 +238,7 @@ void loadCallback()
       args = x.args
       fct_name = x.name
       l = args ? args.length() : 0
-      @f.puts "    rb_define_global_function(\"#{fct_name}\", (VALUE(*)(...))(rb_#{fct_name}), #{l});"
+      @f.puts "    rb_define_global_function(\"#{fct_name}\", (VALUE(*)(ANYARGS))(rb_#{fct_name}), #{l});"
     end
 
     @f.puts "
@@ -236,13 +249,26 @@ void init(){
   if (!initialized){
     initialized = true;
     std::cout << \"init...\" << std::endl;
-    char* file = \"#{$conf['conf']['player_filename']}.rb\";
+    std::string file;
+    char * path = getenv(\"CHAMPION_PATH\");
+    file = (path == NULL) ? \".\":path;
+    std::cout << \"directory is \" << file << std::endl;
+    setenv(\"RUBYLIB\", file.c_str(), 1);
+    file += \"#{$conf['conf']['player_filename']}.rb\";
     int status;
     ruby_init();
+    ruby_script(\"\");
+    std::cout << \"load path...\" << std::endl;
     ruby_init_loadpath ();
+    std::cout << \"load callback...\" << std::endl;
     loadCallback();
-    rb_load_protect(rb_str_new2(file), 0, &status);
+    std::cout << \"load file...\" << std::endl;
+    rb_load_protect(rb_str_new2(file.c_str()), 0, &status);
     std::cout << \"status = \" << status << std::endl;
+    if (status){
+       rb_p (rb_errinfo()); 
+       abort();
+    }
   }
 }
 
@@ -253,15 +279,45 @@ void init(){
       name = fn.name
       ret = fn.ret
       args = fn.args
+
+      fn.name = "#{fn.name}_unwrap";
+      fn.ret = SimpleType.new("VALUE");
+      fn.args = [FunctionArg.new(@rb_types, ["args", "VALUE"])];
+
+      @f.print cxx_proto(fn)
+      if ret.is_nil? then
+        ret_str = ""
+        decl_str = ""
+      else
+        if ret.is_array? then
+          prefix="_array"
+          ret = ret.type
+        else
+          prefix="";
+        end
+        ret_str = " return lang2cxx#{prefix}<#{cxx_type(ret)}>(v);"
+        decl_str = "VALUE v ="
+      end
+      print_body "
+  printf(\"calling ruby function: #{name}\\n\");
+  VALUE v = rb_eval_string(\"#{name}()\"); 
+  return v;
+"
+      fn.ret = ret
+      fn.name = name;
+      fn.args = args
       @f.print cxx_proto(fn)
       print_body "
-  init();
   int status;
-  printf(\"calling ruby function: #{name}\\n\");
-  rb_eval_string(\"#{name}()\" );
-  if (status)
+  init();
+  #{decl_str}rb_protect(&#{fn.name}_unwrap, Qnil, &status);
+  if (status){
     fprintf(stderr, \"error while calling ruby function: #{name} (%d)\\n\", status);
-"
+    rb_p (rb_errinfo()); 
+    abort();
+  }else {
+    #{ret_str}
+  }"
     end
     @f.puts "}"
     @f.close

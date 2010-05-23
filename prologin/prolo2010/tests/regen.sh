@@ -47,4 +47,9 @@ regen python/interface.hh
 regen python/Makefile
 
 
+regen ruby/interface.cc
+regen ruby/interface.hh
+regen ruby/constants.rb
+regen ruby/Makefile
+
 #rm -rf tmp

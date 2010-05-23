@@ -14,6 +14,12 @@
 ** execute 'str', protected from possible exception, ...
 */
 
+void TYPEERR(char *t, VALUE in) {
+  char err_str[256];
+  sprintf(err_str, "erreur de types : %s expected, got : 0x%02x.\n", t, TYPE(in));
+  rb_fatal( err_str);
+}
+
 template<typename Cxx>
 VALUE cxx2lang(Cxx in)
 {
@@ -27,6 +33,7 @@ Cxx lang2cxx(VALUE in)
 template<>
 int lang2cxx<int>(VALUE in)
 {
+  if (TYPE(in) != T_FIXNUM) TYPEERR("integer", in);
   return FIX2INT(in);
 }
 
@@ -39,6 +46,8 @@ bool lang2cxx<bool>(VALUE in)
 template<typename Cxx>
 std::vector<Cxx> lang2cxx_array(VALUE *l)
 {
+  if (TYPE(*l) != T_ARRAY) TYPEERR("array", l);
+
   VALUE *tab = RARRAY_LEN(l);
   int len = RARRAY_PTR(l);
   std::vector<Cxx> vect;
@@ -76,7 +85,8 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
 template<>
 erreur lang2cxx<erreur>(VALUE in)
 {
-char* v = RSTRING_PTR(in);
+if (TYPE(in) != T_STRING) TYPEERR("erreur", in);
+  char* v = RSTRING_PTR(in);
   if (strcmp(v, "ok") == 0)
       return OK;
   if (strcmp(v, "position_invalide") == 0)
@@ -105,6 +115,8 @@ char* v = RSTRING_PTR(in);
       return PLUS_DE_CARTES;
   if (strcmp(v, "phase_cartes_terminee") == 0)
       return PHASE_CARTES_TERMINEE;
+  abort();
+  TYPEERR("erreur", in);
 }
 template<>
 VALUE cxx2lang<erreur>(erreur in)
@@ -140,6 +152,7 @@ VALUE cxx2lang<erreur>(erreur in)
     case PHASE_CARTES_TERMINEE:
       return rb_str_new("phase_cartes_terminee", 21);
   }
+  abort();
 }
 
 ///
@@ -148,7 +161,8 @@ VALUE cxx2lang<erreur>(erreur in)
 template<>
 type_unite lang2cxx<type_unite>(VALUE in)
 {
-char* v = RSTRING_PTR(in);
+if (TYPE(in) != T_STRING) TYPEERR("type_unite", in);
+  char* v = RSTRING_PTR(in);
   if (strcmp(v, "perroquet") == 0)
       return PERROQUET;
   if (strcmp(v, "singe") == 0)
@@ -157,6 +171,8 @@ char* v = RSTRING_PTR(in);
       return CHAT;
   if (strcmp(v, "kangourou") == 0)
       return KANGOUROU;
+  abort();
+  TYPEERR("type_unite", in);
 }
 template<>
 VALUE cxx2lang<type_unite>(type_unite in)
@@ -172,6 +188,7 @@ VALUE cxx2lang<type_unite>(type_unite in)
     case KANGOUROU:
       return rb_str_new("kangourou", 9);
   }
+  abort();
 }
 
 ///
@@ -180,6 +197,7 @@ VALUE cxx2lang<type_unite>(type_unite in)
 template<>
 position lang2cxx<position>(VALUE in)
 {
+  if (TYPE(in) != T_OBJECT) TYPEERR("position", in);
   position out ;
   VALUE x = rb_iv_get(in, "@x");
   out.x = lang2cxx<int>(x);
@@ -202,6 +220,7 @@ VALUE cxx2lang<position>(position in)
 template<>
 taille_terrain lang2cxx<taille_terrain>(VALUE in)
 {
+  if (TYPE(in) != T_OBJECT) TYPEERR("taille_terrain", in);
   taille_terrain out ;
   VALUE taille = rb_iv_get(in, "@taille");
   out.taille = lang2cxx<int>(taille);
@@ -226,6 +245,7 @@ VALUE cxx2lang<taille_terrain>(taille_terrain in)
 template<>
 caracs lang2cxx<caracs>(VALUE in)
 {
+  if (TYPE(in) != T_OBJECT) TYPEERR("caracs", in);
   caracs out ;
   VALUE pa_init = rb_iv_get(in, "@pa_init");
   out.pa_init = lang2cxx<int>(pa_init);
@@ -248,6 +268,7 @@ VALUE cxx2lang<caracs>(caracs in)
 template<>
 unite lang2cxx<unite>(VALUE in)
 {
+  if (TYPE(in) != T_OBJECT) TYPEERR("unite", in);
   unite out ;
   VALUE pos = rb_iv_get(in, "@pos");
   out.pos = lang2cxx<position>(pos);
@@ -284,6 +305,7 @@ VALUE cxx2lang<unite>(unite in)
 template<>
 cartes lang2cxx<cartes>(VALUE in)
 {
+  if (TYPE(in) != T_OBJECT) TYPEERR("cartes", in);
   cartes out ;
   VALUE potion = rb_iv_get(in, "@potion");
   out.potion = lang2cxx<int>(potion);
@@ -304,124 +326,131 @@ VALUE cxx2lang<cartes>(cartes in)
   return out;
 }
 
-VALUE rb_nombre_pc()
+static VALUE rb_nombre_pc(VALUE self)
 {
   return cxx2lang<int>(api_nombre_pc());
 }
 
-VALUE rb_nombre_unites(VALUE ennemi)
+static VALUE rb_nombre_unites(VALUE self, VALUE ennemi)
 {
-  return cxx2lang<int>(api_nombre_unites(lang2cxx<bool>(ennemi)));
+  return cxx2lang<int>(api_nombre_unites(lang2cxx<bool>( ennemi ) ));
 }
 
-VALUE rb_tour_actuel()
+static VALUE rb_tour_actuel(VALUE self)
 {
   return cxx2lang<int>(api_tour_actuel());
 }
 
-VALUE rb_pos_renfort(VALUE ennemi)
+static VALUE rb_pos_renfort(VALUE self, VALUE ennemi)
 {
-  return cxx2lang<position>(api_pos_renfort(lang2cxx<bool>(ennemi)));
+  return cxx2lang<position>(api_pos_renfort(lang2cxx<bool>( ennemi ) ));
 }
 
-VALUE rb_caracteristiques(VALUE tu)
+static VALUE rb_caracteristiques(VALUE self, VALUE tu)
 {
-  return cxx2lang<caracs>(api_caracteristiques(lang2cxx<type_unite>(tu)));
+  return cxx2lang<caracs>(api_caracteristiques(lang2cxx<type_unite>( tu ) ));
 }
 
-VALUE rb_mes_cartes()
+static VALUE rb_mes_cartes(VALUE self)
 {
   return cxx2lang<cartes>(api_mes_cartes());
 }
 
-VALUE rb_unites()
+static VALUE rb_unites(VALUE self)
 {
   return cxx2lang_array<>(api_unites());
 }
 
-VALUE rb_taille_terrain_actuelle()
+static VALUE rb_taille_terrain_actuelle(VALUE self)
 {
   return cxx2lang<taille_terrain>(api_taille_terrain_actuelle());
 }
 
-VALUE rb_potion(VALUE cible)
+static VALUE rb_potion(VALUE self, VALUE cible)
 {
-  return cxx2lang<erreur>(api_potion(lang2cxx<position>(cible)));
+  return cxx2lang<erreur>(api_potion(lang2cxx<position>( cible ) ));
 }
 
-VALUE rb_deguisement(VALUE cible, VALUE nouveau_type)
+static VALUE rb_deguisement(VALUE self, VALUE cible, VALUE nouveau_type)
 {
-  return cxx2lang<erreur>(api_deguisement(lang2cxx<position>(cible), lang2cxx<type_unite>(nouveau_type)));
+  return cxx2lang<erreur>(api_deguisement(lang2cxx<position>( cible ) , lang2cxx<type_unite>( nouveau_type ) ));
 }
 
-VALUE rb_banzai(VALUE cible)
+static VALUE rb_banzai(VALUE self, VALUE cible)
 {
-  return cxx2lang<erreur>(api_banzai(lang2cxx<position>(cible)));
+  return cxx2lang<erreur>(api_banzai(lang2cxx<position>( cible ) ));
 }
 
-VALUE rb_pacifisme()
+static VALUE rb_pacifisme(VALUE self)
 {
   return cxx2lang<erreur>(api_pacifisme());
 }
 
-VALUE rb_deplacer(VALUE cible, VALUE pos)
+static VALUE rb_deplacer(VALUE self, VALUE cible, VALUE pos)
 {
-  return cxx2lang<erreur>(api_deplacer(lang2cxx<position>(cible), lang2cxx<position>(pos)));
+  return cxx2lang<erreur>(api_deplacer(lang2cxx<position>( cible ) , lang2cxx<position>( pos ) ));
 }
 
-VALUE rb_relever(VALUE cible)
+static VALUE rb_relever(VALUE self, VALUE cible)
 {
-  return cxx2lang<erreur>(api_relever(lang2cxx<position>(cible)));
+  return cxx2lang<erreur>(api_relever(lang2cxx<position>( cible ) ));
 }
 
-VALUE rb_attaquer(VALUE attaquant, VALUE cible)
+static VALUE rb_attaquer(VALUE self, VALUE attaquant, VALUE cible)
 {
-  return cxx2lang<erreur>(api_attaquer(lang2cxx<position>(attaquant), lang2cxx<position>(cible)));
+  return cxx2lang<erreur>(api_attaquer(lang2cxx<position>( attaquant ) , lang2cxx<position>( cible ) ));
 }
 
-VALUE rb_renfort(VALUE quoi)
+static VALUE rb_renfort(VALUE self, VALUE quoi)
 {
-  return cxx2lang<erreur>(api_renfort(lang2cxx<type_unite>(quoi)));
+  return cxx2lang<erreur>(api_renfort(lang2cxx<type_unite>( quoi ) ));
 }
 
-VALUE rb_annuler()
+static VALUE rb_annuler(VALUE self)
 {
   return cxx2lang<bool>(api_annuler());
 }
 
-VALUE rb_afficher_erreur(VALUE v)
+static VALUE rb_afficher_erreur(VALUE self, VALUE v)
 {
-api_afficher_erreur(lang2cxx<erreur>(v));
+api_afficher_erreur(lang2cxx<erreur>( v ) );
+  return Qnil;
 }
 
-VALUE rb_afficher_type_unite(VALUE v)
+static VALUE rb_afficher_type_unite(VALUE self, VALUE v)
 {
-api_afficher_type_unite(lang2cxx<type_unite>(v));
+api_afficher_type_unite(lang2cxx<type_unite>( v ) );
+  return Qnil;
 }
 
-VALUE rb_afficher_position(VALUE v)
+static VALUE rb_afficher_position(VALUE self, VALUE v)
 {
-api_afficher_position(lang2cxx<position>(v));
+api_afficher_position(lang2cxx<position>( v ) );
+  return Qnil;
 }
 
-VALUE rb_afficher_taille_terrain(VALUE v)
+static VALUE rb_afficher_taille_terrain(VALUE self, VALUE v)
 {
-api_afficher_taille_terrain(lang2cxx<taille_terrain>(v));
+api_afficher_taille_terrain(lang2cxx<taille_terrain>( v ) );
+  return Qnil;
 }
 
-VALUE rb_afficher_caracs(VALUE v)
+static VALUE rb_afficher_caracs(VALUE self, VALUE v)
 {
-api_afficher_caracs(lang2cxx<caracs>(v));
+api_afficher_caracs(lang2cxx<caracs>( v ) );
+  return Qnil;
 }
 
-VALUE rb_afficher_unite(VALUE v)
+static VALUE rb_afficher_unite(VALUE self, VALUE v)
 {
-api_afficher_unite(lang2cxx<unite>(v));
+api_afficher_unite(lang2cxx<unite>( v ) );
+  return Qnil;
 }
 
-VALUE rb_afficher_cartes(VALUE v)
+static VALUE rb_afficher_cartes(VALUE self, VALUE v)
 {
-api_afficher_cartes(lang2cxx<cartes>(v));
+api_afficher_cartes(lang2cxx<cartes>( v ) );
+  return Qnil;
 }
 
 
@@ -430,122 +459,122 @@ void loadCallback()
 ///
 // Renvoie le nombre de points de commandements.
 //
-    rb_define_global_function("nombre_pc", (VALUE(*)(...))(rb_nombre_pc), 0);
+    rb_define_global_function("nombre_pc", (VALUE(*)(ANYARGS))(rb_nombre_pc), 0);
 
 ///
 // Renvoie le nombre d'unités en jeu.
 //
-    rb_define_global_function("nombre_unites", (VALUE(*)(...))(rb_nombre_unites), 1);
+    rb_define_global_function("nombre_unites", (VALUE(*)(ANYARGS))(rb_nombre_unites), 1);
 
 ///
 // Renvoie le numéro du tour actuel.
 //
-    rb_define_global_function("tour_actuel", (VALUE(*)(...))(rb_tour_actuel), 0);
+    rb_define_global_function("tour_actuel", (VALUE(*)(ANYARGS))(rb_tour_actuel), 0);
 
 ///
 // Renvoie la position du spawn (ennemi ou non).
 //
-    rb_define_global_function("pos_renfort", (VALUE(*)(...))(rb_pos_renfort), 1);
+    rb_define_global_function("pos_renfort", (VALUE(*)(ANYARGS))(rb_pos_renfort), 1);
 
 ///
 // Renvoie les caractéristiques d'un type d'unité.
 //
-    rb_define_global_function("caracteristiques", (VALUE(*)(...))(rb_caracteristiques), 1);
+    rb_define_global_function("caracteristiques", (VALUE(*)(ANYARGS))(rb_caracteristiques), 1);
 
 ///
 // Retourne une structure "cartes" contenant les informations sur les cartes que vous avez en main.
 //
-    rb_define_global_function("mes_cartes", (VALUE(*)(...))(rb_mes_cartes), 0);
+    rb_define_global_function("mes_cartes", (VALUE(*)(ANYARGS))(rb_mes_cartes), 0);
 
 ///
 // Retourne la liste des unités actuellement en jeu.
 //
-    rb_define_global_function("unites", (VALUE(*)(...))(rb_unites), 0);
+    rb_define_global_function("unites", (VALUE(*)(ANYARGS))(rb_unites), 0);
 
 ///
 // Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
 //
-    rb_define_global_function("taille_terrain_actuelle", (VALUE(*)(...))(rb_taille_terrain_actuelle), 0);
+    rb_define_global_function("taille_terrain_actuelle", (VALUE(*)(ANYARGS))(rb_taille_terrain_actuelle), 0);
 
 ///
 // Utilise une carte « Potion magique » que vous avez dans votre main.
 //
-    rb_define_global_function("potion", (VALUE(*)(...))(rb_potion), 1);
+    rb_define_global_function("potion", (VALUE(*)(ANYARGS))(rb_potion), 1);
 
 ///
 // Utilise une carte « Déguisement » que vous avez dans votre main.
 //
-    rb_define_global_function("deguisement", (VALUE(*)(...))(rb_deguisement), 2);
+    rb_define_global_function("deguisement", (VALUE(*)(ANYARGS))(rb_deguisement), 2);
 
 ///
 // Utilise une carte « Banzaï » que vous avez dans votre main.
 //
-    rb_define_global_function("banzai", (VALUE(*)(...))(rb_banzai), 1);
+    rb_define_global_function("banzai", (VALUE(*)(ANYARGS))(rb_banzai), 1);
 
 ///
 // Utilise une carte « Pacifisme » que vous avez dans votre main.
 //
-    rb_define_global_function("pacifisme", (VALUE(*)(...))(rb_pacifisme), 0);
+    rb_define_global_function("pacifisme", (VALUE(*)(ANYARGS))(rb_pacifisme), 0);
 
 ///
 // Déplace une unité vers une position à portée.
 //
-    rb_define_global_function("deplacer", (VALUE(*)(...))(rb_deplacer), 2);
+    rb_define_global_function("deplacer", (VALUE(*)(ANYARGS))(rb_deplacer), 2);
 
 ///
 // Relève une unité n'ayant plus de marqueurs de KO.
 //
-    rb_define_global_function("relever", (VALUE(*)(...))(rb_relever), 1);
+    rb_define_global_function("relever", (VALUE(*)(ANYARGS))(rb_relever), 1);
 
 ///
 // Attaque une autre unité.
 //
-    rb_define_global_function("attaquer", (VALUE(*)(...))(rb_attaquer), 2);
+    rb_define_global_function("attaquer", (VALUE(*)(ANYARGS))(rb_attaquer), 2);
 
 ///
 // Fait apparaitre une unité sur la case de spawn.
 //
-    rb_define_global_function("renfort", (VALUE(*)(...))(rb_renfort), 1);
+    rb_define_global_function("renfort", (VALUE(*)(ANYARGS))(rb_renfort), 1);
 
 ///
 // Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
 //
-    rb_define_global_function("annuler", (VALUE(*)(...))(rb_annuler), 0);
+    rb_define_global_function("annuler", (VALUE(*)(ANYARGS))(rb_annuler), 0);
 
 ///
 // Affiche le contenu d'une valeur de type erreur
 //
-    rb_define_global_function("afficher_erreur", (VALUE(*)(...))(rb_afficher_erreur), 1);
+    rb_define_global_function("afficher_erreur", (VALUE(*)(ANYARGS))(rb_afficher_erreur), 1);
 
 ///
 // Affiche le contenu d'une valeur de type type_unite
 //
-    rb_define_global_function("afficher_type_unite", (VALUE(*)(...))(rb_afficher_type_unite), 1);
+    rb_define_global_function("afficher_type_unite", (VALUE(*)(ANYARGS))(rb_afficher_type_unite), 1);
 
 ///
 // Affiche le contenu d'une valeur de type position
 //
-    rb_define_global_function("afficher_position", (VALUE(*)(...))(rb_afficher_position), 1);
+    rb_define_global_function("afficher_position", (VALUE(*)(ANYARGS))(rb_afficher_position), 1);
 
 ///
 // Affiche le contenu d'une valeur de type taille_terrain
 //
-    rb_define_global_function("afficher_taille_terrain", (VALUE(*)(...))(rb_afficher_taille_terrain), 1);
+    rb_define_global_function("afficher_taille_terrain", (VALUE(*)(ANYARGS))(rb_afficher_taille_terrain), 1);
 
 ///
 // Affiche le contenu d'une valeur de type caracs
 //
-    rb_define_global_function("afficher_caracs", (VALUE(*)(...))(rb_afficher_caracs), 1);
+    rb_define_global_function("afficher_caracs", (VALUE(*)(ANYARGS))(rb_afficher_caracs), 1);
 
 ///
 // Affiche le contenu d'une valeur de type unite
 //
-    rb_define_global_function("afficher_unite", (VALUE(*)(...))(rb_afficher_unite), 1);
+    rb_define_global_function("afficher_unite", (VALUE(*)(ANYARGS))(rb_afficher_unite), 1);
 
 ///
 // Affiche le contenu d'une valeur de type cartes
 //
-    rb_define_global_function("afficher_cartes", (VALUE(*)(...))(rb_afficher_cartes), 1);
+    rb_define_global_function("afficher_cartes", (VALUE(*)(ANYARGS))(rb_afficher_cartes), 1);
 
 
 }
@@ -555,13 +584,26 @@ void init(){
   if (!initialized){
     initialized = true;
     std::cout << "init..." << std::endl;
-    char* file = "prologin.rb";
+    std::string file;
+    char * path = getenv("CHAMPION_PATH");
+    file = (path == NULL) ? ".":path;
+    std::cout << "directory is " << file << std::endl;
+    setenv("RUBYLIB", file.c_str(), 1);
+    file += "prologin.rb";
     int status;
     ruby_init();
+    ruby_script("");
+    std::cout << "load path..." << std::endl;
     ruby_init_loadpath ();
+    std::cout << "load callback..." << std::endl;
     loadCallback();
-    rb_load_protect(rb_str_new2(file), 0, &status);
+    std::cout << "load file..." << std::endl;
+    rb_load_protect(rb_str_new2(file.c_str()), 0, &status);
     std::cout << "status = " << status << std::endl;
+    if (status){
+       rb_p (rb_errinfo()); 
+       abort();
+    }
   }
 }
 
@@ -569,57 +611,101 @@ extern "C" {
 ///
 // Fonction appellée au début de la partie.
 //
+VALUE init_game_unwrap(VALUE args)
+{
+
+  printf("calling ruby function: init_game\n");
+  VALUE v = rb_eval_string("init_game()"); 
+  return v;
+}
 void init_game()
 {
 
-  init();
   int status;
-  printf("calling ruby function: init_game\n");
-  rb_eval_string("init_game()" );
-  if (status)
+  init();
+  rb_protect(&init_game_unwrap, Qnil, &status);
+  if (status){
     fprintf(stderr, "error while calling ruby function: init_game (%d)\n", status);
+    rb_p (rb_errinfo()); 
+    abort();
+  }else {
+    
+  }
 }
 
 ///
 // Fonction appellée pour la phase de retrait de KO.
 //
+VALUE retirer_ko_unwrap(VALUE args)
+{
+
+  printf("calling ruby function: retirer_ko\n");
+  VALUE v = rb_eval_string("retirer_ko()"); 
+  return v;
+}
 position retirer_ko()
 {
 
-  init();
   int status;
-  printf("calling ruby function: retirer_ko\n");
-  rb_eval_string("retirer_ko()" );
-  if (status)
+  init();
+  VALUE v =rb_protect(&retirer_ko_unwrap, Qnil, &status);
+  if (status){
     fprintf(stderr, "error while calling ruby function: retirer_ko (%d)\n", status);
+    rb_p (rb_errinfo()); 
+    abort();
+  }else {
+     return lang2cxx<position>(v);
+  }
 }
 
 ///
 // Fonction appellée pour la phase de jeu.
 //
+VALUE jouer_unwrap(VALUE args)
+{
+
+  printf("calling ruby function: jouer\n");
+  VALUE v = rb_eval_string("jouer()"); 
+  return v;
+}
 void jouer()
 {
 
-  init();
   int status;
-  printf("calling ruby function: jouer\n");
-  rb_eval_string("jouer()" );
-  if (status)
+  init();
+  rb_protect(&jouer_unwrap, Qnil, &status);
+  if (status){
     fprintf(stderr, "error while calling ruby function: jouer (%d)\n", status);
+    rb_p (rb_errinfo()); 
+    abort();
+  }else {
+    
+  }
 }
 
 ///
 // Fonction appellée à la fin de la partie.
 //
+VALUE end_game_unwrap(VALUE args)
+{
+
+  printf("calling ruby function: end_game\n");
+  VALUE v = rb_eval_string("end_game()"); 
+  return v;
+}
 void end_game()
 {
 
-  init();
   int status;
-  printf("calling ruby function: end_game\n");
-  rb_eval_string("end_game()" );
-  if (status)
+  init();
+  rb_protect(&end_game_unwrap, Qnil, &status);
+  if (status){
     fprintf(stderr, "error while calling ruby function: end_game (%d)\n", status);
+    rb_p (rb_errinfo()); 
+    abort();
+  }else {
+    
+  }
 }
 
 }
