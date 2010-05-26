@@ -272,6 +272,10 @@ void init(){
   }
 }
 
+void my_ruby_end(){
+  ruby_cleanup(0);
+}
+
 "
   
     @f.puts "extern \"C\" {"
@@ -307,16 +311,21 @@ void init(){
       fn.name = name;
       fn.args = args
       @f.print cxx_proto(fn)
+      if fn.name == "end_game" then
+        rb_end = "  my_ruby_end();\n"
+      else
+        rb_end = ""
+      end
       print_body "
   int status;
   init();
   #{decl_str}rb_protect(&#{fn.name}_unwrap, Qnil, &status);
   if (status){
     fprintf(stderr, \"error while calling ruby function: #{name} (%d)\\n\", status);
-    rb_p (rb_errinfo()); 
-    abort();
+    rb_p (rb_errinfo());
+    #{rb_end}abort();
   }else {
-    #{ret_str}
+    #{rb_end}#{ret_str}
   }"
     end
     @f.puts "}"

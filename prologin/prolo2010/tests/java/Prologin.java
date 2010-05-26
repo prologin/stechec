@@ -15,13 +15,22 @@ public class Prologin extends Interface
   public Position retirer_ko()
   {
     // Place ton code ici
+      return null;
   }
+
+    private void toto(){
+	throw new RuntimeException();
+    }
 
 
   // Fonction appellée pour la phase de jeu.
   public void jouer()
   {
-    // Place ton code ici
+      try{
+	  toto();
+      } catch (Exception e){
+	  System.out.println("catched !");
+      }
   }
 
 

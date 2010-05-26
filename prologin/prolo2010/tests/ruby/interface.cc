@@ -607,6 +607,10 @@ void init(){
   }
 }
 
+void my_ruby_end(){
+  ruby_cleanup(0);
+}
+
 extern "C" {
 ///
 // Fonction appellée au début de la partie.
@@ -626,7 +630,7 @@ void init_game()
   rb_protect(&init_game_unwrap, Qnil, &status);
   if (status){
     fprintf(stderr, "error while calling ruby function: init_game (%d)\n", status);
-    rb_p (rb_errinfo()); 
+    rb_p (rb_errinfo());
     abort();
   }else {
     
@@ -651,7 +655,7 @@ position retirer_ko()
   VALUE v =rb_protect(&retirer_ko_unwrap, Qnil, &status);
   if (status){
     fprintf(stderr, "error while calling ruby function: retirer_ko (%d)\n", status);
-    rb_p (rb_errinfo()); 
+    rb_p (rb_errinfo());
     abort();
   }else {
      return lang2cxx<position>(v);
@@ -676,7 +680,7 @@ void jouer()
   rb_protect(&jouer_unwrap, Qnil, &status);
   if (status){
     fprintf(stderr, "error while calling ruby function: jouer (%d)\n", status);
-    rb_p (rb_errinfo()); 
+    rb_p (rb_errinfo());
     abort();
   }else {
     
@@ -701,10 +705,12 @@ void end_game()
   rb_protect(&end_game_unwrap, Qnil, &status);
   if (status){
     fprintf(stderr, "error while calling ruby function: end_game (%d)\n", status);
-    rb_p (rb_errinfo()); 
-    abort();
+    rb_p (rb_errinfo());
+      my_ruby_end();
+abort();
   }else {
-    
+      my_ruby_end();
+
   }
 }
 
