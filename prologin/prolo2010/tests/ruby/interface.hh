@@ -1,38 +1,10 @@
 ///
 // This file has been generated, if you wish to
 // modify it in a permanent way, please refer
-// to the script file : gen/generator_cs.rb
+// to the script file : gen/generator_ruby.rb
 //
 
-#ifndef INTERFACE_HH_
-# define INTERFACE_HH_
-
-#include <map>
 #include <vector>
-#include <string>
-#include <glib.h>
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/debug-helpers.h>
-
-class CSharpInterface
-{
-public:
-  CSharpInterface();
-  ~CSharpInterface();
-  MonoObject*   callCSharpMethod(const char* name);
-  MonoImage*    getImage();
-  MonoDomain*   getDomain();
-
-private:
-
-  MonoDomain*		_domain;
-  MonoAssembly*		_assembly;
-  MonoImage*		_image;
-  MonoClass*		_class;
-  MonoObject*       _object;
-};
-
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
@@ -120,149 +92,143 @@ typedef struct cartes {
 } cartes;
 
 
-
-extern "C" {
-
 ///
 // Renvoie le nombre de points de commandements.
 //
-int api_nombre_pc();
+extern "C" int api_nombre_pc();
 
 ///
 // Renvoie le nombre d'unités en jeu.
 //
-int api_nombre_unites(bool ennemi);
+extern "C" int api_nombre_unites(bool ennemi);
 
 ///
 // Renvoie le numéro du tour actuel.
 //
-int api_tour_actuel();
+extern "C" int api_tour_actuel();
 
 ///
 // Renvoie la position du spawn (ennemi ou non).
 //
-position api_pos_renfort(bool ennemi);
+extern "C" position api_pos_renfort(bool ennemi);
 
 ///
 // Renvoie les caractéristiques d'un type d'unité.
 //
-caracs api_caracteristiques(type_unite tu);
+extern "C" caracs api_caracteristiques(type_unite tu);
 
 ///
 // Retourne une structure "cartes" contenant les informations sur les cartes que vous avez en main.
 //
-cartes api_mes_cartes();
+extern "C" cartes api_mes_cartes();
 
 ///
 // Retourne la liste des unités actuellement en jeu.
 //
-std::vector<unite> api_unites();
+extern "C" std::vector<unite> api_unites();
 
 ///
 // Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
 //
-taille_terrain api_taille_terrain_actuelle();
+extern "C" taille_terrain api_taille_terrain_actuelle();
 
 ///
 // Utilise une carte « Potion magique » que vous avez dans votre main.
 //
-erreur api_potion(position cible);
+extern "C" erreur api_potion(position cible);
 
 ///
 // Utilise une carte « Déguisement » que vous avez dans votre main.
 //
-erreur api_deguisement(position cible, type_unite nouveau_type);
+extern "C" erreur api_deguisement(position cible, type_unite nouveau_type);
 
 ///
 // Utilise une carte « Banzaï » que vous avez dans votre main.
 //
-erreur api_banzai(position cible);
+extern "C" erreur api_banzai(position cible);
 
 ///
 // Utilise une carte « Pacifisme » que vous avez dans votre main.
 //
-erreur api_pacifisme();
+extern "C" erreur api_pacifisme();
 
 ///
 // Déplace une unité vers une position à portée.
 //
-erreur api_deplacer(position cible, position pos);
+extern "C" erreur api_deplacer(position cible, position pos);
 
 ///
 // Relève une unité n'ayant plus de marqueurs de KO.
 //
-erreur api_relever(position cible);
+extern "C" erreur api_relever(position cible);
 
 ///
 // Attaque une autre unité.
 //
-erreur api_attaquer(position attaquant, position cible);
+extern "C" erreur api_attaquer(position attaquant, position cible);
 
 ///
 // Fait apparaitre une unité sur la case de spawn.
 //
-erreur api_renfort(type_unite quoi);
+extern "C" erreur api_renfort(type_unite quoi);
 
 ///
 // Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
 //
-bool api_annuler();
+extern "C" bool api_annuler();
 
 ///
 // Affiche le contenu d'une valeur de type erreur
 //
-void api_afficher_erreur(erreur v);
+extern "C" void api_afficher_erreur(erreur v);
 
 ///
 // Affiche le contenu d'une valeur de type type_unite
 //
-void api_afficher_type_unite(type_unite v);
+extern "C" void api_afficher_type_unite(type_unite v);
 
 ///
 // Affiche le contenu d'une valeur de type position
 //
-void api_afficher_position(position v);
+extern "C" void api_afficher_position(position v);
 
 ///
 // Affiche le contenu d'une valeur de type taille_terrain
 //
-void api_afficher_taille_terrain(taille_terrain v);
+extern "C" void api_afficher_taille_terrain(taille_terrain v);
 
 ///
 // Affiche le contenu d'une valeur de type caracs
 //
-void api_afficher_caracs(caracs v);
+extern "C" void api_afficher_caracs(caracs v);
 
 ///
 // Affiche le contenu d'une valeur de type unite
 //
-void api_afficher_unite(unite v);
+extern "C" void api_afficher_unite(unite v);
 
 ///
 // Affiche le contenu d'une valeur de type cartes
 //
-void api_afficher_cartes(cartes v);
+extern "C" void api_afficher_cartes(cartes v);
 
 ///
 // Fonction appellée au début de la partie.
 //
-void init_game();
+extern "C" void init_game();
 
 ///
 // Fonction appellée pour la phase de retrait de KO.
 //
-position retirer_ko();
+extern "C" position retirer_ko();
 
 ///
 // Fonction appellée pour la phase de jeu.
 //
-void jouer();
+extern "C" void jouer();
 
 ///
 // Fonction appellée à la fin de la partie.
 //
-void end_game();
+extern "C" void end_game();
 
-}
-
-#endif // !INTERFACE_HH_

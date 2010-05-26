@@ -20,6 +20,12 @@ Out cxx2lang(Cxx in)
 }
 
 template <>
+MonoString* cxx2lang<MonoString*, std::string>(std::string in)
+{
+  return mono_string_new (gl_csharp.getDomain(), in.c_str());
+}
+
+template <>
 gint32 cxx2lang< gint32, int >(int in)
 {
   return (gint32)in;
@@ -38,6 +44,12 @@ Cxx lang2cxx(Out in)
 }
 
 template <>
+std::string lang2cxx< MonoString*, std::string >(MonoString* in)
+{
+  return mono_string_to_utf8(in);
+}
+
+template <>
 int lang2cxx< gint32, int >(gint32 in)
 {
   return (int)in;
@@ -49,7 +61,7 @@ bool lang2cxx< gint32, bool >(gint32 in)
   return (bool)in;
 }
 ///
-// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action.
+// Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 template <>
 gint32 cxx2lang< gint32, erreur >(erreur in)
@@ -64,7 +76,7 @@ erreur lang2cxx< gint32, erreur >(gint32 in)
 }
 
 ///
-// Le type d'une unitÃ© sur le terrain
+// Le type d'une unité sur le terrain
 //
 template <>
 gint32 cxx2lang< gint32, type_unite >(type_unite in)
@@ -79,7 +91,7 @@ type_unite lang2cxx< gint32, type_unite >(gint32 in)
 }
 
 ///
-// ReprÃ©sente une position sur le terrain du jeu.
+// Représente une position sur le terrain du jeu.
 //
 void cxx2lang(position in, MonoObject* moObj = NULL)
 {
@@ -111,7 +123,7 @@ void cxx2lang(taille_terrain in, MonoObject* moObj = NULL)
 }
 
 ///
-// Donne les caractÃ©ristiques d'un type d'unitÃ©.
+// Donne les caractéristiques d'un type d'unité.
 //
 void cxx2lang(caracs in, MonoObject* moObj = NULL)
 {
@@ -126,7 +138,7 @@ void cxx2lang(caracs in, MonoObject* moObj = NULL)
 }
 
 ///
-// ReprÃ©sente une unitÃ© sur le terrain.
+// Représente une unité sur le terrain.
 //
 void cxx2lang(unite in, MonoObject* moObj = NULL)
 {
@@ -154,7 +166,7 @@ void cxx2lang(unite in, MonoObject* moObj = NULL)
 }
 
 ///
-// ReprÃ©sente l'ensemble des cartes que vous pouvez utiliser.
+// Représente l'ensemble des cartes que vous pouvez utiliser.
 //
 void cxx2lang(cartes in, MonoObject* moObj = NULL)
 {
@@ -173,7 +185,7 @@ void cxx2lang(cartes in, MonoObject* moObj = NULL)
 }
 
 ///
-// ReprÃ©sente une position sur le terrain du jeu.
+// Représente une position sur le terrain du jeu.
 //
 template <>
 MonoObject* cxx2lang< MonoObject*, position >(position in)
@@ -232,7 +244,7 @@ taille_terrain lang2cxx< MonoObject*, taille_terrain >(MonoObject* in)
 }
 
 ///
-// Donne les caractÃ©ristiques d'un type d'unitÃ©.
+// Donne les caractéristiques d'un type d'unité.
 //
 template <>
 MonoObject* cxx2lang< MonoObject*, caracs >(caracs in)
@@ -260,7 +272,7 @@ caracs lang2cxx< MonoObject*, caracs >(MonoObject* in)
 }
 
 ///
-// ReprÃ©sente une unitÃ© sur le terrain.
+// Représente une unité sur le terrain.
 //
 template <>
 MonoObject* cxx2lang< MonoObject*, unite >(unite in)
@@ -309,7 +321,7 @@ unite lang2cxx< MonoObject*, unite >(MonoObject* in)
 }
 
 ///
-// ReprÃ©sente l'ensemble des cartes que vous pouvez utiliser.
+// Représente l'ensemble des cartes que vous pouvez utiliser.
 //
 template <>
 MonoObject* cxx2lang< MonoObject*, cartes >(cartes in)
@@ -343,7 +355,7 @@ cartes lang2cxx< MonoObject*, cartes >(MonoObject* in)
 }
 
 ///
-// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action.
+// Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
 template <>
 MonoArray* cxx2lang< MonoArray*, std::vector<erreur> >(std::vector<erreur> in)
@@ -371,7 +383,7 @@ std::vector<erreur> lang2cxx< MonoArray*, std::vector<erreur> >(MonoArray* in)
 }
 
 ///
-// Le type d'une unitÃ© sur le terrain
+// Le type d'une unité sur le terrain
 //
 template <>
 MonoArray* cxx2lang< MonoArray*, std::vector<type_unite> >(std::vector<type_unite> in)
@@ -399,7 +411,7 @@ std::vector<type_unite> lang2cxx< MonoArray*, std::vector<type_unite> >(MonoArra
 }
 
 ///
-// ReprÃ©sente une position sur le terrain du jeu.
+// Représente une position sur le terrain du jeu.
 //
 template <>
 MonoArray* cxx2lang< MonoArray*, std::vector<position> >(std::vector<position> in)
@@ -455,7 +467,7 @@ std::vector<taille_terrain> lang2cxx< MonoArray*, std::vector<taille_terrain> >(
 }
 
 ///
-// Donne les caractÃ©ristiques d'un type d'unitÃ©.
+// Donne les caractéristiques d'un type d'unité.
 //
 template <>
 MonoArray* cxx2lang< MonoArray*, std::vector<caracs> >(std::vector<caracs> in)
@@ -483,7 +495,7 @@ std::vector<caracs> lang2cxx< MonoArray*, std::vector<caracs> >(MonoArray* in)
 }
 
 ///
-// ReprÃ©sente une unitÃ© sur le terrain.
+// Représente une unité sur le terrain.
 //
 template <>
 MonoArray* cxx2lang< MonoArray*, std::vector<unite> >(std::vector<unite> in)
@@ -511,7 +523,7 @@ std::vector<unite> lang2cxx< MonoArray*, std::vector<unite> >(MonoArray* in)
 }
 
 ///
-// ReprÃ©sente l'ensemble des cartes que vous pouvez utiliser.
+// Représente l'ensemble des cartes que vous pouvez utiliser.
 //
 template <>
 MonoArray* cxx2lang< MonoArray*, std::vector<cartes> >(std::vector<cartes> in)

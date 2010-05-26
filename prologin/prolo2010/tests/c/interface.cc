@@ -5,6 +5,7 @@
 //
 
 #include "interface.hh"
+#include <cstdlib>
 
 template<typename Lang, typename Cxx>
 Cxx lang2cxx(Lang in)
@@ -13,10 +14,17 @@ Cxx lang2cxx(Lang in)
 }
 
 template<>
+std_string lang2cxx<charp, std_string>(charp in)
+{
+  return in;
+}
+
+template<>
 int lang2cxx<int, int>(int in)
 {
   return in;
 }
+
 template<>
 bool lang2cxx<int, bool>(int in)
 {
@@ -35,6 +43,16 @@ template<typename Lang, typename Cxx>
 Lang cxx2lang(Cxx in)
 {
   return in.error;
+}
+
+template<>
+charp cxx2lang<charp, std_string>(std_string in)
+{
+  size_t l = in.length();
+  char * out = (char *) malloc(l + 1);
+  for (int i = 0; i < l; i++) out[i] = in[i];
+  out[l] = 0;
+  return out;
 }
 
 template<>

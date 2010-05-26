@@ -96,12 +96,13 @@ class FunctionArg
     @name = conf[0]
     @type = types[conf[1]]
   end
+
 end
 
 class Function
-  attr_reader :name
-  attr_reader :ret
-  attr_reader :args
+  attr_accessor :name
+  attr_accessor :ret
+  attr_accessor :args
   attr_reader :conf
   attr_reader :dumps
 
@@ -136,7 +137,7 @@ class FileGenerator
   def initialize
     # Add required builtin types
     @types = TypesHash.new
-    ['void', 'int', 'bool'].each do |x|
+    ['void', 'int', 'bool', 'string'].each do |x|
       @types[x] = SimpleType.new x
     end
 
@@ -366,6 +367,8 @@ class CxxProto < CProto
       "std::vector<#{cxx_type(t.type)}>"
     elsif t.is_struct?
       "__internal__cxx__#{t.name}"
+    elsif t.is_simple? && t.name == "string"
+      "std::string"
     else
       t.name
     end
@@ -405,6 +408,8 @@ class CxxProto < CProto
     # Only really useful for arrays.
     if type.is_array?
       "std::vector<#{type.type.name}>"
+    elsif type.name == "string" then
+      "std::string"
     else
       type.name
     end
@@ -584,20 +589,18 @@ class JavaProto < FileGenerator
     if t.is_array?
     then
       "#{ conv_java_type_aux(t.type, true) }[]"
-    else
-      if t.is_struct? then
-        t.name.capitalize()
+    elsif t.is_struct? then
+      t.name.capitalize()
+    elsif t.is_simple? then
+      if t.name == "string" then
+        "String"
+      elsif in_generic then
+        (@java_obj_types[t.name]).capitalize()
       else
-        if t.is_simple? then
-          if in_generic then
-            (@java_obj_types[t.name]).capitalize()
-          else
-            @java_types[t.name]
-          end
-        else
-          t.name.capitalize()
-        end
+        @java_types[t.name]
       end
+    else
+      t.name.capitalize()
     end
   end
 end

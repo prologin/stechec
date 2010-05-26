@@ -5,6 +5,7 @@
 */
 
 #include <stdlib.h>
+typedef char * charp;
 /*!
 ** Taille de départ du terrain.
 */

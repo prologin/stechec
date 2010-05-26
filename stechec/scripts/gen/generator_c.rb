@@ -13,12 +13,18 @@
 require "pathname"
 require "gen/file_generator"
 
-def c_type(type)
-  if type.is_simple? and type.name == "bool"
+def g_c_type(type)
+  if type.name == "bool" then
     "int"
+  elsif type.name == "string" then
+    "charp"
   else
     type.name
   end
+end
+
+def c_type(type)
+  g_c_type(type)
 end
 
 def c_proto(fn, array_like_c = true)
@@ -28,6 +34,7 @@ def c_proto(fn, array_like_c = true)
   if fn.ret.is_array?
     if array_like_c then
       rettype = "void"
+    elsif fn.ret.name == "string" then "char*"
     else
       rettype = "#{c_type(fn.ret.type)}*"
     end
@@ -74,6 +81,7 @@ class CCxxFileGenerator < CxxProto
     print_banner "generator_c.rb"
     @f.puts <<-EOF
 #include "interface.hh"
+#include <cstdlib>
 
 template<typename Lang, typename Cxx>
 Cxx lang2cxx(Lang in)
@@ -82,10 +90,17 @@ Cxx lang2cxx(Lang in)
 }
 
 template<>
+std_string lang2cxx<charp, std_string>(charp in)
+{
+  return in;
+}
+
+template<>
 int lang2cxx<int, int>(int in)
 {
   return in;
 }
+
 template<>
 bool lang2cxx<int, bool>(int in)
 {
@@ -104,6 +119,16 @@ template<typename Lang, typename Cxx>
 Lang cxx2lang(Cxx in)
 {
   return in.error;
+}
+
+template<>
+charp cxx2lang<charp, std_string>(std_string in)
+{
+  size_t l = in.length();
+  char * out = (char *) malloc(l + 1);
+  for (int i = 0; i < l; i++) out[i] = in[i];
+  out[l] = 0;
+  return out;
 }
 
 template<>
@@ -189,23 +214,13 @@ EOF
           lenname = arg.name + "_len"
           name = arg.name
           lang_type = c_type(arg.type.type)
-          cxx_type = arg.type.type
-          if cxx_type.is_struct? then
-            cxx_type = "__internal__cxx__#{cxx_type.name}"
-          else
-            cxx_type = cxx_type.name;
-          end
+          cxx_type = cxx_type(arg.type.type)
           @f.puts "  std::vector<#{cxx_type}> param_#{ name };"
           @f.puts "  lang2cxx_array<#{lang_type}, #{cxx_type}>(#{arrname}, #{lenname}, param_#{name});"
         else
           name = arg.name
           lang_type = c_type(arg.type)
-          cxx_type = arg.type
-          if cxx_type.is_struct? then
-            cxx_type = "__internal__cxx__#{cxx_type.name}"
-          else
-            cxx_type = cxx_type.name;
-          end
+          cxx_type = cxx_type(arg.type)
           @f.puts "  #{cxx_type} param_#{ name } = lang2cxx<#{lang_type}, #{cxx_type}>(#{name});"
         end  
       end
@@ -249,6 +264,7 @@ EOF
     @f.puts 'extern "C" {'
     @f.puts "# include \"#{$conf['conf']['player_filename']}.h\""
     @f.puts "}", ""
+    @f.puts "typedef std::string std_string;"
     build_struct_for_pascal_and_c_to_cxx
     for_each_fun do |fn|
       @f.print cxx_proto(fn, "api_", 'extern "C"'), ";\n"
@@ -272,6 +288,7 @@ class CFileGenerator < CProto
     @f = File.open(@path + @header_file, 'w')
     print_banner "generator_c.rb"
     @f.puts "#include <stdlib.h>"
+    @f.puts "typedef char * charp;"
     build_constants
     build_enums
     build_structs_generic do |field, type|

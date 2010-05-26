@@ -5,38 +5,38 @@
 using System.Runtime.CompilerServices;
 
 namespace Prologin {
-// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action.
+// Énumération représentant une erreur renvoyée par une des fonctions d'action.
 	public enum Erreur {
 		OK, // <- aucune erreur n'est survenue
-		POSITION_INVALIDE, // <- la position spÃ©cifiÃ©e est invalide
-		CASE_OCCUPEE, // <- la case sur laquelle vous tentez de vous dÃ©placer est occupÃ©e
-		PAS_A_PORTEE, // <- la cible n'est pas Ã  portÃ©e
-		UNITE_KO, // <- l'unitÃ© que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO
-		UNITE_DEBOUT, // <- l'unitÃ© que vous essayez de relever est dÃ©jÃ  debout
-		QUOTA_DEPASSE, // <- nombre maximal d'unites, de spawn ou de relevages par tour dÃ©passÃ©
-		PLUS_DE_PA, // <- cette unitÃ© a rÃ©alisÃ© toutes ses actions
-		DEJA_ATTAQUE, // <- cette unitÃ© a dÃ©jÃ  attaquÃ©
-		UNITE_INTERDITE, // <- cette unitÃ© ne peut pas Ãªtre amenÃ©e en renfort
-		RENFORT_IMPOSSIBLE, // <- une unitÃ© est dÃ©jÃ  prÃ©sente sur le spawn
-		PAS_A_MOI, // <- l'unitÃ© ciblÃ©e n'est pas Ã  vous
-		PLUS_DE_CARTES, // <- il n'y a plus de cartes du type spÃ©cifiÃ© dans votre main
+		POSITION_INVALIDE, // <- la position spécifiée est invalide
+		CASE_OCCUPEE, // <- la case sur laquelle vous tentez de vous déplacer est occupée
+		PAS_A_PORTEE, // <- la cible n'est pas à portée
+		UNITE_KO, // <- l'unité que vous essayez de faire agir ou sur laquelle vous essayez d'agir  est KO
+		UNITE_DEBOUT, // <- l'unité que vous essayez de relever est déjà debout
+		QUOTA_DEPASSE, // <- nombre maximal d'unites, de spawn ou de relevages par tour dépassé
+		PLUS_DE_PA, // <- cette unité a réalisé toutes ses actions
+		DEJA_ATTAQUE, // <- cette unité a déjà attaqué
+		UNITE_INTERDITE, // <- cette unité ne peut pas être amenée en renfort
+		RENFORT_IMPOSSIBLE, // <- une unité est déjà présente sur le spawn
+		PAS_A_MOI, // <- l'unité ciblée n'est pas à vous
+		PLUS_DE_CARTES, // <- il n'y a plus de cartes du type spécifié dans votre main
 		PHASE_CARTES_TERMINEE, // <- vous ne pouvez plus poser de cartes car vous avez fait une action
 	}
 
-// Le type d'une unitÃ© sur le terrain
+// Le type d'une unité sur le terrain
 	public enum TypeUnite {
-		PERROQUET, // <- 1 PA et portÃ©e de 1
-		SINGE, // <- 2 PA et portÃ©e de 3
-		CHAT, // <- 5 PA et portÃ©e de 1
-		KANGOUROU, // <- 3 PA et portÃ©e de 2 (explose !)
+		PERROQUET, // <- 1 PA et portée de 1
+		SINGE, // <- 2 PA et portée de 3
+		CHAT, // <- 5 PA et portée de 1
+		KANGOUROU, // <- 3 PA et portée de 2 (explose !)
 	}
 
-// ReprÃ©sente une position sur le terrain du jeu.
+// Représente une position sur le terrain du jeu.
 	class Position {
 		public Position() {
 		}
-		public int X; // <- coordonnÃ©e X
-		public int Y; // <- coordonnÃ©e Y
+		public int X; // <- coordonnée X
+		public int Y; // <- coordonnée Y
 	}
 
 // Contient les informations sur la taille du terrain du jeu.
@@ -44,52 +44,52 @@ namespace Prologin {
 		public TailleTerrain() {
 		}
 		public int Taille; // <- taille actuelle du terrain
-		public int MinCoord; // <- coordonnÃ©e minimale en X ou en Y
-		public int MaxCoord; // <- coordonnÃ©e maximale en X ou en Y
+		public int MinCoord; // <- coordonnée minimale en X ou en Y
+		public int MaxCoord; // <- coordonnée maximale en X ou en Y
 	}
 
-// Donne les caractÃ©ristiques d'un type d'unitÃ©.
+// Donne les caractéristiques d'un type d'unité.
 	class Caracs {
 		public Caracs() {
 		}
 		public int PaInit; // <- nombre de points d'actions par tour
-		public int Portee; // <- portÃ©e maximale de l'unitÃ©
+		public int Portee; // <- portée maximale de l'unité
 	}
 
-// ReprÃ©sente une unitÃ© sur le terrain.
+// Représente une unité sur le terrain.
 	class Unite {
 		public Unite() {
 			Pos = new Position();
 		}
-		public Position Pos; // <- la position de l'unitÃ©
-		public bool Ennemi; // <- vrai si l'unitÃ© appartient Ã  l'ennemi
-		public TypeUnite TypeUniteActuel; // <- le type de l'unitÃ©, qui change si l'unitÃ© est dÃ©guisÃ©e
-		public TypeUnite VraiTypeUnite; // <- le vrai type de l'unitÃ© (qui ne change pas lors du dÃ©guisement)
-		public int Ko; // <- une valeur nÃ©gative si l'unitÃ© n'est pas KO, sinon le nombre de marqueurs KO sur l'unitÃ©
-		public int Pa; // <- le nombre de PA restants Ã  l'unitÃ©
-		public int Attaques; // <- le nombre d'attaques restants Ã  l'unitÃ©
+		public Position Pos; // <- la position de l'unité
+		public bool Ennemi; // <- vrai si l'unité appartient à l'ennemi
+		public TypeUnite TypeUniteActuel; // <- le type de l'unité, qui change si l'unité est déguisée
+		public TypeUnite VraiTypeUnite; // <- le vrai type de l'unité (qui ne change pas lors du déguisement)
+		public int Ko; // <- une valeur négative si l'unité n'est pas KO, sinon le nombre de marqueurs KO sur l'unité
+		public int Pa; // <- le nombre de PA restants à l'unité
+		public int Attaques; // <- le nombre d'attaques restants à l'unité
 		public int AttaquesGratuites; // <- le nombre d'attaques gratuites (voir la partie banzai)
-		public int Id; // <- l'identifiant unique de l'unitÃ©
+		public int Id; // <- l'identifiant unique de l'unité
 	}
 
-// ReprÃ©sente l'ensemble des cartes que vous pouvez utiliser.
+// Représente l'ensemble des cartes que vous pouvez utiliser.
 	class Cartes {
 		public Cartes() {
 		}
-		public int Potion; // <- le nombre de cartes Â« Potion magique Â»
-		public int Deguisement; // <- le nombre de cartes Â« DÃ©guisement Â»
-		public int Banzai; // <- le nombre de cartes Â« BanzaÃ¯ Â»
-		public int Pacifisme; // <- le nombre de cartes Â« Pacifisme Â»
+		public int Potion; // <- le nombre de cartes « Potion magique »
+		public int Deguisement; // <- le nombre de cartes « Déguisement »
+		public int Banzai; // <- le nombre de cartes « Banzaï »
+		public int Pacifisme; // <- le nombre de cartes « Pacifisme »
 	}
 
 	class Api {
-// Taille de dÃ©part du terrain.
+// Taille de départ du terrain.
 		public const int TAILLE_DEPART = 19;
 
-// Le nombre maximal d'unitÃ©s pouvant appartenir Ã  une Ã©quipe.
+// Le nombre maximal d'unités pouvant appartenir à une équipe.
 		public const int NBR_MAX_UNITES = 10;
 
-// Le temps, en nombre de tours, entre deux rÃ©trÃ©cissement du terrain.
+// Le temps, en nombre de tours, entre deux rétrécissement du terrain.
 		public const int TEMPS_RETRECISSEMENT = 5;
 
 // Le nombre maximum en jeu de chaque carte.
@@ -99,11 +99,11 @@ namespace Prologin {
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern int NombrePc();
 
-// Renvoie le nombre d'unitÃ©s en jeu.
+// Renvoie le nombre d'unités en jeu.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern int NombreUnites(bool ennemi);
 
-// Renvoie le numÃ©ro du tour actuel.
+// Renvoie le numéro du tour actuel.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern int TourActuel();
 
@@ -111,7 +111,7 @@ namespace Prologin {
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Position PosRenfort(bool ennemi);
 
-// Renvoie les caractÃ©ristiques d'un type d'unitÃ©.
+// Renvoie les caractéristiques d'un type d'unité.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Caracs Caracteristiques(TypeUnite tu);
 
@@ -119,47 +119,47 @@ namespace Prologin {
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Cartes MesCartes();
 
-// Retourne la liste des unitÃ©s actuellement en jeu.
+// Retourne la liste des unités actuellement en jeu.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Unite[] Unites();
 
-// Retourne la taille actuelle du terrain et les coordonnÃ©es min/max dans une structure "taille_terrain".
+// Retourne la taille actuelle du terrain et les coordonnées min/max dans une structure "taille_terrain".
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern TailleTerrain TailleTerrainActuelle();
 
-// Utilise une carte Â« Potion magique Â» que vous avez dans votre main.
+// Utilise une carte « Potion magique » que vous avez dans votre main.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Potion(Position cible);
 
-// Utilise une carte Â« DÃ©guisement Â» que vous avez dans votre main.
+// Utilise une carte « Déguisement » que vous avez dans votre main.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Deguisement(Position cible, TypeUnite nouveau_type);
 
-// Utilise une carte Â« BanzaÃ¯ Â» que vous avez dans votre main.
+// Utilise une carte « Banzaï » que vous avez dans votre main.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Banzai(Position cible);
 
-// Utilise une carte Â« Pacifisme Â» que vous avez dans votre main.
+// Utilise une carte « Pacifisme » que vous avez dans votre main.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Pacifisme();
 
-// DÃ©place une unitÃ© vers une position Ã  portÃ©e.
+// Déplace une unité vers une position à portée.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Deplacer(Position cible, Position pos);
 
-// RelÃ¨ve une unitÃ© n'ayant plus de marqueurs de KO.
+// Relève une unité n'ayant plus de marqueurs de KO.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Relever(Position cible);
 
-// Attaque une autre unitÃ©.
+// Attaque une autre unité.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Attaquer(Position attaquant, Position cible);
 
-// Fait apparaitre une unitÃ© sur la case de spawn.
+// Fait apparaitre une unité sur la case de spawn.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Erreur Renfort(TypeUnite quoi);
 
-// Annule l'effet de la derniÃ¨re action et remet le jeu dans l'Ã©tat prÃ©cÃ©dent. Renvoie false s'il n'y a rien Ã  annuler, true sinon.
+// Annule l'effet de la dernière action et remet le jeu dans l'état précédent. Renvoie false s'il n'y a rien à annuler, true sinon.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern bool Annuler();
 

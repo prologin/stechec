@@ -27,6 +27,18 @@ int lang2cxx<jint, int>(jint in)
 {
   return in;
 }
+
+template<>
+std::string lang2cxx<java::lang::String*, std::string>(java::lang::String *in)
+{
+  size_t len = in->length();
+  jchar *c = _Jv_GetStringChars(in);
+  std::string s((char *)c, len);
+  for (int i = 0; i < len; i++){
+    s[i] = c[i];
+  }
+  return s;
+}
 template<>
 bool lang2cxx<jboolean, bool>(jboolean in)
 {
@@ -50,6 +62,13 @@ jboolean cxx2lang<jboolean, bool>(bool in)
   return in;
 }
 
+
+template<>
+java::lang::String* cxx2lang<java::lang::String*, std::string>(std::string in)
+{
+  jstring s = _Jv_NewStringLatin1(in.c_str(), in.length());
+  return s;
+}
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //

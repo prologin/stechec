@@ -29,6 +29,7 @@ bashdir = $(pkglibdir)/bash
 nobase_dist_ruby_DATA =				\
 	generator.rb				\
 	gen/file_generator.rb			\
+	gen/generator_prolog.rb			\
 	gen/generator_c.rb			\
 	gen/generator_caml.rb			\
 	gen/generator_cxx.rb			\

@@ -32,6 +32,15 @@ zval* cxx2lang<zval*, bool>(bool in)
     return x;
 }
 
+template <>
+zval* cxx2lang<zval*, std::string>(std::string in)
+{
+    zval* x;
+    MAKE_STD_ZVAL(x);
+    ZVAL_STRINGL(x, in.c_str(), in.length(), true);
+    return x;
+}
+
 template <typename Cxx>
 zval* cxx2lang_array(const std::vector<Cxx>& in)
 {
@@ -63,6 +72,12 @@ template <>
 bool lang2cxx<zval*, bool>(zval* in)
 {
     return Z_BVAL_P(in);
+}
+
+template <>
+std::string lang2cxx<zval*, std::string>(zval* in)
+{
+    return in->value.str.val;
 }
 
 template <typename Cxx>

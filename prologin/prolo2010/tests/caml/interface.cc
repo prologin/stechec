@@ -24,6 +24,16 @@ value cxx2lang<value, int>(int in)
   return Val_int(in);
 }
 
+template<>
+value cxx2lang<value, std::string>(std::string in)
+{
+  size_t l = in.length();
+  char * out = (char *) malloc(l + 1);
+  for (int i = 0; i < l; i++) out[i] = in[i];
+  out[l] = 0;
+  return caml_copy_string(out);
+}
+
 template <>
 value cxx2lang<value, bool>(bool in)
 {
@@ -37,7 +47,9 @@ value cxx2lang_array(const std::vector<Cxx>& in)
   if (size == 0)
     return Atom(0);
 
-  value v = caml_alloc(size, 0);
+  CAMLlocal1(v);
+
+  v = caml_alloc(size, 0);
   for (int i = 0; i < size; ++i)
     Field(v, i) = cxx2lang<value, Cxx>(in[i]);
 
@@ -48,6 +60,12 @@ template <typename Lang, typename Cxx>
 Cxx lang2cxx(Lang in)
 {
   return in.__if_that_triggers_an_error_there_is_a_problem;
+}
+
+template<>
+std::string lang2cxx<value, std::string>(value in)
+{
+  return String_val(in);
 }
 
 template <>
@@ -109,7 +127,7 @@ type_unite lang2cxx<value, type_unite>(value in)
 template <>
 value cxx2lang<value, position>(position in)
 {
-  value out = caml_alloc(2, 0);
+  value out = caml_alloc(2, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   Field(out, 0) = cxx2lang<value, int>(in.x);
   Field(out, 1) = cxx2lang<value, int>(in.y);
   return out;
@@ -130,7 +148,7 @@ position lang2cxx<value, position>(value in)
 template <>
 value cxx2lang<value, taille_terrain>(taille_terrain in)
 {
-  value out = caml_alloc(3, 0);
+  value out = caml_alloc(3, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   Field(out, 0) = cxx2lang<value, int>(in.taille);
   Field(out, 1) = cxx2lang<value, int>(in.min_coord);
   Field(out, 2) = cxx2lang<value, int>(in.max_coord);
@@ -153,7 +171,7 @@ taille_terrain lang2cxx<value, taille_terrain>(value in)
 template <>
 value cxx2lang<value, caracs>(caracs in)
 {
-  value out = caml_alloc(2, 0);
+  value out = caml_alloc(2, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   Field(out, 0) = cxx2lang<value, int>(in.pa_init);
   Field(out, 1) = cxx2lang<value, int>(in.portee);
   return out;
@@ -174,7 +192,7 @@ caracs lang2cxx<value, caracs>(value in)
 template <>
 value cxx2lang<value, unite>(unite in)
 {
-  value out = caml_alloc(9, 0);
+  value out = caml_alloc(9, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   Field(out, 0) = cxx2lang<value, position>(in.pos);
   Field(out, 1) = cxx2lang<value, bool>(in.ennemi);
   Field(out, 2) = cxx2lang<value, type_unite>(in.type_unite_actuel);
@@ -209,7 +227,7 @@ unite lang2cxx<value, unite>(value in)
 template <>
 value cxx2lang<value, cartes>(cartes in)
 {
-  value out = caml_alloc(4, 0);
+  value out = caml_alloc(4, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   Field(out, 0) = cxx2lang<value, int>(in.potion);
   Field(out, 1) = cxx2lang<value, int>(in.deguisement);
   Field(out, 2) = cxx2lang<value, int>(in.banzai);
@@ -235,7 +253,6 @@ extern "C" value ml_nombre_pc(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-
   CAMLreturn((cxx2lang<value, int>(api_nombre_pc())));
 }
 
@@ -246,7 +263,6 @@ extern "C" value ml_nombre_unites(value ennemi)
 {
   CAMLparam0();
   CAMLxparam1(ennemi);
-
   CAMLreturn((cxx2lang<value, int>(api_nombre_unites(lang2cxx<value, bool>(ennemi)))));
 }
 
@@ -257,7 +273,6 @@ extern "C" value ml_tour_actuel(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-
   CAMLreturn((cxx2lang<value, int>(api_tour_actuel())));
 }
 
@@ -268,7 +283,6 @@ extern "C" value ml_pos_renfort(value ennemi)
 {
   CAMLparam0();
   CAMLxparam1(ennemi);
-
   CAMLreturn((cxx2lang<value, position>(api_pos_renfort(lang2cxx<value, bool>(ennemi)))));
 }
 
@@ -279,7 +293,6 @@ extern "C" value ml_caracteristiques(value tu)
 {
   CAMLparam0();
   CAMLxparam1(tu);
-
   CAMLreturn((cxx2lang<value, caracs>(api_caracteristiques(lang2cxx<value, type_unite>(tu)))));
 }
 
@@ -290,7 +303,6 @@ extern "C" value ml_mes_cartes(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-
   CAMLreturn((cxx2lang<value, cartes>(api_mes_cartes())));
 }
 
@@ -301,7 +313,6 @@ extern "C" value ml_unites(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-
   CAMLreturn((cxx2lang_array<unite>(api_unites())));
 }
 
@@ -312,7 +323,6 @@ extern "C" value ml_taille_terrain_actuelle(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-
   CAMLreturn((cxx2lang<value, taille_terrain>(api_taille_terrain_actuelle())));
 }
 
@@ -323,7 +333,6 @@ extern "C" value ml_potion(value cible)
 {
   CAMLparam0();
   CAMLxparam1(cible);
-
   CAMLreturn((cxx2lang<value, erreur>(api_potion(lang2cxx<value, position>(cible)))));
 }
 
@@ -333,9 +342,7 @@ extern "C" value ml_potion(value cible)
 extern "C" value ml_deguisement(value cible, value nouveau_type)
 {
   CAMLparam0();
-  CAMLxparam1(cible);
-  CAMLxparam1(nouveau_type);
-
+  CAMLxparam2(cible, nouveau_type);
   CAMLreturn((cxx2lang<value, erreur>(api_deguisement(lang2cxx<value, position>(cible), lang2cxx<value, type_unite>(nouveau_type)))));
 }
 
@@ -346,7 +353,6 @@ extern "C" value ml_banzai(value cible)
 {
   CAMLparam0();
   CAMLxparam1(cible);
-
   CAMLreturn((cxx2lang<value, erreur>(api_banzai(lang2cxx<value, position>(cible)))));
 }
 
@@ -357,7 +363,6 @@ extern "C" value ml_pacifisme(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-
   CAMLreturn((cxx2lang<value, erreur>(api_pacifisme())));
 }
 
@@ -367,9 +372,7 @@ extern "C" value ml_pacifisme(value unit)
 extern "C" value ml_deplacer(value cible, value pos)
 {
   CAMLparam0();
-  CAMLxparam1(cible);
-  CAMLxparam1(pos);
-
+  CAMLxparam2(cible, pos);
   CAMLreturn((cxx2lang<value, erreur>(api_deplacer(lang2cxx<value, position>(cible), lang2cxx<value, position>(pos)))));
 }
 
@@ -380,7 +383,6 @@ extern "C" value ml_relever(value cible)
 {
   CAMLparam0();
   CAMLxparam1(cible);
-
   CAMLreturn((cxx2lang<value, erreur>(api_relever(lang2cxx<value, position>(cible)))));
 }
 
@@ -390,9 +392,7 @@ extern "C" value ml_relever(value cible)
 extern "C" value ml_attaquer(value attaquant, value cible)
 {
   CAMLparam0();
-  CAMLxparam1(attaquant);
-  CAMLxparam1(cible);
-
+  CAMLxparam2(attaquant, cible);
   CAMLreturn((cxx2lang<value, erreur>(api_attaquer(lang2cxx<value, position>(attaquant), lang2cxx<value, position>(cible)))));
 }
 
@@ -403,7 +403,6 @@ extern "C" value ml_renfort(value quoi)
 {
   CAMLparam0();
   CAMLxparam1(quoi);
-
   CAMLreturn((cxx2lang<value, erreur>(api_renfort(lang2cxx<value, type_unite>(quoi)))));
 }
 
@@ -414,7 +413,6 @@ extern "C" value ml_annuler(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-
   CAMLreturn((cxx2lang<value, bool>(api_annuler())));
 }
 
@@ -425,7 +423,6 @@ extern "C" value ml_afficher_erreur(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-
   api_afficher_erreur(lang2cxx<value, erreur>(v));
   CAMLreturn(Val_unit);
 }
@@ -437,7 +434,6 @@ extern "C" value ml_afficher_type_unite(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-
   api_afficher_type_unite(lang2cxx<value, type_unite>(v));
   CAMLreturn(Val_unit);
 }
@@ -449,7 +445,6 @@ extern "C" value ml_afficher_position(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-
   api_afficher_position(lang2cxx<value, position>(v));
   CAMLreturn(Val_unit);
 }
@@ -461,7 +456,6 @@ extern "C" value ml_afficher_taille_terrain(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-
   api_afficher_taille_terrain(lang2cxx<value, taille_terrain>(v));
   CAMLreturn(Val_unit);
 }
@@ -473,7 +467,6 @@ extern "C" value ml_afficher_caracs(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-
   api_afficher_caracs(lang2cxx<value, caracs>(v));
   CAMLreturn(Val_unit);
 }
@@ -485,7 +478,6 @@ extern "C" value ml_afficher_unite(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-
   api_afficher_unite(lang2cxx<value, unite>(v));
   CAMLreturn(Val_unit);
 }
@@ -497,7 +489,6 @@ extern "C" value ml_afficher_cartes(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-
   api_afficher_cartes(lang2cxx<value, cartes>(v));
   CAMLreturn(Val_unit);
 }
@@ -509,8 +500,8 @@ void init_game()
 {
   static value *closure = NULL;
   if (closure == NULL)
-    closure = caml_named_value("ml_init_game");
-  value _ret = callback(*closure, Val_unit);
+    closure = caml_named_value("ml_init_game"); 
+  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   return;
 }
 
@@ -522,8 +513,8 @@ position retirer_ko()
 {
   static value *closure = NULL;
   if (closure == NULL)
-    closure = caml_named_value("ml_retirer_ko");
-  value _ret = callback(*closure, Val_unit);
+    closure = caml_named_value("ml_retirer_ko"); 
+  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   return lang2cxx<value, position>(_ret);
 }
 
@@ -535,8 +526,8 @@ void jouer()
 {
   static value *closure = NULL;
   if (closure == NULL)
-    closure = caml_named_value("ml_jouer");
-  value _ret = callback(*closure, Val_unit);
+    closure = caml_named_value("ml_jouer"); 
+  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   return;
 }
 
@@ -548,8 +539,8 @@ void end_game()
 {
   static value *closure = NULL;
   if (closure == NULL)
-    closure = caml_named_value("ml_end_game");
-  value _ret = callback(*closure, Val_unit);
+    closure = caml_named_value("ml_end_game"); 
+  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   return;
 }
 

@@ -5,6 +5,7 @@
 //
 
 #include <vector>
+#include <string>
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //

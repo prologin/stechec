@@ -26,7 +26,7 @@ end;
 *)
 procedure jouer(); cdecl; export;
 var
-   u array_of_unite;
+   u :  array_of_unite;
 begin
    u:= unites();
    afficher_unite(u[0]);

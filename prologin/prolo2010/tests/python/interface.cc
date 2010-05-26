@@ -24,6 +24,14 @@ PyObject* cxx2lang<PyObject*, int>(int in)
   return PyInt_FromLong(in);
 }
 
+
+template <>
+PyObject* cxx2lang<PyObject*, std::string>(std::string in)
+{
+return PyString_FromString (in.c_str());
+}
+
+
 template <>
 PyObject* cxx2lang<PyObject*, bool>(bool in)
 {
@@ -65,6 +73,17 @@ template <>
 bool lang2cxx<PyObject*, bool>(PyObject* in)
 {
   return (bool)lang2cxx<PyObject*, int>(in);
+}
+
+template <>
+std::string lang2cxx<PyObject*, std::string>(PyObject* in)
+{
+  char * out = PyString_AS_STRING(in);
+  if (PyErr_Occurred())
+    {
+      throw 42;
+    }
+  return out;
 }
 
 template <typename Cxx>
