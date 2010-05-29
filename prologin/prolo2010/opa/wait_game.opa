@@ -66,7 +66,7 @@ listgames = // session server
     do jlog("start GC")
     out = Map.fold(
       (id, (session, key), (games, listeners) ->
-        if Session_private.isOpen(session) then
+        if Session.is_open(session) then
           (games, listeners)
         else
           do jlog("removing user {id}")
