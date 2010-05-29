@@ -1,106 +1,62 @@
+/*
+ * Copyright (c) 2010 MLState
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * All advertising materials mentioning features or use of this software
+ *       must display the following acknowledgement:
+ *       This product includes software developed by MLState,
+ *       and its contributors.
+ *     * Neither the name of the MLState nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * @author Maxime Audouin <maxime.audouin@mlstate.com>
+ */
 
-do jlog("running server")
 
 server =
   do jlog("server !")
+  html(title, body) = ( _, _, _ ->
+    custom_css = [ _ ->
+      some({
+         custom_body   = none
+         custom_headers= none
+         custom_css    = ["/style.css"]
+         custom_js = []
+         })
+      ]
+      Resource.full_page(
+      title,
+      body,
+      <></>,
+      {success} : web_response,
+      custom_css
+      ))
   urls = parser
-  | "/" -> html("One Prologin Application", page )
-  | "/damier.png" -> Resource.image({png=file_content("damier.png")})
-  | "/bipbip.png" -> Resource.image({png=file_content("bipbip.png")})
-  | "/titi.png" -> Resource.image({png=file_content("titi.png")})
-  | "/elmer.png" -> Resource.image({png=file_content("elmer.png")})
-  | "/coyote.png" -> Resource.image({png=file_content("coyote.png")})
-  
-  | "/bipbip_mini.png" -> Resource.image({png=file_content("bipbip_mini.png")})
-  | "/titi_mini.png" -> Resource.image({png=file_content("titi_mini.png")})
-  | "/elmer_mini.png" -> Resource.image({png=file_content("elmer_mini.png")})
-  | "/coyote_mini.png" -> Resource.image({png=file_content("coyote_mini.png")})
-  simple_server(urls)
+  | "/" -> html("One Prologin Application (powered by OPA from MLState)", page )
+  | "/howtoplay" -> html("how to play ?", page_help)
+  | "/style.css" -> (_, _, _ -> Resource.css(file_content("style.css")))
+  | "/damier.png" -> (_, _, _ -> Resource.dyn_image({png=file_content(
+    if Random.int(2) == 1
+    then "damier.png"
+    else "damier_2.png"
+    )}))
+  | "/" ([a-z_]*) ".png" -> (_, _, _ -> Resource.image({png=file_content("{__2}.png")}))
+  Server.full_server(void, (_, _, _ -> void), urls)
 //
-
-css = css
-
-#{"__internal__log"}{
-display:none;
-}
-
-.toon{
-  border: 2px solid #000;
-}
-
-#games_list {
-  width : 30%;
-  float : left;
-}
-#games_creation{
-  width : 69%;
-  float : right;
-}
-
-#main, #footer {
-  border-top : 1px solid rgb(0,0,0)  ;
-}
-#main{
-  min-height:700px;
-}
-#right{
-  margin-left:700px;
-  width:300px;
-}
-#footer{
-  font-size : x-smaller;
-  text-align : center;
-}
-
-#select{
-  position:absolute;
-  left:-3000px;
-  width:{px(float_of_int(dx))};
-  height:{px(float_of_int(dy))};
-  background-color:#DEF;
-  opacity:0.5;
-}
-
-.bouton{
-  display:inline;
-  border:1px inset #DEF;
-  background-color: #7AD;
-}
-
-.info{
-  font-size : x-smaller;
-  text-decoration : bold;
-}
-.links{
-  border-top:1px solid #000;
-}
-.links ul, .links ul li{
-  margin:0;
-  padding:0;
-}
-.links ul li{
-  width: 33%;
-  list-style:none;
-  float:left;
-  font-size:xx-smaller;
-  text-align:center;
-}
-
-#tbl {
-  width: 600px;
-  height: 600px;
-  background-image: url('/damier.png');
-  position:absolute;
-}
-
-.white{
-  border: 3px solid #DDD;
-  font-weight:bold;
-}
-.black{
-  border: 3px solid #444;
-  font-weight:bold;
-}
-.error{
-  color: #f00
-}

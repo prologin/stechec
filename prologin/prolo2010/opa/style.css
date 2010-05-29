@@ -1,0 +1,160 @@
+body {
+  background: #f2f2f2 none repeat scroll top left;
+  color: #4D4D4D;
+  text-align: left;
+  line-height: normal;
+  font-weight: normal;
+  font-variant: normal;
+  font-style: normal;
+  font-size: 80%;
+  font-family: helvetica, arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  color: #343338;
+  font-size: 1.6em;
+  font-family: helvetica;
+  font-weight: normal;
+  padding: 10px 0;
+  margin: 0;
+}
+h6 {
+  color: #343338;
+  font-size: 1.2em;
+  font-family: helvetica;
+  font-style: italic;
+  padding: 5px 0;
+  margin: 0;
+}
+a {
+  color: #0099cc;
+}
+p {ma}
+input {margin: 0 3px 3px 0;}
+
+#head {
+  margin-bottom: 5px;
+  padding:10px;
+  background: #99cce1;
+  border-bottom: 1px solid #6cb5d5;
+}
+#main {
+  min-height : 700px;
+  padding:5px;
+  min-width: 1000px;
+}
+#footer {
+  background: #cccccc;
+  border-top: 1px solid #aaaaaa;
+  font-size : x-smaller ;
+  text-align : center;
+}
+#games_list {
+  background:none repeat scroll 0 0 #DDDDDD;
+  border:1px solid #CCCCCC;
+  float:left;
+  margin-top: 5px;
+  padding:5px;
+  width:300px;
+}
+#games_creation {
+  float:left; 
+  min-width:660px;
+  padding: 0 10px;
+}
+#tbl {
+  background-image : url('/damier.png');
+  height : 630px;
+  position : absolute;
+  width : 630px;
+}
+#right {
+  border-left: 1px dotted #cccccc;
+  margin-left: 670px;
+  width: 330px;
+  padding-left: 5px;
+}
+
+.bouton {
+  background-color:#DDDDDD;
+  border:1px solid #BBBBBB;
+  font-weight:bold;
+  margin:3px;
+  padding:5px;
+  width:180px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+#log, #info {
+  padding: 10px 3px 5px 3px;
+}
+#pieces {
+  padding:3px;
+}
+
+#team, #toplay {
+  font-weight:bold;
+}
+
+.card {
+  color:#666666;
+  font-family:"Times New Roman", serif;
+  font-style:italic;
+  font-weight:bold;
+  margin:5px 3px;
+  padding-bottom:10px;
+  padding-top:10px;
+  position:relative;
+  text-align:center;
+  text-transform:uppercase;
+  width:190px;
+  border:1px solid #BBBBBB;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+.mycard {background:#afe09a; /*C2E0ED;*/}
+
+.notmycard {background:#ffbe78;}
+
+.mini_toon {
+  float : left;
+  height : 30px;
+  width : 30px;
+  margin-right:2px;
+}
+
+.links {
+  background: #cccccc;
+  height:30px;
+  padding: 5px 0;
+}
+.links ul,.links ul li {margin : 0; padding : 0;}
+
+.links ul li {
+  float : left;
+  font-size : xx-smaller;
+  list-style : none;
+  text-align : center;
+  width : 33%;
+}
+
+#select {background-color : rgb(221,238,255)  ;height : 30px  ;left : -3000px  ;opacity : 0.50  ;position : absolute  ;width : 30px  ;}
+
+.white {background-color : rgb(221,221,221);font-weight : bold;}
+.black {background-color : rgb(68,68,68)  ;font-weight : bold  ;}
+
+.error {color : rgb(255,0,0);}
+
+.front {background-color : rgb(255,255,255)  ;height : 0px  ;left : 0px;margin-bottom : -800px;margin-right : -800px;opacity : 0.50;position : relative;width : 800px;}
+
+.hidden {display: none;}
+
+.info {font-size: x-smaller;}
+
+.toon {}
+
+a img { border: 0px; }
+#__internal__log{
+display:none;
+}

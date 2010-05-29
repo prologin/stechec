@@ -30,21 +30,36 @@
  */
 
 
+page_help =
+<ul>
+  <li>
+    <h6>Pour jouer :</h6>
+    Effectuez des actions, et cliquez sur le bouton <div class="bouton">valider</div>
+  </li>
+  <li>
+    <h6>Bouger un toon :</h6>
+    Pour bouger, cliquez sur la case de départ et la case d'arrivée.
+  </li>
+  <li>
+    <h6>Attaquer :</h6>
+    Pour attaquer :
+    <ul>
+      <li>Soit vous voulez provoquer une explosion (avec un kangourou) et donc, vous cliquez sur le kangourou, et ensuite sur le bouton <div class="bouton">attaquer</div>.</li>
+      <li>Soit vous voulez attaquer un ennemi, et donc, vous cliquez sur l'attaquant, puis sur le bouton <div class="bouton">attaquer</div>, puis sur l'adversaire.</li>
+    </ul>
+  </li>
+  <li>
+    <h6>Retirer un point KO :</h6>
+    Vous devez cliquer sur l'unité puis sur le bouton <div class="bouton">enlever un point ko</div>
+  </li>
+  <li>
+    <h6>Jouer une carte :</h6>
+    Si cette carte s'applique sur une unité, alors cliquez sur l'unité puis sur la carte. Sinon, cliquez directement sur la carte.
+  </li>
+  <li>
+    <h6>Relever une unité :</h6>
+    Pour relever une unité, cliquez sur l'unité, puis sur le bouton <div class="bouton">relever</div>.
+  </li>
+  <li><a href="/">Retour au jeu !</a></li>
+</ul>
 
-type coords = (int, int)
-
-Coords = {{
-  distance((x1, y1), (x2, y2)) =
-    max(Math.abs_i(y2 - y1), Math.abs_i(x2 - x1)) // norme infinie : deplacements en diagonale + horizontaux
-  //
-  add( (a, b), (c, d) ) = (a + c, b + d)
-  rem( (a, b), (c, d) ) = (a - c, b - d)
-  
-  mult_e( (a, b), (c, d)) = (a  * c, b * d)
-  pos(a, b) = (a, b) : coords
-
-  e_min((x1, y1), (x2, y2)) =
-    (min(x1, x2), min(y1, y2))
-  e_max((x1, y1), (x2, y2)) =
-    (max(x1, x2), max(y1, y2))
-}}
