@@ -49,7 +49,6 @@ server =
       custom_css
       ))
   urls = parser
-  | "/" -> html("One Prologin Application (powered by OPA from MLState)", page )
   | "/howtoplay" -> html("how to play ?", page_help)
   | "/style.css" -> (_, _, _ -> Resource.css(file_content("style.css")))
   | "/damier.png" -> (_, _, _ -> Resource.dyn_image({png=file_content(
@@ -58,5 +57,6 @@ server =
     else "damier_2.png"
     )}))
   | "/" ([a-z_]*) ".png" -> (_, _, _ -> Resource.image({png=file_content("{__2}.png")}))
+  | "/" Rule.eos -> html("One Prologin Application (powered by OPA from MLState)", page )
   Server.full_server(void, (_, _, _ -> void), urls)
 //
