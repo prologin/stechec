@@ -238,7 +238,7 @@ Rules = {{
               some( (acc, state) )
             | ~{deguisement} ->
               match deguisement with
-              | {titi} -> err("Tu ne peux pas te deguiser en titi !")
+              | {titi} -> err("Tu ne peux pas te deguiser en perroquet !")
               | _ ->
                 state = update_toon(state, coords,
                   (toon ->
@@ -380,7 +380,7 @@ Rules = {{
     spawn = spawn(state.toplay, state.size)
     if {must_remove_ko} == acc.st then err_ko()
     else if not(Rules.in_board(spawn, state)) then err("le spawn n'est plus sur le plateau.")
-    else if toon == titi then err("vous ne pouvez pas avoir deux titis sur la map.")
+    else if toon == titi then err("vous ne pouvez pas avoir deux perroquets sur la map.")
     else if n_units_moved(state) >= acc.n_move_allowed then err("vous ne pouvez plus actioner d'unites.")
     else if TwoTeams.get(state.toplay, state.nbr_toons_to_spawn) <= 0 then err("vous ne pouvez pas avoir plus de {Rules.max_nbr_toons} unites sur la map.")
     else
