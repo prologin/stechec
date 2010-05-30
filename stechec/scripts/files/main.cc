@@ -26,15 +26,6 @@ extern "C" void jouer();
 // prolo2010 specific : players do not execute simultaneously
 extern "C" bool api_mon_tour();
 
-// prolo2010 specific : the retirer_ko returns a structure on the stack
-typedef struct { int x; int y; } position;
-
-extern "C" position retirer_ko(); // In champion
-extern "C" bool api_retirer_ko(position u); // In API
-
-extern "C" int api_send_actions();
-extern "C" bool api_need_retirer_ko(); // In API
-
 extern "C" int run(void* foo, void* api, void* client_cx)
 {
   init_game();
@@ -48,17 +39,8 @@ extern "C" int run(void* foo, void* api, void* client_cx)
 
       if (api_mon_tour())
       {
-        // prolo2010 specific : two successive phases with no server sync
-        if (api_need_retirer_ko())
-	  {
-	    position u = retirer_ko();
-	    if (!api_retirer_ko(u)) // Returns true if successful
-	      abort();
-	  }
-
-        jouer();
+	jouer();
       }
-      api_send_actions();
       api_do_end_turn(api);
     }
 
