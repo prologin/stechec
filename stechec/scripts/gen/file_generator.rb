@@ -174,7 +174,7 @@ class FileGenerator
       key_part = key[1]
       keys = key[2]
       fun = key[3]
-      puts "checking part : #{key_name}"
+      # puts "checking part : #{key_name}"
       $conf[key_name].each do |x|
         if x["doc_extra"] == nil then
           keys.each do |k|
