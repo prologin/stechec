@@ -132,7 +132,7 @@ int Api::nombre_unites_spawnees(bool ennemi){
 //
 int Api::tour_actuel()
 {
-  return g_->get_real_turn();;
+  return g_->get_real_turn();
 }
 
 ///
