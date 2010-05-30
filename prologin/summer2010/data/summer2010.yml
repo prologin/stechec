@@ -1,0 +1,171 @@
+conf:
+  package_name: summer2010
+  client_rule_lib: argent
+  server_rule_lib: argent
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: \subsection{Constantes}
+  - 
+    cst_name: TAILLE_TERRAIN
+    cst_val: 21
+    cst_comment: Taille du terrain.
+  - 
+    cst_name: PRIX_FIN_PARTIE
+    cst_val: 25
+    cst_comment: le prix de la fin d'une partie
+  - 
+    cst_name: MAX_PA
+    cst_val: 3
+    cst_comment: le nombre de points d'actions des unites au debut du tour.
+  -
+    cst_name: NBR_UNITES
+    cst_val: 9
+    cst_comment: Le nombre d'unités par équipe.
+  -
+    cst_name: MAX_TURN
+    cst_val: 100
+    cst_comment: Le nombre maximum de tours.
+
+enum:
+  - doc_extra: \subsection{Énumérations}
+  -
+    enum_name: erreur
+    enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action.
+    enum_field:
+      - [ok, aucune erreur n'est survenue]
+      - [position_invalide, la position spécifiée est invalide]
+      - [plus_de_pa, vous n'avez pas assez de points d'actions]
+      - [pas_a_toi, l'unite n'est pas a toi.]
+      - [utilisation_impossible, vous ne pouvez pas utiliser cet objet]
+      - [plus_d_argent, vous n'avez pas assez d'argent pour acheter l'objet en question]
+  -
+    enum_name: type_objet
+    enum_summary: Le type d'un objet
+    enum_field:
+      - [filet, permet d'attraper des pieces ou d'immobiliser des unités]
+      - [marteau, permet de frapper des unités.]
+      - [rien, l'unite ne porte aucun objet]
+
+struct:
+  - doc_extra: \subsection{Structures}
+  -
+    str_name: position
+    str_summary: Représente une position sur le terrain du jeu.
+    str_tuple: yes
+    str_field:
+      - [x, int, coordonnée X]
+      - [y, int, coordonnée Y]
+  -
+    str_name: caracteristiques_objet
+    str_summary: les caracteristiques d'un objet
+    str_tuple: no
+    str_field:
+      - [coute, int, ce que coute l'objet]
+      - [porte, int, la porte de l'objet]
+  -
+    str_name: unite
+    str_summary: Représente une unité sur le terrain.
+    str_tuple: no
+    str_field:
+      - [pos_unite, position, la position de l'unité]
+      - [team, int, donne l'equipe du joueur]
+      - [ko, int, renvoie le temps que l'unite passera sans pouvoir bouger.]
+      - [pa, int, le nombre de PA restants à l'unité]
+      - [objet, type_objet, renvoie l'objet que porte l'unite.]
+      - [id, int, "l'identifiant unique de l'unité"]
+  -
+    str_name: piece
+    str_summary: Représente le type d'une piece.
+    str_tuple: no
+    str_field:
+      - [valeur, int, la valeur de la piece.]
+      - [pos_piece, position, renvoie la position de la piece]
+      - [tour_apparition, int, renvoie le tour ou la piece apparaitra ou est apparu.]
+
+function:
+  - doc_extra: |
+     \subsection{Fonctions d'information}
+  -
+    fct_name: mon_equipe
+    fct_summary: Renvoie le numero de votre equipe.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: score
+    fct_summary: Renvoie le score d'une equipe.
+    fct_ret_type: int
+    fct_arg: 
+    - [team, int, l'equipe qui a fait ce score]
+  -
+    fct_name: nombre_equipes
+    fct_summary: Renvoie le nombre d'equipes sur la map
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: tour_actuel
+    fct_summary: Renvoie le numéro du tour actuel.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: pieces_en_jeu
+    fct_summary: Renvoie les pieces qui sont sur la map
+    fct_ret_type: piece array
+    fct_arg: []
+  -
+    fct_name: pieces_a_vennir
+    fct_summary: Renvoie le 10 prochaines pieces a vennir
+    fct_ret_type: piece array
+    fct_arg: []
+  -
+    fct_name: unites
+    fct_summary: Retourne la liste des unités actuellement en jeu.
+    fct_ret_type: unite array
+    fct_arg: []
+
+  - doc_extra: |
+     \subsection{Fonctions d'action}
+  -
+    fct_name: deplacer
+    fct_summary: Déplace une unité vers une position à portée.
+    fct_ret_type: erreur
+    fct_arg:
+    - [cible, position, l'unité à déplacer]
+    - [pos, position, la nouvelle position de l'unité]
+  -
+    fct_name: acheter_objet
+    fct_summary: Achete un objet
+    fct_ret_type: erreur
+    fct_arg:
+    - [cible, position, la position de l'unité qui achete l'objet]
+    - [objet, type_objet, l'objet a acheter]
+  -
+    fct_name: utiliser
+    fct_summary: utilise un objet
+    fct_ret_type: erreur
+    fct_arg:
+    - [attaquant, position, l'unité qui utilise l'objet]
+    - [cible, position, position de la case vers laquelle on utilise l'objet ou sur laquelle on utilise l'objet]
+  -
+    fct_name: achever_la_partie
+    fct_summary: coupe la partie, cette action coute 100 d'or et met fin a la partie.
+    fct_ret_type: erreur
+    fct_arg: []
+
+user_function:
+  -
+    fct_name: init_game
+    fct_summary: Fonction appellée au début de la partie.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: jouer
+    fct_summary: Fonction appellée pour la phase de jeu.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: end_game
+    fct_summary: Fonction appellée à la fin de la partie.
+    fct_ret_type: void
+    fct_arg: []
