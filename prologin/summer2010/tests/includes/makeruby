@@ -1,0 +1,33 @@
+# -*- Makefile -*-
+
+#####################
+# Macro Definitions #
+#####################
+
+CXX 	= g++
+SRC     = interface.cc ../includes/main.cc
+OBJS 	= ${SRC:.cc=.o}
+RM 	= /bin/rm -f
+INCLUDES = -I/usr/local/include/ruby-1.9.1 -I/usr/local/include/ruby-1.9.1/x86_64-linux
+CXXFLAGS = -fPIC -W -Wall $(shell ruby -rrbconfig -e "print Config::CONFIG['CFLAGS']" ) ${INCLUDES}
+LDFLAGS  = -lruby $(shell ruby -rrbconfig -e "print Config::CONFIG['LDFLAGS']" )
+
+##############################
+# Basic Compile Instructions #
+##############################
+
+all: ${NAME}
+
+${NAME}: ${OBJS}
+	${CC} -shared ${OBJS} ${LDFLAGS} -o ${NAME} $(CHECK_CHEAT)
+	@echo Finished
+
+clean:
+	@echo "Cleaning..."
+	${RM} ${OBJS} *~ #*#
+
+distclean: clean
+	${RM} ${NAME} prologin.tgz
+
+tar:
+	tar cvzf prologin.tgz $(SRC) *.rb
