@@ -141,6 +141,56 @@ class FileGenerator
       @types[x] = SimpleType.new x
     end
 
+    # checking conf...
+    def inspect_enum(x)
+      out = true;
+      x["enum_field"].each do |f|
+        out = out && f.size() == 2
+      end
+      out
+    end
+    def inspect_str(x)
+      out = true;
+      x["str_field"].each do |f|
+        out = out && f.size() == 3
+      end
+      out
+    end
+    def inspect_fun(x)
+      out = true;
+      x["fct_arg"].each do |f|
+        out = out && f.size() == 3
+      end
+      out
+    end
+    keys =
+      [
+       ["enum", "enum_name", ["enum_name", "enum_summary", "enum_field"], lambda { |x| return inspect_enum x } ],
+       ["struct", "str_name", ["str_name", "str_summary", "str_tuple", "str_field"], lambda { |x| return inspect_str x } ],
+       ["function", "fct_name", ["fct_name", "fct_summary", "fct_ret_type", "fct_arg"], lambda { |x| return inspect_fun x } ]
+      ]
+    keys.each do |key|
+      key_name = key[0]
+      key_part = key[1]
+      keys = key[2]
+      fun = key[3]
+      puts "checking part : #{key_name}"
+      $conf[key_name].each do |x|
+        if x["doc_extra"] == nil then
+          keys.each do |k|
+            if x[k] == nil then
+              puts "erreur : in section #{key_name}, part : #{x[key_part]}, missing field #{k}"
+              exit 1
+            end
+          end
+          if not fun.call(x) then
+            puts "erreur : in section #{key_name}, part : #{x[key_part]}"
+            exit 1
+          end
+        end
+      end
+    end
+
     @dumpfuns = []
 
     $conf['enum'].each do |x|
