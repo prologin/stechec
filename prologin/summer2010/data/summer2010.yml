@@ -63,7 +63,7 @@ struct:
     str_summary: les caracteristiques d'un objet
     str_tuple: no
     str_field:
-      - [coute, int, ce que coute l'objet]
+      - [cout, int, ce que coute l'objet]
       - [porte, int, la porte de l'objet]
   -
     str_name: unite
@@ -124,6 +124,12 @@ function:
     fct_summary: Retourne la liste des unités actuellement en jeu.
     fct_ret_type: unite array
     fct_arg: []
+  -
+    fct_name: proprietes_objet
+    fct_summary: Retourne les caracteristiques de l'objet.
+    fct_ret_type: caracteristiques_objet
+    fct_arg:
+      - [to, type_objet, le type de l'objet a analyser]
 
   - doc_extra: |
      \subsection{Fonctions d'action}

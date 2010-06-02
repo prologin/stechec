@@ -67,7 +67,9 @@ public:
   void remove_piece(position cible);
   bool contains_piece(position cible);
   piece get_piece(position cible);
+  caracteristiques_objet proprietes_objet(type_objet to);
   void resoudreDeplacer(position cible, position pos);
+  void resoudreAcheterObjet(position cible, type_objet objet);
   void resoudreFinPartie();
   void resoudre( const e_com_type type, const int * pkt);
 private:

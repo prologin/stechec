@@ -75,6 +75,13 @@ std::vector<piece> Api::pieces_en_jeu()
 }
 
 ///
+// Renvoie les pieces qui sont sur la map
+//
+caracteristiques_objet Api::proprietes_objet(type_objet to){
+  return g_->proprietes_objet(to);
+}
+
+///
 // Renvoie le 10 prochaines pieces a vennir
 //
 std::vector<piece> Api::pieces_a_vennir()
@@ -122,8 +129,16 @@ erreur Api::deplacer(position cible, position pos)
 //
 erreur Api::acheter_objet(position cible, type_objet objet)
 {
-  // TODO
-  abort();
+  try{
+    g_->resoudreAcheterObjet(cible, objet);
+  } catch (erreur err) {
+    return err;
+  }
+  StechecPkt com(ACHETER_OBJET_MSG, -1);
+  com.Push(5, last_order_id++, cible.x, cible.y, objet);
+  SendToServer(com);
+
+  return OK;
 }
 
 ///

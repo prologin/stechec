@@ -112,6 +112,7 @@ public:
 // Affiche le contenu d'une valeur de type piece
 //
    void afficher_piece(piece v);
+  caracteristiques_objet proprietes_objet(type_objet to);
 };
 
 

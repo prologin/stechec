@@ -73,7 +73,7 @@ typedef struct position {
 // les caracteristiques d'un objet
 //
 typedef struct caracteristiques_objet {
-  int coute;  /* <- ce que coute l'objet */
+  int cout;  /* <- ce que coute l'objet */
   int porte;  /* <- la porte de l'objet */
 } caracteristiques_objet;
 
@@ -106,6 +106,7 @@ typedef struct piece {
 enum e_com_type {
   DEPLACER_MSG = 0,
   FINIR_MSG,
+  ACHETER_OBJET_MSG,
   NEXT_PIECE_MSG,
   LAST_MSG
 };

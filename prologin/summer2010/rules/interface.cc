@@ -181,7 +181,7 @@ extern "C" void api_afficher_position(position v)
 std::ostream& operator<<(std::ostream& os, caracteristiques_objet v)
 {
   os << "{ ";
-  os << "coute" << "=" << v.coute;
+  os << "cout" << "=" << v.cout;
   os << ", ";
   os << "porte" << "=" << v.porte;
   os << " }";
@@ -239,4 +239,8 @@ extern "C" void api_afficher_piece(piece v)
 extern "C" bool api_mon_tour()
 {
   return api->mon_tour();
+}
+
+extern "C" caracteristiques_objet api_proprietes_objet(type_objet to){
+  return api->proprietes_objet(to);
 }

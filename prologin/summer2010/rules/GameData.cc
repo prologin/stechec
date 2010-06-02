@@ -170,6 +170,15 @@ bool GameData::contains_piece(position cible){
   return i > 0;
 }
 
+caracteristiques_objet GameData::proprietes_objet(type_objet to){
+  static caracteristiques_objet caracs[] = {
+    {100, 10},
+    {10, 4},
+    {0, -1}
+  };
+  return caracs[to];
+}
+
 #define POSITION_VALIDE(p) if (p.x < 0 || p.y < 0 || p.x >= TAILLE_TERRAIN || p.y >= TAILLE_TERRAIN) throw POSITION_INVALIDE;
 #define UNITE_IN(p) if (!contains_unite(p)) throw POSITION_INVALIDE;
 #define PAS_UNITE_IN(p) if (contains_unite(p)) throw POSITION_INVALIDE;
@@ -181,11 +190,11 @@ void GameData::resoudreFinPartie(){
 }
 
 void GameData::resoudreDeplacer(position cible, position pos){
-  int d = distance(cible, pos);
-  unite u = map_u[cible];
   UNITE_IN(cible);
   PAS_UNITE_IN(pos);
   POSITION_VALIDE(pos);
+  int d = distance(cible, pos);
+  unite u = map_u[cible];
   if (u.team != current_player) throw PAS_A_TOI;
   if (u.pa < d) throw PLUS_DE_PA;
   if (u.ko > 0) throw UNITE_KO;
@@ -198,6 +207,18 @@ void GameData::resoudreDeplacer(position cible, position pos){
   set_unite(pos, u);
   remove_unite(cible);
 }
+
+void GameData::resoudreAcheterObjet(position cible, type_objet objet){
+  caracteristiques_objet o = proprietes_objet(objet);
+  UNITE_IN(cible);
+  unite &u = map_u[cible];
+  if (u.team != current_player) throw PAS_A_TOI;
+  if (u.ko > 0) throw UNITE_KO;
+  if ( score_team[u.team] < o.cout) throw PLUS_D_ARGENT;
+  score_team[u.team] -= o.cout;
+  u.objet = objet;
+}
+
 void GameData::resoudre( const e_com_type type, const int * arg){
   position p1, p2;
   switch (type){
@@ -219,6 +240,10 @@ void GameData::resoudre( const e_com_type type, const int * arg){
     p1.y = arg[3];
     push_piece(arg[0], arg[1], p1);
     break;
+  case ACHETER_OBJET_MSG:
+    p1.x = arg[1];
+    p1.y = arg[2];
+    resoudreAcheterObjet(p1, (type_objet)arg[3]);
   }
 }
 
