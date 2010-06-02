@@ -154,6 +154,7 @@ EOF
     @f.puts "template <>"
     @f.puts "value cxx2lang<value, #{name}>(#{name} in)"
     @f.puts "{"
+    @f.puts "  //CAMLlocal1(out);"
     @f.puts "  value out = caml_alloc(#{nfields}, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?"
     i = 0
     struct['str_field'].each do |f|
@@ -163,7 +164,7 @@ EOF
         @f.puts "  Field(out, #{i}) = cxx2lang_array(in.#{fn});"
       else
         ft = ft.name
-        @f.puts "  Field(out, #{i}) = cxx2lang<value, #{ft}>(in.#{fn});"
+        @f.puts "  Store_field (out, #{i}, (cxx2lang<value, #{ft}>(in.#{fn})));"
       end
       i += 1
     end
@@ -202,6 +203,9 @@ EOF
     print_include "caml/callback.h", true
     print_include "caml/alloc.h", true
     print_include "caml/memory.h", true
+
+
+
     @f.puts "}"
     print_include @header_file
     @f.puts
