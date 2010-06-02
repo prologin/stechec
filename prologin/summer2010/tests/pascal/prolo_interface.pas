@@ -17,6 +17,10 @@ const
 *)
 	TAILLE_TERRAIN            =  21;
 (*
+  le prix de la fin d'une partie
+*)
+	PRIX_FIN_PARTIE           =  25;
+(*
   le nombre de points d'actions des unites au debut du tour.
 *)
 	MAX_PA                    =  3;
@@ -35,6 +39,8 @@ type erreur =
   (
     ok { <- aucune erreur n'est survenue },
     position_invalide { <- la position spécifiée est invalide },
+    plus_de_pa { <- vous n'avez pas assez de points d'actions },
+    pas_a_toi { <- l'unite n'est pas a toi. },
     utilisation_impossible { <- vous ne pouvez pas utiliser cet objet },
     plus_d_argent { <- vous n'avez pas assez d'argent pour acheter l'objet en question }
   );

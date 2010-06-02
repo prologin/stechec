@@ -127,9 +127,10 @@ type_objet lang2cxx<value, type_objet>(value in)
 template <>
 value cxx2lang<value, position>(position in)
 {
+  //CAMLlocal1(out);
   value out = caml_alloc(2, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Field(out, 0) = cxx2lang<value, int>(in.x);
-  Field(out, 1) = cxx2lang<value, int>(in.y);
+  Store_field (out, 0, (cxx2lang<value, int>(in.x)));
+  Store_field (out, 1, (cxx2lang<value, int>(in.y)));
   return out;
 }
 
@@ -148,9 +149,10 @@ position lang2cxx<value, position>(value in)
 template <>
 value cxx2lang<value, caracteristiques_objet>(caracteristiques_objet in)
 {
+  //CAMLlocal1(out);
   value out = caml_alloc(2, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Field(out, 0) = cxx2lang<value, int>(in.coute);
-  Field(out, 1) = cxx2lang<value, int>(in.porte);
+  Store_field (out, 0, (cxx2lang<value, int>(in.coute)));
+  Store_field (out, 1, (cxx2lang<value, int>(in.porte)));
   return out;
 }
 
@@ -169,13 +171,14 @@ caracteristiques_objet lang2cxx<value, caracteristiques_objet>(value in)
 template <>
 value cxx2lang<value, unite>(unite in)
 {
+  //CAMLlocal1(out);
   value out = caml_alloc(6, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Field(out, 0) = cxx2lang<value, position>(in.pos_unite);
-  Field(out, 1) = cxx2lang<value, int>(in.team);
-  Field(out, 2) = cxx2lang<value, int>(in.ko);
-  Field(out, 3) = cxx2lang<value, int>(in.pa);
-  Field(out, 4) = cxx2lang<value, type_objet>(in.objet);
-  Field(out, 5) = cxx2lang<value, int>(in.id);
+  Store_field (out, 0, (cxx2lang<value, position>(in.pos_unite)));
+  Store_field (out, 1, (cxx2lang<value, int>(in.team)));
+  Store_field (out, 2, (cxx2lang<value, int>(in.ko)));
+  Store_field (out, 3, (cxx2lang<value, int>(in.pa)));
+  Store_field (out, 4, (cxx2lang<value, type_objet>(in.objet)));
+  Store_field (out, 5, (cxx2lang<value, int>(in.id)));
   return out;
 }
 
@@ -198,10 +201,11 @@ unite lang2cxx<value, unite>(value in)
 template <>
 value cxx2lang<value, piece>(piece in)
 {
+  //CAMLlocal1(out);
   value out = caml_alloc(3, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Field(out, 0) = cxx2lang<value, int>(in.valeur);
-  Field(out, 1) = cxx2lang<value, position>(in.pos_piece);
-  Field(out, 2) = cxx2lang<value, int>(in.tour_apparition);
+  Store_field (out, 0, (cxx2lang<value, int>(in.valeur)));
+  Store_field (out, 1, (cxx2lang<value, position>(in.pos_piece)));
+  Store_field (out, 2, (cxx2lang<value, int>(in.tour_apparition)));
   return out;
 }
 

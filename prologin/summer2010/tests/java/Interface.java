@@ -35,6 +35,8 @@ class Piece {
 enum Erreur{
   Ok, // <- aucune erreur n'est survenue
   Position_invalide, // <- la position spécifiée est invalide
+  Plus_de_pa, // <- vous n'avez pas assez de points d'actions
+  Pas_a_toi, // <- l'unite n'est pas a toi.
   Utilisation_impossible, // <- vous ne pouvez pas utiliser cet objet
   Plus_d_argent, // <- vous n'avez pas assez d'argent pour acheter l'objet en question
 }
@@ -50,6 +52,9 @@ public class Interface
 {
 // Taille du terrain.
   public static final int TAILLE_TERRAIN = 21;
+
+// le prix de la fin d'une partie
+  public static final int PRIX_FIN_PARTIE = 25;
 
 // le nombre de points d'actions des unites au debut du tour.
   public static final int MAX_PA = 3;

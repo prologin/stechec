@@ -91,6 +91,10 @@ if (TYPE(in) != T_STRING) TYPEERR("erreur", in);
       return OK;
   if (strcmp(v, "position_invalide") == 0)
       return POSITION_INVALIDE;
+  if (strcmp(v, "plus_de_pa") == 0)
+      return PLUS_DE_PA;
+  if (strcmp(v, "pas_a_toi") == 0)
+      return PAS_A_TOI;
   if (strcmp(v, "utilisation_impossible") == 0)
       return UTILISATION_IMPOSSIBLE;
   if (strcmp(v, "plus_d_argent") == 0)
@@ -107,6 +111,10 @@ VALUE cxx2lang<erreur>(erreur in)
       return rb_str_new("ok", 2);
     case POSITION_INVALIDE:
       return rb_str_new("position_invalide", 17);
+    case PLUS_DE_PA:
+      return rb_str_new("plus_de_pa", 10);
+    case PAS_A_TOI:
+      return rb_str_new("pas_a_toi", 9);
     case UTILISATION_IMPOSSIBLE:
       return rb_str_new("utilisation_impossible", 22);
     case PLUS_D_ARGENT:

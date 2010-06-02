@@ -12,6 +12,8 @@
 typedef enum erreur {
   OK, /* <- aucune erreur n'est survenue */
   POSITION_INVALIDE, /* <- la position spécifiée est invalide */
+  PLUS_DE_PA, /* <- vous n'avez pas assez de points d'actions */
+  PAS_A_TOI, /* <- l'unite n'est pas a toi. */
   UTILISATION_IMPOSSIBLE, /* <- vous ne pouvez pas utiliser cet objet */
   PLUS_D_ARGENT, /* <- vous n'avez pas assez d'argent pour acheter l'objet en question */
 } erreur;

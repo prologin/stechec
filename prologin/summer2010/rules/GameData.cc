@@ -103,7 +103,18 @@ int GameData::get_real_turn()
 void GameData::team_switched(){
   current_player = (current_player + 1 ) % 2;
   can_move = true;
-  if (getCurrentTurn() % 2 == 0) apparition_piece(); // TODO verifier que ca doit-etre ici ??
+  if (getCurrentTurn() % 2 == 0) apparition_piece();
+
+  // reset des KO et des PA
+  std::vector<unite> out;
+  std::map<position, unite>::iterator itr;
+  for(itr = map_u.begin(); itr != map_u.end(); ++itr){
+    unite &u = itr->second;
+    if (u.team == current_player){
+      if (u.ko) u.ko --;
+      u.pa = MAX_PA;
+    }
+  }
 }
 
 void GameData::apparition_piece(){
@@ -159,7 +170,12 @@ bool GameData::contains_piece(position cible){
   return i > 0;
 }
 
+#define POSITION_VALIDE(p) if (p.x < 0 || p.y < 0 || p.x >= TAILLE_TERRAIN || p.y >= TAILLE_TERRAIN) throw POSITION_INVALIDE;
+#define UNITE_IN(p) if (!contains_unite(p)) throw POSITION_INVALIDE;
+#define PAS_UNITE_IN(p) if (contains_unite(p)) throw POSITION_INVALIDE;
+
 void GameData::resoudreFinPartie(){
+  if (score_team[current_player] < PRIX_FIN_PARTIE) throw PLUS_D_ARGENT;
   score_team[current_player] -= PRIX_FIN_PARTIE;
   player_end_match = true;
 }
@@ -167,6 +183,12 @@ void GameData::resoudreFinPartie(){
 void GameData::resoudreDeplacer(position cible, position pos){
   int d = distance(cible, pos);
   unite u = map_u[cible];
+  UNITE_IN(cible);
+  PAS_UNITE_IN(pos);
+  POSITION_VALIDE(pos);
+  if (u.team != current_player) throw PAS_A_TOI;
+  if (u.pa < d) throw PLUS_DE_PA;
+  if (u.ko > 0) throw UNITE_KO;
   u.pa -= d;
   if (contains_piece(pos)){
     piece p = map_p[pos];

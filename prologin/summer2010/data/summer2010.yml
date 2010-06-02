@@ -37,6 +37,7 @@ enum:
       - [ok, aucune erreur n'est survenue]
       - [position_invalide, la position spécifiée est invalide]
       - [plus_de_pa, vous n'avez pas assez de points d'actions]
+      - [unite_ko, votre unite est ko]
       - [pas_a_toi, l'unite n'est pas a toi.]
       - [utilisation_impossible, vous ne pouvez pas utiliser cet objet]
       - [plus_d_argent, vous n'avez pas assez d'argent pour acheter l'objet en question]

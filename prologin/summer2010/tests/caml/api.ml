@@ -10,6 +10,11 @@
 let taille_terrain = 21
 
 (*
+** le prix de la fin d'une partie
+*)
+let prix_fin_partie = 25
+
+(*
 ** le nombre de points d'actions des unites au debut du tour.
 *)
 let max_pa = 3
@@ -30,6 +35,8 @@ let max_turn = 100
 type erreur =
 | Ok (* <- aucune erreur n'est survenue *)
 | Position_invalide (* <- la position spécifiée est invalide *)
+| Plus_de_pa (* <- vous n'avez pas assez de points d'actions *)
+| Pas_a_toi (* <- l'unite n'est pas a toi. *)
 | Utilisation_impossible (* <- vous ne pouvez pas utiliser cet objet *)
 | Plus_d_argent (* <- vous n'avez pas assez d'argent pour acheter l'objet en question *)
 

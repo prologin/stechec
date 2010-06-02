@@ -68,8 +68,7 @@ std::vector<piece> Api::pieces_en_jeu()
 {
   std::vector<piece> out;
   std::map<position, piece>::const_iterator itr;
-  std::map<position, piece> *map = &(g_->map_p);
-  for(itr = map->begin(); itr != map->end(); ++itr){
+  for(itr = g_->map_p.begin(); itr != g_->map_p.end(); ++itr){
     out.push_back(itr->second);
   }
   return out;
@@ -95,31 +94,22 @@ std::vector<unite> Api::unites()
 {
   std::vector<unite> out;
   std::map<position, unite>::const_iterator itr;
-  std::map<position, unite> *map = &(g_->map_u);
-  for(itr = map->begin(); itr != map->end(); ++itr){
+  for(itr = g_->map_u.begin(); itr != g_->map_u.end(); ++itr){
     out.push_back(itr->second);
   }
   return out;
 }
-
-#define POSITION_VALIDE(p) if (p.x < 0 || p.y < 0 || p.x >= TAILLE_TERRAIN || p.y >= TAILLE_TERRAIN) return POSITION_INVALIDE;
-#define UNITE_IN(p) if (!g_->contains_unite(p)) return POSITION_INVALIDE;
-#define PAS_UNITE_IN(p) if (g_->contains_unite(p)) return POSITION_INVALIDE;
 
 ///
 // Déplace une unité vers une position à portée.
 //
 erreur Api::deplacer(position cible, position pos)
 {
-  UNITE_IN(cible);
-  PAS_UNITE_IN(pos);
-  POSITION_VALIDE(pos);
-  int d = distance(cible, pos);
-  unite u = g_->get_unite(cible);
-  if (u.team != g_->current_player) return PAS_A_TOI;
-  if (u.pa < d) return PLUS_DE_PA;
-  g_->resoudreDeplacer(cible, pos);
-
+  try{
+    g_->resoudreDeplacer(cible, pos);
+  } catch (erreur err) {
+    return err;
+  }
   StechecPkt com(DEPLACER_MSG, -1);
   com.Push(5, last_order_id++, cible.x, cible.y, pos.x, pos.y);
   SendToServer(com);
@@ -150,9 +140,11 @@ erreur Api::utiliser(position attaquant, position cible)
 //
 erreur Api::achever_la_partie()
 {
-  if (g_->score_team[g_->current_player] < PRIX_FIN_PARTIE) return PLUS_D_ARGENT;
-  g_->resoudreFinPartie();
-
+  try{
+    g_->resoudreFinPartie();
+  } catch (erreur err) {
+    return err;
+  }
   StechecPkt com(FINIR_MSG, -1);
   com.Push(1, last_order_id++);
   SendToServer(com);

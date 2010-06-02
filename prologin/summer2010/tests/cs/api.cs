@@ -9,6 +9,8 @@ namespace Prologin {
 	public enum Erreur {
 		OK, // <- aucune erreur n'est survenue
 		POSITION_INVALIDE, // <- la position spécifiée est invalide
+		PLUS_DE_PA, // <- vous n'avez pas assez de points d'actions
+		PAS_A_TOI, // <- l'unite n'est pas a toi.
 		UTILISATION_IMPOSSIBLE, // <- vous ne pouvez pas utiliser cet objet
 		PLUS_D_ARGENT, // <- vous n'avez pas assez d'argent pour acheter l'objet en question
 	}
@@ -62,6 +64,9 @@ namespace Prologin {
 	class Api {
 // Taille du terrain.
 		public const int TAILLE_TERRAIN = 21;
+
+// le prix de la fin d'une partie
+		public const int PRIX_FIN_PARTIE = 25;
 
 // le nombre de points d'actions des unites au debut du tour.
 		public const int MAX_PA = 3;
