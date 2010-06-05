@@ -341,6 +341,7 @@ AC_CONFIG_FILES([
   prologin/summer2010/Makefile
   prologin/summer2010/data/Makefile
   prologin/summer2010/rules/Makefile
+  prologin/summer2010/gui/Makefile
 ])
 fi
 
