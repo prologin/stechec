@@ -36,6 +36,9 @@
 //
 # define MAX_TURN                  100
 
+#define MARTEAU_KO                 10
+#define FILET_KO                    4
+
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
 //
@@ -43,6 +46,7 @@ typedef enum erreur {
   OK, /* <- aucune erreur n'est survenue */
   POSITION_INVALIDE, /* <- la position spécifiée est invalide */
   PLUS_DE_PA, /* <- plus de points d'actions */
+  PAS_A_PORTE, /* <- l'unite ne peut pas atteindre la cible */
   UNITE_KO,
   PAS_A_TOI, /* <- l'unite est a l'adversaire */
   UTILISATION_IMPOSSIBLE, /* <- vous ne pouvez pas utiliser cet objet */
@@ -107,6 +111,7 @@ enum e_com_type {
   DEPLACER_MSG = 0,
   FINIR_MSG,
   ACHETER_OBJET_MSG,
+  UTILISER_OBJET_MSG,
   NEXT_PIECE_MSG,
   LAST_MSG
 };

@@ -18,6 +18,18 @@ bool operator<(position p1, position p2){
   return p1.x < p2.x || (p1.x == p2.x && p1.y < p2.y);
 }
 
+int max(int a, int b){
+  return a>b?a:b;
+}
+
+int min(int a, int b){
+  return a>b?a:b;
+}
+
+int distance(position p1, position p2){
+  return max(abs(p1.x - p2.x), abs(p1.y - p2.y));
+}
+
 //todo, better, call Init() from BeforeNewGame, etc..
 #define INIT()					\
   assert(initialized_);
@@ -219,6 +231,61 @@ void GameData::resoudreAcheterObjet(position cible, type_objet objet){
   u.objet = objet;
 }
 
+bool GameData::filet(int x, int y){
+  position p;
+  p.x = x;
+  p.y = y;
+  if (contains_piece(p)){
+    piece pi = map_p[p];
+    score_team[current_player] += pi.valeur;
+  }
+  if (contains_piece(p)){
+    unite &u = map_u[p];
+    u.ko = FILET_KO;
+    return true;
+  }else{
+    return false;
+  }
+}
+
+void GameData::resoudreUtiliserObjet(position cible, position pos){
+  UNITE_IN(cible);
+  PAS_UNITE_IN(pos);
+  POSITION_VALIDE(pos);
+  unite &u = map_u[cible];
+  int d = distance(cible, pos);
+  int p = proprietes_objet(u.objet).porte;
+  if (u.team != current_player) throw PAS_A_TOI;
+  if (p < d) throw PAS_A_PORTE;
+  if (u.ko > 0) throw UNITE_KO;
+  switch (u.objet){
+  case FILET:
+    if (cible.x == pos.x){
+      int y = cible.y;
+      for (int x = min(cible.x, pos.x), ex = max(cible.x, pos.x); x <= ex; x ++){
+	if (filet(x, y)) break;
+      }
+    }else if (cible.y == pos.y){
+      int x = cible.x;
+      for (int y = min(cible.y, pos.y), ey = max(cible.y, pos.y); y <= ey; y ++ ){
+	if (filet(x, y)) break;
+      }
+    }else{
+      throw UTILISATION_IMPOSSIBLE;
+    }
+    break;
+  case MARTEAU:
+    {
+      unite &adversaire = map_u[pos];
+      adversaire.ko = MARTEAU_KO;
+    };
+    break;
+  case RIEN:
+    break;
+  }
+  u.objet = RIEN;
+}
+
 void GameData::resoudre( const e_com_type type, const int * arg){
   position p1, p2;
   switch (type){
@@ -241,9 +308,21 @@ void GameData::resoudre( const e_com_type type, const int * arg){
     push_piece(arg[0], arg[1], p1);
     break;
   case ACHETER_OBJET_MSG:
+    if (mon_tour())  return;
     p1.x = arg[1];
     p1.y = arg[2];
     resoudreAcheterObjet(p1, (type_objet)arg[3]);
+    break;
+  case UTILISER_OBJET_MSG:
+    if (mon_tour())  return;
+    p1.x = arg[1];
+    p1.y = arg[2];
+    p2.x = arg[3];
+    p2.y = arg[4];
+    resoudreUtiliserObjet(p1, p2);
+    break;
+  default:
+    abort();
   }
 }
 

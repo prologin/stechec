@@ -17,14 +17,10 @@
 # include "Constant.hh"
 # include "map"
 
-
-static inline int max(int a, int b){
-  return a>b?a:b;
-}
-
-static inline int distance(position p1, position p2){
-  return max(abs(p1.x - p2.x), abs(p1.y - p2.y));
-}
+bool operator<(position p1, position p2);
+int max(int a, int b);
+int min(int a, int b);
+int distance(position p1, position p2);
 
 /*!
 ** This class is meant to contain all data, accessible from
@@ -67,14 +63,17 @@ public:
   void remove_piece(position cible);
   bool contains_piece(position cible);
   piece get_piece(position cible);
+
   caracteristiques_objet proprietes_objet(type_objet to);
   void resoudreDeplacer(position cible, position pos);
   void resoudreAcheterObjet(position cible, type_objet objet);
+  void resoudreUtiliserObjet(position cible, position pos);
   void resoudreFinPartie();
   void resoudre( const e_com_type type, const int * pkt);
 private:
   bool initialized_;
   void push_empty_player(const position p, const int team);
+  bool filet(int x, int y);
 
 };
 

@@ -146,8 +146,16 @@ erreur Api::acheter_objet(position cible, type_objet objet)
 //
 erreur Api::utiliser(position attaquant, position cible)
 {
-  // TODO
-  abort();
+  try{
+    g_->resoudreUtiliserObjet(attaquant, cible);
+  } catch (erreur err) {
+    return err;
+  }
+  StechecPkt com(UTILISER_OBJET_MSG, -1);
+  com.Push(5, last_order_id++, attaquant.x, attaquant.y, cible.x, cible.y);
+  SendToServer(com);
+
+  return OK;
 }
 
 ///

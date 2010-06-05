@@ -27,7 +27,14 @@ constant:
     cst_name: MAX_TURN
     cst_val: 100
     cst_comment: Le nombre maximum de tours.
-
+  -
+    cst_name: MARTEAU_KO
+    cst_val: 10
+    cst_comment: Le nombre points KO infliges par un coup de marteau
+  -
+    cst_name: FILET_KO
+    cst_val: 4
+    cst_comment: Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
 enum:
   - doc_extra: \subsection{Énumérations}
   -
@@ -37,6 +44,7 @@ enum:
       - [ok, aucune erreur n'est survenue]
       - [position_invalide, la position spécifiée est invalide]
       - [plus_de_pa, vous n'avez pas assez de points d'actions]
+      - [pas_a_porte, vous ne pouvez pas utiliser cet objet la cible n'est pas a porte]
       - [unite_ko, votre unite est ko]
       - [pas_a_toi, l'unite n'est pas a toi.]
       - [utilisation_impossible, vous ne pouvez pas utiliser cet objet]
