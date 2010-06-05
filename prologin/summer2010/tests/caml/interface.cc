@@ -151,7 +151,7 @@ value cxx2lang<value, caracteristiques_objet>(caracteristiques_objet in)
 {
   //CAMLlocal1(out);
   value out = caml_alloc(2, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Store_field (out, 0, (cxx2lang<value, int>(in.coute)));
+  Store_field (out, 0, (cxx2lang<value, int>(in.cout)));
   Store_field (out, 1, (cxx2lang<value, int>(in.porte)));
   return out;
 }
@@ -160,7 +160,7 @@ template <>
 caracteristiques_objet lang2cxx<value, caracteristiques_objet>(value in)
 {
   caracteristiques_objet out;
-  out.coute = lang2cxx<value, int>(Field(in, 0));
+  out.cout = lang2cxx<value, int>(Field(in, 0));
   out.porte = lang2cxx<value, int>(Field(in, 1));
   return out;
 }
@@ -287,6 +287,16 @@ extern "C" value ml_unites(value unit)
   CAMLparam0();
   CAMLxparam1(unit);
   CAMLreturn((cxx2lang_array<unite>(api_unites())));
+}
+
+///
+// Retourne les caracteristiques de l'objet.
+//
+extern "C" value ml_proprietes_objet(value to)
+{
+  CAMLparam0();
+  CAMLxparam1(to);
+  CAMLreturn((cxx2lang<value, caracteristiques_objet>(api_proprietes_objet(lang2cxx<value, type_objet>(to)))));
 }
 
 ///

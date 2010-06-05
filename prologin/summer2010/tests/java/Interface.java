@@ -10,7 +10,7 @@ class Position {
 
 // les caracteristiques d'un objet
 class Caracteristiques_objet {
-  public int coute; // ce que coute l'objet
+  public int cout; // ce que coute l'objet
   public int porte; // la porte de l'objet
 }
 
@@ -36,6 +36,8 @@ enum Erreur{
   Ok, // <- aucune erreur n'est survenue
   Position_invalide, // <- la position spécifiée est invalide
   Plus_de_pa, // <- vous n'avez pas assez de points d'actions
+  Pas_a_porte, // <- vous ne pouvez pas utiliser cet objet la cible n'est pas a porte
+  Unite_ko, // <- votre unite est ko
   Pas_a_toi, // <- l'unite n'est pas a toi.
   Utilisation_impossible, // <- vous ne pouvez pas utiliser cet objet
   Plus_d_argent, // <- vous n'avez pas assez d'argent pour acheter l'objet en question
@@ -65,6 +67,12 @@ public class Interface
 // Le nombre maximum de tours.
   public static final int MAX_TURN = 100;
 
+// Le nombre points KO infliges par un coup de marteau
+  public static final int MARTEAU_KO = 10;
+
+// Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+  public static final int FILET_KO = 4;
+
   // Renvoie le numero de votre equipe.
   public static native int mon_equipe();
 
@@ -85,6 +93,9 @@ public class Interface
 
   // Retourne la liste des unités actuellement en jeu.
   public static native Unite[] unites();
+
+  // Retourne les caracteristiques de l'objet.
+  public static native Caracteristiques_objet proprietes_objet(Type_objet to);
 
   // Déplace une unité vers une position à portée.
   public static native Erreur deplacer(Position cible, Position pos);

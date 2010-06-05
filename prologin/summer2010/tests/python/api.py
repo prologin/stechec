@@ -16,15 +16,23 @@ NBR_UNITES = 9
 # Le nombre maximum de tours.
 MAX_TURN = 100
 
+# Le nombre points KO infliges par un coup de marteau
+MARTEAU_KO = 10
+
+# Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+FILET_KO = 4
+
 # Énumération représentant une erreur renvoyée par une des fonctions d'action.
 (
     OK, # <- aucune erreur n'est survenue
     POSITION_INVALIDE, # <- la position spécifiée est invalide
     PLUS_DE_PA, # <- vous n'avez pas assez de points d'actions
+    PAS_A_PORTE, # <- vous ne pouvez pas utiliser cet objet la cible n'est pas a porte
+    UNITE_KO, # <- votre unite est ko
     PAS_A_TOI, # <- l'unite n'est pas a toi.
     UTILISATION_IMPOSSIBLE, # <- vous ne pouvez pas utiliser cet objet
     PLUS_D_ARGENT, # <- vous n'avez pas assez d'argent pour acheter l'objet en question
-) = range(6)
+) = range(8)
 
 
 # Le type d'un objet
@@ -148,7 +156,7 @@ position = namedtuple("position",
 
 # les caracteristiques d'un objet
 caracteristiques_objet = namedtuple("caracteristiques_objet",
-    'coute ' # <- ce que coute l'objet
+    'cout ' # <- ce que coute l'objet
     'porte ' # <- la porte de l'objet
 )
 

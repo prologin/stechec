@@ -178,7 +178,7 @@ template <>
 PyObject* cxx2lang<PyObject*, caracteristiques_objet>(caracteristiques_objet in)
 {
   PyObject* tuple = PyTuple_New(2);
-  PyTuple_SET_ITEM(tuple, 0, (cxx2lang<PyObject*, int>(in.coute)));
+  PyTuple_SET_ITEM(tuple, 0, (cxx2lang<PyObject*, int>(in.cout)));
   PyTuple_SET_ITEM(tuple, 1, (cxx2lang<PyObject*, int>(in.porte)));
   PyObject* name = PyString_FromString("caracteristiques_objet");
   PyObject* cstr = PyObject_GetAttr(py_module, name);
@@ -199,7 +199,7 @@ caracteristiques_objet lang2cxx<PyObject*, caracteristiques_objet>(PyObject* in)
   i = cxx2lang<PyObject*, int>(0);
   i = PyObject_GetItem(in, i);
   if (i == NULL) throw 42;
-  out.coute = lang2cxx<PyObject*, int>(i);
+  out.cout = lang2cxx<PyObject*, int>(i);
   Py_DECREF(i);
   i = cxx2lang<PyObject*, int>(1);
   i = PyObject_GetItem(in, i);
@@ -415,6 +415,21 @@ return cxx2lang_array(api_unites());
 }
 
 ///
+// Retourne les caracteristiques de l'objet.
+//
+static PyObject* p_proprietes_objet(PyObject* self, PyObject* args)
+{
+  (void)self;
+PyObject* a0;
+  if (!PyArg_ParseTuple(args, "O", &a0)) {
+    return NULL;
+  }
+    try {
+return cxx2lang<PyObject*, caracteristiques_objet>(api_proprietes_objet(lang2cxx<PyObject*, type_objet>(a0)));
+  } catch (...) { return NULL; }
+}
+
+///
 // Déplace une unité vers une position à portée.
 //
 static PyObject* p_deplacer(PyObject* self, PyObject* args)
@@ -590,6 +605,7 @@ static PyMethodDef api_callback[] = {
   {"pieces_en_jeu", p_pieces_en_jeu, METH_VARARGS, "pieces_en_jeu"},
   {"pieces_a_vennir", p_pieces_a_vennir, METH_VARARGS, "pieces_a_vennir"},
   {"unites", p_unites, METH_VARARGS, "unites"},
+  {"proprietes_objet", p_proprietes_objet, METH_VARARGS, "proprietes_objet"},
   {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},
   {"acheter_objet", p_acheter_objet, METH_VARARGS, "acheter_objet"},
   {"utiliser", p_utiliser, METH_VARARGS, "utiliser"},

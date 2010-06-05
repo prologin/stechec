@@ -28,7 +28,7 @@ typedef struct __internal__cxx__position {
 // les caracteristiques d'un objet
 //
 typedef struct __internal__cxx__caracteristiques_objet {
-  int coute; 
+  int cout; 
   int porte; 
 } __internal__cxx__caracteristiques_objet;
 
@@ -90,6 +90,11 @@ extern "C" std::vector<__internal__cxx__piece> api_pieces_a_vennir();
 // Retourne la liste des unités actuellement en jeu.
 //
 extern "C" std::vector<__internal__cxx__unite> api_unites();
+
+///
+// Retourne les caracteristiques de l'objet.
+//
+extern "C" __internal__cxx__caracteristiques_objet api_proprietes_objet(type_objet to);
 
 ///
 // Déplace une unité vers une position à portée.

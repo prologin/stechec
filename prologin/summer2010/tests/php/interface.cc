@@ -172,8 +172,8 @@ zval* cxx2lang<zval*, caracteristiques_objet>(caracteristiques_objet in)
     zval* tmp;
     MAKE_STD_ZVAL(ret);
     array_init(ret);
-    tmp = (cxx2lang<zval*, int>(in.coute));
-    add_assoc_zval(ret, "coute", tmp);
+    tmp = (cxx2lang<zval*, int>(in.cout));
+    add_assoc_zval(ret, "cout", tmp);
     tmp = (cxx2lang<zval*, int>(in.porte));
     add_assoc_zval(ret, "porte", tmp);
     return ret;
@@ -189,9 +189,9 @@ caracteristiques_objet lang2cxx<zval*, caracteristiques_objet>(zval* in)
     }
     zval* tmp;
     HashTable* ht = Z_ARRVAL_P(in);
-    zend_symtable_find(ht, "coute", 6, (void**)&tmp);
+    zend_symtable_find(ht, "cout", 5, (void**)&tmp);
     tmp = (zval*)tmp->value.ht;
-    out.coute = lang2cxx<zval*, int>(tmp);
+    out.cout = lang2cxx<zval*, int>(tmp);
     zend_symtable_find(ht, "porte", 6, (void**)&tmp);
     tmp = (zval*)tmp->value.ht;
     out.porte = lang2cxx<zval*, int>(tmp);
@@ -380,6 +380,24 @@ zval* ret = cxx2lang_array(api_unites());
 }
 
 ///
+// Retourne les caracteristiques de l'objet.
+//
+PHP_FUNCTION(php_api_proprietes_objet)
+{
+    zval* _to;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &_to) == FAILURE)
+    {
+        RETURN_NULL();
+    }
+
+        try {
+zval* ret = cxx2lang<zval*, caracteristiques_objet>(api_proprietes_objet(lang2cxx<zval*, type_objet>(_to)));
+    RETURN_ZVAL(ret, 0, 0);
+    } catch (...) { RETURN_NULL(); }
+}
+
+///
 // Déplace une unité vers une position à portée.
 //
 PHP_FUNCTION(php_api_deplacer)
@@ -563,6 +581,7 @@ static function_entry module_functions_table[] = {
     PHP_FALIAS(pieces_en_jeu, php_api_pieces_en_jeu, NULL)
     PHP_FALIAS(pieces_a_vennir, php_api_pieces_a_vennir, NULL)
     PHP_FALIAS(unites, php_api_unites, NULL)
+    PHP_FALIAS(proprietes_objet, php_api_proprietes_objet, NULL)
     PHP_FALIAS(deplacer, php_api_deplacer, NULL)
     PHP_FALIAS(acheter_objet, php_api_acheter_objet, NULL)
     PHP_FALIAS(utiliser, php_api_utiliser, NULL)

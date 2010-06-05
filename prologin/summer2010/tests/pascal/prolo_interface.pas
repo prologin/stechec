@@ -33,6 +33,14 @@ const
 *)
 	MAX_TURN                  =  100;
 (*
+  Le nombre points KO infliges par un coup de marteau
+*)
+	MARTEAU_KO                =  10;
+(*
+  Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+*)
+	FILET_KO                  =  4;
+(*
   Énumération représentant une erreur renvoyée par une des fonctions d'action.
 *)
 type erreur =
@@ -40,6 +48,8 @@ type erreur =
     ok { <- aucune erreur n'est survenue },
     position_invalide { <- la position spécifiée est invalide },
     plus_de_pa { <- vous n'avez pas assez de points d'actions },
+    pas_a_porte { <- vous ne pouvez pas utiliser cet objet la cible n'est pas a porte },
+    unite_ko { <- votre unite est ko },
     pas_a_toi { <- l'unite n'est pas a toi. },
     utilisation_impossible { <- vous ne pouvez pas utiliser cet objet },
     plus_d_argent { <- vous n'avez pas assez d'argent pour acheter l'objet en question }
@@ -78,7 +88,7 @@ type array_of_position = array of position;
 *)
 type caracteristiques_objet =
   record
-    coute : cint; (*  <- ce que coute l'objet *)
+    cout : cint; (*  <- ce que coute l'objet *)
     porte : cint; (*  <- la porte de l'objet *)
   end;
 
@@ -148,6 +158,11 @@ function pieces_a_vennir() : array_of_piece; cdecl; external;
   Retourne la liste des unités actuellement en jeu.
 *)
 function unites() : array_of_unite; cdecl; external;
+
+(*
+  Retourne les caracteristiques de l'objet.
+*)
+function proprietes_objet(to : type_objet) : caracteristiques_objet; cdecl; external;
 
 (*
   Déplace une unité vers une position à portée.

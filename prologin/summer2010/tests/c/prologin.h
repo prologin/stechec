@@ -32,12 +32,24 @@ typedef char * charp;
 # define MAX_TURN                  100
 
 /*!
+** Le nombre points KO infliges par un coup de marteau
+*/
+# define MARTEAU_KO                10
+
+/*!
+** Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+*/
+# define FILET_KO                  4
+
+/*!
 ** Énumération représentant une erreur renvoyée par une des fonctions d'action.
 */
 typedef enum erreur {
   OK, /* <- aucune erreur n'est survenue */
   POSITION_INVALIDE, /* <- la position spécifiée est invalide */
   PLUS_DE_PA, /* <- vous n'avez pas assez de points d'actions */
+  PAS_A_PORTE, /* <- vous ne pouvez pas utiliser cet objet la cible n'est pas a porte */
+  UNITE_KO, /* <- votre unite est ko */
   PAS_A_TOI, /* <- l'unite n'est pas a toi. */
   UTILISATION_IMPOSSIBLE, /* <- vous ne pouvez pas utiliser cet objet */
   PLUS_D_ARGENT, /* <- vous n'avez pas assez d'argent pour acheter l'objet en question */
@@ -67,7 +79,7 @@ typedef struct position {
 ** les caracteristiques d'un objet
 */
 typedef struct caracteristiques_objet {
-  int coute;  /* <- ce que coute l'objet */
+  int cout;  /* <- ce que coute l'objet */
   int porte;  /* <- la porte de l'objet */
 } caracteristiques_objet;
 
@@ -129,6 +141,11 @@ void pieces_a_vennir(piece** ret_arr, size_t* ret_len);
 ** Retourne la liste des unités actuellement en jeu.
 */
 void unites(unite** ret_arr, size_t* ret_len);
+
+/*!
+** Retourne les caracteristiques de l'objet.
+*/
+caracteristiques_objet proprietes_objet(type_objet to);
 
 /*!
 ** Déplace une unité vers une position à portée.

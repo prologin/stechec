@@ -25,14 +25,26 @@ define('NBR_UNITES', 9);
 define('MAX_TURN', 100);
 
 /*
+ * Le nombre points KO infliges par un coup de marteau
+ */
+define('MARTEAU_KO', 10);
+
+/*
+ * Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+ */
+define('FILET_KO', 4);
+
+/*
  * Énumération représentant une erreur renvoyée par une des fonctions d'action.
  */
 define('OK', 0); // aucune erreur n'est survenue
 define('POSITION_INVALIDE', 1); // la position spécifiée est invalide
 define('PLUS_DE_PA', 2); // vous n'avez pas assez de points d'actions
-define('PAS_A_TOI', 3); // l'unite n'est pas a toi.
-define('UTILISATION_IMPOSSIBLE', 4); // vous ne pouvez pas utiliser cet objet
-define('PLUS_D_ARGENT', 5); // vous n'avez pas assez d'argent pour acheter l'objet en question
+define('PAS_A_PORTE', 3); // vous ne pouvez pas utiliser cet objet la cible n'est pas a porte
+define('UNITE_KO', 4); // votre unite est ko
+define('PAS_A_TOI', 5); // l'unite n'est pas a toi.
+define('UTILISATION_IMPOSSIBLE', 6); // vous ne pouvez pas utiliser cet objet
+define('PLUS_D_ARGENT', 7); // vous n'avez pas assez d'argent pour acheter l'objet en question
 
 /*
  * Le type d'un objet

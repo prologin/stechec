@@ -30,12 +30,24 @@ let nbr_unites = 9
 let max_turn = 100
 
 (*
+** Le nombre points KO infliges par un coup de marteau
+*)
+let marteau_ko = 10
+
+(*
+** Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+*)
+let filet_ko = 4
+
+(*
 ** Énumération représentant une erreur renvoyée par une des fonctions d'action.
 *)
 type erreur =
 | Ok (* <- aucune erreur n'est survenue *)
 | Position_invalide (* <- la position spécifiée est invalide *)
 | Plus_de_pa (* <- vous n'avez pas assez de points d'actions *)
+| Pas_a_porte (* <- vous ne pouvez pas utiliser cet objet la cible n'est pas a porte *)
+| Unite_ko (* <- votre unite est ko *)
 | Pas_a_toi (* <- l'unite n'est pas a toi. *)
 | Utilisation_impossible (* <- vous ne pouvez pas utiliser cet objet *)
 | Plus_d_argent (* <- vous n'avez pas assez d'argent pour acheter l'objet en question *)
@@ -59,7 +71,7 @@ type position = (int * int)
 ** les caracteristiques d'un objet
 *)
 type caracteristiques_objet = {
-  coute : int ; (* <- ce que coute l'objet *)
+  cout : int ; (* <- ce que coute l'objet *)
   porte : int ; (* <- la porte de l'objet *)
 }
 
@@ -112,6 +124,10 @@ external pieces_a_vennir : unit -> piece array = "ml_pieces_a_vennir"
 ** Retourne la liste des unités actuellement en jeu.
 *)
 external unites : unit -> unite array = "ml_unites"
+(*
+** Retourne les caracteristiques de l'objet.
+*)
+external proprietes_objet : type_objet -> caracteristiques_objet = "ml_proprietes_objet"
 (*
 ** Déplace une unité vers une position à portée.
 *)

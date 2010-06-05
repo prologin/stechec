@@ -114,8 +114,8 @@ void cxx2lang(caracteristiques_objet in, MonoObject* moObj = NULL)
   MonoClass*  mcKlass  = mono_class_from_name(gl_csharp.getImage(), "Prologin", "CaracteristiquesObjet");
   if (!moObj) moObj    = mono_object_new(gl_csharp.getDomain(), mcKlass);
   mono_runtime_object_init(moObj);
-  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.coute));
-  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Coute"), &arg);
+  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.cout));
+  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Cout"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.porte));
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Porte"), &arg);
 }
@@ -196,8 +196,8 @@ MonoObject* cxx2lang< MonoObject*, caracteristiques_objet >(caracteristiques_obj
   MonoClass*  mcKlass  = mono_class_from_name(gl_csharp.getImage(), "Prologin", "CaracteristiquesObjet");
   MonoObject* moObj    = mono_object_new(gl_csharp.getDomain(), mcKlass);
   mono_runtime_object_init(moObj);
-  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.coute));
-  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Coute"), &arg);
+  arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.cout));
+  mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Cout"), &arg);
   arg = reinterpret_cast< void* >(cxx2lang< gint32, int >(in.porte));
   mono_field_set_value(moObj, mono_class_get_field_from_name(mcKlass, "Porte"), &arg);
   return moObj;
@@ -209,7 +209,7 @@ caracteristiques_objet lang2cxx< MonoObject*, caracteristiques_objet >(MonoObjec
   void*      field_out;
   MonoClass* mcKlass = mono_class_from_name(gl_csharp.getImage(), "Prologin", "CaracteristiquesObjet");
   (void)field_out;
-  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Coute"), &out.coute);
+  mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Cout"), &out.cout);
   mono_field_get_value(in, mono_class_get_field_from_name(mcKlass, "Porte"), &out.porte);
   return out;
 }
@@ -488,6 +488,11 @@ MonoArray* unites()
 	return cxx2lang< MonoArray*, std::vector<unite> >(api_unites());
 }
 
+MonoObject* proprietes_objet(type_objet to)
+{
+	return cxx2lang< MonoObject*, caracteristiques_objet >(api_proprietes_objet(lang2cxx< gint32, type_objet >(to)));
+}
+
 gint32 deplacer(MonoObject* cible, MonoObject* pos)
 {
 	return cxx2lang< gint32, erreur >(api_deplacer(lang2cxx< MonoObject*, position >(cible), lang2cxx< MonoObject*, position >(pos)));
@@ -580,6 +585,7 @@ CSharpInterface::CSharpInterface()
   mono_add_internal_call("Prologin.Api::PiecesEnJeu", (const void*)pieces_en_jeu);
   mono_add_internal_call("Prologin.Api::PiecesAVennir", (const void*)pieces_a_vennir);
   mono_add_internal_call("Prologin.Api::Unites", (const void*)unites);
+  mono_add_internal_call("Prologin.Api::ProprietesObjet", (const void*)proprietes_objet);
   mono_add_internal_call("Prologin.Api::Deplacer", (const void*)deplacer);
   mono_add_internal_call("Prologin.Api::AcheterObjet", (const void*)acheter_objet);
   mono_add_internal_call("Prologin.Api::Utiliser", (const void*)utiliser);

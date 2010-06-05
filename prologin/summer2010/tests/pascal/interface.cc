@@ -164,14 +164,14 @@ out.y = cxx2lang<int, int>(in.y);
 template<>
 __internal__cxx__caracteristiques_objet lang2cxx<caracteristiques_objet, __internal__cxx__caracteristiques_objet>(caracteristiques_objet in) {
 __internal__cxx__caracteristiques_objet out;
-out.coute = lang2cxx<int, int>(in.coute);
+out.cout = lang2cxx<int, int>(in.cout);
 out.porte = lang2cxx<int, int>(in.porte);
  return out;
 }
 template<>
 caracteristiques_objet cxx2lang<caracteristiques_objet, __internal__cxx__caracteristiques_objet>(__internal__cxx__caracteristiques_objet in) {
 caracteristiques_objet out;
-out.coute = cxx2lang<int, int>(in.coute);
+out.cout = cxx2lang<int, int>(in.cout);
 out.porte = cxx2lang<int, int>(in.porte);
  return out;
 }
@@ -292,6 +292,17 @@ unite* unites(void)
   std::vector<__internal__cxx__unite> _retval;
   _retval = api_unites(  );
   return cxx2lang_array<unite, __internal__cxx__unite>(_retval, &INIT_PROLO_INTERFACE_ARRAY_OF_UNITE);
+}
+
+///
+// Retourne les caracteristiques de l'objet.
+//
+caracteristiques_objet proprietes_objet(type_objet to)
+{
+  __internal__cxx__caracteristiques_objet _retval;
+  type_objet arg_to = lang2cxx<type_objet, type_objet>(to);
+  _retval = api_proprietes_objet( arg_to );
+  return cxx2lang<caracteristiques_objet, __internal__cxx__caracteristiques_objet>(_retval);
 }
 
 ///

@@ -17,6 +17,12 @@ NBR_UNITES = 9
 # Le nombre maximum de tours.
 MAX_TURN = 100
 
+# Le nombre points KO infliges par un coup de marteau
+MARTEAU_KO = 10
+
+# Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+FILET_KO = 4
+
 # Représente une position sur le terrain du jeu.
 class Position
     attr_reader :x # int
@@ -29,10 +35,10 @@ end
 
 # les caracteristiques d'un objet
 class Caracteristiques_objet
-    attr_reader :coute # int
+    attr_reader :cout # int
     attr_reader :porte # int
-  def initialize(coute, porte)
-    @coute = coute
+  def initialize(cout, porte)
+    @cout = cout
     @porte = porte
   end
 end

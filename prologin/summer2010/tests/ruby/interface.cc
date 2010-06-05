@@ -93,6 +93,10 @@ if (TYPE(in) != T_STRING) TYPEERR("erreur", in);
       return POSITION_INVALIDE;
   if (strcmp(v, "plus_de_pa") == 0)
       return PLUS_DE_PA;
+  if (strcmp(v, "pas_a_porte") == 0)
+      return PAS_A_PORTE;
+  if (strcmp(v, "unite_ko") == 0)
+      return UNITE_KO;
   if (strcmp(v, "pas_a_toi") == 0)
       return PAS_A_TOI;
   if (strcmp(v, "utilisation_impossible") == 0)
@@ -113,6 +117,10 @@ VALUE cxx2lang<erreur>(erreur in)
       return rb_str_new("position_invalide", 17);
     case PLUS_DE_PA:
       return rb_str_new("plus_de_pa", 10);
+    case PAS_A_PORTE:
+      return rb_str_new("pas_a_porte", 11);
+    case UNITE_KO:
+      return rb_str_new("unite_ko", 8);
     case PAS_A_TOI:
       return rb_str_new("pas_a_toi", 9);
     case UTILISATION_IMPOSSIBLE:
@@ -186,8 +194,8 @@ caracteristiques_objet lang2cxx<caracteristiques_objet>(VALUE in)
 {
   if (TYPE(in) != T_OBJECT) TYPEERR("caracteristiques_objet", in);
   caracteristiques_objet out ;
-  VALUE coute = rb_iv_get(in, "@coute");
-  out.coute = lang2cxx<int>(coute);
+  VALUE cout = rb_iv_get(in, "@cout");
+  out.cout = lang2cxx<int>(cout);
   VALUE porte = rb_iv_get(in, "@porte");
   out.porte = lang2cxx<int>(porte);
   return out;
@@ -195,7 +203,7 @@ caracteristiques_objet lang2cxx<caracteristiques_objet>(VALUE in)
 template<>
 VALUE cxx2lang<caracteristiques_objet>(caracteristiques_objet in)
 {
-  VALUE argv[] = {cxx2lang<int>(in.coute), cxx2lang<int>(in.porte)};
+  VALUE argv[] = {cxx2lang<int>(in.cout), cxx2lang<int>(in.porte)};
   int argc = 2;
   VALUE out = rb_funcall2(rb_path2class("Caracteristiques_objet"), rb_intern("new"), argc, argv);
   return out;
@@ -292,6 +300,11 @@ static VALUE rb_unites(VALUE self)
   return cxx2lang_array<>(api_unites());
 }
 
+static VALUE rb_proprietes_objet(VALUE self, VALUE to)
+{
+  return cxx2lang<caracteristiques_objet>(api_proprietes_objet(lang2cxx<type_objet>( to ) ));
+}
+
 static VALUE rb_deplacer(VALUE self, VALUE cible, VALUE pos)
 {
   return cxx2lang<erreur>(api_deplacer(lang2cxx<position>( cible ) , lang2cxx<position>( pos ) ));
@@ -385,6 +398,11 @@ void loadCallback()
 // Retourne la liste des unités actuellement en jeu.
 //
     rb_define_global_function("unites", (VALUE(*)(ANYARGS))(rb_unites), 0);
+
+///
+// Retourne les caracteristiques de l'objet.
+//
+    rb_define_global_function("proprietes_objet", (VALUE(*)(ANYARGS))(rb_proprietes_objet), 1);
 
 ///
 // Déplace une unité vers une position à portée.

@@ -10,6 +10,8 @@ namespace Prologin {
 		OK, // <- aucune erreur n'est survenue
 		POSITION_INVALIDE, // <- la position spécifiée est invalide
 		PLUS_DE_PA, // <- vous n'avez pas assez de points d'actions
+		PAS_A_PORTE, // <- vous ne pouvez pas utiliser cet objet la cible n'est pas a porte
+		UNITE_KO, // <- votre unite est ko
 		PAS_A_TOI, // <- l'unite n'est pas a toi.
 		UTILISATION_IMPOSSIBLE, // <- vous ne pouvez pas utiliser cet objet
 		PLUS_D_ARGENT, // <- vous n'avez pas assez d'argent pour acheter l'objet en question
@@ -34,7 +36,7 @@ namespace Prologin {
 	class CaracteristiquesObjet {
 		public CaracteristiquesObjet() {
 		}
-		public int Coute; // <- ce que coute l'objet
+		public int Cout; // <- ce que coute l'objet
 		public int Porte; // <- la porte de l'objet
 	}
 
@@ -77,6 +79,12 @@ namespace Prologin {
 // Le nombre maximum de tours.
 		public const int MAX_TURN = 100;
 
+// Le nombre points KO infliges par un coup de marteau
+		public const int MARTEAU_KO = 10;
+
+// Le nombre points KO qu'une unite subbit losqu'elle se prend un filet.
+		public const int FILET_KO = 4;
+
 // Renvoie le numero de votre equipe.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern int MonEquipe();
@@ -104,6 +112,10 @@ namespace Prologin {
 // Retourne la liste des unités actuellement en jeu.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern Unite[] Unites();
+
+// Retourne les caracteristiques de l'objet.
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public static extern CaracteristiquesObjet ProprietesObjet(TypeObjet to);
 
 // Déplace une unité vers une position à portée.
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

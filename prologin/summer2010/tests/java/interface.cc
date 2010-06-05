@@ -121,14 +121,14 @@ Position* cxx2lang<Position*, position>(position in){
 template <>
 caracteristiques_objet lang2cxx<Caracteristiques_objet* , caracteristiques_objet >(Caracteristiques_objet* in){
   caracteristiques_objet out;
-  out.coute = lang2cxx<jint, int >(in->coute);
+  out.cout = lang2cxx<jint, int >(in->cout);
   out.porte = lang2cxx<jint, int >(in->porte);
   return out;
 }
 template <>
 Caracteristiques_objet* cxx2lang<Caracteristiques_objet*, caracteristiques_objet>(caracteristiques_objet in){
   Caracteristiques_objet* klass = new Caracteristiques_objet();
-  klass->coute = cxx2lang<jint, int >(in.coute);
+  klass->cout = cxx2lang<jint, int >(in.cout);
   klass->porte = cxx2lang<jint, int >(in.porte);
   return klass;
 }
@@ -236,6 +236,11 @@ JArray< Piece* >* Interface::pieces_a_vennir()
 JArray< Unite* >* Interface::unites()
 {
 	return cxx2lang_array< Unite, unite >(api_unites());
+}
+
+Caracteristiques_objet* Interface::proprietes_objet(Type_objet* to)
+{
+	return cxx2lang<Caracteristiques_objet*, caracteristiques_objet >(api_proprietes_objet(lang2cxx<Type_objet*, type_objet >(to)));
 }
 
 Erreur* Interface::deplacer(Position* cible, Position* pos)
