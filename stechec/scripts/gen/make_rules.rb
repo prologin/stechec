@@ -129,7 +129,7 @@ class CxxFileGenerator < CxxProto
     @f.print <<-EOF
 std::string convert_to_string(std::vector<#{ty}> in){
   if (in.size()){
-    std::string s = "[" + convert_to_string(s[0]);
+    std::string s = "[" + convert_to_string(in[0]);
     for (int i = 1, l = in.size(); i < l; i++){
       s = s + ", " + convert_to_string(in[0]);
     }
@@ -147,10 +147,14 @@ EOF
     # print info
     # string convertion fonctions (util function for "print info")
     @f.print <<-EOF
+
+// todo avoir un ostringstream a la place de std::string
+
 std::string convert_to_string(int i){
-  std::string s="";
-  s +=i;
-  return s;
+  std::ostringstream s;
+  s << i;
+  std::string result = s.str();
+  return result;
 }
 std::string convert_to_string(std::string i){
   return i;
