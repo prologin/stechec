@@ -457,92 +457,74 @@ gint32 mon_equipe()
 {
 	return cxx2lang< gint32, int >(api_mon_equipe());
 }
-
 gint32 score(int team)
 {
 	return cxx2lang< gint32, int >(api_score(lang2cxx< gint32, int >(team)));
 }
-
 gint32 nombre_equipes()
 {
 	return cxx2lang< gint32, int >(api_nombre_equipes());
 }
-
 gint32 tour_actuel()
 {
 	return cxx2lang< gint32, int >(api_tour_actuel());
 }
-
 MonoArray* pieces_en_jeu()
 {
 	return cxx2lang< MonoArray*, std::vector<piece> >(api_pieces_en_jeu());
 }
-
 MonoArray* pieces_a_vennir()
 {
 	return cxx2lang< MonoArray*, std::vector<piece> >(api_pieces_a_vennir());
 }
-
 MonoArray* unites()
 {
 	return cxx2lang< MonoArray*, std::vector<unite> >(api_unites());
 }
-
 MonoObject* proprietes_objet(type_objet to)
 {
 	return cxx2lang< MonoObject*, caracteristiques_objet >(api_proprietes_objet(lang2cxx< gint32, type_objet >(to)));
 }
-
 gint32 deplacer(MonoObject* cible, MonoObject* pos)
 {
 	return cxx2lang< gint32, erreur >(api_deplacer(lang2cxx< MonoObject*, position >(cible), lang2cxx< MonoObject*, position >(pos)));
 }
-
 gint32 acheter_objet(MonoObject* cible, type_objet objet)
 {
 	return cxx2lang< gint32, erreur >(api_acheter_objet(lang2cxx< MonoObject*, position >(cible), lang2cxx< gint32, type_objet >(objet)));
 }
-
 gint32 utiliser(MonoObject* attaquant, MonoObject* cible)
 {
 	return cxx2lang< gint32, erreur >(api_utiliser(lang2cxx< MonoObject*, position >(attaquant), lang2cxx< MonoObject*, position >(cible)));
 }
-
 gint32 achever_la_partie()
 {
 	return cxx2lang< gint32, erreur >(api_achever_la_partie());
 }
-
 void afficher_erreur(erreur v)
 {
 	api_afficher_erreur(lang2cxx< gint32, erreur >(v));
 }
-
 void afficher_type_objet(type_objet v)
 {
 	api_afficher_type_objet(lang2cxx< gint32, type_objet >(v));
 }
-
 void afficher_position(MonoObject* v)
 {
 	api_afficher_position(lang2cxx< MonoObject*, position >(v));
 }
-
 void afficher_caracteristiques_objet(MonoObject* v)
 {
 	api_afficher_caracteristiques_objet(lang2cxx< MonoObject*, caracteristiques_objet >(v));
 }
-
 void afficher_unite(MonoObject* v)
 {
 	api_afficher_unite(lang2cxx< MonoObject*, unite >(v));
 }
-
 void afficher_piece(MonoObject* v)
 {
 	api_afficher_piece(lang2cxx< MonoObject*, piece >(v));
 }
-
 
 /*
 ** Inititialize Mono and load the DLL file.
@@ -578,25 +560,7 @@ CSharpInterface::CSharpInterface()
   mono_runtime_object_init(_object);
 
   // Register API functions as internal Mono functions
-  mono_add_internal_call("Prologin.Api::MonEquipe", (const void*)mon_equipe);
-  mono_add_internal_call("Prologin.Api::Score", (const void*)score);
-  mono_add_internal_call("Prologin.Api::NombreEquipes", (const void*)nombre_equipes);
-  mono_add_internal_call("Prologin.Api::TourActuel", (const void*)tour_actuel);
-  mono_add_internal_call("Prologin.Api::PiecesEnJeu", (const void*)pieces_en_jeu);
-  mono_add_internal_call("Prologin.Api::PiecesAVennir", (const void*)pieces_a_vennir);
-  mono_add_internal_call("Prologin.Api::Unites", (const void*)unites);
-  mono_add_internal_call("Prologin.Api::ProprietesObjet", (const void*)proprietes_objet);
-  mono_add_internal_call("Prologin.Api::Deplacer", (const void*)deplacer);
-  mono_add_internal_call("Prologin.Api::AcheterObjet", (const void*)acheter_objet);
-  mono_add_internal_call("Prologin.Api::Utiliser", (const void*)utiliser);
-  mono_add_internal_call("Prologin.Api::AcheverLaPartie", (const void*)achever_la_partie);
-  mono_add_internal_call("Prologin.Api::AfficherErreur", (const void*)afficher_erreur);
-  mono_add_internal_call("Prologin.Api::AfficherTypeObjet", (const void*)afficher_type_objet);
-  mono_add_internal_call("Prologin.Api::AfficherPosition", (const void*)afficher_position);
-  mono_add_internal_call("Prologin.Api::AfficherCaracteristiquesObjet", (const void*)afficher_caracteristiques_objet);
-  mono_add_internal_call("Prologin.Api::AfficherUnite", (const void*)afficher_unite);
-  mono_add_internal_call("Prologin.Api::AfficherPiece", (const void*)afficher_piece);
-}
+  mono_add_internal_call("Prologin.Api::MonEquipe", (const void*)mon_equipe);  mono_add_internal_call("Prologin.Api::Score", (const void*)score);  mono_add_internal_call("Prologin.Api::NombreEquipes", (const void*)nombre_equipes);  mono_add_internal_call("Prologin.Api::TourActuel", (const void*)tour_actuel);  mono_add_internal_call("Prologin.Api::PiecesEnJeu", (const void*)pieces_en_jeu);  mono_add_internal_call("Prologin.Api::PiecesAVennir", (const void*)pieces_a_vennir);  mono_add_internal_call("Prologin.Api::Unites", (const void*)unites);  mono_add_internal_call("Prologin.Api::ProprietesObjet", (const void*)proprietes_objet);  mono_add_internal_call("Prologin.Api::Deplacer", (const void*)deplacer);  mono_add_internal_call("Prologin.Api::AcheterObjet", (const void*)acheter_objet);  mono_add_internal_call("Prologin.Api::Utiliser", (const void*)utiliser);  mono_add_internal_call("Prologin.Api::AcheverLaPartie", (const void*)achever_la_partie);  mono_add_internal_call("Prologin.Api::AfficherErreur", (const void*)afficher_erreur);  mono_add_internal_call("Prologin.Api::AfficherTypeObjet", (const void*)afficher_type_objet);  mono_add_internal_call("Prologin.Api::AfficherPosition", (const void*)afficher_position);  mono_add_internal_call("Prologin.Api::AfficherCaracteristiquesObjet", (const void*)afficher_caracteristiques_objet);  mono_add_internal_call("Prologin.Api::AfficherUnite", (const void*)afficher_unite);  mono_add_internal_call("Prologin.Api::AfficherPiece", (const void*)afficher_piece);}
 
 MonoImage* CSharpInterface::getImage()
 {
@@ -635,14 +599,11 @@ void init_game()
 {
   gl_csharp.callCSharpMethod("InitGame");
 }
-
 void jouer()
 {
   gl_csharp.callCSharpMethod("Jouer");
 }
-
 void end_game()
 {
   gl_csharp.callCSharpMethod("EndGame");
 }
-

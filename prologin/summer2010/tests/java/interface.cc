@@ -207,92 +207,74 @@ jint Interface::mon_equipe()
 {
 	return cxx2lang<jint, int >(api_mon_equipe());
 }
-
 jint Interface::score(jint team)
 {
 	return cxx2lang<jint, int >(api_score(lang2cxx<jint, int >(team)));
 }
-
 jint Interface::nombre_equipes()
 {
 	return cxx2lang<jint, int >(api_nombre_equipes());
 }
-
 jint Interface::tour_actuel()
 {
 	return cxx2lang<jint, int >(api_tour_actuel());
 }
-
 JArray< Piece* >* Interface::pieces_en_jeu()
 {
 	return cxx2lang_array< Piece, piece >(api_pieces_en_jeu());
 }
-
 JArray< Piece* >* Interface::pieces_a_vennir()
 {
 	return cxx2lang_array< Piece, piece >(api_pieces_a_vennir());
 }
-
 JArray< Unite* >* Interface::unites()
 {
 	return cxx2lang_array< Unite, unite >(api_unites());
 }
-
 Caracteristiques_objet* Interface::proprietes_objet(Type_objet* to)
 {
 	return cxx2lang<Caracteristiques_objet*, caracteristiques_objet >(api_proprietes_objet(lang2cxx<Type_objet*, type_objet >(to)));
 }
-
 Erreur* Interface::deplacer(Position* cible, Position* pos)
 {
 	return cxx2lang<Erreur*, erreur >(api_deplacer(lang2cxx<Position*, position >(cible), lang2cxx<Position*, position >(pos)));
 }
-
 Erreur* Interface::acheter_objet(Position* cible, Type_objet* objet)
 {
 	return cxx2lang<Erreur*, erreur >(api_acheter_objet(lang2cxx<Position*, position >(cible), lang2cxx<Type_objet*, type_objet >(objet)));
 }
-
 Erreur* Interface::utiliser(Position* attaquant, Position* cible)
 {
 	return cxx2lang<Erreur*, erreur >(api_utiliser(lang2cxx<Position*, position >(attaquant), lang2cxx<Position*, position >(cible)));
 }
-
 Erreur* Interface::achever_la_partie()
 {
 	return cxx2lang<Erreur*, erreur >(api_achever_la_partie());
 }
-
 void Interface::afficher_erreur(Erreur* v)
 {
 	api_afficher_erreur(lang2cxx<Erreur*, erreur >(v));
 }
-
 void Interface::afficher_type_objet(Type_objet* v)
 {
 	api_afficher_type_objet(lang2cxx<Type_objet*, type_objet >(v));
 }
-
 void Interface::afficher_position(Position* v)
 {
 	api_afficher_position(lang2cxx<Position*, position >(v));
 }
-
 void Interface::afficher_caracteristiques_objet(Caracteristiques_objet* v)
 {
 	api_afficher_caracteristiques_objet(lang2cxx<Caracteristiques_objet*, caracteristiques_objet >(v));
 }
-
 void Interface::afficher_unite(Unite* v)
 {
 	api_afficher_unite(lang2cxx<Unite*, unite >(v));
 }
-
 void Interface::afficher_piece(Piece* v)
 {
 	api_afficher_piece(lang2cxx<Piece*, piece >(v));
 }
-
 extern void GC_disable();
 
 struct ProloginJavaVm
@@ -367,4 +349,28 @@ extern "C" void end_game()
     t->printStackTrace();
   }
 }
+
+///
+// Affiche le contenu d'une valeur de type erreur
+//
+
+///
+// Affiche le contenu d'une valeur de type type_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type position
+//
+
+///
+// Affiche le contenu d'une valeur de type caracteristiques_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type unite
+//
+
+///
+// Affiche le contenu d'une valeur de type piece
+//
 

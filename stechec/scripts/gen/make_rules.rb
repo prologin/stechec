@@ -111,13 +111,15 @@ class CxxFileGenerator < CxxProto
   # Api.cc
   def print_cxx_api
     for_each_fun do |fn|
-      @f.print cxx_proto(fn, "Api::")
-      @f.puts "
+      if not fn.dumps then
+        @f.print cxx_proto(fn, "Api::")
+        @f.puts "
 {
   // TODO
   abort();
 }
 "
+      end
     end
   end
 
@@ -217,7 +219,7 @@ EOF
     if args_string != [] then @f.puts "  out += #{args_string.join " + \", \" + " };" end
     @f.puts "  return out + \"]\";"
     @f.puts "}"
-    for_each_fun true, "function", true, do |fn| 
+    for_each_fun true, "function" do |fn| 
       if fn.dumps then
         t = fn.dumps
         @f.puts "std::ostream& operator<<(std::ostream& os, #{t.name} v)"
@@ -272,8 +274,10 @@ EOF
   # Api.hh
   def print_cxx_api_head
     for_each_fun do |fn|
-      @f.print cxx_proto(fn, "", "  ");
-      @f.print ";"
+      if not fn.dumps then
+        @f.print cxx_proto(fn, "", "  ");
+        @f.print ";"
+      end
     end
   end
 

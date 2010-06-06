@@ -212,3 +212,27 @@ void jouer(void);
 */
 void end_game(void);
 
+/*!
+** Affiche le contenu d'une valeur de type erreur
+*/
+
+/*!
+** Affiche le contenu d'une valeur de type type_objet
+*/
+
+/*!
+** Affiche le contenu d'une valeur de type position
+*/
+
+/*!
+** Affiche le contenu d'une valeur de type caracteristiques_objet
+*/
+
+/*!
+** Affiche le contenu d'une valeur de type unite
+*/
+
+/*!
+** Affiche le contenu d'une valeur de type piece
+*/
+

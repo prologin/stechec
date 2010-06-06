@@ -207,6 +207,30 @@ void jouer();
 //
 void end_game();
 
+///
+// Affiche le contenu d'une valeur de type erreur
+//
+
+///
+// Affiche le contenu d'une valeur de type type_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type position
+//
+
+///
+// Affiche le contenu d'une valeur de type caracteristiques_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type unite
+//
+
+///
+// Affiche le contenu d'une valeur de type piece
+//
+
 }
 
 #endif // !INTERFACE_HH_

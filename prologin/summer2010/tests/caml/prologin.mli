@@ -21,3 +21,27 @@ val jouer : unit -> unit
 *)
 val end_game : unit -> unit
 
+(*
+** Affiche le contenu d'une valeur de type erreur
+*)
+
+(*
+** Affiche le contenu d'une valeur de type type_objet
+*)
+
+(*
+** Affiche le contenu d'une valeur de type position
+*)
+
+(*
+** Affiche le contenu d'une valeur de type caracteristiques_objet
+*)
+
+(*
+** Affiche le contenu d'une valeur de type unite
+*)
+
+(*
+** Affiche le contenu d'une valeur de type piece
+*)
+

@@ -100,11 +100,11 @@ class FunctionArg
 end
 
 class Function
-  attr_reader :name
-  attr_reader :ret
-  attr_reader :args
-  attr_reader :conf
-  attr_reader :dumps
+  attr_accessor :name
+  attr_accessor :ret
+  attr_accessor :args
+  attr_accessor :conf
+  attr_accessor :dumps
 
   def initialize(types, conf, dumps = nil)
     @conf = conf
@@ -282,7 +282,7 @@ to the script file : gen/" + script
     end
   end
 
-  def for_each_fun(print_comment = true, arr = 'function', dump=false, &block)
+  def for_each_fun(print_comment = true, arr = 'function', &block)
     $conf[arr].delete_if {|x| x['doc_extra'] }
     $conf[arr].each do |x|
       fn = Function.new(@types, x)
@@ -290,17 +290,19 @@ to the script file : gen/" + script
       block.call(fn)
       if print_comment then @f.puts end
     end
-    if dump then
-      @dumpfuns.each do |f|
-        print_multiline_comment(f.conf['fct_summary']) if print_comment
-        block.call(f)
-        if print_comment then @f.puts end
-      end
+    @dumpfuns.each do |f|
+      print_multiline_comment(f.conf['fct_summary']) if print_comment
+      block.call(f)
+      if print_comment then @f.puts end
     end
   end
 
   def for_each_user_fun(print_comment = true, &block)
-    for_each_fun(print_comment, 'user_function') { |fn| block.call(fn) }
+    for_each_fun(print_comment, 'user_function') { |fn|
+      if not fn.dumps then
+        block.call(fn)
+      end
+    }
   end
 
 end

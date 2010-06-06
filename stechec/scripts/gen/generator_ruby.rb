@@ -393,7 +393,7 @@ class RubyFileGenerator < CProto
     @f.puts
     for_each_user_fun(false) do |fn|
       name = fn.name
-      args = fn.args.map do |a| a[0] end
+      args = fn.args.map do |a| a.name end
       @f.print "def ", name, "(#{args.join ', '})\n", "  # fonction a completer\n", "end\n" 
     end
     @f.close

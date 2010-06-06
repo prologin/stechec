@@ -598,25 +598,7 @@ api_afficher_piece(lang2cxx<PyObject*, piece>(a0));
 ** Api functions to register.
 */
 static PyMethodDef api_callback[] = {
-  {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},
-  {"score", p_score, METH_VARARGS, "score"},
-  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},
-  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},
-  {"pieces_en_jeu", p_pieces_en_jeu, METH_VARARGS, "pieces_en_jeu"},
-  {"pieces_a_vennir", p_pieces_a_vennir, METH_VARARGS, "pieces_a_vennir"},
-  {"unites", p_unites, METH_VARARGS, "unites"},
-  {"proprietes_objet", p_proprietes_objet, METH_VARARGS, "proprietes_objet"},
-  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},
-  {"acheter_objet", p_acheter_objet, METH_VARARGS, "acheter_objet"},
-  {"utiliser", p_utiliser, METH_VARARGS, "utiliser"},
-  {"achever_la_partie", p_achever_la_partie, METH_VARARGS, "achever_la_partie"},
-  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},
-  {"afficher_type_objet", p_afficher_type_objet, METH_VARARGS, "afficher_type_objet"},
-  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},
-  {"afficher_caracteristiques_objet", p_afficher_caracteristiques_objet, METH_VARARGS, "afficher_caracteristiques_objet"},
-  {"afficher_unite", p_afficher_unite, METH_VARARGS, "afficher_unite"},
-  {"afficher_piece", p_afficher_piece, METH_VARARGS, "afficher_piece"},
-  {NULL, NULL, 0, NULL}
+  {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"score", p_score, METH_VARARGS, "score"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"pieces_en_jeu", p_pieces_en_jeu, METH_VARARGS, "pieces_en_jeu"},  {"pieces_a_vennir", p_pieces_a_vennir, METH_VARARGS, "pieces_a_vennir"},  {"unites", p_unites, METH_VARARGS, "unites"},  {"proprietes_objet", p_proprietes_objet, METH_VARARGS, "proprietes_objet"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"acheter_objet", p_acheter_objet, METH_VARARGS, "acheter_objet"},  {"utiliser", p_utiliser, METH_VARARGS, "utiliser"},  {"achever_la_partie", p_achever_la_partie, METH_VARARGS, "achever_la_partie"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_objet", p_afficher_type_objet, METH_VARARGS, "afficher_type_objet"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_caracteristiques_objet", p_afficher_caracteristiques_objet, METH_VARARGS, "afficher_caracteristiques_objet"},  {"afficher_unite", p_afficher_unite, METH_VARARGS, "afficher_unite"},  {"afficher_piece", p_afficher_piece, METH_VARARGS, "afficher_piece"},  {NULL, NULL, 0, NULL}
 };
 
 static void _initapi()
@@ -707,7 +689,6 @@ extern "C" void init_game()
   } catch (...) { PyErr_Print(); abort(); }
 }
 
-
 extern "C" void jouer()
 {
   PyObject* _retval = _call_python_function("jouer");
@@ -717,7 +698,6 @@ extern "C" void jouer()
   } catch (...) { PyErr_Print(); abort(); }
 }
 
-
 extern "C" void end_game()
 {
   PyObject* _retval = _call_python_function("end_game");
@@ -726,5 +706,4 @@ extern "C" void end_game()
   Py_XDECREF(_retval);
   } catch (...) { PyErr_Print(); abort(); }
 }
-
 

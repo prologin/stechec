@@ -269,98 +269,80 @@ static VALUE rb_mon_equipe(VALUE self)
 {
   return cxx2lang<int>(api_mon_equipe());
 }
-
 static VALUE rb_score(VALUE self, VALUE team)
 {
   return cxx2lang<int>(api_score(lang2cxx<int>( team ) ));
 }
-
 static VALUE rb_nombre_equipes(VALUE self)
 {
   return cxx2lang<int>(api_nombre_equipes());
 }
-
 static VALUE rb_tour_actuel(VALUE self)
 {
   return cxx2lang<int>(api_tour_actuel());
 }
-
 static VALUE rb_pieces_en_jeu(VALUE self)
 {
   return cxx2lang_array<>(api_pieces_en_jeu());
 }
-
 static VALUE rb_pieces_a_vennir(VALUE self)
 {
   return cxx2lang_array<>(api_pieces_a_vennir());
 }
-
 static VALUE rb_unites(VALUE self)
 {
   return cxx2lang_array<>(api_unites());
 }
-
 static VALUE rb_proprietes_objet(VALUE self, VALUE to)
 {
   return cxx2lang<caracteristiques_objet>(api_proprietes_objet(lang2cxx<type_objet>( to ) ));
 }
-
 static VALUE rb_deplacer(VALUE self, VALUE cible, VALUE pos)
 {
   return cxx2lang<erreur>(api_deplacer(lang2cxx<position>( cible ) , lang2cxx<position>( pos ) ));
 }
-
 static VALUE rb_acheter_objet(VALUE self, VALUE cible, VALUE objet)
 {
   return cxx2lang<erreur>(api_acheter_objet(lang2cxx<position>( cible ) , lang2cxx<type_objet>( objet ) ));
 }
-
 static VALUE rb_utiliser(VALUE self, VALUE attaquant, VALUE cible)
 {
   return cxx2lang<erreur>(api_utiliser(lang2cxx<position>( attaquant ) , lang2cxx<position>( cible ) ));
 }
-
 static VALUE rb_achever_la_partie(VALUE self)
 {
   return cxx2lang<erreur>(api_achever_la_partie());
 }
-
 static VALUE rb_afficher_erreur(VALUE self, VALUE v)
 {
 api_afficher_erreur(lang2cxx<erreur>( v ) );
   return Qnil;
 }
-
 static VALUE rb_afficher_type_objet(VALUE self, VALUE v)
 {
 api_afficher_type_objet(lang2cxx<type_objet>( v ) );
   return Qnil;
 }
-
 static VALUE rb_afficher_position(VALUE self, VALUE v)
 {
 api_afficher_position(lang2cxx<position>( v ) );
   return Qnil;
 }
-
 static VALUE rb_afficher_caracteristiques_objet(VALUE self, VALUE v)
 {
 api_afficher_caracteristiques_objet(lang2cxx<caracteristiques_objet>( v ) );
   return Qnil;
 }
-
 static VALUE rb_afficher_unite(VALUE self, VALUE v)
 {
 api_afficher_unite(lang2cxx<unite>( v ) );
   return Qnil;
 }
-
 static VALUE rb_afficher_piece(VALUE self, VALUE v)
 {
 api_afficher_piece(lang2cxx<piece>( v ) );
   return Qnil;
 }
-
 
 void loadCallback()
 { 
@@ -566,5 +548,29 @@ abort();
 
   }
 }
+
+///
+// Affiche le contenu d'une valeur de type erreur
+//
+
+///
+// Affiche le contenu d'une valeur de type type_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type position
+//
+
+///
+// Affiche le contenu d'une valeur de type caracteristiques_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type unite
+//
+
+///
+// Affiche le contenu d'une valeur de type piece
+//
 
 }

@@ -574,25 +574,7 @@ api_afficher_piece(lang2cxx<zval*, piece>(_v));
 }
 
 static function_entry module_functions_table[] = {
-    PHP_FALIAS(mon_equipe, php_api_mon_equipe, NULL)
-    PHP_FALIAS(score, php_api_score, NULL)
-    PHP_FALIAS(nombre_equipes, php_api_nombre_equipes, NULL)
-    PHP_FALIAS(tour_actuel, php_api_tour_actuel, NULL)
-    PHP_FALIAS(pieces_en_jeu, php_api_pieces_en_jeu, NULL)
-    PHP_FALIAS(pieces_a_vennir, php_api_pieces_a_vennir, NULL)
-    PHP_FALIAS(unites, php_api_unites, NULL)
-    PHP_FALIAS(proprietes_objet, php_api_proprietes_objet, NULL)
-    PHP_FALIAS(deplacer, php_api_deplacer, NULL)
-    PHP_FALIAS(acheter_objet, php_api_acheter_objet, NULL)
-    PHP_FALIAS(utiliser, php_api_utiliser, NULL)
-    PHP_FALIAS(achever_la_partie, php_api_achever_la_partie, NULL)
-    PHP_FALIAS(afficher_erreur, php_api_afficher_erreur, NULL)
-    PHP_FALIAS(afficher_type_objet, php_api_afficher_type_objet, NULL)
-    PHP_FALIAS(afficher_position, php_api_afficher_position, NULL)
-    PHP_FALIAS(afficher_caracteristiques_objet, php_api_afficher_caracteristiques_objet, NULL)
-    PHP_FALIAS(afficher_unite, php_api_afficher_unite, NULL)
-    PHP_FALIAS(afficher_piece, php_api_afficher_piece, NULL)
-    {NULL, NULL, NULL}
+    PHP_FALIAS(mon_equipe, php_api_mon_equipe, NULL)    PHP_FALIAS(score, php_api_score, NULL)    PHP_FALIAS(nombre_equipes, php_api_nombre_equipes, NULL)    PHP_FALIAS(tour_actuel, php_api_tour_actuel, NULL)    PHP_FALIAS(pieces_en_jeu, php_api_pieces_en_jeu, NULL)    PHP_FALIAS(pieces_a_vennir, php_api_pieces_a_vennir, NULL)    PHP_FALIAS(unites, php_api_unites, NULL)    PHP_FALIAS(proprietes_objet, php_api_proprietes_objet, NULL)    PHP_FALIAS(deplacer, php_api_deplacer, NULL)    PHP_FALIAS(acheter_objet, php_api_acheter_objet, NULL)    PHP_FALIAS(utiliser, php_api_utiliser, NULL)    PHP_FALIAS(achever_la_partie, php_api_achever_la_partie, NULL)    PHP_FALIAS(afficher_erreur, php_api_afficher_erreur, NULL)    PHP_FALIAS(afficher_type_objet, php_api_afficher_type_objet, NULL)    PHP_FALIAS(afficher_position, php_api_afficher_position, NULL)    PHP_FALIAS(afficher_caracteristiques_objet, php_api_afficher_caracteristiques_objet, NULL)    PHP_FALIAS(afficher_unite, php_api_afficher_unite, NULL)    PHP_FALIAS(afficher_piece, php_api_afficher_piece, NULL)    {NULL, NULL, NULL}
 };
 static zend_module_entry api_module_entry = {
     STANDARD_MODULE_HEADER,
@@ -689,4 +671,28 @@ extern "C" void end_game()
     zval_ptr_dtor(&ret);
     zval_ptr_dtor(&fname);
 }
+
+///
+// Affiche le contenu d'une valeur de type erreur
+//
+
+///
+// Affiche le contenu d'une valeur de type type_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type position
+//
+
+///
+// Affiche le contenu d'une valeur de type caracteristiques_objet
+//
+
+///
+// Affiche le contenu d'une valeur de type unite
+//
+
+///
+// Affiche le contenu d'une valeur de type piece
+//
 
