@@ -100,9 +100,9 @@ class FunctionArg
 end
 
 class Function
-  attr_accessor :name
-  attr_accessor :ret
-  attr_accessor :args
+  attr_reader :name
+  attr_reader :ret
+  attr_reader :args
   attr_reader :conf
   attr_reader :dumps
 
@@ -257,7 +257,7 @@ to the script file : gen/" + script
     $conf['enum'].each do |x|
       print_multiline_comment(x['enum_summary']) if print_comment
       block.call(x)
-      @f.puts
+      @f.puts() if print_comment
     end
   end
 
@@ -266,23 +266,35 @@ to the script file : gen/" + script
     $conf['struct'].each do |x|
       print_multiline_comment(x['str_summary']) if print_comment
       block.call(x)
-      @f.puts
+      @f.puts() if print_comment
     end
   end
 
-  def for_each_fun(print_comment = true, arr = 'function', &block)
+  def for_each_info(&block)
+    arr="infos"
+    types = {}
+    for_each_fun(false) do |x| types[x.name] = x.ret end
+    if ($conf[arr] != nil) then
+      $conf[arr].each do |x|
+        x["type"] = types[x["fct_name"]]
+        block.call x
+      end
+    end
+  end
+
+  def for_each_fun(print_comment = true, arr = 'function', dump=false, &block)
     $conf[arr].delete_if {|x| x['doc_extra'] }
     $conf[arr].each do |x|
       fn = Function.new(@types, x)
       print_multiline_comment(x['fct_summary']) if print_comment
       block.call(fn)
-      @f.puts
+      if print_comment then @f.puts end
     end
-    if arr == 'function'
+    if dump then
       @dumpfuns.each do |f|
         print_multiline_comment(f.conf['fct_summary']) if print_comment
         block.call(f)
-        @f.puts
+        if print_comment then @f.puts end
       end
     end
   end

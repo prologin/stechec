@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 #
 # Stechec project is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -120,9 +121,103 @@ class CxxFileGenerator < CxxProto
     end
   end
 
+
+
+  def convert_to_string_arr(ty)
+    @f.print <<-EOF
+std::string convert_to_string(std::vector<#{ty}> in){
+  if (in.size()){
+    std::string s = "[" + convert_to_string(s[0]);
+    for (int i = 1, l = in.size(); i < l; i++){
+      s = s + ", " + convert_to_string(in[0]);
+    }
+    return s + "]";
+  }else{
+    return "[]";
+  }
+}
+EOF
+  end
+
+
   # interface.cc
   def print_interface
-    for_each_fun do |fn| 
+    # print info
+    # string convertion fonctions (util function for "print info")
+    @f.print <<-EOF
+std::string convert_to_string(int i){
+  std::string s="";
+  s +=i;
+  return s;
+}
+std::string convert_to_string(std::string i){
+  return i;
+}
+std::string convert_to_string(bool i){
+  return i?"true":"false";
+}
+EOF
+
+    # string conversion functions for enum
+    for_each_enum(false) do |e|
+      ty = e["enum_name"]
+      @f.puts "std::string convert_to_string(#{ty} in){"
+      @f.puts "  switch (in)\n  {"
+      e["enum_field"].each do |f|
+        @f.puts "    case #{f[0].upcase()}: return \"\\\"#{f[0]}\\\"\";"
+      end
+      @f.puts "  }"
+      @f.puts "  return \"bad value\";"
+      @f.puts "}"
+      convert_to_string_arr ty
+    end
+
+    # string conversion functions for vectors
+    for_each_struct(false) do |e|
+      ty = e["str_name"]
+      @f.puts "std::string convert_to_string(#{ty} in){"
+      args = []
+      e["str_field"].each do |e|
+        @f.puts "  std::string #{e[0]} = convert_to_string(in.#{e[0]});"
+	args.push "\"#{e[0]}:\" + #{e[0]}"
+      end
+      @f.puts "  std::string out = \"{\";"
+      virgule = false;
+      args.each do |s|
+        if virgule then @f.puts "  out += \", \";" end
+        @f.puts "  out += #{s};"
+        virgule = true;
+      end
+      @f.puts "  return out + \"}\";"
+      @f.puts "}"
+      @f.puts
+      convert_to_string_arr ty
+    end
+
+    # dump infos function
+    @f.puts "std::string dump_infos()","{"
+    i = 0
+    args_string = []
+    for_each_info do |x|
+      i = i + 1
+      ty = x['type']
+      if ty.is_array? then
+        ty = "std::vector<#{ty.type.name}>"
+      else
+        ty = ty.name
+      end
+      args_ = x['fct_arg'].map do |x| x end
+      args_str = args_.join ", "
+      @f.puts "  std::string string_info#{i} = convert_to_string(api->#{x['fct_name']}(#{args_str}));"
+      args_string.push("string_info#{i}")
+    end
+    @f.puts "  // TODO modifie les infos ici, si besoin (si tu as une vue subjective, ca peut-etre utile)"
+
+    @f.puts "  std::string out = \"[\";"
+    if args_string != [] then @f.puts "  out += #{args_string.join " + \", \" + " };" end
+    @f.puts "  return out + \"]\";"
+    @f.puts "}"
+    for_each_fun true, "function", true, do |fn| 
       if fn.dumps then
         t = fn.dumps
         @f.puts "std::ostream& operator<<(std::ostream& os, #{t.name} v)"
