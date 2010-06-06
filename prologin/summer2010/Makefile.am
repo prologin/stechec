@@ -2,7 +2,8 @@
 
 SUBDIRS =					\
 	data					\
-	rules
+	rules					\
+	jsdumper
 
 if HAVE_SDL
   SUBDIRS += gui
