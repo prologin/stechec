@@ -33,12 +33,185 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
   return os;
 }
 
+std::string convert_to_string(int i){
+  std::string s="";
+  s +=i;
+  return s;
+}
+std::string convert_to_string(std::string i){
+  return i;
+}
+std::string convert_to_string(bool i){
+  return i?"true":"false";
+}
+std::string convert_to_string(erreur in){
+  switch (in)
+  {
+    case OK: return "\"ok\"";
+    case POSITION_INVALIDE: return "\"position_invalide\"";
+    case PLUS_DE_PA: return "\"plus_de_pa\"";
+    case PAS_A_PORTE: return "\"pas_a_porte\"";
+    case UNITE_KO: return "\"unite_ko\"";
+    case PAS_A_TOI: return "\"pas_a_toi\"";
+    case UTILISATION_IMPOSSIBLE: return "\"utilisation_impossible\"";
+    case PLUS_D_ARGENT: return "\"plus_d_argent\"";
+  }
+  return "bad value";
+}
+std::string convert_to_string(std::vector<erreur> in){
+  if (in.size()){
+    std::string s = "[" + convert_to_string(s[0]);
+    for (int i = 1, l = in.size(); i < l; i++){
+      s = s + ", " + convert_to_string(in[0]);
+    }
+    return s + "]";
+  }else{
+    return "[]";
+  }
+}
+std::string convert_to_string(type_objet in){
+  switch (in)
+  {
+    case FILET: return "\"filet\"";
+    case MARTEAU: return "\"marteau\"";
+    case RIEN: return "\"rien\"";
+  }
+  return "bad value";
+}
+std::string convert_to_string(std::vector<type_objet> in){
+  if (in.size()){
+    std::string s = "[" + convert_to_string(s[0]);
+    for (int i = 1, l = in.size(); i < l; i++){
+      s = s + ", " + convert_to_string(in[0]);
+    }
+    return s + "]";
+  }else{
+    return "[]";
+  }
+}
+std::string convert_to_string(position in){
+  std::string x = convert_to_string(in.x);
+  std::string y = convert_to_string(in.y);
+  std::string out = "{";
+  out += "x:" + x;
+  out += ", ";
+  out += "y:" + y;
+  return out + "}";
+}
+
+std::string convert_to_string(std::vector<position> in){
+  if (in.size()){
+    std::string s = "[" + convert_to_string(s[0]);
+    for (int i = 1, l = in.size(); i < l; i++){
+      s = s + ", " + convert_to_string(in[0]);
+    }
+    return s + "]";
+  }else{
+    return "[]";
+  }
+}
+std::string convert_to_string(caracteristiques_objet in){
+  std::string cout = convert_to_string(in.cout);
+  std::string porte = convert_to_string(in.porte);
+  std::string out = "{";
+  out += "cout:" + cout;
+  out += ", ";
+  out += "porte:" + porte;
+  return out + "}";
+}
+
+std::string convert_to_string(std::vector<caracteristiques_objet> in){
+  if (in.size()){
+    std::string s = "[" + convert_to_string(s[0]);
+    for (int i = 1, l = in.size(); i < l; i++){
+      s = s + ", " + convert_to_string(in[0]);
+    }
+    return s + "]";
+  }else{
+    return "[]";
+  }
+}
+std::string convert_to_string(unite in){
+  std::string pos_unite = convert_to_string(in.pos_unite);
+  std::string team = convert_to_string(in.team);
+  std::string ko = convert_to_string(in.ko);
+  std::string pa = convert_to_string(in.pa);
+  std::string objet = convert_to_string(in.objet);
+  std::string id = convert_to_string(in.id);
+  std::string out = "{";
+  out += "pos_unite:" + pos_unite;
+  out += ", ";
+  out += "team:" + team;
+  out += ", ";
+  out += "ko:" + ko;
+  out += ", ";
+  out += "pa:" + pa;
+  out += ", ";
+  out += "objet:" + objet;
+  out += ", ";
+  out += "id:" + id;
+  return out + "}";
+}
+
+std::string convert_to_string(std::vector<unite> in){
+  if (in.size()){
+    std::string s = "[" + convert_to_string(s[0]);
+    for (int i = 1, l = in.size(); i < l; i++){
+      s = s + ", " + convert_to_string(in[0]);
+    }
+    return s + "]";
+  }else{
+    return "[]";
+  }
+}
+std::string convert_to_string(piece in){
+  std::string valeur = convert_to_string(in.valeur);
+  std::string pos_piece = convert_to_string(in.pos_piece);
+  std::string tour_apparition = convert_to_string(in.tour_apparition);
+  std::string out = "{";
+  out += "valeur:" + valeur;
+  out += ", ";
+  out += "pos_piece:" + pos_piece;
+  out += ", ";
+  out += "tour_apparition:" + tour_apparition;
+  return out + "}";
+}
+
+std::string convert_to_string(std::vector<piece> in){
+  if (in.size()){
+    std::string s = "[" + convert_to_string(s[0]);
+    for (int i = 1, l = in.size(); i < l; i++){
+      s = s + ", " + convert_to_string(in[0]);
+    }
+    return s + "]";
+  }else{
+    return "[]";
+  }
+}
+std::string dump_infos()
+{
+  std::string string_info1 = convert_to_string(api->unites());
+  std::string string_info2 = convert_to_string(api->pieces_a_vennir());
+  std::string string_info3 = convert_to_string(api->pieces_en_jeu());
+  // TODO modifie les infos ici, si besoin (si tu as une vue subjective, ca peut-etre utile)
+  std::string out = "[";
+  out += string_info1 + ", " + string_info2 + ", " + string_info3;
+  return out + "]";
+}
 ///
 // Renvoie le numero de votre equipe.
 //
 extern "C" int api_mon_equipe()
 {
   return api->mon_equipe();
+}
+
+///
+// Renvoie le score d'une equipe.
+//
+extern "C" int api_score(int team)
+{
+  return api->score(team);
 }
 
 ///
@@ -82,6 +255,14 @@ extern "C" std::vector<unite> api_unites()
 }
 
 ///
+// Retourne les caracteristiques de l'objet.
+//
+extern "C" caracteristiques_objet api_proprietes_objet(type_objet to)
+{
+  return api->proprietes_objet(to);
+}
+
+///
 // Déplace une unité vers une position à portée.
 //
 extern "C" erreur api_deplacer(position cible, position pos)
@@ -95,14 +276,6 @@ extern "C" erreur api_deplacer(position cible, position pos)
 extern "C" erreur api_acheter_objet(position cible, type_objet objet)
 {
   return api->acheter_objet(cible, objet);
-}
-
-///
-// Achete un objet
-//
-extern "C" int api_score(int team)
-{
-  return api->score(team);
 }
 
 ///
@@ -128,9 +301,11 @@ std::ostream& operator<<(std::ostream& os, erreur v)
 {
   switch (v) {
   case OK: os << "OK"; break;
-  case PLUS_DE_PA: os << "PLUS_DE_PA"; break;
-  case PAS_A_TOI: os << "PAS_A_TOI"; break;
   case POSITION_INVALIDE: os << "POSITION_INVALIDE"; break;
+  case PLUS_DE_PA: os << "PLUS_DE_PA"; break;
+  case PAS_A_PORTE: os << "PAS_A_PORTE"; break;
+  case UNITE_KO: os << "UNITE_KO"; break;
+  case PAS_A_TOI: os << "PAS_A_TOI"; break;
   case UTILISATION_IMPOSSIBLE: os << "UTILISATION_IMPOSSIBLE"; break;
   case PLUS_D_ARGENT: os << "PLUS_D_ARGENT"; break;
   }
@@ -236,11 +411,3 @@ extern "C" void api_afficher_piece(piece v)
   std::cerr << v << std::endl;
 }
 
-extern "C" bool api_mon_tour()
-{
-  return api->mon_tour();
-}
-
-extern "C" caracteristiques_objet api_proprietes_objet(type_objet to){
-  return api->proprietes_objet(to);
-}

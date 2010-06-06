@@ -184,3 +184,13 @@ user_function:
     fct_summary: Fonction appellée à la fin de la partie.
     fct_ret_type: void
     fct_arg: []
+infos:
+  -
+    fct_name: unites
+    fct_arg: []
+  -
+    fct_name: pieces_a_vennir
+    fct_arg: []
+  -
+    fct_name: pieces_en_jeu
+    fct_arg: []
