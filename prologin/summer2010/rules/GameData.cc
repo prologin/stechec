@@ -291,6 +291,7 @@ void GameData::resoudre( const e_com_type type, const int * arg){
   switch (type){
   case DEPLACER_MSG:
     if (mon_tour())  return;
+    if (!can_move) abort();
     p1.x = arg[1];
     p1.y = arg[2];
     p2.x = arg[3];
@@ -298,6 +299,7 @@ void GameData::resoudre( const e_com_type type, const int * arg){
     resoudreDeplacer(p1, p2);
     break;
   case FINIR_MSG:
+    if (!can_move) abort();
     if (mon_tour())  return;
     resoudreFinPartie();
     break;
@@ -308,12 +310,14 @@ void GameData::resoudre( const e_com_type type, const int * arg){
     push_piece(arg[0], arg[1], p1);
     break;
   case ACHETER_OBJET_MSG:
+    if (!can_move) abort();
     if (mon_tour())  return;
     p1.x = arg[1];
     p1.y = arg[2];
     resoudreAcheterObjet(p1, (type_objet)arg[3]);
     break;
   case UTILISER_OBJET_MSG:
+    if (!can_move) abort();
     if (mon_tour())  return;
     p1.x = arg[1];
     p1.y = arg[2];
