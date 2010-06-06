@@ -33,6 +33,11 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
   return os;
 }
 
+extern "C" bool api_mon_tour()
+{
+  return api->mon_tour();
+}
+
 std::string convert_to_string(int i){
   std::string s="";
   s +=i;
