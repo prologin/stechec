@@ -37,6 +37,7 @@ public:
   std::map<position, piece> map_p;
   piece next[NB_PIECES_SUIVANTES_VISIBLES];
   int next_indice0;
+  int first_indice0;
   int current_player;
 
   bool can_move;
@@ -51,7 +52,7 @@ public:
   bool case_occupee(const position p);
   int get_real_turn();
   int get_current_player();
-  void team_switched();
+  void team_switched(bool serv);
   bool mon_tour();
   void apparition_piece();
   bool match_finished();

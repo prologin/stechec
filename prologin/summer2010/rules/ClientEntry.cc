@@ -50,7 +50,7 @@ int        ClientEntry::initGame()
 
 int        ClientEntry::beforeNewTurn()
 {
-  g_->team_switched();
+  g_->team_switched(false);
   return 0;
 }
 

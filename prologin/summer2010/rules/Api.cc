@@ -177,5 +177,4 @@ erreur Api::achever_la_partie()
 
 void Api::teamSwitched()
 {
-  g_->team_switched();
 }

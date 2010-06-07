@@ -30,12 +30,10 @@ int		ServerEntry::beforeGame(void)
 
   g_->Init();
   for (int i = 0; i < NB_PIECES_SUIVANTES_VISIBLES; i ++) {
-    LOG2("PUSH PIECES MSG !!");
-
     g_->push_random_piece();
-    g_->next[i].tour_apparition = i+1;
+    g_->next[i].tour_apparition = i / NB_PIECES_SUIVANTES_VISIBLES_PAR_TOUR + 1;
     StechecPkt com(NEXT_PIECE_MSG, -1);
-    com.Push(5, i+1, g_->next[i].valeur, g_->next[i].pos_piece.x, g_->next[i].pos_piece.y);
+    com.Push(5, g_->next[i].tour_apparition, g_->next[i].valeur, g_->next[i].pos_piece.x, g_->next[i].pos_piece.y);
     SendToAll(com);
   }
 
@@ -49,7 +47,7 @@ int         ServerEntry::initGame(void)
 
 int         ServerEntry::beforeNewTurn(void)
 {
-  g_->team_switched();
+  g_->team_switched(true);
   return 0;
 }
 
@@ -65,12 +63,14 @@ int         ServerEntry::afterNewTurn(void)
     SendToAll((*it)[0], -1, 8, ARG8((*it), 1));
   }
   if (g_->getCurrentTurn() % 2 == 0){
-    g_->apparition_piece();
-    LOG2("PUSH PIECES MSG !!");
-    piece p = g_->push_random_piece();
-    StechecPkt com(NEXT_PIECE_MSG, -1);
-    com.Push(4, p.tour_apparition, p.valeur, p.pos_piece.x, p.pos_piece.y);
-    SendToAll(com);
+    for (int i = 0; i < NB_PIECES_SUIVANTES_VISIBLES_PAR_TOUR; i ++){
+      g_->apparition_piece();
+      LOG2("PUSH PIECES MSG !!");
+      piece p = g_->push_random_piece();
+      StechecPkt com(NEXT_PIECE_MSG, -1);
+      com.Push(4, p.tour_apparition, p.valeur, p.pos_piece.x, p.pos_piece.y);
+      SendToAll(com);
+    }
   }
   return 0;
 }

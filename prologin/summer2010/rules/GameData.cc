@@ -38,6 +38,7 @@ GameData::GameData()
 {
   srand(time(0));
   next_indice0 = 0;
+  first_indice0 = 0;
   can_move = false;
   current_player = 1;
   for (int dx = 0; dx < 3; dx ++){
@@ -82,6 +83,7 @@ piece GameData::push_random_piece() {
   return next[next_indice0_old];
 }
 void GameData::push_piece(int temps, int valeur, position p) {
+  LOG3("push piece temps : %1 valeur %2", temps, valeur);
   int next_indice0_old = next_indice0;
   next[next_indice0].valeur = valeur;
   next[next_indice0].tour_apparition = temps;
@@ -101,7 +103,7 @@ void GameData::random_position(position & p) {
 void GameData::random_piece(piece & p) {
   random_position(p.pos_piece);
   p.valeur = 1 + (rand() % 9);
-  p.tour_apparition = get_real_turn() + NB_PIECES_SUIVANTES_VISIBLES;
+  p.tour_apparition = get_real_turn() + NB_PIECES_SUIVANTES_VISIBLES / NB_PIECES_SUIVANTES_VISIBLES_PAR_TOUR;
 }
 
 int GameData::get_current_player(){
@@ -112,10 +114,13 @@ int GameData::get_real_turn()
 {
   return (getCurrentTurn() - 1) / 2 + 1;
 }
-void GameData::team_switched(){
+void GameData::team_switched(bool serv){
   current_player = (current_player + 1 ) % 2;
   can_move = true;
-  if (getCurrentTurn() % 2 == 0) apparition_piece();
+  if (!serv && getCurrentTurn() % 2 == 0){
+    for (int i = 0; i < NB_PIECES_SUIVANTES_VISIBLES_PAR_TOUR; i ++)
+      apparition_piece();
+  }
 
   // reset des KO et des PA
   std::vector<unite> out;
@@ -130,8 +135,13 @@ void GameData::team_switched(){
 }
 
 void GameData::apparition_piece(){
-  piece p = next[next_indice0];
-  map_p[p.pos_piece] = p;
+  piece p = next[first_indice0];
+  if (contains_unite(p.pos_piece)){
+    score_team[map_u[p.pos_piece].team] += p.valeur;
+  }else{
+    map_p[p.pos_piece] = p;
+  }
+  first_indice0 = (first_indice0 + 1) % NB_PIECES_SUIVANTES_VISIBLES;
 }
 
 bool GameData::match_finished(){
@@ -142,7 +152,7 @@ int GameData::score(int team){
   if (team != 0 && team != 1){
     return 0;
   }
-  LOG2("score[%1]= %2", team, score_team[team]);
+  LOG4("score[%1]= %2", team, score_team[team]);
   return score_team[team];
 }
 
@@ -155,30 +165,30 @@ piece GameData::get_piece(position cible){
 }
 
 void GameData::set_unite(position cible, unite u){
-  LOG2("case (%1. %2) adding unit %3", cible.x, cible.y, u.id);
+  LOG4("case (%1. %2) adding unit %3", cible.x, cible.y, u.id);
   u.pos_unite = cible;
   map_u[cible] = u;
 }
 
 void GameData::remove_unite(position cible){
-  LOG2("case (%1, %2) removing unit...", cible.x, cible.y);
+  LOG4("case (%1, %2) removing unit...", cible.x, cible.y);
   map_u.erase(cible);
 }
 
 bool GameData::contains_unite(position cible){
   int i = map_u.count(cible);
-  LOG2("case (%1, %2) contains %3 unit", cible.x, cible.y, i);
+  LOG4("case (%1, %2) contains %3 unit", cible.x, cible.y, i);
   return i > 0;
 }
 
 void GameData::remove_piece(position cible){
-  LOG2("case (%1, %2) removing piece at...", cible.x, cible.y);
+  LOG4("case (%1, %2) removing piece at...", cible.x, cible.y);
   map_p.erase(cible);
 }
 
 bool GameData::contains_piece(position cible){
   int i = map_p.count(cible);
-  LOG2("case (%1. %2) contains %3 piece", cible.x, cible.y, i);
+  LOG4("case (%1. %2) contains %3 piece", cible.x, cible.y, i);
   return i > 0;
 }
 
@@ -203,8 +213,11 @@ void GameData::resoudreFinPartie(){
 
 void GameData::resoudreDeplacer(position cible, position pos){
   UNITE_IN(cible);
+  LOG3("position de depart libre");
   PAS_UNITE_IN(pos);
+  LOG3("position de destination libre");
   POSITION_VALIDE(pos);
+  LOG3("position de destination dans le terrain");
   int d = distance(cible, pos);
   unite u = map_u[cible];
   if (u.team != current_player) throw PAS_A_TOI;
@@ -304,7 +317,6 @@ void GameData::resoudre( const e_com_type type, const int * arg){
     resoudreFinPartie();
     break;
   case NEXT_PIECE_MSG:
-    LOG2("RECIEVE PIECES MSG !!");
     p1.x = arg[2];
     p1.y = arg[3];
     push_piece(arg[0], arg[1], p1);
