@@ -15,6 +15,14 @@ module List = struct
 	if n = i then [f n]
 	else (f n) :: (aux (n + 1))
       in aux 0;;
+  let carthesien l1 l2 =
+    List.fold_left
+      (fun acc i1 ->
+	 List.fold_left
+	   (fun acc i2 ->
+	      (i1, i2) :: acc
+	   ) acc l2
+      ) [] l1
 end
 
 
@@ -23,6 +31,14 @@ end
 *)
 let init_game () =  (* Pose ton code ici *)
   flush stderr; flush stdout;; (* Pour que vos sorties s'affichent *)
+
+let show_unites u =
+  List.iter
+    (fun u ->
+       let (x, y) = u.pos_unite in
+       Printf.printf "id=%d team=%d pos=(%d, %d)\n" u.id u.team x y
+    )
+    u
 
 let (|>) x f = f x;;
 
@@ -61,39 +77,31 @@ let deplacer u p =
 
 let position_occupee p =
   let u = unites () |> Array.to_list in
+  let () = show_unites u in
     List.exists (fun u -> u.pos_unite = p) u
 
 let direction u p =
   let (ux, uy) = u.pos_unite in
   let (px, py) = p.pos_piece in
-  let position dx dy =
+  let position (dx, dy) =
     let x = if ux < px then ux + dx else ux - dx in
     let y = if uy < py then uy + dy else uy - dy
     in (x, y)
   in
   let position_libre dx dy =
-    let () = Printf.printf "init dx, dy = (%d, %d)\n" dx dy in
-    let () = clean () in
     let list_dx = List.init (fun i -> i + 1) (dx - 1) |> List.rev in
     let list_dy = List.init (fun i -> i + 1) (dy - 1) |> List.rev in
+    let p_list = List.carthesien list_dx list_dy in
+    let p_list = List.map position p_list in
       List.fold_left
-	(fun pos dx ->
-	   match pos with
-	     | Some s -> pos
+	(fun opt p ->
+	   match opt with
+	     | Some s -> opt
 	     | None ->
-		 List.fold_left
-		   (fun pos dy ->
-		      let () = Printf.printf "init dx, dy = (%d, %d)\n" dx dy in
-		      let () = clean () in
-			match pos with
-			  | Some s -> pos
-			  | None ->
-			      let p = position dx dy
-			      in if position_occupee p then None else Some p
-		   )
-		   None list_dy
+		 if position_occupee p then None else Some p
 	)
-	None list_dx
+	None
+	p_list
   in
   let pa = u.pa in
   let dx = min pa (abs (ux - px)) in
@@ -148,14 +156,6 @@ let move_player (u:unite) =
 		    | None -> ()
     end
 ;;
-
-let show_unites u =
-  List.iter
-    (fun u ->
-       let (x, y) = u.pos_unite in
-       Printf.printf "id=%d team=%d pos=(%d, %d)\n" u.id u.team x y
-    )
-    u
 
 let deplacer () =
   let u = unites () |> Array.to_list in
