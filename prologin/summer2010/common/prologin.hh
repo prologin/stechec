@@ -19,7 +19,7 @@
 ///
 // le prix de la fin d'une partie
 //
-# define PRIX_FIN_PARTIE           25
+# define PRIX_FIN_PARTIE           150
 
 ///
 // le nombre de points d'actions des unites au debut du tour.

@@ -92,6 +92,7 @@ static const char* images_path[NUMBER_OF_IMAGES] = {
 TTF_Font* font;
 typedef int color;
 static color background;
+static color forground;
 int alpha = 200;
 int transparent;
 
@@ -157,7 +158,10 @@ void draw_text(char *t, int x, int y){
   SDL_BlitSurface(message, NULL, s, &pos);
   SDL_FreeSurface(message);
   SDL_Flip(s);
-  printf("message : %s\n", t);
+}
+
+void draw_text(char *t, SDL_Rect pos){
+  draw_text(t, pos.x, pos.y);
 }
 
 void quit_sdl()
@@ -170,7 +174,8 @@ void init() {
   int i;
   get_screen();
   SDL_Surface *text = get_text_surface();
-  background = SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 255, 255);  
+  background = SDL_MapRGB(SDL_GetVideoSurface()->format, 70,0,0);
+  forground = SDL_MapRGB(SDL_GetVideoSurface()->format, 255,255,255);
   for (i = 0; i < NUMBER_OF_IMAGES; ++i)
     {
       images[i] = load_image(images_path[i]);
@@ -181,7 +186,7 @@ void init() {
     }
   font = load_ttf("FreeSerif.ttf", FONT_SIZE);
   assert(font != NULL);
-  transparent = SDL_MapRGB(text->format, 255, 255, 255);
+  transparent = SDL_MapRGB(text->format, 0,0,0);
   text_surface_clear();
   draw_text("appuyez sur espace pour faire avancer le jeu", 10, 150);
   display_map();
@@ -263,10 +268,7 @@ void display_map(){
   int ncasesx = screen->w / CASE_WIDTH + (screen->w % CASE_WIDTH != 0);
   int ncasesy = screen->h / CASE_HEIGHT + (screen->h % CASE_HEIGHT != 0);
   SDL_FillRect(screen, NULL, background);
-
-  int tour = tour_actuel();
-  int score1 = score(0);
-  int score2 = score(1);
+  text_surface_clear();
   std::vector<piece> vect_pej = pieces_en_jeu();
   std::vector<unite> vect_u = unites();
   std::vector<piece> vect_pav = pieces_a_vennir();
@@ -306,6 +308,35 @@ void display_map(){
 	  if (pic != -1) SDL_BlitSurface(images[pic], NULL, screen, &pos);
         }
     }
+  { // clean text surface
+    SDL_Rect pos;
+    pos.x = 0;
+    pos.y = 0;
+    pos.w = 200;
+    pos.h = 150;
+    SDL_FillRect(screen, &pos, forground);
+  }
+  for (int i = 0; i <= 1 ; i ++){
+    int score_ = score(i);
+    SDL_Rect pos;
+    pos.x = 0;
+    pos.y = i * 50;
+    SDL_BlitSurface(images[IMG_PLAYER1 + i], NULL, screen, &pos);
+    pos.x = 100;
+    char buffer[255];
+    sprintf(buffer, "score : %d", score_);
+    draw_text(buffer, pos);
+  }
+
+  {
+    SDL_Rect pos;
+    pos.x = 0;
+    pos.y = 100;
+    int tour = tour_actuel();
+    char buffer[255];
+    sprintf(buffer, "tour : %d", tour);
+    draw_text(buffer, pos);
+  }
   SDL_BlitSurface(get_text_surface(), NULL, screen, NULL);
   SDL_Flip(screen);
 }

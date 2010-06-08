@@ -24,7 +24,7 @@ void event_turn();
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define VIDEO_FORMAT (SDL_HWSURFACE | SDL_RESIZABLE)
-#define FONT_SIZE 12
+#define FONT_SIZE 20
 
 #define CASE_WIDTH 50
 #define CASE_HEIGHT 50

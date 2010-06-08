@@ -68,7 +68,7 @@ namespace Prologin {
 		public const int TAILLE_TERRAIN = 21;
 
 // le prix de la fin d'une partie
-		public const int PRIX_FIN_PARTIE = 25;
+		public const int PRIX_FIN_PARTIE = 150;
 
 // le nombre de points d'actions des unites au debut du tour.
 		public const int MAX_PA = 3;

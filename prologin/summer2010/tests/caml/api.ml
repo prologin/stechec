@@ -12,7 +12,7 @@ let taille_terrain = 21
 (*
 ** le prix de la fin d'une partie
 *)
-let prix_fin_partie = 25
+let prix_fin_partie = 150
 
 (*
 ** le nombre de points d'actions des unites au debut du tour.

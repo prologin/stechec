@@ -13,7 +13,7 @@ constant:
     cst_comment: Taille du terrain.
   - 
     cst_name: PRIX_FIN_PARTIE
-    cst_val: 25
+    cst_val: 150
     cst_comment: le prix de la fin d'une partie
   - 
     cst_name: MAX_PA

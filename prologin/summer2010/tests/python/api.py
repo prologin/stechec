@@ -5,7 +5,7 @@ from _api import *
 TAILLE_TERRAIN = 21
 
 # le prix de la fin d'une partie
-PRIX_FIN_PARTIE = 25
+PRIX_FIN_PARTIE = 150
 
 # le nombre de points d'actions des unites au debut du tour.
 MAX_PA = 3

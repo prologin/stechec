@@ -11,6 +11,7 @@ extern "C" {
 #include <caml/memory.h>
 }
 #include "interface.hh"
+#include <iostream>
 
 template <typename Lang, typename Cxx>
 Lang cxx2lang(Cxx in)
@@ -411,8 +412,13 @@ extern "C" value ml_afficher_piece(value v)
 void init_game()
 {
   static value *closure = NULL;
-  if (closure == NULL)
-    closure = caml_named_value("ml_init_game"); 
+  if (closure == NULL){
+    closure = caml_named_value("ml_init_game");
+    if (closure == NULL){
+      std::cout << "fonction init_game non definie\n";
+      abort();
+    }
+  }
   value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
   return;
 }
