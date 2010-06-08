@@ -25,12 +25,17 @@ module List = struct
       ) [] l1
 end
 
+module Tuple = struct
+  let switch (a, b) = b, a
+  let apply_clot (a, b) = a b
+  let map f (a, b) = (f a), (f b)
+  let map2 (f, g) (a, b) = (f a), (g b)
+  let combine (a, b) (c, d) = (a, c), (b, d)
+  let add (a, b) c = (a, b, c)
+  let to_list (a, b) = [b, a]
+  let fold f acc0 (a, b) = f a (f acc0 b)
+end
 
-(*
-** Fonction appellée au début de la partie.
-*)
-let init_game () =  (* Pose ton code ici *)
-  flush stderr; flush stdout;; (* Pour que vos sorties s'affichent *)
 
 let show_unites u =
   List.iter
@@ -77,7 +82,7 @@ let deplacer u p =
 
 let position_occupee p =
   let u = unites () |> Array.to_list in
-  let () = show_unites u in
+(*  let () = show_unites u in *)
     List.exists (fun u -> u.pos_unite = p) u
 
 let direction u p =
@@ -159,8 +164,7 @@ let move_player (u:unite) =
 
 let deplacer () =
   let u = unites () |> Array.to_list in
-(*   let () = Gc.compact () in *)
-  let () = show_unites u in
+    (* let () = show_unites u in *)
   let u = u |> List.filter (fun u -> (my_team u) && u.ko = 0) in
     begin
       Printf.printf "nbr utites : %d\n" (List.length u);
@@ -168,11 +172,7 @@ let deplacer () =
       List.iter move_player u
     end;;
 
-
-(*
-** Fonction appellée pour la phase de jeu.
-*)
-let jouer () =  (* Pose ton code ici *)
+let try_deplacer () =
   begin
     prerr_endline "jouer !";
     try deplacer ()  with e ->
@@ -180,15 +180,62 @@ let jouer () =  (* Pose ton code ici *)
 	prerr_endline (Printexc.to_string e);
 	prerr_endline (Printexc.get_backtrace ());
       end;
-    flush stderr; (* Pour que vos sorties s'affichent *)
-    flush stdout;
   end;;
+
+let try_achever () =
+  begin
+    let mon_score, son_score =
+      let mon_equipe = mon_equipe () in
+      let () = Printf.printf "mon equipe = %d\n" mon_equipe in
+      let score0 = score 0
+      and score1 = score 1
+      in let () = begin
+	  Printf.printf "score equipe 0 = %d\n" score0;
+	  Printf.printf "score equipe 1 = %d\n" score1;
+	  clean ();
+	end
+      in let tuple = (score0, score1)
+      in if mon_equipe == 0
+	then tuple
+	else Tuple.switch tuple
+    in let () = begin
+	Printf.printf "mon score = %d\n" mon_score;
+	Printf.printf "son score = %d\n" son_score;
+	clean ();
+      end
+    in if mon_score > son_score + prix_fin_partie then
+	begin
+	  Printf.printf "ACHEVER LA PARTIE !\n";
+	  Printf.printf "tour = %d\n" (tour_actuel ());
+	  clean ();
+	  achever_la_partie () |> afficher_erreur;
+	end
+  end;;
+
+
+(*
+** Fonction appellée au début de la partie.
+*)
+let init_game () =  (* Pose ton code ici *)
+  Printf.printf "init game";
+  clean ();;
+
+(*
+** Fonction appellée pour la phase de jeu.
+*)
+let jouer () =  (* Pose ton code ici *)
+    begin
+      try_deplacer ();
+      try_achever ();
+      clean ();
+    end;;
 
 (*
 ** Fonction appellée à la fin de la partie.
 *)
 let end_game () =  (* Pose ton code ici *)
-  flush stderr; flush stdout;; (* Pour que vos sorties s'affichent *)
+  Printf.printf "ocaml end game";;
+  clean ();;
 
 (* /!\ Ne touche pas a ce qui suit /!\ *)
 Callback.register "ml_init_game" init_game;;
