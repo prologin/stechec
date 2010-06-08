@@ -28,6 +28,7 @@ int        ClientEntry::beforeGame()
   StechecPkt com;
   while (fetchCommand(&com))
     differ_->ApplyDiff(&com);
+  assert (g_->first_indice0 == g_->next_indice0);
   return 0;
 }
 

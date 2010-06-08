@@ -45,9 +45,9 @@ public:
   bool player_end_match;
   std::vector<std::vector<int> > packets;
 
-  piece push_random_piece();
+  piece push_random_piece(int tour_apparition);
   void push_piece(int temps, int valeur, position p);
-  void random_piece(piece & p);
+  void random_piece(piece & p, int tour_apparition);
   void random_position(position & p);
   bool case_occupee(const position p);
   int get_real_turn();

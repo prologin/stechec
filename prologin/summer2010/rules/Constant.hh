@@ -18,7 +18,7 @@
 # define NB_PIECES_SUIVANTES_VISIBLES 50
 # define NB_PIECES_SUIVANTES_VISIBLES_PAR_TOUR 5
 
-# define PRIX_FIN_PARTIE 10
+# define PRIX_FIN_PARTIE 150
 
 
 # define MAX_PA                  3

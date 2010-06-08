@@ -76,14 +76,14 @@ void GameData::push_empty_player(const position p, const int team){
   u.objet = RIEN;
   map_u[p] = u;
 }
-piece GameData::push_random_piece() {
-  int next_indice0_old = next_indice0;
-  random_piece(next[next_indice0]);
-  next_indice0 = (next_indice0 + 1) % NB_PIECES_SUIVANTES_VISIBLES;
-  return next[next_indice0_old];
+piece GameData::push_random_piece(int tour_apparition) {
+  piece p;
+  random_piece(p, tour_apparition);
+  push_piece(tour_apparition, p.valeur, p.pos_piece);
+  return p;
 }
 void GameData::push_piece(int temps, int valeur, position p) {
-  LOG3("push piece temps : %1 valeur %2", temps, valeur);
+  LOG3("push piece temps : %1 valeur %2 indice = %3", temps, valeur, next_indice0);
   int next_indice0_old = next_indice0;
   next[next_indice0].valeur = valeur;
   next[next_indice0].tour_apparition = temps;
@@ -100,10 +100,10 @@ void GameData::random_position(position & p) {
     random_position(p);
   }
 }
-void GameData::random_piece(piece & p) {
+void GameData::random_piece(piece & p, int tour_apparition) {
   random_position(p.pos_piece);
   p.valeur = 1 + (rand() % 9);
-  p.tour_apparition = get_real_turn() + NB_PIECES_SUIVANTES_VISIBLES / NB_PIECES_SUIVANTES_VISIBLES_PAR_TOUR;
+  p.tour_apparition = tour_apparition;
 }
 
 int GameData::get_current_player(){
@@ -117,11 +117,6 @@ int GameData::get_real_turn()
 void GameData::team_switched(bool serv){
   current_player = (current_player + 1 ) % 2;
   can_move = true;
-  if (!serv && getCurrentTurn() % 2 == 0){
-    for (int i = 0; i < NB_PIECES_SUIVANTES_VISIBLES_PAR_TOUR; i ++)
-      apparition_piece();
-  }
-
   // reset des KO et des PA
   std::vector<unite> out;
   std::map<position, unite>::iterator itr;
@@ -145,7 +140,7 @@ void GameData::apparition_piece(){
 }
 
 bool GameData::match_finished(){
-  return player_end_match || ( get_real_turn() >= MAX_TURN);
+  return player_end_match || ( getCurrentTurn() >= MAX_TURN * 2);
 }
 
 int GameData::score(int team){
@@ -206,6 +201,7 @@ caracteristiques_objet GameData::proprietes_objet(type_objet to){
 #define PAS_UNITE_IN(p) if (contains_unite(p)) throw POSITION_INVALIDE;
 
 void GameData::resoudreFinPartie(){
+  LOG3("argent[%1] = %2, prix fin = %3", current_player, score_team[current_player], PRIX_FIN_PARTIE);
   if (score_team[current_player] < PRIX_FIN_PARTIE) throw PLUS_D_ARGENT;
   score_team[current_player] -= PRIX_FIN_PARTIE;
   player_end_match = true;
@@ -301,8 +297,10 @@ void GameData::resoudreUtiliserObjet(position cible, position pos){
 
 void GameData::resoudre( const e_com_type type, const int * arg){
   position p1, p2;
+  LOG3("current player = %1", current_player);
   switch (type){
   case DEPLACER_MSG:
+    LOG3("resoudre deplacer msg");
     if (mon_tour())  return;
     if (!can_move) abort();
     p1.x = arg[1];
@@ -312,16 +310,21 @@ void GameData::resoudre( const e_com_type type, const int * arg){
     resoudreDeplacer(p1, p2);
     break;
   case FINIR_MSG:
+    LOG3("resoudre finir msg");
     if (!can_move) abort();
     if (mon_tour())  return;
     resoudreFinPartie();
     break;
-  case NEXT_PIECE_MSG:
+  case NEXT_PIECE_MSG: // client only
+    LOG3("resoudre next piece msg");
     p1.x = arg[2];
     p1.y = arg[3];
+    if (can_move) apparition_piece();
     push_piece(arg[0], arg[1], p1);
+    LOG2("first_indice = %1 next_indice = %2", first_indice0, next_indice0);
     break;
   case ACHETER_OBJET_MSG:
+    LOG3("resoudre acheter objet msg");
     if (!can_move) abort();
     if (mon_tour())  return;
     p1.x = arg[1];
@@ -329,6 +332,7 @@ void GameData::resoudre( const e_com_type type, const int * arg){
     resoudreAcheterObjet(p1, (type_objet)arg[3]);
     break;
   case UTILISER_OBJET_MSG:
+    LOG3("resoudre utiliser objet msg");
     if (!can_move) abort();
     if (mon_tour())  return;
     p1.x = arg[1];
