@@ -62,6 +62,8 @@ enum
   IMG_VIDE = 0,
   IMG_PLAYER1,
   IMG_PLAYER2,
+  IMG_PLAYER1_KO,
+  IMG_PLAYER2_KO,
   IMG_OR1,
   IMG_OR2,
   IMG_OR3,
@@ -78,6 +80,8 @@ static const char* images_path[NUMBER_OF_IMAGES] = {
   "vide.bmp",
   "player1.bmp",
   "player2.bmp",
+  "player1_ko.bmp",
+  "player2_ko.bmp",
   "or_1.bmp",
   "or_2.bmp",
   "or_3.bmp",
@@ -283,7 +287,7 @@ void display_map(){
   }
   for (int i = 0, s = vect_u.size(); i < s; i ++) {
     unite u = vect_u[i];
-    map[u.pos_unite] = IMG_PLAYER1 + u.team;
+    map[u.pos_unite] = IMG_PLAYER1 + u.team + ( (u.ko != 0) ? 2 : 0 );
   }
   for (int x = 0; x < ncasesx; x++)
     {
