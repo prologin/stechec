@@ -189,8 +189,8 @@ bool GameData::contains_piece(position cible){
 
 caracteristiques_objet GameData::proprietes_objet(type_objet to){
   static caracteristiques_objet caracs[] = {
-    {100, 10},
-    {10, 4},
+    {10, 100},
+    {5, 4},
     {0, -1}
   };
   return caracs[to];
@@ -231,24 +231,36 @@ void GameData::resoudreDeplacer(position cible, position pos){
 
 void GameData::resoudreAcheterObjet(position cible, type_objet objet){
   caracteristiques_objet o = proprietes_objet(objet);
+  LOG3("achat %1 (%2, %3) portee %4, cout %5", objet, cible.x, cible.y, o.porte, o.cout);
   UNITE_IN(cible);
   unite &u = map_u[cible];
   if (u.team != current_player) throw PAS_A_TOI;
   if (u.ko > 0) throw UNITE_KO;
+  LOG3("argent avant achat %1", score_team[current_player]);
   if ( score_team[u.team] < o.cout) throw PLUS_D_ARGENT;
   score_team[u.team] -= o.cout;
   u.objet = objet;
 }
 
-bool GameData::filet(int x, int y){
+bool GameData::filet(int x, int y, int x0, int y0){
   position p;
   p.x = x;
   p.y = y;
+  LOG3("filet in %1, %2", x, y);
+  /*std::map<position, piece>::const_iterator itr;
+  for(itr = map_p.begin(); itr != map_p.end(); ++itr){
+    LOG3("piece %1, %2", (itr->second).pos_piece.x, (itr->second).pos_piece.y );
+    }*/
+
+
   if (contains_piece(p)){
     piece pi = map_p[p];
+    LOG3("pieces");
     score_team[current_player] += pi.valeur;
+    remove_piece(p);
   }
-  if (contains_piece(p)){
+  if (contains_unite(p) && x != x0 && y != y0){
+    LOG3("unite");
     unite &u = map_u[p];
     u.ko = FILET_KO;
     return true;
@@ -259,25 +271,27 @@ bool GameData::filet(int x, int y){
 
 void GameData::resoudreUtiliserObjet(position cible, position pos){
   UNITE_IN(cible);
-  PAS_UNITE_IN(pos);
   POSITION_VALIDE(pos);
   unite &u = map_u[cible];
   int d = distance(cible, pos);
   int p = proprietes_objet(u.objet).porte;
   if (u.team != current_player) throw PAS_A_TOI;
+  LOG3("distance %1 porte %2", d, p);
   if (p < d) throw PAS_A_PORTE;
   if (u.ko > 0) throw UNITE_KO;
   switch (u.objet){
   case FILET:
-    if (cible.x == pos.x){
+    if (cible.y == pos.y){
       int y = cible.y;
-      for (int x = min(cible.x, pos.x), ex = max(cible.x, pos.x); x <= ex; x ++){
-	if (filet(x, y)) break;
+      int d = (cible.x > pos.x) ? -1 : 1;
+      for (int x = cible.x; x != pos.x; x += d){
+	if (filet(x, y, cible.x, cible.y)) break;
       }
-    }else if (cible.y == pos.y){
+    }else if (cible.x == pos.x){
       int x = cible.x;
-      for (int y = min(cible.y, pos.y), ey = max(cible.y, pos.y); y <= ey; y ++ ){
-	if (filet(x, y)) break;
+      int d = (cible.y > pos.y) ? -1 : 1;
+      for (int y = cible.y; y != pos.y; y += d){
+	if (filet(x, y, cible.x, cible.y)) break;
       }
     }else{
       throw UTILISATION_IMPOSSIBLE;
@@ -292,6 +306,7 @@ void GameData::resoudreUtiliserObjet(position cible, position pos){
   case RIEN:
     break;
   }
+  LOG3("argent apres utilisation %1", score_team[current_player]);
   u.objet = RIEN;
 }
 

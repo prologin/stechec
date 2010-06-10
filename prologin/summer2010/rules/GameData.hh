@@ -74,7 +74,7 @@ public:
 private:
   bool initialized_;
   void push_empty_player(const position p, const int team);
-  bool filet(int x, int y);
+  bool filet(int x, int y, int x0, int y0);
 
 };
 
