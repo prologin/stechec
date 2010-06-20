@@ -52,7 +52,7 @@ require 'fileutils'
 require 'pathname'
 require 'conf'
 
-$languages = %w[c cs cxx pascal caml java python php ruby]
+$languages = %w[c cs cxx pascal caml java python php ruby js]
 
 def make_player
   $languages.each do |x|
@@ -78,6 +78,7 @@ def make_player
 #  LuaFileGenerator.new.build
   PythonFileGenerator.new.build
   PhpFileGenerator.new.build
+  JsFileGenerator.new.build
 end
 
 
@@ -113,6 +114,7 @@ def make_includes
 # PrologMakefile.new.build_client(install_path)
 #  HaskellMakefile.new.build_client(install_path)
   RubyMakefile.new.build_client(install_path)
+  JsMakefile.new.build_client(install_path)
 #  LuaMakefile.new.build_client(install_path)
 end
 
@@ -137,6 +139,7 @@ def make_server
   PhpMakefile.new.build_metaserver(install_path)
   # PrologMakefile.new.build_metaserver(install_path)
   RubyMakefile.new.build_metaserver(install_path)
+  JsMakefile.new.build_metaserver(install_path)
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
   FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_lime.cc").to_s)

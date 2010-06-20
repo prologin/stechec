@@ -41,6 +41,7 @@ nobase_dist_ruby_DATA =				\
 	gen/generator_python.rb			\
 	gen/generator_php.rb			\
 	gen/generator_cs.rb			\
+	gen/generator_js.rb			\
 	gen/makefile_c.rb			\
 	gen/makefile_caml.rb			\
 	gen/makefile_cxx.rb			\
@@ -51,6 +52,7 @@ nobase_dist_ruby_DATA =				\
 	gen/makefile_lua.rb			\
 	gen/makefile_python.rb			\
 	gen/makefile_php.rb				\
+	gen/makefile_js.rb				\
 	gen/makefile_cs.rb			\
 	gen/make_rules.rb			\
 	gen/make_tex.rtex			\
