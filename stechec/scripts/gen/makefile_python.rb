@@ -26,7 +26,7 @@ lib_TARGETS = #{target}
 #{target}-dists += api.py interface.hh
 #{target}-srcs = interface.cc stechec_lime.cc
 
-pc = $(shell which python-config >/dev/null 2>&1 && echo python-config || echo python2.5-config)
+pc = $(shell for p in python2-config python-config; do if which $$p &>/dev/null; then echo $$p; fi done | head -n 1)
 #{target}-cxxflags = -fPIC $(shell $(pc) --includes)
 #{target}-ldflags = -s $(shell $(pc) --ldflags)
 
