@@ -105,9 +105,9 @@ AC_ARG_VAR([DOXYGEN], [A C++ documentation system program])
 
 # Documentation generation
 AC_ARG_ENABLE([documentation],
-    [AS_HELP_STRING([--disable-documentation], [disable documentation generation])],
+    [AS_HELP_STRING([--enable-documentation], [disable documentation generation])],
     [documentation=${enableval}],
-    [documentation=yes]
+    [documentation=no]
 )
 AM_CONDITIONAL([GENERATE_DOC], [test "$documentation" = "yes"])
 
