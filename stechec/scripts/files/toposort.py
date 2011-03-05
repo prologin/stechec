@@ -44,7 +44,7 @@ def toposort(deps):
                 handle(dep, d)
             out.append(mod)
 
-    for mod, d in deps.iteritems():
+    for mod, d in deps.items():
         handle(mod, d)
 
     return out
@@ -53,10 +53,10 @@ if __name__ == '__main__':
     files = sys.argv[1:]
     pipe = subprocess.Popen(["ocamldep", "-modules"] + files,
                             stdout=subprocess.PIPE)
-    out = pipe.communicate()[0]
+    out = pipe.communicate()[0].decode('utf-8')
     if pipe.returncode != 0:
         sys.exit(pipe.returncode)
     raw_deps = out.split('\n')
     deps = parse_deps(raw_deps)
     order = toposort(deps)
-    print ' '.join(m + '.o' for m in order)
+    print(' '.join(m + '.o' for m in order))
