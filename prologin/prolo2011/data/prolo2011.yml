@@ -23,19 +23,43 @@ constant:
     cst_name: TAILLE_TRAINEE
     cst_val: 900
     cst_comment: Taille des traînées de moto
+  -
+    cst_name: MAX_ALLONGEMENT
+    cst_val: 5
+    cst_comment: Longueur maximale de l'allongement
 
 enum:
   - doc_extra: \subsection{Énumérations}
   -
     enum_name: erreur
-    enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action
+    enum_summary:
+      Énumération représentant une erreur renvoyée par une des fonctions
+      d'action
     enum_field:
       - [ok, aucune erreur n'est survenue]
       - [id_invalide, identifiant invalide]
       - [position_invalide, la position spécifiée est invalide]
       - [plus_de_pa, vous n'avez pas assez de points d'action]
+      - [bonus_invalide, vous n'avez pas ce bonus]
       - [pas_a_toi, l'unité n'est pas a vous]
 
+  -
+    enum_name: type_case
+    enum_summary: Énumération représentant les différents types de case
+    enum_field:
+      - [vide, rien n'est présent sur la case]
+      - [obstacle, cette case est inaccessible]
+
+      -
+        - bonus_croisement
+        - bonus permettant de croiser deux traînées de moto sur une case
+      - [bonus_plus_long, bonus permettant d'agrandir une traînée de moto]
+      - [bonus_plus_pa, bonus permettant d'avoir plus de points d'action]
+      -
+        - bonus_regeneration
+        - bonus permettant de regenerer une source d'energie
+
+      - [point_croisement, point de croisement de traînées]
 
 struct:
   - doc_extra: \subsection{Structures}
@@ -53,15 +77,26 @@ struct:
     str_field:
       - [id, int, identifiant de la source d'énergie]
       - [pos, position, position de la source d'énergie]
-      - [coef, int, coefficient representant les points d'énergie que la source va vous apporter]
+      -
+        - coef
+        - int
+        -
+          coefficient representant les points d'énergie que la source va vous
+          apporter
   -
     str_name: trainee_moto
     str_summary: Représente une traînée de moto sur le terrain
     str_tuple: no
     str_field:
       - [id, int, identifiant de la traînee]
-      - [emplacement, position array, position de chaque composant de la traînée de moto]
-      - [team, int, identifiant de l'équipe qui possède cette traînée de moto]
+      -
+        - emplacement
+        - position array
+        - position de chaque composant de la traînée de moto
+      -
+        - team
+        - int
+        - identifiant de l'équipe qui possède cette traînée de moto
 
 function:
   - doc_extra: |
@@ -97,8 +132,8 @@ function:
     fct_ret_type: trainee_moto array
     fct_arg: []
 
-  - type_case
-  - bonus(team)
+  - type_case (vide, obstacle, et?)
+  - bonus(team) (?)
 
   - doc_extra: |
      \subsection{Fonctions d'action}
@@ -119,19 +154,70 @@ function:
     fct_ret_type: erreur
     fct_arg:
     - [id, int, identifiant de la traînée de moto à couper]
-    - [entre, position, nouvelle extrémité de la première traînée de moto
-    - [et, position, nouvelle extrémité de la deuxième traînée de moto
+    - [entre, position, nouvelle extrémité de la première traînée de moto]
+    - [et, position, nouvelle extrémité de la deuxième traînée de moto]
   -
     fct_name: cancel
     fct_summary: Annuler l'action précédente
     fct_arg: []
 
-  -enrouler (X, Y)
-  -more_pa
-  -agrandir (+ max(len, 5))
-  -regeneration_machine
-  -poser un point de croisement
-  -merge
+  -
+    fct_name: enrouler
+    fct_summary: Enrouler la traînée de moto en un point
+    fct_ret_type: erreur
+    fct_arg:
+    - [id, int, identifiant de la traînée de moto à enrouler]
+    - [point, position, point sur lequel enrouler la moto]
+
+  -
+    fct_name: regenerer_source_energie
+    fct_summary: Régénère une source d'énergie à son maximal
+    fct_ret_type: erreur
+    fct_arg:
+    - [id, int, identifiant de la source d'énergie à regénérer]
+  -
+    fct_name: allonger_pa
+    fct_summary: Allonge le tour en rajoutant des points d'action
+    fct_ret_type: erreur
+    fct_arg: []
+
+  -
+    fct_name: agrandir_trainee_moto
+    fct_summary:
+      Allonge une traînée de moto. L'allongement se fera aux prochains
+      déplacements. La longueur du prolongement doit être comprise entre 0
+      et MAX_ALLONGEMENT (inclus).
+    fct_ret_type: erreur
+    fct_arg:
+    - [id, int, identifiant de la traînée de moto à allonger]
+    - [longueur, int, longueur du prolongement]
+
+  -
+    fct_name: poser_point_croisement
+    fct_summary:
+      Pose un point de croisement sur une case du terrain. La case doit ne pas
+      déjà être un point de croisement.
+    fct_ret_type: erreur
+    fct_arg:
+    -
+      - point
+      - position
+      - position de la case sur laquelle poser le point de croisement
+
+  -
+    fct_name: fusionner
+    fct_summary:
+      Fusionner deux traînées de moto. Les deux doivent appartenir à la
+      même équipe, mais doivent être deux traînées distinctes. « pos1 »
+      et « pos2 » doivent être adjacentes et occupées respectivement par
+      « id1 » et « id2 ».
+    fct_ret_type: erreur
+    fct_arg:
+    - [id1, int, identifiant de la première traînée]
+    - [pos1, position, extrémité à fusionner de la première traînée]
+    - [id2, int, identifiant de la seconde traînée]
+    - [pos2, position, extrémité à fusionner de la seconde traînée]
+
 user_function:
   -
     fct_name: init_game
