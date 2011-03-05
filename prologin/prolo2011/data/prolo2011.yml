@@ -1,0 +1,157 @@
+conf:
+  package_name: prolo2011
+  client_rule_lib: network
+  server_rule_lib: network
+  player_lib: champion
+  player_filename: prologin
+
+constant:
+  - doc_extra: \subsection{Constantes}
+  - 
+    cst_name: TAILLE_TERRAIN
+    cst_val: 100
+    cst_comment: Taille du terrain.
+  - 
+    cst_name: FIN_PARTIE
+    cst_val: 1500
+    cst_comment: le nombre de tours avant la fin de la partie
+  - 
+    cst_name: MAX_PA
+    cst_val: 3
+    cst_comment: le nombre de points d'actions par tour.
+  -
+    cst_name: N_CABLES
+    cst_val: 900
+    cst_comment: La taille des cables disponible
+
+enum:
+  - doc_extra: \subsection{Énumérations}
+  -
+    enum_name: erreur
+    enum_summary: Énumération représentant une erreur renvoyée par une des fonctions d'action.
+    enum_field:
+      - [ok, aucune erreur n'est survenue]
+      - [id_invalide, id invlalide]
+      - [position_invalide, la position spécifiée est invalide]
+      - [plus_de_pa, vous n'avez pas assez de points d'actions]
+      - [pas_a_toi, l'unite n'est pas a toi.]
+
+
+struct:
+  - doc_extra: \subsection{Structures}
+  -
+    str_name: position
+    str_summary: Représente une position sur le terrain du jeu.
+    str_tuple: yes
+    str_field:
+      - [x, int, coordonnée X]
+      - [y, int, coordonnée Y]
+  -
+    str_name: caracteristiques_pc
+    str_summary: les caracteristiques d'une machine
+    str_tuple: no
+    str_field:
+      - [id, int, l'id de la machine]
+      - [pos, position, la position de la machine]
+      - [coef, int, un coeficient qui represente les points que la machine va vous apporter]
+  -
+    str_name: cable
+    str_summary: Représente un cable sur le terrain.
+    str_tuple: no
+    str_field:
+      - [id, int, l'id d'un cable]
+      - [emplacement, position array, la position de chaque partie du cable]
+      - [team, int, l'id de la team qui possede ce cable]
+
+function:
+  - doc_extra: |
+     \subsection{Fonctions d'information}
+  -
+    fct_name: mon_equipe
+    fct_summary: Renvoie le numero de votre equipe.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: scores
+    fct_summary: Renvoie les scores
+    fct_ret_type: int array
+    fct_arg: []
+  -
+    fct_name: nombre_equipes
+    fct_summary: Renvoie le nombre d'equipes sur la map
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: tour_actuel
+    fct_summary: Renvoie le numéro du tour actuel.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: scan_network
+    fct_summary: Renvoie le tableau des machines sur le plateau
+    fct_ret_type: caracteristiques_pc array
+    fct_arg: []
+  -
+    fct_name: scan_connections
+    fct_summary: Renvoie la liste des cables sur le plateau
+    fct_ret_type: cable array
+    fct_arg: []
+
+  - type_case
+  - bonus(team)
+
+  - doc_extra: |
+     \subsection{Fonctions d'action}
+  -
+    fct_name: deplacer
+    fct_summary: Déplace un cable
+    fct_ret_type: erreur
+    fct_arg:
+    - [id, int, l'id du cable a deplacer]
+    - [de, position, la position de l'extremite que l'on deplace]
+    - [vers, position, la nouvelle position pour cette extremite]
+  -
+    fct_name: couper_cable
+    fct_summary: coupe un cable pour donner deux sous cables
+    fct_ret_type: erreur
+    fct_arg:
+    - [id, int, l'id du cable a couper]
+    - [entre, position, la position ou on coupe]
+    - [et, position, la position ou on coupe]
+  -
+    fct_name: cancel
+    fct_summary: cancel lol
+    fct_arg: []
+
+  -enrouler (X, Y)
+  -more_pa
+  -agrandir (+ max(len, 5))
+  -regeneration_machine
+  -poser un point de croisement
+  -merge
+user_function:
+  -
+    fct_name: init_game
+    fct_summary: Fonction appellée au début de la partie.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: jouer
+    fct_summary: Fonction appellée pour la phase de jeu.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: end_game
+    fct_summary: Fonction appellée à la fin de la partie.
+    fct_ret_type: void
+    fct_arg: []
+infos:
+  -
+    fct_name: scan_network
+    fct_arg: []
+  -
+    fct_name: scan_connections
+    fct_arg: []
+  -
+    fct_name: scores
+    fct_arg: []
