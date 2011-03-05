@@ -14,7 +14,7 @@ constant:
   -
     cst_name: FIN_PARTIE
     cst_val: 1500
-    cst_comment: Nombre de tours avant la fin de la partie
+    cst_comment: Nombre de tours par partie
   -
     cst_name: MAX_PA
     cst_val: 3
