@@ -12,6 +12,8 @@ configure
 config.status
 
 doc/doc.doxy*
+doc/doxygen_ref.tar.gz
+doc/pdf
 
 Makefile
 Makefile.in
@@ -23,21 +25,29 @@ Makefile.in
 *.Plo
 *.pyc
 
-.libs/*
+.libs
 
 conf/config_prolo.xml
 
-prologin/tkrun/tkrun{,.1}
+prologin/tkrun/tkrun
+prologin/tkrun/tkrun.1
 prologin/web_meta/log_limit
 prologin/web_meta/stechec.yml
 
 stechec/client/stechec
-stechec/scripts/{conf.rb,generator,run}
+stechec/scripts/conf.rb
+stechec/scripts/generator
+stechec/scripts/run
 stechec/server/stechec_server
 
-stechec/tools/test/{cx,pool}
-stechec/tools/xml_test/parse_{bad,formation,team}
-stechec/sdl/test/{scroll,simple,text}
+stechec/tools/test/cx
+stechec/tools/test/pool
+stechec/tools/xml_test/parse_bad
+stechec/tools/xml_test/formation
+stechec/tools/xml_test/team
+stechec/sdl/test/scroll
+stechec/sdl/test/simple
+stechec/sdl/test/text
 
 prologin/prolo2010/rules/prolo2010
 prologin/prolo2010/opa/_build
