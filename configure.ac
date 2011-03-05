@@ -18,7 +18,7 @@ AM_CONFIG_HEADER([config.h])
 
 
 # Modules to build, by default
-modules="summer2010"
+modules="prolo2011"
 
 # Existing modules/meta-modules
 STECHEC_ADDMODULE([bb5])
@@ -31,6 +31,7 @@ STECHEC_ADDMODULE([prolo2008])
 STECHEC_ADDMODULE([prolo2009])
 STECHEC_ADDMODULE([prolo2010])
 STECHEC_ADDMODULE([summer2010])
+STECHEC_ADDMODULE([prolo2011])
 
 # Modules dependencies
 DEPENDS=""
@@ -44,6 +45,8 @@ DEPENDS_prolo2008="prologin"
 DEPENDS_prolo2009="prologin"
 DEPENDS_prolo2010="prologin"
 DEPENDS_summer2010="prologin"
+DEPENDS_prolo2011="prologin"
+
 
 # Can select which module(s) to build
 AC_MSG_CHECKING([for modules to build])
@@ -343,6 +346,15 @@ AC_CONFIG_FILES([
   prologin/summer2010/rules/Makefile
   prologin/summer2010/gui/Makefile
   prologin/summer2010/jsdumper/Makefile
+])
+fi
+
+if test x$BUILD_prolo2011 != x; then
+AC_CONFIG_FILES([
+  prologin/prolo2011/Makefile
+  prologin/prolo2011/data/Makefile
+  prologin/prolo2011/rules/Makefile
+  prologin/prolo2011/jsdumper/Makefile
 ])
 fi
 

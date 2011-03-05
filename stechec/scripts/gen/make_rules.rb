@@ -131,7 +131,7 @@ std::string convert_to_string(std::vector<#{ty}> in){
   if (in.size()){
     std::string s = "[" + convert_to_string(in[0]);
     for (int i = 1, l = in.size(); i < l; i++){
-      s = s + ", " + convert_to_string(in[0]);
+      s = s + ", " + convert_to_string(in[i]);
     }
     return s + "]";
   }else{
@@ -163,6 +163,8 @@ std::string convert_to_string(bool i){
   return i?"true":"false";
 }
 EOF
+
+convert_to_string_arr "int";
 
     # string conversion functions for enum
     for_each_enum(false) do |e|
