@@ -7,18 +7,18 @@ conf:
 
 constant:
   - doc_extra: \subsection{Constantes}
-  - 
+  -
     cst_name: TAILLE_TERRAIN
     cst_val: 100
     cst_comment: Taille du terrain
-  - 
+  -
     cst_name: FIN_PARTIE
     cst_val: 1500
     cst_comment: Nombre de tours avant la fin de la partie
-  - 
+  -
     cst_name: MAX_PA
     cst_val: 3
-    cst_comment: Nombre de points d'action par tour
+    cst_comment: "Nombre de points d'action par tour"
   -
     cst_name: TAILLE_TRAINEE
     cst_val: 900
@@ -26,40 +26,45 @@ constant:
   -
     cst_name: MAX_ALLONGEMENT
     cst_val: 5
-    cst_comment: Longueur maximale de l'allongement
+    cst_comment: "Longueur maximale de l'allongement"
 
 enum:
   - doc_extra: \subsection{Énumérations}
   -
     enum_name: erreur
     enum_summary:
-      Énumération représentant une erreur renvoyée par une des fonctions
-      d'action
+      "Énumération représentant une erreur renvoyée par une des fonctions
+      d'action"
     enum_field:
-      - [ok, aucune erreur n'est survenue]
+      - [ok, "aucune erreur n'est survenue"]
       - [id_invalide, identifiant invalide]
       - [position_invalide, la position spécifiée est invalide]
-      - [plus_de_pa, vous n'avez pas assez de points d'action]
-      - [bonus_invalide, vous n'avez pas ce bonus]
-      - [pas_a_toi, l'unité n'est pas a vous]
+      - [plus_de_pa, "vous n'avez pas assez de points d'action"]
+      - [bonus_invalide, "vous n'avez pas ce bonus"]
+      - [pas_a_toi, "l'unité n'est pas a vous"]
 
   -
     enum_name: type_case
     enum_summary: Énumération représentant les différents types de case
     enum_field:
-      - [vide, rien n'est présent sur la case]
+      - [vide, "rien n'est présent sur la case"]
       - [obstacle, cette case est inaccessible]
+      - [bonus, "cette case cotient un bonus"]
+      - [point_croisement, point de croisement de traînées]
 
+  -
+    enum_name: bonus
+    enum_summary: Énumération représentant les différents types de bonii
+    enum_field:
+      - [vide, "ceci n'est pas un bonus :-)"]
       -
         - bonus_croisement
-        - bonus permettant de croiser deux traînées de moto sur une case
-      - [bonus_plus_long, bonus permettant d'agrandir une traînée de moto]
-      - [bonus_plus_pa, bonus permettant d'avoir plus de points d'action]
+        - "bonus permettant de croiser deux traînées de moto sur une case"
+      - [plus_long, "bonus permettant d'agrandir une traînée de moto"]
+      - [plus_pa, "bonus permettant d'avoir plus de points d'action"]
       -
         - bonus_regeneration
-        - bonus permettant de regenerer une source d'energie
-
-      - [point_croisement, point de croisement de traînées]
+        - "bonus permettant de regenerer une source d'energie"
 
 struct:
   - doc_extra: \subsection{Structures}
@@ -72,17 +77,17 @@ struct:
       - [y, int, coordonnée en Y]
   -
     str_name: source_energie
-    str_summary: Caracteristiques d'une source d'énergie
+    str_summary: "Caracteristiques d'une source d'énergie"
     str_tuple: no
     str_field:
-      - [id, int, identifiant de la source d'énergie]
-      - [pos, position, position de la source d'énergie]
+      - [id, int, "identifiant de la source d'énergie"]
+      - [pos, position, "position de la source d'énergie"]
       -
         - coef
         - int
         -
-          coefficient representant les points d'énergie que la source va vous
-          apporter
+          "coefficient representant les points d'énergie que la source va
+          vous apporter"
   -
     str_name: trainee_moto
     str_summary: Représente une traînée de moto sur le terrain
@@ -96,11 +101,11 @@ struct:
       -
         - team
         - int
-        - identifiant de l'équipe qui possède cette traînée de moto
+        - "identifiant de l'équipe qui possède cette traînée de moto"
 
 function:
   - doc_extra: |
-     \subsection{Fonctions d'information}
+     "\subsection{Fonctions d'information}"
   -
     fct_name: mon_equipe
     fct_summary: Retourne le numéro de votre équipe
@@ -113,7 +118,7 @@ function:
     fct_arg: []
   -
     fct_name: nombre_equipes
-    fct_summary: Retourne le nombre d'équipes sur le terrain
+    fct_summary: "Retourne le nombre d'équipes sur le terrain"
     fct_ret_type: int
     fct_arg: []
   -
@@ -123,7 +128,7 @@ function:
     fct_arg: []
   -
     fct_name: sources_energie
-    fct_summary: Retourne la liste des sources d'énergie
+    fct_summary: "Retourne la liste des sources d'énergie"
     fct_ret_type: source_energie array
     fct_arg: []
   -
@@ -132,18 +137,36 @@ function:
     fct_ret_type: trainee_moto array
     fct_arg: []
 
-  - type_case (vide, obstacle, et?)
-  - bonus(team) (?)
+  -
+    fct_name: regarder_type_case
+    fct_summary: "Retourne le type d'une case"
+    fct_ret_type: type_case
+    fct_arg:
+      - [pos, position, position de la case]
+
+  -
+    fct_name: regarder_type_bonus
+    fct_summary: "Retourne le type de bonus d'une case"
+    fct_ret_type: bonus
+    fct_arg:
+      - [pos, position, position de la case]
+
+  -
+    fct_name: regarder_bonus
+    fct_summary: "Retourne la liste des bonus d'une équipe"
+    fct_ret_type: bonus array
+    fct_arg:
+      - [equipe, int, "identifiant de l'équipe visée"]
 
   - doc_extra: |
-     \subsection{Fonctions d'action}
+     "\subsection{Fonctions d'action}"
   -
     fct_name: deplacer
     fct_summary: Déplace une moto
     fct_ret_type: erreur
     fct_arg:
     - [id, int, identifiant de la moto à déplacer]
-    - [de, position, position de l'extrémité que l'on déplace]
+    - [de, position, "position de l'extrémité que l'on déplace"]
     - [vers, position, nouvelle position pour cette extrémité]
   -
     fct_name: couper_trainee_moto
@@ -156,9 +179,11 @@ function:
     - [id, int, identifiant de la traînée de moto à couper]
     - [entre, position, nouvelle extrémité de la première traînée de moto]
     - [et, position, nouvelle extrémité de la deuxième traînée de moto]
+
   -
     fct_name: cancel
-    fct_summary: Annuler l'action précédente
+    fct_summary: "Annuler l'action précédente"
+    fct_ret_type: erreur
     fct_arg: []
 
   -
@@ -177,16 +202,16 @@ function:
     - [id, int, identifiant de la source d'énergie à regénérer]
   -
     fct_name: allonger_pa
-    fct_summary: Allonge le tour en rajoutant des points d'action
+    fct_summary: "Allonge le tour en rajoutant des points d'action"
     fct_ret_type: erreur
     fct_arg: []
 
   -
     fct_name: agrandir_trainee_moto
     fct_summary:
-      Allonge une traînée de moto. L'allongement se fera aux prochains
+      "Allonge une traînée de moto. L'allongement se fera aux prochains
       déplacements. La longueur du prolongement doit être comprise entre 0
-      et MAX_ALLONGEMENT (inclus).
+      et MAX_ALLONGEMENT (inclus)."
     fct_ret_type: erreur
     fct_arg:
     - [id, int, identifiant de la traînée de moto à allonger]
