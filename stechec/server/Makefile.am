@@ -12,7 +12,8 @@ stechec_server_SOURCES	=			\
 
 stechec_server_CXXFLAGS =			\
 	-DMODULE_COLOR=C_BLUE			\
-	-DMODULE_NAME=\"server\"
+	-DMODULE_NAME=\"server\" \
+	$(PTHREAD_CFLAGS)
 
 stechec_server_LDFLAGS =			\
 	-export-dynamic
@@ -23,7 +24,8 @@ endif
 
 stechec_server_LDADD =						\
 	$(top_builddir)/stechec/base_rules/libbase_rules.la	\
-	$(top_builddir)/stechec/tools/libtools.la
+	$(top_builddir)/stechec/tools/libtools.la \
+	$(PTHREAD_LIBS)
 
 INCLUDES	=				\
 	-I$(top_srcdir)/stechec/base_rules	\

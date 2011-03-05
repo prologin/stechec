@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-SUBDIRS = . xml_test test
+SUBDIRS = . test
 
 pkglib_LTLIBRARIES = libtools.la
 
@@ -42,26 +42,9 @@ libtools_la_SOURCES +=				\
 	datatfs/Packet.hh			\
 	datatfs/Packet.cc
 
-libtools_la_SOURCES +=				\
-	xml/xml.cc				\
-	xml/xml.hh				\
-	xml/xml_team.cc				\
-	xml/xml_team.hh				\
-	xml/xml_formation.cc			\
-	xml/xml_formation.hh			\
-	xml/xml_internal.cc			\
-	xml/xml_internal.hh			\
-	xml/strings.hh
-
-libtools_la_CPPFLAGS	=			\
-	$(XERCES_CPPFLAGS)
-
 libtools_la_CXXFLAGS	=			\
 	-DMODULE_NAME=\"tools\"			\
 	-DMODULE_COLOR=C_PURPLE
-
-libtools_la_LDFLAGS 	= 			\
-	$(XERCES_LDFLAGS)
 
 libtools_la_LIBADD      =			\
 	$(LIBDL)

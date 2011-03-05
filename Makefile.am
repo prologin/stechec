@@ -21,6 +21,5 @@ endif
 
 CONFIGURE_DEPENDENCIES =			\
 	$(srcdir)/build-aux/sdl.m4		\
-	$(srcdir)/build-aux/xerces.m4		\
 	$(srcdir)/build-aux/pthreads.m4		\
 	$(srcdir)/build-aux/stechec-deps.m4

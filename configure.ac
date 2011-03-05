@@ -192,9 +192,6 @@ case $DEPENDS in
 esac
 AM_CONDITIONAL([HAVE_QT], [test x"$HAVE_QT" = xyes])
 
-# Xerces (XML parser)
-TBT_CHECK_XML
-
 # Mysql (really optionnal)
 HAVE_MYSQL=no
 case $DEPENDS in
