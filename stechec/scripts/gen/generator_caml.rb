@@ -58,39 +58,43 @@ Lang cxx2lang(Cxx in)
 template <>
 value cxx2lang<value, int>(int in)
 {
-  return Val_int(in);
+  CAMLparam0();
+  CAMLreturn(Val_int(in));
 }
 
 template<>
 value cxx2lang<value, std::string>(std::string in)
 {
+  CAMLparam0();
   size_t l = in.length();
   char * out = (char *) malloc(l + 1);
   for (int i = 0; i < l; i++) out[i] = in[i];
   out[l] = 0;
-  return caml_copy_string(out);
+  CAMLreturn(caml_copy_string(out));
 }
 
 template <>
 value cxx2lang<value, bool>(bool in)
 {
-  return Val_int(in);
+  CAMLparam0();
+  CAMLreturn(Val_int(in));
 }
 
 template <typename Cxx>
 value cxx2lang_array(const std::vector<Cxx>& in)
 {
+  CAMLparam0();
+  CAMLlocal1(v);
+
   size_t size = in.size();
   if (size == 0)
-    return Atom(0);
-
-  CAMLlocal1(v);
+    CAMLreturn(Atom(0));
 
   v = caml_alloc(size, 0);
   for (int i = 0; i < size; ++i)
-    Field(v, i) = cxx2lang<value, Cxx>(in[i]);
+    caml_initialize(&Field(v, i), cxx2lang<value, Cxx>(in[i]));
 
-  return v;
+  CAMLreturn(v);
 }
 
 template <typename Lang, typename Cxx>
@@ -102,31 +106,35 @@ Cxx lang2cxx(Lang in)
 template<>
 std::string lang2cxx<value, std::string>(value in)
 {
-  return String_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(std::string, String_val(in));
 }
 
 template <>
 int lang2cxx<value, int>(value in)
 {
-  return Int_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(int, Int_val(in));
 }
 
 template <>
 bool lang2cxx<value, bool>(value in)
 {
-  return Int_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(bool, Int_val(in));
 }
 
 template <typename Cxx>
 std::vector<Cxx> lang2cxx_array(value in)
 {
+  CAMLparam1(in);
   std::vector<Cxx> out;
   mlsize_t size = Wosize_val(in);
 
   for (int i = 0; i < size; ++i)
     out.push_back(lang2cxx<value, Cxx>(Field(in, i)));
 
-  return out;
+  CAMLreturnT(std::vector<Cxx>, out);
 }
 EOF
   end
@@ -137,13 +145,15 @@ EOF
 template <>
 value cxx2lang<value, #{name}>(#{name} in)
 {
-  return Val_int(in);
+  CAMLparam0();
+  CAMLreturn(Val_int(in));
 }
 
 template <>
 #{name} lang2cxx<value, #{name}>(value in)
 {
-  return (#{name})Int_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(#{name}, (#{name})Int_val(in));
 }
 EOF
   end
@@ -154,21 +164,22 @@ EOF
     @f.puts "template <>"
     @f.puts "value cxx2lang<value, #{name}>(#{name} in)"
     @f.puts "{"
-    @f.puts "  //CAMLlocal1(out);"
-    @f.puts "  value out = caml_alloc(#{nfields}, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?"
+    @f.puts "  CAMLparam0();"
+    @f.puts "  CAMLlocal1(out);"
+    @f.puts "  out = caml_alloc(#{nfields}, 0);"
     i = 0
     struct['str_field'].each do |f|
       fn = f[0]
       ft = @types[f[1]]
       if ft.is_array?
-        @f.puts "  Field(out, #{i}) = cxx2lang_array(in.#{fn});"
+        @f.puts "  caml_initialize(&Field(out, #{i}), cxx2lang_array(in.#{fn}));"
       else
         ft = ft.name
-        @f.puts "  Store_field (out, #{i}, (cxx2lang<value, #{ft}>(in.#{fn})));"
+        @f.puts "  caml_initialize(&Field(out, #{i}), cxx2lang<value, #{ft}>(in.#{fn}));"
       end
       i += 1
     end
-    @f.puts "  return out;"
+    @f.puts "  CAMLreturn(out);"
     @f.puts "}"
     @f.puts
 
@@ -176,6 +187,7 @@ EOF
     @f.puts "template <>"
     @f.puts "#{name} lang2cxx<value, #{name}>(value in)"
     @f.puts "{"
+    @f.puts "  CAMLparam1(in);"
     @f.puts "  #{name} out;"
     i = 0
     struct['str_field'].each do |f|
@@ -189,7 +201,7 @@ EOF
       end
       i += 1
     end
-    @f.puts "  return out;"
+    @f.puts "  CAMLreturnT(#{name}, out);"
     @f.puts "}"
   end
 
@@ -264,16 +276,18 @@ EOF
     for_each_user_fun do |fn|
       @f.print cxx_proto(fn)
       @f.puts "", "{"
+      @f.puts "  CAMLparam0();"
+      @f.puts "  CAMLlocal1(_ret);"
       @f.puts "  static value *closure = NULL;"
       @f.puts "  if (closure == NULL)"
-      @f.puts "    closure = caml_named_value(\"ml_#{fn.name}\"); "
-      @f.puts "  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?"
+      @f.puts "    closure = caml_named_value(\"ml_#{fn.name}\");"
+      @f.puts "  _ret = callback(*closure, Val_unit);"
       if fn.ret.is_nil?
-        @f.puts "  return;"
+        @f.puts "  CAMLreturn0;"
       elsif fn.ret.is_array?
-        @f.puts "  return lang2cxx_array<#{cxx_type(fn.ret.type)}>(_ret);"
+        @f.puts "  CAMLreturnT(std::vector<#{cxx_type(fn.ret.type)}>, lang2cxx_array<#{cxx_type(fn.ret.type)}>(_ret));"
       else
-        @f.puts "  return lang2cxx<value, #{cxx_type(fn.ret)}>(_ret);"
+        @f.puts "  CAMLreturnT(#{cxx_type(fn.ret)}, lang2cxx<value, #{cxx_type(fn.ret)}>(_ret));"
       end
       @f.puts "}", ""
     end

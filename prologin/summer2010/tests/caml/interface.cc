@@ -11,7 +11,6 @@ extern "C" {
 #include <caml/memory.h>
 }
 #include "interface.hh"
-#include <iostream>
 
 template <typename Lang, typename Cxx>
 Lang cxx2lang(Cxx in)
@@ -22,39 +21,43 @@ Lang cxx2lang(Cxx in)
 template <>
 value cxx2lang<value, int>(int in)
 {
-  return Val_int(in);
+  CAMLparam0();
+  CAMLreturn(Val_int(in));
 }
 
 template<>
 value cxx2lang<value, std::string>(std::string in)
 {
+  CAMLparam0();
   size_t l = in.length();
   char * out = (char *) malloc(l + 1);
   for (int i = 0; i < l; i++) out[i] = in[i];
   out[l] = 0;
-  return caml_copy_string(out);
+  CAMLreturn(caml_copy_string(out));
 }
 
 template <>
 value cxx2lang<value, bool>(bool in)
 {
-  return Val_int(in);
+  CAMLparam0();
+  CAMLreturn(Val_int(in));
 }
 
 template <typename Cxx>
 value cxx2lang_array(const std::vector<Cxx>& in)
 {
+  CAMLparam0();
+  CAMLlocal1(v);
+
   size_t size = in.size();
   if (size == 0)
-    return Atom(0);
-
-  CAMLlocal1(v);
+    CAMLreturn(Atom(0));
 
   v = caml_alloc(size, 0);
   for (int i = 0; i < size; ++i)
-    Field(v, i) = cxx2lang<value, Cxx>(in[i]);
+    caml_initialize(&Field(v, i), cxx2lang<value, Cxx>(in[i]));
 
-  return v;
+  CAMLreturn(v);
 }
 
 template <typename Lang, typename Cxx>
@@ -66,31 +69,35 @@ Cxx lang2cxx(Lang in)
 template<>
 std::string lang2cxx<value, std::string>(value in)
 {
-  return String_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(std::string, String_val(in));
 }
 
 template <>
 int lang2cxx<value, int>(value in)
 {
-  return Int_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(int, Int_val(in));
 }
 
 template <>
 bool lang2cxx<value, bool>(value in)
 {
-  return Int_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(bool, Int_val(in));
 }
 
 template <typename Cxx>
 std::vector<Cxx> lang2cxx_array(value in)
 {
+  CAMLparam1(in);
   std::vector<Cxx> out;
   mlsize_t size = Wosize_val(in);
 
   for (int i = 0; i < size; ++i)
     out.push_back(lang2cxx<value, Cxx>(Field(in, i)));
 
-  return out;
+  CAMLreturnT(std::vector<Cxx>, out);
 }
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action.
@@ -98,13 +105,15 @@ std::vector<Cxx> lang2cxx_array(value in)
 template <>
 value cxx2lang<value, erreur>(erreur in)
 {
-  return Val_int(in);
+  CAMLparam0();
+  CAMLreturn(Val_int(in));
 }
 
 template <>
 erreur lang2cxx<value, erreur>(value in)
 {
-  return (erreur)Int_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(erreur, (erreur)Int_val(in));
 }
 
 ///
@@ -113,13 +122,15 @@ erreur lang2cxx<value, erreur>(value in)
 template <>
 value cxx2lang<value, type_objet>(type_objet in)
 {
-  return Val_int(in);
+  CAMLparam0();
+  CAMLreturn(Val_int(in));
 }
 
 template <>
 type_objet lang2cxx<value, type_objet>(value in)
 {
-  return (type_objet)Int_val(in);
+  CAMLparam1(in);
+  CAMLreturnT(type_objet, (type_objet)Int_val(in));
 }
 
 ///
@@ -128,20 +139,22 @@ type_objet lang2cxx<value, type_objet>(value in)
 template <>
 value cxx2lang<value, position>(position in)
 {
-  //CAMLlocal1(out);
-  value out = caml_alloc(2, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Store_field (out, 0, (cxx2lang<value, int>(in.x)));
-  Store_field (out, 1, (cxx2lang<value, int>(in.y)));
-  return out;
+  CAMLparam0();
+  CAMLlocal1(out);
+  out = caml_alloc(2, 0);
+  caml_initialize(&Field(out, 0), cxx2lang<value, int>(in.x));
+  caml_initialize(&Field(out, 1), cxx2lang<value, int>(in.y));
+  CAMLreturn(out);
 }
 
 template <>
 position lang2cxx<value, position>(value in)
 {
+  CAMLparam1(in);
   position out;
   out.x = lang2cxx<value, int>(Field(in, 0));
   out.y = lang2cxx<value, int>(Field(in, 1));
-  return out;
+  CAMLreturnT(position, out);
 }
 
 ///
@@ -150,20 +163,22 @@ position lang2cxx<value, position>(value in)
 template <>
 value cxx2lang<value, caracteristiques_objet>(caracteristiques_objet in)
 {
-  //CAMLlocal1(out);
-  value out = caml_alloc(2, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Store_field (out, 0, (cxx2lang<value, int>(in.cout)));
-  Store_field (out, 1, (cxx2lang<value, int>(in.porte)));
-  return out;
+  CAMLparam0();
+  CAMLlocal1(out);
+  out = caml_alloc(2, 0);
+  caml_initialize(&Field(out, 0), cxx2lang<value, int>(in.cout));
+  caml_initialize(&Field(out, 1), cxx2lang<value, int>(in.porte));
+  CAMLreturn(out);
 }
 
 template <>
 caracteristiques_objet lang2cxx<value, caracteristiques_objet>(value in)
 {
+  CAMLparam1(in);
   caracteristiques_objet out;
   out.cout = lang2cxx<value, int>(Field(in, 0));
   out.porte = lang2cxx<value, int>(Field(in, 1));
-  return out;
+  CAMLreturnT(caracteristiques_objet, out);
 }
 
 ///
@@ -172,20 +187,22 @@ caracteristiques_objet lang2cxx<value, caracteristiques_objet>(value in)
 template <>
 value cxx2lang<value, unite>(unite in)
 {
-  //CAMLlocal1(out);
-  value out = caml_alloc(6, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Store_field (out, 0, (cxx2lang<value, position>(in.pos_unite)));
-  Store_field (out, 1, (cxx2lang<value, int>(in.team)));
-  Store_field (out, 2, (cxx2lang<value, int>(in.ko)));
-  Store_field (out, 3, (cxx2lang<value, int>(in.pa)));
-  Store_field (out, 4, (cxx2lang<value, type_objet>(in.objet)));
-  Store_field (out, 5, (cxx2lang<value, int>(in.id)));
-  return out;
+  CAMLparam0();
+  CAMLlocal1(out);
+  out = caml_alloc(6, 0);
+  caml_initialize(&Field(out, 0), cxx2lang<value, position>(in.pos_unite));
+  caml_initialize(&Field(out, 1), cxx2lang<value, int>(in.team));
+  caml_initialize(&Field(out, 2), cxx2lang<value, int>(in.ko));
+  caml_initialize(&Field(out, 3), cxx2lang<value, int>(in.pa));
+  caml_initialize(&Field(out, 4), cxx2lang<value, type_objet>(in.objet));
+  caml_initialize(&Field(out, 5), cxx2lang<value, int>(in.id));
+  CAMLreturn(out);
 }
 
 template <>
 unite lang2cxx<value, unite>(value in)
 {
+  CAMLparam1(in);
   unite out;
   out.pos_unite = lang2cxx<value, position>(Field(in, 0));
   out.team = lang2cxx<value, int>(Field(in, 1));
@@ -193,7 +210,7 @@ unite lang2cxx<value, unite>(value in)
   out.pa = lang2cxx<value, int>(Field(in, 3));
   out.objet = lang2cxx<value, type_objet>(Field(in, 4));
   out.id = lang2cxx<value, int>(Field(in, 5));
-  return out;
+  CAMLreturnT(unite, out);
 }
 
 ///
@@ -202,22 +219,24 @@ unite lang2cxx<value, unite>(value in)
 template <>
 value cxx2lang<value, piece>(piece in)
 {
-  //CAMLlocal1(out);
-  value out = caml_alloc(3, 0); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  Store_field (out, 0, (cxx2lang<value, int>(in.valeur)));
-  Store_field (out, 1, (cxx2lang<value, position>(in.pos_piece)));
-  Store_field (out, 2, (cxx2lang<value, int>(in.tour_apparition)));
-  return out;
+  CAMLparam0();
+  CAMLlocal1(out);
+  out = caml_alloc(3, 0);
+  caml_initialize(&Field(out, 0), cxx2lang<value, int>(in.valeur));
+  caml_initialize(&Field(out, 1), cxx2lang<value, position>(in.pos_piece));
+  caml_initialize(&Field(out, 2), cxx2lang<value, int>(in.tour_apparition));
+  CAMLreturn(out);
 }
 
 template <>
 piece lang2cxx<value, piece>(value in)
 {
+  CAMLparam1(in);
   piece out;
   out.valeur = lang2cxx<value, int>(Field(in, 0));
   out.pos_piece = lang2cxx<value, position>(Field(in, 1));
   out.tour_apparition = lang2cxx<value, int>(Field(in, 2));
-  return out;
+  CAMLreturnT(piece, out);
 }
 
 ///
@@ -411,16 +430,13 @@ extern "C" value ml_afficher_piece(value v)
 //
 void init_game()
 {
+  CAMLparam0();
+  CAMLlocal1(_ret);
   static value *closure = NULL;
-  if (closure == NULL){
+  if (closure == NULL)
     closure = caml_named_value("ml_init_game");
-    if (closure == NULL){
-      std::cout << "fonction init_game non definie\n";
-      abort();
-    }
-  }
-  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  return;
+  _ret = callback(*closure, Val_unit);
+  CAMLreturn0;
 }
 
 
@@ -429,11 +445,13 @@ void init_game()
 //
 void jouer()
 {
+  CAMLparam0();
+  CAMLlocal1(_ret);
   static value *closure = NULL;
   if (closure == NULL)
-    closure = caml_named_value("ml_jouer"); 
-  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  return;
+    closure = caml_named_value("ml_jouer");
+  _ret = callback(*closure, Val_unit);
+  CAMLreturn0;
 }
 
 
@@ -442,11 +460,13 @@ void jouer()
 //
 void end_game()
 {
+  CAMLparam0();
+  CAMLlocal1(_ret);
   static value *closure = NULL;
   if (closure == NULL)
-    closure = caml_named_value("ml_end_game"); 
-  value _ret = callback(*closure, Val_unit); //Could be buggy(stechec segaulting randomly), CAMLlocal1(value) ?
-  return;
+    closure = caml_named_value("ml_end_game");
+  _ret = callback(*closure, Val_unit);
+  CAMLreturn0;
 }
 
 
