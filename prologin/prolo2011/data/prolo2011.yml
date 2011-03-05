@@ -56,7 +56,7 @@ enum:
     enum_name: bonus
     enum_summary: Énumération représentant les différents types de bonii
     enum_field:
-      - [vide, "ceci n'est pas un bonus :-)"]
+      - [pas_bonus, "ceci n'est pas un bonus :-)"]
       -
         - bonus_croisement
         - "bonus permettant de croiser deux traînées de moto sur une case"

@@ -1,0 +1,216 @@
+/*
+** Stechec project is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** The complete GNU General Public Licence Notice can be found as the
+** `NOTICE' file in the root directory.
+**
+** Copyright (C) 2011 Prologin
+*/
+
+#include <stdlib.h>
+
+#include "Api.hh"
+
+// global used in interface.cc
+Api* api;
+
+
+Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
+{
+  api = this;
+}
+
+///
+// Retourne le numéro de votre équipe
+//
+int Api::mon_equipe()
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne les scores de chaque équipe
+//
+std::vector<int> Api::scores()
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne le nombre d'équipes sur le terrain
+//
+int Api::nombre_equipes()
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne le numéro du tour actuel
+//
+int Api::tour_actuel()
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne la liste des sources d'énergie
+//
+std::vector<source_energie> Api::sources_energie()
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne la liste des traînées de moto
+//
+std::vector<trainee_moto> Api::trainees_moto()
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne le type d'une case
+//
+type_case Api::regarder_type_case(position pos)
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne le type de bonus d'une case
+//
+bonus Api::regarder_type_bonus(position pos)
+{
+  // TODO
+  abort();
+}
+
+///
+// Retourne la liste des bonus d'une équipe
+//
+std::vector<bonus> Api::regarder_bonus(int equipe)
+{
+  // TODO
+  abort();
+}
+
+///
+// Déplace une moto
+//
+erreur Api::deplacer(int id, position de, position vers)
+{
+  // TODO
+  abort();
+}
+
+///
+// Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
+//
+erreur Api::couper_trainee_moto(int id, position entre, position et)
+{
+  // TODO
+  abort();
+}
+
+///
+// Annuler l'action précédente
+//
+erreur Api::cancel()
+{
+  // TODO
+  abort();
+}
+
+///
+// Enrouler la traînée de moto en un point
+//
+erreur Api::enrouler(int id, position point)
+{
+  // TODO
+  abort();
+}
+
+///
+// Régénère une source d'énergie à son maximal
+//
+erreur Api::regenerer_source_energie(int id)
+{
+  // TODO
+  abort();
+}
+
+///
+// Allonge le tour en rajoutant des points d'action
+//
+erreur Api::allonger_pa()
+{
+  // TODO
+  abort();
+}
+
+///
+// Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
+//
+erreur Api::agrandir_trainee_moto(int id, int longueur)
+{
+  // TODO
+  abort();
+}
+
+///
+// Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
+//
+erreur Api::poser_point_croisement(position point)
+{
+  // TODO
+  abort();
+}
+
+///
+// Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
+//
+erreur Api::fusionner(int id1, position pos1, int id2, position pos2)
+{
+  // TODO
+  abort();
+}
+
+///
+// Affiche le contenu d'une valeur de type erreur
+//
+
+///
+// Affiche le contenu d'une valeur de type type_case
+//
+
+///
+// Affiche le contenu d'une valeur de type bonus
+//
+
+///
+// Affiche le contenu d'une valeur de type position
+//
+
+///
+// Affiche le contenu d'une valeur de type source_energie
+//
+
+///
+// Affiche le contenu d'une valeur de type trainee_moto
+//
+
+
+
+void Api::teamSwitched()
+{
+}
