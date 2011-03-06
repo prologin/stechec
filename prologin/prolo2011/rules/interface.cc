@@ -103,7 +103,7 @@ std::string convert_to_string(std::vector<type_case> in){
     return "[]";
   }
 }
-std::string convert_to_string(bonus in){
+std::string convert_to_string(type_bonus in){
   switch (in)
   {
     case VIDE: return "\"vide\"";
@@ -114,7 +114,7 @@ std::string convert_to_string(bonus in){
   }
   return "bad value";
 }
-std::string convert_to_string(std::vector<bonus> in){
+std::string convert_to_string(std::vector<type_bonus> in){
   if (in.size()){
     std::string s = "[" + convert_to_string(in[0]);
     for (int i = 1, l = in.size(); i < l; i++){
@@ -263,7 +263,7 @@ extern "C" type_case api_regarder_type_case(position pos)
 ///
 // Retourne le type de bonus d'une case
 //
-extern "C" bonus api_regarder_type_bonus(position pos)
+extern "C" type_bonus api_regarder_type_bonus(position pos)
 {
   return api->regarder_type_bonus(pos);
 }
@@ -271,7 +271,7 @@ extern "C" bonus api_regarder_type_bonus(position pos)
 ///
 // Retourne la liste des bonus d'une équipe
 //
-extern "C" std::vector<bonus> api_regarder_bonus(int equipe)
+extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe)
 {
   return api->regarder_bonus(equipe);
 }
@@ -389,7 +389,7 @@ extern "C" void api_afficher_type_case(type_case v)
 ///
 // Affiche le contenu d'une valeur de type bonus
 //
-std::ostream& operator<<(std::ostream& os, bonus v)
+std::ostream& operator<<(std::ostream& os, type_bonus v)
 {
   switch (v) {
   case VIDE: os << "VIDE"; break;
@@ -400,7 +400,7 @@ std::ostream& operator<<(std::ostream& os, bonus v)
   }
   return os;
 }
-extern "C" void api_afficher_bonus(bonus v)
+extern "C" void api_afficher_type_bonus(type_bonus v)
 {
   std::cerr << v << std::endl;
 }

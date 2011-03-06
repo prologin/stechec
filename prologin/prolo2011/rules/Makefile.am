@@ -3,6 +3,8 @@
 lib_LTLIBRARIES = tron.la
 
 tron_la_SOURCES =			\
+	Actions.cc		\
+	Actions.hh		\
 	Api.cc				\
 	Api.hh				\
 	Client.cc			\
@@ -22,6 +24,7 @@ tron_la_SOURCES =			\
 	ServerEntry.cc			\
 	ServerEntry.hh			\
 	load_rules.cc			\
+	internal_interface.cc	\
 	interface.cc
 
 tron_la_LDFLAGS = -module

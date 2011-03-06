@@ -16,6 +16,11 @@
 # include "Contest.hh"
 # include "Constant.hh"
 
+# include "Actions.hh"
+
+class Action;
+
+
 /*!
 ** This class is meant to contain all data, accessible from
 ** everywhere.
@@ -28,6 +33,25 @@ public:
   void Init();
 
   // TODO
+
+  // actions
+  std::vector<Action*> actions;
+  void appliquer_action(Action* act);
+  void send_actions();
+  bool annuler();
+
+  // turn
+  int get_current_player();
+  bool mon_tour();
+  int mon_equipe();
+  int get_real_turn();
+
+
+  // data
+  int current_player;
+  // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
+  std::vector<std::vector<int> > packets;
+
 
 private:
   bool initialized_;

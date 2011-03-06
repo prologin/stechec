@@ -40,6 +40,8 @@ protected:
 
 public:
 
+  void sendActions();
+
 ///
 // Retourne le numéro de votre équipe
 //
@@ -71,11 +73,11 @@ public:
 ///
 // Retourne le type de bonus d'une case
 //
-   bonus regarder_type_bonus(position pos);
+   type_bonus regarder_type_bonus(position pos);
 ///
 // Retourne la liste des bonus d'une équipe
 //
-   std::vector<bonus> regarder_bonus(int equipe);
+   std::vector<type_bonus> regarder_bonus(int equipe);
 ///
 // Déplace une moto
 //
@@ -112,29 +114,9 @@ public:
 // Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
 //
    erreur fusionner(int id1, position pos1, int id2, position pos2);
-///
-// Affiche le contenu d'une valeur de type erreur
-//
 
-///
-// Affiche le contenu d'une valeur de type type_case
-//
 
-///
-// Affiche le contenu d'une valeur de type bonus
-//
-
-///
-// Affiche le contenu d'une valeur de type position
-//
-
-///
-// Affiche le contenu d'une valeur de type source_energie
-//
-
-///
-// Affiche le contenu d'une valeur de type trainee_moto
-//
+  bool mon_tour();
 
 };
 

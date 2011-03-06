@@ -28,8 +28,7 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
 //
 int Api::mon_equipe()
 {
-  // TODO
-  abort();
+  return g_->mon_equipe();
 }
 
 ///
@@ -55,8 +54,7 @@ int Api::nombre_equipes()
 //
 int Api::tour_actuel()
 {
-  // TODO
-  abort();
+  return g_->get_real_turn();
 }
 
 ///
@@ -89,7 +87,7 @@ type_case Api::regarder_type_case(position pos)
 ///
 // Retourne le type de bonus d'une case
 //
-bonus Api::regarder_type_bonus(position pos)
+type_bonus Api::regarder_type_bonus(position pos)
 {
   // TODO
   abort();
@@ -98,7 +96,7 @@ bonus Api::regarder_type_bonus(position pos)
 ///
 // Retourne la liste des bonus d'une équipe
 //
-std::vector<bonus> Api::regarder_bonus(int equipe)
+std::vector<type_bonus> Api::regarder_bonus(int equipe)
 {
   // TODO
   abort();
@@ -185,32 +183,16 @@ erreur Api::fusionner(int id1, position pos1, int id2, position pos2)
   abort();
 }
 
-///
-// Affiche le contenu d'une valeur de type erreur
-//
-
-///
-// Affiche le contenu d'une valeur de type type_case
-//
-
-///
-// Affiche le contenu d'une valeur de type bonus
-//
-
-///
-// Affiche le contenu d'une valeur de type position
-//
-
-///
-// Affiche le contenu d'une valeur de type source_energie
-//
-
-///
-// Affiche le contenu d'une valeur de type trainee_moto
-//
-
-
+bool Api::mon_tour()
+{
+  return g_->mon_tour();
+}
 
 void Api::teamSwitched()
 {
+}
+
+void Api::sendActions()
+{
+g_->send_actions();
 }

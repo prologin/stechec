@@ -65,13 +65,13 @@ typedef enum type_case {
 ///
 // Énumération représentant les différents types de bonii
 //
-typedef enum bonus {
+typedef enum type_bonus {
   PAS_BONUS, /* <- ceci n'est pas un bonus :-) */
   BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traînées de moto sur une case */
   PLUS_LONG, /* <- bonus permettant d'agrandir une traînée de moto */
   PLUS_PA, /* <- bonus permettant d'avoir plus de points d'action */
   BONUS_REGENERATION, /* <- bonus permettant de regenerer une source d'energie */
-} bonus;
+} type_bonus;
 
 
 ///
@@ -106,9 +106,8 @@ typedef struct trainee_moto {
 
 // Ids for message type.
 enum e_com_type {
-  // MSG1 = 0,
-  // MSG2,
-  // ...
+  ACT_DEPLACER = 0,
+
   LAST_MSG
 };
 
