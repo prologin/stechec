@@ -23,6 +23,18 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
   api = this;
 }
 
+#define DO_ACTION(type, ...) \
+  if (g_->can_play) { \
+  try { \
+    Action* act = new type(__VA_ARGS__); \
+    act->verifier(g_); \
+    g_->appliquer_action(act); \
+    return OK; \
+  } catch (erreur err) { \
+    return err; \
+  } }else abort();
+
+
 ///
 // Retourne le numéro de votre équipe
 //
@@ -125,8 +137,14 @@ erreur Api::couper_trainee_moto(int id, position entre, position et)
 //
 erreur Api::cancel()
 {
-  // TODO
-  abort();
+  LOG2("annuler");
+  LOG4("state avant annuler"); 
+  g_->check(__FILE__, __LINE__);
+  bool out = g_->annuler();
+  LOG4("state apres annuler"); 
+  g_->check(__FILE__, __LINE__);
+  // TODO return out
+  return OK;
 }
 
 ///

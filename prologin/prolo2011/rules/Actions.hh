@@ -59,4 +59,6 @@ protected:
   position to_;
 };
 
+Action* act_from_pkt(int type, const StechecPkt* pkt);
+
 #endif

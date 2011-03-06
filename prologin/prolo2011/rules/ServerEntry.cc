@@ -29,41 +29,42 @@ int		ServerEntry::beforeGame(void)
 {
 
   g_->Init();
-
-  // TODO
-  
   return 0;
 }
 
 int         ServerEntry::initGame(void)
 {
-  // TODO
   return 0;
 }
 
 int         ServerEntry::beforeNewTurn(void)
 {
-  // TODO
+  g_->team_switched();
   return 0;
 }
 
+#define ARG2(a, i) a[(i)], a[(i) + 1]
+#define ARG4(a, i) ARG2(a, i), ARG2(a, i + 2)
+#define ARG8(a, i) ARG4(a, i), ARG4(a, i + 4)
 int         ServerEntry::afterNewTurn(void)
-{
-  // TODO
+{ // forward the actions
+  for (std::vector<std::vector<int> >::iterator it = g_->packets.begin();
+       it != g_->packets.end(); ++it)
+  {
+    SendToAll((*it)[0], -1, 8, ARG8((*it), 1)); // maximum 8 parametres par action...
+  }
   return 0;
 }
 
 
 int         ServerEntry::afterGame(void)
 {
-  // TODO
   return 0;
 }
 
 bool        ServerEntry::isMatchFinished(void)
 {
-  // TODO
-  return true;
+  return g_->isMatchFinished();
 }
 
 int ServerEntry::getScore(int uid)

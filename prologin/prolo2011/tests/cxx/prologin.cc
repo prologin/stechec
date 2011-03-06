@@ -6,12 +6,14 @@
 
 #include "prologin.hh"
 
+#include <iostream>
+
 ///
 // Fonction appellée au début de la partie
 //
 void init_game()
 {
-  // fonction a completer
+  std::cout << "equipe : " << mon_equipe() << std::endl;
 }
 
 ///

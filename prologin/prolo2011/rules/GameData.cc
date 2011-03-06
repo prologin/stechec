@@ -11,6 +11,7 @@
 */
 
 #include "GameData.hh"
+#include "Constant.hh"
 #include <ctime>
 #include <cstdlib>
 
@@ -22,21 +23,32 @@ GameData::GameData()
 {
   srand(time(0));
   current_player = 1;
+  can_play = false;
 }
-
 void GameData::Init() {
   // TODO
   initialized_ = true;
 }
 
+void GameData::team_switched(){
+  can_play = true;
+  current_player = (current_player + 1 ) % 2;
+  // TODO reset point d'actions
+}
+
+void GameData::check(const char * file, int line){
+  LOG3("%1:%2", file, line );
+  // TODO
+}
+
 int GameData::mon_equipe(){
-  LOG2("mon_equipe %1", getTeamId());
+  LOG4("mon_equipe %1", getTeamId());
   return getTeamId();
 }
 bool GameData::mon_tour()
 {
   unsigned int curr_player = (getCurrentTurn() - 1) % 2;
-  LOG2("curr_player = %1, team id = %2", curr_player, getTeamId());
+  LOG4("curr_player = %1, team id = %2", curr_player, getTeamId());
   return curr_player == getTeamId();
 }
 int GameData::get_current_player(){
@@ -48,7 +60,9 @@ int GameData::get_real_turn()
   return (getCurrentTurn() - 1) / 2 + 1;
 }
 
-
+bool GameData::isMatchFinished(){
+  return getCurrentTurn() == FIN_PARTIE * 2;
+}
 
 
 // actions

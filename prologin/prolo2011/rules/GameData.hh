@@ -31,8 +31,10 @@ public:
   GameData();
   // Call this before everything else.
   void Init();
+  void check(const char * file, int line);
 
-  // TODO
+  // side effects
+  void team_switched();
 
   // actions
   std::vector<Action*> actions;
@@ -47,7 +49,11 @@ public:
   int get_real_turn();
 
 
+  bool isMatchFinished();
+
+
   // data
+  bool can_play;
   int current_player;
   // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
   std::vector<std::vector<int> > packets;

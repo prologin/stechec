@@ -5,6 +5,7 @@
 */
 
 #include "prologin.h"
+#include <stdio.h>
 
 /*!
 ** Fonction appellée au début de la partie
@@ -19,7 +20,7 @@ void init_game(void)
 */
 void jouer(void)
 {
-  /* fonction a completer */
+  printf("tour : %d\n", tour_actuel());
 }
 
 /*!
