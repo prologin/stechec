@@ -287,7 +287,7 @@ EOF
       elsif fn.ret.is_array?
         @f.puts "  CAMLreturnT(std::vector<#{cxx_type(fn.ret.type)}>, lang2cxx_array<#{cxx_type(fn.ret.type)}>(_ret));"
       else
-        @f.puts "  CAMLreturnT(#{cxx_type(fn.ret)}, lang2cxx<value, #{cxx_type(fn.ret)}>(_ret));"
+        @f.puts "  CAMLreturnT(#{cxx_type(fn.ret)}, (lang2cxx<value, #{cxx_type(fn.ret)}>(_ret)));"
       end
       @f.puts "}", ""
     end
