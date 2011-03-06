@@ -17,7 +17,7 @@ const
 *)
 	TAILLE_TERRAIN            =  100;
 (*
-  Nombre de tours avant la fin de la partie
+  Nombre de tours par partie
 *)
 	FIN_PARTIE                =  1500;
 (*
@@ -65,16 +65,16 @@ type array_of_type_case = array of type_case;
 (*
   Énumération représentant les différents types de bonii
 *)
-type bonus =
+type type_bonus =
   (
-    vide { <- ceci n'est pas un bonus :-) },
+    pas_bonus { <- ceci n'est pas un bonus :-) },
     bonus_croisement { <- bonus permettant de croiser deux traînées de moto sur une case },
     plus_long { <- bonus permettant d'agrandir une traînée de moto },
     plus_pa { <- bonus permettant d'avoir plus de points d'action },
     bonus_regeneration { <- bonus permettant de regenerer une source d'energie }
   );
 
-type array_of_bonus = array of bonus;
+type array_of_type_bonus = array of type_bonus;
 
 
 (*
@@ -153,12 +153,12 @@ function regarder_type_case(pos : position) : type_case; cdecl; external;
 (*
   Retourne le type de bonus d'une case
 *)
-function regarder_type_bonus(pos : position) : bonus; cdecl; external;
+function regarder_type_bonus(pos : position) : type_bonus; cdecl; external;
 
 (*
   Retourne la liste des bonus d'une équipe
 *)
-function regarder_bonus(equipe : cint) : array_of_bonus; cdecl; external;
+function regarder_bonus(equipe : cint) : array_of_type_bonus; cdecl; external;
 
 (*
   Déplace une moto
@@ -216,9 +216,9 @@ procedure afficher_erreur(v : erreur); cdecl; external;
 procedure afficher_type_case(v : type_case); cdecl; external;
 
 (*
-  Affiche le contenu d'une valeur de type bonus
+  Affiche le contenu d'une valeur de type type_bonus
 *)
-procedure afficher_bonus(v : bonus); cdecl; external;
+procedure afficher_type_bonus(v : type_bonus); cdecl; external;
 
 (*
   Affiche le contenu d'une valeur de type position

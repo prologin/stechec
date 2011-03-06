@@ -40,7 +40,7 @@ function end_game()
  */
 
 /*
- * Affiche le contenu d'une valeur de type bonus
+ * Affiche le contenu d'une valeur de type type_bonus
  */
 
 /*

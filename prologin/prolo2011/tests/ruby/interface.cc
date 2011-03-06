@@ -163,12 +163,12 @@ VALUE cxx2lang<type_case>(type_case in)
 // Énumération représentant les différents types de bonii
 //
 template<>
-bonus lang2cxx<bonus>(VALUE in)
+type_bonus lang2cxx<type_bonus>(VALUE in)
 {
-if (TYPE(in) != T_STRING) TYPEERR("bonus", in);
+if (TYPE(in) != T_STRING) TYPEERR("type_bonus", in);
   char* v = RSTRING_PTR(in);
-  if (strcmp(v, "vide") == 0)
-      return VIDE;
+  if (strcmp(v, "pas_bonus") == 0)
+      return PAS_BONUS;
   if (strcmp(v, "bonus_croisement") == 0)
       return BONUS_CROISEMENT;
   if (strcmp(v, "plus_long") == 0)
@@ -178,15 +178,15 @@ if (TYPE(in) != T_STRING) TYPEERR("bonus", in);
   if (strcmp(v, "bonus_regeneration") == 0)
       return BONUS_REGENERATION;
   abort();
-  TYPEERR("bonus", in);
+  TYPEERR("type_bonus", in);
 }
 template<>
-VALUE cxx2lang<bonus>(bonus in)
+VALUE cxx2lang<type_bonus>(type_bonus in)
 {
   switch (in)
   {
-    case VIDE:
-      return rb_str_new("vide", 4);
+    case PAS_BONUS:
+      return rb_str_new("pas_bonus", 9);
     case BONUS_CROISEMENT:
       return rb_str_new("bonus_croisement", 16);
     case PLUS_LONG:
@@ -302,7 +302,7 @@ static VALUE rb_regarder_type_case(VALUE self, VALUE pos)
 }
 static VALUE rb_regarder_type_bonus(VALUE self, VALUE pos)
 {
-  return cxx2lang<bonus>(api_regarder_type_bonus(lang2cxx<position>( pos ) ));
+  return cxx2lang<type_bonus>(api_regarder_type_bonus(lang2cxx<position>( pos ) ));
 }
 static VALUE rb_regarder_bonus(VALUE self, VALUE equipe)
 {
@@ -354,9 +354,9 @@ static VALUE rb_afficher_type_case(VALUE self, VALUE v)
 api_afficher_type_case(lang2cxx<type_case>( v ) );
   return Qnil;
 }
-static VALUE rb_afficher_bonus(VALUE self, VALUE v)
+static VALUE rb_afficher_type_bonus(VALUE self, VALUE v)
 {
-api_afficher_bonus(lang2cxx<bonus>( v ) );
+api_afficher_type_bonus(lang2cxx<type_bonus>( v ) );
   return Qnil;
 }
 static VALUE rb_afficher_position(VALUE self, VALUE v)
@@ -478,9 +478,9 @@ void loadCallback()
     rb_define_global_function("afficher_type_case", (VALUE(*)(ANYARGS))(rb_afficher_type_case), 1);
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-    rb_define_global_function("afficher_bonus", (VALUE(*)(ANYARGS))(rb_afficher_bonus), 1);
+    rb_define_global_function("afficher_type_bonus", (VALUE(*)(ANYARGS))(rb_afficher_type_bonus), 1);
 
 ///
 // Affiche le contenu d'une valeur de type position
@@ -619,7 +619,7 @@ abort();
 //
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
 
 ///

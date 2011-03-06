@@ -16,7 +16,7 @@
 # define TAILLE_TERRAIN            100
 
 ///
-// Nombre de tours avant la fin de la partie
+// Nombre de tours par partie
 //
 # define FIN_PARTIE                1500
 
@@ -62,21 +62,21 @@ typedef enum type_case {
 ///
 // Énumération représentant les différents types de bonii
 //
-typedef enum bonus {
-  VIDE, /* <- ceci n'est pas un bonus :-) */
+typedef enum type_bonus {
+  PAS_BONUS, /* <- ceci n'est pas un bonus :-) */
   BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traînées de moto sur une case */
   PLUS_LONG, /* <- bonus permettant d'agrandir une traînée de moto */
   PLUS_PA, /* <- bonus permettant d'avoir plus de points d'action */
   BONUS_REGENERATION, /* <- bonus permettant de regenerer une source d'energie */
-} bonus;
+} type_bonus;
 
 
 ///
 // Représente une position sur le terrain du jeu
 //
 typedef struct position {
-  int x;  /* <- coordonnée en X */
-  int y;  /* <- coordonnée en Y */
+int x;  /* <- coordonnée en X */
+int y;  /* <- coordonnée en Y */
 } position;
 
 
@@ -84,9 +84,9 @@ typedef struct position {
 // Caracteristiques d'une source d'énergie
 //
 typedef struct source_energie {
-  int id;  /* <- identifiant de la source d'énergie */
-  position pos;  /* <- position de la source d'énergie */
-  int coef;  /* <- coefficient representant les points d'énergie que la source va vous apporter */
+int id;  /* <- identifiant de la source d'énergie */
+position pos;  /* <- position de la source d'énergie */
+int coef;  /* <- coefficient representant les points d'énergie que la source va vous apporter */
 } source_energie;
 
 
@@ -94,9 +94,9 @@ typedef struct source_energie {
 // Représente une traînée de moto sur le terrain
 //
 typedef struct trainee_moto {
-  int id;  /* <- identifiant de la traînee */
-  std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
-  int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
+int id;  /* <- identifiant de la traînee */
+position *emplacement;  /* <- position de chaque composant de la traînée de moto */
+int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
 } trainee_moto;
 
 
@@ -124,7 +124,7 @@ typedef struct __internal__cxx__source_energie {
 //
 typedef struct __internal__cxx__trainee_moto {
   int id; 
-  std::vector<position> emplacement;
+  std::vector<__internal__cxx__position> emplacement;
   int team; 
 } __internal__cxx__trainee_moto;
 
@@ -168,12 +168,12 @@ type_case api_regarder_type_case(__internal__cxx__position pos);
 ///
 // Retourne le type de bonus d'une case
 //
-bonus api_regarder_type_bonus(__internal__cxx__position pos);
+type_bonus api_regarder_type_bonus(__internal__cxx__position pos);
 
 ///
 // Retourne la liste des bonus d'une équipe
 //
-std::vector<bonus> api_regarder_bonus(int equipe);
+std::vector<type_bonus> api_regarder_bonus(int equipe);
 
 ///
 // Déplace une moto
@@ -231,9 +231,9 @@ void api_afficher_erreur(erreur v);
 void api_afficher_type_case(type_case v);
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-void api_afficher_bonus(bonus v);
+void api_afficher_type_bonus(type_bonus v);
 
 ///
 // Affiche le contenu d'une valeur de type position

@@ -12,7 +12,7 @@ typedef char * charp;
 # define TAILLE_TERRAIN            100
 
 /*!
-** Nombre de tours avant la fin de la partie
+** Nombre de tours par partie
 */
 # define FIN_PARTIE                1500
 
@@ -58,13 +58,13 @@ typedef enum type_case {
 /*!
 ** Énumération représentant les différents types de bonii
 */
-typedef enum bonus {
-  VIDE, /* <- ceci n'est pas un bonus :-) */
+typedef enum type_bonus {
+  PAS_BONUS, /* <- ceci n'est pas un bonus :-) */
   BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traînées de moto sur une case */
   PLUS_LONG, /* <- bonus permettant d'agrandir une traînée de moto */
   PLUS_PA, /* <- bonus permettant d'avoir plus de points d'action */
   BONUS_REGENERATION, /* <- bonus permettant de regenerer une source d'energie */
-} bonus;
+} type_bonus;
 
 
 /*!
@@ -135,12 +135,12 @@ type_case regarder_type_case(position pos);
 /*!
 ** Retourne le type de bonus d'une case
 */
-bonus regarder_type_bonus(position pos);
+type_bonus regarder_type_bonus(position pos);
 
 /*!
 ** Retourne la liste des bonus d'une équipe
 */
-void regarder_bonus(int equipe, bonus** ret_arr, size_t* ret_len);
+void regarder_bonus(int equipe, type_bonus** ret_arr, size_t* ret_len);
 
 /*!
 ** Déplace une moto
@@ -198,9 +198,9 @@ void afficher_erreur(erreur v);
 void afficher_type_case(type_case v);
 
 /*!
-** Affiche le contenu d'une valeur de type bonus
+** Affiche le contenu d'une valeur de type type_bonus
 */
-void afficher_bonus(bonus v);
+void afficher_type_bonus(type_bonus v);
 
 /*!
 ** Affiche le contenu d'une valeur de type position
@@ -241,7 +241,7 @@ void end_game(void);
 */
 
 /*!
-** Affiche le contenu d'une valeur de type bonus
+** Affiche le contenu d'une valeur de type type_bonus
 */
 
 /*!

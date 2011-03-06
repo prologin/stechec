@@ -4,7 +4,7 @@ from _api import *
 # Taille du terrain
 TAILLE_TERRAIN = 100
 
-# Nombre de tours avant la fin de la partie
+# Nombre de tours par partie
 FIN_PARTIE = 1500
 
 # Nombre de points d'action par tour
@@ -38,7 +38,7 @@ MAX_ALLONGEMENT = 5
 
 # Énumération représentant les différents types de bonii
 (
-    VIDE, # <- ceci n'est pas un bonus :-)
+    PAS_BONUS, # <- ceci n'est pas un bonus :-)
     BONUS_CROISEMENT, # <- bonus permettant de croiser deux traînées de moto sur une case
     PLUS_LONG, # <- bonus permettant d'agrandir une traînée de moto
     PLUS_PA, # <- bonus permettant d'avoir plus de points d'action

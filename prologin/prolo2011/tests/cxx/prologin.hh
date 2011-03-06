@@ -17,7 +17,7 @@
 # define TAILLE_TERRAIN            100
 
 ///
-// Nombre de tours avant la fin de la partie
+// Nombre de tours par partie
 //
 # define FIN_PARTIE                1500
 
@@ -63,13 +63,13 @@ typedef enum type_case {
 ///
 // Énumération représentant les différents types de bonii
 //
-typedef enum bonus {
-  VIDE, /* <- ceci n'est pas un bonus :-) */
+typedef enum type_bonus {
+  PAS_BONUS, /* <- ceci n'est pas un bonus :-) */
   BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traînées de moto sur une case */
   PLUS_LONG, /* <- bonus permettant d'agrandir une traînée de moto */
   PLUS_PA, /* <- bonus permettant d'avoir plus de points d'action */
   BONUS_REGENERATION, /* <- bonus permettant de regenerer une source d'energie */
-} bonus;
+} type_bonus;
 
 
 ///
@@ -174,8 +174,8 @@ static inline type_case regarder_type_case(position pos)
 ///
 // Retourne le type de bonus d'une case
 //
-extern "C" bonus api_regarder_type_bonus(position pos);
-static inline bonus regarder_type_bonus(position pos)
+extern "C" type_bonus api_regarder_type_bonus(position pos);
+static inline type_bonus regarder_type_bonus(position pos)
 {
   return api_regarder_type_bonus(pos);
 }
@@ -184,8 +184,8 @@ static inline bonus regarder_type_bonus(position pos)
 ///
 // Retourne la liste des bonus d'une équipe
 //
-extern "C" std::vector<bonus> api_regarder_bonus(int equipe);
-static inline std::vector<bonus> regarder_bonus(int equipe)
+extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
+static inline std::vector<type_bonus> regarder_bonus(int equipe)
 {
   return api_regarder_bonus(equipe);
 }
@@ -302,12 +302,12 @@ static inline void afficher_type_case(type_case v)
 
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-extern "C" void api_afficher_bonus(bonus v);
-static inline void afficher_bonus(bonus v)
+extern "C" void api_afficher_type_bonus(type_bonus v);
+static inline void afficher_type_bonus(type_bonus v)
 {
-  api_afficher_bonus(v);
+  api_afficher_type_bonus(v);
 }
 
 
@@ -368,7 +368,7 @@ void end_game();
 //
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
 
 ///

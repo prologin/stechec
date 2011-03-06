@@ -10,7 +10,7 @@
 let taille_terrain = 100
 
 (*
-** Nombre de tours avant la fin de la partie
+** Nombre de tours par partie
 *)
 let fin_partie = 1500
 
@@ -54,8 +54,8 @@ type type_case =
 (*
 ** Énumération représentant les différents types de bonii
 *)
-type bonus =
-| Vide (* <- ceci n'est pas un bonus :-) *)
+type type_bonus =
+| Pas_bonus (* <- ceci n'est pas un bonus :-) *)
 | Bonus_croisement (* <- bonus permettant de croiser deux traînées de moto sur une case *)
 | Plus_long (* <- bonus permettant d'agrandir une traînée de moto *)
 | Plus_pa (* <- bonus permettant d'avoir plus de points d'action *)
@@ -116,11 +116,11 @@ external regarder_type_case : position -> type_case = "ml_regarder_type_case"
 (*
 ** Retourne le type de bonus d'une case
 *)
-external regarder_type_bonus : position -> bonus = "ml_regarder_type_bonus"
+external regarder_type_bonus : position -> type_bonus = "ml_regarder_type_bonus"
 (*
 ** Retourne la liste des bonus d'une équipe
 *)
-external regarder_bonus : int -> bonus array = "ml_regarder_bonus"
+external regarder_bonus : int -> type_bonus array = "ml_regarder_bonus"
 (*
 ** Déplace une moto
 *)
@@ -166,9 +166,9 @@ external afficher_erreur : erreur -> unit = "ml_afficher_erreur"
 *)
 external afficher_type_case : type_case -> unit = "ml_afficher_type_case"
 (*
-** Affiche le contenu d'une valeur de type bonus
+** Affiche le contenu d'une valeur de type type_bonus
 *)
-external afficher_bonus : bonus -> unit = "ml_afficher_bonus"
+external afficher_type_bonus : type_bonus -> unit = "ml_afficher_type_bonus"
 (*
 ** Affiche le contenu d'une valeur de type position
 *)

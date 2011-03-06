@@ -26,7 +26,7 @@ def end_game():
 
 # Affiche le contenu d'une valeur de type type_case
 
-# Affiche le contenu d'une valeur de type bonus
+# Affiche le contenu d'une valeur de type type_bonus
 
 # Affiche le contenu d'une valeur de type position
 

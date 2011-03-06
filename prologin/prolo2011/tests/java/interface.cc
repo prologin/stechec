@@ -101,14 +101,14 @@ Type_case* cxx2lang<Type_case*, type_case >(type_case in)
 // Énumération représentant les différents types de bonii
 //
 template<>
-bonus lang2cxx<Bonus*, bonus >(Bonus* in)
+type_bonus lang2cxx<Type_bonus*, type_bonus >(Type_bonus* in)
 {
-  return bonus(lang2cxx<jint, int>( in->ordinal() ));
+  return type_bonus(lang2cxx<jint, int>( in->ordinal() ));
 }
 template<>
-Bonus* cxx2lang<Bonus*, bonus >(bonus in)
+Type_bonus* cxx2lang<Type_bonus*, type_bonus >(type_bonus in)
 {
-  return *(&Bonus::Vide + (int)in);
+  return *(&Type_bonus::Pas_bonus + (int)in);
 }
 
 ///
@@ -221,13 +221,13 @@ Type_case* Interface::regarder_type_case(Position* pos)
 {
 	return cxx2lang<Type_case*, type_case >(api_regarder_type_case(lang2cxx<Position*, position >(pos)));
 }
-Bonus* Interface::regarder_type_bonus(Position* pos)
+Type_bonus* Interface::regarder_type_bonus(Position* pos)
 {
-	return cxx2lang<Bonus*, bonus >(api_regarder_type_bonus(lang2cxx<Position*, position >(pos)));
+	return cxx2lang<Type_bonus*, type_bonus >(api_regarder_type_bonus(lang2cxx<Position*, position >(pos)));
 }
-JArray< Bonus* >* Interface::regarder_bonus(jint equipe)
+JArray< Type_bonus* >* Interface::regarder_bonus(jint equipe)
 {
-	return cxx2lang_array< Bonus, bonus >(api_regarder_bonus(lang2cxx<jint, int >(equipe)));
+	return cxx2lang_array< Type_bonus, type_bonus >(api_regarder_bonus(lang2cxx<jint, int >(equipe)));
 }
 Erreur* Interface::deplacer(jint id, Position* de, Position* vers)
 {
@@ -273,9 +273,9 @@ void Interface::afficher_type_case(Type_case* v)
 {
 	api_afficher_type_case(lang2cxx<Type_case*, type_case >(v));
 }
-void Interface::afficher_bonus(Bonus* v)
+void Interface::afficher_type_bonus(Type_bonus* v)
 {
-	api_afficher_bonus(lang2cxx<Bonus*, bonus >(v));
+	api_afficher_type_bonus(lang2cxx<Type_bonus*, type_bonus >(v));
 }
 void Interface::afficher_position(Position* v)
 {
@@ -305,7 +305,7 @@ struct ProloginJavaVm
       // GC_disable();
       JvInitClass(&::Erreur::class$);
       JvInitClass(&::Type_case::class$);
-      JvInitClass(&::Bonus::class$);
+      JvInitClass(&::Type_bonus::class$);
       c = new Prologin();
     }
     catch (Throwable *t)
@@ -374,7 +374,7 @@ extern "C" void end_game()
 //
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
 
 ///

@@ -130,15 +130,15 @@ type_case lang2cxx<zval*, type_case>(zval* in)
 // Énumération représentant les différents types de bonii
 //
 template <>
-zval* cxx2lang<zval*, bonus>(bonus in)
+zval* cxx2lang<zval*, type_bonus>(type_bonus in)
 {
     return cxx2lang<zval*, int>((int)in);
 }
 
 template <>
-bonus lang2cxx<zval*, bonus>(zval* in)
+type_bonus lang2cxx<zval*, type_bonus>(zval* in)
 {
-    return (bonus)lang2cxx<zval*, int>(in);
+    return (type_bonus)lang2cxx<zval*, int>(in);
 }
 
 ///
@@ -356,7 +356,7 @@ PHP_FUNCTION(php_api_regarder_type_bonus)
     }
 
         try {
-zval* ret = cxx2lang<zval*, bonus>(api_regarder_type_bonus(lang2cxx<zval*, position>(_pos)));
+zval* ret = cxx2lang<zval*, type_bonus>(api_regarder_type_bonus(lang2cxx<zval*, position>(_pos)));
     RETURN_ZVAL(ret, 0, 0);
     } catch (...) { RETURN_NULL(); }
 }
@@ -573,9 +573,9 @@ api_afficher_type_case(lang2cxx<zval*, type_case>(_v));
 }
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-PHP_FUNCTION(php_api_afficher_bonus)
+PHP_FUNCTION(php_api_afficher_type_bonus)
 {
     zval* _v;
 
@@ -585,7 +585,7 @@ PHP_FUNCTION(php_api_afficher_bonus)
     }
 
         try {
-api_afficher_bonus(lang2cxx<zval*, bonus>(_v));
+api_afficher_type_bonus(lang2cxx<zval*, type_bonus>(_v));
     RETURN_NULL();
     } catch (...) { RETURN_NULL(); }
 }
@@ -645,7 +645,7 @@ api_afficher_trainee_moto(lang2cxx<zval*, trainee_moto>(_v));
 }
 
 static function_entry module_functions_table[] = {
-    PHP_FALIAS(mon_equipe, php_api_mon_equipe, NULL)    PHP_FALIAS(scores, php_api_scores, NULL)    PHP_FALIAS(nombre_equipes, php_api_nombre_equipes, NULL)    PHP_FALIAS(tour_actuel, php_api_tour_actuel, NULL)    PHP_FALIAS(sources_energie, php_api_sources_energie, NULL)    PHP_FALIAS(trainees_moto, php_api_trainees_moto, NULL)    PHP_FALIAS(regarder_type_case, php_api_regarder_type_case, NULL)    PHP_FALIAS(regarder_type_bonus, php_api_regarder_type_bonus, NULL)    PHP_FALIAS(regarder_bonus, php_api_regarder_bonus, NULL)    PHP_FALIAS(deplacer, php_api_deplacer, NULL)    PHP_FALIAS(couper_trainee_moto, php_api_couper_trainee_moto, NULL)    PHP_FALIAS(cancel, php_api_cancel, NULL)    PHP_FALIAS(enrouler, php_api_enrouler, NULL)    PHP_FALIAS(regenerer_source_energie, php_api_regenerer_source_energie, NULL)    PHP_FALIAS(allonger_pa, php_api_allonger_pa, NULL)    PHP_FALIAS(agrandir_trainee_moto, php_api_agrandir_trainee_moto, NULL)    PHP_FALIAS(poser_point_croisement, php_api_poser_point_croisement, NULL)    PHP_FALIAS(fusionner, php_api_fusionner, NULL)    PHP_FALIAS(afficher_erreur, php_api_afficher_erreur, NULL)    PHP_FALIAS(afficher_type_case, php_api_afficher_type_case, NULL)    PHP_FALIAS(afficher_bonus, php_api_afficher_bonus, NULL)    PHP_FALIAS(afficher_position, php_api_afficher_position, NULL)    PHP_FALIAS(afficher_source_energie, php_api_afficher_source_energie, NULL)    PHP_FALIAS(afficher_trainee_moto, php_api_afficher_trainee_moto, NULL)    {NULL, NULL, NULL}
+    PHP_FALIAS(mon_equipe, php_api_mon_equipe, NULL)    PHP_FALIAS(scores, php_api_scores, NULL)    PHP_FALIAS(nombre_equipes, php_api_nombre_equipes, NULL)    PHP_FALIAS(tour_actuel, php_api_tour_actuel, NULL)    PHP_FALIAS(sources_energie, php_api_sources_energie, NULL)    PHP_FALIAS(trainees_moto, php_api_trainees_moto, NULL)    PHP_FALIAS(regarder_type_case, php_api_regarder_type_case, NULL)    PHP_FALIAS(regarder_type_bonus, php_api_regarder_type_bonus, NULL)    PHP_FALIAS(regarder_bonus, php_api_regarder_bonus, NULL)    PHP_FALIAS(deplacer, php_api_deplacer, NULL)    PHP_FALIAS(couper_trainee_moto, php_api_couper_trainee_moto, NULL)    PHP_FALIAS(cancel, php_api_cancel, NULL)    PHP_FALIAS(enrouler, php_api_enrouler, NULL)    PHP_FALIAS(regenerer_source_energie, php_api_regenerer_source_energie, NULL)    PHP_FALIAS(allonger_pa, php_api_allonger_pa, NULL)    PHP_FALIAS(agrandir_trainee_moto, php_api_agrandir_trainee_moto, NULL)    PHP_FALIAS(poser_point_croisement, php_api_poser_point_croisement, NULL)    PHP_FALIAS(fusionner, php_api_fusionner, NULL)    PHP_FALIAS(afficher_erreur, php_api_afficher_erreur, NULL)    PHP_FALIAS(afficher_type_case, php_api_afficher_type_case, NULL)    PHP_FALIAS(afficher_type_bonus, php_api_afficher_type_bonus, NULL)    PHP_FALIAS(afficher_position, php_api_afficher_position, NULL)    PHP_FALIAS(afficher_source_energie, php_api_afficher_source_energie, NULL)    PHP_FALIAS(afficher_trainee_moto, php_api_afficher_trainee_moto, NULL)    {NULL, NULL, NULL}
 };
 static zend_module_entry api_module_entry = {
     STANDARD_MODULE_HEADER,
@@ -752,7 +752,7 @@ extern "C" void end_game()
 //
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
 
 ///

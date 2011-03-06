@@ -38,13 +38,13 @@ typedef enum type_case {
 ///
 // Énumération représentant les différents types de bonii
 //
-typedef enum bonus {
-  VIDE, /* <- ceci n'est pas un bonus :-) */
+typedef enum type_bonus {
+  PAS_BONUS, /* <- ceci n'est pas un bonus :-) */
   BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traînées de moto sur une case */
   PLUS_LONG, /* <- bonus permettant d'agrandir une traînée de moto */
   PLUS_PA, /* <- bonus permettant d'avoir plus de points d'action */
   BONUS_REGENERATION, /* <- bonus permettant de regenerer une source d'energie */
-} bonus;
+} type_bonus;
 
 
 ///
@@ -117,12 +117,12 @@ type_case api_regarder_type_case(position pos);
 ///
 // Retourne le type de bonus d'une case
 //
-bonus api_regarder_type_bonus(position pos);
+type_bonus api_regarder_type_bonus(position pos);
 
 ///
 // Retourne la liste des bonus d'une équipe
 //
-std::vector<bonus> api_regarder_bonus(int equipe);
+std::vector<type_bonus> api_regarder_bonus(int equipe);
 
 ///
 // Déplace une moto
@@ -180,9 +180,9 @@ void api_afficher_erreur(erreur v);
 void api_afficher_type_case(type_case v);
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-void api_afficher_bonus(bonus v);
+void api_afficher_type_bonus(type_bonus v);
 
 ///
 // Affiche le contenu d'une valeur de type position

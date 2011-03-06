@@ -39,7 +39,7 @@ void end_game(void)
 */
 
 /*!
-** Affiche le contenu d'une valeur de type bonus
+** Affiche le contenu d'une valeur de type type_bonus
 */
 
 /*!

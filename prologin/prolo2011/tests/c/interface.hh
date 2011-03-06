@@ -39,7 +39,7 @@ typedef struct __internal__cxx__source_energie {
 //
 typedef struct __internal__cxx__trainee_moto {
   int id; 
-  std::vector<position> emplacement;
+  std::vector<__internal__cxx__position> emplacement;
   int team; 
 } __internal__cxx__trainee_moto;
 
@@ -82,12 +82,12 @@ extern "C" type_case api_regarder_type_case(__internal__cxx__position pos);
 ///
 // Retourne le type de bonus d'une case
 //
-extern "C" bonus api_regarder_type_bonus(__internal__cxx__position pos);
+extern "C" type_bonus api_regarder_type_bonus(__internal__cxx__position pos);
 
 ///
 // Retourne la liste des bonus d'une équipe
 //
-extern "C" std::vector<bonus> api_regarder_bonus(int equipe);
+extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
 
 ///
 // Déplace une moto
@@ -145,9 +145,9 @@ extern "C" void api_afficher_erreur(erreur v);
 extern "C" void api_afficher_type_case(type_case v);
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-extern "C" void api_afficher_bonus(bonus v);
+extern "C" void api_afficher_type_bonus(type_bonus v);
 
 ///
 // Affiche le contenu d'une valeur de type position

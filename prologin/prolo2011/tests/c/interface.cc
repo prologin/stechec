@@ -103,11 +103,11 @@ type_case cxx2lang<type_case, type_case>(type_case in) {
 // Énumération représentant les différents types de bonii
 //
 template<>
-bonus lang2cxx<bonus, bonus>(bonus in) {
+type_bonus lang2cxx<type_bonus, type_bonus>(type_bonus in) {
  return in;
 }
 template<>
-bonus cxx2lang<bonus, bonus>(bonus in) {
+type_bonus cxx2lang<type_bonus, type_bonus>(type_bonus in) {
  return in;
 }
 
@@ -164,7 +164,7 @@ template<>
 trainee_moto cxx2lang<trainee_moto, __internal__cxx__trainee_moto>(__internal__cxx__trainee_moto in) {
 trainee_moto out;
 out.id = cxx2lang<int, int>(in.id);
-cxx2lang_array<position, __internal__cxx__position>(out.emplacement_arr, out.emplacement_len, in.emplacement);
+cxx2lang_array<position, __internal__cxx__position>(&out.emplacement_arr, &out.emplacement_len, in.emplacement);
 out.team = cxx2lang<int, int>(in.team);
  return out;
 }
@@ -244,23 +244,23 @@ type_case regarder_type_case(position pos)
 ///
 // Retourne le type de bonus d'une case
 //
-bonus regarder_type_bonus(position pos)
+type_bonus regarder_type_bonus(position pos)
 {
-  bonus _retval;
+  type_bonus _retval;
   __internal__cxx__position param_pos = lang2cxx<position, __internal__cxx__position>(pos);
   _retval = api_regarder_type_bonus(param_pos);
-  return cxx2lang<bonus, bonus>(_retval);
+  return cxx2lang<type_bonus, type_bonus>(_retval);
 }
 
 ///
 // Retourne la liste des bonus d'une équipe
 //
-void regarder_bonus(int equipe, bonus** ret_arr, size_t* ret_len)
+void regarder_bonus(int equipe, type_bonus** ret_arr, size_t* ret_len)
 {
-  std::vector<bonus> _retval;
+  std::vector<type_bonus> _retval;
   int param_equipe = lang2cxx<int, int>(equipe);
   _retval = api_regarder_bonus(param_equipe);
-  cxx2lang_array<bonus, bonus>(ret_arr, ret_len, _retval);
+  cxx2lang_array<type_bonus, type_bonus>(ret_arr, ret_len, _retval);
 }
 
 ///
@@ -388,12 +388,12 @@ api_afficher_type_case(param_v);
 }
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-void afficher_bonus(bonus v)
+void afficher_type_bonus(type_bonus v)
 {
-  bonus param_v = lang2cxx<bonus, bonus>(v);
-api_afficher_bonus(param_v);
+  type_bonus param_v = lang2cxx<type_bonus, type_bonus>(v);
+api_afficher_type_bonus(param_v);
 }
 
 ///

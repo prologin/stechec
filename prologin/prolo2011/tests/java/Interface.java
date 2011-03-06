@@ -41,8 +41,8 @@ enum Type_case{
 }
 
 // Énumération représentant les différents types de bonii
-enum Bonus{
-  Vide, // <- ceci n'est pas un bonus :-)
+enum Type_bonus{
+  Pas_bonus, // <- ceci n'est pas un bonus :-)
   Bonus_croisement, // <- bonus permettant de croiser deux traînées de moto sur une case
   Plus_long, // <- bonus permettant d'agrandir une traînée de moto
   Plus_pa, // <- bonus permettant d'avoir plus de points d'action
@@ -54,7 +54,7 @@ public class Interface
 // Taille du terrain
   public static final int TAILLE_TERRAIN = 100;
 
-// Nombre de tours avant la fin de la partie
+// Nombre de tours par partie
   public static final int FIN_PARTIE = 1500;
 
 // Nombre de points d'action par tour
@@ -88,10 +88,10 @@ public class Interface
   public static native Type_case regarder_type_case(Position pos);
 
   // Retourne le type de bonus d'une case
-  public static native Bonus regarder_type_bonus(Position pos);
+  public static native Type_bonus regarder_type_bonus(Position pos);
 
   // Retourne la liste des bonus d'une équipe
-  public static native Bonus[] regarder_bonus(int equipe);
+  public static native Type_bonus[] regarder_bonus(int equipe);
 
   // Déplace une moto
   public static native Erreur deplacer(int id, Position de, Position vers);
@@ -126,8 +126,8 @@ public class Interface
   // Affiche le contenu d'une valeur de type type_case
   public static native void afficher_type_case(Type_case v);
 
-  // Affiche le contenu d'une valeur de type bonus
-  public static native void afficher_bonus(Bonus v);
+  // Affiche le contenu d'une valeur de type type_bonus
+  public static native void afficher_type_bonus(Type_bonus v);
 
   // Affiche le contenu d'une valeur de type position
   public static native void afficher_position(Position v);

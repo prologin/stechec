@@ -5,7 +5,7 @@
 # Taille du terrain
 TAILLE_TERRAIN = 100
 
-# Nombre de tours avant la fin de la partie
+# Nombre de tours par partie
 FIN_PARTIE = 1500
 
 # Nombre de points d'action par tour

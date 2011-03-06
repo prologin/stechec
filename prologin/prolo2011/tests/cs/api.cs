@@ -24,8 +24,8 @@ namespace Prologin {
 	}
 
 // Énumération représentant les différents types de bonii
-	public enum Bonus {
-		VIDE, // <- ceci n'est pas un bonus :-)
+	public enum TypeBonus {
+		PAS_BONUS, // <- ceci n'est pas un bonus :-)
 		BONUS_CROISEMENT, // <- bonus permettant de croiser deux traînées de moto sur une case
 		PLUS_LONG, // <- bonus permettant d'agrandir une traînée de moto
 		PLUS_PA, // <- bonus permettant d'avoir plus de points d'action
@@ -64,7 +64,7 @@ namespace Prologin {
 // Taille du terrain
 		public const int TAILLE_TERRAIN = 100;
 
-// Nombre de tours avant la fin de la partie
+// Nombre de tours par partie
 		public const int FIN_PARTIE = 1500;
 
 // Nombre de points d'action par tour
@@ -106,11 +106,11 @@ namespace Prologin {
 
 // Retourne le type de bonus d'une case
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public static extern Bonus RegarderTypeBonus(Position pos);
+		public static extern TypeBonus RegarderTypeBonus(Position pos);
 
 // Retourne la liste des bonus d'une équipe
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public static extern Bonus[] RegarderBonus(int equipe);
+		public static extern TypeBonus[] RegarderBonus(int equipe);
 
 // Déplace une moto
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -156,9 +156,9 @@ namespace Prologin {
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public static extern void AfficherTypeCase(TypeCase v);
 
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public static extern void AfficherBonus(Bonus v);
+		public static extern void AfficherTypeBonus(TypeBonus v);
 
 // Affiche le contenu d'une valeur de type position
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

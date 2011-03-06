@@ -137,17 +137,17 @@ type_case lang2cxx<value, type_case>(value in)
 // Énumération représentant les différents types de bonii
 //
 template <>
-value cxx2lang<value, bonus>(bonus in)
+value cxx2lang<value, type_bonus>(type_bonus in)
 {
   CAMLparam0();
   CAMLreturn(Val_int(in));
 }
 
 template <>
-bonus lang2cxx<value, bonus>(value in)
+type_bonus lang2cxx<value, type_bonus>(value in)
 {
   CAMLparam1(in);
-  CAMLreturnT(bonus, (bonus)Int_val(in));
+  CAMLreturnT(type_bonus, (type_bonus)Int_val(in));
 }
 
 ///
@@ -303,7 +303,7 @@ extern "C" value ml_regarder_type_bonus(value pos)
 {
   CAMLparam0();
   CAMLxparam1(pos);
-  CAMLreturn((cxx2lang<value, bonus>(api_regarder_type_bonus(lang2cxx<value, position>(pos)))));
+  CAMLreturn((cxx2lang<value, type_bonus>(api_regarder_type_bonus(lang2cxx<value, position>(pos)))));
 }
 
 ///
@@ -313,7 +313,7 @@ extern "C" value ml_regarder_bonus(value equipe)
 {
   CAMLparam0();
   CAMLxparam1(equipe);
-  CAMLreturn((cxx2lang_array<bonus>(api_regarder_bonus(lang2cxx<value, int>(equipe)))));
+  CAMLreturn((cxx2lang_array<type_bonus>(api_regarder_bonus(lang2cxx<value, int>(equipe)))));
 }
 
 ///
@@ -429,13 +429,13 @@ extern "C" value ml_afficher_type_case(value v)
 }
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-extern "C" value ml_afficher_bonus(value v)
+extern "C" value ml_afficher_type_bonus(value v)
 {
   CAMLparam0();
   CAMLxparam1(v);
-  api_afficher_bonus(lang2cxx<value, bonus>(v));
+  api_afficher_type_bonus(lang2cxx<value, type_bonus>(v));
   CAMLreturn(Val_unit);
 }
 
@@ -526,7 +526,7 @@ void end_game()
 //
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
 
 ///

@@ -94,15 +94,15 @@ type_case lang2cxx< gint32, type_case >(gint32 in)
 // Énumération représentant les différents types de bonii
 //
 template <>
-gint32 cxx2lang< gint32, bonus >(bonus in)
+gint32 cxx2lang< gint32, type_bonus >(type_bonus in)
 {
   return (gint32)in;
 }
 
 template <>
-bonus lang2cxx< gint32, bonus >(gint32 in)
+type_bonus lang2cxx< gint32, type_bonus >(gint32 in)
 {
-  return (bonus)in;
+  return (type_bonus)in;
 }
 
 ///
@@ -302,27 +302,27 @@ std::vector<type_case> lang2cxx< MonoArray*, std::vector<type_case> >(MonoArray*
 // Énumération représentant les différents types de bonii
 //
 template <>
-MonoArray* cxx2lang< MonoArray*, std::vector<bonus> >(std::vector<bonus> in)
+MonoArray* cxx2lang< MonoArray*, std::vector<type_bonus> >(std::vector<type_bonus> in)
 {
   gint32 size = in.size();
-  MonoClass* mcKlass = mono_class_from_name(gl_csharp.getImage(), "Prologin", "Bonus");
+  MonoClass* mcKlass = mono_class_from_name(gl_csharp.getImage(), "Prologin", "TypeBonus");
   if (size == 0)
     return mono_array_new(gl_csharp.getDomain(), mcKlass, 0);
 
   MonoArray * maArray = mono_array_new(gl_csharp.getDomain(), mcKlass, size);
   for (int i = 0; i < size; ++i)
-		mono_array_set(maArray, gint32, i, (cxx2lang< gint32, bonus >(in[i])));
+		mono_array_set(maArray, gint32, i, (cxx2lang< gint32, type_bonus >(in[i])));
   return maArray;
 }
 
 template <>
-std::vector<bonus> lang2cxx< MonoArray*, std::vector<bonus> >(MonoArray* in)
+std::vector<type_bonus> lang2cxx< MonoArray*, std::vector<type_bonus> >(MonoArray* in)
 {
-  std::vector< bonus > out;
+  std::vector< type_bonus > out;
   gint32 size = mono_array_length(in);
 
   for (int i = 0; i < size; ++i)
-		out.push_back(lang2cxx< gint32, bonus >(mono_array_get(in, gint32, i)));
+		out.push_back(lang2cxx< gint32, type_bonus >(mono_array_get(in, gint32, i)));
   return out;
 }
 
@@ -440,11 +440,11 @@ gint32 regarder_type_case(MonoObject* pos)
 }
 gint32 regarder_type_bonus(MonoObject* pos)
 {
-	return cxx2lang< gint32, bonus >(api_regarder_type_bonus(lang2cxx< MonoObject*, position >(pos)));
+	return cxx2lang< gint32, type_bonus >(api_regarder_type_bonus(lang2cxx< MonoObject*, position >(pos)));
 }
 MonoArray* regarder_bonus(int equipe)
 {
-	return cxx2lang< MonoArray*, std::vector<bonus> >(api_regarder_bonus(lang2cxx< gint32, int >(equipe)));
+	return cxx2lang< MonoArray*, std::vector<type_bonus> >(api_regarder_bonus(lang2cxx< gint32, int >(equipe)));
 }
 gint32 deplacer(int id, MonoObject* de, MonoObject* vers)
 {
@@ -490,9 +490,9 @@ void afficher_type_case(type_case v)
 {
 	api_afficher_type_case(lang2cxx< gint32, type_case >(v));
 }
-void afficher_bonus(bonus v)
+void afficher_type_bonus(type_bonus v)
 {
-	api_afficher_bonus(lang2cxx< gint32, bonus >(v));
+	api_afficher_type_bonus(lang2cxx< gint32, type_bonus >(v));
 }
 void afficher_position(MonoObject* v)
 {
@@ -541,7 +541,7 @@ CSharpInterface::CSharpInterface()
   mono_runtime_object_init(_object);
 
   // Register API functions as internal Mono functions
-  mono_add_internal_call("Prologin.Api::MonEquipe", (const void*)mon_equipe);  mono_add_internal_call("Prologin.Api::Scores", (const void*)scores);  mono_add_internal_call("Prologin.Api::NombreEquipes", (const void*)nombre_equipes);  mono_add_internal_call("Prologin.Api::TourActuel", (const void*)tour_actuel);  mono_add_internal_call("Prologin.Api::SourcesEnergie", (const void*)sources_energie);  mono_add_internal_call("Prologin.Api::TraineesMoto", (const void*)trainees_moto);  mono_add_internal_call("Prologin.Api::RegarderTypeCase", (const void*)regarder_type_case);  mono_add_internal_call("Prologin.Api::RegarderTypeBonus", (const void*)regarder_type_bonus);  mono_add_internal_call("Prologin.Api::RegarderBonus", (const void*)regarder_bonus);  mono_add_internal_call("Prologin.Api::Deplacer", (const void*)deplacer);  mono_add_internal_call("Prologin.Api::CouperTraineeMoto", (const void*)couper_trainee_moto);  mono_add_internal_call("Prologin.Api::Cancel", (const void*)cancel);  mono_add_internal_call("Prologin.Api::Enrouler", (const void*)enrouler);  mono_add_internal_call("Prologin.Api::RegenererSourceEnergie", (const void*)regenerer_source_energie);  mono_add_internal_call("Prologin.Api::AllongerPa", (const void*)allonger_pa);  mono_add_internal_call("Prologin.Api::AgrandirTraineeMoto", (const void*)agrandir_trainee_moto);  mono_add_internal_call("Prologin.Api::PoserPointCroisement", (const void*)poser_point_croisement);  mono_add_internal_call("Prologin.Api::Fusionner", (const void*)fusionner);  mono_add_internal_call("Prologin.Api::AfficherErreur", (const void*)afficher_erreur);  mono_add_internal_call("Prologin.Api::AfficherTypeCase", (const void*)afficher_type_case);  mono_add_internal_call("Prologin.Api::AfficherBonus", (const void*)afficher_bonus);  mono_add_internal_call("Prologin.Api::AfficherPosition", (const void*)afficher_position);  mono_add_internal_call("Prologin.Api::AfficherSourceEnergie", (const void*)afficher_source_energie);  mono_add_internal_call("Prologin.Api::AfficherTraineeMoto", (const void*)afficher_trainee_moto);}
+  mono_add_internal_call("Prologin.Api::MonEquipe", (const void*)mon_equipe);  mono_add_internal_call("Prologin.Api::Scores", (const void*)scores);  mono_add_internal_call("Prologin.Api::NombreEquipes", (const void*)nombre_equipes);  mono_add_internal_call("Prologin.Api::TourActuel", (const void*)tour_actuel);  mono_add_internal_call("Prologin.Api::SourcesEnergie", (const void*)sources_energie);  mono_add_internal_call("Prologin.Api::TraineesMoto", (const void*)trainees_moto);  mono_add_internal_call("Prologin.Api::RegarderTypeCase", (const void*)regarder_type_case);  mono_add_internal_call("Prologin.Api::RegarderTypeBonus", (const void*)regarder_type_bonus);  mono_add_internal_call("Prologin.Api::RegarderBonus", (const void*)regarder_bonus);  mono_add_internal_call("Prologin.Api::Deplacer", (const void*)deplacer);  mono_add_internal_call("Prologin.Api::CouperTraineeMoto", (const void*)couper_trainee_moto);  mono_add_internal_call("Prologin.Api::Cancel", (const void*)cancel);  mono_add_internal_call("Prologin.Api::Enrouler", (const void*)enrouler);  mono_add_internal_call("Prologin.Api::RegenererSourceEnergie", (const void*)regenerer_source_energie);  mono_add_internal_call("Prologin.Api::AllongerPa", (const void*)allonger_pa);  mono_add_internal_call("Prologin.Api::AgrandirTraineeMoto", (const void*)agrandir_trainee_moto);  mono_add_internal_call("Prologin.Api::PoserPointCroisement", (const void*)poser_point_croisement);  mono_add_internal_call("Prologin.Api::Fusionner", (const void*)fusionner);  mono_add_internal_call("Prologin.Api::AfficherErreur", (const void*)afficher_erreur);  mono_add_internal_call("Prologin.Api::AfficherTypeCase", (const void*)afficher_type_case);  mono_add_internal_call("Prologin.Api::AfficherTypeBonus", (const void*)afficher_type_bonus);  mono_add_internal_call("Prologin.Api::AfficherPosition", (const void*)afficher_position);  mono_add_internal_call("Prologin.Api::AfficherSourceEnergie", (const void*)afficher_source_energie);  mono_add_internal_call("Prologin.Api::AfficherTraineeMoto", (const void*)afficher_trainee_moto);}
 
 MonoImage* CSharpInterface::getImage()
 {

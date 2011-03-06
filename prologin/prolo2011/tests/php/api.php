@@ -5,7 +5,7 @@
 define('TAILLE_TERRAIN', 100);
 
 /*
- * Nombre de tours avant la fin de la partie
+ * Nombre de tours par partie
  */
 define('FIN_PARTIE', 1500);
 
@@ -45,7 +45,7 @@ define('POINT_CROISEMENT', 3); // point de croisement de traînées
 /*
  * Énumération représentant les différents types de bonii
  */
-define('VIDE', 0); // ceci n'est pas un bonus :-)
+define('PAS_BONUS', 0); // ceci n'est pas un bonus :-)
 define('BONUS_CROISEMENT', 1); // bonus permettant de croiser deux traînées de moto sur une case
 define('PLUS_LONG', 2); // bonus permettant d'agrandir une traînée de moto
 define('PLUS_PA', 3); // bonus permettant d'avoir plus de points d'action

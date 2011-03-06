@@ -8,6 +8,13 @@
 #include <cstdio>
 #include <cstdlib>
 
+
+extern "C"{
+  void fpc_dynarray_setlength(void *, void *, int, void *);
+  int fpc_dynarray_length(void *);
+}
+
+
 template<typename Lang, typename Cxx>
 Cxx lang2cxx(Lang in)
 {
@@ -80,11 +87,6 @@ Lang * cxx2lang_array(const std::vector<Cxx>& vect, void *type_ptr)
   }
   return tab;
 }
-extern "C"{
-  void fpc_dynarray_setlength(void *, void *, int, void *);
-  void fpc_dynarray_length(void *);
-}
-
 extern int INIT_PROLO_INTERFACE_ARRAY_OF_CINT;
 ///
 // Représente une position sur le terrain du jeu
@@ -114,7 +116,7 @@ extern int INIT_PROLO_INTERFACE_ARRAY_OF_TYPE_CASE;
 ///
 // Énumération représentant les différents types de bonii
 //
-extern int INIT_PROLO_INTERFACE_ARRAY_OF_BONUS;
+extern int INIT_PROLO_INTERFACE_ARRAY_OF_TYPE_BONUS;
 
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action
@@ -144,11 +146,11 @@ type_case cxx2lang<type_case, type_case>(type_case in) {
 // Énumération représentant les différents types de bonii
 //
 template<>
-bonus lang2cxx<bonus, bonus>(bonus in) {
+type_bonus lang2cxx<type_bonus, type_bonus>(type_bonus in) {
  return in;
 }
 template<>
-bonus cxx2lang<bonus, bonus>(bonus in) {
+type_bonus cxx2lang<type_bonus, type_bonus>(type_bonus in) {
  return in;
 }
 
@@ -197,8 +199,8 @@ template<>
 __internal__cxx__trainee_moto lang2cxx<trainee_moto, __internal__cxx__trainee_moto>(trainee_moto in) {
 __internal__cxx__trainee_moto out;
 out.id = lang2cxx<int, int>(in.id);
-out.emplacement = lang2cxx_array<position, __internal__cxx__position>(in.emplacement, &INIT_PROLO_INTERFACE_ARRAY_OF_POSITION);
-out.team = lang2cxx_array<int, int>(in.team);
+out.emplacement = lang2cxx_array<position, __internal__cxx__position>(in.emplacement);
+out.team = lang2cxx<int, int>(in.team);
  return out;
 }
 template<>
@@ -206,7 +208,7 @@ trainee_moto cxx2lang<trainee_moto, __internal__cxx__trainee_moto>(__internal__c
 trainee_moto out;
 out.id = cxx2lang<int, int>(in.id);
 out.emplacement = cxx2lang_array<position, __internal__cxx__position>(in.emplacement, &INIT_PROLO_INTERFACE_ARRAY_OF_POSITION);
-out.team = cxx2lang_array<int, int>(in.team);
+out.team = cxx2lang<int, int>(in.team);
  return out;
 }
 
@@ -228,7 +230,7 @@ int* scores(void)
 {
   std::vector<int> _retval;
   _retval = api_scores(  );
-  return cxx2lang_array<int, int>(_retval, &INIT_PROLO_INTERFACE_ARRAY_OF_INT);
+  return cxx2lang_array<int, int>(_retval, &INIT_PROLO_INTERFACE_ARRAY_OF_CINT);
 }
 
 ///
@@ -285,23 +287,23 @@ type_case regarder_type_case(position pos)
 ///
 // Retourne le type de bonus d'une case
 //
-bonus regarder_type_bonus(position pos)
+type_bonus regarder_type_bonus(position pos)
 {
-  bonus _retval;
+  type_bonus _retval;
   __internal__cxx__position arg_pos = lang2cxx<position, __internal__cxx__position>(pos);
   _retval = api_regarder_type_bonus( arg_pos );
-  return cxx2lang<bonus, bonus>(_retval);
+  return cxx2lang<type_bonus, type_bonus>(_retval);
 }
 
 ///
 // Retourne la liste des bonus d'une équipe
 //
-bonus* regarder_bonus(int equipe)
+type_bonus* regarder_bonus(int equipe)
 {
-  std::vector<bonus> _retval;
+  std::vector<type_bonus> _retval;
   int arg_equipe = lang2cxx<int, int>(equipe);
   _retval = api_regarder_bonus( arg_equipe );
-  return cxx2lang_array<bonus, bonus>(_retval, &INIT_PROLO_INTERFACE_ARRAY_OF_BONUS);
+  return cxx2lang_array<type_bonus, type_bonus>(_retval, &INIT_PROLO_INTERFACE_ARRAY_OF_TYPE_BONUS);
 }
 
 ///
@@ -429,12 +431,12 @@ api_afficher_type_case( arg_v );
 }
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-void afficher_bonus(bonus v)
+void afficher_type_bonus(type_bonus v)
 {
-  bonus arg_v = lang2cxx<bonus, bonus>(v);
-api_afficher_bonus( arg_v );
+  type_bonus arg_v = lang2cxx<type_bonus, type_bonus>(v);
+api_afficher_type_bonus( arg_v );
 }
 
 ///

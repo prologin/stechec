@@ -137,15 +137,15 @@ type_case lang2cxx<PyObject*, type_case>(PyObject* in)
 // Énumération représentant les différents types de bonii
 //
 template <>
-PyObject* cxx2lang<PyObject*, bonus>(bonus in)
+PyObject* cxx2lang<PyObject*, type_bonus>(type_bonus in)
 {
   return cxx2lang<PyObject*, int>((int)in);
 }
 
 template <>
-bonus lang2cxx<PyObject*, bonus>(PyObject* in)
+type_bonus lang2cxx<PyObject*, type_bonus>(PyObject* in)
 {
-  return (bonus)lang2cxx<PyObject*, int>(in);
+  return (type_bonus)lang2cxx<PyObject*, int>(in);
 }
 
 ///
@@ -384,7 +384,7 @@ PyObject* a0;
     return NULL;
   }
     try {
-return cxx2lang<PyObject*, bonus>(api_regarder_type_bonus(lang2cxx<PyObject*, position>(a0)));
+return cxx2lang<PyObject*, type_bonus>(api_regarder_type_bonus(lang2cxx<PyObject*, position>(a0)));
   } catch (...) { return NULL; }
 }
 
@@ -580,9 +580,9 @@ api_afficher_type_case(lang2cxx<PyObject*, type_case>(a0));
 }
 
 ///
-// Affiche le contenu d'une valeur de type bonus
+// Affiche le contenu d'une valeur de type type_bonus
 //
-static PyObject* p_afficher_bonus(PyObject* self, PyObject* args)
+static PyObject* p_afficher_type_bonus(PyObject* self, PyObject* args)
 {
   (void)self;
 PyObject* a0;
@@ -590,7 +590,7 @@ PyObject* a0;
     return NULL;
   }
     try {
-api_afficher_bonus(lang2cxx<PyObject*, bonus>(a0));
+api_afficher_type_bonus(lang2cxx<PyObject*, type_bonus>(a0));
   Py_INCREF(Py_None);
   return Py_None;
   } catch (...) { return NULL; }
@@ -652,7 +652,7 @@ api_afficher_trainee_moto(lang2cxx<PyObject*, trainee_moto>(a0));
 ** Api functions to register.
 */
 static PyMethodDef api_callback[] = {
-  {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"sources_energie", p_sources_energie, METH_VARARGS, "sources_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_source_energie", p_regenerer_source_energie, METH_VARARGS, "regenerer_source_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"agrandir_trainee_moto", p_agrandir_trainee_moto, METH_VARARGS, "agrandir_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_bonus", p_afficher_bonus, METH_VARARGS, "afficher_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_source_energie", p_afficher_source_energie, METH_VARARGS, "afficher_source_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"},  {NULL, NULL, 0, NULL}
+  {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"sources_energie", p_sources_energie, METH_VARARGS, "sources_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_source_energie", p_regenerer_source_energie, METH_VARARGS, "regenerer_source_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"agrandir_trainee_moto", p_agrandir_trainee_moto, METH_VARARGS, "agrandir_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_source_energie", p_afficher_source_energie, METH_VARARGS, "afficher_source_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"},  {NULL, NULL, 0, NULL}
 };
 
 static void _initapi()
