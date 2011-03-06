@@ -174,7 +174,7 @@ class FileGenerator
       key_part = key[1]
       keys = key[2]
       fun = key[3]
-      puts "checking part : #{key_name}"
+      #puts "checking part : #{key_name}"
       $conf[key_name].each do |x|
         if x["doc_extra"] == nil then
           keys.each do |k|
@@ -410,7 +410,12 @@ class CProto < FileGenerator
         type = @types[f[1]]
         field = f[0]
         @f.puts(if type.is_array? then
-                  "  std::vector<#{type.type.name}> #{field};"
+                  if type.type.is_struct? then
+                    s="__internal__cxx__"
+                  else
+                    s=""
+                  end
+                  "  std::vector<#{s}#{type.type.name}> #{field};"
                 elsif type.is_struct? then
                   "  __internal__cxx__#{type.name} #{field};"
                 else

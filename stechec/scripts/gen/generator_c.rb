@@ -165,7 +165,7 @@ EOF
     end
 
     for_each_struct do |x|
-      def aux(fields, name_fun, lang, cxx)
+      def aux(fields, name_fun, lang, cxx, ref)
         fields['str_field'].each do |f|
           name =f[0]
           type = @types[f[1]]
@@ -175,7 +175,7 @@ EOF
           lang_type = c_type(type_)
           cxx_type = cxx_type(type_)
           if type.is_array? then
-            @f.puts "#{name_fun}_array<#{lang_type}, #{cxx_type}>(#{lang}.#{name}_arr, #{lang}.#{name}_len, #{cxx}.#{name});"
+            @f.puts "#{name_fun}_array<#{lang_type}, #{cxx_type}>(#{ref}#{lang}.#{name}_arr, #{ref}#{lang}.#{name}_len, #{cxx}.#{name});"
           else
             @f.puts "out.#{name} = #{name_fun}<#{lang_type}, #{cxx_type}>(in.#{name});"
           end
@@ -186,13 +186,13 @@ EOF
       @f.puts "template<>"
       @f.puts "#{cxx_name} lang2cxx<#{c_name}, #{cxx_name}>(#{c_name} in) {"
       @f.puts "#{cxx_name} out;"
-      aux(x, "lang2cxx", "in", "out")
+      aux(x, "lang2cxx", "in", "out", "")
       @f.puts " return out;"
       @f.puts "}"
       @f.puts "template<>"
       @f.puts "#{c_name} cxx2lang<#{c_name}, #{cxx_name}>(#{cxx_name} in) {"
       @f.puts "#{c_name} out;"
-      aux(x, "cxx2lang", "out", "in")
+      aux(x, "cxx2lang", "out", "in", "&")
       @f.puts " return out;"
       @f.puts "}"
     end

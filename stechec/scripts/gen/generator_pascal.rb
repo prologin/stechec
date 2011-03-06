@@ -89,6 +89,13 @@ class PascalCxxFileGenerator < CxxFileGenerator
 #include <cstdio>
 #include <cstdlib>
 
+
+extern "C"{
+  void fpc_dynarray_setlength(void *, void *, int, void *);
+  int fpc_dynarray_length(void *);
+}
+
+
 template<typename Lang, typename Cxx>
 Cxx lang2cxx(Lang in)
 {
@@ -161,11 +168,6 @@ Lang * cxx2lang_array(const std::vector<Cxx>& vect, void *type_ptr)
   }
   return tab;
 }
-extern "C"{
-  void fpc_dynarray_setlength(void *, void *, int, void *);
-  void fpc_dynarray_length(void *);
-}
-
 EOF
 
     @f.puts "extern int INIT_PROLO_INTERFACE_ARRAY_OF_CINT;";
@@ -190,7 +192,8 @@ EOF
       @f.puts "}"
     end
     for_each_struct do |x|
-      def aux(fields, name_fun, lang, cxx)
+      def aux(fields, name_fun, lang, cxx, addon_ok)
+        name_fun_initial = name_fun
         fields['str_field'].each do |f|
           name =f[0]
           type = @types[f[1]]
@@ -200,12 +203,19 @@ EOF
           lang_type = c_type(type_)
           cxx_type = cxx_type(type_)
           if type.is_array? then
-            addon=", &INIT_PROLO_INTERFACE_ARRAY_OF_#{lang_type.upcase}"
+            prefix=""
+            if addon_ok then
+              addon=", &INIT_PROLO_INTERFACE_ARRAY_OF_#{lang_type.upcase}"
+            else
+              addon = ""
+            end
             name_fun = "#{name_fun}_array"
           else
+            prefix=""
             addon=""
+            name_fun = name_fun_initial
           end
-          @f.puts "out.#{name} = #{name_fun}<#{lang_type}, #{cxx_type}>(in.#{name}#{addon});"
+          @f.puts "out.#{name} = #{name_fun}<#{lang_type}, #{cxx_type}>(#{prefix}in.#{name}#{addon});"
         end
       end
       c_name = x['str_name']
@@ -213,13 +223,13 @@ EOF
       @f.puts "template<>"
       @f.puts "#{cxx_name} lang2cxx<#{c_name}, #{cxx_name}>(#{c_name} in) {"
       @f.puts "#{cxx_name} out;"
-      aux(x, "lang2cxx", "in", "out")
+      aux(x, "lang2cxx", "in", "out", false)
       @f.puts " return out;"
       @f.puts "}"
       @f.puts "template<>"
       @f.puts "#{c_name} cxx2lang<#{c_name}, #{cxx_name}>(#{cxx_name} in) {"
       @f.puts "#{c_name} out;"
-      aux(x, "cxx2lang", "out", "in")
+      aux(x, "cxx2lang", "out", "in", true)
       @f.puts " return out;"
       @f.puts "}"
     end
@@ -237,7 +247,12 @@ EOF
         if type.is_array?
           cxx_type = cxx_type(type.type)
           lang_type = lang_type(type.type)
-          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx_array<#{lang_type}, #{cxx_type}>(#{arg.name}, &INIT_PROLO_INTERFACE_ARRAY_OF_#{lang_type.upcase});"
+          if type.type.is_simple? && type.type.name == "int" then
+            type_ptr = "CINT"
+          else
+            type_ptr = "#{lang_type.upcase}"
+          end
+          @f.puts "  #{cxx_type(arg.type)} arg_#{arg.name} = lang2cxx_array<#{lang_type}, #{cxx_type}>(#{arg.name}, &INIT_PROLO_INTERFACE_ARRAY_OF_#{type_ptr});"
         else
           cxx_type = cxx_type(type)
           lang_type = lang_type(type)
@@ -259,7 +274,13 @@ EOF
           t = fn.ret.type
           ln = c_type(t)
           cxx = cxx_type(t)
-          addon = ", &INIT_PROLO_INTERFACE_ARRAY_OF_#{ln.upcase}"
+          if fn.ret.type.is_simple? && fn.ret.type.name == "int" then
+            suffix_ptr = "CINT"
+          else
+            suffix_ptr = ln.upcase
+          end
+
+          addon = ", &INIT_PROLO_INTERFACE_ARRAY_OF_#{suffix_ptr}"
         else
           addon = ""
           suffix=""
@@ -291,7 +312,15 @@ EOF
     @f.puts "", "# include <vector>", "# include <string>", ""
     build_constants
     build_enums
-    build_structs
+    build_structs_generic do |field, type|
+      type = @types[type];
+      if type.is_array?
+        n = "#{type.type.name} *"
+      else
+        n = "#{type.name} "
+      end
+      "#{n}#{field};"
+    end
     build_struct_for_pascal_and_c_to_cxx
     @f.puts 'extern "C" {'
     for_each_fun do |fn|
