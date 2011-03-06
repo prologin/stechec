@@ -53,7 +53,7 @@ enum:
       - [point_croisement, point de croisement de traînées]
 
   -
-    enum_name: bonus
+    enum_name: type_bonus
     enum_summary: Énumération représentant les différents types de bonii
     enum_field:
       - [pas_bonus, "ceci n'est pas un bonus :-)"]
@@ -147,14 +147,14 @@ function:
   -
     fct_name: regarder_type_bonus
     fct_summary: "Retourne le type de bonus d'une case"
-    fct_ret_type: bonus
+    fct_ret_type: type_bonus
     fct_arg:
       - [pos, position, position de la case]
 
   -
     fct_name: regarder_bonus
     fct_summary: "Retourne la liste des bonus d'une équipe"
-    fct_ret_type: bonus array
+    fct_ret_type: type_bonus array
     fct_arg:
       - [equipe, int, "identifiant de l'équipe visée"]
 
