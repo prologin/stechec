@@ -245,7 +245,7 @@ void                NutsBarrier::reachHardLimit(int)
 {
   // about 200 MHz
   ERR("This computer is too slow, I can't run any program at this speed !\n");
-  exit(1);
+  //exit(1);
 }
 
 /*
