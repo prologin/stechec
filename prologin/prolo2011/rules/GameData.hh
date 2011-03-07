@@ -15,7 +15,7 @@
 
 # include "Contest.hh"
 # include "Constant.hh"
-
+# include "InternalTraineeMoto.hh"
 # include "Actions.hh"
 
 class Action;
@@ -58,6 +58,7 @@ public:
   // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
   std::vector<std::vector<int> > packets;
 
+  std::vector<InternalTraineeMoto> motos;
 
 private:
   bool initialized_;
