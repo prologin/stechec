@@ -23,16 +23,24 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
   api = this;
 }
 
-#define DO_ACTION(type, ...) \
-  if (g_->can_play) { \
-  try { \
-    Action* act = new type(__VA_ARGS__); \
-    act->verifier(g_); \
-    g_->appliquer_action(act); \
-    return OK; \
-  } catch (erreur err) { \
-    return err; \
-  } }else abort();
+#define DO_ACTION(type, ...)			\
+  if (g_->can_play) {				\
+    try {					\
+      Action* act = new type(__VA_ARGS__);	\
+      LOG4("DO_ACTION : verifier...");		\
+      act->verifier(g_);			\
+      LOG4("DO_ACTION : appliquer...");		\
+      g_->appliquer_action(act);		\
+      LOG4("DO_ACTION : OK");		\
+      return OK;				\
+    } catch (erreur err) {			\
+      LOG1("erreur : %1", err);				\
+      return err;				\
+    }						\
+  }else{					\
+    LOG1("ERREUR : PAS TON TOUR !");		\
+    abort();					\
+  }
 
 
 ///

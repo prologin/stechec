@@ -11,6 +11,7 @@
 */
 
 #include "Api.hh"
+#include "Contest.hh"
 
 // from Api.cc
 extern Api* api;
@@ -22,5 +23,6 @@ extern "C" bool api_mon_tour()
 
 extern "C" void api_send_actions()
 {
+  LOG3("internal_interface.cc  api_send_actions");
   return api->sendActions();
 }

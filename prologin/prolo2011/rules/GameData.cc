@@ -31,6 +31,7 @@ void GameData::Init() {
 }
 
 void GameData::team_switched(){
+  LOG4("GameData::team_switched");
   can_play = true;
   current_player = (current_player + 1 ) % 2;
   // TODO reset point d'actions
@@ -48,7 +49,7 @@ int GameData::mon_equipe(){
 bool GameData::mon_tour()
 {
   unsigned int curr_player = (getCurrentTurn() - 1) % 2;
-  LOG4("curr_player = %1, team id = %2", curr_player, getTeamId());
+  LOG4("curr_player = %1, team id = %2, current_player = %3", curr_player, getTeamId(), current_player);
   return curr_player == getTeamId();
 }
 int GameData::get_current_player(){

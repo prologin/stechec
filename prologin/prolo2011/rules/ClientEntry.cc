@@ -55,6 +55,7 @@ int        ClientEntry::beforeNewTurn()
 */
 int        ClientEntry::afterNewTurn()
 {
+  LOG3("ClientEntry :: afterNewTurn");
   g_->send_actions();
   return 0;
 }
