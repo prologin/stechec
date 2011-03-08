@@ -23,7 +23,7 @@
 ///
 // Nombre de tours avant la fin de la partie
 //
-# define FIN_PARTIE                1500
+# define FIN_PARTIE                3
 
 ///
 // Nombre de points d'action par tour
