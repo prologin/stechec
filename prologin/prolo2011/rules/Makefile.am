@@ -4,6 +4,7 @@ lib_LTLIBRARIES = tron.la
 
 tron_la_SOURCES =			\
 	InternalTraineeMoto.cc		\
+	Utils.cc		\
 	Actions.cc			\
 	Actions.hh			\
 	Api.cc				\
