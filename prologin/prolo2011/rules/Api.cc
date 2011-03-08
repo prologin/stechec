@@ -132,8 +132,11 @@ std::vector<type_bonus> Api::regarder_bonus(int equipe)
 //
 erreur Api::deplacer(int id, position de, position vers)
 {
-  // TODO
-  abort();
+  LOG4("Api::deplacer...");
+  DO_ACTION(ActionDeplacer, g_->get_current_player(),
+            id, de, vers);
+  LOG4("Api::deplacer : OK");
+  return OK;
 }
 
 ///

@@ -18,6 +18,8 @@
 # include "Constant.hh"
 # include "GameData.hh"
 
+#include "InternalTraineeMoto.hh"
+
 # include <map>
 # include <vector>
 
@@ -46,17 +48,20 @@ protected:
 class ActionDeplacer : public Action
 {
 public:
-  ActionDeplacer(int player, int unite, position from, position to) :
-    Action(player), unite_(unite), from_(from), to_(to)
+  ActionDeplacer(int player, int id, position from, position to) :
+    Action(player), id_(id), from_(from), to_(to)
   {
   }
 
   ACTIONS
 
 protected:
-  int unite_;
   position from_;
   position to_;
+  int id_;
+  int old_len_;
+  position old_queue_;
+  position new_queue_;
 };
 
 Action* act_from_pkt(int type, const StechecPkt* pkt);

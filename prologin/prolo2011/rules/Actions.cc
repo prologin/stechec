@@ -11,6 +11,7 @@
 */
 
 #include "Actions.hh"
+#include "Contest.hh"
 #include <algorithm>
 
 #ifdef ASSERT
@@ -39,19 +40,33 @@ void Action::annuler(GameData *g){
 
 
 void ActionDeplacer::verifier(GameData *g){
+  if (id_ < 0 || id_ >= g->motos.size()) throw ID_INVALIDE;
+  InternalTraineeMoto &moto = g->motos.at(id_);
+  moto.reject_bad_move(from_, to_);
 }
 
 void ActionDeplacer::appliquer(GameData* g)
 {
+  LOG2("trainee_moto appliquer");
+  InternalTraineeMoto &moto = g->motos.at(id_);
+  old_len_ = moto.length();
+  old_queue_ = moto.queue(from_);
+  moto.move(from_, to_);
+  new_queue_ = moto.queue(to_);
 }
 void ActionDeplacer::annuler(GameData* g)
 {
+  InternalTraineeMoto &moto = g->motos.at(id_);
+  // TODO if c'est pas la meme
+  moto.move(new_queue_, old_queue_);
+  // TODO len : supprimer le debut si la taille a augmentee
 }
 
 void ActionDeplacer::envoyer(Api* api)
 {
   StechecPkt com(ACT_DEPLACER, -1);
-  com.Push(7, last_order_id++, player_, unite_, from_.x, from_.y, to_.x, to_.y);
+  com.Push(7, last_order_id++, player_, id_, from_.x, from_.y, to_.x, to_.y);
+  LOG3("envoyer un deplacement au serveur...");
   api->SendToServer(com);
 }
 
