@@ -26,6 +26,8 @@ extern "C" void jouer();
 // prolo2010 specific : players do not execute simultaneously
 extern "C" bool api_mon_tour();
 
+extern "C" int api_send_actions();
+
 extern "C" int run(void* foo, void* api, void* client_cx)
 {
   init_game();
@@ -41,6 +43,7 @@ extern "C" int run(void* foo, void* api, void* client_cx)
       {
 	jouer();
       }
+      api_send_actions();
       api_do_end_turn(api);
     }
 
