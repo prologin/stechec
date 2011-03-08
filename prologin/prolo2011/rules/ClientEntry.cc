@@ -46,6 +46,8 @@ int        ClientEntry::initGame()
 
 int        ClientEntry::beforeNewTurn()
 {
+  LOG3("ClientEntry :: beforeNewTurn");
+  g_->team_switched();
   return 0;
 }
 
