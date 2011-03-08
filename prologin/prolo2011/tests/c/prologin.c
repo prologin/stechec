@@ -7,12 +7,15 @@
 #include "prologin.h"
 #include <stdio.h>
 
+int tour;
+
 /*!
 ** Fonction appellée au début de la partie
 */
 void init_game(void)
 {
   /* fonction a completer */
+  tour = 0;
 }
 
 /*!
@@ -20,7 +23,12 @@ void init_game(void)
 */
 void jouer(void)
 {
-  int tour = tour_actuel();
+  tour ++;
+  int t = tour_actuel();
+  if (t != tour){
+    printf("t != tour : %d, %d", t, tour);
+    abort();
+  }
   position from;
   position to;
   from.x = 0;
