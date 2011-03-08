@@ -13,6 +13,8 @@
 #ifndef CONSTANT_HH_
 # define CONSTANT_HH_
 
+#include <vector>
+
 ///
 // Taille du terrain
 //
