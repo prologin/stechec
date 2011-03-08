@@ -20,7 +20,19 @@ void init_game(void)
 */
 void jouer(void)
 {
-  printf("tour : %d\n", tour_actuel());
+  int tour = tour_actuel();
+  position from;
+  position to;
+  from.x = 0;
+  from.y = tour - 1;
+  to.x = 0;
+  to.y = tour;
+  erreur err = deplacer(0, from, to);
+  //printf("tour : %d\n", tour);
+  //afficher_position(from);
+  //afficher_position(to);
+  //afficher_erreur(err);
+  //printf("\n");
 }
 
 /*!

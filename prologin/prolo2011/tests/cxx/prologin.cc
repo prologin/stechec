@@ -21,7 +21,20 @@ void init_game()
 //
 void jouer()
 {
-  // fonction a completer
+  // position init = {99, 99};
+  // position end = {99, 98};
+  // deplacer(1, init, end);
+  
+std::cout << "tour : " << tour_actuel() << std::endl;
+  std::vector<trainee_moto> t = trainees_moto();
+  for (int i = 0; i < t.size(); i++){
+    trainee_moto tr = t.at(i);
+    std::cout << "trainee : " << i << std::endl;
+    for (int j = 0; j < tr.emplacement.size(); j++){
+      position p = tr.emplacement.at(j);
+      std::cout << "  " << p.x << " " << p.y << std::endl;
+    }
+  }
 }
 
 ///
