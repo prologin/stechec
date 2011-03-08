@@ -91,8 +91,13 @@ std::vector<source_energie> Api::sources_energie()
 //
 std::vector<trainee_moto> Api::trainees_moto()
 {
-  // TODO
-  abort();
+  int len = g_->motos.size();
+  std::vector<trainee_moto> out;
+  out.reserve(len);
+  for (int i = 0; i < len; i++){
+    out.push_back(g_->motos.at(i).to_trainee_moto(i));
+  }
+  return out;
 }
 
 ///
