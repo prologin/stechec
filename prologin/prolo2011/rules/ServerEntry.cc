@@ -46,12 +46,13 @@ int         ServerEntry::beforeNewTurn(void)
 #define ARG2(a, i) a[(i)], a[(i) + 1]
 #define ARG4(a, i) ARG2(a, i), ARG2(a, i + 2)
 #define ARG8(a, i) ARG4(a, i), ARG4(a, i + 4)
+#define ARG10(a, i) ARG8(a, i), ARG2(a, i + 8)
 int         ServerEntry::afterNewTurn(void)
 { // forward the actions
   for (std::vector<std::vector<int> >::iterator it = g_->packets.begin();
        it != g_->packets.end(); ++it)
   {
-    SendToAll((*it)[0], -1, 8, ARG8((*it), 1)); // maximum 8 parametres par action...
+    SendToAll((*it)[0], -1, 10, ARG10((*it), 1)); // maximum 10 parametres par action...
   }
   return 0;
 }
