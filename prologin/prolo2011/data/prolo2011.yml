@@ -51,6 +51,7 @@ enum:
       - [obstacle, cette case est inaccessible]
       - [bonus, "cette case cotient un bonus"]
       - [point_croisement, point de croisement de traînées]
+      - [source, source ou consommateur d'energie]
 
   -
     enum_name: type_bonus
