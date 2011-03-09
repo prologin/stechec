@@ -92,6 +92,12 @@ GameData::get_case(int x, int y)
     return terrain_[x + TAILLE_TERRAIN * y];
 }
 
+Case&
+GameData::get_case(const position &p)
+{
+    return terrain_[p.x + TAILLE_TERRAIN * p.y];
+}
+
 void GameData::team_switched(){
   LOG4("GameData::team_switched");
   can_play = true;
