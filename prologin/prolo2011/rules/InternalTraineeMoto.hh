@@ -16,9 +16,12 @@
 #include "Constant.hh"
 #include <deque>
 
-class InternalTraineeMoto{
+class GameData;
+
+class InternalTraineeMoto
+{
 public:
-  InternalTraineeMoto(int player, position init, int max_len);
+  InternalTraineeMoto(GameData* gd, int player, position init, int max_len);
   erreur move(position from, position to);
   void reject_bad_move(position from, position to);
   bool begin(position pos);
@@ -32,6 +35,7 @@ public:
   position queue();
 
 private:
+  GameData* gd_;
   std::deque<position> content_;
   int len_;
   int max_len_;

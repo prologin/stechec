@@ -56,8 +56,8 @@ GameData::generer_terrain()
   spawn1.y = 0;
   spawn2.x = TAILLE_TERRAIN - 1;
   spawn2.y = TAILLE_TERRAIN - 1;
-  InternalTraineeMoto derouleur_1(0, spawn1, TAILLE_TRAINEE);
-  InternalTraineeMoto derouleur_2(1, spawn2, TAILLE_TRAINEE);
+  InternalTraineeMoto derouleur_1(this, 0, spawn1, TAILLE_TRAINEE);
+  InternalTraineeMoto derouleur_2(this, 1, spawn2, TAILLE_TRAINEE);
   motos.push_back(derouleur_1);
   motos.push_back(derouleur_2);
   get_case(spawn1).nb_trainees_moto = 1;
