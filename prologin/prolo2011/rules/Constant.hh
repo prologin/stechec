@@ -109,8 +109,10 @@ typedef struct trainee_moto {
 
 // Ids for message type.
 enum e_com_type {
-  ACT_DEPLACER = 0,
-
+  NB_SOURCES = 0,
+  CONTENU_CASE, // x, y, type case
+  SOURCE_CONTENT,
+  ACT_DEPLACER,
   LAST_MSG
 };
 

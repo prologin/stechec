@@ -35,6 +35,9 @@ public:
   // Recupere le score, appele pour chaque joueur a la fin
   // de la partie
   virtual int	getScore(int uid);
+
+private:
+  int loadMap();
 };
 
 #endif // !SERVERENTRY_HH_
