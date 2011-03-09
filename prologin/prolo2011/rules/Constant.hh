@@ -18,7 +18,7 @@
 ///
 // Taille du terrain
 //
-# define TAILLE_TERRAIN            100
+# define TAILLE_TERRAIN            50
 
 ///
 // Nombre de tours avant la fin de la partie
