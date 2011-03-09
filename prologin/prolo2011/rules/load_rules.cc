@@ -33,7 +33,7 @@ extern "C" const struct RuleDescription rules_description = {
 };
 
 extern "C" const struct ConfCmdLineOpt rules_cmd_opt[] = {
-  // TODO
+  {'m', "map", 1, "map"},
   { 0, 0, 0, 0 }
 };
 
@@ -42,9 +42,7 @@ extern "C" const struct ConfCmdLineOpt rules_cmd_opt[] = {
 const ConfSection* parse_server_rules_option(ConfFile* cfg_file)
 {
   ConfSection::RegList def;
-
-  // TODO
-
+  def["map"] = "";
   cfg_file->parseCmdLine(MODULE_NAME, rules_cmd_opt, 2);
   cfg_file->setDefaultEntries(MODULE_NAME, def);
   return cfg_file->getSection(MODULE_NAME);
