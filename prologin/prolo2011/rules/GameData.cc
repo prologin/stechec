@@ -19,9 +19,39 @@
 #define INIT()					\
   assert(initialized_);
 
+Case::Case()
+    : type(VIDE),
+      bonus(PAS_BONUS),
+      nb_trainees_moto(0),
+      source_id(-1)
+{
+}
+
+Joueur::Joueur()
+    : score(0),
+      bonus()
+{
+}
+
+void SourceEnergie::set_potentiel(int potentiel)
+{
+    potentiel_max = potentiel;
+    potentiel_cur = potentiel;
+}
+
 GameData::GameData()
 {
+  generer_terrain();
+}
+
+void
+GameData::generer_terrain()
+{
   position spawn1, spawn2;
+
+  terrain_.reserve(TAILLE_TERRAIN * TAILLE_TERRAIN);
+
+  // Mise en place des deux joueurs + trainées
   spawn1.x = 0;
   spawn1.y = 0;
   spawn2.x = TAILLE_TERRAIN - 1;
@@ -30,6 +60,22 @@ GameData::GameData()
   InternalTraineeMoto derouleur_2(1, spawn2, TAILLE_TRAINEE);
   motos.push_back(derouleur_1);
   motos.push_back(derouleur_2);
+  get_case(spawn1).nb_trainees_moto = 1;
+  get_case(spawn2).nb_trainees_moto = 1;
+  joueurs.reserve(2);
+
+  // Mise en place des deux sources
+  sources.reserve(2);
+  sources[0].set_potentiel(100);
+  sources[1].set_potentiel(-100);
+  spawn1.x = 0;
+  spawn1.y = 4;
+  spawn2.x = TAILLE_TERRAIN - 1;
+  spawn2.y = TAILLE_TERRAIN - 1 - 4;
+  sources[0].pos = spawn1;
+  sources[1].pos = spawn2;
+  get_case(spawn1).source_id = 0;
+  get_case(spawn2).source_id = 1;
 
   srand(time(0));
   current_player = 1;
@@ -38,6 +84,12 @@ GameData::GameData()
 void GameData::Init() {
   // TODO
   initialized_ = true;
+}
+
+Case&
+GameData::get_case(int x, int y)
+{
+    return terrain_[x + TAILLE_TERRAIN * y];
 }
 
 void GameData::team_switched(){
@@ -64,6 +116,31 @@ bool GameData::mon_tour()
 }
 int GameData::get_current_player(){
   return current_player;
+}
+
+void GameData::get_scores(std::vector<int>& scores)
+{
+    scores.reserve(joueurs.size());
+    for (int i = 0; i < joueurs.size(); ++i)
+        scores[i] = joueurs[i].score;
+}
+
+void
+GameData::get_sources(std::vector<source_energie>& srcs)
+{
+    srcs.reserve(sources.size());
+    for (int i = 0; i < sources.size(); ++i)
+    {
+        srcs[i].id = i;
+        srcs[i].pos = sources[i].pos;
+        srcs[i].coef = sources[i].potentiel_cur;
+    }
+}
+
+void
+GameData::get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus)
+{
+    bonus = joueurs[joueur].bonus;
 }
 
 int GameData::get_real_turn()

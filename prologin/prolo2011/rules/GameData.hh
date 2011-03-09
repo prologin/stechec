@@ -20,6 +20,35 @@
 
 class Action;
 
+/*!
+** Représente une case du terrain.
+*/
+struct Case
+{
+    type_case   type;
+    type_bonus  bonus;
+    int         nb_trainees_moto; /*! Nombre de trainées sur la case */
+    int         source_id; /*! Identifiant de la source d'énergie */
+
+    Case();
+};
+
+struct SourceEnergie
+{
+    position    pos;
+    int         potentiel_max;
+    int         potentiel_cur;
+
+    void set_potentiel(int potentiel);
+};
+
+struct Joueur
+{
+    int                         score;
+    std::vector<type_bonus>     bonus;
+
+    Joueur();
+};
 
 /*!
 ** This class is meant to contain all data, accessible from
@@ -32,6 +61,13 @@ public:
   // Call this before everything else.
   void Init();
   void check(const char * file, int line);
+
+  // Juste pour les tests
+  void generer_terrain();
+
+  // Accès basique aux données
+  Case& get_case(int x, int y);
+  Case& get_case(const position &pos);
 
   // side effects
   void team_switched();
@@ -46,6 +82,9 @@ public:
   int get_current_player();
   bool mon_tour();
   int mon_equipe();
+  void get_scores(std::vector<int>& scores);
+  void get_sources(std::vector<source_energie>& srcs);
+  void get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus);
   int get_real_turn();
 
 
@@ -58,11 +97,14 @@ public:
   // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
   std::vector<std::vector<int> > packets;
 
-  std::vector<InternalTraineeMoto> motos;
+  std::vector<Joueur>               joueurs;
+  std::vector<InternalTraineeMoto>  motos;
+  std::vector<SourceEnergie>        sources;
 
 private:
   bool initialized_;
 
+  std::vector<Case> terrain_;
 };
 
 #endif // !GAMEDATA_HH_
