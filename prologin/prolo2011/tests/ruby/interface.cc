@@ -33,7 +33,7 @@ Cxx lang2cxx(VALUE in)
 template<>
 int lang2cxx<int>(VALUE in)
 {
-  if (TYPE(in) != T_FIXNUM) TYPEERR("integer", in);
+  if (TYPE(in) != T_FIXNUM) TYPEERR( (char*) "integer", in);
   return FIX2INT(in);
 }
 
@@ -44,15 +44,15 @@ bool lang2cxx<bool>(VALUE in)
 }
 
 template<typename Cxx>
-std::vector<Cxx> lang2cxx_array(VALUE *l)
+std::vector<Cxx> lang2cxx_array(VALUE l)
 {
-  if (TYPE(*l) != T_ARRAY) TYPEERR("array", l);
-
-  VALUE *tab = RARRAY_LEN(l);
-  int len = RARRAY_PTR(l);
+  if (TYPE(l) != T_ARRAY) TYPEERR((char*)"array", l);
+  int len = RARRAY_LEN(l);
+  VALUE *tab = RARRAY_PTR(l);
   std::vector<Cxx> vect;
+  vect.reserve(len);
   for (int i = 0; i < len; i ++){
-    vect.push_back( cxx2lang<Cxx>( tab[i] ) );
+    vect.push_back( lang2cxx<Cxx>( tab[i] ) );
   }
   return vect;
 }
@@ -85,22 +85,22 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
 template<>
 erreur lang2cxx<erreur>(VALUE in)
 {
-if (TYPE(in) != T_STRING) TYPEERR("erreur", in);
+if (TYPE(in) != T_STRING) TYPEERR( (char*) "erreur", in);
   char* v = RSTRING_PTR(in);
-  if (strcmp(v, "ok") == 0)
+  if (strcmp(v, (char *) "ok") == 0)
       return OK;
-  if (strcmp(v, "id_invalide") == 0)
+  if (strcmp(v, (char *) "id_invalide") == 0)
       return ID_INVALIDE;
-  if (strcmp(v, "position_invalide") == 0)
+  if (strcmp(v, (char *) "position_invalide") == 0)
       return POSITION_INVALIDE;
-  if (strcmp(v, "plus_de_pa") == 0)
+  if (strcmp(v, (char *) "plus_de_pa") == 0)
       return PLUS_DE_PA;
-  if (strcmp(v, "bonus_invalide") == 0)
+  if (strcmp(v, (char *) "bonus_invalide") == 0)
       return BONUS_INVALIDE;
-  if (strcmp(v, "pas_a_toi") == 0)
+  if (strcmp(v, (char *) "pas_a_toi") == 0)
       return PAS_A_TOI;
   abort();
-  TYPEERR("erreur", in);
+  TYPEERR((char *) "erreur", in);
 }
 template<>
 VALUE cxx2lang<erreur>(erreur in)
@@ -108,17 +108,17 @@ VALUE cxx2lang<erreur>(erreur in)
   switch (in)
   {
     case OK:
-      return rb_str_new("ok", 2);
+      return rb_str_new( (char *) "ok", 2);
     case ID_INVALIDE:
-      return rb_str_new("id_invalide", 11);
+      return rb_str_new( (char *) "id_invalide", 11);
     case POSITION_INVALIDE:
-      return rb_str_new("position_invalide", 17);
+      return rb_str_new( (char *) "position_invalide", 17);
     case PLUS_DE_PA:
-      return rb_str_new("plus_de_pa", 10);
+      return rb_str_new( (char *) "plus_de_pa", 10);
     case BONUS_INVALIDE:
-      return rb_str_new("bonus_invalide", 14);
+      return rb_str_new( (char *) "bonus_invalide", 14);
     case PAS_A_TOI:
-      return rb_str_new("pas_a_toi", 9);
+      return rb_str_new( (char *) "pas_a_toi", 9);
   }
   abort();
 }
@@ -129,18 +129,20 @@ VALUE cxx2lang<erreur>(erreur in)
 template<>
 type_case lang2cxx<type_case>(VALUE in)
 {
-if (TYPE(in) != T_STRING) TYPEERR("type_case", in);
+if (TYPE(in) != T_STRING) TYPEERR( (char*) "type_case", in);
   char* v = RSTRING_PTR(in);
-  if (strcmp(v, "vide") == 0)
+  if (strcmp(v, (char *) "vide") == 0)
       return VIDE;
-  if (strcmp(v, "obstacle") == 0)
+  if (strcmp(v, (char *) "obstacle") == 0)
       return OBSTACLE;
-  if (strcmp(v, "bonus") == 0)
+  if (strcmp(v, (char *) "bonus") == 0)
       return BONUS;
-  if (strcmp(v, "point_croisement") == 0)
+  if (strcmp(v, (char *) "point_croisement") == 0)
       return POINT_CROISEMENT;
+  if (strcmp(v, (char *) "source") == 0)
+      return SOURCE;
   abort();
-  TYPEERR("type_case", in);
+  TYPEERR((char *) "type_case", in);
 }
 template<>
 VALUE cxx2lang<type_case>(type_case in)
@@ -148,14 +150,17 @@ VALUE cxx2lang<type_case>(type_case in)
   switch (in)
   {
     case VIDE:
-      return rb_str_new("vide", 4);
+      return rb_str_new( (char *) "vide", 4);
     case OBSTACLE:
-      return rb_str_new("obstacle", 8);
+      return rb_str_new( (char *) "obstacle", 8);
     case BONUS:
-      return rb_str_new("bonus", 5);
+      return rb_str_new( (char *) "bonus", 5);
     case POINT_CROISEMENT:
-      return rb_str_new("point_croisement", 16);
+      return rb_str_new( (char *) "point_croisement", 16);
+    case SOURCE:
+      return rb_str_new( (char *) "source", 6);
   }
+  std::cout << "aborting..." << __FILE__ << __LINE__ << std::endl;
   abort();
 }
 
@@ -165,20 +170,20 @@ VALUE cxx2lang<type_case>(type_case in)
 template<>
 type_bonus lang2cxx<type_bonus>(VALUE in)
 {
-if (TYPE(in) != T_STRING) TYPEERR("type_bonus", in);
+if (TYPE(in) != T_STRING) TYPEERR( (char*) "type_bonus", in);
   char* v = RSTRING_PTR(in);
-  if (strcmp(v, "pas_bonus") == 0)
+  if (strcmp(v, (char *) "pas_bonus") == 0)
       return PAS_BONUS;
-  if (strcmp(v, "bonus_croisement") == 0)
+  if (strcmp(v, (char *) "bonus_croisement") == 0)
       return BONUS_CROISEMENT;
-  if (strcmp(v, "plus_long") == 0)
+  if (strcmp(v, (char *) "plus_long") == 0)
       return PLUS_LONG;
-  if (strcmp(v, "plus_pa") == 0)
+  if (strcmp(v, (char *) "plus_pa") == 0)
       return PLUS_PA;
-  if (strcmp(v, "bonus_regeneration") == 0)
+  if (strcmp(v, (char *) "bonus_regeneration") == 0)
       return BONUS_REGENERATION;
   abort();
-  TYPEERR("type_bonus", in);
+  TYPEERR((char *) "type_bonus", in);
 }
 template<>
 VALUE cxx2lang<type_bonus>(type_bonus in)
@@ -186,15 +191,15 @@ VALUE cxx2lang<type_bonus>(type_bonus in)
   switch (in)
   {
     case PAS_BONUS:
-      return rb_str_new("pas_bonus", 9);
+      return rb_str_new( (char *) "pas_bonus", 9);
     case BONUS_CROISEMENT:
-      return rb_str_new("bonus_croisement", 16);
+      return rb_str_new( (char *) "bonus_croisement", 16);
     case PLUS_LONG:
-      return rb_str_new("plus_long", 9);
+      return rb_str_new( (char *) "plus_long", 9);
     case PLUS_PA:
-      return rb_str_new("plus_pa", 7);
+      return rb_str_new( (char *) "plus_pa", 7);
     case BONUS_REGENERATION:
-      return rb_str_new("bonus_regeneration", 18);
+      return rb_str_new( (char *) "bonus_regeneration", 18);
   }
   abort();
 }
@@ -205,11 +210,11 @@ VALUE cxx2lang<type_bonus>(type_bonus in)
 template<>
 position lang2cxx<position>(VALUE in)
 {
-  if (TYPE(in) != T_OBJECT) TYPEERR("position", in);
+  if (TYPE(in) != T_OBJECT) TYPEERR( (char *)"position", in);
   position out ;
-  VALUE x = rb_iv_get(in, "@x");
+  VALUE x = rb_iv_get(in, (char *) "@x");
   out.x = lang2cxx<int>(x);
-  VALUE y = rb_iv_get(in, "@y");
+  VALUE y = rb_iv_get(in, (char *) "@y");
   out.y = lang2cxx<int>(y);
   return out;
 }
@@ -218,7 +223,7 @@ VALUE cxx2lang<position>(position in)
 {
   VALUE argv[] = {cxx2lang<int>(in.x), cxx2lang<int>(in.y)};
   int argc = 2;
-  VALUE out = rb_funcall2(rb_path2class("Position"), rb_intern("new"), argc, argv);
+  VALUE out = rb_funcall2(rb_path2class( (char *) "Position"), rb_intern( (char *) "new"), argc, argv);
   return out;
 }
 
@@ -228,13 +233,13 @@ VALUE cxx2lang<position>(position in)
 template<>
 source_energie lang2cxx<source_energie>(VALUE in)
 {
-  if (TYPE(in) != T_OBJECT) TYPEERR("source_energie", in);
+  if (TYPE(in) != T_OBJECT) TYPEERR( (char *)"source_energie", in);
   source_energie out ;
-  VALUE id = rb_iv_get(in, "@id");
+  VALUE id = rb_iv_get(in, (char *) "@id");
   out.id = lang2cxx<int>(id);
-  VALUE pos = rb_iv_get(in, "@pos");
+  VALUE pos = rb_iv_get(in, (char *) "@pos");
   out.pos = lang2cxx<position>(pos);
-  VALUE coef = rb_iv_get(in, "@coef");
+  VALUE coef = rb_iv_get(in, (char *) "@coef");
   out.coef = lang2cxx<int>(coef);
   return out;
 }
@@ -243,7 +248,7 @@ VALUE cxx2lang<source_energie>(source_energie in)
 {
   VALUE argv[] = {cxx2lang<int>(in.id), cxx2lang<position>(in.pos), cxx2lang<int>(in.coef)};
   int argc = 3;
-  VALUE out = rb_funcall2(rb_path2class("Source_energie"), rb_intern("new"), argc, argv);
+  VALUE out = rb_funcall2(rb_path2class( (char *) "Source_energie"), rb_intern( (char *) "new"), argc, argv);
   return out;
 }
 
@@ -253,13 +258,13 @@ VALUE cxx2lang<source_energie>(source_energie in)
 template<>
 trainee_moto lang2cxx<trainee_moto>(VALUE in)
 {
-  if (TYPE(in) != T_OBJECT) TYPEERR("trainee_moto", in);
+  if (TYPE(in) != T_OBJECT) TYPEERR( (char *)"trainee_moto", in);
   trainee_moto out ;
-  VALUE id = rb_iv_get(in, "@id");
+  VALUE id = rb_iv_get(in, (char *) "@id");
   out.id = lang2cxx<int>(id);
-  VALUE emplacement = rb_iv_get(in, "@emplacement");
+  VALUE emplacement = rb_iv_get(in, (char *) "@emplacement");
   out.emplacement = lang2cxx_array<position>(emplacement);
-  VALUE team = rb_iv_get(in, "@team");
+  VALUE team = rb_iv_get(in, (char *) "@team");
   out.team = lang2cxx<int>(team);
   return out;
 }
@@ -268,7 +273,7 @@ VALUE cxx2lang<trainee_moto>(trainee_moto in)
 {
   VALUE argv[] = {cxx2lang<int>(in.id), cxx2lang_array<position>(in.emplacement), cxx2lang<int>(in.team)};
   int argc = 3;
-  VALUE out = rb_funcall2(rb_path2class("Trainee_moto"), rb_intern("new"), argc, argv);
+  VALUE out = rb_funcall2(rb_path2class( (char *) "Trainee_moto"), rb_intern( (char *) "new"), argc, argv);
   return out;
 }
 
@@ -298,7 +303,8 @@ static VALUE rb_trainees_moto(VALUE self)
 }
 static VALUE rb_regarder_type_case(VALUE self, VALUE pos)
 {
-  return cxx2lang<type_case>(api_regarder_type_case(lang2cxx<position>( pos ) ));
+  type_case c = api_regarder_type_case(lang2cxx<position>( pos ) );
+  return cxx2lang<type_case>( c );
 }
 static VALUE rb_regarder_type_bonus(VALUE self, VALUE pos)
 {
@@ -380,122 +386,122 @@ void loadCallback()
 ///
 // Retourne le numéro de votre équipe
 //
-    rb_define_global_function("mon_equipe", (VALUE(*)(ANYARGS))(rb_mon_equipe), 0);
+    rb_define_global_function( (char *) "mon_equipe", (VALUE(*)(ANYARGS))(rb_mon_equipe), 0);
 
 ///
 // Retourne les scores de chaque équipe
 //
-    rb_define_global_function("scores", (VALUE(*)(ANYARGS))(rb_scores), 0);
+    rb_define_global_function( (char *) "scores", (VALUE(*)(ANYARGS))(rb_scores), 0);
 
 ///
 // Retourne le nombre d'équipes sur le terrain
 //
-    rb_define_global_function("nombre_equipes", (VALUE(*)(ANYARGS))(rb_nombre_equipes), 0);
+    rb_define_global_function( (char *) "nombre_equipes", (VALUE(*)(ANYARGS))(rb_nombre_equipes), 0);
 
 ///
 // Retourne le numéro du tour actuel
 //
-    rb_define_global_function("tour_actuel", (VALUE(*)(ANYARGS))(rb_tour_actuel), 0);
+    rb_define_global_function( (char *) "tour_actuel", (VALUE(*)(ANYARGS))(rb_tour_actuel), 0);
 
 ///
 // Retourne la liste des sources d'énergie
 //
-    rb_define_global_function("sources_energie", (VALUE(*)(ANYARGS))(rb_sources_energie), 0);
+    rb_define_global_function( (char *) "sources_energie", (VALUE(*)(ANYARGS))(rb_sources_energie), 0);
 
 ///
 // Retourne la liste des traînées de moto
 //
-    rb_define_global_function("trainees_moto", (VALUE(*)(ANYARGS))(rb_trainees_moto), 0);
+    rb_define_global_function( (char *) "trainees_moto", (VALUE(*)(ANYARGS))(rb_trainees_moto), 0);
 
 ///
 // Retourne le type d'une case
 //
-    rb_define_global_function("regarder_type_case", (VALUE(*)(ANYARGS))(rb_regarder_type_case), 1);
+    rb_define_global_function( (char *) "regarder_type_case", (VALUE(*)(ANYARGS))(rb_regarder_type_case), 1);
 
 ///
 // Retourne le type de bonus d'une case
 //
-    rb_define_global_function("regarder_type_bonus", (VALUE(*)(ANYARGS))(rb_regarder_type_bonus), 1);
+    rb_define_global_function( (char *) "regarder_type_bonus", (VALUE(*)(ANYARGS))(rb_regarder_type_bonus), 1);
 
 ///
 // Retourne la liste des bonus d'une équipe
 //
-    rb_define_global_function("regarder_bonus", (VALUE(*)(ANYARGS))(rb_regarder_bonus), 1);
+    rb_define_global_function( (char *) "regarder_bonus", (VALUE(*)(ANYARGS))(rb_regarder_bonus), 1);
 
 ///
 // Déplace une moto
 //
-    rb_define_global_function("deplacer", (VALUE(*)(ANYARGS))(rb_deplacer), 3);
+    rb_define_global_function( (char *) "deplacer", (VALUE(*)(ANYARGS))(rb_deplacer), 3);
 
 ///
 // Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
 //
-    rb_define_global_function("couper_trainee_moto", (VALUE(*)(ANYARGS))(rb_couper_trainee_moto), 3);
+    rb_define_global_function( (char *) "couper_trainee_moto", (VALUE(*)(ANYARGS))(rb_couper_trainee_moto), 3);
 
 ///
 // Annuler l'action précédente
 //
-    rb_define_global_function("cancel", (VALUE(*)(ANYARGS))(rb_cancel), 0);
+    rb_define_global_function( (char *) "cancel", (VALUE(*)(ANYARGS))(rb_cancel), 0);
 
 ///
 // Enrouler la traînée de moto en un point
 //
-    rb_define_global_function("enrouler", (VALUE(*)(ANYARGS))(rb_enrouler), 2);
+    rb_define_global_function( (char *) "enrouler", (VALUE(*)(ANYARGS))(rb_enrouler), 2);
 
 ///
 // Régénère une source d'énergie à son maximal
 //
-    rb_define_global_function("regenerer_source_energie", (VALUE(*)(ANYARGS))(rb_regenerer_source_energie), 1);
+    rb_define_global_function( (char *) "regenerer_source_energie", (VALUE(*)(ANYARGS))(rb_regenerer_source_energie), 1);
 
 ///
 // Allonge le tour en rajoutant des points d'action
 //
-    rb_define_global_function("allonger_pa", (VALUE(*)(ANYARGS))(rb_allonger_pa), 0);
+    rb_define_global_function( (char *) "allonger_pa", (VALUE(*)(ANYARGS))(rb_allonger_pa), 0);
 
 ///
 // Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
-    rb_define_global_function("agrandir_trainee_moto", (VALUE(*)(ANYARGS))(rb_agrandir_trainee_moto), 2);
+    rb_define_global_function( (char *) "agrandir_trainee_moto", (VALUE(*)(ANYARGS))(rb_agrandir_trainee_moto), 2);
 
 ///
 // Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
 //
-    rb_define_global_function("poser_point_croisement", (VALUE(*)(ANYARGS))(rb_poser_point_croisement), 1);
+    rb_define_global_function( (char *) "poser_point_croisement", (VALUE(*)(ANYARGS))(rb_poser_point_croisement), 1);
 
 ///
 // Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
 //
-    rb_define_global_function("fusionner", (VALUE(*)(ANYARGS))(rb_fusionner), 4);
+    rb_define_global_function( (char *) "fusionner", (VALUE(*)(ANYARGS))(rb_fusionner), 4);
 
 ///
 // Affiche le contenu d'une valeur de type erreur
 //
-    rb_define_global_function("afficher_erreur", (VALUE(*)(ANYARGS))(rb_afficher_erreur), 1);
+    rb_define_global_function( (char *) "afficher_erreur", (VALUE(*)(ANYARGS))(rb_afficher_erreur), 1);
 
 ///
 // Affiche le contenu d'une valeur de type type_case
 //
-    rb_define_global_function("afficher_type_case", (VALUE(*)(ANYARGS))(rb_afficher_type_case), 1);
+    rb_define_global_function( (char *) "afficher_type_case", (VALUE(*)(ANYARGS))(rb_afficher_type_case), 1);
 
 ///
 // Affiche le contenu d'une valeur de type type_bonus
 //
-    rb_define_global_function("afficher_type_bonus", (VALUE(*)(ANYARGS))(rb_afficher_type_bonus), 1);
+    rb_define_global_function( (char *) "afficher_type_bonus", (VALUE(*)(ANYARGS))(rb_afficher_type_bonus), 1);
 
 ///
 // Affiche le contenu d'une valeur de type position
 //
-    rb_define_global_function("afficher_position", (VALUE(*)(ANYARGS))(rb_afficher_position), 1);
+    rb_define_global_function( (char *) "afficher_position", (VALUE(*)(ANYARGS))(rb_afficher_position), 1);
 
 ///
 // Affiche le contenu d'une valeur de type source_energie
 //
-    rb_define_global_function("afficher_source_energie", (VALUE(*)(ANYARGS))(rb_afficher_source_energie), 1);
+    rb_define_global_function( (char *) "afficher_source_energie", (VALUE(*)(ANYARGS))(rb_afficher_source_energie), 1);
 
 ///
 // Affiche le contenu d'une valeur de type trainee_moto
 //
-    rb_define_global_function("afficher_trainee_moto", (VALUE(*)(ANYARGS))(rb_afficher_trainee_moto), 1);
+    rb_define_global_function( (char *) "afficher_trainee_moto", (VALUE(*)(ANYARGS))(rb_afficher_trainee_moto), 1);
 
 
 }

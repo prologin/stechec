@@ -1,9 +1,10 @@
+# -*- coding: iso-8859-1 -*-
 # This file has been generated, if you wish to
 # modify it in a permanent way, please refer
 # to the script file : gen/generator_ruby.rb
 
 # Taille du terrain
-TAILLE_TERRAIN = 100
+TAILLE_TERRAIN = 50
 
 # Nombre de tours par partie
 FIN_PARTIE = 1500
