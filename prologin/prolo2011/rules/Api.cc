@@ -105,8 +105,9 @@ std::vector<trainee_moto> Api::trainees_moto()
 //
 type_case Api::regarder_type_case(position pos)
 {
-  // TODO
-  abort();
+  // TODO assert position
+  Case &c = g_->get_case(pos);
+  return c.type;
 }
 
 ///
@@ -114,8 +115,9 @@ type_case Api::regarder_type_case(position pos)
 //
 type_bonus Api::regarder_type_bonus(position pos)
 {
-  // TODO
-  abort();
+  // TODO assert position
+  Case &c = g_->get_case(pos);
+  return c.bonus;
 }
 
 ///
