@@ -25,6 +25,10 @@ ClientEntry::ClientEntry(GameData* game, ClientDiffer* diff, Client* client)
 */
 int        ClientEntry::beforeGame()
 {
+  // recuperation de la map, et peut-etre d'autres choses
+    StechecPkt com;
+    while (fetchCommand(&com))
+        differ_->ApplyDiff(&com);
   return 0;
 }
 

@@ -51,9 +51,10 @@ int ServerEntry::loadMap()
   }
   int indice_source = 0;
   g_->sources.reserve(nsources);
-  SendToAll(NB_SOURCES, -1, nsources);
+  SendToAll(NB_SOURCES, -1, 1, nsources);
   for (int y = 0; y < TAILLE_TERRAIN; ++y){
     getline(f, line);
+    LOG2("map[%1]=%2", y, line);
     if (!f){
       ERR("Not enough lines in map file");
       return 1;
@@ -81,7 +82,7 @@ int ServerEntry::loadMap()
 	s.pos.y = y;
 	s.potentiel_max = sources[indice_source];
 	s.potentiel_cur = sources[indice_source];
-	SendToAll(SOURCE_CONTENT, -1, 7, indice_source, x, y, sources[indice_source]);
+	SendToAll(SOURCE_CONTENT, -1, 4, indice_source, x, y, sources[indice_source]);
 	indice_source++;
 	g_->sources.push_back(s);
       }else if (line[x] == 'C'){

@@ -22,20 +22,25 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
 {
   switch (pkt->type){
   case NB_SOURCES:
+    LOG2("NB_sources : %1", pkt->arg[0]);
     g_->sources.reserve(pkt->arg[0]);
     break;
   case CONTENU_CASE:
     {
       int x = pkt->arg[0];
       int y = pkt->arg[1];
+      LOG2("content : (%1, %2)", x, y);
       Case &c = g_->get_case(x, y);
       c.bonus = (type_bonus)pkt->arg[2];
       c.type = (type_case)pkt->arg[3];
       c.source_id = pkt->arg[4];
+      LOG2("  - %3", c.type);
     }
     break;
   case SOURCE_CONTENT:
     {
+      break; // TODO faire marcher ca ...
+      LOG2("loading source : %1", pkt->arg[0]);
       SourceEnergie &s = g_->sources.at(pkt->arg[0]);
       s.pos.x = pkt->arg[1];
       s.pos.y = pkt->arg[2];
@@ -44,13 +49,12 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
     }
     break;
   default:
-    LOG2("ClientDiffer::ApplyDiff");
+    LOG2("ClientDiffer::ApplyDiff - action");
     if (g_->mon_tour()){
       LOG2("ClientDiffer::mon_tour");
       return;
     }
     Action* act = act_from_pkt(pkt->type, pkt);
-    LOG2("type = %1", pkt->type);
     act->appliquer(g_);
     delete act;
   }

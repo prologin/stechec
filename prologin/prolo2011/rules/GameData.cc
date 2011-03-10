@@ -82,7 +82,7 @@ GameData::generer_terrain()
   can_play = false;
 }
 void GameData::Init() {
-  // TODO
+  LOG2("GameData::Init");
   initialized_ = true;
 }
 
