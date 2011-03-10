@@ -154,6 +154,15 @@ int GameData::get_real_turn()
   return (getCurrentTurn() - 1) / 2 + 1;
 }
 
+InternalTraineeMoto& GameData::creer_trainee_moto(int player,
+                                                  position init,
+                                                  int max_len)
+{
+    InternalTraineeMoto moto(this, player, init, max_len);
+    motos.push_back(moto);
+    return motos[motos.size() - 1];
+}
+
 bool GameData::isMatchFinished(){
   return getCurrentTurn() == FIN_PARTIE * 2;
 }

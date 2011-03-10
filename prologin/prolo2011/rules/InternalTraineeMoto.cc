@@ -26,6 +26,7 @@ InternalTraineeMoto::InternalTraineeMoto(GameData* gd,
   len_ = 1;
   player_ = player;
   max_len_ = max_len;
+  last_end_moved_ = false;
   content_.push_front(init);
   LOG4("trainee_moto constructor");
 }
@@ -54,7 +55,8 @@ void InternalTraineeMoto::reject_bad_move(position from, position to){
   if (!begin(from) && !end(from))
     throw POSITION_INVALIDE;
   Case& c = gd_->get_case(to);
-  if ((c.type != POINT_CROISEMENT && c.nb_trainees_moto == 1) ||
+  if ((c.type == OBSTACLE) ||
+      (c.type != POINT_CROISEMENT && c.nb_trainees_moto == 1) ||
       (c.type == POINT_CROISEMENT && c.nb_trainees_moto == 4))
       throw POSITION_INVALIDE;
 }
@@ -74,6 +76,7 @@ erreur InternalTraineeMoto::move(position from, position to)
       len_ ++;
     content_.push_front(to);
     gd_->get_case(to).nb_trainees_moto += 1;
+    last_end_moved_ = false;
     return OK;
   }
   else if (end(from))
@@ -88,10 +91,78 @@ erreur InternalTraineeMoto::move(position from, position to)
       len_ ++;
     content_.push_back(to);
     gd_->get_case(to).nb_trainees_moto += 1;
+    last_end_moved_ = true;
     return OK;
   }
   LOG2("BAD MOVE : %1 -> %2", from, to);
   return POSITION_INVALIDE;
+}
+
+erreur InternalTraineeMoto::couper(position entre, position et)
+{
+    // First find the two adjectent nodes to split
+    deque_type::iterator it;
+    deque_type::iterator it2;
+    int i = 1;
+
+    for (it = content_.begin(); it != content_.end(); ++it, ++i)
+        if (*it == entre)
+        {
+            it2 = it + 1;
+            if (it2 == content_.end() || *it2 != et)
+                throw POSITION_INVALIDE;
+            break;
+        }
+        else if (*it == et)
+        {
+            it2 = it + 1;
+            if (it2 == content_.end() || *it2 != entre)
+                throw POSITION_INVALIDE;
+            break;
+        }
+
+    // Then create the second TraineeMoto
+    int new_max_len = 0;
+    if (last_end_moved_)
+        new_max_len = len_ - i;
+    else
+        new_max_len = max_len_ - i;
+    InternalTraineeMoto& moto = gd_->creer_trainee_moto(player_,
+                                                        *it2,
+                                                        new_max_len);
+    moto.last_end_moved_ = last_end_moved_;
+    max_len_ -= new_max_len;
+    len_ -= 1;
+    while ((it2 = content_.erase(it2)) != content_.end())
+    {
+        moto.content_.push_back(*it2);
+        moto.len_ += 1;
+        len_ -= 1;
+    }
+}
+
+/*
+ * Just check that "entre" and "et" are two positions owned by the TraineeMoto
+ * and that they are adjacent.
+*/
+void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
+{
+    deque_type::const_iterator it;
+    deque_type::const_iterator it2;
+
+    for (it = content_.begin(); it != content_.end(); ++it)
+        if (*it == entre)
+        {
+            it2 = it + 1;
+            if (it2 == content_.end() || (*it2) != et)
+                throw POSITION_INVALIDE;
+        }
+        else if (*it == et)
+        {
+            it2 = it + 1;
+            if (it2 == content_.end() || *it2 != entre)
+                throw POSITION_INVALIDE;
+        }
 }
 
 int InternalTraineeMoto::length(){

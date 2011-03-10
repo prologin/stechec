@@ -15,5 +15,6 @@
 
 #include "Constant.hh"
 bool operator==(position p1, position p2);
+bool operator!=(position p1, position p2);
 bool a_cote(position p1, position p2);
 #endif

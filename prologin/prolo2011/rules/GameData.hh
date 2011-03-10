@@ -86,7 +86,9 @@ public:
   void get_sources(std::vector<source_energie>& srcs);
   void get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus);
   int get_real_turn();
-
+  InternalTraineeMoto& creer_trainee_moto(int player,
+                                          position init,
+                                          int max_len);
 
   bool isMatchFinished();
 
