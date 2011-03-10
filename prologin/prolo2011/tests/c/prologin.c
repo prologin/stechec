@@ -18,6 +18,21 @@ void init_game(void)
   tour = 0;
 }
 
+
+void show_map(){
+  int x, y;
+  for (y = 0; y < TAILLE_TERRAIN; y ++) {
+    for (x = 0; x < TAILLE_TERRAIN; x ++){
+      position p;
+      p.x = x;
+      p.y = y;
+      type_case c = regarder_type_case(p);
+      printf("%d", c);
+    }
+    printf("\n");
+  }
+}
+
 /*!
 ** Fonction appellée pour la phase de jeu
 */
@@ -41,6 +56,7 @@ void jouer(void)
   //afficher_position(to);
   //afficher_erreur(err);
   //printf("\n");
+  show_map();
 }
 
 /*!

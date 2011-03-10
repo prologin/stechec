@@ -9,7 +9,7 @@ typedef char * charp;
 /*!
 ** Taille du terrain
 */
-# define TAILLE_TERRAIN            100
+# define TAILLE_TERRAIN            50
 
 /*!
 ** Nombre de tours par partie
