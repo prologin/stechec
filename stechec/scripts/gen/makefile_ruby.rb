@@ -14,6 +14,8 @@
 class RubyMakefile
   def initialize
     version=""
+
+# TODO : ruby path
     @makefile = "
 #####################
 # Macro Definitions #
@@ -23,9 +25,19 @@ CXX 	= g++
 SRC     = interface.cc ../includes/main.cc
 OBJS 	= ${SRC:.cc=.o}
 RM 	= /bin/rm -f
-INCLUDES = -I/usr/local/include/ruby-1.9.1 -I/usr/local/include/ruby-1.9.1/x86_64-linux
-CXXFLAGS = -fPIC -W -Wall $(shell ruby#{version} -rrbconfig -e \"print Config::CONFIG['CFLAGS']\" ) ${INCLUDES}
-LDFLAGS  = -lruby $(shell ruby#{version} -rrbconfig -e \"print Config::CONFIG['LDFLAGS']\" )
+
+
+RBINC = $(shell ruby -rrbconfig -e \"print Config::CONFIG['rubyhdrdir']\" )
+RBARCH = $(shell ruby -rrbconfig -e \"print Config::CONFIG['arch']\" )
+
+INCLUDES = -I${RBINC} -I${RBINC}/${RBARCH}
+
+RBLIB= $(shell ruby -rrbconfig -e \"print Config::CONFIG['LIBRUBYARG_SHARED']\" )
+
+CXXFLAGS = -fPIC $(shell ruby -rrbconfig -e \"print Config::CONFIG['CFLAGS']\" ) ${INCLUDES}
+LDFLAGS  = ${RBLIB} $(shell ruby -rrbconfig -e \"print Config::CONFIG['LDFLAGS']\" )
+
+
 
 ##############################
 # Basic Compile Instructions #

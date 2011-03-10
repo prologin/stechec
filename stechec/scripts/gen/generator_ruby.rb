@@ -74,7 +74,7 @@ Cxx lang2cxx(VALUE in)
 template<>
 int lang2cxx<int>(VALUE in)
 {
-  if (TYPE(in) != T_FIXNUM) TYPEERR(\"integer\", in);
+  if (TYPE(in) != T_FIXNUM) TYPEERR( (char*) \"integer\", in);
   return FIX2INT(in);
 }
 
@@ -85,15 +85,15 @@ bool lang2cxx<bool>(VALUE in)
 }
 
 template<typename Cxx>
-std::vector<Cxx> lang2cxx_array(VALUE *l)
+std::vector<Cxx> lang2cxx_array(VALUE l)
 {
-  if (TYPE(*l) != T_ARRAY) TYPEERR(\"array\", l);
-
-  VALUE *tab = RARRAY_LEN(l);
-  int len = RARRAY_PTR(l);
+  if (TYPE(l) != T_ARRAY) TYPEERR((char*)\"array\", l);
+  int len = RARRAY_LEN(l);
+  VALUE *tab = RARRAY_PTR(l);
   std::vector<Cxx> vect;
+  vect.reserve(len);
   for (int i = 0; i < len; i ++){
-    vect.push_back( cxx2lang<Cxx>( tab[i] ) );
+    vect.push_back( lang2cxx<Cxx>( tab[i] ) );
   }
   return vect;
 }
@@ -128,14 +128,14 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
 
       @f.puts "template<>"
       @f.puts "#{ty} lang2cxx<#{ty}>(VALUE in)\n{"
-      @f.puts "if (TYPE(in) != T_STRING) TYPEERR(\"#{ty}\", in);"
+      @f.puts "if (TYPE(in) != T_STRING) TYPEERR( (char*) \"#{ty}\", in);"
       @f.puts "  char* v = RSTRING_PTR(in);"
       fields.each do |f|
-        @f.puts "  if (strcmp(v, \"#{f[0]}\") == 0)"
+        @f.puts "  if (strcmp(v, (char *) \"#{f[0]}\") == 0)"
         @f.puts "      return #{f[0].upcase};"
       end
       @f.puts "  abort();"
-      @f.puts "  TYPEERR(\"#{ty}\", in);"
+      @f.puts "  TYPEERR((char *) \"#{ty}\", in);"
       @f.puts "}\n"
 
       @f.puts "template<>"
@@ -143,7 +143,7 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
       @f.puts "  switch (in)\n  {"
       fields.each do |f|
         @f.puts "    case #{f[0].upcase}:"
-        @f.puts "      return rb_str_new(\"#{f[0]}\", #{f[0].length});"
+        @f.puts "      return rb_str_new( (char *) \"#{f[0]}\", #{f[0].length});"
       end
       @f.puts "  }
   abort();
@@ -155,7 +155,7 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
       type = s["str_name"]
       @f.puts "template<>"
       @f.puts "#{type} lang2cxx<#{type}>(VALUE in)\n{"
-      @f.puts "  if (TYPE(in) != T_OBJECT) TYPEERR(\"#{type}\", in);"
+      @f.puts "  if (TYPE(in) != T_OBJECT) TYPEERR( (char *)\"#{type}\", in);"
       @f.puts "  #{type} out ;"
       s['str_field'].each do |f|
         name =f[0]
@@ -167,7 +167,7 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
           type = type.name
           fun = ''
         end
-        @f.puts "  VALUE #{name} = rb_iv_get(in, \"@#{name}\");"
+        @f.puts "  VALUE #{name} = rb_iv_get(in, (char *) \"@#{name}\");"
         @f.puts "  out.#{name} = lang2cxx#{fun}<#{type}>(#{name});"
       end
       @f.puts "  return out;"
@@ -189,7 +189,7 @@ VALUE cxx2lang_array(const std::vector<Cxx>& vect)
       end
       @f.puts "  VALUE argv[] = {#{args.join ', '}};"
       @f.puts "  int argc = #{args.size };"
-      @f.puts "  VALUE out = rb_funcall2(rb_path2class(\"#{type.capitalize()}\"), rb_intern(\"new\"), argc, argv);"
+      @f.puts "  VALUE out = rb_funcall2(rb_path2class( (char *) \"#{type.capitalize()}\"), rb_intern( (char *) \"new\"), argc, argv);"
       @f.puts "  return out;"
       @f.puts "}"
 
@@ -238,7 +238,7 @@ void loadCallback()
       args = x.args
       fct_name = x.name
       l = args ? args.length() : 0
-      @f.puts "    rb_define_global_function(\"#{fct_name}\", (VALUE(*)(ANYARGS))(rb_#{fct_name}), #{l});"
+      @f.puts "    rb_define_global_function( (char *) \"#{fct_name}\", (VALUE(*)(ANYARGS))(rb_#{fct_name}), #{l});"
     end
 
     @f.puts "
