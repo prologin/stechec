@@ -40,7 +40,6 @@ public:
   position head();
   position queue();
 
-private:
   GameData* gd_;
   deque_type content_;
   int len_;

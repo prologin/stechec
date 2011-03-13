@@ -62,6 +62,7 @@ protected:
   int old_len_;
   position old_queue_;
   position new_queue_;
+  bool last_end_moved_;
 };
 
 Action* act_from_pkt(int type, const StechecPkt* pkt);
