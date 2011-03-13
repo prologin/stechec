@@ -38,6 +38,7 @@ void show_map(){
 */
 void jouer(void)
 {
+  printf("equipe = %d\n", mon_equipe());
   tour ++;
   int t = tour_actuel();
   if (t != tour){
@@ -46,17 +47,25 @@ void jouer(void)
   }
   position from;
   position to;
-  from.x = 0;
-  from.y = tour - 1;
-  to.x = 0;
-  to.y = tour;
-  erreur err = deplacer(0, from, to);
-  //printf("tour : %d\n", tour);
-  //afficher_position(from);
-  //afficher_position(to);
-  //afficher_erreur(err);
-  //printf("\n");
-  show_map();
+  from.x = (mon_equipe() == 0) ? 0 : TAILLE_TERRAIN - 1;
+  
+  from.y = (mon_equipe() == 0) ? tour - 1 : TAILLE_TERRAIN - tour;
+  to.x = (mon_equipe() == 0) ? 0 : TAILLE_TERRAIN - 1;
+  to.y =  (mon_equipe() == 0) ? tour : TAILLE_TERRAIN - tour - 1;
+
+  int indice = mon_equipe() == 0 ? 0 : 1;
+
+  erreur err = deplacer(indice, from, to);
+
+  cancel();
+
+  afficher_position(from);
+  afficher_position(to);
+  printf("tour : %d\n", tour);
+  afficher_erreur(err);
+  printf("\n");
+  
+  //show_map();
 }
 
 /*!
