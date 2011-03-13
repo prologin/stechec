@@ -11,10 +11,10 @@
 -10
 -10
 -10
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-X                 X                              X
-X           XXXX  X                              X
-X     !     X     X                              X
+                                                 X
+                  X                              X
+            XXXX  X                              X
+      !     X     X                              X
 X           X XX  XXXXXXXXXXX                    X
 X              X  X                              X
 X XXXXXXXXX XX X  X                              X
@@ -54,10 +54,10 @@ X    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   !   X
 X                  X                             X
 X                  X XXXXXXXXXXXXXXXXXXXXXXXXXXX X
 XXXXXXXXXXXXXXX    X                             X
-X                  XXXXXXXXXXXXXXX XXXXXXXXXXXXXXX
-X  !   X     XXXXXXX                             X
-X      X              XXXXXXXXXXXXXXXXXXXX   !   X
-X      X     X                                   X
-X  !   X     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-X      X                                         X
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+X                  XXXXXXXXXXXXXXX XXXXXXXXXXXXXX 
+X  !   X     XXXXXXX                              
+X      X              XXXXXXXXXXXXXXXXXXXX   !    
+X      X     X                                    
+X  !   X     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+X      X                                          
+X                                                 
