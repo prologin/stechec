@@ -65,18 +65,10 @@ GameData::generer_terrain()
   get_case(spawn2).nb_trainees_moto = 1;
   joueurs.reserve(2);
 
-  // Mise en place des deux sources
-  sources.reserve(2);
-  sources[0].set_potentiel(100);
-  sources[1].set_potentiel(-100);
   spawn1.x = 0;
   spawn1.y = 4;
   spawn2.x = TAILLE_TERRAIN - 1;
   spawn2.y = TAILLE_TERRAIN - 1 - 4;
-  sources[0].pos = spawn1;
-  sources[1].pos = spawn2;
-  get_case(spawn1).source_id = 0;
-  get_case(spawn2).source_id = 1;
 
   srand(time(0));
   current_player = 1;
