@@ -22,8 +22,15 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
 {
   switch (pkt->type){
   case NB_SOURCES:
-    LOG6("NB_sources : %1", pkt->arg[0]);
-    g_->sources.reserve(pkt->arg[0]);
+    {
+      int l = pkt->arg[0];
+      LOG6("NB_sources : %1", l);
+      g_->sources.reserve(l);
+      for (int i = 0; i < l; i++){
+	SourceEnergie s;
+	g_->sources.push_back(s);
+      }
+    }
     break;
   case CONTENU_CASE:
     {
@@ -39,7 +46,6 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
     break;
   case SOURCE_CONTENT:
     {
-      break; // TODO faire marcher ca ...
       LOG6("loading source : %1", pkt->arg[0]);
       SourceEnergie &s = g_->sources.at(pkt->arg[0]);
       s.pos.x = pkt->arg[1];
