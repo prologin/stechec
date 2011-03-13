@@ -10,6 +10,7 @@
 ** Copyright (C) 2011 Prologin
 */
 
+#include "Utils.hh"
 #include "GameData.hh"
 #include "Constant.hh"
 #include <ctime>
@@ -89,13 +90,14 @@ void GameData::Init() {
 Case&
 GameData::get_case(int x, int y)
 {
+  if (position_invalide(x, y)) abort();
     return terrain_[x + TAILLE_TERRAIN * y];
 }
 
 Case&
 GameData::get_case(const position &p)
 {
-    return terrain_[p.x + TAILLE_TERRAIN * p.y];
+  return get_case(p.x, p.y);
 }
 
 void GameData::team_switched(){

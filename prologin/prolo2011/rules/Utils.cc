@@ -32,3 +32,10 @@ bool a_cote(position p1, position p2){
      )
     ;
 }
+
+bool position_invalide(int x, int y){
+  return x < 0 ||
+    y < 0 ||
+    x >= TAILLE_TERRAIN ||
+    y >= TAILLE_TERRAIN ;
+}
