@@ -17,7 +17,6 @@
 
 #include "tools.hh"
 #include "datatfs/Cx.hh"
-#include "start_arbiter.hh"
 #include "ClientApp.hh"
 #include "ChampionLoader.hh"
 
@@ -33,9 +32,7 @@ ClientApp::ClientApp(int argc, char** argv, const std::string&, const std::strin
 }
 
 ClientApp::~ClientApp()
-{
-  clean_arbiter();
-}
+{}
 
 void ClientApp::showHelp(const char* prgname,
                          const struct ConfCmdLineOpt* cmd_opt)
@@ -182,9 +179,6 @@ int ClientApp::runApp()
 	// bool replay_log = cfg.getAttr<bool>("client", "mode", "replay");
 	bool replay_log = false;
 
-	// Optionally start a thread for the arbiter, if needed.
-	start_arbiter(*cfg_);
-
 	// Load rules.
 	rules_ = rules_loader_.loadRules(&cfg_file_, cfg_);
 	ccx_.setRules(rules_);
@@ -217,7 +211,7 @@ int ClientApp::runApp()
 	    ret_value = onPlay(false);
 	  }
 	ccx_.disconnect(false);
-	clean_arbiter();
+
       }
   } catch (const NetError& e) {
     ERR("Network: %1", e);

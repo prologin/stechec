@@ -7,8 +7,6 @@ noinst_LTLIBRARIES = libgeneric_client.la
 libgeneric_client_la_SOURCES =			\
 	ClientCx.cc				\
 	ClientCx.hh				\
-	start_arbiter.cc			\
-	start_arbiter.hh			\
 	RulesLoader.cc				\
 	RulesLoader.hh				\
 	ChampionLoader.cc			\
