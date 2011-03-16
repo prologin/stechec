@@ -56,8 +56,13 @@ int Api::mon_equipe()
 //
 std::vector<int> Api::scores()
 {
-  // TODO
-  abort();
+    std::vector<int>        scores;
+    std::vector<Joueur>&    joueurs = g_->joueurs;
+
+    scores.reserve(joueurs.size());
+    for (int i = 0; i < joueurs.size(); ++i)
+        scores[i] = joueurs[i].score;
+    return (scores);
 }
 
 ///
@@ -65,8 +70,7 @@ std::vector<int> Api::scores()
 //
 int Api::nombre_equipes()
 {
-  // TODO
-  abort();
+    return g_->joueurs.size();
 }
 
 ///
@@ -82,8 +86,17 @@ int Api::tour_actuel()
 //
 std::vector<source_energie> Api::sources_energie()
 {
-  // TODO
-  abort();
+    std::vector<source_energie> result;
+    std::vector<SourceEnergie>&  sources = g_->sources;
+
+    result.reserve(sources.size());
+    for (int i = 0; i < sources.size(); ++i)
+    {
+        result[i].id = i;
+        result[i].pos = sources.pos;
+        result[i].coef = soruces.potentiel_cur;
+    }
+    return (result);
 }
 
 ///
@@ -91,13 +104,13 @@ std::vector<source_energie> Api::sources_energie()
 //
 std::vector<trainee_moto> Api::trainees_moto()
 {
-  int len = g_->motos.size();
-  std::vector<trainee_moto> out;
-  out.reserve(len);
-  for (int i = 0; i < len; i++){
-    out.push_back(g_->motos.at(i).to_trainee_moto(i));
-  }
-  return out;
+  std::vector<trainee_moto>         out;
+  std::vector<InternalTraineeMoto>& motos = g_->motos;
+
+  out.reserve(motos.size());
+  for (int i = 0; i < motos.size(); i++)
+    out[i] = motos[i].to_trainee_moto(i);
+  return (out);
 }
 
 ///

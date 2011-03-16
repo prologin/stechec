@@ -45,6 +45,10 @@ GameData::GameData()
   generer_terrain();
 }
 
+/*
+ * Ceci génère pour le moment un terrain de test.
+ * FIXME: À remplacer par le chargement du terrain depuis un fichier.
+ */
 void
 GameData::generer_terrain()
 {
@@ -74,6 +78,7 @@ GameData::generer_terrain()
   current_player = 1;
   can_play = false;
 }
+
 void GameData::Init() {
   LOG2("GameData::Init");
   initialized_ = true;
