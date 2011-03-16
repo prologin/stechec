@@ -34,6 +34,15 @@ Joueur::Joueur()
 {
 }
 
+source_energie  SourceEnergie::to_source_energie(int indice)
+{
+    source_energie  s;
+    s.id = indice;
+    s.pos = pos;
+    s.coef = potentiel_cur;
+    return (s);
+}
+
 void SourceEnergie::set_potentiel(int potentiel)
 {
     potentiel_max = potentiel;

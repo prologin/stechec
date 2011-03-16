@@ -18,7 +18,7 @@
 # include "Constant.hh"
 # include "GameData.hh"
 
-#include "InternalTraineeMoto.hh"
+# include "InternalTraineeMoto.hh"
 
 # include <map>
 # include <vector>

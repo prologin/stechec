@@ -91,11 +91,7 @@ std::vector<source_energie> Api::sources_energie()
 
     result.reserve(sources.size());
     for (int i = 0; i < sources.size(); ++i)
-    {
-        result[i].id = i;
-        result[i].pos = sources.pos;
-        result[i].coef = soruces.potentiel_cur;
-    }
+        result.push_back(sources[i].to_source_energie(i));
     return (result);
 }
 
@@ -109,7 +105,7 @@ std::vector<trainee_moto> Api::trainees_moto()
 
   out.reserve(motos.size());
   for (int i = 0; i < motos.size(); i++)
-    out[i] = motos[i].to_trainee_moto(i);
+    out.push_back(motos[i].to_trainee_moto(i));
   return (out);
 }
 

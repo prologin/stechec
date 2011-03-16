@@ -39,6 +39,7 @@ struct SourceEnergie
     int         potentiel_max;
     int         potentiel_cur;
 
+    source_energie  to_source_energie(int indice);
     void set_potentiel(int potentiel);
 };
 
