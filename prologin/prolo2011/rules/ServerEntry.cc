@@ -110,11 +110,6 @@ int ServerEntry::loadMap()
 int		ServerEntry::beforeGame(void)
 {
   g_->Init();
-  return 0;
-}
-
-int         ServerEntry::initGame(void)
-{
   if (loadMap())
     return 1;
   for (int y = 0; y < TAILLE_TERRAIN; ++y) {
@@ -123,6 +118,11 @@ int         ServerEntry::initGame(void)
       SendToAll(CONTENU_CASE, -1, 5, x, y, c.bonus, c.type, c.source_id);
     }
   }
+  return 0;
+}
+
+int         ServerEntry::initGame(void)
+{
   return 0;
 }
 
