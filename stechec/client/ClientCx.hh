@@ -78,10 +78,6 @@ private:
   bool          connect(const std::string& host, int port);
   bool          join(int game_uid, bool wanna_be_viewer, const struct RuleDescription& desc);
 
-  //! @brief Syncing with the arbiter, in standalone mode.
-  void          createDirectCx(int uid);
-  bool          syncArbiter();
-
   Cx*           cx_;
   BaseCRules*   rules_;
   int           client_gid_;

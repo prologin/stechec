@@ -35,8 +35,6 @@ libtools_la_SOURCES +=				\
 	datatfs/CxPool.hxx			\
 	datatfs/TcpCx.hh			\
 	datatfs/TcpCx.cc			\
-	datatfs/Direct.hh			\
-	datatfs/Direct.cc			\
 	datatfs/FileCx.hh			\
 	datatfs/FileCx.cc			\
 	datatfs/Packet.hh			\

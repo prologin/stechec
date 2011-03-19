@@ -12,7 +12,6 @@
 
 #include "tools.hh"
 #include "datatfs/FileCx.hh"
-#include "datatfs/Direct.hh"
 #include "datatfs/TcpCx.hh"
 #include "misc/Conf.hh"
 #include "ClientCx.hh"
@@ -243,24 +242,6 @@ bool ClientCx::join(int game_uid, bool wanna_be_viewer, const struct RuleDescrip
       return false;
     }
   LOG3("Connection sequence completed.");
-  return p->token == CX_ACCEPT;
-}
-
-// Connect to the arbiter, in standalone mode
-void ClientCx::createDirectCx(int uid)
-{
-  LOG4("[%1] Create DirectCx", uid);
-  cx_ = new DirectCx(uid == 1 ? CXD_IS_COACH1 : CXD_IS_COACH2);
-}
-
-bool ClientCx::syncArbiter()
-{
-  Packet hello(CX_INIT, 1);
-  cx_->send(hello);
-  if (!cx_->poll(1000))
-    return false;
-  Packet* p = cx_->receive();
-  LOG4("Sync ok.");
   return p->token == CX_ACCEPT;
 }
 
