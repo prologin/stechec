@@ -55,10 +55,17 @@ GameData::GameData()
 {
     int		taille = TAILLE_TERRAIN * TAILLE_TERRAIN;
     Case	default_case;
+    Joueur	basic_joueur;
 
     terrain_.reserve(taille);
     for (int i = 0; i < taille; ++i)
 	terrain_.push_back(default_case);
+
+    // FIXME: use a constant (made the assumption that there will always be 2
+    // players
+    joueurs.reserve(2);
+    for (int i = 0; i < 2; ++i)
+	joueurs.push_back(basic_joueur);
 }
 
 void GameData::Init() {
