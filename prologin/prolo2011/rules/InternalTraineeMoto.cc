@@ -21,12 +21,12 @@ InternalTraineeMoto::InternalTraineeMoto(GameData* gd,
                                          int player,
                                          position init,
                                          int max_len)
+    : gd_(gd),
+      len_(1),
+      player_(player),
+      max_len_(max_len),
+      last_end_moved_(false)
 {
-  gd_ = gd;
-  len_ = 1;
-  player_ = player;
-  max_len_ = max_len;
-  last_end_moved_ = false;
   content_.push_front(init);
   LOG4("trainee_moto constructor");
 }
@@ -174,6 +174,57 @@ void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
             if (it2 == content_.end() || *it2 != entre)
                 throw POSITION_INVALIDE;
         }
+}
+
+/*
+ * Make the "autre" moto empty steeling all its nodes.
+ * "entre" must be owned by *this, and "et" must be owned by autre. Of course,
+ * each of "entre" and "et" must be ends of the Motos.
+ */
+erreur InternalTraineeMoto::fusionner(InternalTraineeMoto	&autre,
+				      position			entre,
+				      position			et)
+{
+    // Check which ends will be merged
+    bool			my_end;
+
+    if (head() == entre)
+	my_end = false;
+    else if (queue() == entre)
+	my_end = true;
+
+    // Determine if we browse the moto in the direct or the reverse order
+    DequeIterator<position>	it(autre.content_, autre.queue() == et);
+
+    // Move the position from autre to *this
+    while (it)
+    {
+	position	buffer = *it;
+	++it;
+	if (my_end)
+	    content_.push_back(buffer);
+	else
+	    content_.push_front(buffer);
+    }
+    autre.content_.clear();
+}
+
+/*
+ * Just check that "entre" and "et" are two positions owned by the TraineeMoto,
+ * that they are adjacent and that they belong to the same team.
+ */
+
+void InternalTraineeMoto::reject_bad_fusion(InternalTraineeMoto	&autre,
+					    position		entre,
+					    position		et)
+{
+    if (player_ != autre.player_)
+	throw ID_INVALIDE;
+    if ((head() != entre && queue() != entre) ||
+	(autre.head() != et && autre.queue() != et))
+	throw POSITION_INVALIDE;
+    if (!a_cote(entre, et))
+	throw POSITION_INVALIDE;
 }
 
 int InternalTraineeMoto::length(){

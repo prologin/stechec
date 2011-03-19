@@ -52,31 +52,38 @@ protected:
 class InternalTraineeMoto
 {
 public:
-  typedef std::deque<position> deque_type;
+    typedef std::deque<position> deque_type;
 
-  InternalTraineeMoto(GameData* gd, int player, position init, int max_len);
-  bool begin(position pos);
-  bool end(position pos);
+    InternalTraineeMoto(GameData* gd, int player, position init, int max_len);
 
-  trainee_moto to_trainee_moto(int indice);
+    bool begin(position pos);
+    bool end(position pos);
 
-  erreur move(position from, position to);
-  void reject_bad_move(position from, position to);
+    trainee_moto to_trainee_moto(int indice);
 
-  erreur couper(position entre, position et);
-  void reject_bad_coupe(position entre, position et);
+    erreur move(position from, position to);
+    void reject_bad_move(position from, position to);
 
-  int length();
-  position queue(position head);
-  position head();
-  position queue();
+    erreur couper(position entre, position et);
+    void reject_bad_coupe(position entre, position et);
+    erreur fusionner(InternalTraineeMoto	&autre,
+		     position			entre,
+		     position			et);
+    void reject_bad_fusion(InternalTraineeMoto	&autre,
+			   position		entre,
+			   position		et);
 
-  GameData* gd_;
-  deque_type content_;
-  int len_;
-  int max_len_;
-  bool last_end_moved_; /* false when head, true when queue */
-  int player_;
+    int length();
+    position queue(position head);
+    position head();
+    position queue();
+
+    GameData* gd_;
+    deque_type content_;
+    int len_;
+    int max_len_;
+    bool last_end_moved_; /* false when head, true when queue */
+    int player_;
 };
 
 #endif // !INTERNAL_TRAINEE_MOTO_HH_

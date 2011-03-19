@@ -32,10 +32,10 @@ Api::Api(GameData* gameData, Client* c) : StechecApi(gameData, c)
       act->verifier(g_);			\
       LOG4("DO_ACTION : appliquer...");		\
       g_->appliquer_action(act);		\
-      LOG4("DO_ACTION : OK");		\
+      LOG4("DO_ACTION : OK");			\
       return OK;				\
     } catch (erreur err) {			\
-      LOG1("erreur : %1", err);				\
+      LOG1("erreur : %1", err);			\
       return err;				\
     }						\
   }else{					\
