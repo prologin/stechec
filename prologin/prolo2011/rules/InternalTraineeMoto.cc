@@ -17,6 +17,90 @@
 
 #include "interface.hh"
 
+
+/*
+ * Wrapper that handles both iterators and reverse_iterators for double ended
+ * queues. It is used only for merging two InternalTraineeMoto’s.
+ */
+template<typename T>
+class DequeIterator
+{
+public:
+    typedef std::deque<T>	deque_type;
+
+    DequeIterator(deque_type&	deque,
+		  bool		reverse = false);
+
+    // Using the two next methods is undefined if the iterator has reached the
+    // end of the deque
+    T& operator*();
+    T& operator->();
+
+    // Go to the next node (does not raise an error if the end is reached)
+    DequeIterator<T>& operator++();
+    // Return if the end is reached
+    operator bool();
+
+protected:
+    deque_type&	deque_;
+
+    bool	reverse_;
+    typename deque_type::iterator		it_;
+    typename deque_type::reverse_iterator	rit_;
+};
+
+template<typename T>
+DequeIterator<T>::DequeIterator(deque_type&	deque,
+				bool		reverse)
+    : deque_ (deque),
+      reverse_ (reverse)
+{
+    if (reverse_)
+	rit_ = deque.rbegin();
+    else
+	it_ = deque.begin();
+}
+
+template<typename T>
+T&
+DequeIterator<T>::operator*()
+{
+    if (reverse_)
+	return (*rit_);
+    else
+	return (*it_);
+}
+
+template<typename T>
+T&
+DequeIterator<T>::operator->()
+{
+    if (reverse_)
+	return (*rit_);
+    else
+	return (*it_);
+}
+
+template<typename T>
+DequeIterator<T>&
+DequeIterator<T>::operator++()
+{
+    if (reverse_)
+	++rit_;
+    else
+	++it_;
+    return (*this);
+}
+
+template<typename T>
+DequeIterator<T>::operator bool()
+{
+    if (reverse_)
+	return (rit_ != deque_.rend());
+    else
+	return (it_ != deque_.end());
+}
+
 InternalTraineeMoto::InternalTraineeMoto(GameData* gd,
                                          int player,
                                          position init,
@@ -253,56 +337,4 @@ trainee_moto InternalTraineeMoto::to_trainee_moto(int indice){
     out.emplacement.push_back(content_[i]); // TODO
   }
   return out;
-}
-
-template<typename T>
-DequeIterator<T>::DequeIterator(deque_type&	deque,
-				bool		reverse)
-    : deque_ (deque),
-      reverse_ (reverse)
-{
-    if (reverse_)
-	rit_ = deque.rbegin();
-    else
-	it_ = deque.begin();
-}
-
-template<typename T>
-T&
-DequeIterator<T>::operator*()
-{
-    if (reverse_)
-	return (*rit_);
-    else
-	return (*it_);
-}
-
-template<typename T>
-T&
-DequeIterator<T>::operator->()
-{
-    if (reverse_)
-	return (*rit_);
-    else
-	return (*it_);
-}
-
-template<typename T>
-DequeIterator<T>&
-DequeIterator<T>::operator++()
-{
-    if (reverse_)
-	++rit_;
-    else
-	++it_;
-    return (*this);
-}
-
-template<typename T>
-DequeIterator<T>::operator bool()
-{
-    if (reverse_)
-	return (rit_ != deque_.rend());
-    else
-	return (it_ != deque_.end());
 }
