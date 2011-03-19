@@ -103,6 +103,20 @@ void my_print_scores()
     std::cout << std::endl;
 }
 
+void my_print_bonus()
+{
+    for (int j = 0; j < nombre_equipes(); ++j)
+    {
+	std::vector<type_bonus>	bonus = regarder_bonus(j);
+	std::cout << "Bonus[" << j << "]:";
+	if (bonus.size() == 0)
+	    std::cout << " <vide>";
+	for (unsigned int b = 0; b < bonus.size(); ++b)
+	    std::cout << " " << str_type_bonus(bonus[b]) << "(" << b << ")";
+	std::cout << std::endl;
+    }
+}
+
 void test_error_cases()
 {
     std::string	indent("   ");
@@ -140,6 +154,7 @@ void jouer()
     my_print_trainees();
     my_print_sources();
     my_print_scores();
+    my_print_bonus();
 
     test_error_cases();
 }

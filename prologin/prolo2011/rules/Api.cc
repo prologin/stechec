@@ -142,8 +142,16 @@ type_bonus Api::regarder_type_bonus(position pos)
 //
 std::vector<type_bonus> Api::regarder_bonus(int equipe)
 {
-  // TODO
-  abort();
+    if (equipe < 0 || equipe >= g_->joueurs.size())
+	return std::vector<type_bonus>();
+
+    const std::vector<type_bonus>& bonus = g_->joueurs[equipe].bonus;
+    std::vector<type_bonus>	result;
+
+    result.reserve(bonus.size());
+    for (int i = 0; i < bonus.size(); ++i)
+	result.push_back(bonus[i]);
+    return (result);
 }
 
 ///
