@@ -330,6 +330,7 @@ AC_CONFIG_FILES([
   prologin/prolo2011/Makefile
   prologin/prolo2011/data/Makefile
   prologin/prolo2011/rules/Makefile
+  prologin/prolo2011/gui/Makefile
 ])
 fi
 

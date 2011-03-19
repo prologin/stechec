@@ -2,4 +2,5 @@
 
 SUBDIRS =					\
 	data					\
-	rules
+	rules					\
+	gui

@@ -1,0 +1,11 @@
+--- interface.cc.orig	2011-03-19 13:07:08.456666573 +0100
++++ interface.cc	2011-03-19 13:14:19.806666427 +0100
+@@ -669,7 +669,7 @@
+   PyObject* name;
+   const char* champion_path;
+       
+-  champion_path = getenv("CHAMPION_PATH");
++  champion_path = CHAMPION_PATH; // Set by Makefile.am
+   if (champion_path == NULL)
+     champion_path = ".";
+ 
