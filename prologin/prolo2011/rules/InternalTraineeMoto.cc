@@ -203,3 +203,55 @@ trainee_moto InternalTraineeMoto::to_trainee_moto(int indice){
   }
   return out;
 }
+
+template<typename T>
+DequeIterator<T>::DequeIterator(deque_type&	deque,
+				bool		reverse)
+    : deque_ (deque),
+      reverse_ (reverse)
+{
+    if (reverse_)
+	rit_ = deque.rbegin();
+    else
+	it_ = deque.begin();
+}
+
+template<typename T>
+T&
+DequeIterator<T>::operator*()
+{
+    if (reverse_)
+	return (*rit_);
+    else
+	return (*it_);
+}
+
+template<typename T>
+T&
+DequeIterator<T>::operator->()
+{
+    if (reverse_)
+	return (*rit_);
+    else
+	return (*it_);
+}
+
+template<typename T>
+DequeIterator<T>&
+DequeIterator<T>::operator++()
+{
+    if (reverse_)
+	++rit_;
+    else
+	++it_;
+    return (*this);
+}
+
+template<typename T>
+DequeIterator<T>::operator bool()
+{
+    if (reverse_)
+	return (rit_ != deque_.rend());
+    else
+	return (it_ != deque_.end());
+}

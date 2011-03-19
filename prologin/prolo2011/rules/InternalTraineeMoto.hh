@@ -18,6 +18,37 @@
 
 class GameData;
 
+/*
+ * Wrapper that handles both iterators and reverse_iterators for double ended
+ * queues.
+ */
+template<typename T>
+class DequeIterator
+{
+public:
+    typedef std::deque<T>	deque_type;
+
+    DequeIterator(deque_type&	deque,
+		  bool		reverse = false);
+
+    // Using the two next methods is undefined if the iterator has reached the
+    // end of the deque
+    T& operator*();
+    T& operator->();
+
+    // Go to the next node (does not raise an error if the end is reached)
+    DequeIterator<T>& operator++();
+    // Return if the end is reached
+    operator bool();
+
+protected:
+    deque_type&	deque_;
+
+    bool	reverse_;
+    typename deque_type::iterator		it_;
+    typename deque_type::reverse_iterator	rit_;
+};
+
 class InternalTraineeMoto
 {
 public:
