@@ -171,8 +171,11 @@ erreur Api::deplacer(int id, position de, position vers)
 //
 erreur Api::couper_trainee_moto(int id, position entre, position et)
 {
-  // TODO
-  abort();
+    LOG4("Api::couper_trainee_moto");
+    DO_ACTION(ActionCouperTraineeMoto, g_->get_current_player(),
+	      id, entre, et);
+    LOG4("Api::deplacer : OK");
+    return OK;
 }
 
 ///
@@ -238,10 +241,14 @@ erreur Api::poser_point_croisement(position point)
 ///
 // Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
 //
-erreur Api::fusionner(int id1, position pos1, int id2, position pos2)
+erreur Api::fusionner(int	id1, position	pos1,
+		      int	id2, position	pos2)
 {
-  // TODO
-  abort();
+    LOG4("Api::fusionner");
+    DO_ACTION(ActionFusionner, g_->get_current_player(),
+	      id1, pos1, id2, pos2);
+    LOG4("Api::fusionner OK");
+    return OK;
 }
 
 bool Api::mon_tour()

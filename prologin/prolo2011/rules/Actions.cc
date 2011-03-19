@@ -38,6 +38,7 @@ void Action::annuler(GameData *g){
   LOG3("annule une action abstraite");
 }
 
+/* ********** Action Deplacer ********** */
 
 void ActionDeplacer::verifier(GameData *g){
   if (id_ < 0 || id_ >= g->motos.size()) throw ID_INVALIDE;
@@ -55,6 +56,7 @@ void ActionDeplacer::appliquer(GameData* g)
   moto.move(from_, to_);
   new_queue_ = moto.queue(to_);
 }
+
 void ActionDeplacer::annuler(GameData* g)
 {
   InternalTraineeMoto &moto = g->motos.at(id_);
@@ -82,17 +84,123 @@ void ActionDeplacer::envoyer(Api* api)
   api->SendToServer(com);
 }
 
-Action* act_from_pkt(int type, const StechecPkt* pkt)
+ActionDeplacer*
+ActionDeplacer::recevoir(const StechecPkt* pkt)
 {
-  struct position from, to;
-  switch(type)
-  {
-  case ACT_DEPLACER:
+    position from, to;
+
     from.x = pkt->arg[3];
     from.y = pkt->arg[4];
     to.x = pkt->arg[5];
     to.y = pkt->arg[6];
     return new ActionDeplacer(pkt->arg[1], pkt->arg[2], from, to);
-  }
-  abort();
+}
+
+/* ********** Action CouperTraineeMoto ********** */
+
+void ActionCouperTraineeMoto::verifier(GameData* g)
+{
+    if (id_ < 0 || id_ >= g->motos.size())
+	throw ID_INVALIDE;
+    g->motos[id_].reject_bad_coupe(entre_, et_);
+}
+
+void ActionCouperTraineeMoto::appliquer(GameData* g)
+{
+    (void) g;
+}
+
+void ActionCouperTraineeMoto::annuler(GameData* g)
+{
+    (void) g;
+}
+
+void ActionCouperTraineeMoto::envoyer(Api* api)
+{
+    StechecPkt com(ACT_COUPER_TRAINEE_MOTO, -1);
+    com.Push(8, last_order_id++, player_,
+	     id_, new_id_,
+	     entre_.x, entre_.y,
+	     et_.x, et_.y);
+    LOG3("Envoyer une coupe au serveur...");
+    api->SendToServer(com);
+}
+
+ActionCouperTraineeMoto*
+ActionCouperTraineeMoto::recevoir(const StechecPkt* pkt)
+{
+    position entre, et;
+    ActionCouperTraineeMoto*	result;
+
+    entre.x = pkt->arg[4];
+    entre.y = pkt->arg[5];
+    et.x = pkt->arg[6];
+    et.y = pkt->arg[7];
+    result = new ActionCouperTraineeMoto(pkt->arg[1],
+					 pkt->arg[2], entre, et);
+    result->new_id_ = pkt->arg[3];
+    return (result);
+}
+
+/* ********** Action Fusionner ********** */
+
+void ActionFusionner::verifier(GameData* g)
+{
+    if (
+	(id1_ < 0 || id1_ >= g->motos.size()) ||
+	(id2_ < 0 || id2_ >= g->motos.size()) ||
+	(id1_ == id2_)
+	)
+	throw ID_INVALIDE;
+    g->motos[id1_].reject_bad_fusion(g->motos[id2_], pos1_, pos2_);
+}
+
+void ActionFusionner::appliquer(GameData* g)
+{
+    (void) g;
+}
+
+void ActionFusionner::annuler(GameData* g)
+{
+    (void) g;
+}
+
+void ActionFusionner::envoyer(Api* api)
+{
+    StechecPkt com(ACT_FUSIONNER, -1);
+    com.Push(8, last_order_id++, player_,
+	     id1_, id2_,
+	     pos1_.x, pos1_.y,
+	     pos2_.x, pos2_.x);
+    LOG3("Envoyer une fusion au serveur...");
+    api->SendToServer(com);
+}
+
+
+ActionFusionner*
+ActionFusionner::recevoir(const StechecPkt* pkt)
+{
+    position pos1, pos2;
+    pos1.x = pkt->arg[3];
+    pos1.y = pkt->arg[4];
+    pos2.x = pkt->arg[5];
+    pos2.y = pkt->arg[6];
+    return new ActionFusionner(pkt->arg[1],
+			       pkt->arg[2], pos1,
+			       pkt->arg[3], pos2);
+}
+
+Action* act_from_pkt(int type, const StechecPkt* pkt)
+{
+    switch(type)
+    {
+    case ACT_DEPLACER:
+	return ActionDeplacer::recevoir(pkt);
+    case ACT_COUPER_TRAINEE_MOTO:
+	return ActionCouperTraineeMoto::recevoir(pkt);
+    case ACT_FUSIONNER:
+	return ActionFusionner::recevoir(pkt);
+    default:
+	abort();
+    }
 }

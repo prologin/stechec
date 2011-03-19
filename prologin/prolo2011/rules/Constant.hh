@@ -113,6 +113,8 @@ enum e_com_type {
   CONTENU_CASE, // x, y, type case
   SOURCE_CONTENT,
   ACT_DEPLACER,
+  ACT_COUPER_TRAINEE_MOTO,
+  ACT_FUSIONNER,
   LAST_MSG
 };
 
