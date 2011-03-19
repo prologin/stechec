@@ -41,6 +41,7 @@ stechec_adddep()
         qt) STECHEC_PUSHDEP([qt]) ;;
         mysql) STECHEC_PUSHDEP([mysql]) ;;
         readline) STECHEC_PUSHDEP([readline]) ;;
+        python) STECHEC_PUSHDEP([python]) ;;
         *)
             sub_deps=$(eval echo "\$DEPENDS_$dep")
             if test "x$sub_deps" != x; then

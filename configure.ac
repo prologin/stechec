@@ -43,7 +43,7 @@ DEPENDS_prolo2008="prologin"
 DEPENDS_prolo2009="prologin"
 DEPENDS_prolo2010="prologin"
 DEPENDS_summer2010="prologin"
-DEPENDS_prolo2011="prologin"
+DEPENDS_prolo2011="prologin,python"
 
 
 # Can select which module(s) to build
@@ -196,6 +196,13 @@ case $DEPENDS in
     *mysql*) STECHEC_CHECK_MYSQL ;;
 esac
 AM_CONDITIONAL([HAVE_MYSQL], [test x"$HAVE_MYSQL" = xyes])
+
+# Python 2.x
+HAVE_PYTHON=no
+case $DEPENDS in
+    *python*) STECHEC_CHECK_PYTHON ;;
+esac
+AM_CONDITIONAL([HAVE_PYTHON], [test x"$HAVE_PYTHON" = xyes])
 
 # Check for pthread.
 TBT_CHECK_PTHREAD
