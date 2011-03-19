@@ -13,6 +13,7 @@
 #include <stdlib.h>
 
 #include "Api.hh"
+#include "Utils.hh"
 
 // global used in interface.cc
 Api* api;
@@ -114,9 +115,13 @@ std::vector<trainee_moto> Api::trainees_moto()
 //
 type_case Api::regarder_type_case(position pos)
 {
-  // TODO assert position
-  Case &c = g_->get_case(pos);
-  return c.type;
+    // FIXED by PM: assert position and return a default value (OBSTACLE) if
+    // the positin is invalid
+
+    if (position_invalide(pos.x, pos.y))
+	return (OBSTACLE);
+    Case &c = g_->get_case(pos);
+    return (c.type);
 }
 
 ///
@@ -124,9 +129,12 @@ type_case Api::regarder_type_case(position pos)
 //
 type_bonus Api::regarder_type_bonus(position pos)
 {
-  // TODO assert position
-  Case &c = g_->get_case(pos);
-  return c.bonus;
+    // FIXED by PM: assert position and return a default value (PAS_BONUS) if
+    // the positin is invalid
+    if (position_invalide(pos.x, pos.y))
+	return (PAS_BONUS);
+    Case &c = g_->get_case(pos);
+    return c.bonus;
 }
 
 ///
