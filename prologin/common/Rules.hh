@@ -115,6 +115,7 @@ public:
   int arg[MAX_ARG];
 
   StechecPkt(int type, int player_id);
+  StechecPkt(const StechecPkt& pkt);
   void Push(unsigned nbarg, ...);
   int getNbArg() const;
   void setNbArg(unsigned nb);
@@ -127,6 +128,15 @@ inline StechecPkt::StechecPkt(int type, int player_id)
     nb_args(0)
 {
   data_size = sizeof(*this) - (MAX_ARG * sizeof(int));
+}
+
+inline StechecPkt::StechecPkt(const StechecPkt& pkt)
+  : Packet(STECHEC_PKT, pkt.client_id),
+    type(pkt.type)
+{
+  setNbArg(pkt.nb_args);
+  for (int i = 0; i < pkt.nb_args; ++i)
+    arg[i] = pkt.arg[i];
 }
 
 inline int StechecPkt::getNbArg() const
