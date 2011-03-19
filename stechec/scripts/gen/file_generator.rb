@@ -290,10 +290,14 @@ to the script file : gen/" + script
       block.call(fn)
       if print_comment then @f.puts end
     end
-    @dumpfuns.each do |f|
-      print_multiline_comment(f.conf['fct_summary']) if print_comment
-      block.call(f)
-      if print_comment then @f.puts end
+
+    # XXX: That's quite dirty.
+    if arr == 'function'
+      @dumpfuns.each do |f|
+        print_multiline_comment(f.conf['fct_summary']) if print_comment
+        block.call(f)
+        if print_comment then @f.puts end
+      end
     end
   end
 
