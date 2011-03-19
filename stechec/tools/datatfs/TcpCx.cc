@@ -271,13 +271,8 @@ void TcpCx::sendData(unsigned char* data, unsigned size)
               continue;
             }
         }
-      if (cnt != snd_size)
-        {
-          state_ = CX_CLOSED;
-          throw NetSysError("send");
-        }
 
-      snd_bytes += snd_size;
+      snd_bytes += cnt;
     }
 }
 
