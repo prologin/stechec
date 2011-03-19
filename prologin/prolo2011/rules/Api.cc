@@ -61,7 +61,7 @@ std::vector<int> Api::scores()
 
     scores.reserve(joueurs.size());
     for (int i = 0; i < joueurs.size(); ++i)
-        scores[i] = joueurs[i].score;
+        scores.push_back(joueurs[i].score);
     return (scores);
 }
 
