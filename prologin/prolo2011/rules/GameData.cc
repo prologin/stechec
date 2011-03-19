@@ -50,6 +50,8 @@ void SourceEnergie::set_potentiel(int potentiel)
 }
 
 GameData::GameData()
+    : current_player(0),
+      can_play(true)
 {
     int		taille = TAILLE_TERRAIN * TAILLE_TERRAIN;
     Case	default_case;
