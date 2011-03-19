@@ -51,41 +51,12 @@ void SourceEnergie::set_potentiel(int potentiel)
 
 GameData::GameData()
 {
-  generer_terrain();
-}
+    int		taille = TAILLE_TERRAIN * TAILLE_TERRAIN;
+    Case	default_case;
 
-/*
- * Ceci génère pour le moment un terrain de test.
- * FIXME: À remplacer par le chargement du terrain depuis un fichier.
- */
-void
-GameData::generer_terrain()
-{
-  position spawn1, spawn2;
-
-  terrain_.reserve(TAILLE_TERRAIN * TAILLE_TERRAIN);
-
-  // Mise en place des deux joueurs + trainées
-  spawn1.x = 0;
-  spawn1.y = 0;
-  spawn2.x = TAILLE_TERRAIN - 1;
-  spawn2.y = TAILLE_TERRAIN - 1;
-  InternalTraineeMoto derouleur_1(this, 0, spawn1, TAILLE_TRAINEE);
-  InternalTraineeMoto derouleur_2(this, 1, spawn2, TAILLE_TRAINEE);
-  motos.push_back(derouleur_1);
-  motos.push_back(derouleur_2);
-  get_case(spawn1).nb_trainees_moto = 1;
-  get_case(spawn2).nb_trainees_moto = 1;
-  joueurs.reserve(2);
-
-  spawn1.x = 0;
-  spawn1.y = 4;
-  spawn2.x = TAILLE_TERRAIN - 1;
-  spawn2.y = TAILLE_TERRAIN - 1 - 4;
-
-  srand(time(0));
-  current_player = 1;
-  can_play = false;
+    terrain_.reserve(taille);
+    for (int i = 0; i < taille; ++i)
+	terrain_.push_back(default_case);
 }
 
 void GameData::Init() {

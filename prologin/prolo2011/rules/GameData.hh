@@ -63,9 +63,6 @@ public:
   void Init();
   void check(const char * file, int line);
 
-  // Juste pour les tests
-  void generer_terrain();
-
   // Accès basique aux données
   Case& get_case(int x, int y);
   Case& get_case(const position &pos);
