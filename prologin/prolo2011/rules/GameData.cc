@@ -16,7 +16,7 @@
 #include <ctime>
 #include <cstdlib>
 
-//todo, better, call Init() from BeforeNewGame, etc..
+// TODO: better, call Init() from BeforeNewGame, etc..
 #define INIT()					\
   assert(initialized_);
 
@@ -86,6 +86,36 @@ GameData::get_case(const position &p)
   return get_case(p.x, p.y);
 }
 
+int GameData::get_free_moto_id()
+{
+    // Even if it is inefficient, it should work while there’s no more than
+    // 2^(sizeof (int) * 8) motos. :-)
+
+    int result = 0;
+    while (moto_valide(result))
+	++result;
+    return result;
+}
+
+InternalTraineeMoto&
+GameData::creer_trainee_moto(int player, position init, int max_len)
+{
+    int	id = get_free_moto_id();
+    InternalTraineeMoto moto(this, player, id, init, max_len);
+    motos.insert(std::pair<int, InternalTraineeMoto>(id, moto));
+    return motos[id];
+}
+
+bool GameData::moto_valide(int id)
+{
+    return (motos.find(id) != motos.end());
+}
+
+void GameData::supprimer_moto(int id)
+{
+    motos.erase(id);
+}
+
 void GameData::team_switched(){
   LOG4("GameData::team_switched");
   can_play = true;
@@ -140,15 +170,6 @@ GameData::get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus)
 int GameData::get_real_turn()
 {
   return (getCurrentTurn() - 1) / 2 + 1;
-}
-
-InternalTraineeMoto& GameData::creer_trainee_moto(int player,
-                                                  position init,
-                                                  int max_len)
-{
-    InternalTraineeMoto moto(this, player, init, max_len);
-    motos.push_back(moto);
-    return motos[motos.size() - 1];
 }
 
 bool GameData::isMatchFinished(){

@@ -17,7 +17,6 @@
 
 #include "interface.hh"
 
-
 /*
  * Wrapper that handles both iterators and reverse_iterators for double ended
  * queues. It is used only for merging two InternalTraineeMoto’s.
@@ -101,18 +100,27 @@ DequeIterator<T>::operator bool()
 	return (it_ != deque_.end());
 }
 
-InternalTraineeMoto::InternalTraineeMoto(GameData* gd,
-                                         int player,
-                                         position init,
-                                         int max_len)
+InternalTraineeMoto::InternalTraineeMoto(GameData*	gd,
+                                         int		player,
+					 int		id,
+                                         position	init,
+                                         int		max_len)
     : gd_(gd),
-      len_(1),
       player_(player),
+      id_(id),
+      len_(1),
       max_len_(max_len),
       last_end_moved_(false)
 {
   content_.push_front(init);
   LOG4("trainee_moto constructor");
+}
+
+InternalTraineeMoto::InternalTraineeMoto()
+{
+    ERR("Tried to instanciate InternalTraineeMoto with the default"
+	" constructor (this is invalid, and compile just in order to be able"
+	" to use std::map)");
 }
 
 bool InternalTraineeMoto::begin(position pos){
@@ -290,7 +298,7 @@ erreur InternalTraineeMoto::fusionner(InternalTraineeMoto	&autre,
 	else
 	    content_.push_front(buffer);
     }
-    autre.content_.clear();
+    gd_->supprimer_moto(autre.id_);
 }
 
 /*
@@ -328,13 +336,14 @@ position InternalTraineeMoto::queue(position head__){
   }
 }
 
-trainee_moto InternalTraineeMoto::to_trainee_moto(int indice){
-  trainee_moto out;
-  out.id = indice;
-  out.emplacement.reserve(len_);
-  out.team = player_;
-  for (int i = 0; i < len_; i++){
-    out.emplacement.push_back(content_[i]); // TODO
-  }
-  return out;
+trainee_moto InternalTraineeMoto::to_trainee_moto() const
+{
+    trainee_moto out;
+
+    out.id = id_;
+    out.emplacement.reserve(len_);
+    out.team = player_;
+    for (int i = 0; i < len_; i++)
+	out.emplacement.push_back(content_[i]); // TODO
+    return out;
 }

@@ -23,12 +23,17 @@ class InternalTraineeMoto
 public:
     typedef std::deque<position> deque_type;
 
-    InternalTraineeMoto(GameData* gd, int player, position init, int max_len);
+    InternalTraineeMoto(GameData* gd,
+			int player, int id,
+			position init, int max_len);
+    // Will fail. It is defined only to be able to put InternalTraineeMoto’s in
+    // std::map
+    InternalTraineeMoto();
 
     bool begin(position pos);
     bool end(position pos);
 
-    trainee_moto to_trainee_moto(int indice);
+    trainee_moto to_trainee_moto() const;
 
     erreur move(position from, position to);
     void reject_bad_move(position from, position to);
@@ -47,12 +52,14 @@ public:
     position head();
     position queue();
 
-    GameData* gd_;
+    GameData*	gd_;
+    int		player_;
+    int		id_;
+
     deque_type content_;
     int len_;
     int max_len_;
     bool last_end_moved_; /* false when head, true when queue */
-    int player_;
 };
 
 #endif // !INTERNAL_TRAINEE_MOTO_HH_

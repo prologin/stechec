@@ -18,6 +18,8 @@
 # include "InternalTraineeMoto.hh"
 # include "Actions.hh"
 
+# include <map>
+
 class Action;
 
 /*!
@@ -58,53 +60,67 @@ struct Joueur
 class GameData: public StechecGameData
 {
 public:
-  GameData();
-  // Call this before everything else.
-  void Init();
-  void check(const char * file, int line);
+    GameData();
+    // Call this before everything else.
+    void Init();
+    void check(const char * file, int line);
 
-  // Accès basique aux données
-  Case& get_case(int x, int y);
-  Case& get_case(const position &pos);
+    // Accès basique aux données
+    Case& get_case(int x, int y);
+    Case& get_case(const position &pos);
 
-  // side effects
-  void team_switched();
+    // Manipulations basiques des motos
 
-  // actions
-  std::vector<Action*> actions;
-  void appliquer_action(Action* act);
-  void send_actions();
-  bool annuler();
+    // Chaque moto est identifiée par un entier, et celui-ci ne doit pas
+    // changer. Il arrive que des motos soit supprimées, ce qui laisse
+    // apparaître des trous dans l’ensemble des identifiants. C’est uniquement
+    // pour cela que std::map est le plus adapté.
+    InternalTraineeMoto&
+    creer_trainee_moto(int player, position init, int max_len);
+    bool moto_valide(int id);
+    void supprimer_moto(int id);
 
-  // turn
-  int get_current_player();
-  bool mon_tour();
-  int mon_equipe();
-  void get_scores(std::vector<int>& scores);
-  void get_sources(std::vector<source_energie>& srcs);
-  void get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus);
-  int get_real_turn();
-  InternalTraineeMoto& creer_trainee_moto(int player,
-                                          position init,
-                                          int max_len);
+    // side effects
+    void team_switched();
 
-  bool isMatchFinished();
+    // actions
+    std::vector<Action*> actions;
+    void appliquer_action(Action* act);
+    void send_actions();
+    bool annuler();
+
+    // turn
+    int get_current_player();
+    bool mon_tour();
+    int mon_equipe();
+    void get_scores(std::vector<int>& scores);
+    void get_sources(std::vector<source_energie>& srcs);
+    void get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus);
+    int get_real_turn();
+
+    bool isMatchFinished();
 
 
-  // data
-  bool can_play;
-  int current_player;
-  // server internal // pourquoi ne pas mettre des actions ici ? il est trop tard maintenant, mais bon...
-  std::vector<std::vector<int> > packets;
+    // data
+    typedef std::map<int, InternalTraineeMoto>	motos_type;
 
-  std::vector<Joueur>               joueurs;
-  std::vector<InternalTraineeMoto>  motos;
-  std::vector<SourceEnergie>        sources;
+    bool can_play;
+    int current_player;
+    // server internal
+    // Coucou: pourquoi ne pas mettre des actions ici ? il est trop tard
+    // maintenant, mais bon...
+    std::vector<std::vector<int> > packets;
 
-private:
-  bool initialized_;
+    std::vector<Joueur>         joueurs;
+    motos_type			motos;
+    std::vector<SourceEnergie>  sources;
 
-  std::vector<Case> terrain_;
+protected:
+    bool initialized_;
+
+    std::vector<Case> terrain_;
+
+    int get_free_moto_id();
 };
 
 #endif // !GAMEDATA_HH_

@@ -101,13 +101,14 @@ std::vector<source_energie> Api::sources_energie()
 //
 std::vector<trainee_moto> Api::trainees_moto()
 {
-  std::vector<trainee_moto>         out;
-  std::vector<InternalTraineeMoto>& motos = g_->motos;
+    std::vector<trainee_moto>		out;
+    GameData::motos_type&			motos = g_->motos;
+    GameData::motos_type::const_iterator	it;
 
-  out.reserve(motos.size());
-  for (int i = 0; i < motos.size(); i++)
-    out.push_back(motos[i].to_trainee_moto(i));
-  return (out);
+    out.reserve(motos.size());
+    for (it = motos.begin(); it != motos.end(); ++it)
+	out.push_back(it->second.to_trainee_moto());
+    return (out);
 }
 
 ///

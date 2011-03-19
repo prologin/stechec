@@ -41,47 +41,48 @@ void Action::annuler(GameData *g){
 /* ********** Action Deplacer ********** */
 
 void ActionDeplacer::verifier(GameData *g){
-  if (id_ < 0 || id_ >= g->motos.size()) throw ID_INVALIDE;
-  InternalTraineeMoto &moto = g->motos.at(id_);
-  moto.reject_bad_move(from_, to_);
+    if (!g->moto_valide(id_))
+	throw ID_INVALIDE;
+    InternalTraineeMoto &moto = g->motos.at(id_);
+    moto.reject_bad_move(from_, to_);
 }
 
 void ActionDeplacer::appliquer(GameData* g)
 {
-  LOG2("trainee_moto appliquer");
-  InternalTraineeMoto &moto = g->motos.at(id_);
-  old_len_ = moto.length();
-  old_queue_ = moto.queue(from_);
-  last_end_moved_ = moto.last_end_moved_;
-  moto.move(from_, to_);
-  new_queue_ = moto.queue(to_);
+    LOG2("trainee_moto appliquer");
+    InternalTraineeMoto &moto = g->motos.at(id_);
+    old_len_ = moto.length();
+    old_queue_ = moto.queue(from_);
+    last_end_moved_ = moto.last_end_moved_;
+    moto.move(from_, to_);
+    new_queue_ = moto.queue(to_);
 }
 
 void ActionDeplacer::annuler(GameData* g)
 {
-  InternalTraineeMoto &moto = g->motos.at(id_);
-  if (old_len_ == moto.len_){
-    moto.move(new_queue_, old_queue_);
-  }else if (old_len_ == moto.len_ - 1){
-    moto.len_ --;
-    if (last_end_moved_){
-      moto.content_.pop_front();
-    }else{
-      moto.content_.pop_back();
+    InternalTraineeMoto &moto = g->motos.at(id_);
+    if (old_len_ == moto.len_)
+	moto.move(new_queue_, old_queue_);
+    else if (old_len_ == moto.len_ - 1)
+    {
+	moto.len_ --;
+	if (last_end_moved_)
+	    moto.content_.pop_front();
+	else
+	    moto.content_.pop_back();
     }
-  }else{
-    abort();
-  }
-  // TODO len : supprimer le debut si la taille a augmentee
-  moto.last_end_moved_ = last_end_moved_;
+    else
+	abort();
+    // TODO len : supprimer le debut si la taille a augmentee
+    moto.last_end_moved_ = last_end_moved_;
 }
 
 void ActionDeplacer::envoyer(Api* api)
 {
-  StechecPkt com(ACT_DEPLACER, -1);
-  com.Push(7, last_order_id++, player_, id_, from_.x, from_.y, to_.x, to_.y);
-  LOG3("envoyer un deplacement au serveur...");
-  api->SendToServer(com);
+    StechecPkt com(ACT_DEPLACER, -1);
+    com.Push(7, last_order_id++, player_, id_, from_.x, from_.y, to_.x, to_.y);
+    LOG3("envoyer un deplacement au serveur...");
+    api->SendToServer(com);
 }
 
 ActionDeplacer*
@@ -100,7 +101,7 @@ ActionDeplacer::recevoir(const StechecPkt* pkt)
 
 void ActionCouperTraineeMoto::verifier(GameData* g)
 {
-    if (id_ < 0 || id_ >= g->motos.size())
+    if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
     g->motos[id_].reject_bad_coupe(entre_, et_);
 }
@@ -146,11 +147,7 @@ ActionCouperTraineeMoto::recevoir(const StechecPkt* pkt)
 
 void ActionFusionner::verifier(GameData* g)
 {
-    if (
-	(id1_ < 0 || id1_ >= g->motos.size()) ||
-	(id2_ < 0 || id2_ >= g->motos.size()) ||
-	(id1_ == id2_)
-	)
+    if (id1_ == id2_ || !g->moto_valide(id1_) || !g->moto_valide(id2_))
 	throw ID_INVALIDE;
     g->motos[id1_].reject_bad_fusion(g->motos[id2_], pos1_, pos2_);
 }
