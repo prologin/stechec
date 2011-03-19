@@ -1,9 +1,0 @@
-/*!
-** @defgroup tbt Tow Bowl Tactics
-** @brief Located in @c bb5 directory.
-*/
-
-/*!
-** @dir bb5
-** @brief Contains \ref tbt module.
-*/
