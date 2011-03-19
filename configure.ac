@@ -21,7 +21,6 @@ AM_CONFIG_HEADER([config.h])
 modules="prolo2011"
 
 # Existing modules/meta-modules
-STECHEC_ADDMODULE([bb5])
 STECHEC_ADDMODULE([prologin])
 STECHEC_ADDMODULE([ant])
 STECHEC_ADDMODULE([prolo2005])
@@ -35,7 +34,6 @@ STECHEC_ADDMODULE([prolo2011])
 
 # Modules dependencies
 DEPENDS=""
-DEPENDS_bb5="sdl,readline"
 DEPENDS_prologin="sdl,mysql"
 DEPENDS_ant="prologin"
 DEPENDS_prolo2005="prologin"
@@ -219,29 +217,6 @@ AC_CONFIG_FILES([
   stechec/tools/Makefile
   stechec/tools/test/Makefile
 ])
-
-#
-# BB5 output files
-#
-if test x$BUILD_bb5 != x; then
-AC_CONFIG_FILES([
-  bb5/Makefile
-  bb5/ai/Makefile
-  bb5/arbiter/Makefile
-  bb5/client/Makefile
-  bb5/common/Makefile
-  bb5/console/Makefile
-  bb5/data/Makefile
-  bb5/data/default_config.xml
-  bb5/data/team/amazon.xml
-  bb5/data/team/chaos.xml
-  bb5/data/formation/default.xml
-  bb5/teamroster2/Makefile
-  bb5/visu2d/Makefile
-  bb5/rules_test/Makefile
-  bb5/subject/Makefile
-])
-fi
 
 #
 # Prologin ouput files
