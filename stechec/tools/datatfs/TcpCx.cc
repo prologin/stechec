@@ -263,7 +263,7 @@ void TcpCx::sendData(unsigned char* data, unsigned size)
               delay.tv_sec = 0;
               delay.tv_nsec = 1000 * 1000;
               nanosleep(&delay, NULL);
-              if (retry_count++ > 5)
+              if (retry_count++ > 100)
                 {
                   state_ = CX_CLOSED;
                   throw NetSysError("send: EAGAIN raised too much");
