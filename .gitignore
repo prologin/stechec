@@ -35,6 +35,7 @@ prologin/tkrun/tkrun
 prologin/tkrun/tkrun.1
 prologin/web_meta/log_limit
 prologin/web_meta/stechec.yml
+prologin/meta-server/meta-server
 
 stechec/client/stechec
 stechec/scripts/conf.rb

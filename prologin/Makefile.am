@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-SUBDIRS	= common tkrun web_meta
+SUBDIRS	= common tkrun meta-server
 
 SUBDIRS += 					\
 	$(BUILD_ant)				\

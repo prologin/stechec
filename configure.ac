@@ -232,9 +232,9 @@ if test x$BUILD_prologin != x; then
 
 AC_CONFIG_FILES([
   prologin/Makefile
-  prologin/web_meta/Makefile
-  prologin/web_meta/stechec.yml
   prologin/common/Makefile
+  prologin/meta-server/Makefile
+  prologin/meta-server/meta-server
   prologin/tkrun/Makefile
 ])
 
