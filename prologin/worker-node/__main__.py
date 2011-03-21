@@ -56,7 +56,7 @@ class WorkerNodeProxy(object):
         self.node = node
 
 if __name__ == '__main__':
-    s = SimpleXMLRPCServer(('localhost', 8068))
+    s = SimpleXMLRPCServer(('localhost', 8068), logRequests=False)
     s.register_introspection_functions()
 
     worker = WorkerNode({ 'master': {'host': 'localhost',
