@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-SUBDIRS	= common meta-server
+SUBDIRS	= common worker-node
 
 SUBDIRS += 					\
 	$(BUILD_ant)				\

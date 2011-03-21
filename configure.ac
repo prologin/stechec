@@ -233,8 +233,8 @@ if test x$BUILD_prologin != x; then
 AC_CONFIG_FILES([
   prologin/Makefile
   prologin/common/Makefile
-  prologin/meta-server/Makefile
-  prologin/meta-server/meta-server
+  prologin/worker-node/Makefile
+  prologin/worker-node/worker-node
 ])
 
 if test x$BUILD_ant != x; then
