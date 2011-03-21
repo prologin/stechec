@@ -2,7 +2,8 @@ workernodedir = $(pkglibdir)/workernode
 workernodecfgdir = $(sysconfdir)/stechec
 
 dist_workernode_DATA = \
-	__main__.py
+	__main__.py \
+	__init__.py
 
 dist_bin_SCRIPTS = worker-node
 
