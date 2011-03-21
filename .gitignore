@@ -36,6 +36,7 @@ prologin/tkrun/tkrun.1
 prologin/web_meta/log_limit
 prologin/web_meta/stechec.yml
 prologin/worker-node/worker-node
+prologin/worker-node/worker-node.yml
 
 stechec/client/stechec
 stechec/scripts/conf.rb

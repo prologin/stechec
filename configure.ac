@@ -235,6 +235,7 @@ AC_CONFIG_FILES([
   prologin/common/Makefile
   prologin/worker-node/Makefile
   prologin/worker-node/worker-node
+  prologin/worker-node/worker-node.yml
 ])
 
 if test x$BUILD_ant != x; then

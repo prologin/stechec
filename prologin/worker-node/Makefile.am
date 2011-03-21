@@ -7,6 +7,6 @@ dist_workernode_DATA = \
 
 dist_bin_SCRIPTS = worker-node
 
-dist_workernodecfg_DATA =
+dist_workernodecfg_DATA = worker-node.yml
 
-EXTRA_DIST = worker-node.in
+EXTRA_DIST = worker-node.in worker-node.yml.in
