@@ -24,16 +24,20 @@ import gevent.socket
 gevent.monkey.patch_all()
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
+
+import paths
 import socket
 import xmlrpclib
+import yaml
 
 class WorkerNode(object):
     def __init__(self, config):
         self.master = self.create_master_connection(config)
-        self.interval = config['master']['interval']
+        self.interval = config['master']['heartbeat_secs']
         self.hostname = socket.gethostname()
         self.port = config['worker']['port']
         self.slots = self.max_slots = config['worker']['available_slots']
+        self.secret = config['master']['shared_secret']
 
         self.heartbeat_greenlet = gevent.spawn(self.send_heartbeat)
 
@@ -48,7 +52,7 @@ class WorkerNode(object):
     def send_heartbeat(self):
         while True:
             try:
-                self.master.heartbeat('secret', self.get_worker_infos())
+                self.master.heartbeat(self.secret, self.get_worker_infos())
             except gevent.socket.error:
                 print 'master down, retrying heartbeat in %ds' % self.interval
             gevent.sleep(self.interval)
@@ -61,24 +65,13 @@ class WorkerNodeProxy(object):
     def __init__(self, node):
         self.node = node
 
-# TODO: Replace that with a YAML parsing function
 def read_config(filename):
-    return {
-        'master': {
-            'host': 'localhost',
-            'port': 8067,
-            'interval': 2,
-            'secret': 'foobar',
-        },
-        'worker': {
-            'port': 8068,
-            'available_slots': 20,
-        }
-    }
+    return yaml.load(open(filename))
 
 if __name__ == '__main__':
-    config = read_config("")
-    s = SimpleXMLRPCServer(('localhost', 8068), logRequests=False)
+    config = read_config(paths.config_file)
+    s = SimpleXMLRPCServer(('localhost', config['worker']['port']),
+                           logRequests=False)
     s.register_introspection_functions()
 
     worker = WorkerNode(config)
