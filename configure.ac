@@ -235,7 +235,6 @@ AC_CONFIG_FILES([
   prologin/common/Makefile
   prologin/meta-server/Makefile
   prologin/meta-server/meta-server
-  prologin/tkrun/Makefile
 ])
 
 if test x$BUILD_ant != x; then
