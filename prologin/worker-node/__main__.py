@@ -47,6 +47,14 @@ class WorkerNode(object):
                 print 'master down, retrying heartbeat in %ds' % self.interval
             gevent.sleep(self.interval)
 
+class WorkerNodeProxy(object):
+    """
+    Proxies XMLRPC requests to the WorkerNode.
+    """
+
+    def __init__(self, node):
+        self.node = node
+
 if __name__ == '__main__':
     s = SimpleXMLRPCServer(('localhost', 8068))
     s.register_introspection_functions()
@@ -54,6 +62,6 @@ if __name__ == '__main__':
     worker = WorkerNode({ 'master': {'host': 'localhost',
                                      'port': 8067,
                                      'interval': 2}})
-    s.register_instance(worker)
+    s.register_instance(WorkerNodeProxy(worker))
 
     s.serve_forever()
