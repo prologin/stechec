@@ -67,16 +67,18 @@ void init_game()
 void my_print_trainees()
 {
     // Affichage des trainees
+    std::cout << "Trainees:" << std::endl;
     std::vector<trainee_moto> t = trainees_moto();
     for (unsigned int i = 0; i < t.size(); i++)
     {
-        trainee_moto tr = t.at(i);
-        std::cout << "trainee : " << i << std::endl;
+        trainee_moto& tr = t[i];
+        std::cout << "  [p" << tr.team << ":" << tr.id << "] :";
         for (unsigned int j = 0; j < tr.emplacement.size(); j++)
         {
             position p = tr.emplacement.at(j);
-            std::cout << "  " << p.x << " " << p.y << std::endl;
+            std::cout << " (" << p.x << ", " << p.y << ")";
         }
+	std::cout << std::endl;
     }
 }
 
@@ -157,6 +159,41 @@ void jouer()
     my_print_bonus();
 
     test_error_cases();
+
+    static bool move_right = true;
+    int		my_player = mon_equipe();
+    int		incr = 1;
+    int		my_moto = 0;
+    position	cur_pos, next_pos;
+    if (my_player)
+	incr = -1;
+
+    // Choose a moto to move
+    std::vector<trainee_moto> t = trainees_moto();
+    for (unsigned int i = 0; i < t.size(); i++)
+    {
+        trainee_moto& tr = t.at(i);
+	if (tr.team == my_player)
+	{
+	    my_moto = tr.id;
+	    cur_pos = tr.emplacement[0];
+	    next_pos = cur_pos;
+	    break;
+	}
+    }
+
+    for (int i = 0; i < MAX_PA; ++i)
+    {
+	if (move_right)
+	    next_pos.x += incr;
+	else
+	    next_pos.y += incr;
+	move_right = !move_right;
+	std::cout << "Move: (" << cur_pos.x << ", " << cur_pos.y << ") -> ("
+		  << next_pos.x << ", " << next_pos.y << ")" << std::endl;
+	deplacer(my_moto, cur_pos, next_pos);
+	cur_pos = next_pos;
+    }
 }
 
 ///
