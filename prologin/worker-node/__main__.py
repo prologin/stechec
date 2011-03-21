@@ -17,5 +17,43 @@
 # You should have received a copy of the GNU General Public License
 # along with Stechec.  If not, see <http://www.gnu.org/licenses/>.
 
+import gevent
+import gevent.monkey
+import gevent.socket
+
+gevent.monkey.patch_all()
+
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+import xmlrpclib
+
+class WorkerNode(object):
+    def __init__(self, config):
+        self.master = self.create_master_connection(config)
+        self.interval = config['master']['interval']
+        self.infos = ('localhost', 8068)
+
+        self.heartbeat_greenlet = gevent.spawn(self.send_heartbeat)
+
+    def create_master_connection(self, config):
+        host, port = (config['master']['host'], config['master']['port'])
+        url = "http://%s:%d/" % (host, port)
+        return xmlrpclib.ServerProxy(url)
+
+    def send_heartbeat(self):
+        while True:
+            try:
+                self.master.heartbeat('secret', self.infos)
+            except gevent.socket.error:
+                print 'master down, retrying heartbeat in %ds' % self.interval
+            gevent.sleep(self.interval)
+
 if __name__ == '__main__':
-    print 'Hello, world!'
+    s = SimpleXMLRPCServer(('localhost', 8068))
+    s.register_introspection_functions()
+
+    worker = WorkerNode({ 'master': {'host': 'localhost',
+                                     'port': 8067,
+                                     'interval': 2}})
+    s.register_instance(worker)
+
+    s.serve_forever()
