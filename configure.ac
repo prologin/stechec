@@ -234,6 +234,7 @@ AC_CONFIG_FILES([
   prologin/Makefile
   prologin/common/Makefile
   prologin/worker-node/Makefile
+  prologin/worker-node/paths.py
   prologin/worker-node/worker-node
   prologin/worker-node/worker-node.yml
 ])
