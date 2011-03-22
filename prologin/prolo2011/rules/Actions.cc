@@ -90,6 +90,7 @@ void ActionDeplacer::envoyer(Api* api)
 ActionDeplacer*
 ActionDeplacer::recevoir(const StechecPkt* pkt)
 {
+    LOG3("ActionDeplacer::recevoir()");
     position from, to;
 
     from.x = pkt->arg[3];
@@ -139,18 +140,19 @@ void ActionCouperTraineeMoto::annuler(GameData* g)
 
 void ActionCouperTraineeMoto::envoyer(Api* api)
 {
+    LOG3("ActionCouperTraineeMoto::envoyer()");
     StechecPkt com(ACT_COUPER_TRAINEE_MOTO, -1);
     com.Push(7, last_order_id++, player_,
 	     id_,
 	     entre_.x, entre_.y,
 	     et_.x, et_.y);
-    LOG3("Envoyer une coupe au serveur...");
     api->SendToServer(com);
 }
 
 ActionCouperTraineeMoto*
 ActionCouperTraineeMoto::recevoir(const StechecPkt* pkt)
 {
+    LOG3("ActionCouperTraineeMoto::recevoir()");
     position entre, et;
     ActionCouperTraineeMoto*	result;
 
@@ -203,12 +205,12 @@ void ActionFusionner::annuler(GameData* g)
 
 void ActionFusionner::envoyer(Api* api)
 {
+    LOG3("ActionFusionner::envoyer()");
     StechecPkt com(ACT_FUSIONNER, -1);
     com.Push(8, last_order_id++, player_,
 	     id1_, id2_,
 	     pos1_.x, pos1_.y,
 	     pos2_.x, pos2_.y);
-    LOG3("Envoyer une fusion au serveur...");
     api->SendToServer(com);
 }
 
@@ -216,7 +218,9 @@ void ActionFusionner::envoyer(Api* api)
 ActionFusionner*
 ActionFusionner::recevoir(const StechecPkt* pkt)
 {
+    LOG3("ActionFusionner::recevoir()");
     position pos1, pos2;
+
     pos1.x = pkt->arg[4];
     pos1.y = pkt->arg[5];
     pos2.x = pkt->arg[6];
@@ -248,7 +252,6 @@ void ActionEnrouler::verifier(GameData* g)
 void ActionEnrouler::appliquer(GameData* g)
 {
     LOG2("ActionEnrouler::appliquer()");
-
     g->motos[id_].enrouler(point_, data_);
 }
 
@@ -260,11 +263,11 @@ void ActionEnrouler::annuler(GameData* g)
 
 void ActionEnrouler::envoyer(Api* api)
 {
-    StechecPkt com(ACT_FUSIONNER, -1);
-    com.Push(8, last_order_id++, player_,
+    LOG3("ActionEnrouler::envoyer()");
+    StechecPkt com(ACT_ENROULER, -1);
+    com.Push(5, last_order_id++, player_,
 	     id_,
 	     point_.x, point_.y);
-    LOG3("Envoyer un enroulage au serveur...");
     api->SendToServer(com);
 }
 
@@ -272,7 +275,9 @@ void ActionEnrouler::envoyer(Api* api)
 ActionEnrouler*
 ActionEnrouler::recevoir(const StechecPkt* pkt)
 {
+    LOG2("ActionEnrouler::recevoir()");
     position point;
+
     point.x = pkt->arg[3];
     point.y = pkt->arg[4];
     return new ActionEnrouler(pkt->arg[1],
