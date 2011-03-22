@@ -143,10 +143,6 @@ def make_server
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
   FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_lime.cc").to_s)
-  FileUtils.cp((path + "forbidden_fun-c").to_s, install_path.to_s)
-  FileUtils.cp((path + "forbidden_fun-pascal").to_s, install_path.to_s)
-  FileUtils.cp((path + "forbidden_fun-java").to_s, install_path.to_s)
-  FileUtils.cp((path + "forbidden_fun-caml").to_s, install_path.to_s)
   FileUtils.cp((path + "toposort.py").to_s, install_path.to_s)
   FileUtils.cp((path + "rules.mk").to_s, install_path.to_s)
 end
