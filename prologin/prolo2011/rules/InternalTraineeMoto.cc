@@ -263,14 +263,18 @@ void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
         if (*it == entre)
         {
             it2 = it + 1;
-            if (it2 == content_.end() || (*it2) != et)
+            if (it2 == content_.end() || *it2 != et)
                 throw POSITION_INVALIDE;
+	    else
+		return;
         }
         else if (*it == et)
         {
             it2 = it + 1;
             if (it2 == content_.end() || *it2 != entre)
                 throw POSITION_INVALIDE;
+	    else
+		return;
         }
 }
 
