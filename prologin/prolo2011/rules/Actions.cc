@@ -35,7 +35,7 @@ void Action::appliquer(GameData* g)
 {
 }
 void Action::annuler(GameData *g){
-  LOG3("annule une action abstraite");
+  LOG3("WARNING: Action::annuler ne devrait pas etre appele");
 }
 
 /* ********** Action Deplacer ********** */
@@ -49,7 +49,7 @@ void ActionDeplacer::verifier(GameData *g){
 
 void ActionDeplacer::appliquer(GameData* g)
 {
-    LOG2("trainee_moto appliquer");
+    LOG2("ActionDeplacer::appliquer()");
     InternalTraineeMoto &moto = g->motos.at(id_);
     old_len_ = moto.length();
     old_queue_ = moto.queue(from_);
@@ -60,6 +60,7 @@ void ActionDeplacer::appliquer(GameData* g)
 
 void ActionDeplacer::annuler(GameData* g)
 {
+    LOG2("ActionDeplacer::annuler()");
     InternalTraineeMoto &moto = g->motos.at(id_);
     if (old_len_ == moto.len_)
 	moto.move(new_queue_, old_queue_);
@@ -81,7 +82,6 @@ void ActionDeplacer::envoyer(Api* api)
 {
     StechecPkt com(ACT_DEPLACER, -1);
     com.Push(7, last_order_id++, player_, id_, from_.x, from_.y, to_.x, to_.y);
-    LOG3("envoyer un deplacement au serveur...");
     api->SendToServer(com);
 }
 
@@ -108,12 +108,21 @@ void ActionCouperTraineeMoto::verifier(GameData* g)
 
 void ActionCouperTraineeMoto::appliquer(GameData* g)
 {
-    (void) g;
+    LOG2("ActionCouperTraineeMoto::appliquer()");
+    InternalTraineeMoto&	moto1 = g->motos[id_];
+    InternalTraineeMoto*	pmoto2;
+
+    moto1.couper(entre_, et_, &pmoto2);
+    new_id_ = pmoto2->id_;
 }
 
 void ActionCouperTraineeMoto::annuler(GameData* g)
 {
-    (void) g;
+    LOG2("ActionCouperTraineeMoto::annuler()");
+    InternalTraineeMoto&	moto1 = g->motos[id_];
+    InternalTraineeMoto&	moto2 = g->motos[new_id_];
+
+    moto1.fusionner(moto2, entre_, et_);
 }
 
 void ActionCouperTraineeMoto::envoyer(Api* api)
@@ -154,12 +163,21 @@ void ActionFusionner::verifier(GameData* g)
 
 void ActionFusionner::appliquer(GameData* g)
 {
-    (void) g;
+    LOG2("ActionFusionner::appliquer()");
+    InternalTraineeMoto&	moto1 = g->motos[id1_];
+    InternalTraineeMoto&	moto2 = g->motos[id2_];
+
+    moto1.fusionner(moto2, pos1_, pos2_);
 }
 
 void ActionFusionner::annuler(GameData* g)
 {
-    (void) g;
+    LOG2("ActionFusionner::annuler()");
+    InternalTraineeMoto&	moto1 = g->motos[id1_];
+    InternalTraineeMoto*	pmoto2;
+
+    moto1.couper(pos1_, pos2_, &pmoto2);
+    id2_ = pmoto2->id_;
 }
 
 void ActionFusionner::envoyer(Api* api)
