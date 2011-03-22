@@ -25,6 +25,8 @@ gevent.monkey.patch_all()
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 
+import os.path
+import operations
 import paths
 import socket
 import xmlrpclib
@@ -57,6 +59,11 @@ class WorkerNode(object):
                 print 'master down, retrying heartbeat in %ds' % self.interval
             gevent.sleep(self.interval)
 
+    def compile_champion(self, contest, user, champ_id):
+        dir_path = os.path.join(config['paths']['data_root'],
+                                contest, "champions", user, str(champ_id))
+        return operations.compile_champion(config, dir_path, user, champ_id)
+
 class WorkerNodeProxy(object):
     """
     Proxies XMLRPC requests to the WorkerNode.
@@ -64,6 +71,9 @@ class WorkerNodeProxy(object):
 
     def __init__(self, node):
         self.node = node
+
+    def compile_champion(self, secret, *args, **kwargs):
+        return self.node.compile_champion(*args, **kwargs)
 
 def read_config(filename):
     return yaml.load(open(filename))
