@@ -26,25 +26,27 @@
 class Action
 {
 public:
-  Action(int player) : player_(player) {}
+    Action(int player) : player_(player) {}
 
-  virtual ~Action() {}
+    virtual ~Action() {}
 
-  virtual void appliquer(GameData* g);
-  virtual void envoyer(Api* api) = 0;
-  virtual void annuler(GameData* g);
-  virtual void verifier(GameData* g) = 0;
+    virtual void appliquer(GameData* g);
+    virtual void envoyer(Api* api) = 0;
+    virtual void annuler(GameData* g);
+    virtual void verifier(GameData* g) = 0;
+    virtual void print() = 0;
 
 protected:
   int player_;
 };
 
-#define ACTIONS(Nom)				\
-    virtual void appliquer(GameData* g);	\
-    virtual void envoyer(Api* api);		\
+#define ACTIONS(Nom)				  \
+    virtual void appliquer(GameData* g);	  \
+    virtual void envoyer(Api* api);		  \
     static  Nom* recevoir(const StechecPkt* pkt); \
-    virtual void annuler(GameData* g);		\
-    virtual void verifier(GameData* g);
+    virtual void annuler(GameData* g);		  \
+    virtual void verifier(GameData* g);		  \
+    virtual void print();
 
 class ActionDeplacer : public Action
 {

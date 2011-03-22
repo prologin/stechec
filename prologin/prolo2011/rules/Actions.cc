@@ -12,6 +12,7 @@
 
 #include "Actions.hh"
 #include "Contest.hh"
+
 #include <algorithm>
 
 #ifdef ASSERT
@@ -41,6 +42,7 @@ void Action::annuler(GameData *g){
 /* ********** Action Deplacer ********** */
 
 void ActionDeplacer::verifier(GameData *g){
+    LOG2("ActionDeplacer::verifier()");
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
     InternalTraineeMoto &moto = g->motos.at(id_);
@@ -97,10 +99,20 @@ ActionDeplacer::recevoir(const StechecPkt* pkt)
     return new ActionDeplacer(pkt->arg[1], pkt->arg[2], from, to);
 }
 
+void ActionDeplacer::print()
+{
+    std::cout << "ActionDeplacer: [" << player_ << ":" << id_ << "] ";
+    std::cout << "(" << from_.x << ", " << from_.y << ")";
+    std::cout << "->";
+    std::cout << "(" << to_.x << ", " << to_.y << ")";
+    std::cout << std::endl;
+}
+
 /* ********** Action CouperTraineeMoto ********** */
 
 void ActionCouperTraineeMoto::verifier(GameData* g)
 {
+    LOG2("ActionCouperTraineeMoto::verifier()");
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
     g->motos[id_].reject_bad_coupe(entre_, et_);
@@ -152,10 +164,20 @@ ActionCouperTraineeMoto::recevoir(const StechecPkt* pkt)
     return (result);
 }
 
+void ActionCouperTraineeMoto::print()
+{
+    std::cout << "ActionCouperTraineeMoto: [" << player_ << ":" << id_ << "] ";
+    std::cout << "(" << entre_.x << ", " << entre_.y << ")";
+    std::cout << "<->";
+    std::cout << "(" << et_.x << ", " << et_.y << ")";
+    std::cout << std::endl;
+}
+
 /* ********** Action Fusionner ********** */
 
 void ActionFusionner::verifier(GameData* g)
 {
+    LOG2("ActionFusionner::verifier()");
     if (id1_ == id2_ || !g->moto_valide(id1_) || !g->moto_valide(id2_))
 	throw ID_INVALIDE;
     g->motos[id1_].reject_bad_fusion(g->motos[id2_], pos1_, pos2_);
@@ -203,6 +225,15 @@ ActionFusionner::recevoir(const StechecPkt* pkt)
     return new ActionFusionner(pkt->arg[1],
 			       pkt->arg[2], pos1,
 			       pkt->arg[3], pos2);
+}
+
+void ActionFusionner::print()
+{
+    std::cout << "ActionFusionner: [" << player_ << ":" << id1_ << "<->" << id2_ << "] ";
+    std::cout << "(" << pos1_.x << ", " << pos1_.y << ")";
+    std::cout << "<->";
+    std::cout << "(" << pos2_.x << ", " << pos2_.y << ")";
+    std::cout << std::endl;
 }
 
 Action* act_from_pkt(int type, const StechecPkt* pkt)
