@@ -208,7 +208,7 @@ void ActionFusionner::envoyer(Api* api)
     com.Push(8, last_order_id++, player_,
 	     id1_, id2_,
 	     pos1_.x, pos1_.y,
-	     pos2_.x, pos2_.x);
+	     pos2_.x, pos2_.y);
     LOG3("Envoyer une fusion au serveur...");
     api->SendToServer(com);
 }
@@ -218,10 +218,10 @@ ActionFusionner*
 ActionFusionner::recevoir(const StechecPkt* pkt)
 {
     position pos1, pos2;
-    pos1.x = pkt->arg[3];
-    pos1.y = pkt->arg[4];
-    pos2.x = pkt->arg[5];
-    pos2.y = pkt->arg[6];
+    pos1.x = pkt->arg[4];
+    pos1.y = pkt->arg[5];
+    pos2.x = pkt->arg[6];
+    pos2.y = pkt->arg[7];
     return new ActionFusionner(pkt->arg[1],
 			       pkt->arg[2], pos1,
 			       pkt->arg[3], pos2);
