@@ -314,6 +314,8 @@ erreur InternalTraineeMoto::fusionner(InternalTraineeMoto	&autre,
 	else
 	    content_.push_front(buffer);
     }
+    len_ += autre.len_;
+    max_len_ += autre.max_len_;
     gd_->supprimer_moto(autre.id_);
 }
 
