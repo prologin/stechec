@@ -33,7 +33,7 @@ Usage: generator <option> <yaml_file> <install_path>
 
 Options:
   player       create startup files, for candidats and for all langages.
-  server       create special Makefiles for meta-server.
+  server       create special Makefiles for worker nodes.
   rules        generate some boring piece for api rules.
   apidoc       generate latex API documentation for the subject.
 
