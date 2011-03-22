@@ -201,8 +201,12 @@ erreur InternalTraineeMoto::move(position from, position to)
   return POSITION_INVALIDE;
 }
 
-erreur InternalTraineeMoto::couper(position entre, position et)
+erreur InternalTraineeMoto::couper(position entre, position et,
+				   InternalTraineeMoto** moitie)
 {
+    // TODO: associate "entre" with the first half, and "et" with the second
+    // one (this is necessary when cancelling a "coupe"
+
     // First find the two adjectent nodes to split
     deque_type::iterator it;
     deque_type::iterator it2;
@@ -233,6 +237,7 @@ erreur InternalTraineeMoto::couper(position entre, position et)
     InternalTraineeMoto& moto = gd_->creer_trainee_moto(player_,
                                                         *it2,
                                                         new_max_len);
+    *moitie = &moto;
     moto.last_end_moved_ = last_end_moved_;
     max_len_ -= new_max_len;
     len_ -= 1;
@@ -242,6 +247,7 @@ erreur InternalTraineeMoto::couper(position entre, position et)
         moto.len_ += 1;
         len_ -= 1;
     }
+    return OK;
 }
 
 /*

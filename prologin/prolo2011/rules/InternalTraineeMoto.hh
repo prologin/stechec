@@ -38,7 +38,8 @@ public:
     erreur move(position from, position to);
     void reject_bad_move(position from, position to);
 
-    erreur couper(position entre, position et);
+    erreur couper(position entre, position et,
+		  InternalTraineeMoto** moitie);
     void reject_bad_coupe(position entre, position et);
     erreur fusionner(InternalTraineeMoto	&autre,
 		     position			entre,
