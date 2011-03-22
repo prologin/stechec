@@ -14,14 +14,14 @@
 #define INTERNAL_TRAINEE_MOTO_HH_
 
 #include "Constant.hh"
-#include <deque>
+#include <list>
 
 class GameData;
 
 class InternalTraineeMoto
 {
 public:
-    typedef std::deque<position> deque_type;
+    typedef std::list<position> nodes_list;
 
     InternalTraineeMoto(GameData* gd,
 			int player, int id,
@@ -57,7 +57,7 @@ public:
     int		player_;
     int		id_;
 
-    deque_type content_;
+    nodes_list content_;
     int len_;
     int max_len_;
     bool last_end_moved_; /* false when head, true when queue */

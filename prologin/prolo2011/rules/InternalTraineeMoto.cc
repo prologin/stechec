@@ -18,51 +18,51 @@
 #include "interface.hh"
 
 /*
- * Wrapper that handles both iterators and reverse_iterators for double ended
- * queues. It is used only for merging two InternalTraineeMoto’s.
+ * Wrapper that handles both iterators and reverse_iterators for lists. It is
+ * used only for merging two InternalTraineeMoto’s.
  */
 template<typename T>
-class DequeIterator
+class ListIterator
 {
 public:
-    typedef std::deque<T>	deque_type;
+    typedef std::list<T>	nodes_list;
 
-    DequeIterator(deque_type&	deque,
-		  bool		reverse = false);
+    ListIterator(nodes_list&	list,
+		 bool		reverse = false);
 
     // Using the two next methods is undefined if the iterator has reached the
-    // end of the deque
+    // end of the list
     T& operator*();
     T& operator->();
 
     // Go to the next node (does not raise an error if the end is reached)
-    DequeIterator<T>& operator++();
+    ListIterator<T>& operator++();
     // Return if the end is reached
     operator bool();
 
 protected:
-    deque_type&	deque_;
+    nodes_list&	list_;
 
     bool	reverse_;
-    typename deque_type::iterator		it_;
-    typename deque_type::reverse_iterator	rit_;
+    typename nodes_list::iterator		it_;
+    typename nodes_list::reverse_iterator	rit_;
 };
 
 template<typename T>
-DequeIterator<T>::DequeIterator(deque_type&	deque,
-				bool		reverse)
-    : deque_ (deque),
+ListIterator<T>::ListIterator(nodes_list&	list,
+			      bool		reverse)
+    : list_ (list),
       reverse_ (reverse)
 {
     if (reverse_)
-	rit_ = deque.rbegin();
+	rit_ = list.rbegin();
     else
-	it_ = deque.begin();
+	it_ = list.begin();
 }
 
 template<typename T>
 T&
-DequeIterator<T>::operator*()
+ListIterator<T>::operator*()
 {
     if (reverse_)
 	return (*rit_);
@@ -72,7 +72,7 @@ DequeIterator<T>::operator*()
 
 template<typename T>
 T&
-DequeIterator<T>::operator->()
+ListIterator<T>::operator->()
 {
     if (reverse_)
 	return (*rit_);
@@ -81,8 +81,8 @@ DequeIterator<T>::operator->()
 }
 
 template<typename T>
-DequeIterator<T>&
-DequeIterator<T>::operator++()
+ListIterator<T>&
+ListIterator<T>::operator++()
 {
     if (reverse_)
 	++rit_;
@@ -92,12 +92,12 @@ DequeIterator<T>::operator++()
 }
 
 template<typename T>
-DequeIterator<T>::operator bool()
+ListIterator<T>::operator bool()
 {
     if (reverse_)
-	return (rit_ != deque_.rend());
+	return (rit_ != list_.rend());
     else
-	return (it_ != deque_.end());
+	return (it_ != list_.end());
 }
 
 InternalTraineeMoto::InternalTraineeMoto(GameData*	gd,
@@ -208,21 +208,23 @@ erreur InternalTraineeMoto::couper(position entre, position et,
     // one (this is necessary when cancelling a "coupe"
 
     // First find the two adjectent nodes to split
-    deque_type::iterator it;
-    deque_type::iterator it2;
+    nodes_list::iterator it;
+    nodes_list::iterator it2;
     int i = 1;
 
     for (it = content_.begin(); it != content_.end(); ++it, ++i)
         if (*it == entre)
         {
-            it2 = it + 1;
+	    it2 = it;
+	    ++it2;
             if (it2 == content_.end() || *it2 != et)
                 throw POSITION_INVALIDE;
             break;
         }
         else if (*it == et)
         {
-            it2 = it + 1;
+	    it2 = it;
+	    ++it2;
             if (it2 == content_.end() || *it2 != entre)
                 throw POSITION_INVALIDE;
             break;
@@ -237,12 +239,14 @@ erreur InternalTraineeMoto::couper(position entre, position et,
     InternalTraineeMoto& moto = gd_->creer_trainee_moto(player_,
                                                         *it2,
                                                         new_max_len);
+    std::cout << "New moto, init pos: (" << it2->x << ", " << it2->y << ")" << std::endl;
     *moitie = &moto;
     moto.last_end_moved_ = last_end_moved_;
     max_len_ -= new_max_len;
     len_ -= 1;
     while ((it2 = content_.erase(it2)) != content_.end())
     {
+	std::cout << "Pushing: (" << it2->x << ", " << it2->y << ")" << std::endl;
         moto.content_.push_back(*it2);
         moto.len_ += 1;
         len_ -= 1;
@@ -256,13 +260,14 @@ erreur InternalTraineeMoto::couper(position entre, position et,
 */
 void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
 {
-    deque_type::const_iterator it;
-    deque_type::const_iterator it2;
+    nodes_list::const_iterator it;
+    nodes_list::const_iterator it2;
 
     for (it = content_.begin(); it != content_.end(); ++it)
         if (*it == entre)
         {
-            it2 = it + 1;
+	    it2 = it;
+	    ++it2;
             if (it2 == content_.end() || *it2 != et)
                 throw POSITION_INVALIDE;
 	    else
@@ -270,7 +275,8 @@ void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
         }
         else if (*it == et)
         {
-            it2 = it + 1;
+	    it2 = it;
+	    ++it2;
             if (it2 == content_.end() || *it2 != entre)
                 throw POSITION_INVALIDE;
 	    else
@@ -296,7 +302,7 @@ erreur InternalTraineeMoto::fusionner(InternalTraineeMoto	&autre,
 	my_end = true;
 
     // Determine if we browse the moto in the direct or the reverse order
-    DequeIterator<position>	it(autre.content_, autre.queue() == et);
+    ListIterator<position>	it(autre.content_, autre.queue() == et);
 
     // Move the position from autre to *this
     while (it)
@@ -348,12 +354,13 @@ position InternalTraineeMoto::queue(position head__){
 
 trainee_moto InternalTraineeMoto::to_trainee_moto() const
 {
-    trainee_moto out;
+    trainee_moto		out;
+    nodes_list::const_iterator	it;
 
     out.id = id_;
     out.emplacement.reserve(len_);
     out.team = player_;
-    for (int i = 0; i < len_; i++)
-	out.emplacement.push_back(content_[i]); // TODO
+    for (it = content_.begin(); it != content_.end(); ++it)
+	out.emplacement.push_back(*it); // TODO
     return out;
 }
