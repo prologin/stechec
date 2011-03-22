@@ -124,7 +124,7 @@ def make_server
   end
 
   # create directory
-  install_path = Pathname.new($install_path)  + "makefile"
+  install_path = Pathname.new($install_path)
   install_path.mkpath
 
   CMakefile.new.build_metaserver(install_path)
