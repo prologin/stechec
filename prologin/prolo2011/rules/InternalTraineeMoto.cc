@@ -171,7 +171,7 @@ erreur InternalTraineeMoto::move(position from, position to)
   {
     if (len_ == max_len_)
     {
-      const position& pos = content_.back();
+      position pos = content_.back();
       content_.pop_back();
       gd_->get_case(pos).nb_trainees_moto -= 1;
     }
@@ -186,7 +186,7 @@ erreur InternalTraineeMoto::move(position from, position to)
   {
     if (len_ == max_len_)
     {
-      const position& pos = content_.front();
+      position pos = content_.front();
       content_.pop_front();
       gd_->get_case(pos).nb_trainees_moto -= 1;
     }
