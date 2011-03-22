@@ -23,6 +23,15 @@ class InternalTraineeMoto
 public:
     typedef std::list<position> nodes_list;
 
+    struct MotoData
+    {
+	typedef std::list<position> nodes_list;
+	nodes_list content;
+	int len;
+	int max_len;
+	bool last_end_moved;
+    };
+
     InternalTraineeMoto(GameData* gd,
 			int player, int id,
 			position init, int max_len);
@@ -33,6 +42,7 @@ public:
     bool begin(position pos);
     bool end(position pos);
 
+    void load_data(const MotoData& data);
     trainee_moto to_trainee_moto() const;
 
     erreur move(position from, position to);
@@ -41,12 +51,17 @@ public:
     erreur couper(position entre, position et,
 		  InternalTraineeMoto** moitie);
     void reject_bad_coupe(position entre, position et);
+
     erreur fusionner(InternalTraineeMoto	&autre,
 		     position			entre,
 		     position			et);
     void reject_bad_fusion(InternalTraineeMoto	&autre,
 			   position		entre,
 			   position		et);
+
+    erreur enrouler(position	point,
+		    MotoData	&data);
+    void reject_bad_enroule(position	point);
 
     int length();
     position queue(position head);
@@ -61,6 +76,9 @@ public:
     int len_;
     int max_len_;
     bool last_end_moved_; /* false when head, true when queue */
+
+protected:
+    void save_data(MotoData& data);
 };
 
 #endif // !INTERNAL_TRAINEE_MOTO_HH_

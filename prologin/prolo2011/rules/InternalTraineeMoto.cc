@@ -337,21 +337,68 @@ void InternalTraineeMoto::reject_bad_fusion(InternalTraineeMoto	&autre,
 	throw POSITION_INVALIDE;
 }
 
+erreur InternalTraineeMoto::enrouler(position	point,
+				     MotoData&	data)
+{
+    save_data(data);
+    content_.push_back(point);
+    len_ = 1;
+    gd_->get_case(point).nb_trainees_moto += 1;
+    return OK;
+}
+
+void InternalTraineeMoto::reject_bad_enroule(position	point)
+{
+    nodes_list::const_iterator	it;
+
+    for (it = content_.begin(); it != content_.end(); ++it)
+	if (*it == point)
+	    return;
+    throw POSITION_INVALIDE;
+}
+
 int InternalTraineeMoto::length(){
   return len_;
 }
 
-position InternalTraineeMoto::queue(position head__){
-  LOG4("trainee_moto queue");
-  if (begin(head__))
-    return head();
-  else if (end(head__))
-    return queue();
-  else
-  {
-    position p = {0, 0};
-    return p;
-  }
+position InternalTraineeMoto::queue(position head__)
+{
+    LOG4("trainee_moto queue");
+    if (begin(head__))
+	return head();
+    else if (end(head__))
+	return queue();
+    else
+    {
+	position p = {0, 0};
+	return p;
+    }
+}
+
+void InternalTraineeMoto::save_data(MotoData& data)
+{
+    data.content = content_;
+    data.len = len_;
+    data.max_len = max_len_;
+    data.last_end_moved = last_end_moved_;
+
+    // Remove all the node from the map
+    nodes_list::const_iterator	it;
+    for (it = content_.begin(); it != content_.end(); ++it)
+	gd_->get_case(*it).nb_trainees_moto -= 1;
+    content_.clear();
+}
+
+void InternalTraineeMoto::load_data(const MotoData& data)
+{
+    content_ = data.content;
+    // Put all the node on the map
+    nodes_list::const_iterator	it;
+    for (it = content_.begin(); it != content_.end(); ++it)
+	gd_->get_case(*it).nb_trainees_moto += 1;
+    len_ = data.len;
+    max_len_ = data.max_len;
+    last_end_moved_ = data.last_end_moved;
 }
 
 trainee_moto InternalTraineeMoto::to_trainee_moto() const
