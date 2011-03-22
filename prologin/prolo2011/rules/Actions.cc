@@ -140,8 +140,8 @@ void ActionCouperTraineeMoto::annuler(GameData* g)
 void ActionCouperTraineeMoto::envoyer(Api* api)
 {
     StechecPkt com(ACT_COUPER_TRAINEE_MOTO, -1);
-    com.Push(8, last_order_id++, player_,
-	     id_, new_id_,
+    com.Push(7, last_order_id++, player_,
+	     id_,
 	     entre_.x, entre_.y,
 	     et_.x, et_.y);
     LOG3("Envoyer une coupe au serveur...");
@@ -154,13 +154,12 @@ ActionCouperTraineeMoto::recevoir(const StechecPkt* pkt)
     position entre, et;
     ActionCouperTraineeMoto*	result;
 
-    entre.x = pkt->arg[4];
-    entre.y = pkt->arg[5];
-    et.x = pkt->arg[6];
-    et.y = pkt->arg[7];
+    entre.x = pkt->arg[3];
+    entre.y = pkt->arg[4];
+    et.x = pkt->arg[5];
+    et.y = pkt->arg[6];
     result = new ActionCouperTraineeMoto(pkt->arg[1],
 					 pkt->arg[2], entre, et);
-    result->new_id_ = pkt->arg[3];
     return (result);
 }
 
