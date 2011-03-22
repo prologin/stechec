@@ -26,6 +26,7 @@ Makefile.in
 *.pyc
 *.o.d
 *.so
+*.tgz
 
 .libs
 
