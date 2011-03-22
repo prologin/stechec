@@ -142,7 +142,7 @@ def make_server
   # JsMakefile.new.build_metaserver(install_path) TODO
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
-  FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_lime.cc").to_s)
+  FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_main.cc").to_s)
   FileUtils.cp((path + "toposort.py").to_s, install_path.to_s)
   FileUtils.cp((path + "rules.mk").to_s, install_path.to_s)
 end
