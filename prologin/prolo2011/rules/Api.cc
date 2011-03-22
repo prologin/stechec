@@ -199,8 +199,11 @@ erreur Api::cancel()
 //
 erreur Api::enrouler(int id, position point)
 {
-  // TODO
-  abort();
+    LOG4("Api::enrouler");
+    DO_ACTION(ActionEnrouler, g_->get_current_player(),
+	      id, point);
+    LOG4("Api::enrouler : OK");
+    return OK;
 }
 
 ///

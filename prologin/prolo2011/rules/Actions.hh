@@ -108,6 +108,25 @@ protected:
     position	pos2_;
 };
 
+class ActionEnrouler : public Action
+{
+public:
+    ActionEnrouler(int player,
+		   int		id,
+		   position	point) :
+	Action(player),
+	id_(id), point_(point)
+    {
+    }
+
+    ACTIONS(ActionEnrouler);
+
+protected:
+    int					id_;
+    position				point_;
+    InternalTraineeMoto::MotoData	data_;
+};
+
 Action* act_from_pkt(int type, const StechecPkt* pkt);
 
 #endif

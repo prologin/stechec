@@ -235,6 +235,57 @@ void ActionFusionner::print()
     std::cout << std::endl;
 }
 
+/* ********** Action Enrouler ********** */
+
+void ActionEnrouler::verifier(GameData* g)
+{
+    LOG2("ActionEnrouler::verifier()");
+    if (!g->moto_valide(id_))
+	throw ID_INVALIDE;
+    g->motos[id_].reject_bad_enroule(point_);
+}
+
+void ActionEnrouler::appliquer(GameData* g)
+{
+    LOG2("ActionEnrouler::appliquer()");
+
+    g->motos[id_].enrouler(point_, data_);
+}
+
+void ActionEnrouler::annuler(GameData* g)
+{
+    LOG2("ActionEnrouler::annuler()");
+    g->motos[id_].load_data(data_);
+}
+
+void ActionEnrouler::envoyer(Api* api)
+{
+    StechecPkt com(ACT_FUSIONNER, -1);
+    com.Push(8, last_order_id++, player_,
+	     id_,
+	     point_.x, point_.y);
+    LOG3("Envoyer un enroulage au serveur...");
+    api->SendToServer(com);
+}
+
+
+ActionEnrouler*
+ActionEnrouler::recevoir(const StechecPkt* pkt)
+{
+    position point;
+    point.x = pkt->arg[3];
+    point.y = pkt->arg[4];
+    return new ActionEnrouler(pkt->arg[1],
+			      pkt->arg[2], point);
+}
+
+void ActionEnrouler::print()
+{
+    std::cout << "ActionEnrouler: [" << player_ << ":" << id_ << "] ";
+    std::cout << "(" << point_.x << ", " << point_.y << ")";
+    std::cout << std::endl;
+}
+
 Action* act_from_pkt(int type, const StechecPkt* pkt)
 {
     switch(type)
@@ -245,6 +296,8 @@ Action* act_from_pkt(int type, const StechecPkt* pkt)
 	return ActionCouperTraineeMoto::recevoir(pkt);
     case ACT_FUSIONNER:
 	return ActionFusionner::recevoir(pkt);
+    case ACT_ENROULER:
+	return ActionEnrouler::recevoir(pkt);
     default:
 	abort();
     }
