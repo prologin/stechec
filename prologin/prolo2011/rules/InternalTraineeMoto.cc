@@ -279,7 +279,7 @@ void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
 }
 
 /*
- * Make the "autre" moto empty steeling all its nodes.
+ * Make the "autre" moto empty steeling all its nodes, and delete it.
  * "entre" must be owned by *this, and "et" must be owned by autre. Of course,
  * each of "entre" and "et" must be ends of the Motos.
  */
