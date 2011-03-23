@@ -45,7 +45,10 @@ public:
     void load_data(const MotoData& data);
     trainee_moto to_trainee_moto() const;
 
-    erreur move(position from, position to);
+    void take_case(const position&	pos,
+		   type_bonus&		taken_bonus);
+    erreur move(position from, position to,
+		type_bonus&	taken_bonus);
     void reject_bad_move(position from, position to);
 
     erreur couper(position entre, position et,

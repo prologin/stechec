@@ -164,7 +164,22 @@ void InternalTraineeMoto::reject_bad_move(position from, position to){
   }
 }
 
-erreur InternalTraineeMoto::move(position from, position to)
+void InternalTraineeMoto::take_case(const position&	pos,
+				    type_bonus&		taken_bonus)
+{
+    Case&	case_to = gd_->get_case(pos);
+
+    case_to.nb_trainees_moto += 1;
+    taken_bonus = case_to.bonus;
+    if (case_to.bonus != PAS_BONUS)
+    {
+	gd_->joueurs[player_].bonus.push_back(case_to.bonus);
+	case_to.bonus = PAS_BONUS;
+    }
+}
+
+erreur InternalTraineeMoto::move(position from, position to,
+				 type_bonus&	taken_bonus)
 {
   LOG4("trainee_moto move");
   if (begin(from))
@@ -178,7 +193,7 @@ erreur InternalTraineeMoto::move(position from, position to)
     else
       len_ ++;
     content_.push_front(to);
-    gd_->get_case(to).nb_trainees_moto += 1;
+    take_case(to, taken_bonus);
     last_end_moved_ = false;
     return OK;
   }
@@ -193,7 +208,7 @@ erreur InternalTraineeMoto::move(position from, position to)
     else
       len_ ++;
     content_.push_back(to);
-    gd_->get_case(to).nb_trainees_moto += 1;
+    take_case(to, taken_bonus);
     last_end_moved_ = true;
     return OK;
   }

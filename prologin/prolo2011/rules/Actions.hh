@@ -59,13 +59,14 @@ public:
     ACTIONS(ActionDeplacer);
 
 protected:
-    position from_;
-    position to_;
-    int id_;
-    int old_len_;
-    position old_queue_;
-    position new_queue_;
-    bool last_end_moved_;
+    position	from_;
+    position	to_;
+    int		id_;
+    int		old_len_;
+    position	old_queue_;
+    position	new_queue_;
+    type_bonus	taken_bonus_;
+    bool	last_end_moved_;
 };
 
 class ActionCouperTraineeMoto : public Action

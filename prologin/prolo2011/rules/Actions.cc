@@ -56,16 +56,18 @@ void ActionDeplacer::appliquer(GameData* g)
     old_len_ = moto.length();
     old_queue_ = moto.queue(from_);
     last_end_moved_ = moto.last_end_moved_;
-    moto.move(from_, to_);
+    moto.move(from_, to_, taken_bonus_);
     new_queue_ = moto.queue(to_);
 }
 
 void ActionDeplacer::annuler(GameData* g)
 {
     LOG2("ActionDeplacer::annuler()");
+    type_bonus		trash;
     InternalTraineeMoto &moto = g->motos.at(id_);
+
     if (old_len_ == moto.len_)
-	moto.move(new_queue_, old_queue_);
+	moto.move(new_queue_, old_queue_, trash);
     else if (old_len_ == moto.len_ - 1)
     {
 	moto.len_ --;
@@ -78,6 +80,7 @@ void ActionDeplacer::annuler(GameData* g)
 	abort();
     // TODO len : supprimer le debut si la taille a augmentee
     moto.last_end_moved_ = last_end_moved_;
+    g->get_case(to_).bonus = taken_bonus_;
 }
 
 void ActionDeplacer::envoyer(Api* api)
