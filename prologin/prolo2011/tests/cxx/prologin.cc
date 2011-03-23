@@ -101,7 +101,7 @@ void my_print_scores()
 {
     // Affichage des scores
     std::vector<int>    s = scores();
-    std::cout << "scores:";
+    std::cout << "Scores:";
     for (unsigned int i = 0; i < s.size(); ++i)
         std::cout << " " << i << "->" << s[i];
     std::cout << std::endl;
@@ -153,6 +153,14 @@ void get_team_motos(std::vector<trainee_moto>&	motos, int team)
 	    motos.push_back(t[i]);
 }
 
+void my_print_game()
+{
+    my_print_trainees();
+    my_print_sources();
+    my_print_scores();
+    my_print_bonus();
+}
+
 ///
 // Fonction appellée pour la phase de jeu
 //
@@ -164,16 +172,12 @@ void jouer()
 
     std::cout << "tour : " << tour_actuel() << std::endl;
 
-    my_print_trainees();
-    my_print_sources();
-    my_print_scores();
-    my_print_bonus();
-
-    test_error_cases();
+    my_print_game();
 
     int		act_points = MAX_PA;
     static int	move_right = true;
     int		my_player = mon_equipe();
+    int		turn = tour_actuel();
     int		incr = 1;
     position	cur_pos, next_pos;
     if (my_player)
@@ -185,8 +189,11 @@ void jouer()
     cur_pos = my_motos[0].emplacement[0];
     next_pos = cur_pos;
 
-    // 3rd turn: split and merge
-    if (tour_actuel() == 2)
+    // 1st turn: error cases
+    if (turn == 1)
+	test_error_cases();
+    // 2rd turn: split and merge
+    else if (turn == 2)
     {
 	position& pos1 = my_motos[0].emplacement[0];
 	position& pos2 = my_motos[0].emplacement[1];
@@ -211,7 +218,20 @@ void jouer()
 	get_team_motos(my_motos, my_player);
 	std::cout << "Apres fusion:" << std::endl;
 	my_print_trainees();
-    };
+    }
+    // 3rd turn: enrouler
+    else if (turn == 3)
+    {
+	trainee_moto&	moto = my_motos[0];
+	position&	point = my_motos[0].emplacement[1];
+
+	std::cout << "Enrouler: (" << point.x << ", " << point.y << ")" << std::endl;
+	enrouler(moto.id, point);
+	--act_points;
+	get_team_motos(my_motos, my_player);
+	std::cout << "Apres enroulage:" << std::endl;
+	my_print_trainees();
+    }
 
     // And the we move it
     for (; act_points > 0; --act_points)
@@ -226,6 +246,9 @@ void jouer()
 	deplacer(my_motos[0].id, cur_pos, next_pos);
 	cur_pos = next_pos;
     }
+
+    if (turn == 3)
+	my_print_game();
 }
 
 ///
