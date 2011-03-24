@@ -49,6 +49,18 @@ void SourceEnergie::set_potentiel(int potentiel)
     potentiel_cur = potentiel;
 }
 
+int SourceEnergie::regenerer()
+{
+    int old_potentiel = potentiel_cur;
+    potentiel_cur = potentiel_max;
+    return (old_potentiel);
+}
+
+void SourceEnergie::reset(int old_potentiel)
+{
+    potentiel_cur = old_potentiel;
+}
+
 GameData::GameData()
     : current_player(0),
       can_play(true)
@@ -124,6 +136,11 @@ bool GameData::moto_valide(int id)
 void GameData::supprimer_moto(int id)
 {
     motos.erase(id);
+}
+
+bool GameData::source_valide(int id)
+{
+    return (0 <= id && id < sources.size());
 }
 
 void GameData::team_switched(){

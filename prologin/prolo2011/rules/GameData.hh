@@ -43,6 +43,8 @@ struct SourceEnergie
 
     source_energie  to_source_energie(int indice);
     void set_potentiel(int potentiel);
+    int regenerer();
+    void reset(int old_potentiel);
 };
 
 struct Joueur
@@ -79,6 +81,8 @@ public:
     creer_trainee_moto(int player, position init, int max_len);
     bool moto_valide(int id);
     void supprimer_moto(int id);
+
+    bool source_valide(int id);
 
     // side effects
     void team_switched();
