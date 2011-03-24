@@ -223,11 +223,13 @@ void jouer()
     else if (turn == 3)
     {
 	trainee_moto&	moto = my_motos[0];
-	position&	point = my_motos[0].emplacement[1];
+	position	point = my_motos[0].emplacement[my_motos[0].emplacement.size() - 1];
 
 	std::cout << "Enrouler: (" << point.x << ", " << point.y << ")" << std::endl;
 	enrouler(moto.id, point);
 	--act_points;
+	cur_pos = point;
+	next_pos = point;
 	get_team_motos(my_motos, my_player);
 	std::cout << "Apres enroulage:" << std::endl;
 	my_print_trainees();
