@@ -294,6 +294,56 @@ void ActionEnrouler::print()
     std::cout << std::endl;
 }
 
+/* ********** Action RegenererSourceEnergie ********** */
+
+void ActionRegenererSourceEnergie::verifier(GameData* g)
+{
+    LOG2("ActionRegenererSourceEnergie::verifier()");
+    if (!g->source_valide(id_))
+	throw ID_INVALIDE;
+    if (!g->joueurs[player_].is_able(BONUS_REGENERATION))
+	throw BONUS_INVALIDE;
+}
+
+void ActionRegenererSourceEnergie::appliquer(GameData* g)
+{
+    LOG2("ActionRegenererSourceEnergie::appliquer()");
+    old_potentiel_ = g->sources[id_].regenerer();
+    g->joueurs[player_].use_capacity(BONUS_REGENERATION);
+}
+
+void ActionRegenererSourceEnergie::annuler(GameData* g)
+{
+    LOG2("ActionRegenererSourceEnergie::annuler()");
+    g->sources[id_].reset(old_potentiel_);
+    g->joueurs[player_].bonus.push_back(BONUS_REGENERATION);
+}
+
+void ActionRegenererSourceEnergie::envoyer(Api* api)
+{
+    LOG3("ActionRegenererSourceEnergie::envoyer()");
+    StechecPkt com(ACT_REGENERER, -1);
+    com.Push(3, last_order_id++, player_,
+	     id_);
+    api->SendToServer(com);
+}
+
+
+ActionRegenererSourceEnergie*
+ActionRegenererSourceEnergie::recevoir(const StechecPkt* pkt)
+{
+    LOG2("ActionRegenererSourceEnergie::recevoir()");
+
+    return new ActionRegenererSourceEnergie(pkt->arg[1],
+					    pkt->arg[2]);
+}
+
+void ActionRegenererSourceEnergie::print()
+{
+    std::cout << "ActionRegenererSourceEnergie: [" << id_ << "] ";
+    std::cout << std::endl;
+}
+
 Action* act_from_pkt(int type, const StechecPkt* pkt)
 {
     switch(type)
@@ -306,6 +356,8 @@ Action* act_from_pkt(int type, const StechecPkt* pkt)
 	return ActionFusionner::recevoir(pkt);
     case ACT_ENROULER:
 	return ActionEnrouler::recevoir(pkt);
+    case ACT_REGENERER:
+	return ActionRegenererSourceEnergie::recevoir(pkt);
     default:
 	abort();
     }

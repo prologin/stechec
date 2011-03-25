@@ -207,8 +207,11 @@ erreur Api::enrouler(int id, position point)
 //
 erreur Api::regenerer_source_energie(int id)
 {
-  // TODO
-  abort();
+    LOG4("Api::regenerer");
+    DO_ACTION(ActionRegenererSourceEnergie, g_->get_current_player(),
+	      id);
+    LOG4("Api::regenerer : OK");
+    return OK;
 }
 
 ///

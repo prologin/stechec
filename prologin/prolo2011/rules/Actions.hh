@@ -128,6 +128,22 @@ protected:
     InternalTraineeMoto::MotoData	data_;
 };
 
+class ActionRegenererSourceEnergie : public Action
+{
+public:
+    ActionRegenererSourceEnergie(int player, int id)
+	: Action(player),
+	  id_(id)
+    {
+    }
+
+    ACTIONS(ActionRegenererSourceEnergie);
+
+protected:
+    int	id_;
+    int	old_potentiel_;
+};
+
 Action* act_from_pkt(int type, const StechecPkt* pkt);
 
 #endif
