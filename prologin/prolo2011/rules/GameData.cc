@@ -34,6 +34,32 @@ Joueur::Joueur()
 {
 }
 
+bool Joueur::is_able(type_bonus	b)
+{
+    return (get_bonus(b) != bonus.end());
+}
+
+erreur Joueur::use_capacity(type_bonus	b)
+{
+    typename bonus_list::iterator	it;
+
+    it = get_bonus(b);
+    if (it == bonus.end())
+	return (BONUS_INVALIDE);
+    bonus.erase(it);
+    return (OK);
+}
+
+typename Joueur::bonus_list::iterator
+Joueur::get_bonus(type_bonus	b)
+{
+    typename bonus_list::iterator	it;
+    for (it = bonus.begin(); it != bonus.end(); ++it)
+	if (*it == b)
+	    return (it);
+    return (bonus.end());
+}
+
 source_energie  SourceEnergie::to_source_energie(int indice)
 {
     source_energie  s;

@@ -55,6 +55,18 @@ struct Joueur
     bonus_list	bonus;
 
     Joueur();
+    /*! Test weither a player is able to use a bonus */
+    bool is_able(type_bonus	b);
+
+    /*!
+     * Remove a bonus from the players’s bonus and return OK, or return
+     * BONUS_INVALIDE if there’s no such bonus.
+     */
+    erreur use_capacity(type_bonus	b);
+
+protected:
+    typename bonus_list::iterator
+    get_bonus(type_bonus	b);
 };
 
 /*!
