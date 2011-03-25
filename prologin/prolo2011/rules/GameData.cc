@@ -191,7 +191,16 @@ GameData::get_sources(std::vector<source_energie>& srcs)
 void
 GameData::get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus)
 {
-    bonus = joueurs[joueur].bonus;
+    if (joueur < 0 || joueur >= joueurs.size())
+	return;
+
+    Joueur::bonus_list& blist = joueurs[joueur].bonus;
+    Joueur::bonus_list::iterator it;
+
+    bonus.clear();
+    bonus.reserve(bonus.size());
+    for (it = blist.begin(); it != blist.end(); ++it)
+	bonus.push_back(*it);
 }
 
 int GameData::get_real_turn()

@@ -49,8 +49,10 @@ struct SourceEnergie
 
 struct Joueur
 {
-    int                         score;
-    std::vector<type_bonus>     bonus;
+    typedef std::list<type_bonus>	bonus_list;
+
+    int		score;
+    bonus_list	bonus;
 
     Joueur();
 };
