@@ -46,6 +46,8 @@ void ActionDeplacer::verifier(GameData *g){
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
     InternalTraineeMoto &moto = g->motos.at(id_);
+    if (!player_ != moto.player_)
+	throw PAS_A_TOI;
     moto.reject_bad_move(from_, to_);
 }
 
@@ -119,7 +121,10 @@ void ActionCouperTraineeMoto::verifier(GameData* g)
     LOG2("ActionCouperTraineeMoto::verifier()");
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
-    g->motos[id_].reject_bad_coupe(entre_, et_);
+    InternalTraineeMoto& moto = g->motos[id_];
+    if (!player_ != moto.player_)
+	throw PAS_A_TOI;
+    moto.reject_bad_coupe(entre_, et_);
 }
 
 void ActionCouperTraineeMoto::appliquer(GameData* g)
@@ -184,7 +189,10 @@ void ActionFusionner::verifier(GameData* g)
     LOG2("ActionFusionner::verifier()");
     if (id1_ == id2_ || !g->moto_valide(id1_) || !g->moto_valide(id2_))
 	throw ID_INVALIDE;
-    g->motos[id1_].reject_bad_fusion(g->motos[id2_], pos1_, pos2_);
+    InternalTraineeMoto& moto = g->motos[id1_];
+    if (!player_ != moto.player_)
+	throw PAS_A_TOI;
+    moto.reject_bad_fusion(g->motos[id2_], pos1_, pos2_);
 }
 
 void ActionFusionner::appliquer(GameData* g)
@@ -249,7 +257,10 @@ void ActionEnrouler::verifier(GameData* g)
     LOG2("ActionEnrouler::verifier()");
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
-    g->motos[id_].reject_bad_enroule(point_);
+    InternalTraineeMoto& moto = g->motos[id_];
+    if (!player_ != moto.player_)
+	throw PAS_A_TOI;
+    moto.reject_bad_enroule(point_);
 }
 
 void ActionEnrouler::appliquer(GameData* g)
