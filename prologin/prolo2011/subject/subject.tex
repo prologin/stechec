@@ -1,5 +1,15 @@
 %LaTeX Document
 
+%% Comment inclure une image :
+%% \vspace{1cm}
+%% \begin{figure}[!h]
+%% \centering
+%% \includegraphics{<filename.ext>}
+%% \caption{<legende>}
+%% \end{figure}
+
+
+
 %\documentclass[a4paper,twoside,12pt]{book}
 \documentclass[a4paper,twoside,12pt]{article}
 
@@ -52,7 +62,7 @@ $\bullet$ \underline{\textbf{#1}}
 % Couverture =========================================================
 \begin{titlepage}
 \begin{center}
-\includegraphics[width=\linewidth]{logo.png}\\ %% FIXME: Logo 2009
+%\includegraphics[width=\linewidth]{logo.png}\\ %% FIXME: Logo 2009
 \vspace{4cm}
 \Huge
 \textbf{Titre}\\
@@ -69,6 +79,8 @@ Samedi 23 avril 2011\\
 \cleardoublepage
 \tableofcontents
 
+
+
 % Corps ==============================================================
 %\cleardoublepage
 \setcounter{page}{1}
@@ -76,33 +88,35 @@ Samedi 23 avril 2011\\
 \parskip=6pt plus 3pt
 
 \newpage
-\includegraphics[width=\linewidth]{image.png}\\
+%\includegraphics[width=\linewidth]{image.png}\\
 \newpage
 \section{Introduction}
+//FIXME histoire
+
+        \subsection{Votre mission}
+        \subsection{La Grille}
+        //FIXME le terrain, les cases, producteurs/consommateurs
 
 \newpage
-\section{Phase I}
+\section{Les règles}
+//FIXME histoire
 
-    %% \vspace{1cm}
-    %% \begin{figure}[!h]
-    %% \centering
-    %% \includegraphics{build.png}
-    %% \caption{Constructions possibles par rapport à la portion de route centrale}
-    %% \end{figure}
+        \subsection{Les programmes}
+        //FIXME qu'est-ce qu'un programme, les tours, les PA
 
-\newpage
-\section{Phase II}
-
+        \subsection{Interagir avec la Grille}
+        //FIXME les actions
 
 \newpage
-\section{Phase III}
+\section{Les bonus}
+//FIXME
 
 \newpage
-\section{Autres actions}
+\section{Time's up!}
+//FIXME fin de partie
 
 \newpage
-\section{Fin de la partie}
-
+\section{Conclusion}
 
 \newpage
 \section{API}
