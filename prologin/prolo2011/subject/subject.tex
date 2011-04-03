@@ -1,0 +1,111 @@
+%LaTeX Document
+
+%\documentclass[a4paper,twoside,12pt]{book}
+\documentclass[a4paper,twoside,12pt]{article}
+
+\usepackage{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{a4}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{palatino}
+\usepackage{subfigure}
+\usepackage{verbatim,fancyvrb}
+\usepackage{listings}
+\usepackage{array}
+\usepackage{color}
+
+\definecolor{colIdentifier}{gray}{0}
+\definecolor{colKeys}{rgb}{0,0,0.6}
+\lstnewenvironment{lst-c++}{%
+\lstset{%
+language=C++,
+identifierstyle=\color{colIdentifier},
+keywordstyle=\color{colKeys},
+basicstyle=\ttfamily\small
+}}{}
+\renewcommand\ttdefault{cmtt}
+
+\newcommand{\functitle}[1]{%
+\vspace{0.5cm}
+$\bullet$ \underline{\textbf{#1}}
+}
+
+%\NoAutoSpaceBeforeFDP
+\geometry{bindingoffset=5mm,hmarginratio=1:1,heightrounded,headheight=15pt}
+
+\makeindex
+
+\begin{document}
+\pagestyle{empty}
+\sloppy
+
+%\lhead[\textsl{Prologin 2009}]{\nouppercase \leftmark}
+%\rhead[Sujet de la finale]{}
+\lhead[\thepage]{\nouppercase \leftmark}
+\rhead[\textsl{Prologin 2011} --- Sujet de la finale]{\thepage}
+\cfoot{}
+
+% Couverture =========================================================
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=\linewidth]{logo.png}\\ %% FIXME: Logo 2009
+\vspace{4cm}
+\Huge
+\textbf{Titre}\\
+\Large
+\textbf{Sous-titre}\\
+\vspace{2cm}
+\normalsize
+Sujet de la finale du Concours National d'Informatique\\
+Samedi 23 avril 2011\\
+\end{center}
+\end{titlepage}
+
+% Sommaire ===========================================================
+\cleardoublepage
+\tableofcontents
+
+% Corps ==============================================================
+%\cleardoublepage
+\setcounter{page}{1}
+\pagestyle{fancy}
+\parskip=6pt plus 3pt
+
+\newpage
+\includegraphics[width=\linewidth]{image.png}\\
+\newpage
+\section{Introduction}
+
+\newpage
+\section{Phase I}
+
+    %% \vspace{1cm}
+    %% \begin{figure}[!h]
+    %% \centering
+    %% \includegraphics{build.png}
+    %% \caption{Constructions possibles par rapport à la portion de route centrale}
+    %% \end{figure}
+
+\newpage
+\section{Phase II}
+
+
+\newpage
+\section{Phase III}
+
+\newpage
+\section{Autres actions}
+
+\newpage
+\section{Fin de la partie}
+
+
+\newpage
+\section{API}
+\input{api}
+
+\end{document}

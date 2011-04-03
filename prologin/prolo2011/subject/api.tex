@@ -1,0 +1,1015 @@
+
+
+%
+% Ce fichier a été généré avec gen/make_tex.rtex
+% Ne faites pas l'autiste, ne le modifiez pas directement !
+%
+
+\subsection{Constantes}\subsubsection{Les codes d'erreur}
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & INFINI \\
+\textbf{Valeur:} & 30000 \\
+\textbf{Description:} & Renvoyé par cout\_achat\_maison lorsque vous ne pouvez plus construire de maison pour le tour en cours. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & HORS\_TERRAIN \\
+\textbf{Valeur:} & -12 \\
+\textbf{Description:} & Les coordonnées (x,y) avec lesquelles vous avez appelé une fonction sont hors des bornes du terrain. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & PAS\_DE\_MAISON \\
+\textbf{Valeur:} & -2 \\
+\textbf{Description:} & Il n'y a pas de maison à la case indiquée. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & PAS\_DE\_MONUMENT \\
+\textbf{Valeur:} & -3 \\
+\textbf{Description:} & Il n'y a pas de monument à la case indiquée. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & FINANCES\_DEPASSEES \\
+\textbf{Valeur:} & -4 \\
+\textbf{Description:} & Vous voulez dépenser plus d'argent que vous n'en n'avez. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & BLOCAGE \\
+\textbf{Valeur:} & -5 \\
+\textbf{Description:} & Un blocage intervient lorsqu'aucune route n'est accessible depuis l'extérieur du jeu. Ce code d'erreur indique que le jeu serait bloqué si vous construisiez une maison ou un monument en (x,y) (ou si vous faisiez une réservation). \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & JOUEUR\_INCORRECT \\
+\textbf{Valeur:} & -7 \\
+\textbf{Description:} & Le numéro de joueur donné est incorrect. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & NON\_CONNEXE \\
+\textbf{Valeur:} & -8 \\
+\textbf{Description:} & La case indiquée n'est pas adjacente à une route (pour la 4-connexité si vous voulez construire une route, et pour la 8-connexité si vous voulez construire un bâtiment). \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & CASE\_OCCUPEE \\
+\textbf{Valeur:} & -9 \\
+\textbf{Description:} & La case indiquée est déjà occupée. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & ACTION\_INTERDITE \\
+\textbf{Valeur:} & -10 \\
+\textbf{Description:} & Ce n'est pas votre tour, ou l'action demandée est interdite. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & TROP\_LOIN \\
+\textbf{Valeur:} & 50 \\
+\textbf{Description:} & La distance demandée est strictement supérieure à MAX\_DISTANCE. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & SUCCES \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & L'action s'est déroulée avec succès. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+\subsubsection{Les constantes de possession}
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & MAIRIE \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & La case (ou le bâtiment) est possédée par la mairie. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+\subsubsection{Les constantes de terrain}
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & VIDE \\
+\textbf{Valeur:} & 0 \\
+\textbf{Description:} & Case de terrain vide. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & MAISON \\
+\textbf{Valeur:} & 1 \\
+\textbf{Description:} & Case de terrain qui contient une maison. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & RESERVATION \\
+\textbf{Valeur:} & 2 \\
+\textbf{Description:} & Case de terrain réservée. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & MONUMENT \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & Case de terrain qui contient un monument. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & ROUTE \\
+\textbf{Valeur:} & 4 \\
+\textbf{Description:} & Case de terrain qui contient une route. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+\subsubsection{Bornes, tailles}
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & MAX\_MONUMENTS \\
+\textbf{Valeur:} & 14 \\
+\textbf{Description:} & Nombre de monuments qui seront mis aux enchères au cours de la partie. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & TAILLE\_CARTE \\
+\textbf{Valeur:} & 100 \\
+\textbf{Description:} & La taille de la carte, en hauteur et en largeur. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & MAX\_DISTANCE \\
+\textbf{Valeur:} & 12 \\
+\textbf{Description:} & Distance maximale qui peut être calculée. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & ARGENT\_INITIAL \\
+\textbf{Valeur:} & 10 \\
+\textbf{Description:} & La somme d'argent possédée par les champions au début du jeu. \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\subsection{Fonctions d'information}
+Toutes ses fonctions peuvent renvoyer la constante HORS\_TERRAIN quand
+leurs arguments sont incorrects.
+Ces fonctions (en incluant la fonction distance) prennent en comptent
+toutes les actions que vous avez déjà effectuées au cours de votre phase
+de tour de jeu.
+
+\begin{minipage}{\linewidth}
+\functitle{type\_case}
+
+\begin{lst-c++}
+int type_case(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le type de la case, VIDE, MAISON, ROUTE, MONUMENT ou RESERVATION. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{valeur\_case}
+
+\begin{lst-c++}
+int valeur_case(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie la valeur de la case, c'est-à-dire la somme des prestiges des monuments qui ont cette case dans leur portée. Cette valeur peut être négative. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{appartenance}
+
+\begin{lst-c++}
+int appartenance(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie l'entité possédant la case, 0, 1 ou 2 si la case est une maison, et MAIRIE sinon. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{type\_monument}
+
+\begin{lst-c++}
+int type_monument(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le numéro d'un monument sur une case donnée, ou PAS\_DE\_MONUMENT. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{portee\_monument}
+
+\begin{lst-c++}
+int portee_monument(int num_monument)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie la portée d'un monument. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_monument}~: & le numéro du monument \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{prestige\_monument}
+
+\begin{lst-c++}
+int prestige_monument(int num_monument)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le prestige d'un monument \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_monument}~: & le numéro d'un monument \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{numero\_tour}
+
+\begin{lst-c++}
+int numero_tour()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le numéro du tour \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{commence}
+
+\begin{lst-c++}
+int commence()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Numéro du joueur qui commence lors de la phase 1. Si cette fonction est appelée pendant une phase 2 ou 3, renvoie le numéro du joueur qui commencera lors de la phase 1 du tour suivant. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{montant\_encheres}
+
+\begin{lst-c++}
+int montant_encheres(int num_joueur)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Donne le montant de la dernière enchère effectuée par un joueur. Renvoie 0 au premier tour. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_joueur}~: & le numéro du joueur \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{vainqueur\_encheres}
+
+\begin{lst-c++}
+int vainqueur_encheres()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Donne le numéro du joueur ayant gagné la dernière enchère. Renvoie 0 au premier tour. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{score}
+
+\begin{lst-c++}
+int score(int num_joueur)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Donne le score d'un joueur. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_joueur}~: & le numéro du joueur \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{finances}
+
+\begin{lst-c++}
+int finances(int num_joueur)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Donne l'argent possédé par un joueur \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{num\_joueur}~: & le numéro du joueur \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{monument\_en\_cours}
+
+\begin{lst-c++}
+int monument_en_cours()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Donne le numéro du monument le plus récemment mis aux enchères. Renvoie PAS\_DE\_MONUMENT lors de la phase 1 du premier tour. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{distance}
+
+\begin{lst-c++}
+int distance(int x1, int y1, int x2, int y2)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie la distance minimale pour aller de (x1,y1) à (x2,y2) (sachant qu'un déplacement en bas, à gauche, en haut ou à droite coûte pour 1, et que les déplacements en diagonal ne sont pas autorisés). Lors du calcul de cette distance, seules les cases vides, les cases contenant une route, et les cases étant réservée par votre champion sont considérées comme franchissables. Si le résultat est supérieur strictement à MAX\_DISTANCE, la fonction renvoie TROP\_LOIN. Cette fonction ne fait aucun calcul, elle renvoie immédiatement. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x1}~: & la colonne du premier point \\
+      
+    
+      
+        \textsl{y1}~: & la ligne du premier point \\
+      
+    
+      
+        \textsl{x2}~: & la colonne du second point \\
+      
+    
+      
+        \textsl{y2}~: & la ligne du second point \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{route\_possible}
+
+\begin{lst-c++}
+int route_possible(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Indique si vous pouvez construire une route en (x,y). Si non, renvoie HORS\_TERRAIN, CASE\_OCCUPEE ou NON\_CONNEXE. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{construction\_possible}
+
+\begin{lst-c++}
+int construction_possible(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Indique si vous pouvez construire une maison ou un monument en (x,y). Si non, renvoie HORS\_TERRAIN, CASE\_OCCUPEE, BLOCAGE ou NON\_CONNEXE. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{cout\_achat\_maison}
+
+\begin{lst-c++}
+int cout_achat_maison()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le coût d'achat d'une maison (ou INFINI si vous ne pouvez plus en construire pour ce tour), en fonction de ce que vous avez déjà construit (et dépensé) lors de votre phase de jeu. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{cout\_achat\_route}
+
+\begin{lst-c++}
+int cout_achat_route()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le coût d'achat d'une route, en fonction de ce que vous avez déjà construit (et dépensé) lors de votre phase de jeu. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{mon\_tour}
+
+\begin{lst-c++}
+int mon_tour()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Indique si votre champion doit jouer ou non. Si cette fonction renvoie false, votre champion ne pourra effectuer aucune action. Vous devriez toujours commencer vos fonctions jouer, enchere et placement par \texttt{if (mon\_tour() == false) return;}. \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+\subsection{Fonctions d'action}
+Toutes les fonctions peuvent renvoyer la constante
+\textbf{HORS\_TERRAIN} quand les coordonnées en entrée sont invalides.
+
+\begin{minipage}{\linewidth}
+\functitle{construire\_route}
+
+\begin{lst-c++}
+int construire_route(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Construit si possible une route en (x,y). Si impossible, renvoie ACTION\_INTERDITE, FINANCES\_DEPASSEES, NON\_CONNEXE ou CASE\_OCCUPEE. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{construire\_maison}
+
+\begin{lst-c++}
+int construire_maison(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Construit si possible une maison en (x,y). Si impossible, renvoie ACTION\_INTERDITE, FINANCES\_DEPASSEES, NON\_CONNEXE, BLOCAGE ou CASE\_OCCUPEE. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{reserver\_case}
+
+\begin{lst-c++}
+int reserver_case(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Réserve la case (x,y). Si impossible, renvoie ACTION\_INTERDITE, FINANCES\_DEPASSEES, NON\_CONNEXE, BLOCAGE ou CASE\_OCCUPEE. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{detruire\_maison}
+
+\begin{lst-c++}
+int detruire_maison(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Détruit la maison en (x,y). Si impossible, renvoie ACTION\_INTERDITE, FINANCES\_DEPASSEES ou PAS\_DE\_MAISON. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{vendre\_maison}
+
+\begin{lst-c++}
+int vendre_maison(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Vend la maison en (x,y). Si impossible, renvoie ACTION\_INTERDITE ou PAS\_DE\_MAISON. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{encherir}
+
+\begin{lst-c++}
+int encherir(int montant)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Place une enchère. Renvoie ACTION\_INTERDITE ou FINANCES\_DEPASSEES si impossible. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{montant}~: & Le montant de votre enchère \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{construire\_monument}
+
+\begin{lst-c++}
+int construire_monument(int x, int y)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Construit un monument en (x,y). Si impossible, renvoie ACTION\_INTERDITE, NON\_CONNEXE, BLOCAGE ou CASE\_OCCUPEE. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{x}~: & la colonne \\
+      
+    
+      
+        \textsl{y}~: & la ligne \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+
+\end{document}
