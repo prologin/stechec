@@ -219,7 +219,7 @@ void jouer()
 	std::cout << "Apres fusion:" << std::endl;
 	my_print_trainees();
     }
-    // 3rd turn: enrouler
+    // 3rd turn: enrouler & regenerer
     else if (turn == 3)
     {
 	trainee_moto&	moto = my_motos[0];
@@ -233,6 +233,9 @@ void jouer()
 	get_team_motos(my_motos, my_player);
 	std::cout << "Apres enroulage:" << std::endl;
 	my_print_trainees();
+
+	regenerer_source_energie(0);
+	--act_points;
     }
 
     // And the we move it
