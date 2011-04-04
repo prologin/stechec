@@ -28,10 +28,11 @@ Case::Case()
 {
 }
 
-Joueur::Joueur()
+Joueur::Joueur(int id)
     : score(0),
       bonus()
 {
+    this->id = id;
 }
 
 bool Joueur::is_able(type_bonus	b)
@@ -88,12 +89,12 @@ void SourceEnergie::reset(int old_potentiel)
 }
 
 GameData::GameData()
-    : current_player(0),
+    // FIXME: use a constant to but the last team's id
+    : current_player(1),
       can_play(true)
 {
     int		taille = TAILLE_TERRAIN * TAILLE_TERRAIN;
     Case	default_case;
-    Joueur	basic_joueur;
 
     terrain_.reserve(taille);
     for (int i = 0; i < taille; ++i)
@@ -109,7 +110,7 @@ GameData::GameData()
     joueurs.reserve(2);
     for (int i = 0; i < 2; ++i)
     {
-	joueurs.push_back(basic_joueur);
+	joueurs.push_back(Joueur(i));
 	InternalTraineeMoto& init_moto = creer_trainee_moto(i,
 							    init_pos[i],
 							    TAILLE_TRAINEE);

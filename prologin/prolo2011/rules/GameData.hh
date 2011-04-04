@@ -51,10 +51,11 @@ struct Joueur
 {
     typedef std::list<type_bonus>	bonus_list;
 
+    int		id;
     int		score;
     bonus_list	bonus;
 
-    Joueur();
+    Joueur(int id);
     /*! Test weither a player is able to use a bonus */
     bool is_able(type_bonus	b);
 
