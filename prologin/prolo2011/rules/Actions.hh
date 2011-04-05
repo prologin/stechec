@@ -162,6 +162,22 @@ protected:
     int longueur_;
 };
 
+class ActionPoserPointCroisement : public Action
+{
+public:
+    ActionPoserPointCroisement(int player, position point)
+	: Action(player),
+	  point_(point)
+    {
+    }
+
+    ACTIONS(ActionPoserPointCroisement);
+
+protected:
+    position point_;
+    type_case old_type_;
+};
+
 Action* act_from_pkt(int type, const StechecPkt* pkt);
 
 #endif

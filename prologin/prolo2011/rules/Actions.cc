@@ -12,6 +12,7 @@
 
 #include "Actions.hh"
 #include "Contest.hh"
+#include "Utils.hh"
 
 #include <algorithm>
 
@@ -404,7 +405,66 @@ ActionAgrandirTraineeMoto::recevoir(const StechecPkt* pkt)
 
 void ActionAgrandirTraineeMoto::print()
 {
-    std::cout << "ActionAgrandirTraineeMoto: [" << id_ << "] -> " << longueur_;
+    std::cout << "ActionAgrandirTraineeMoto: [" << id_ << "] + "
+	      << longueur_;
+    std::cout << std::endl;
+}
+
+/* ********** Action PoserPointCroisement ********** */
+
+void ActionPoserPointCroisement::verifier(GameData* g)
+{
+    LOG2("ActionPoserPointCroisement::verifier()");
+    if (!g->joueurs[player_].is_able(BONUS_CROISEMENT))
+	throw BONUS_INVALIDE;
+    if (position_invalide(point_.x, point_.y))
+	throw POSITION_INVALIDE;
+    Case& c = g->get_case(point_);
+    if (c.type != VIDE)
+	throw POSITION_INVALIDE;
+}
+
+void ActionPoserPointCroisement::appliquer(GameData* g)
+{
+    LOG2("ActionPoserPointCroisement::appliquer()");
+    g->joueurs[player_].use_capacity(BONUS_CROISEMENT);
+    Case& c = g->get_case(point_);
+    old_type_ = c.type;
+    c.type = POINT_CROISEMENT;
+}
+
+void ActionPoserPointCroisement::annuler(GameData* g)
+{
+    LOG2("ActionPoserPointCroisement::annuler()");
+    Case& c = g->get_case(point_);
+    c.type = old_type_;
+}
+
+void ActionPoserPointCroisement::envoyer(Api* api)
+{
+    LOG3("ActionPoserPointCroisement::envoyer()");
+    StechecPkt com(ACT_AGRANDIR, -1);
+    com.Push(4, last_order_id++, player_, point_.x, point_.y);
+    api->SendToServer(com);
+}
+
+
+ActionPoserPointCroisement*
+ActionPoserPointCroisement::recevoir(const StechecPkt* pkt)
+{
+    LOG2("ActionPoserPointCroisement::recevoir()");
+
+    position point;
+    point.x = pkt->arg[2];
+    point.y = pkt->arg[3];
+    return new ActionPoserPointCroisement(pkt->arg[1],
+					  point);
+}
+
+void ActionPoserPointCroisement::print()
+{
+    std::cout << "ActionPoserPointCroisement: ("
+	      << point_.x << ", " << point_.y << ")";
     std::cout << std::endl;
 }
 
@@ -424,6 +484,8 @@ Action* act_from_pkt(int type, const StechecPkt* pkt)
 	return ActionRegenererSourceEnergie::recevoir(pkt);
     case ACT_AGRANDIR:
 	return ActionAgrandirTraineeMoto::recevoir(pkt);
+    case ACT_POSER_PT_CROIX:
+	return ActionPoserPointCroisement::recevoir(pkt);
     default:
 	abort();
     }

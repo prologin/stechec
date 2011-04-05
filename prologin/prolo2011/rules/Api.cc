@@ -239,8 +239,10 @@ erreur Api::agrandir_trainee_moto(int id, int longueur)
 //
 erreur Api::poser_point_croisement(position point)
 {
-  // TODO
-  abort();
+    LOG4("Api::poser_point_croisement");
+    DO_ACTION(ActionPoserPointCroisement, g_->get_current_player(), point);
+    LOG4("Api::poser_point_croisement : OK");
+    return OK;
 }
 
 ///

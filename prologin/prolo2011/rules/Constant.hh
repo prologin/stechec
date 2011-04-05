@@ -119,6 +119,7 @@ enum e_com_type {
   ACT_REGENERER,
   ACT_ALLONGER_PA,
   ACT_AGRANDIR,
+  ACT_POSER_PT_CROIX,
   LAST_MSG
 };
 
