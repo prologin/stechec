@@ -228,8 +228,10 @@ erreur Api::allonger_pa()
 //
 erreur Api::agrandir_trainee_moto(int id, int longueur)
 {
-  // TODO
-  abort();
+    LOG4("Api::agrandir_trainee_moto");
+    DO_ACTION(ActionAgrandirTraineeMoto, g_->get_current_player(), id, longueur);
+    LOG4("Api::agrandir_trainee_moto : OK");
+    return OK;
 }
 
 ///

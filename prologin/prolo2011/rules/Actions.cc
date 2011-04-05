@@ -355,6 +355,59 @@ void ActionRegenererSourceEnergie::print()
     std::cout << std::endl;
 }
 
+
+/* ********** Action AgrandirTraineeMoto ********** */
+
+void ActionAgrandirTraineeMoto::verifier(GameData* g)
+{
+    LOG2("ActionAgrandirTraineeMoto::verifier()");
+    if (!g->joueurs[player_].is_able(PLUS_PA))
+	throw BONUS_INVALIDE;
+    if (!g->moto_valide(id_))
+	throw ID_INVALIDE;
+    if (longueur_ < 0 || longueur_ >= MAX_ALLONGEMENT)
+	throw 100; /* TODO: introduce a meaningful error code */
+}
+
+void ActionAgrandirTraineeMoto::appliquer(GameData* g)
+{
+    LOG2("ActionAgrandirTraineeMoto::appliquer()");
+    g->joueurs[player_].use_capacity(PLUS_LONG);
+    g->motos[id_].len_ += longueur_;
+}
+
+void ActionAgrandirTraineeMoto::annuler(GameData* g)
+{
+    LOG2("ActionAgrandirTraineeMoto::annuler()");
+    g->joueurs[player_].bonus.push_back(PLUS_LONG);
+    g->motos[id_].len_ -= longueur_;
+}
+
+void ActionAgrandirTraineeMoto::envoyer(Api* api)
+{
+    LOG3("ActionAgrandirTraineeMoto::envoyer()");
+    StechecPkt com(ACT_AGRANDIR, -1);
+    com.Push(4, last_order_id++, player_, id_, longueur_);
+    api->SendToServer(com);
+}
+
+
+ActionAgrandirTraineeMoto*
+ActionAgrandirTraineeMoto::recevoir(const StechecPkt* pkt)
+{
+    LOG2("ActionAgrandirTraineeMoto::recevoir()");
+
+    return new ActionAgrandirTraineeMoto(pkt->arg[1],
+					 pkt->arg[2],
+					 pkt->arg[3]);
+}
+
+void ActionAgrandirTraineeMoto::print()
+{
+    std::cout << "ActionAgrandirTraineeMoto: [" << id_ << "] -> " << longueur_;
+    std::cout << std::endl;
+}
+
 Action* act_from_pkt(int type, const StechecPkt* pkt)
 {
     switch(type)
@@ -369,6 +422,8 @@ Action* act_from_pkt(int type, const StechecPkt* pkt)
 	return ActionEnrouler::recevoir(pkt);
     case ACT_REGENERER:
 	return ActionRegenererSourceEnergie::recevoir(pkt);
+    case ACT_AGRANDIR:
+	return ActionAgrandirTraineeMoto::recevoir(pkt);
     default:
 	abort();
     }

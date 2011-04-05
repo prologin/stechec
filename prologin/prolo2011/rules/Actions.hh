@@ -144,6 +144,24 @@ protected:
     int	old_potentiel_;
 };
 
+
+class ActionAgrandirTraineeMoto : public Action
+{
+public:
+    ActionAgrandirTraineeMoto(int player, int id, int longueur)
+	: Action(player),
+	  id_ (id),
+	  longueur_ (longueur)
+    {
+    }
+
+    ACTIONS(ActionAgrandirTraineeMoto);
+
+protected:
+    int	id_;
+    int longueur_;
+};
+
 Action* act_from_pkt(int type, const StechecPkt* pkt);
 
 #endif
