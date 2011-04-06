@@ -108,6 +108,9 @@ public:
     void send_actions();
     bool annuler();
 
+    bool take_pa(int pa);
+    void give_pa(int pa);
+
     // turn
     int get_current_player();
     bool mon_tour();
@@ -136,6 +139,7 @@ public:
 
 protected:
     bool initialized_;
+    int remaining_pa_;
 
     std::vector<Case> terrain_;
 

@@ -171,10 +171,11 @@ bool GameData::source_valide(int id)
 }
 
 void GameData::team_switched(){
-  LOG4("GameData::team_switched");
-  can_play = true;
-  current_player = (current_player + 1 ) % 2;
-  // TODO reset point d'actions
+    LOG4("GameData::team_switched");
+    can_play = true;
+    current_player = (current_player + 1 ) % 2;
+    // FIXED by PM: reset point d'actions
+    remaining_pa_ = MAX_PA;
 }
 
 void GameData::check(const char * file, int line){
@@ -272,4 +273,21 @@ bool GameData::annuler(){
     delete act;
     return true;
   }
+}
+
+bool GameData::take_pa(int pa)
+{
+    if (pa < 0)
+	return false;
+    if (remaining_pa_ < pa)
+	return false;
+    remaining_pa_ -= pa;
+    return true;
+}
+
+void GameData::give_pa(int pa)
+{
+    if (pa < 0)
+	return;
+    remaining_pa_ += pa;
 }
