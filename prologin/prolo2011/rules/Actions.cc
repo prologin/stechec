@@ -432,7 +432,7 @@ void ActionAgrandirTraineeMoto::verifier(GameData* g)
 {
     LOG2("ActionAgrandirTraineeMoto::verifier()");
     verifier_pa(g, 1);
-    if (!g->joueurs[player_].is_able(PLUS_PA))
+    if (!g->joueurs[player_].is_able(PLUS_LONG))
 	throw BONUS_INVALIDE;
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
