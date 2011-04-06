@@ -234,6 +234,10 @@ void jouer()
 	std::cout << "Apres enroulage:" << std::endl;
 	my_print_trainees();
 
+	allonger_pa();
+	--act_points;
+	act_points += 5;
+
 	regenerer_source_energie(0);
 	--act_points;
     }
