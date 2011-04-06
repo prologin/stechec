@@ -10,6 +10,7 @@ config.h.in~
 config.log
 configure
 config.status
+my_config.ini
 
 doc/doc.doxy*
 doc/doxygen_ref.tar.gz
