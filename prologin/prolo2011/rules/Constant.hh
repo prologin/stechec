@@ -41,6 +41,11 @@
 # define MAX_ALLONGEMENT           5
 
 ///
+// Nombre de points d'action à rajouter avec bonus
+//
+# define AJOUT_PA		   5
+
+///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action
 //
 typedef enum erreur {
