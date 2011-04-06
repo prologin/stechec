@@ -46,6 +46,9 @@ struct SourceEnergie
     void set_potentiel(int potentiel);
     int regenerer();
     void reset(int old_potentiel);
+
+    void consume(int degree);
+    void release();
 };
 
 struct Joueur

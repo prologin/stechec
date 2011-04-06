@@ -88,6 +88,26 @@ void SourceEnergie::reset(int old_potentiel)
     potentiel_cur = old_potentiel;
 }
 
+void SourceEnergie::consume(int degree)
+{
+    if (potentiel_max < 0)
+	degree = -degree;
+    if ((potentiel_cur - degree) * potentiel_max < 0)
+	// If (potentiel_cur - degree) and potentiel_max does not have the same
+	// sign and the first one is not null.
+	potentiel_cur = 0;
+    else
+	potentiel_cur -= degree;
+}
+
+void SourceEnergie::release()
+{
+    if (potentiel_cur > potentiel_max)
+	--potentiel_cur;
+    else if (potentiel_cur < potentiel_max)
+	++potentiel_cur;
+}
+
 GameData::GameData()
     // FIXME: use a constant to but the last team's id
     : current_player(1),
