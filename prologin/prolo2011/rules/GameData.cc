@@ -13,8 +13,10 @@
 #include "Utils.hh"
 #include "GameData.hh"
 #include "Constant.hh"
+
 #include <ctime>
 #include <cstdlib>
+#include <set>
 
 // TODO: better, call Init() from BeforeNewGame, etc..
 #define INIT()					\
@@ -145,7 +147,8 @@ void GameData::Init() {
 Case&
 GameData::get_case(int x, int y)
 {
-  if (position_invalide(x, y)) abort();
+    if (position_invalide(x, y))
+	abort();
     return terrain_[x + TAILLE_TERRAIN * y];
 }
 
@@ -319,4 +322,96 @@ void GameData::give_pa(int pa)
     if (pa < 0)
 	return;
     remaining_pa_ += pa;
+}
+
+/*
+ * Look for an energy source at a (potentially invalid) position, and categorize
+ * it (positive & negative).
+ */
+void GameData::categorize_case(const position& p,
+			       std::set<SourceEnergie*>& src_p,
+			       std::set<SourceEnergie*>& src_n)
+{
+    if (position_invalide(p))
+	return;
+
+    Case& c = get_case(p);
+    if (c.source_id != -1)
+    {
+	SourceEnergie&	src = sources[c.source_id];
+	if (src.potentiel_cur < 0)
+	    src_n.insert(&src);
+	else if (src.potentiel_cur > 0)
+	    src_p.insert(&src);
+    }
+}
+
+/*
+ * Look for every connection between one trainee_moto and the sources, compute
+ * the partial sources potentel’s changes and increase the score.
+ */
+void GameData::apply_connections_unit(int id_trainee,
+				      std::vector<int>& degrees)
+{
+    typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
+    typedef typename std::set<SourceEnergie*>::iterator sources_it;
+
+    std::set<SourceEnergie*>	src_p;
+    std::set<SourceEnergie*>	src_n;
+    InternalTraineeMoto&	moto = motos[id_trainee];
+    InternalTraineeMoto::nodes_list& nodes = moto.content_;
+
+    // Look for every sourced connected to the trainee_moto and categorize them
+    for (nodes_it it = nodes.begin(); it != nodes.end(); ++it)
+    {
+	position	p;
+
+	p.y = it->y - 1;
+	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
+	    categorize_case(p, src_p, src_n);
+
+	p.y = it->y;
+	p.x = it->x - 1;
+	categorize_case(p, src_p, src_n);
+	p.x = it->x + 1;
+	categorize_case(p, src_p, src_n);
+
+	p.y = it->y + 1;
+	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
+	    categorize_case(p, src_p, src_n);
+    }
+
+    if (src_p.empty() || src_n.empty())
+	return;
+
+    Joueur& joueur = joueurs[moto.player_];
+    for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
+    {
+	int potentiel = (*it)->potentiel_cur;
+	if (potentiel < 0)
+	    potentiel = -potentiel;
+	joueur.score += potentiel;
+	degrees[(*it)->id] += 1;
+    }
+}
+
+/*
+ * Look for every connection between trainees_moto and sources, compute the
+ * sources potentiel’s changes and the increase the scores.
+ */
+void GameData::apply_connections()
+{
+    motos_type::const_iterator	it;
+    std::vector<int>		degrees;
+
+    degrees.resize(sources.size(), 0);
+    for (it = motos.begin(); it != motos.end(); ++it)
+	apply_connections_unit(it->first, degrees);
+
+    // Change the sources’ potentiel
+    for (int i = 0; i < degrees.size(); ++i)
+	if (degrees[i] == 0)
+	    sources[i].release();
+	else
+	    sources[i].consume(degrees[i]);
 }

@@ -152,6 +152,25 @@ protected:
     std::vector<Case> terrain_;
 
     int get_free_moto_id();
+
+    /*
+     * Look for every connection between trainees_moto and sources, compute the
+     * sources potentiel’s changes and the increase the scores.
+     */
+    void apply_connections();
+    /*
+     * Look for every connection between one trainee_moto and the sources,
+     * compute the partial sources potentel’s changes and increase the score.
+     */
+    void apply_connections_unit(int id_trainee,
+				std::vector<int>& degrees);
+    /*
+     * Look for an energy source at a (potentially invalid) position, and
+     * categorize it (positive & negative).
+     */
+    void categorize_case(const position& p,
+			 std::set<SourceEnergie*>& src_p,
+			 std::set<SourceEnergie*>& src_n);
 };
 
 #endif // !GAMEDATA_HH_
