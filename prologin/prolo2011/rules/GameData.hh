@@ -37,6 +37,7 @@ struct Case
 
 struct SourceEnergie
 {
+    int		id;
     position    pos;
     int         potentiel_max;
     int         potentiel_cur;

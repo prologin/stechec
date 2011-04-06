@@ -84,6 +84,7 @@ int ServerEntry::loadMap()
 	s.potentiel_cur = sources[indice_source];
 	SendToAll(SOURCE_CONTENT, -1, 4, indice_source, x, y, sources[indice_source]);
 	indice_source++;
+	s.id = g_->sources.size();
 	g_->sources.push_back(s);
       }else if (line[x] == 'C'){
 	c.type = BONUS;
