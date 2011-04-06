@@ -275,14 +275,23 @@ bool GameData::annuler(){
   }
 }
 
-bool GameData::take_pa(int pa)
+bool GameData::poll_pa(int pa)
 {
     if (pa < 0)
 	return false;
     if (remaining_pa_ < pa)
 	return false;
-    remaining_pa_ -= pa;
     return true;
+}
+
+bool GameData::take_pa(int pa)
+{
+    if (poll_pa(pa))
+    {
+	remaining_pa_ -= pa;
+	return true;
+    }
+    return false;
 }
 
 void GameData::give_pa(int pa)

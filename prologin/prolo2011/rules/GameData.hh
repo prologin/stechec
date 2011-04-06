@@ -108,7 +108,11 @@ public:
     void send_actions();
     bool annuler();
 
+    /* Return if "pa" PAs are available. Return false if "pa" is negative. */
+    bool poll_pa(int pa);
+    /* Take "pa" PAs if poll_pa returned true and return ask_pa's result */
     bool take_pa(int pa);
+    /* If "pa" is positive, add "pa" PAs */
     void give_pa(int pa);
 
     // turn
