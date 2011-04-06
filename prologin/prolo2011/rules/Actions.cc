@@ -40,10 +40,17 @@ void Action::annuler(GameData *g){
   LOG3("WARNING: Action::annuler ne devrait pas etre appele");
 }
 
+void Action::verifier_pa(GameData *g, int pa)
+{
+    if (!g->poll_pa(pa))
+	throw PLUS_DE_PA;
+}
+
 /* ********** Action Deplacer ********** */
 
 void ActionDeplacer::verifier(GameData *g){
     LOG2("ActionDeplacer::verifier()");
+    verifier_pa(g, 1);
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
     InternalTraineeMoto &moto = g->motos.at(id_);
@@ -55,6 +62,7 @@ void ActionDeplacer::verifier(GameData *g){
 void ActionDeplacer::appliquer(GameData* g)
 {
     LOG2("ActionDeplacer::appliquer()");
+    g->take_pa(1);
     InternalTraineeMoto &moto = g->motos.at(id_);
     old_len_ = moto.length();
     old_queue_ = moto.queue(from_);
@@ -66,6 +74,7 @@ void ActionDeplacer::appliquer(GameData* g)
 void ActionDeplacer::annuler(GameData* g)
 {
     LOG2("ActionDeplacer::annuler()");
+    g->give_pa(1);
     type_bonus		trash;
     InternalTraineeMoto &moto = g->motos.at(id_);
 
@@ -120,6 +129,7 @@ void ActionDeplacer::print()
 void ActionCouperTraineeMoto::verifier(GameData* g)
 {
     LOG2("ActionCouperTraineeMoto::verifier()");
+    verifier_pa(g, 1);
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
     InternalTraineeMoto& moto = g->motos[id_];
@@ -131,6 +141,7 @@ void ActionCouperTraineeMoto::verifier(GameData* g)
 void ActionCouperTraineeMoto::appliquer(GameData* g)
 {
     LOG2("ActionCouperTraineeMoto::appliquer()");
+    g->take_pa(1);
     InternalTraineeMoto&	moto1 = g->motos[id_];
     InternalTraineeMoto*	pmoto2;
 
@@ -141,6 +152,7 @@ void ActionCouperTraineeMoto::appliquer(GameData* g)
 void ActionCouperTraineeMoto::annuler(GameData* g)
 {
     LOG2("ActionCouperTraineeMoto::annuler()");
+    g->give_pa(1);
     InternalTraineeMoto&	moto1 = g->motos[id_];
     InternalTraineeMoto&	moto2 = g->motos[new_id_];
 
@@ -188,6 +200,7 @@ void ActionCouperTraineeMoto::print()
 void ActionFusionner::verifier(GameData* g)
 {
     LOG2("ActionFusionner::verifier()");
+    verifier_pa(g, 1);
     if (id1_ == id2_ || !g->moto_valide(id1_) || !g->moto_valide(id2_))
 	throw ID_INVALIDE;
     InternalTraineeMoto& moto = g->motos[id1_];
@@ -199,6 +212,7 @@ void ActionFusionner::verifier(GameData* g)
 void ActionFusionner::appliquer(GameData* g)
 {
     LOG2("ActionFusionner::appliquer()");
+    g->take_pa(1);
     InternalTraineeMoto&	moto1 = g->motos[id1_];
     InternalTraineeMoto&	moto2 = g->motos[id2_];
 
@@ -208,6 +222,7 @@ void ActionFusionner::appliquer(GameData* g)
 void ActionFusionner::annuler(GameData* g)
 {
     LOG2("ActionFusionner::annuler()");
+    g->give_pa(1);
     InternalTraineeMoto&	moto1 = g->motos[id1_];
     InternalTraineeMoto*	pmoto2;
 
@@ -256,6 +271,7 @@ void ActionFusionner::print()
 void ActionEnrouler::verifier(GameData* g)
 {
     LOG2("ActionEnrouler::verifier()");
+    verifier_pa(g, 1);
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
     InternalTraineeMoto& moto = g->motos[id_];
@@ -267,12 +283,14 @@ void ActionEnrouler::verifier(GameData* g)
 void ActionEnrouler::appliquer(GameData* g)
 {
     LOG2("ActionEnrouler::appliquer()");
+    g->take_pa(1);
     g->motos[id_].enrouler(point_, data_);
 }
 
 void ActionEnrouler::annuler(GameData* g)
 {
     LOG2("ActionEnrouler::annuler()");
+    g->give_pa(1);
     g->motos[id_].load_data(data_);
 }
 
@@ -311,6 +329,7 @@ void ActionEnrouler::print()
 void ActionRegenererSourceEnergie::verifier(GameData* g)
 {
     LOG2("ActionRegenererSourceEnergie::verifier()");
+    verifier_pa(g, 1);
     if (!g->source_valide(id_))
 	throw ID_INVALIDE;
     if (!g->joueurs[player_].is_able(BONUS_REGENERATION))
@@ -320,6 +339,7 @@ void ActionRegenererSourceEnergie::verifier(GameData* g)
 void ActionRegenererSourceEnergie::appliquer(GameData* g)
 {
     LOG2("ActionRegenererSourceEnergie::appliquer()");
+    g->take_pa(1);
     old_potentiel_ = g->sources[id_].regenerer();
     g->joueurs[player_].use_capacity(BONUS_REGENERATION);
 }
@@ -327,6 +347,7 @@ void ActionRegenererSourceEnergie::appliquer(GameData* g)
 void ActionRegenererSourceEnergie::annuler(GameData* g)
 {
     LOG2("ActionRegenererSourceEnergie::annuler()");
+    g->give_pa(1);
     g->sources[id_].reset(old_potentiel_);
     g->joueurs[player_].bonus.push_back(BONUS_REGENERATION);
 }
@@ -362,6 +383,7 @@ void ActionRegenererSourceEnergie::print()
 void ActionAgrandirTraineeMoto::verifier(GameData* g)
 {
     LOG2("ActionAgrandirTraineeMoto::verifier()");
+    verifier_pa(g, 1);
     if (!g->joueurs[player_].is_able(PLUS_PA))
 	throw BONUS_INVALIDE;
     if (!g->moto_valide(id_))
@@ -373,6 +395,7 @@ void ActionAgrandirTraineeMoto::verifier(GameData* g)
 void ActionAgrandirTraineeMoto::appliquer(GameData* g)
 {
     LOG2("ActionAgrandirTraineeMoto::appliquer()");
+    g->take_pa(1);
     g->joueurs[player_].use_capacity(PLUS_LONG);
     g->motos[id_].len_ += longueur_;
 }
@@ -380,6 +403,7 @@ void ActionAgrandirTraineeMoto::appliquer(GameData* g)
 void ActionAgrandirTraineeMoto::annuler(GameData* g)
 {
     LOG2("ActionAgrandirTraineeMoto::annuler()");
+    g->give_pa(1);
     g->joueurs[player_].bonus.push_back(PLUS_LONG);
     g->motos[id_].len_ -= longueur_;
 }
@@ -415,6 +439,7 @@ void ActionAgrandirTraineeMoto::print()
 void ActionPoserPointCroisement::verifier(GameData* g)
 {
     LOG2("ActionPoserPointCroisement::verifier()");
+    verifier_pa(g, 1);
     if (!g->joueurs[player_].is_able(BONUS_CROISEMENT))
 	throw BONUS_INVALIDE;
     if (position_invalide(point_.x, point_.y))
@@ -427,6 +452,7 @@ void ActionPoserPointCroisement::verifier(GameData* g)
 void ActionPoserPointCroisement::appliquer(GameData* g)
 {
     LOG2("ActionPoserPointCroisement::appliquer()");
+    g->take_pa(1);
     g->joueurs[player_].use_capacity(BONUS_CROISEMENT);
     Case& c = g->get_case(point_);
     old_type_ = c.type;
@@ -436,6 +462,7 @@ void ActionPoserPointCroisement::appliquer(GameData* g)
 void ActionPoserPointCroisement::annuler(GameData* g)
 {
     LOG2("ActionPoserPointCroisement::annuler()");
+    g->give_pa(1);
     Case& c = g->get_case(point_);
     c.type = old_type_;
 }

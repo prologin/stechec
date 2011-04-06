@@ -36,6 +36,8 @@ public:
     virtual void verifier(GameData* g) = 0;
     virtual void print() = 0;
 
+    void verifier_pa(GameData* g, int pa);
+
 protected:
   int player_;
 };
