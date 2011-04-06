@@ -377,6 +377,54 @@ void ActionRegenererSourceEnergie::print()
     std::cout << std::endl;
 }
 
+/* ********** Action AllongerPA ********** */
+
+void ActionAllongerPA::verifier(GameData* g)
+{
+    LOG2("ActionAllongerPA::verifier()");
+    verifier_pa(g, 1);
+    if (!g->joueurs[player_].is_able(PLUS_PA))
+	throw BONUS_INVALIDE;
+}
+
+void ActionAllongerPA::appliquer(GameData* g)
+{
+    LOG2("ActionAllongerPA::appliquer()");
+    g->take_pa(1);
+    g->joueurs[player_].use_capacity(PLUS_LONG);
+    g->give_pa(AJOUT_PA);
+}
+
+void ActionAllongerPA::annuler(GameData* g)
+{
+    LOG2("ActionAllongerPA::annuler()");
+    g->give_pa(1);
+    g->take_pa(AJOUT_PA);
+    g->joueurs[player_].bonus.push_back(PLUS_LONG);
+}
+
+void ActionAllongerPA::envoyer(Api* api)
+{
+    LOG3("ActionAllongerPA::envoyer()");
+    StechecPkt com(ACT_ALLONGER_PA, -1);
+    com.Push(2, last_order_id++, player_);
+    api->SendToServer(com);
+}
+
+
+ActionAllongerPA*
+ActionAllongerPA::recevoir(const StechecPkt* pkt)
+{
+    LOG2("ActionAllongerPA::recevoir()");
+
+    return new ActionAllongerPA(pkt->arg[1]);
+}
+
+void ActionAllongerPA::print()
+{
+    std::cout << "ActionAllongerPA: nothing :-)";
+    std::cout << std::endl;
+}
 
 /* ********** Action AgrandirTraineeMoto ********** */
 
@@ -509,6 +557,8 @@ Action* act_from_pkt(int type, const StechecPkt* pkt)
 	return ActionEnrouler::recevoir(pkt);
     case ACT_REGENERER:
 	return ActionRegenererSourceEnergie::recevoir(pkt);
+    case ACT_ALLONGER_PA:
+	return ActionAllongerPA::recevoir(pkt);
     case ACT_AGRANDIR:
 	return ActionAgrandirTraineeMoto::recevoir(pkt);
     case ACT_POSER_PT_CROIX:

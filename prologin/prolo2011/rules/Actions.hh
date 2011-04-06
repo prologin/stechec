@@ -146,6 +146,16 @@ protected:
     int	old_potentiel_;
 };
 
+class ActionAllongerPA : public Action
+{
+public:
+    ActionAllongerPA(int player)
+	: Action(player)
+    {
+    }
+
+    ACTIONS(ActionAllongerPA);
+};
 
 class ActionAgrandirTraineeMoto : public Action
 {

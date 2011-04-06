@@ -219,8 +219,10 @@ erreur Api::regenerer_source_energie(int id)
 //
 erreur Api::allonger_pa()
 {
-  // TODO
-  abort();
+    LOG4("Api::allonger_pa");
+    DO_ACTION(ActionAllongerPA, g_->get_current_player());
+    LOG4("Api::allonger_pa : OK");
+    return OK;
 }
 
 ///
