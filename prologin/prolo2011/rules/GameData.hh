@@ -17,6 +17,7 @@
 # include "Constant.hh"
 # include "InternalTraineeMoto.hh"
 # include "Actions.hh"
+# include "Utils.hh"
 
 # include <map>
 
@@ -89,6 +90,24 @@ public:
     // Accès basique aux données
     Case& get_case(int x, int y);
     Case& get_case(const position &pos);
+
+    // Path processing
+    void get_next_pos(const position& p,
+		      std::vector<position>& next_pos);
+    bool is_crossable_pos(const position& p);
+    void build_from_reverse_path(const position& reverse_begin,
+				 const position& reverse_end,
+				 std::map<pair_position, position>& back_path,
+				 std::vector<position>& path);
+
+
+    /*
+     * Build a shortest path betwee 'begin' and 'end' in 'path', or make 'path'
+     * empty if there's no such path.
+     */
+    void get_shortest_path(const position& begin,
+			   const position& end,
+			   std::vector<position>& path);
 
     // Manipulations basiques des motos
 

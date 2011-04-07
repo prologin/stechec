@@ -17,6 +17,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <set>
+#include <deque>
 
 // TODO: better, call Init() from BeforeNewGame, etc..
 #define INIT()					\
@@ -169,6 +170,128 @@ int GameData::get_free_moto_id()
     return result;
 }
 
+void GameData::get_next_pos(const position& p,
+			    std::vector<position>& next_pos)
+{
+    position next_p;
+    next_pos.reserve(4);
+
+    next_p.x = p.x;
+    next_p.y = p.y - 1;
+    next_pos.push_back(next_p);
+    next_p.y = p.y + 1;
+    next_pos.push_back(next_p);
+
+    next_p.y = p.y;
+    next_p.x = p.x - 1;
+    next_pos.push_back(next_p);
+    next_p.x = p.x + 1;
+    next_pos.push_back(next_p);
+}
+
+bool GameData::is_crossable_pos(const position& p)
+{
+    if (position_invalide(p))
+	return false;
+    else
+    {
+	Case& c = get_case(p);
+	if ((c.type != VIDE && c.type != BONUS) ||
+	    (c.nb_trainees_moto != 0 && c.type != POINT_CROISEMENT))
+	    return false;
+    }
+    return true;
+}
+
+void GameData::build_from_reverse_path(const position& reverse_begin,
+				       const position& reverse_end,
+				       std::map<pair_position, position>& back_path,
+				       std::vector<position>& path)
+{
+    std::vector<position> reverse_path;
+
+    int length = 0;
+    path.clear();
+    reverse_path.push_back(reverse_begin);
+    while (reverse_path[length] != reverse_end)
+    {
+	pair_position current_pos = pos_to_pair(reverse_path[length]);
+	reverse_path.push_back(back_path[current_pos]);
+	++length;
+    }
+    path.reserve(reverse_path.size());
+    for (int i = length - 1; i >= 0; --i)
+	path.push_back(reverse_path[i]);
+    LOG4("Path's length: %1", reverse_path.size());
+}
+
+/*
+ * Build a shortest path betwee 'begin' and 'end' in 'path', or make 'path'
+ * empty if there's no such path.
+ */
+void GameData::get_shortest_path(const position& begin,
+				 const position& end,
+				 std::vector<position>& path)
+{
+    LOG4("Processing a shortest path betwee (%1, %2) and (%3, %4)",
+	 begin.x, begin.y,
+	 end.x, end.y);
+
+    // Proceed a BFS and keep in memory for each cell the previous cell
+    // (building a reverse path)
+    std::deque<position> fifo;
+    std::map<pair_position, position> back_path;
+
+    path.clear();
+    // We don't mind if the beginning is not crossable
+    if (!is_crossable_pos(end))
+	// One end is not crossable: there's no path
+	return;
+    LOG5("The goal position is crossable: continue...");
+
+    fifo.push_back(begin);
+    back_path[pos_to_pair(begin)] = begin;
+    while (!fifo.empty())
+    {
+	position p = fifo[0];
+	fifo.pop_front();
+	LOG5("Processing the position (%1, %2)", p.x, p.y);
+
+	// Build the set of the adjacent positions
+	std::vector<position> next_pos;
+	get_next_pos(p, next_pos);
+
+	for (int i = 0; i < next_pos.size(); ++i)
+	{
+	    pair_position next_p = pos_to_pair(next_pos[i]);
+
+	    if (back_path.find(next_p) != back_path.end() ||
+		!is_crossable_pos(next_pos[i]))
+		// If this position is already visited or if this position is
+		// not crossable, do not process it
+		continue;
+	    LOG5("The next position (%1, %2) is valid", next_p.first, next_p.second);
+
+	    // The previous position of the next one is the current one
+	    back_path[next_p] = p;
+
+	    // If we reached the end, clear and exit. Continue otherwise.
+	    if (next_pos[i] == end)
+	    {
+		LOG5("We reached the end!");
+		fifo.clear();
+		break;
+	    }
+	    else
+		fifo.push_back(next_pos[i]);
+	}
+    }
+    if (back_path.find(pos_to_pair(end)) == back_path.end())
+	// If the end could not be reached, there's no path
+	return;
+    build_from_reverse_path(end, begin, back_path, path);
+}
+
 InternalTraineeMoto&
 GameData::creer_trainee_moto(int player, position init, int max_len)
 {
@@ -209,6 +332,26 @@ void GameData::team_switched(){
     current_player = (current_player + 1 ) % 2;
     // FIXED by PM: reset point d'actions
     remaining_pa_ = MAX_PA;
+
+    /* This code tests the path finding
+    static int tour = 0;
+    ++tour;
+    if (tour != 6)
+	return;
+    std::cout << "Shortest path from (0, 0) to (49, 49):" << std::endl;
+    std::vector<position> path;
+    position begin;
+    begin.x = 0;
+    begin.y = 0;
+    position end;
+    end.x = TAILLE_TERRAIN - 1;
+    end.y = TAILLE_TERRAIN - 1;
+    get_shortest_path(begin, end, path);
+    for (std::vector<position>::iterator it = path.begin();
+	 it != path.end();
+	 ++it)
+	std::cout << "-> (" << it->x << ", " << it->y << ")" << std::endl;
+    */
 }
 
 void GameData::check(const char * file, int line){
