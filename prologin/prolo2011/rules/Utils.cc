@@ -47,3 +47,12 @@ bool position_invalide(const position& p)
     p.x >= TAILLE_TERRAIN ||
     p.y >= TAILLE_TERRAIN ;
 }
+
+pair_position pos_to_pair(const position& p)
+{
+    pair_position p_;
+
+    p_.first = p.x;
+    p_.second = p.y;
+    return p_;
+}
