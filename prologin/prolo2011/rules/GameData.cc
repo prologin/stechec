@@ -195,6 +195,16 @@ bool GameData::source_valide(int id)
 
 void GameData::team_switched(){
     LOG4("GameData::team_switched");
+
+    // Update scores and potentiels each time everybody have played
+    if (current_player % 2 == 0)
+    {
+	apply_connections();
+	LOG4("Scores and potentiels have been updated!");
+	for (int i = 0; i < 2; ++i)
+	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
+    }
+
     can_play = true;
     current_player = (current_player + 1 ) % 2;
     // FIXED by PM: reset point d'actions
