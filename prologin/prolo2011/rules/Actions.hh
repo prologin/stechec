@@ -31,7 +31,9 @@ public:
     virtual ~Action() {}
 
     virtual void appliquer(GameData* g);
-    virtual void envoyer(Api* api) = 0;
+    virtual std::vector<int> serialiser() = 0;
+    virtual int type() = 0;
+    virtual void envoyer(Api* api);
     virtual void annuler(GameData* g);
     virtual void verifier(GameData* g) = 0;
     virtual void print() = 0;
@@ -42,9 +44,10 @@ protected:
   int player_;
 };
 
-#define ACTIONS(Nom)				  \
+#define ACTIONS(Nom, Type)			  \
     virtual void appliquer(GameData* g);	  \
-    virtual void envoyer(Api* api);		  \
+    virtual std::vector<int> serialiser();	  \
+    virtual int type() { return Type; }		  \
     static  Nom* recevoir(const StechecPkt* pkt); \
     virtual void annuler(GameData* g);		  \
     virtual void verifier(GameData* g);		  \
@@ -58,7 +61,7 @@ public:
     {
     }
 
-    ACTIONS(ActionDeplacer);
+    ACTIONS(ActionDeplacer, ACT_DEPLACER);
 
 protected:
     position	from_;
@@ -81,7 +84,7 @@ public:
     {
     }
 
-    ACTIONS(ActionCouperTraineeMoto);
+    ACTIONS(ActionCouperTraineeMoto, ACT_COUPER_TRAINEE_MOTO);
 
 protected:
     int		id_;
@@ -102,7 +105,7 @@ public:
     {
     }
 
-    ACTIONS(ActionFusionner);
+    ACTIONS(ActionFusionner, ACT_FUSIONNER);
 
 protected:
     int		id1_;
@@ -122,7 +125,7 @@ public:
     {
     }
 
-    ACTIONS(ActionEnrouler);
+    ACTIONS(ActionEnrouler, ACT_ENROULER);
 
 protected:
     int					id_;
@@ -139,7 +142,7 @@ public:
     {
     }
 
-    ACTIONS(ActionRegenererSourceEnergie);
+    ACTIONS(ActionRegenererSourceEnergie, ACT_REGENERER);
 
 protected:
     int	id_;
@@ -154,7 +157,7 @@ public:
     {
     }
 
-    ACTIONS(ActionAllongerPA);
+    ACTIONS(ActionAllongerPA, ACT_ALLONGER_PA);
 };
 
 class ActionAgrandirTraineeMoto : public Action
@@ -167,7 +170,7 @@ public:
     {
     }
 
-    ACTIONS(ActionAgrandirTraineeMoto);
+    ACTIONS(ActionAgrandirTraineeMoto, ACT_AGRANDIR);
 
 protected:
     int	id_;
@@ -183,7 +186,7 @@ public:
     {
     }
 
-    ACTIONS(ActionPoserPointCroisement);
+    ACTIONS(ActionPoserPointCroisement, ACT_POSER_PT_CROIX);
 
 protected:
     position point_;

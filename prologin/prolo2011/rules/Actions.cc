@@ -31,13 +31,41 @@ static inline int distance(position p1, position p2)
   return abs(p1.x - p2.x) + abs(p1.y - p2.y);
 }
 
+static inline std::vector<int> make_int_vect(int size, ...)
+{
+    va_list va;
+    std::vector<int> ret;
 
+    va_start(va, size);
+    while (size--)
+    {
+        ret.push_back(va_arg(va, int));
+    }
+    va_end(va);
+
+    return ret;
+}
 
 void Action::appliquer(GameData* g)
 {
 }
 void Action::annuler(GameData *g){
   LOG3("WARNING: Action::annuler ne devrait pas etre appele");
+}
+
+void Action::envoyer(Api* api)
+{
+    std::vector<int> params = this->serialiser();
+    StechecPkt pkt(this->type(), -1);
+
+    pkt.Push(1, last_order_id++);
+    for (std::vector<int>::const_iterator it = params.begin();
+            it != params.end(); ++it)
+    {
+        pkt.Push(1, *it);
+    }
+
+    api->SendToServer(pkt);
 }
 
 void Action::verifier_pa(GameData *g, int pa)
@@ -95,11 +123,9 @@ void ActionDeplacer::annuler(GameData* g)
     g->get_case(to_).bonus = taken_bonus_;
 }
 
-void ActionDeplacer::envoyer(Api* api)
+std::vector<int> ActionDeplacer::serialiser()
 {
-    StechecPkt com(ACT_DEPLACER, -1);
-    com.Push(7, last_order_id++, player_, id_, from_.x, from_.y, to_.x, to_.y);
-    api->SendToServer(com);
+    return make_int_vect(player_, id_, from_.x, from_.y, to_.x, to_.y);
 }
 
 ActionDeplacer*
@@ -159,15 +185,9 @@ void ActionCouperTraineeMoto::annuler(GameData* g)
     moto1.fusionner(moto2, entre_, et_);
 }
 
-void ActionCouperTraineeMoto::envoyer(Api* api)
+std::vector<int> ActionCouperTraineeMoto::serialiser()
 {
-    LOG3("ActionCouperTraineeMoto::envoyer()");
-    StechecPkt com(ACT_COUPER_TRAINEE_MOTO, -1);
-    com.Push(7, last_order_id++, player_,
-	     id_,
-	     entre_.x, entre_.y,
-	     et_.x, et_.y);
-    api->SendToServer(com);
+    return make_int_vect(player_, id_, entre_.x, entre_.y, et_.x, et_.y);
 }
 
 ActionCouperTraineeMoto*
@@ -230,15 +250,10 @@ void ActionFusionner::annuler(GameData* g)
     id2_ = pmoto2->id_;
 }
 
-void ActionFusionner::envoyer(Api* api)
+std::vector<int> ActionFusionner::serialiser()
 {
-    LOG3("ActionFusionner::envoyer()");
-    StechecPkt com(ACT_FUSIONNER, -1);
-    com.Push(8, last_order_id++, player_,
-	     id1_, id2_,
-	     pos1_.x, pos1_.y,
-	     pos2_.x, pos2_.y);
-    api->SendToServer(com);
+    return make_int_vect(player_, id1_, id2_, pos1_.x, pos1_.y,
+                         pos2_.x, pos2_.y);
 }
 
 
@@ -294,16 +309,10 @@ void ActionEnrouler::annuler(GameData* g)
     g->motos[id_].load_data(data_);
 }
 
-void ActionEnrouler::envoyer(Api* api)
+std::vector<int> ActionEnrouler::serialiser()
 {
-    LOG3("ActionEnrouler::envoyer()");
-    StechecPkt com(ACT_ENROULER, -1);
-    com.Push(5, last_order_id++, player_,
-	     id_,
-	     point_.x, point_.y);
-    api->SendToServer(com);
+    return make_int_vect(player_, id_, point_.x, point_.y);
 }
-
 
 ActionEnrouler*
 ActionEnrouler::recevoir(const StechecPkt* pkt)
@@ -352,15 +361,10 @@ void ActionRegenererSourceEnergie::annuler(GameData* g)
     g->joueurs[player_].bonus.push_back(BONUS_REGENERATION);
 }
 
-void ActionRegenererSourceEnergie::envoyer(Api* api)
+std::vector<int> ActionRegenererSourceEnergie::serialiser()
 {
-    LOG3("ActionRegenererSourceEnergie::envoyer()");
-    StechecPkt com(ACT_REGENERER, -1);
-    com.Push(3, last_order_id++, player_,
-	     id_);
-    api->SendToServer(com);
+    return make_int_vect(player_, id_);
 }
-
 
 ActionRegenererSourceEnergie*
 ActionRegenererSourceEnergie::recevoir(const StechecPkt* pkt)
@@ -403,14 +407,10 @@ void ActionAllongerPA::annuler(GameData* g)
     g->joueurs[player_].bonus.push_back(PLUS_LONG);
 }
 
-void ActionAllongerPA::envoyer(Api* api)
+std::vector<int> ActionAllongerPA::serialiser()
 {
-    LOG3("ActionAllongerPA::envoyer()");
-    StechecPkt com(ACT_ALLONGER_PA, -1);
-    com.Push(2, last_order_id++, player_);
-    api->SendToServer(com);
+    return make_int_vect(player_);
 }
-
 
 ActionAllongerPA*
 ActionAllongerPA::recevoir(const StechecPkt* pkt)
@@ -456,14 +456,10 @@ void ActionAgrandirTraineeMoto::annuler(GameData* g)
     g->motos[id_].len_ -= longueur_;
 }
 
-void ActionAgrandirTraineeMoto::envoyer(Api* api)
+std::vector<int> ActionAgrandirTraineeMoto::serialiser()
 {
-    LOG3("ActionAgrandirTraineeMoto::envoyer()");
-    StechecPkt com(ACT_AGRANDIR, -1);
-    com.Push(4, last_order_id++, player_, id_, longueur_);
-    api->SendToServer(com);
+    return make_int_vect(player_, id_, longueur_);
 }
-
 
 ActionAgrandirTraineeMoto*
 ActionAgrandirTraineeMoto::recevoir(const StechecPkt* pkt)
@@ -515,14 +511,10 @@ void ActionPoserPointCroisement::annuler(GameData* g)
     c.type = old_type_;
 }
 
-void ActionPoserPointCroisement::envoyer(Api* api)
+std::vector<int> ActionPoserPointCroisement::serialiser()
 {
-    LOG3("ActionPoserPointCroisement::envoyer()");
-    StechecPkt com(ACT_AGRANDIR, -1);
-    com.Push(4, last_order_id++, player_, point_.x, point_.y);
-    api->SendToServer(com);
+    return make_int_vect(player_, point_.x, point_.y);
 }
-
 
 ActionPoserPointCroisement*
 ActionPoserPointCroisement::recevoir(const StechecPkt* pkt)
