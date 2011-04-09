@@ -260,6 +260,12 @@ erreur Api::fusionner(int	id1, position	pos1,
     return OK;
 }
 
+std::vector<std::vector<int> > Api::actions_effectuees()
+{
+    LOG4("Api::actions_effectuees");
+    return g_->actions_stockees;
+}
+
 bool Api::mon_tour()
 {
   return g_->mon_tour();

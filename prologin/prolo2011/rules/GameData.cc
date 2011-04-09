@@ -328,6 +328,8 @@ void GameData::team_switched(){
 	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
     }
 
+    actions_stockees.clear();
+
     can_play = true;
     current_player = (current_player + 1 ) % 2;
     // FIXED by PM: reset point d'actions
@@ -567,4 +569,13 @@ void GameData::apply_connections()
 	    sources[i].release();
 	else
 	    sources[i].consume(degrees[i]);
+}
+
+void GameData::stocker_action(Action* act)
+{
+    // WARN: We cannot store the pointer, it is deleted just after the
+    // action is done. Serialize, and store that.
+    std::vector<int> ser = act->serialiser();
+    ser.insert(ser.begin(), 1, act->type());
+    actions_stockees.push_back(ser);
 }

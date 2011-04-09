@@ -61,6 +61,7 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
       return;
     }
     Action* act = act_from_pkt(pkt->type, pkt);
+    g_->stocker_action(act);
     act->appliquer(g_);
     delete act;
   }

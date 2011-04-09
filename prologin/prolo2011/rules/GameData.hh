@@ -149,6 +149,9 @@ public:
 
     bool isMatchFinished();
 
+    void stocker_action(Action* act);
+    std::vector<std::vector<int> > actions_stockees;
+
 
     // data
     typedef std::map<int, InternalTraineeMoto>	motos_type;
