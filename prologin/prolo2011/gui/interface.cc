@@ -275,6 +275,23 @@ trainee_moto lang2cxx<PyObject*, trainee_moto>(PyObject* in)
 }
 
 ///
+// GUI specific
+// Retourne la liste des actions effectuées pendant ce tour.
+//
+extern "C" std::vector<std::vector<int> > api_actions_effectuees();
+static PyObject* p_actions_effectuees(PyObject* self, PyObject* args)
+{
+  std::vector<std::vector<int> > actions = api_actions_effectuees();
+  size_t size = actions.size();
+  PyObject* out = PyList_New(size);
+
+  for (unsigned int i = 0; i < size; ++i)
+    PyList_SET_ITEM(out, i, cxx2lang_array<int>(actions[i]));
+
+  return out;
+}
+
+///
 // Retourne le numéro de votre équipe
 //
 static PyObject* p_mon_equipe(PyObject* self, PyObject* args)

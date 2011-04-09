@@ -1,6 +1,30 @@
---- interface.cc.orig	2011-03-19 13:07:08.456666573 +0100
-+++ interface.cc	2011-03-19 13:14:19.806666427 +0100
-@@ -669,7 +669,7 @@
+--- interface.cc.orig	2011-03-19 13:38:29.396666304 +0100
++++ interface.cc	2011-04-10 01:09:48.729997648 +0200
+@@ -275,6 +275,23 @@
+ }
+ 
+ ///
++// GUI specific
++// Retourne la liste des actions effectuées pendant ce tour.
++//
++extern "C" std::vector<std::vector<int> > api_actions_effectuees();
++static PyObject* p_actions_effectuees(PyObject* self, PyObject* args)
++{
++  std::vector<std::vector<int> > actions = api_actions_effectuees();
++  size_t size = actions.size();
++  PyObject* out = PyList_New(size);
++
++  for (unsigned int i = 0; i < size; ++i)
++    PyList_SET_ITEM(out, i, cxx2lang_array<int>(actions[i]));
++
++  return out;
++}
++
++///
+ // Retourne le numéro de votre équipe
+ //
+ static PyObject* p_mon_equipe(PyObject* self, PyObject* args)
+@@ -669,7 +686,7 @@
    PyObject* name;
    const char* champion_path;
        
