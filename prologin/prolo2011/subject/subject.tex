@@ -1,19 +1,43 @@
 %LaTeX Document
+\documentclass[a4paper,twoside,12pt]{article}
+\usepackage[utf8]{inputenc}
 
-%% Comment inclure une image :
-%% \vspace{1cm}
-%% \begin{figure}[!h]
-%% \centering
-%% \includegraphics{<filename.ext>}
-%% \caption{<legende>}
-%% \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         BEGIN FIXME         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\plongday{Samedi}
+\def\pday{23}
+\def\pmonth{avril}
+\def\pyear{2011}
+
+\def\ptitle{L'Arm\'ee des toons} %% Subject's main title
+\def\psubtitle{Tu jouais encore aux billes que je commandais des toons dans la l\'egion} %% Subject's sub title
+
+\def\plogo{prologin2010.png} %% Logo
+\def\psubjectpicture{image.png} %% Picture to be displayed
+%% on its own page
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         END FIXME           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%              DO NOT EDIT PAST THIS LINE            %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
 
 
 
 %\documentclass[a4paper,twoside,12pt]{book}
-\documentclass[a4paper,twoside,12pt]{article}
 
-\usepackage{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage{a4}
@@ -27,6 +51,8 @@
 \usepackage{listings}
 \usepackage{array}
 \usepackage{color}
+
+\def\pdate{\plongday{} \pday{} \pmonth{} \pyear{}}
 
 \definecolor{colIdentifier}{gray}{0}
 \definecolor{colKeys}{rgb}{0,0,0.6}
@@ -56,30 +82,28 @@ $\bullet$ \underline{\textbf{#1}}
 %\lhead[\textsl{Prologin 2009}]{\nouppercase \leftmark}
 %\rhead[Sujet de la finale]{}
 \lhead[\thepage]{\nouppercase \leftmark}
-\rhead[\textsl{Prologin 2011} --- Sujet de la finale]{\thepage}
+\rhead[\textsl{Prologin \pyear{}} --- Sujet de la finale]{\thepage}
 \cfoot{}
 
 % Couverture =========================================================
 \begin{titlepage}
 \begin{center}
-%\includegraphics[width=\linewidth]{logo.png}\\ %% FIXME: Logo 2009
+\includegraphics[width=\linewidth]{\plogo}\\
 \vspace{4cm}
 \Huge
-\textbf{Titre}\\
+\textbf{\ptitle{}}\\
 \Large
-\textbf{Sous-titre}\\
+\textbf{\psubtitle{}}\\
 \vspace{2cm}
 \normalsize
 Sujet de la finale du Concours National d'Informatique\\
-Samedi 23 avril 2011\\
+\pdate\\
 \end{center}
 \end{titlepage}
 
 % Sommaire ===========================================================
 \cleardoublepage
 \tableofcontents
-
-
 
 % Corps ==============================================================
 %\cleardoublepage
@@ -88,79 +112,17 @@ Samedi 23 avril 2011\\
 \parskip=6pt plus 3pt
 
 \newpage
-%\includegraphics[width=\linewidth]{image.png}\\
+\includegraphics[width=\linewidth]{\psubjectpicture}\\
 \newpage
-\section{Introduction}
-\textit{Greetings, Program! I'm Castor! Your host! Provider of any and all, entertainment, and diversions\ldots{}}
 
-\textit{\ldots{}at your service.}\\
-
-
-La Grille\ldots{} Un monde numérique. J'ai essayé d'imaginer
-des blocs d'informations se déplaçant dans l'ordinateur. A quoi
-ressemblent-ils ? Bateaux ? Motos ? Les circuits sont-ils les
-autoroutes de l'information ?
-
-J'ai continué à rêver d'un monde que je ne pensais jamais voir\ldots{}
-Jusqu'à ce que j'y pénètre\ldots{}\\
-
-Ce monde de programmes, régi par des programmes pour les programmes,
-est dirigé d'un pointeur de fer par Clu. Chargé de concevoir un monde
-parfait, Clu fait régner la terreur, désactivant sans pitié tout programme
-faisant un pas de travers.\\
-
-La seule passerelle entre ce monde numérique et le notre est le Portail.
-
-
-
-
-
-//FIXME histoire
-
-        \subsection{Votre mission}
-        \textit{In there is a new world! In there is our future! In there is our destiny!}
-        \subsection{La Grille}
-        \textit{-- The Grid. A digital frontier. I tried to picture clusters
-          of information as they moved through the computer. What did they
-          look like? Ships, motorcycles? Were the circuits like freeways? I
-          kept dreaming of a world I thought I'd never see. And then, one
-          day\ldots{}}
-
-        \textit{-- You got in!}
-
-        //FIXME le terrain, les cases, producteurs/consommateurs
-
-\newpage
-\section{Les règles}
-\textit{Patience, Sam Flynn. All of your questions will be answered soon.}
-
-//FIXME histoire
-
-        \subsection{Les programmes}
-        //FIXME qu'est-ce qu'un programme, les tours, les PA
-
-        \subsection{Interagir avec la Grille}
-        \textit{This is Blue Leader to Blue Bikes. Run these guys into your jet walls.}
-
-        //FIXME les actions
-
-\newpage
-\section{Les bonus}
-\textit{Now for some real user power.}
-
-//FIXME
-
-\newpage
-\section{Time's up!}
-\textit{End of Line, man.}
-
-//FIXME fin de partie
-
-\newpage
-\section{Conclusion}
+\input{subject_content.tex}
 
 \newpage
 \section{API}
-\input{api}
+\input{api.tex}
+
+\newpage
+\section{Notes sur l'utilisation de l'API}
+\input{useapi.tex}
 
 \end{document}
