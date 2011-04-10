@@ -334,7 +334,7 @@ lib_TARGETS = #{target}
 #{target}-cflags = -ggdb3 -Wall -Wextra
 
 # Evite de toucher a ce qui suit
-#{target}-dists += #{@header_file}
+#{target}-dists += #{@header_file} interface.hh
 #{target}-srcs += #{@source_file} ../includes/main.cc
 include ../includes/rules.mk
     EOF
