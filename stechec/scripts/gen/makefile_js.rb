@@ -67,7 +67,7 @@ NAME      = #{$conf['conf']['player_lib']}.so
 
 MY_CFLAGS = -O2
 
-LIMEOBJ   = stechec_lime.o
+LIMEOBJ   = stechec_main.o
 
     EOF
     f.print @makefile
