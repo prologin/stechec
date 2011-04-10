@@ -39,3 +39,20 @@ bool position_invalide(int x, int y){
     x >= TAILLE_TERRAIN ||
     y >= TAILLE_TERRAIN ;
 }
+
+bool position_invalide(const position& p)
+{
+  return p.x < 0 ||
+    p.y < 0 ||
+    p.x >= TAILLE_TERRAIN ||
+    p.y >= TAILLE_TERRAIN ;
+}
+
+pair_position pos_to_pair(const position& p)
+{
+    pair_position p_;
+
+    p_.first = p.x;
+    p_.second = p.y;
+    return p_;
+}

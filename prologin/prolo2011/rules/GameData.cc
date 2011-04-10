@@ -13,8 +13,11 @@
 #include "Utils.hh"
 #include "GameData.hh"
 #include "Constant.hh"
+
 #include <ctime>
 #include <cstdlib>
+#include <set>
+#include <deque>
 
 // TODO: better, call Init() from BeforeNewGame, etc..
 #define INIT()					\
@@ -28,10 +31,37 @@ Case::Case()
 {
 }
 
-Joueur::Joueur()
+Joueur::Joueur(int id)
     : score(0),
       bonus()
 {
+    this->id = id;
+}
+
+bool Joueur::is_able(type_bonus	b)
+{
+    return (get_bonus(b) != bonus.end());
+}
+
+erreur Joueur::use_capacity(type_bonus	b)
+{
+    typename bonus_list::iterator	it;
+
+    it = get_bonus(b);
+    if (it == bonus.end())
+	return (BONUS_INVALIDE);
+    bonus.erase(it);
+    return (OK);
+}
+
+typename Joueur::bonus_list::iterator
+Joueur::get_bonus(type_bonus	b)
+{
+    typename bonus_list::iterator	it;
+    for (it = bonus.begin(); it != bonus.end(); ++it)
+	if (*it == b)
+	    return (it);
+    return (bonus.end());
 }
 
 source_energie  SourceEnergie::to_source_energie(int indice)
@@ -49,13 +79,45 @@ void SourceEnergie::set_potentiel(int potentiel)
     potentiel_cur = potentiel;
 }
 
+int SourceEnergie::regenerer()
+{
+    int old_potentiel = potentiel_cur;
+    potentiel_cur = potentiel_max;
+    return (old_potentiel);
+}
+
+void SourceEnergie::reset(int old_potentiel)
+{
+    potentiel_cur = old_potentiel;
+}
+
+void SourceEnergie::consume(int degree)
+{
+    if (potentiel_max < 0)
+	degree = -degree;
+    if ((potentiel_cur - degree) * potentiel_max < 0)
+	// If (potentiel_cur - degree) and potentiel_max does not have the same
+	// sign and the first one is not null.
+	potentiel_cur = 0;
+    else
+	potentiel_cur -= degree;
+}
+
+void SourceEnergie::release()
+{
+    if (potentiel_cur > potentiel_max)
+	--potentiel_cur;
+    else if (potentiel_cur < potentiel_max)
+	++potentiel_cur;
+}
+
 GameData::GameData()
-    : current_player(0),
+    // FIXME: use a constant to but the last team's id
+    : current_player(1),
       can_play(true)
 {
     int		taille = TAILLE_TERRAIN * TAILLE_TERRAIN;
     Case	default_case;
-    Joueur	basic_joueur;
 
     terrain_.reserve(taille);
     for (int i = 0; i < taille; ++i)
@@ -71,7 +133,7 @@ GameData::GameData()
     joueurs.reserve(2);
     for (int i = 0; i < 2; ++i)
     {
-	joueurs.push_back(basic_joueur);
+	joueurs.push_back(Joueur(i));
 	InternalTraineeMoto& init_moto = creer_trainee_moto(i,
 							    init_pos[i],
 							    TAILLE_TRAINEE);
@@ -86,7 +148,8 @@ void GameData::Init() {
 Case&
 GameData::get_case(int x, int y)
 {
-  if (position_invalide(x, y)) abort();
+    if (position_invalide(x, y))
+	abort();
     return terrain_[x + TAILLE_TERRAIN * y];
 }
 
@@ -105,6 +168,128 @@ int GameData::get_free_moto_id()
     while (moto_valide(result))
 	++result;
     return result;
+}
+
+void GameData::get_next_pos(const position& p,
+			    std::vector<position>& next_pos)
+{
+    position next_p;
+    next_pos.reserve(4);
+
+    next_p.x = p.x;
+    next_p.y = p.y - 1;
+    next_pos.push_back(next_p);
+    next_p.y = p.y + 1;
+    next_pos.push_back(next_p);
+
+    next_p.y = p.y;
+    next_p.x = p.x - 1;
+    next_pos.push_back(next_p);
+    next_p.x = p.x + 1;
+    next_pos.push_back(next_p);
+}
+
+bool GameData::is_crossable_pos(const position& p)
+{
+    if (position_invalide(p))
+	return false;
+    else
+    {
+	Case& c = get_case(p);
+	if ((c.type != VIDE && c.type != BONUS) ||
+	    (c.nb_trainees_moto != 0 && c.type != POINT_CROISEMENT))
+	    return false;
+    }
+    return true;
+}
+
+void GameData::build_from_reverse_path(const position& reverse_begin,
+				       const position& reverse_end,
+				       std::map<pair_position, position>& back_path,
+				       std::vector<position>& path)
+{
+    std::vector<position> reverse_path;
+
+    int length = 0;
+    path.clear();
+    reverse_path.push_back(reverse_begin);
+    while (reverse_path[length] != reverse_end)
+    {
+	pair_position current_pos = pos_to_pair(reverse_path[length]);
+	reverse_path.push_back(back_path[current_pos]);
+	++length;
+    }
+    path.reserve(reverse_path.size());
+    for (int i = length - 1; i >= 0; --i)
+	path.push_back(reverse_path[i]);
+    LOG4("Path's length: %1", reverse_path.size());
+}
+
+/*
+ * Build a shortest path betwee 'begin' and 'end' in 'path', or make 'path'
+ * empty if there's no such path.
+ */
+void GameData::get_shortest_path(const position& begin,
+				 const position& end,
+				 std::vector<position>& path)
+{
+    LOG4("Processing a shortest path betwee (%1, %2) and (%3, %4)",
+	 begin.x, begin.y,
+	 end.x, end.y);
+
+    // Proceed a BFS and keep in memory for each cell the previous cell
+    // (building a reverse path)
+    std::deque<position> fifo;
+    std::map<pair_position, position> back_path;
+
+    path.clear();
+    // We don't mind if the beginning is not crossable
+    if (!is_crossable_pos(end))
+	// One end is not crossable: there's no path
+	return;
+    LOG5("The goal position is crossable: continue...");
+
+    fifo.push_back(begin);
+    back_path[pos_to_pair(begin)] = begin;
+    while (!fifo.empty())
+    {
+	position p = fifo[0];
+	fifo.pop_front();
+	LOG5("Processing the position (%1, %2)", p.x, p.y);
+
+	// Build the set of the adjacent positions
+	std::vector<position> next_pos;
+	get_next_pos(p, next_pos);
+
+	for (int i = 0; i < next_pos.size(); ++i)
+	{
+	    pair_position next_p = pos_to_pair(next_pos[i]);
+
+	    if (back_path.find(next_p) != back_path.end() ||
+		!is_crossable_pos(next_pos[i]))
+		// If this position is already visited or if this position is
+		// not crossable, do not process it
+		continue;
+	    LOG5("The next position (%1, %2) is valid", next_p.first, next_p.second);
+
+	    // The previous position of the next one is the current one
+	    back_path[next_p] = p;
+
+	    // If we reached the end, clear and exit. Continue otherwise.
+	    if (next_pos[i] == end)
+	    {
+		LOG5("We reached the end!");
+		fifo.clear();
+		break;
+	    }
+	    else
+		fifo.push_back(next_pos[i]);
+	}
+    }
+    if (back_path.find(pos_to_pair(end)) == back_path.end())
+	// If the end could not be reached, there's no path
+	return;
+    build_from_reverse_path(end, begin, back_path, path);
 }
 
 InternalTraineeMoto&
@@ -126,11 +311,49 @@ void GameData::supprimer_moto(int id)
     motos.erase(id);
 }
 
+bool GameData::source_valide(int id)
+{
+    return (0 <= id && id < sources.size());
+}
+
 void GameData::team_switched(){
-  LOG4("GameData::team_switched");
-  can_play = true;
-  current_player = (current_player + 1 ) % 2;
-  // TODO reset point d'actions
+    LOG4("GameData::team_switched");
+
+    // Update scores and potentiels each time everybody have played
+    if (current_player % 2 == 0)
+    {
+	apply_connections();
+	LOG4("Scores and potentiels have been updated!");
+	for (int i = 0; i < 2; ++i)
+	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
+    }
+
+    actions_stockees.clear();
+
+    can_play = true;
+    current_player = (current_player + 1 ) % 2;
+    // FIXED by PM: reset point d'actions
+    remaining_pa_ = MAX_PA;
+
+    /* This code tests the path finding
+    static int tour = 0;
+    ++tour;
+    if (tour != 6)
+	return;
+    std::cout << "Shortest path from (0, 0) to (49, 49):" << std::endl;
+    std::vector<position> path;
+    position begin;
+    begin.x = 0;
+    begin.y = 0;
+    position end;
+    end.x = TAILLE_TERRAIN - 1;
+    end.y = TAILLE_TERRAIN - 1;
+    get_shortest_path(begin, end, path);
+    for (std::vector<position>::iterator it = path.begin();
+	 it != path.end();
+	 ++it)
+	std::cout << "-> (" << it->x << ", " << it->y << ")" << std::endl;
+    */
 }
 
 void GameData::check(const char * file, int line){
@@ -174,7 +397,16 @@ GameData::get_sources(std::vector<source_energie>& srcs)
 void
 GameData::get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus)
 {
-    bonus = joueurs[joueur].bonus;
+    if (joueur < 0 || joueur >= joueurs.size())
+	return;
+
+    Joueur::bonus_list& blist = joueurs[joueur].bonus;
+    Joueur::bonus_list::iterator it;
+
+    bonus.clear();
+    bonus.reserve(bonus.size());
+    for (it = blist.begin(); it != blist.end(); ++it)
+	bonus.push_back(*it);
 }
 
 int GameData::get_real_turn()
@@ -219,4 +451,131 @@ bool GameData::annuler(){
     delete act;
     return true;
   }
+}
+
+bool GameData::poll_pa(int pa)
+{
+    if (pa < 0)
+	return false;
+    if (remaining_pa_ < pa)
+	return false;
+    return true;
+}
+
+bool GameData::take_pa(int pa)
+{
+    if (poll_pa(pa))
+    {
+	remaining_pa_ -= pa;
+	return true;
+    }
+    return false;
+}
+
+void GameData::give_pa(int pa)
+{
+    if (pa < 0)
+	return;
+    remaining_pa_ += pa;
+}
+
+/*
+ * Look for an energy source at a (potentially invalid) position, and categorize
+ * it (positive & negative).
+ */
+void GameData::categorize_case(const position& p,
+			       std::set<SourceEnergie*>& src_p,
+			       std::set<SourceEnergie*>& src_n)
+{
+    if (position_invalide(p))
+	return;
+
+    Case& c = get_case(p);
+    if (c.source_id != -1)
+    {
+	SourceEnergie&	src = sources[c.source_id];
+	if (src.potentiel_cur < 0)
+	    src_n.insert(&src);
+	else if (src.potentiel_cur > 0)
+	    src_p.insert(&src);
+    }
+}
+
+/*
+ * Look for every connection between one trainee_moto and the sources, compute
+ * the partial sources potentel’s changes and increase the score.
+ */
+void GameData::apply_connections_unit(int id_trainee,
+				      std::vector<int>& degrees)
+{
+    typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
+    typedef typename std::set<SourceEnergie*>::iterator sources_it;
+
+    std::set<SourceEnergie*>	src_p;
+    std::set<SourceEnergie*>	src_n;
+    InternalTraineeMoto&	moto = motos[id_trainee];
+    InternalTraineeMoto::nodes_list& nodes = moto.content_;
+
+    // Look for every sourced connected to the trainee_moto and categorize them
+    for (nodes_it it = nodes.begin(); it != nodes.end(); ++it)
+    {
+	position	p;
+
+	p.y = it->y - 1;
+	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
+	    categorize_case(p, src_p, src_n);
+
+	p.y = it->y;
+	p.x = it->x - 1;
+	categorize_case(p, src_p, src_n);
+	p.x = it->x + 1;
+	categorize_case(p, src_p, src_n);
+
+	p.y = it->y + 1;
+	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
+	    categorize_case(p, src_p, src_n);
+    }
+
+    if (src_p.empty() || src_n.empty())
+	return;
+
+    Joueur& joueur = joueurs[moto.player_];
+    for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
+    {
+	int potentiel = (*it)->potentiel_cur;
+	if (potentiel < 0)
+	    potentiel = -potentiel;
+	joueur.score += potentiel;
+	degrees[(*it)->id] += 1;
+    }
+}
+
+/*
+ * Look for every connection between trainees_moto and sources, compute the
+ * sources potentiel’s changes and the increase the scores.
+ */
+void GameData::apply_connections()
+{
+    motos_type::const_iterator	it;
+    std::vector<int>		degrees;
+
+    degrees.resize(sources.size(), 0);
+    for (it = motos.begin(); it != motos.end(); ++it)
+	apply_connections_unit(it->first, degrees);
+
+    // Change the sources’ potentiel
+    for (int i = 0; i < degrees.size(); ++i)
+	if (degrees[i] == 0)
+	    sources[i].release();
+	else
+	    sources[i].consume(degrees[i]);
+}
+
+void GameData::stocker_action(Action* act)
+{
+    // WARN: We cannot store the pointer, it is deleted just after the
+    // action is done. Serialize, and store that.
+    std::vector<int> ser = act->serialiser();
+    ser.insert(ser.begin(), 1, act->type());
+    actions_stockees.push_back(ser);
 }

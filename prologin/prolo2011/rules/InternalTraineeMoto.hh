@@ -14,14 +14,23 @@
 #define INTERNAL_TRAINEE_MOTO_HH_
 
 #include "Constant.hh"
-#include <deque>
+#include <list>
 
 class GameData;
 
 class InternalTraineeMoto
 {
 public:
-    typedef std::deque<position> deque_type;
+    typedef std::list<position> nodes_list;
+
+    struct MotoData
+    {
+	typedef std::list<position> nodes_list;
+	nodes_list content;
+	int len;
+	int max_len;
+	bool last_end_moved;
+    };
 
     InternalTraineeMoto(GameData* gd,
 			int player, int id,
@@ -33,19 +42,29 @@ public:
     bool begin(position pos);
     bool end(position pos);
 
+    void load_data(const MotoData& data);
     trainee_moto to_trainee_moto() const;
 
-    erreur move(position from, position to);
+    void take_case(const position&	pos,
+		   type_bonus&		taken_bonus);
+    erreur move(position from, position to,
+		type_bonus&	taken_bonus);
     void reject_bad_move(position from, position to);
 
-    erreur couper(position entre, position et);
+    erreur couper(position entre, position et,
+		  InternalTraineeMoto** moitie);
     void reject_bad_coupe(position entre, position et);
+
     erreur fusionner(InternalTraineeMoto	&autre,
 		     position			entre,
 		     position			et);
     void reject_bad_fusion(InternalTraineeMoto	&autre,
 			   position		entre,
 			   position		et);
+
+    erreur enrouler(position	point,
+		    MotoData	&data);
+    void reject_bad_enroule(position	point);
 
     int length();
     position queue(position head);
@@ -56,10 +75,13 @@ public:
     int		player_;
     int		id_;
 
-    deque_type content_;
+    nodes_list content_;
     int len_;
     int max_len_;
     bool last_end_moved_; /* false when head, true when queue */
+
+protected:
+    void save_data(MotoData& data);
 };
 
 #endif // !INTERNAL_TRAINEE_MOTO_HH_

@@ -17,6 +17,7 @@
 # include "Constant.hh"
 # include "InternalTraineeMoto.hh"
 # include "Actions.hh"
+# include "Utils.hh"
 
 # include <map>
 
@@ -37,20 +38,41 @@ struct Case
 
 struct SourceEnergie
 {
+    int		id;
     position    pos;
     int         potentiel_max;
     int         potentiel_cur;
 
     source_energie  to_source_energie(int indice);
     void set_potentiel(int potentiel);
+    int regenerer();
+    void reset(int old_potentiel);
+
+    void consume(int degree);
+    void release();
 };
 
 struct Joueur
 {
-    int                         score;
-    std::vector<type_bonus>     bonus;
+    typedef std::list<type_bonus>	bonus_list;
 
-    Joueur();
+    int		id;
+    int		score;
+    bonus_list	bonus;
+
+    Joueur(int id);
+    /*! Test weither a player is able to use a bonus */
+    bool is_able(type_bonus	b);
+
+    /*!
+     * Remove a bonus from the players’s bonus and return OK, or return
+     * BONUS_INVALIDE if there’s no such bonus.
+     */
+    erreur use_capacity(type_bonus	b);
+
+protected:
+    typename bonus_list::iterator
+    get_bonus(type_bonus	b);
 };
 
 /*!
@@ -69,6 +91,24 @@ public:
     Case& get_case(int x, int y);
     Case& get_case(const position &pos);
 
+    // Path processing
+    void get_next_pos(const position& p,
+		      std::vector<position>& next_pos);
+    bool is_crossable_pos(const position& p);
+    void build_from_reverse_path(const position& reverse_begin,
+				 const position& reverse_end,
+				 std::map<pair_position, position>& back_path,
+				 std::vector<position>& path);
+
+
+    /*
+     * Build a shortest path betwee 'begin' and 'end' in 'path', or make 'path'
+     * empty if there's no such path.
+     */
+    void get_shortest_path(const position& begin,
+			   const position& end,
+			   std::vector<position>& path);
+
     // Manipulations basiques des motos
 
     // Chaque moto est identifiée par un entier, et celui-ci ne doit pas
@@ -80,6 +120,8 @@ public:
     bool moto_valide(int id);
     void supprimer_moto(int id);
 
+    bool source_valide(int id);
+
     // side effects
     void team_switched();
 
@@ -88,6 +130,13 @@ public:
     void appliquer_action(Action* act);
     void send_actions();
     bool annuler();
+
+    /* Return if "pa" PAs are available. Return false if "pa" is negative. */
+    bool poll_pa(int pa);
+    /* Take "pa" PAs if poll_pa returned true and return ask_pa's result */
+    bool take_pa(int pa);
+    /* If "pa" is positive, add "pa" PAs */
+    void give_pa(int pa);
 
     // turn
     int get_current_player();
@@ -99,6 +148,9 @@ public:
     int get_real_turn();
 
     bool isMatchFinished();
+
+    void stocker_action(Action* act);
+    std::vector<std::vector<int> > actions_stockees;
 
 
     // data
@@ -117,10 +169,30 @@ public:
 
 protected:
     bool initialized_;
+    int remaining_pa_;
 
     std::vector<Case> terrain_;
 
     int get_free_moto_id();
+
+    /*
+     * Look for every connection between trainees_moto and sources, compute the
+     * sources potentiel’s changes and the increase the scores.
+     */
+    void apply_connections();
+    /*
+     * Look for every connection between one trainee_moto and the sources,
+     * compute the partial sources potentel’s changes and increase the score.
+     */
+    void apply_connections_unit(int id_trainee,
+				std::vector<int>& degrees);
+    /*
+     * Look for an energy source at a (potentially invalid) position, and
+     * categorize it (positive & negative).
+     */
+    void categorize_case(const position& p,
+			 std::set<SourceEnergie*>& src_p,
+			 std::set<SourceEnergie*>& src_n);
 };
 
 #endif // !GAMEDATA_HH_

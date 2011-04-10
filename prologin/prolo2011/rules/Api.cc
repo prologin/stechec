@@ -146,12 +146,8 @@ std::vector<type_bonus> Api::regarder_bonus(int equipe)
     if (equipe < 0 || equipe >= g_->joueurs.size())
 	return std::vector<type_bonus>();
 
-    const std::vector<type_bonus>& bonus = g_->joueurs[equipe].bonus;
     std::vector<type_bonus>	result;
-
-    result.reserve(bonus.size());
-    for (int i = 0; i < bonus.size(); ++i)
-	result.push_back(bonus[i]);
+    g_->get_bonus_joueur(equipe, result);
     return (result);
 }
 
@@ -199,8 +195,11 @@ erreur Api::cancel()
 //
 erreur Api::enrouler(int id, position point)
 {
-  // TODO
-  abort();
+    LOG4("Api::enrouler");
+    DO_ACTION(ActionEnrouler, g_->get_current_player(),
+	      id, point);
+    LOG4("Api::enrouler : OK");
+    return OK;
 }
 
 ///
@@ -208,8 +207,11 @@ erreur Api::enrouler(int id, position point)
 //
 erreur Api::regenerer_source_energie(int id)
 {
-  // TODO
-  abort();
+    LOG4("Api::regenerer");
+    DO_ACTION(ActionRegenererSourceEnergie, g_->get_current_player(),
+	      id);
+    LOG4("Api::regenerer : OK");
+    return OK;
 }
 
 ///
@@ -217,8 +219,10 @@ erreur Api::regenerer_source_energie(int id)
 //
 erreur Api::allonger_pa()
 {
-  // TODO
-  abort();
+    LOG4("Api::allonger_pa");
+    DO_ACTION(ActionAllongerPA, g_->get_current_player());
+    LOG4("Api::allonger_pa : OK");
+    return OK;
 }
 
 ///
@@ -226,8 +230,10 @@ erreur Api::allonger_pa()
 //
 erreur Api::agrandir_trainee_moto(int id, int longueur)
 {
-  // TODO
-  abort();
+    LOG4("Api::agrandir_trainee_moto");
+    DO_ACTION(ActionAgrandirTraineeMoto, g_->get_current_player(), id, longueur);
+    LOG4("Api::agrandir_trainee_moto : OK");
+    return OK;
 }
 
 ///
@@ -235,8 +241,10 @@ erreur Api::agrandir_trainee_moto(int id, int longueur)
 //
 erreur Api::poser_point_croisement(position point)
 {
-  // TODO
-  abort();
+    LOG4("Api::poser_point_croisement");
+    DO_ACTION(ActionPoserPointCroisement, g_->get_current_player(), point);
+    LOG4("Api::poser_point_croisement : OK");
+    return OK;
 }
 
 ///
@@ -250,6 +258,12 @@ erreur Api::fusionner(int	id1, position	pos1,
 	      id1, pos1, id2, pos2);
     LOG4("Api::fusionner OK");
     return OK;
+}
+
+std::vector<std::vector<int> > Api::actions_effectuees()
+{
+    LOG4("Api::actions_effectuees");
+    return g_->actions_stockees;
 }
 
 bool Api::mon_tour()

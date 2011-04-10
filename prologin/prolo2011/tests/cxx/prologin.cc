@@ -61,7 +61,9 @@ std::string	str_type_bonus(type_bonus b)
 //
 void init_game()
 {
-  std::cout << "equipe : " << mon_equipe() << std::endl;
+    std::cout << "Turn/Equipe : "
+	      << tour_actuel() << "/"
+	      << mon_equipe() << std::endl;
 }
 
 void my_print_trainees()
@@ -99,7 +101,7 @@ void my_print_scores()
 {
     // Affichage des scores
     std::vector<int>    s = scores();
-    std::cout << "scores:";
+    std::cout << "Scores:";
     for (unsigned int i = 0; i < s.size(); ++i)
         std::cout << " " << i << "->" << s[i];
     std::cout << std::endl;
@@ -142,6 +144,23 @@ void test_error_cases()
 	      << std::endl;
 }
 
+void get_team_motos(std::vector<trainee_moto>&	motos, int team)
+{
+    motos.clear();
+    std::vector<trainee_moto> t = trainees_moto();
+    for (unsigned int i = 0; i < t.size(); i++)
+	if (t[i].team == team)
+	    motos.push_back(t[i]);
+}
+
+void my_print_game()
+{
+    my_print_trainees();
+    my_print_sources();
+    my_print_scores();
+    my_print_bonus();
+}
+
 ///
 // Fonction appellée pour la phase de jeu
 //
@@ -153,36 +172,78 @@ void jouer()
 
     std::cout << "tour : " << tour_actuel() << std::endl;
 
-    my_print_trainees();
-    my_print_sources();
-    my_print_scores();
-    my_print_bonus();
+    my_print_game();
 
-    test_error_cases();
-
-    static bool move_right = true;
+    int		act_points = MAX_PA;
+    static int	move_right = true;
     int		my_player = mon_equipe();
+    int		turn = tour_actuel();
     int		incr = 1;
-    int		my_moto = 0;
     position	cur_pos, next_pos;
     if (my_player)
 	incr = -1;
 
     // Choose a moto to move
-    std::vector<trainee_moto> t = trainees_moto();
-    for (unsigned int i = 0; i < t.size(); i++)
+    std::vector<trainee_moto>	my_motos;
+    get_team_motos(my_motos, my_player);
+    cur_pos = my_motos[0].emplacement[0];
+    next_pos = cur_pos;
+
+    // 1st turn: error cases
+    if (turn == 1)
+	test_error_cases();
+    // 2rd turn: split and merge
+    else if (turn == 2)
     {
-        trainee_moto& tr = t.at(i);
-	if (tr.team == my_player)
-	{
-	    my_moto = tr.id;
-	    cur_pos = tr.emplacement[0];
-	    next_pos = cur_pos;
-	    break;
-	}
+	position& pos1 = my_motos[0].emplacement[0];
+	position& pos2 = my_motos[0].emplacement[1];
+	std::cout << "Coupe: (" << pos1.x << ", " << pos1.y << ") <-> ("
+		  << pos2.x << ", " << pos2.y << ")" << std::endl;
+	if (couper_trainee_moto(my_motos[0].id,
+				my_motos[0].emplacement[0],
+				my_motos[0].emplacement[1]) != OK)
+	    return;
+	--act_points;
+	get_team_motos(my_motos, my_player);
+	std::cout << "Apres coupe:" << std::endl;
+	my_print_trainees();
+
+
+	if (fusionner(my_motos[0].id,
+		      my_motos[0].emplacement[0],
+		      my_motos[1].id,
+		      my_motos[1].emplacement[0]) != OK)
+	    return;
+	--act_points;
+	get_team_motos(my_motos, my_player);
+	std::cout << "Apres fusion:" << std::endl;
+	my_print_trainees();
+    }
+    // 3rd turn: enrouler & regenerer
+    else if (turn == 3)
+    {
+	trainee_moto&	moto = my_motos[0];
+	position	point = my_motos[0].emplacement[my_motos[0].emplacement.size() - 1];
+
+	std::cout << "Enrouler: (" << point.x << ", " << point.y << ")" << std::endl;
+	enrouler(moto.id, point);
+	--act_points;
+	cur_pos = point;
+	next_pos = point;
+	get_team_motos(my_motos, my_player);
+	std::cout << "Apres enroulage:" << std::endl;
+	my_print_trainees();
+
+	allonger_pa();
+	--act_points;
+	act_points += 5;
+
+	regenerer_source_energie(0);
+	--act_points;
     }
 
-    for (int i = 0; i < MAX_PA; ++i)
+    // And the we move it
+    for (; act_points > 0; --act_points)
     {
 	if (move_right)
 	    next_pos.x += incr;
@@ -191,9 +252,12 @@ void jouer()
 	move_right = !move_right;
 	std::cout << "Move: (" << cur_pos.x << ", " << cur_pos.y << ") -> ("
 		  << next_pos.x << ", " << next_pos.y << ")" << std::endl;
-	deplacer(my_moto, cur_pos, next_pos);
+	deplacer(my_motos[0].id, cur_pos, next_pos);
 	cur_pos = next_pos;
     }
+
+    if (turn == 3)
+	my_print_game();
 }
 
 ///

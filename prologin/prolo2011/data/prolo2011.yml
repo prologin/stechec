@@ -27,6 +27,10 @@ constant:
     cst_name: MAX_ALLONGEMENT
     cst_val: 5
     cst_comment: "Longueur maximale de l'allongement"
+  -
+    cst_name: AJOUT_PA
+    cst_val: 5
+    cst_comment: "Nombre de points d'action à rajouter avec bonus"
 
 enum:
   - doc_extra: \subsection{Énumérations}

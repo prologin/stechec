@@ -26,25 +26,32 @@
 class Action
 {
 public:
-  Action(int player) : player_(player) {}
+    Action(int player) : player_(player) {}
 
-  virtual ~Action() {}
+    virtual ~Action() {}
 
-  virtual void appliquer(GameData* g);
-  virtual void envoyer(Api* api) = 0;
-  virtual void annuler(GameData* g);
-  virtual void verifier(GameData* g) = 0;
+    virtual void appliquer(GameData* g);
+    virtual std::vector<int> serialiser() = 0;
+    virtual int type() = 0;
+    virtual void envoyer(Api* api);
+    virtual void annuler(GameData* g);
+    virtual void verifier(GameData* g) = 0;
+    virtual void print() = 0;
+
+    void verifier_pa(GameData* g, int pa);
 
 protected:
   int player_;
 };
 
-#define ACTIONS(Nom)				\
-    virtual void appliquer(GameData* g);	\
-    virtual void envoyer(Api* api);		\
+#define ACTIONS(Nom, Type)			  \
+    virtual void appliquer(GameData* g);	  \
+    virtual std::vector<int> serialiser();	  \
+    virtual int type() { return Type; }		  \
     static  Nom* recevoir(const StechecPkt* pkt); \
-    virtual void annuler(GameData* g);		\
-    virtual void verifier(GameData* g);
+    virtual void annuler(GameData* g);		  \
+    virtual void verifier(GameData* g);		  \
+    virtual void print();
 
 class ActionDeplacer : public Action
 {
@@ -54,16 +61,17 @@ public:
     {
     }
 
-    ACTIONS(ActionDeplacer);
+    ACTIONS(ActionDeplacer, ACT_DEPLACER);
 
 protected:
-    position from_;
-    position to_;
-    int id_;
-    int old_len_;
-    position old_queue_;
-    position new_queue_;
-    bool last_end_moved_;
+    position	from_;
+    position	to_;
+    int		id_;
+    int		old_len_;
+    position	old_queue_;
+    position	new_queue_;
+    type_bonus	taken_bonus_;
+    bool	last_end_moved_;
 };
 
 class ActionCouperTraineeMoto : public Action
@@ -76,7 +84,7 @@ public:
     {
     }
 
-    ACTIONS(ActionCouperTraineeMoto);
+    ACTIONS(ActionCouperTraineeMoto, ACT_COUPER_TRAINEE_MOTO);
 
 protected:
     int		id_;
@@ -97,13 +105,92 @@ public:
     {
     }
 
-    ACTIONS(ActionFusionner);
+    ACTIONS(ActionFusionner, ACT_FUSIONNER);
 
 protected:
     int		id1_;
     int		id2_;
     position	pos1_;
     position	pos2_;
+};
+
+class ActionEnrouler : public Action
+{
+public:
+    ActionEnrouler(int player,
+		   int		id,
+		   position	point) :
+	Action(player),
+	id_(id), point_(point)
+    {
+    }
+
+    ACTIONS(ActionEnrouler, ACT_ENROULER);
+
+protected:
+    int					id_;
+    position				point_;
+    InternalTraineeMoto::MotoData	data_;
+};
+
+class ActionRegenererSourceEnergie : public Action
+{
+public:
+    ActionRegenererSourceEnergie(int player, int id)
+	: Action(player),
+	  id_(id)
+    {
+    }
+
+    ACTIONS(ActionRegenererSourceEnergie, ACT_REGENERER);
+
+protected:
+    int	id_;
+    int	old_potentiel_;
+};
+
+class ActionAllongerPA : public Action
+{
+public:
+    ActionAllongerPA(int player)
+	: Action(player)
+    {
+    }
+
+    ACTIONS(ActionAllongerPA, ACT_ALLONGER_PA);
+};
+
+class ActionAgrandirTraineeMoto : public Action
+{
+public:
+    ActionAgrandirTraineeMoto(int player, int id, int longueur)
+	: Action(player),
+	  id_ (id),
+	  longueur_ (longueur)
+    {
+    }
+
+    ACTIONS(ActionAgrandirTraineeMoto, ACT_AGRANDIR);
+
+protected:
+    int	id_;
+    int longueur_;
+};
+
+class ActionPoserPointCroisement : public Action
+{
+public:
+    ActionPoserPointCroisement(int player, position point)
+	: Action(player),
+	  point_(point)
+    {
+    }
+
+    ACTIONS(ActionPoserPointCroisement, ACT_POSER_PT_CROIX);
+
+protected:
+    position point_;
+    type_case old_type_;
 };
 
 Action* act_from_pkt(int type, const StechecPkt* pkt);

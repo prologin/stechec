@@ -115,6 +115,10 @@ public:
 //
    erreur fusionner(int id1, position pos1, int id2, position pos2);
 
+///
+// GUI specific
+// Renvoie la liste des actions effectuees
+  std::vector<std::vector<int> > actions_effectuees();
 
   bool mon_tour();
 

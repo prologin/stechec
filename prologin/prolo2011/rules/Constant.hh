@@ -41,6 +41,11 @@
 # define MAX_ALLONGEMENT           5
 
 ///
+// Nombre de points d'action à rajouter avec bonus
+//
+# define AJOUT_PA		   5
+
+///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action
 //
 typedef enum erreur {
@@ -115,6 +120,11 @@ enum e_com_type {
   ACT_DEPLACER,
   ACT_COUPER_TRAINEE_MOTO,
   ACT_FUSIONNER,
+  ACT_ENROULER,
+  ACT_REGENERER,
+  ACT_ALLONGER_PA,
+  ACT_AGRANDIR,
+  ACT_POSER_PT_CROIX,
   LAST_MSG
 };
 

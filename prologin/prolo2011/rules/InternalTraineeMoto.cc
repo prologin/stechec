@@ -18,51 +18,51 @@
 #include "interface.hh"
 
 /*
- * Wrapper that handles both iterators and reverse_iterators for double ended
- * queues. It is used only for merging two InternalTraineeMoto’s.
+ * Wrapper that handles both iterators and reverse_iterators for lists. It is
+ * used only for merging two InternalTraineeMoto’s.
  */
 template<typename T>
-class DequeIterator
+class ListIterator
 {
 public:
-    typedef std::deque<T>	deque_type;
+    typedef std::list<T>	nodes_list;
 
-    DequeIterator(deque_type&	deque,
-		  bool		reverse = false);
+    ListIterator(nodes_list&	list,
+		 bool		reverse = false);
 
     // Using the two next methods is undefined if the iterator has reached the
-    // end of the deque
+    // end of the list
     T& operator*();
     T& operator->();
 
     // Go to the next node (does not raise an error if the end is reached)
-    DequeIterator<T>& operator++();
+    ListIterator<T>& operator++();
     // Return if the end is reached
     operator bool();
 
 protected:
-    deque_type&	deque_;
+    nodes_list&	list_;
 
     bool	reverse_;
-    typename deque_type::iterator		it_;
-    typename deque_type::reverse_iterator	rit_;
+    typename nodes_list::iterator		it_;
+    typename nodes_list::reverse_iterator	rit_;
 };
 
 template<typename T>
-DequeIterator<T>::DequeIterator(deque_type&	deque,
-				bool		reverse)
-    : deque_ (deque),
+ListIterator<T>::ListIterator(nodes_list&	list,
+			      bool		reverse)
+    : list_ (list),
       reverse_ (reverse)
 {
     if (reverse_)
-	rit_ = deque.rbegin();
+	rit_ = list.rbegin();
     else
-	it_ = deque.begin();
+	it_ = list.begin();
 }
 
 template<typename T>
 T&
-DequeIterator<T>::operator*()
+ListIterator<T>::operator*()
 {
     if (reverse_)
 	return (*rit_);
@@ -72,7 +72,7 @@ DequeIterator<T>::operator*()
 
 template<typename T>
 T&
-DequeIterator<T>::operator->()
+ListIterator<T>::operator->()
 {
     if (reverse_)
 	return (*rit_);
@@ -81,8 +81,8 @@ DequeIterator<T>::operator->()
 }
 
 template<typename T>
-DequeIterator<T>&
-DequeIterator<T>::operator++()
+ListIterator<T>&
+ListIterator<T>::operator++()
 {
     if (reverse_)
 	++rit_;
@@ -92,12 +92,12 @@ DequeIterator<T>::operator++()
 }
 
 template<typename T>
-DequeIterator<T>::operator bool()
+ListIterator<T>::operator bool()
 {
     if (reverse_)
-	return (rit_ != deque_.rend());
+	return (rit_ != list_.rend());
     else
-	return (it_ != deque_.end());
+	return (it_ != list_.end());
 }
 
 InternalTraineeMoto::InternalTraineeMoto(GameData*	gd,
@@ -164,21 +164,36 @@ void InternalTraineeMoto::reject_bad_move(position from, position to){
   }
 }
 
-erreur InternalTraineeMoto::move(position from, position to)
+void InternalTraineeMoto::take_case(const position&	pos,
+				    type_bonus&		taken_bonus)
+{
+    Case&	case_to = gd_->get_case(pos);
+
+    case_to.nb_trainees_moto += 1;
+    taken_bonus = case_to.bonus;
+    if (case_to.bonus != PAS_BONUS)
+    {
+	gd_->joueurs[player_].bonus.push_back(case_to.bonus);
+	case_to.bonus = PAS_BONUS;
+    }
+}
+
+erreur InternalTraineeMoto::move(position from, position to,
+				 type_bonus&	taken_bonus)
 {
   LOG4("trainee_moto move");
   if (begin(from))
   {
     if (len_ == max_len_)
     {
-      const position& pos = content_.back();
+      position pos = content_.back();
       content_.pop_back();
       gd_->get_case(pos).nb_trainees_moto -= 1;
     }
     else
       len_ ++;
     content_.push_front(to);
-    gd_->get_case(to).nb_trainees_moto += 1;
+    take_case(to, taken_bonus);
     last_end_moved_ = false;
     return OK;
   }
@@ -186,14 +201,14 @@ erreur InternalTraineeMoto::move(position from, position to)
   {
     if (len_ == max_len_)
     {
-      const position& pos = content_.front();
+      position pos = content_.front();
       content_.pop_front();
       gd_->get_case(pos).nb_trainees_moto -= 1;
     }
     else
       len_ ++;
     content_.push_back(to);
-    gd_->get_case(to).nb_trainees_moto += 1;
+    take_case(to, taken_bonus);
     last_end_moved_ = true;
     return OK;
   }
@@ -201,24 +216,30 @@ erreur InternalTraineeMoto::move(position from, position to)
   return POSITION_INVALIDE;
 }
 
-erreur InternalTraineeMoto::couper(position entre, position et)
+erreur InternalTraineeMoto::couper(position entre, position et,
+				   InternalTraineeMoto** moitie)
 {
+    // TODO: associate "entre" with the first half, and "et" with the second
+    // one (this is necessary when cancelling a "coupe"
+
     // First find the two adjectent nodes to split
-    deque_type::iterator it;
-    deque_type::iterator it2;
+    nodes_list::iterator it;
+    nodes_list::iterator it2;
     int i = 1;
 
     for (it = content_.begin(); it != content_.end(); ++it, ++i)
         if (*it == entre)
         {
-            it2 = it + 1;
+	    it2 = it;
+	    ++it2;
             if (it2 == content_.end() || *it2 != et)
                 throw POSITION_INVALIDE;
             break;
         }
         else if (*it == et)
         {
-            it2 = it + 1;
+	    it2 = it;
+	    ++it2;
             if (it2 == content_.end() || *it2 != entre)
                 throw POSITION_INVALIDE;
             break;
@@ -233,15 +254,19 @@ erreur InternalTraineeMoto::couper(position entre, position et)
     InternalTraineeMoto& moto = gd_->creer_trainee_moto(player_,
                                                         *it2,
                                                         new_max_len);
+    std::cout << "New moto, init pos: (" << it2->x << ", " << it2->y << ")" << std::endl;
+    *moitie = &moto;
     moto.last_end_moved_ = last_end_moved_;
     max_len_ -= new_max_len;
     len_ -= 1;
     while ((it2 = content_.erase(it2)) != content_.end())
     {
+	std::cout << "Pushing: (" << it2->x << ", " << it2->y << ")" << std::endl;
         moto.content_.push_back(*it2);
         moto.len_ += 1;
         len_ -= 1;
     }
+    return OK;
 }
 
 /*
@@ -250,26 +275,32 @@ erreur InternalTraineeMoto::couper(position entre, position et)
 */
 void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
 {
-    deque_type::const_iterator it;
-    deque_type::const_iterator it2;
+    nodes_list::const_iterator it;
+    nodes_list::const_iterator it2;
 
     for (it = content_.begin(); it != content_.end(); ++it)
         if (*it == entre)
         {
-            it2 = it + 1;
-            if (it2 == content_.end() || (*it2) != et)
+	    it2 = it;
+	    ++it2;
+            if (it2 == content_.end() || *it2 != et)
                 throw POSITION_INVALIDE;
+	    else
+		return;
         }
         else if (*it == et)
         {
-            it2 = it + 1;
+	    it2 = it;
+	    ++it2;
             if (it2 == content_.end() || *it2 != entre)
                 throw POSITION_INVALIDE;
+	    else
+		return;
         }
 }
 
 /*
- * Make the "autre" moto empty steeling all its nodes.
+ * Make the "autre" moto empty steeling all its nodes, and delete it.
  * "entre" must be owned by *this, and "et" must be owned by autre. Of course,
  * each of "entre" and "et" must be ends of the Motos.
  */
@@ -286,7 +317,7 @@ erreur InternalTraineeMoto::fusionner(InternalTraineeMoto	&autre,
 	my_end = true;
 
     // Determine if we browse the moto in the direct or the reverse order
-    DequeIterator<position>	it(autre.content_, autre.queue() == et);
+    ListIterator<position>	it(autre.content_, autre.queue() == et);
 
     // Move the position from autre to *this
     while (it)
@@ -298,6 +329,8 @@ erreur InternalTraineeMoto::fusionner(InternalTraineeMoto	&autre,
 	else
 	    content_.push_front(buffer);
     }
+    len_ += autre.len_;
+    max_len_ += autre.max_len_;
     gd_->supprimer_moto(autre.id_);
 }
 
@@ -319,31 +352,79 @@ void InternalTraineeMoto::reject_bad_fusion(InternalTraineeMoto	&autre,
 	throw POSITION_INVALIDE;
 }
 
+erreur InternalTraineeMoto::enrouler(position	point,
+				     MotoData&	data)
+{
+    save_data(data);
+    content_.push_back(point);
+    len_ = 1;
+    gd_->get_case(point).nb_trainees_moto += 1;
+    return OK;
+}
+
+void InternalTraineeMoto::reject_bad_enroule(position	point)
+{
+    nodes_list::const_iterator	it;
+
+    for (it = content_.begin(); it != content_.end(); ++it)
+	if (*it == point)
+	    return;
+    throw POSITION_INVALIDE;
+}
+
 int InternalTraineeMoto::length(){
   return len_;
 }
 
-position InternalTraineeMoto::queue(position head__){
-  LOG4("trainee_moto queue");
-  if (begin(head__))
-    return head();
-  else if (end(head__))
-    return queue();
-  else
-  {
-    position p = {0, 0};
-    return p;
-  }
+position InternalTraineeMoto::queue(position head__)
+{
+    LOG4("trainee_moto queue");
+    if (begin(head__))
+	return head();
+    else if (end(head__))
+	return queue();
+    else
+    {
+	position p = {0, 0};
+	return p;
+    }
+}
+
+void InternalTraineeMoto::save_data(MotoData& data)
+{
+    data.content = content_;
+    data.len = len_;
+    data.max_len = max_len_;
+    data.last_end_moved = last_end_moved_;
+
+    // Remove all the node from the map
+    nodes_list::const_iterator	it;
+    for (it = content_.begin(); it != content_.end(); ++it)
+	gd_->get_case(*it).nb_trainees_moto -= 1;
+    content_.clear();
+}
+
+void InternalTraineeMoto::load_data(const MotoData& data)
+{
+    content_ = data.content;
+    // Put all the node on the map
+    nodes_list::const_iterator	it;
+    for (it = content_.begin(); it != content_.end(); ++it)
+	gd_->get_case(*it).nb_trainees_moto += 1;
+    len_ = data.len;
+    max_len_ = data.max_len;
+    last_end_moved_ = data.last_end_moved;
 }
 
 trainee_moto InternalTraineeMoto::to_trainee_moto() const
 {
-    trainee_moto out;
+    trainee_moto		out;
+    nodes_list::const_iterator	it;
 
     out.id = id_;
     out.emplacement.reserve(len_);
     out.team = player_;
-    for (int i = 0; i < len_; i++)
-	out.emplacement.push_back(content_[i]); // TODO
+    for (it = content_.begin(); it != content_.end(); ++it)
+	out.emplacement.push_back(*it); // TODO
     return out;
 }
