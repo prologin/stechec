@@ -23,7 +23,7 @@ lib_TARGETS = #{target}
 #{target}-dists = $(wildcard *.py)
 
 # Evite de toucher a ce qui suit
-#{target}-dists += api.py interface.hh
+#{target}-dists += interface.hh
 #{target}-srcs = interface.cc stechec_main.cc
 
 pc = $(shell for p in python2-config python-config; do if which $$p &>/dev/null; then echo $$p; fi done | head -n 1)
