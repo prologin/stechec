@@ -54,18 +54,25 @@ def communicate(cmdline, data=''):
 
     # Read stdout data
     chunks = []
+    read_size = 0
     while True:
         try:
             chunk = p.stdout.read(4096)
+            read_size += len(chunk)
             if not chunk:
                 break
-            chunks.append(chunk)
+
+            if read_size < 2**18:
+                chunks.append(chunk)
         except IOError, ex:
             if ex[0] != errno.EAGAIN:
                 raise
             sys.exc_clear()
         gevent.socket.wait_read(p.stdout.fileno())
     p.stdout.close()
+
+    if read_size >= 2**18:
+        chunks.append("\n\nLog truncated to stay below 256K\n")
 
     # Wait for process completion
     while p.poll() is None:
