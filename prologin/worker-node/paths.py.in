@@ -34,3 +34,4 @@ def expand_path(p):
 paths = {name: expand_path(path) for name, path in paths.iteritems()}
 
 config_file = os.path.join(paths['cfgdir'], "worker-node.yml")
+compile_script = os.path.join(paths['workernodedir'], "compile-champion.sh")
