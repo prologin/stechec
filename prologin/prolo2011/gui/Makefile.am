@@ -8,7 +8,16 @@ prolo2011guidir = $(pkgdatadir)/prolo2011/gui
 
 dist_prolo2011gui_DATA = \
 	api.py \
+	game.py \
+	graphics.py \
 	prologin.py
 
 tron_gui_la_CXXFLAGS = $(PYTHON_CFLAGS) -DCHAMPION_PATH=\"$(prolo2011guidir)\"
 tron_gui_la_LDFLAGS = -module $(PYTHON_LIBS)
+
+INCLUDES = \
+        -I$(top_srcdir)/stechec/tools                   \
+        -I$(top_srcdir)/stechec/base_rules              \
+        -I$(top_srcdir)/stechec/client                  \
+        -I$(top_srcdir)/prologin/common                 \
+        -I$(top_srcdir)/prologin/prolo2011/rules

@@ -11,6 +11,11 @@
 */
 
 #include <cstdlib>
+#include <iostream>
+
+#include <Api.hh>
+#include <ClientCx.hh>
+
 /* These functions are defined in common stechec rules. */
 extern "C" int api_state_is_end(void*);
 extern "C" int api_state_is_playturn(void*);
@@ -30,24 +35,23 @@ extern "C" int api_send_actions();
 
 extern "C" int run(void* foo, void* api, void* client_cx)
 {
-  init_game();
-  while (!api_state_is_end(api))
-    {
-      // Wait until we can play.
-      while (!api_state_is_playturn(api) && !api_state_is_end(api))
-	client_cx_process(client_cx);
-      if (api_state_is_end(api))
-        break;
+    Api&	g_api = *((Api*) api);
+    ClientCx&	g_cx = *((ClientCx*) client_cx);
 
-      if (api_mon_tour())
-      {
+    init_game();
+    while (!api_state_is_end(api))
+    {
 	jouer();
-      }
-      api_send_actions();
-      api_do_end_turn(api);
+
+	g_cx.setReady();
+	while (client_cx_process(client_cx))
+	    ;
+
+	if (api_state_is_end(api))
+	    break;
     }
 
-  end_game();
-  foo = foo;
-  return 0;
+    end_game();
+    foo = foo;
+    return 0;
 }

@@ -5,32 +5,37 @@
 
 from api import *
 
+import threading
+import Queue as queue
+
+import game
+import graphics
+
 try:
     import psyco
     psyco.full()
 except:
     pass
-# Fonction appellée au début de la partie
+
+pipe = queue.Queue()
+new_turn = threading.Event()
+end_turn = threading.Event()
+graphics = graphics.Graphics(pipe, new_turn, end_turn)
+gfx_thread = threading.Thread(target=graphics.run)
+
 def init_game():
-    pass # Place ton code ici
+    graphics.init()
+    gfx_thread.start()
 
-# Fonction appellée pour la phase de jeu
 def jouer():
-    pass # Place ton code ici
+    print 'Main: jouer()'
+    game_state = game.GameState()
+    pipe.put(game_state)
+    end_turn.clear()
+    new_turn.set()
+    print 'Main: waiting for the GUI'
+    end_turn.wait()
+    print 'Main: OK, jouer done'
 
-# Fonction appellée à la fin de la partie
 def end_game():
-    pass # Place ton code ici
-
-# Affiche le contenu d'une valeur de type erreur
-
-# Affiche le contenu d'une valeur de type type_case
-
-# Affiche le contenu d'une valeur de type type_bonus
-
-# Affiche le contenu d'une valeur de type position
-
-# Affiche le contenu d'une valeur de type source_energie
-
-# Affiche le contenu d'une valeur de type trainee_moto
-
+    graphics.quit()
