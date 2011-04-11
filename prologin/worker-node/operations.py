@@ -127,7 +127,6 @@ listen_port=%(port)d
 verbose=2
 
 [%(contest)s]
-verbose=0
 %(opts)s
 ''' % locals()
     open(config_path, 'w').write(config)
