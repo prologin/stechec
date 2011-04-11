@@ -7,6 +7,8 @@ master:
 worker:
   port: 8068
   available_slots: 20
+  port_range_start: 40000
+  port_range_end: 41000
 
 paths:
   data_root: /srv/stechec
