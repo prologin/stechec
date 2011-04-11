@@ -48,6 +48,9 @@ class WorkerNode(object):
         self.port = config['worker']['port']
         self.slots = self.max_slots = config['worker']['available_slots']
         self.secret = config['master']['shared_secret']
+        self.min_srv_port = config['worker']['port_range_start']
+        self.max_srv_port = config['worker']['port_range_end']
+        self.srv_port = self.min_srv_port
 
         self.heartbeat_greenlet = gevent.spawn(self.send_heartbeat)
 
@@ -60,6 +63,19 @@ class WorkerNode(object):
         host, port = (config['master']['host'], config['master']['port'])
         url = "http://%s:%d/" % (host, port)
         return xmlrpclib.ServerProxy(url)
+
+    @property
+    def available_server_port(self):
+        """
+        Be optimistic and hope that:
+        - nobody will use the ports in the port range but us
+        - there will never be more servers than ports in the range
+        """
+        port = self.srv_port
+        self.srv_port += 1
+        if self.srv_port > self.max_srv_port:
+            self.srv_port = self.min_srv_port
+        return port
 
     def send_heartbeat(self):
         while True:
@@ -76,10 +92,12 @@ class WorkerNode(object):
         self.slots -= slots
 
         def real_work():
+            job_done = True
             try:
-                func, args_li = work(*args, **kwargs)
+                job_done, func, args_li = work(*args, **kwargs)
             finally:
-                self.slots += slots
+                if job_done:
+                    self.slots += slots
             func(self.secret, self.get_worker_infos(), *args_li)
 
         gevent.spawn(real_work)
@@ -90,7 +108,17 @@ class WorkerNode(object):
                                 contest, "champions", user, str(champ_id))
         ret = operations.compile_champion(self.config, dir_path,
                                           user, champ_id)
-        return self.master.compilation_result, (champ_id, ret)
+        return True, self.master.compilation_result, (champ_id, ret)
+
+    def run_server(self, contest, match_id, opts=''):
+        port = self.available_server_port
+        match_id_high = "%03d" % (match_id / 1000)
+        match_id_low = "%03d" % (match_id % 1000)
+        match_path = os.path.join(self.config['paths']['data_root'],
+                                  contest, "matches", match_id_high,
+                                  match_id_low)
+        operations.run_server(self, port, contest, opts, match_path)
+        return False, self.master.match_ready, (match_id, port)
 
 class WorkerNodeProxy(object):
     """
@@ -103,6 +131,11 @@ class WorkerNodeProxy(object):
     def compile_champion(self, secret, *args, **kwargs):
         return self.node.start_work(
             self.node.compile_champion, 1, *args, **kwargs
+        )
+
+    def run_server(self, secret, *args, **kwargs):
+        return self.node.start_work(
+            self.node.run_server, 1, *args, **kwargs
         )
 
 def read_config(filename):

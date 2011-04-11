@@ -25,6 +25,7 @@ import gevent
 import gevent.socket
 import paths
 import os
+import os.path
 import sys
 
 def communicate(cmdline, data=''):
@@ -83,3 +84,31 @@ def compile_champion(config, dir_path, user, champ_id):
     cmd = [paths.compile_script, config['paths']['data_root'], dir_path]
     retcode, stdout = communicate(cmd)
     return retcode == 0
+
+def spawn_server(worker, cmd):
+    retcode, stdout = communicate(cmd)
+    worker.slots += 1
+
+def run_server(worker, port, contest, opts, match_path):
+    """
+    Runs the Stechec server and wait for client connections.
+    """
+    try:
+        os.makedirs(match_path)
+    except OSError:
+        pass
+
+    config_path = os.path.join(match_path, "config_server.ini")
+    config = '''
+[server]
+listen_port=%(port)d
+verbose=2
+
+[%(contest)s]
+verbose=0
+%(opts)s
+''' % locals()
+    open(config_path, 'w').write(config)
+    cmd = [paths.stechec_server, "-c", config_path]
+    gevent.spawn(spawn_server, worker, cmd)
+    gevent.sleep(0.25) # let it start
