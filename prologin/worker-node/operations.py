@@ -85,11 +85,11 @@ def compile_champion(config, dir_path, user, champ_id):
     retcode, stdout = communicate(cmd)
     return retcode == 0
 
-def spawn_server(worker, cmd):
+def spawn_server(cmd, callback, *args):
     retcode, stdout = communicate(cmd)
-    worker.slots += 1
+    callback(retcode, stdout, *args)
 
-def run_server(worker, port, contest, opts, match_path):
+def run_server(server_done, port, contest, opts, match_path, *args):
     """
     Runs the Stechec server and wait for client connections.
     """
@@ -110,5 +110,5 @@ verbose=0
 ''' % locals()
     open(config_path, 'w').write(config)
     cmd = [paths.stechec_server, "-c", config_path]
-    gevent.spawn(spawn_server, worker, cmd)
+    gevent.spawn(spawn_server, cmd, server_done, *args)
     gevent.sleep(0.25) # let it start

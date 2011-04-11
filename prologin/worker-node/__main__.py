@@ -117,8 +117,23 @@ class WorkerNode(object):
         match_path = os.path.join(self.config['paths']['data_root'],
                                   contest, "matches", match_id_high,
                                   match_id_low)
-        operations.run_server(self, port, contest, opts, match_path)
+        operations.run_server(worker.server_done, port, contest, opts,
+                              match_path, match_id)
         return False, self.master.match_ready, (match_id, port)
+
+    def server_done(self, retcode, stdout, match_id):
+        self.slots += 1
+        sent = False
+        print retcode
+        print stdout
+        while not sent:
+            try:
+                self.master.match_done(self.secret, self.get_worker_infos(),
+                                       match_id, [])
+                gevent.sleep(0.5)
+                sent = True
+            except socket.error:
+                pass
 
 class WorkerNodeProxy(object):
     """
