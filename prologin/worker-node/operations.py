@@ -134,17 +134,17 @@ verbose=2
     gevent.spawn(spawn_server, cmd, path, match_id, server_done)
     gevent.sleep(0.25) # let it start
 
-def spawn_client(cmd, path, match_id, champ_id, callback):
+def spawn_client(cmd, path, match_id, champ_id, tid, callback):
     retcode, stdout = communicate(cmd)
-    log_path = os.path.join(path, "log-champ-%d.log" % champ_id)
+    log_path = os.path.join(path, "log-champ-%d-%d.log" % (tid, champ_id))
     open(log_path, "w").write(stdout)
     callback(retcode, stdout, match_id, champ_id)
 
-def run_client(config, ip, port, contest, match_id, user, champ_id, cb):
+def run_client(config, ip, port, contest, match_id, user, champ_id, tid, cb):
     dir_path = champion_path(config, contest, user, champ_id)
     mp = match_path(config, contest, match_id)
     cmd = [paths.stechec_client,
-               "-i", str(champ_id),
+               "-i", str(tid),
                "-r", contest,
                "-a", dir_path,
                "-l", "champion",
@@ -154,4 +154,4 @@ def run_client(config, ip, port, contest, match_id, user, champ_id, cb):
                "-t", "50",
                "-f", "45000",
     ]
-    gevent.spawn(spawn_client, cmd, mp, match_id, champ_id, cb)
+    gevent.spawn(spawn_client, cmd, mp, match_id, champ_id, tid, cb)

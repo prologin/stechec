@@ -36,6 +36,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 import os.path
 import operations
 import paths
+import re
 import socket
 import xmlrpclib
 import yaml
@@ -51,6 +52,7 @@ class WorkerNode(object):
         self.min_srv_port = config['worker']['port_range_start']
         self.max_srv_port = config['worker']['port_range_end']
         self.srv_port = self.min_srv_port
+        self.matches = {}
 
         self.heartbeat_greenlet = gevent.spawn(self.send_heartbeat)
 
@@ -109,34 +111,48 @@ class WorkerNode(object):
 
     def run_server(self, contest, match_id, opts=''):
         port = self.available_server_port
+        self.matches[match_id] = {}
         operations.run_server(self.config, worker.server_done, port, contest,
                               match_id, opts)
         return False, self.master.match_ready, (match_id, port)
 
     def server_done(self, retcode, stdout, match_id):
         self.slots += 1
+
+        lines = stdout.split('\n')
+        result = []
+        score_re = re.compile(r'^(\d+) (\d+) (-?\d+) \(.*\)$')
+        for line in lines:
+            m = score_re.match(line)
+            if m is None:
+                continue
+            pid, score, stat = m.groups()
+            result.append((self.matches[match_id][int(pid)], int(score)))
+
         sent = False
-        print retcode
-        print stdout
         while not sent:
             try:
                 self.master.match_done(self.secret, self.get_worker_infos(),
-                                       match_id, [])
+                                       match_id, result)
                 gevent.sleep(0.5)
                 sent = True
             except socket.error:
                 pass
 
     def run_client(self, contest, match_id, ip, port, user, champ_id):
+        available_id = 0
+        while available_id in self.matches[match_id]:
+            available_id += 1
+        self.matches[match_id][available_id] = champ_id
         operations.run_client(self.config, ip, port, contest, match_id, user,
-                              champ_id, self.client_done)
+                              champ_id, available_id, self.client_done)
         return False, self.master.client_ready, (match_id, champ_id)
 
     def client_done(self, retcode, stdout, match_id, champ_id):
         self.slots += 1
         try:
             self.master.client_done(self.secret, self.get_worker_infos(),
-                                    match_id, champ_id, [])
+                                    match_id, champ_id, retcode)
         except socket.error:
             pass
 
