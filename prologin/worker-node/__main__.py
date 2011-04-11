@@ -21,7 +21,15 @@ import gevent
 import gevent.monkey
 import gevent.socket
 
-gevent.monkey.patch_all()
+# We do not use .patch_all() because .patch_os() must NOT be called.
+#
+# It overrides os.fork() which is used in subprocess.Popen and causes a
+# strange bug in libevent when the hub is reinitialized (infinite loop on ^C).
+gevent.monkey.patch_select()
+gevent.monkey.patch_socket()
+gevent.monkey.patch_ssl()
+gevent.monkey.patch_time()
+gevent.monkey.patch_thread()
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 
