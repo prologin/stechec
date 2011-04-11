@@ -34,7 +34,7 @@ import yaml
 
 class WorkerNode(object):
     def __init__(self, config):
-        self.master = self.create_master_connection(config)
+        self.config = config
         self.interval = config['master']['heartbeat_secs']
         self.hostname = socket.gethostname()
         self.port = config['worker']['port']
@@ -46,7 +46,9 @@ class WorkerNode(object):
     def get_worker_infos(self):
         return (self.hostname, self.port, self.slots, self.max_slots)
 
-    def create_master_connection(self, config):
+    @property
+    def master(self):
+        config = self.config
         host, port = (config['master']['host'], config['master']['port'])
         url = "http://%s:%d/" % (host, port)
         return xmlrpclib.ServerProxy(url)
@@ -59,10 +61,28 @@ class WorkerNode(object):
                 print 'master down, retrying heartbeat in %ds' % self.interval
             gevent.sleep(self.interval)
 
+    def start_work(self, work, slots, *args, **kwargs):
+        if self.slots < slots:
+            return False, self.secret, self.get_worker_infos()
+
+        self.slots -= slots
+
+        def real_work():
+            try:
+                func, args_li = work(*args, **kwargs)
+            finally:
+                self.slots += slots
+            func(self.secret, self.get_worker_infos(), *args_li)
+
+        gevent.spawn(real_work)
+        return True, self.secret, self.get_worker_infos()
+
     def compile_champion(self, contest, user, champ_id):
-        dir_path = os.path.join(config['paths']['data_root'],
+        dir_path = os.path.join(self.config['paths']['data_root'],
                                 contest, "champions", user, str(champ_id))
-        return operations.compile_champion(config, dir_path, user, champ_id)
+        ret = operations.compile_champion(self.config, dir_path,
+                                          user, champ_id)
+        return self.master.compilation_result, (champ_id, ret)
 
 class WorkerNodeProxy(object):
     """
@@ -73,7 +93,9 @@ class WorkerNodeProxy(object):
         self.node = node
 
     def compile_champion(self, secret, *args, **kwargs):
-        return self.node.compile_champion(*args, **kwargs)
+        return self.node.start_work(
+            self.node.compile_champion, 1, *args, **kwargs
+        )
 
 def read_config(filename):
     return yaml.load(open(filename))

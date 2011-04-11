@@ -25,4 +25,4 @@ def compile_champion(config, dir_path, user, champ_id):
     output of the compilation script.
     """
     # TODO
-    return (True, "")
+    return True
