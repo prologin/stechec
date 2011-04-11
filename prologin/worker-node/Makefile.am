@@ -7,6 +7,9 @@ dist_workernode_DATA = \
 	operations.py \
 	paths.py
 
+dist_workernode_SCRIPTS = \
+	compile_champion.sh
+
 dist_bin_SCRIPTS = worker-node
 
 dist_workernodecfg_DATA = worker-node.yml
