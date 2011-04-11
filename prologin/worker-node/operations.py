@@ -81,34 +81,46 @@ def communicate(cmdline, data=''):
     # Return data
     return (p.returncode, ''.join(chunks))
 
-def compile_champion(config, dir_path, user, champ_id):
+def champion_path(config, contest, user, champ_id):
+    return os.path.join(config['paths']['data_root'], contest, 'champions',
+                        user, str(champ_id))
+
+def match_path(config, contest, match_id):
+    match_id_high = "%03d" % (match_id / 1000)
+    match_id_low = "%03d" % (match_id % 1000)
+    return os.path.join(config['paths']['data_root'], contest, "matches",
+                        match_id_high, match_id_low)
+
+def compile_champion(config, contest, user, champ_id):
     """
     Compiles the champion at $dir_path/champion.tgz to $dir_path/champion.so.
 
     Returns a tuple (ok, output), with ok = True/False and output being the
     output of the compilation script.
     """
+    dir_path = champion_path(config, contest, user, champ_id)
     cmd = [paths.compile_script, config['paths']['data_root'], dir_path]
     retcode, stdout = communicate(cmd)
     return retcode == 0
 
-def spawn_server(cmd, path, callback, *args):
+def spawn_server(cmd, path, match_id, callback):
     retcode, stdout = communicate(cmd)
 
     log_path = os.path.join(path, "server.log")
     open(log_path, "w").write(stdout)
-    callback(retcode, stdout, *args)
+    callback(retcode, stdout, match_id)
 
-def run_server(server_done, port, contest, opts, match_path, *args):
+def run_server(config, server_done, port, contest, match_id, opts):
     """
     Runs the Stechec server and wait for client connections.
     """
+    path = match_path(config, contest, match_id)
     try:
-        os.makedirs(match_path)
+        os.makedirs(path)
     except OSError:
         pass
 
-    config_path = os.path.join(match_path, "config_server.ini")
+    config_path = os.path.join(path, "config_server.ini")
     config = '''
 [server]
 listen_port=%(port)d
@@ -120,5 +132,27 @@ verbose=0
 ''' % locals()
     open(config_path, 'w').write(config)
     cmd = [paths.stechec_server, "-c", config_path]
-    gevent.spawn(spawn_server, cmd, match_path, server_done, *args)
+    gevent.spawn(spawn_server, cmd, path, match_id, server_done)
     gevent.sleep(0.25) # let it start
+
+def spawn_client(cmd, path, match_id, champ_id, callback):
+    retcode, stdout = communicate(cmd)
+    log_path = os.path.join(path, "log-champ-%d.log" % champ_id)
+    open(log_path, "w").write(stdout)
+    callback(retcode, stdout, match_id, champ_id)
+
+def run_client(config, ip, port, contest, match_id, user, champ_id, cb):
+    dir_path = champion_path(config, contest, user, champ_id)
+    mp = match_path(config, contest, match_id)
+    cmd = [paths.stechec_client,
+               "-i", str(champ_id),
+               "-r", contest,
+               "-a", dir_path,
+               "-l", "champion",
+               "-d", ip,
+               "-p", str(port),
+               "-m", "250000",
+               "-t", "50",
+               "-f", "45000",
+    ]
+    gevent.spawn(spawn_client, cmd, mp, match_id, champ_id, cb)

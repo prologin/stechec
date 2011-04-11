@@ -104,21 +104,13 @@ class WorkerNode(object):
         return True, self.secret, self.get_worker_infos()
 
     def compile_champion(self, contest, user, champ_id):
-        dir_path = os.path.join(self.config['paths']['data_root'],
-                                contest, "champions", user, str(champ_id))
-        ret = operations.compile_champion(self.config, dir_path,
-                                          user, champ_id)
+        ret = operations.compile_champion(self.config, contest, user, champ_id)
         return True, self.master.compilation_result, (champ_id, ret)
 
     def run_server(self, contest, match_id, opts=''):
         port = self.available_server_port
-        match_id_high = "%03d" % (match_id / 1000)
-        match_id_low = "%03d" % (match_id % 1000)
-        match_path = os.path.join(self.config['paths']['data_root'],
-                                  contest, "matches", match_id_high,
-                                  match_id_low)
-        operations.run_server(worker.server_done, port, contest, opts,
-                              match_path, match_id)
+        operations.run_server(self.config, worker.server_done, port, contest,
+                              match_id, opts)
         return False, self.master.match_ready, (match_id, port)
 
     def server_done(self, retcode, stdout, match_id):
@@ -134,6 +126,19 @@ class WorkerNode(object):
                 sent = True
             except socket.error:
                 pass
+
+    def run_client(self, contest, match_id, ip, port, user, champ_id):
+        operations.run_client(self.config, ip, port, contest, match_id, user,
+                              champ_id, self.client_done)
+        return False, self.master.client_ready, (match_id, champ_id)
+
+    def client_done(self, retcode, stdout, match_id, champ_id):
+        self.slots += 1
+        try:
+            self.master.client_done(self.secret, self.get_worker_infos(),
+                                    match_id, champ_id, [])
+        except socket.error:
+            pass
 
 class WorkerNodeProxy(object):
     """
@@ -151,6 +156,11 @@ class WorkerNodeProxy(object):
     def run_server(self, secret, *args, **kwargs):
         return self.node.start_work(
             self.node.run_server, 1, *args, **kwargs
+        )
+
+    def run_client(self, secret, *args, **kwargs):
+        return self.node.start_work(
+            self.node.run_client, 1, *args, **kwargs
         )
 
 def read_config(filename):
