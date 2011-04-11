@@ -165,4 +165,7 @@ if __name__ == '__main__':
     worker = WorkerNode(config)
     s.register_instance(WorkerNodeProxy(worker))
 
-    s.serve_forever()
+    try:
+        s.serve_forever()
+    except KeyboardInterrupt:
+        pass
