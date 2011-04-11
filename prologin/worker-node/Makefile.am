@@ -8,7 +8,7 @@ dist_workernode_DATA = \
 	paths.py
 
 dist_workernode_SCRIPTS = \
-	compile_champion.sh
+	compile-champion.sh
 
 dist_bin_SCRIPTS = worker-node
 
