@@ -33,8 +33,11 @@ gevent.monkey.patch_thread()
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 
+import logging
+import logging.handlers
 import os.path
 import operations
+import optparse
 import paths
 import re
 import socket
@@ -80,17 +83,23 @@ class WorkerNode(object):
         return port
 
     def send_heartbeat(self):
+        logging.info('sending heartbeat to the server, %d/%d slots' % (
+                         self.slots, self.max_slots
+        ))
         while True:
             try:
                 self.master.heartbeat(self.secret, self.get_worker_infos())
             except gevent.socket.error:
-                print 'master down, retrying heartbeat in %ds' % self.interval
+                msg = 'master down, retrying heartbeat in %ds' % self.interval
+                logging.warn(msg)
             gevent.sleep(self.interval)
 
     def start_work(self, work, slots, *args, **kwargs):
         if self.slots < slots:
+            logging.warn('not enough slots to start the required job')
             return False, self.secret, self.get_worker_infos()
 
+        logging.debug('starting a job for %d slots' % slots)
         self.slots -= slots
 
         def real_work():
@@ -110,6 +119,7 @@ class WorkerNode(object):
         return True, self.master.compilation_result, (champ_id, ret)
 
     def run_server(self, contest, match_id, opts=''):
+        logging.info('starting server for match %d' % match_id)
         port = self.available_server_port
         self.matches[match_id] = {}
         operations.run_server(self.config, worker.server_done, port, contest,
@@ -118,6 +128,8 @@ class WorkerNode(object):
 
     def server_done(self, retcode, stdout, match_id):
         self.slots += 1
+
+        logging.info('match %d done' % match_id)
 
         lines = stdout.split('\n')
         result = []
@@ -140,6 +152,9 @@ class WorkerNode(object):
                 pass
 
     def run_client(self, contest, match_id, ip, port, user, champ_id):
+        logging.info('running champion %d from %s for match %d' % (
+                         champ_id, user, match_id
+        ))
         available_id = 0
         while available_id in self.matches[match_id]:
             available_id += 1
@@ -150,6 +165,7 @@ class WorkerNode(object):
 
     def client_done(self, retcode, stdout, match_id, champ_id):
         self.slots += 1
+        logging.info('champion %d for match %d done' % (champ_id, match_id))
         try:
             self.master.client_done(self.secret, self.get_worker_infos(),
                                     match_id, champ_id, retcode)
@@ -165,16 +181,19 @@ class WorkerNodeProxy(object):
         self.node = node
 
     def compile_champion(self, secret, *args, **kwargs):
+        logging.debug('received a compile_champion request')
         return self.node.start_work(
             self.node.compile_champion, 1, *args, **kwargs
         )
 
     def run_server(self, secret, *args, **kwargs):
+        logging.debug('received a run_server request')
         return self.node.start_work(
             self.node.run_server, 1, *args, **kwargs
         )
 
     def run_client(self, secret, *args, **kwargs):
+        logging.debug('received a run_client request')
         return self.node.start_work(
             self.node.run_client, 1, *args, **kwargs
         )
@@ -183,7 +202,32 @@ def read_config(filename):
     return yaml.load(open(filename))
 
 if __name__ == '__main__':
-    config = read_config(paths.config_file)
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest='config_file',
+                      default=paths.config_file,
+                      help='The configuration file.')
+    parser.add_option('-l', '--local-logging', action='store_true',
+                      dest='local_logging', default=False,
+                      help='Activate logging to stdout.')
+    parser.add_option('-v', '--verbose', action='store_true',
+                      dest='verbose', default=False,
+                      help='Verbose mode.')
+    options, args = parser.parse_args()
+
+    loggers = []
+    loggers.append(logging.handlers.SysLogHandler('/dev/log'))
+    if options.local_logging:
+        loggers.append(logging.StreamHandler())
+    for logger in loggers:
+        logger.setFormatter(logging.Formatter(
+            'worker-node: [%(levelname)s] %(message)s'
+        ))
+        logging.getLogger('').addHandler(logger)
+    logging.getLogger('').setLevel(
+        logging.DEBUG if options.verbose else logging.INFO
+    )
+
+    config = read_config(options.config_file)
     s = SimpleXMLRPCServer(('localhost', config['worker']['port']),
                            logRequests=False)
     s.register_introspection_functions()
