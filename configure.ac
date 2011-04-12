@@ -233,6 +233,8 @@ if test x$BUILD_prologin != x; then
 AC_CONFIG_FILES([
   prologin/Makefile
   prologin/common/Makefile
+  prologin/master-node/Makefile
+  prologin/master-node/master-node.yml
   prologin/worker-node/Makefile
   prologin/worker-node/paths.py
   prologin/worker-node/worker-node

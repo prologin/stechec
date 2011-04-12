@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-SUBDIRS	= common worker-node
+SUBDIRS	= common worker-node master-node
 
 SUBDIRS += 					\
 	$(BUILD_ant)				\

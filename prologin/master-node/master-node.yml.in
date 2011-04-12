@@ -1,0 +1,6 @@
+master:
+  port: 8067
+  shared_secret: <undefined>
+
+worker:
+  timeout_secs: 12
