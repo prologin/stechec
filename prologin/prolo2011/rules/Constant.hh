@@ -117,6 +117,7 @@ enum e_com_type {
   NB_SOURCES = 0,
   CONTENU_CASE, // x, y, type case
   SOURCE_CONTENT,
+  MOTO_POS,
   ACT_DEPLACER,
   ACT_COUPER_TRAINEE_MOTO,
   ACT_FUSIONNER,

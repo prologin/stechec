@@ -123,21 +123,9 @@ GameData::GameData()
     for (int i = 0; i < taille; ++i)
 	terrain_.push_back(default_case);
 
-    // FIXME: use a constant (made the assumption that there will always be 2
-    // players
-    position	init_pos[2] =
-    {
-	{0, 0},
-	{TAILLE_TERRAIN - 1, TAILLE_TERRAIN - 1}
-    };
     joueurs.reserve(2);
     for (int i = 0; i < 2; ++i)
-    {
 	joueurs.push_back(Joueur(i));
-	InternalTraineeMoto& init_moto = creer_trainee_moto(i,
-							    init_pos[i],
-							    TAILLE_TRAINEE);
-    }
 }
 
 void GameData::Init() {

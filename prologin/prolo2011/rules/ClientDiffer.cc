@@ -54,6 +54,16 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
       s.potentiel_cur = pkt->arg[3];
     }
     break;
+  case MOTO_POS:
+    {
+	int team = pkt->arg[0];
+	position p;
+	p.x = pkt->arg[1];
+	p.y = pkt->arg[2];
+	LOG4("Recv source: (%1, %2)", p.x, p.y);
+	g_->creer_trainee_moto(team, p, TAILLE_TRAINEE);
+    }
+    break;
   default:
     LOG6("ClientDiffer::ApplyDiff - action");
     if (g_->mon_tour()){
