@@ -27,6 +27,7 @@ Makefile.in
 *.pyc
 *.o.d
 *.so
+*.tgz
 
 .libs
 
@@ -36,6 +37,9 @@ prologin/tkrun/tkrun
 prologin/tkrun/tkrun.1
 prologin/web_meta/log_limit
 prologin/web_meta/stechec.yml
+prologin/worker-node/paths.py
+prologin/worker-node/worker-node
+prologin/worker-node/worker-node.yml
 
 stechec/client/stechec
 stechec/scripts/conf.rb

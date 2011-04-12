@@ -232,10 +232,11 @@ if test x$BUILD_prologin != x; then
 
 AC_CONFIG_FILES([
   prologin/Makefile
-  prologin/web_meta/Makefile
-  prologin/web_meta/stechec.yml
   prologin/common/Makefile
-  prologin/tkrun/Makefile
+  prologin/worker-node/Makefile
+  prologin/worker-node/paths.py
+  prologin/worker-node/worker-node
+  prologin/worker-node/worker-node.yml
 ])
 
 if test x$BUILD_ant != x; then

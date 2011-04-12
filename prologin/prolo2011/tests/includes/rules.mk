@@ -32,7 +32,7 @@ ifndef NOCOLORS
   quiet_cmd_ld_shared	= [1;36mlib  $@[0m
   quiet_cmd_clean	= [1;35mclean[0m
   quiet_cmd_distclean	= [1;35mdistclean[0m
-  quiet_cmd_tar		= [1;35mtar  prologin.tgz[0m
+  quiet_cmd_tar		= [1;35mtar  champion.tgz[0m
 else
   quiet_cmd_cc		= CC      $@
   quiet_cmd_cxx		= CXX     $@
@@ -44,7 +44,7 @@ else
   quiet_cmd_ld_shared	= LINK    $@
   quiet_cmd_clean	= CLEAN   objects
   quiet_cmd_distclean	= CLEAN   targets
-  quiet_cmd_tar		= TAR     prologin.tgz
+  quiet_cmd_tar		= TAR     champion.tgz
 endif
 
 cmd = $(if $($(quiet)cmd_$(1)),@echo '$(if $(quiet),  )$($(quiet)cmd_$(1))';) $(cmd_$(1))
@@ -156,7 +156,7 @@ cmd_ld_shared	= $(CXX) $(filter %.o %.a,$^) $(ld_flags) -shared -o $@ $(_LDLIBS)
 
 cmd_clean	= $(RM) $(_cleanfiles)
 cmd_distclean	= $(RM) $(_dcleanfiles)
-cmd_tar		= tar czf prologin.tgz $(_dist)
+cmd_tar		= tar czf champion.tgz $(_dist)
 
 lib_TARGETS	:= $(lib_TARGETS)
 
@@ -174,7 +174,7 @@ $(foreach t,$(lib_TARGETS),$(eval $(call build_lib,$(t))))
 _dist		:= $(foreach t,$(lib_TARGETS),$($(t)-dists) $(filter-out ../%,$($(t)-srcs)))
 _deps		:= $(foreach f,$(_objs),$(dir $(f)).$(notdir $(f)).d)
 _cleanfiles	:= $(cleanfiles) $(_objs) $(_deps)
-_dcleanfiles	:= $(_targets) prologin.tgz
+_dcleanfiles	:= $(_targets) champion.tgz
 _run_reqs   := $(_targets) $(foreach t,$(lib_TARGETS),$($(t)-dists))
 
 # ==============================================================================

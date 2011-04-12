@@ -91,11 +91,7 @@ nobase_pkgdata_DATA =				\
 	files/interface.cc				\
 	files/check.cc				\
 	files/load_rules.cc				\
-	files/bin2c.lua				\
-	files/forbidden_fun-c			\
-	files/forbidden_fun-java		\
-	files/forbidden_fun-pascal		\
-	files/forbidden_fun-caml
+	files/bin2c.lua	
 
 bin_SCRIPTS =			\
 	run			\

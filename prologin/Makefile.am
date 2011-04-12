@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-SUBDIRS	= common tkrun web_meta
+SUBDIRS	= common worker-node
 
 SUBDIRS += 					\
 	$(BUILD_ant)				\

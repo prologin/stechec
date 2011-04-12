@@ -23,8 +23,8 @@ lib_TARGETS = #{target}
 #{target}-dists = $(wildcard *.php)
 
 # Evite de toucher a ce qui suit
-#{target}-dists += api.php interface.hh
-#{target}-srcs = interface.cc stechec_lime.cc
+#{target}-dists += interface.hh
+#{target}-srcs = interface.cc stechec_main.cc
 #{target}-cxxflags = -fPIC $(shell php-config --includes) -Wno-write-strings
 #{target}-ldflags = -s $(shell php-config --libs --ldflags) -lphp5
 

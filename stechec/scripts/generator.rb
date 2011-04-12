@@ -33,7 +33,7 @@ Usage: generator <option> <yaml_file> <install_path>
 
 Options:
   player       create startup files, for candidats and for all langages.
-  server       create special Makefiles for meta-server.
+  server       create special Makefiles for worker nodes.
   rules        generate some boring piece for api rules.
   apidoc       generate latex API documentation for the subject.
 
@@ -124,7 +124,7 @@ def make_server
   end
 
   # create directory
-  install_path = Pathname.new($install_path)  + "makefile"
+  install_path = Pathname.new($install_path)
   install_path.mkpath
 
   CMakefile.new.build_metaserver(install_path)
@@ -138,15 +138,11 @@ def make_server
   PythonMakefile.new.build_metaserver(install_path)
   PhpMakefile.new.build_metaserver(install_path)
   # PrologMakefile.new.build_metaserver(install_path)
-  RubyMakefile.new.build_metaserver(install_path)
-  JsMakefile.new.build_metaserver(install_path)
+  # RubyMakefile.new.build_metaserver(install_path) TODO
+  # JsMakefile.new.build_metaserver(install_path) TODO
   # copy some used files
   path = Pathname.new(PKGDATADIR) + "files"
-  FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_lime.cc").to_s)
-  FileUtils.cp((path + "forbidden_fun-c").to_s, install_path.to_s)
-  FileUtils.cp((path + "forbidden_fun-pascal").to_s, install_path.to_s)
-  FileUtils.cp((path + "forbidden_fun-java").to_s, install_path.to_s)
-  FileUtils.cp((path + "forbidden_fun-caml").to_s, install_path.to_s)
+  FileUtils.cp((path + "main.cc").to_s, (install_path + "stechec_main.cc").to_s)
   FileUtils.cp((path + "toposort.py").to_s, install_path.to_s)
   FileUtils.cp((path + "rules.mk").to_s, install_path.to_s)
 end
