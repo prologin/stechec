@@ -1,4 +1,4 @@
-workernodedir = $(pkglibdir)/workernode
+workernodedir = $(pkglibdir)/worker-node
 workernodecfgdir = $(sysconfdir)/stechec
 
 dist_workernode_DATA = \
