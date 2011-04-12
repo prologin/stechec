@@ -28,14 +28,11 @@ def init_game():
     gfx_thread.start()
 
 def jouer():
-    print 'Main: jouer()'
     game_state = game.GameState()
     pipe.put(game_state)
     end_turn.clear()
     new_turn.set()
-    print 'Main: waiting for the GUI'
     end_turn.wait()
-    print 'Main: OK, jouer done'
 
 def end_game():
     graphics.quit()

@@ -16,6 +16,9 @@ TAILLE_TRAINEE = 900
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5
 
+# Nombre de points d'action à rajouter avec bonus
+AJOUT_PA = 5
+
 # Énumération représentant une erreur renvoyée par une des fonctions d'action
 (
     OK, # <- aucune erreur n'est survenue
