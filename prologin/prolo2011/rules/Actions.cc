@@ -125,7 +125,7 @@ void ActionDeplacer::annuler(GameData* g)
 
 std::vector<int> ActionDeplacer::serialiser()
 {
-    return make_int_vect(player_, id_, from_.x, from_.y, to_.x, to_.y);
+    return make_int_vect(6, player_, id_, from_.x, from_.y, to_.x, to_.y);
 }
 
 ActionDeplacer*
@@ -187,7 +187,7 @@ void ActionCouperTraineeMoto::annuler(GameData* g)
 
 std::vector<int> ActionCouperTraineeMoto::serialiser()
 {
-    return make_int_vect(player_, id_, entre_.x, entre_.y, et_.x, et_.y);
+    return make_int_vect(6, player_, id_, entre_.x, entre_.y, et_.x, et_.y);
 }
 
 ActionCouperTraineeMoto*
@@ -252,7 +252,7 @@ void ActionFusionner::annuler(GameData* g)
 
 std::vector<int> ActionFusionner::serialiser()
 {
-    return make_int_vect(player_, id1_, id2_, pos1_.x, pos1_.y,
+    return make_int_vect(7, player_, id1_, id2_, pos1_.x, pos1_.y,
                          pos2_.x, pos2_.y);
 }
 
@@ -311,7 +311,7 @@ void ActionEnrouler::annuler(GameData* g)
 
 std::vector<int> ActionEnrouler::serialiser()
 {
-    return make_int_vect(player_, id_, point_.x, point_.y);
+    return make_int_vect(4, player_, id_, point_.x, point_.y);
 }
 
 ActionEnrouler*
@@ -363,7 +363,7 @@ void ActionRegenererSourceEnergie::annuler(GameData* g)
 
 std::vector<int> ActionRegenererSourceEnergie::serialiser()
 {
-    return make_int_vect(player_, id_);
+    return make_int_vect(2, player_, id_);
 }
 
 ActionRegenererSourceEnergie*
@@ -409,7 +409,7 @@ void ActionAllongerPA::annuler(GameData* g)
 
 std::vector<int> ActionAllongerPA::serialiser()
 {
-    return make_int_vect(player_);
+    return make_int_vect(1, player_);
 }
 
 ActionAllongerPA*
@@ -458,7 +458,7 @@ void ActionAgrandirTraineeMoto::annuler(GameData* g)
 
 std::vector<int> ActionAgrandirTraineeMoto::serialiser()
 {
-    return make_int_vect(player_, id_, longueur_);
+    return make_int_vect(3, player_, id_, longueur_);
 }
 
 ActionAgrandirTraineeMoto*
@@ -513,7 +513,7 @@ void ActionPoserPointCroisement::annuler(GameData* g)
 
 std::vector<int> ActionPoserPointCroisement::serialiser()
 {
-    return make_int_vect(player_, point_.x, point_.y);
+    return make_int_vect(3, player_, point_.x, point_.y);
 }
 
 ActionPoserPointCroisement*
