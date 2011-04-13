@@ -34,6 +34,9 @@ import optparse
 import paths
 import xmlrpclib
 import yaml
+import utils
+
+utils.init_psycopg_gevent()
 
 class MasterNode(object):
     def __init__(self, config):

@@ -4,7 +4,8 @@ masternodecfgdir = $(sysconfdir)/stechec
 dist_masternode_DATA = \
 	__init__.py \
 	__main__.py \
-	paths.py
+	paths.py \
+	utils.py
 
 dist_bin_SCRIPTS = master-node
 
