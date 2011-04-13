@@ -18,10 +18,10 @@ sql:
         users.name as name
       from
         champions
-      having
-        champions.status = 'new'
       left join users
         on users.id = champions.author_id
+      where
+        champions.status = 'new'
 
     compiled: >
       update
