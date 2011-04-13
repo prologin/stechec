@@ -37,6 +37,7 @@ prologin/tkrun/tkrun
 prologin/tkrun/tkrun.1
 prologin/web_meta/log_limit
 prologin/web_meta/stechec.yml
+prologin/master-node/paths.py
 prologin/master-node/master-node
 prologin/master-node/master-node.yml
 prologin/worker-node/paths.py
