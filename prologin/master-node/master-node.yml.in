@@ -4,3 +4,37 @@ master:
 
 worker:
   timeout_secs: 12
+
+sql:
+  host: localhost
+  port: 5432
+  user: stechec
+  password: prologin
+  database: stechec
+  queries:
+    to_be_compiled: >
+      select
+        champions.id as id,
+        users.name as name
+      from
+        champions
+      having
+        champions.status = 'new'
+      left join users
+        on users.id = champions.author_id
+
+    compiled: >
+      update
+        champions
+      set
+        champions.status = 'ready'
+      where
+        champions.id = %(champion_id)s
+
+    compile_error: >
+      update
+        champions
+      set
+        champions.status = 'error'
+      where
+        champions.id = %(champion_id)s

@@ -18,6 +18,7 @@
 # along with Stechec.  If not, see <http://www.gnu.org/licenses/>.
 
 import gevent
+import gevent.event
 import gevent.monkey
 import gevent.socket
 
@@ -34,6 +35,7 @@ import logging
 import logging.handlers
 import optparse
 import paths
+import psycopg2
 import xmlrpclib
 import utils
 import yaml
@@ -48,7 +50,11 @@ class MasterNode(object):
         self.spawn_tasks()
 
     def spawn_tasks(self):
+        # Setup locks/events/queues
+        self.dispatch_needed = gevent.event.Event()
+
         self.janitor = gevent.spawn(self.janitor_task)
+        self.dbwatcher = gevent.spawn(self.dbwatcher_task)
 
     def update_worker(self, worker):
         hostname, port, slots, max_slots = worker
@@ -80,6 +86,33 @@ class MasterNode(object):
                                 ))
                     del self.workers[(worker.hostname, worker.port)]
 
+            gevent.sleep(1)
+
+    def connect_to_db(self):
+        self.db = psycopg2.connect(
+            host=self.config['sql']['host'],
+            port=self.config['sql']['port'],
+            user=self.config['sql']['user'],
+            password=self.config['sql']['password'],
+            database=self.config['sql']['database'],
+            async=True,
+        )
+
+    def check_requested_compilations(self):
+        logging.error("todo!")
+        return False
+
+    def check_requested_matches(self):
+        logging.error("todo!")
+        return False
+
+    def dbwatcher_task(self):
+        self.connect_to_db()
+        while True:
+            compils = self.check_requested_compilations()
+            matches = self.check_requested_matches()
+            if compils or matches:
+                self.dispatch_needed.set()
             gevent.sleep(1)
 
 class MasterNodeProxy(object):
