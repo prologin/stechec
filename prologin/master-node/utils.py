@@ -32,11 +32,11 @@ def init_psycopg_gevent():
     def wait(conn, timeout=None):
         while True:
             state = conn.poll()
-            if state == extensions.POLL_OK:
+            if state == psycopg2.extensions.POLL_OK:
                 break
-            elif state == extensions.POLL_READ:
+            elif state == psycopg2.extensions.POLL_READ:
                 gevent.socket.wait_read(conn.fileno(), timeout=timeout)
-            elif state == extensions.POLL_WRITE:
+            elif state == psycopg2.extensions.POLL_WRITE:
                 gevent.socket.wait_write(conn.fileno(), timeout=timeout)
             else:
                 raise psycopg2.OperationalError("invalid poll state")
