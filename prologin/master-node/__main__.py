@@ -29,7 +29,7 @@ from worker import Worker
 
 import copy
 import gevent
-import gevent.queue
+import gevent.event
 import logging
 import logging.handlers
 import optparse
@@ -46,12 +46,13 @@ class MasterNode(object):
     def __init__(self, config):
         self.config = config
         self.workers = {}
+        self.worker_tasks = []
 
         self.spawn_tasks()
 
     def spawn_tasks(self):
         # Setup locks/events/queues
-        self.to_dispatch = gevent.queue.Queue()
+        self.to_dispatch = gevent.event.Event()
 
         self.janitor = gevent.spawn(self.janitor_task)
         self.dbwatcher = gevent.spawn(self.dbwatcher_task)
@@ -90,7 +91,7 @@ class MasterNode(object):
             gevent.sleep(1)
 
     def connect_to_db(self):
-        self.db = psycopg2.connect(
+        return psycopg2.connect(
             host=self.config['sql']['host'],
             port=self.config['sql']['port'],
             user=self.config['sql']['user'],
@@ -100,17 +101,34 @@ class MasterNode(object):
 
     def check_requested_compilations(self):
         cur = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute(self.config['sql']['queries']['to_be_compiled'])
+        cur.execute(
+            self.config['sql']['queries']['get_champions'],
+            { 'champion_status': 'new' }
+        )
+
+        to_set_pending = []
         for r in cur:
-            self.to_dispatch.put(r)
-        return False
+            logging.info('requested compilation for %(name)s / %(id)d' % r)
+            to_set_pending.append({
+                'champion_id': r['id'],
+                'champion_status': 'pending'
+            })
+            self.worker_tasks.append(r)
+
+        if to_set_pending:
+            self.to_dispatch.set()
+
+        cur.executemany(
+            self.config['sql']['queries']['set_champion_status'],
+            to_set_pending
+        )
+        self.db.commit()
 
     def check_requested_matches(self):
-        logging.error("todo!")
-        return False
+        logging.error("todo: check_requested_matches")
 
     def dbwatcher_task(self):
-        self.connect_to_db()
+        self.db = self.connect_to_db()
         while True:
             compils = self.check_requested_compilations()
             matches = self.check_requested_matches()
@@ -118,8 +136,13 @@ class MasterNode(object):
 
     def dispatcher_task(self):
         while True:
-            item = self.to_dispatch.get()
-            logging.error("todo: use the dispatched item!")
+            self.to_dispatch.wait()
+            if self.worker_tasks:
+                task = self.worker_tasks[0]
+                self.worker_tasks = self.worker_tasks[1:]
+                logging.error("todo: dispatch the task: %s" % task)
+            if not self.worker_tasks:
+                self.to_dispatch.clear()
             gevent.sleep(0) # avoid blocking everything with a lot to dispatch
 
 class MasterNodeProxy(object):

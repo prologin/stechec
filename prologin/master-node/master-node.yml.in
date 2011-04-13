@@ -12,7 +12,7 @@ sql:
   password: prologin
   database: stechec
   queries:
-    to_be_compiled: >
+    get_champions: >
       select
         champions.id as id,
         users.name as name
@@ -21,20 +21,12 @@ sql:
       left join users
         on users.id = champions.author_id
       where
-        champions.status = 'new'
+        champions.status = %(champion_status)s
 
-    compiled: >
+    set_champion_status:
       update
         champions
       set
-        champions.status = 'ready'
-      where
-        champions.id = %(champion_id)s
-
-    compile_error: >
-      update
-        champions
-      set
-        champions.status = 'error'
+        status = %(champion_status)s
       where
         champions.id = %(champion_id)s

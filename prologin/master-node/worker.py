@@ -25,6 +25,7 @@ class Worker(object):
         self.port = port
         self.slots = slots
         self.max_slots = max_slots
+        self.tasks = []
         self.keep_alive()
 
     def update(self, slots, max_slots):
@@ -37,3 +38,11 @@ class Worker(object):
 
     def is_alive(self, timeout):
         return (time.time() - self.last_heartbeat) < timeout
+
+    def can_add_task(self, used_slots):
+        return self.slots >= self.used_slots
+
+    def add_task(self, task, used_slots):
+        self.slots -= self.used_slots
+        self.tasks.append(task)
+        task.execute(self)
