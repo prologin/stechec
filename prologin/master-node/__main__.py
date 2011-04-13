@@ -40,25 +40,15 @@ import yaml
 
 utils.init_psycopg_gevent()
 
-def janitor(master, config):
-    """
-    Cleans up timeout-ed workers.
-    """
-    while True:
-        all_workers = copy.copy(master.workers)
-        for worker in all_workers.itervalues():
-            if not worker.is_alive(config['worker']['timeout_secs']):
-                logging.warn("timeout detected for worker %s:%d" % (
-                                 worker.hostname, worker.port
-                            ))
-                del master.workers[(worker.hostname, worker.port)]
-
-        gevent.sleep(1)
-
 class MasterNode(object):
     def __init__(self, config):
         self.config = config
         self.workers = {}
+
+        self.spawn_tasks()
+
+    def spawn_tasks(self):
+        self.janitor = gevent.spawn(self.janitor_task)
 
     def update_worker(self, worker):
         hostname, port, slots, max_slots = worker
@@ -67,6 +57,9 @@ class MasterNode(object):
             logging.warn("registered new worker: %s:%d" % (hostname, port))
             self.workers[key] = Worker(hostname, port, slots, max_slots)
         else:
+            logging.debug("updating worker: %s:%d %d/%d" % (
+                              hostname, port, slots, max_slots
+                         ))
             self.workers[key].update(slots, max_slots)
 
     def heartbeat(self, worker):
@@ -76,6 +69,18 @@ class MasterNode(object):
                          hostname, port, usage
                     ))
         self.update_worker(worker)
+
+    def janitor_task(self):
+        while True:
+            all_workers = copy.copy(self.workers)
+            for worker in all_workers.itervalues():
+                if not worker.is_alive(self.config['worker']['timeout_secs']):
+                    logging.warn("timeout detected for worker %s:%d" % (
+                                     worker.hostname, worker.port
+                                ))
+                    del self.workers[(worker.hostname, worker.port)]
+
+            gevent.sleep(1)
 
 class MasterNodeProxy(object):
     def __init__(self, master):
@@ -118,8 +123,6 @@ if __name__ == '__main__':
 
     master = MasterNode(config)
     s.register_instance(MasterNodeProxy(master))
-
-    gevent.spawn(janitor, master, config)
 
     try:
         s.serve_forever()
