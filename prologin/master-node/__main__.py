@@ -27,20 +27,63 @@ import gevent.socket
 gevent.monkey.patch_all()
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
+from worker import Worker
 
+import copy
 import logging
 import logging.handlers
 import optparse
 import paths
 import xmlrpclib
-import yaml
 import utils
+import yaml
 
 utils.init_psycopg_gevent()
+
+def janitor(master, config):
+    """
+    Cleans up timeout-ed workers.
+    """
+    while True:
+        all_workers = copy.copy(master.workers)
+        for worker in all_workers.itervalues():
+            if not worker.is_alive(config['worker']['timeout_secs']):
+                logging.warn("timeout detected for worker %s:%d" % (
+                                 worker.hostname, worker.port
+                            ))
+                del master.workers[(worker.hostname, worker.port)]
+
+        gevent.sleep(1)
 
 class MasterNode(object):
     def __init__(self, config):
         self.config = config
+        self.workers = {}
+
+    def update_worker(self, worker):
+        hostname, port, slots, max_slots = worker
+        key = hostname, port
+        if key not in self.workers:
+            logging.warn("registered new worker: %s:%d" % (hostname, port))
+            self.workers[key] = Worker(hostname, port, slots, max_slots)
+        else:
+            self.workers[key].update(slots, max_slots)
+
+    def heartbeat(self, worker):
+        hostname, port, slots, max_slots = worker
+        usage = (1.0 - float(slots) / max_slots) * 100
+        logging.info('received heartbeat from %s:%d, usage is %.2f' % (
+                         hostname, port, usage
+                    ))
+        self.update_worker(worker)
+
+class MasterNodeProxy(object):
+    def __init__(self, master):
+        self.master = master
+
+    def heartbeat(self, secret, worker):
+        self.master.heartbeat(worker)
+        return True
 
 if __name__ == '__main__':
     parser = optparse.OptionParser()
@@ -74,7 +117,9 @@ if __name__ == '__main__':
     s.register_introspection_functions()
 
     master = MasterNode(config)
-    s.register_instance(master)
+    s.register_instance(MasterNodeProxy(master))
+
+    gevent.spawn(janitor, master, config)
 
     try:
         s.serve_forever()

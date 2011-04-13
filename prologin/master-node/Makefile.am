@@ -5,7 +5,8 @@ dist_masternode_DATA = \
 	__init__.py \
 	__main__.py \
 	paths.py \
-	utils.py
+	utils.py \
+	worker.py
 
 dist_bin_SCRIPTS = master-node
 
