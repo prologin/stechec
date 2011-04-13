@@ -17,10 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Stechec.  If not, see <http://www.gnu.org/licenses/>.
 
-import gevent
-import gevent.event
 import gevent.monkey
-import gevent.socket
 
 # We are not in the worker node and are not supposed to use subprocesses, so a
 # monkey.patch_all() should be safe. However, if this was to change, beware
@@ -31,11 +28,14 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from worker import Worker
 
 import copy
+import gevent
+import gevent.queue
 import logging
 import logging.handlers
 import optparse
 import paths
 import psycopg2
+import psycopg2.extras
 import xmlrpclib
 import utils
 import yaml
@@ -51,10 +51,11 @@ class MasterNode(object):
 
     def spawn_tasks(self):
         # Setup locks/events/queues
-        self.dispatch_needed = gevent.event.Event()
+        self.to_dispatch = gevent.queue.Queue()
 
         self.janitor = gevent.spawn(self.janitor_task)
         self.dbwatcher = gevent.spawn(self.dbwatcher_task)
+        self.dispatcher = gevent.spawn(self.dispatcher_task)
 
     def update_worker(self, worker):
         hostname, port, slots, max_slots = worker
@@ -95,11 +96,13 @@ class MasterNode(object):
             user=self.config['sql']['user'],
             password=self.config['sql']['password'],
             database=self.config['sql']['database'],
-            async=True,
         )
 
     def check_requested_compilations(self):
-        logging.error("todo!")
+        cur = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(self.config['sql']['queries']['to_be_compiled'])
+        for r in cur:
+            self.to_dispatch.put(r)
         return False
 
     def check_requested_matches(self):
@@ -111,9 +114,13 @@ class MasterNode(object):
         while True:
             compils = self.check_requested_compilations()
             matches = self.check_requested_matches()
-            if compils or matches:
-                self.dispatch_needed.set()
             gevent.sleep(1)
+
+    def dispatcher_task(self):
+        while True:
+            item = self.to_dispatch.get()
+            logging.error("todo: use the dispatched item!")
+            gevent.sleep(0) # avoid blocking everything with a lot to dispatch
 
 class MasterNodeProxy(object):
     def __init__(self, master):
