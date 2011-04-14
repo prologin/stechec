@@ -63,27 +63,22 @@ class Graphics:
         if self.game_state is None:
             return
 
-        cell_size = (16, 16)
-        vshift = 16
-        terrain_img = self.img['terrain']
-        for (position, value) in self.game_state.ground:
-            if value == OBSTACLE:
-                str_val = 'obstacle'
-            elif value == POINT_CROISEMENT:
-                str_val = 'point_croisement'
+        bonus_img = self.img['bonus']
+        for (position, value) in self.game_state.bonusgrid:
+            bonus = ''
+            if value == PLUS_LONG:
+                bonus = 'plus_long'
+            elif value == PLUS_PA:
+                bonus = 'plus_pa'
+            elif value == BONUS_CROISEMENT:
+                bonus = 'bonus_croisement'
+            elif value == BONUS_REGENERATION:
+                bonus = 'bonus_regeneration'
             else:
                 continue
 
             images.place_img(position, self.screen,
-                             terrain_img[str_val], self.img_props)
-
-        for ((x, y), value) in self.game_state.bonusgrid:
-            if value == PAS_BONUS:
-                continue
-            color = (192, 64, 192)
-            self.screen.fill(color,
-                    (x * cell_size[0], vshift + y * cell_size[1],
-                     cell_size[0], cell_size[1]))
+                             bonus_img[bonus], self.img_props)
 
         (conn_trainees, conn_sources) = self.game_state.get_connected_objects()
         img_moto = self.img['trainee_moto']
@@ -105,6 +100,18 @@ class Graphics:
             dir = game.direction_to_str(dir)
             images.place_img(trainee_moto.nodes[-1], self.screen,
                              self.img['moto'][dir][trainee_moto.team], self.img_props)
+
+        terrain_img = self.img['terrain']
+        for (position, value) in self.game_state.ground:
+            if value == OBSTACLE:
+                str_val = 'obstacle'
+            elif value == POINT_CROISEMENT:
+                str_val = 'point_croisement'
+            else:
+                continue
+
+            images.place_img(position, self.screen,
+                             terrain_img[str_val], self.img_props)
 
         for source in self.game_state.sources:
             if source.coefficient < 0:
