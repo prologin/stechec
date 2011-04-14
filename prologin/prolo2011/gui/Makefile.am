@@ -8,9 +8,14 @@ prolo2011guidir = $(pkgdatadir)/prolo2011/gui
 
 dist_prolo2011gui_DATA = \
 	api.py \
+	paths.py \
+	images.py \
 	game.py \
+	state_reader.py \
 	graphics.py \
 	prologin.py
+
+dist_EXTRA = paths.py.in
 
 tron_gui_la_CXXFLAGS = $(PYTHON_CFLAGS) -DCHAMPION_PATH=\"$(prolo2011guidir)\"
 tron_gui_la_LDFLAGS = -module $(PYTHON_LIBS)

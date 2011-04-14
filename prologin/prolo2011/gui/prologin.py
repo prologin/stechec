@@ -6,9 +6,9 @@
 from api import *
 
 import threading
-import Queue as queue
 
 import game
+import state_reader
 import graphics
 
 try:
@@ -17,10 +17,8 @@ try:
 except:
     pass
 
-pipe = queue.Queue()
-new_turn = threading.Event()
-end_turn = threading.Event()
-graphics = graphics.Graphics(pipe, new_turn, end_turn)
+state_reader = state_reader.StechecReader()
+graphics = graphics.Graphics(state_reader)
 gfx_thread = threading.Thread(target=graphics.run)
 
 def init_game():
@@ -28,11 +26,7 @@ def init_game():
     gfx_thread.start()
 
 def jouer():
-    game_state = game.GameState()
-    pipe.put(game_state)
-    end_turn.clear()
-    new_turn.set()
-    end_turn.wait()
+    state_reader.put_state(game.GameState())
 
 def end_game():
-    graphics.quit()
+    state_reader.do_end()
