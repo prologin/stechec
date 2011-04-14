@@ -48,9 +48,15 @@ def load_image(filename):
     img = pygame.image.load(path).convert_alpha()
     return img
 
-def load_pix(teams):
+pix_memory = None
+def load_pix():
     '''Build a dictionary with the tiles images and return it.'''
 
+    global pix_memory
+    if pix_memory is not None:
+        return pix_memory
+    # teams used to be a parameter. We’re now sure that there are only 2 teams
+    teams = 2
     images = {}
 
     images['source_energie'] = {}
@@ -94,15 +100,21 @@ def load_pix(teams):
         img = load_image('moto-%s.png' % dir)
         for team in xrange(teams):
             images['moto'][dir][team] = custom_to_team(img, team)
+    pix_memory = images
     return images
 
+props_memory = None
 def load_props():
     '''Build a dictionary with the images properties and return it.'''
 
+    global props_memory
+    if props_memory is not None:
+        return props_memory
     props = {
         'tile_size': (16, 16),
         'vshift': 16
         }
+    props_memory = props
     return props
 
 def get_screen_size(field_size):

@@ -13,6 +13,7 @@ dist_prolo2011gui_DATA = \
 	game.py \
 	state_reader.py \
 	surface.py \
+	field_surface.py \
 	graphics.py \
 	prologin.py
 
