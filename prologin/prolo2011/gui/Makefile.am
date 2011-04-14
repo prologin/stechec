@@ -14,6 +14,7 @@ dist_prolo2011gui_DATA = \
 	state_reader.py \
 	surface.py \
 	field_surface.py \
+	team_surface.py \
 	graphics.py \
 	prologin.py
 

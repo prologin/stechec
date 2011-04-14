@@ -11,6 +11,7 @@ import game
 import images
 import surface
 from field_surface import FieldSurface
+from team_surface import TeamSurface
 
 # TODO: erase this when the constant is updated upstream in ALL FILES
 TAILLE_TERRAIN = 50
@@ -49,6 +50,7 @@ class Graphics:
                 if game_state is not None:
                     self.game_state = game_state
                     self.field_surf.update_field(game_state)
+                    self.team_surf.update_teams(game_state)
             looping = self.handle_events()
             self.update_graphics()
 
@@ -66,6 +68,7 @@ class Graphics:
     def update_graphics(self):
         self.screen.fill((0, 0, 0))
         self.field_surf.blit(self.screen)
+        self.team_surf.blit(self.screen)
         pygame.display.flip()
 
     def init(self):
@@ -78,7 +81,11 @@ class Graphics:
 
         self.clock = pygame.time.Clock()
         self.field_surf = FieldSurface((0, 0))
-        screen_dim = self.field_surf.size
+        self.team_surf = TeamSurface((self.field_surf.size[0], 16))
+        screen_dim = (
+            self.team_surf.position[0] + self.team_surf.size[0],
+            self.field_surf.size[1]
+            )
         self.screen = pygame.display.set_mode(screen_dim, flags)
 
     def release(self):
