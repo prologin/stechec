@@ -65,17 +65,17 @@ class Graphics:
 
         cell_size = (16, 16)
         vshift = 16
-        for ((x, y), value) in self.game_state.ground:
-            color = (0, 0, 0)
+        terrain_img = self.img['terrain']
+        for (position, value) in self.game_state.ground:
             if value == OBSTACLE:
-                color = (255, 255, 255)
+                str_val = 'obstacle'
             elif value == POINT_CROISEMENT:
-                color = (128, 128, 128)
+                str_val = 'point_croisement'
             else:
                 continue
-            self.screen.fill(color,
-                    (x * cell_size[0], vshift + y * cell_size[0],
-                     cell_size[0], cell_size[1]))
+
+            images.place_img(position, self.screen,
+                             terrain_img[str_val], self.img_props)
 
         for ((x, y), value) in self.game_state.bonusgrid:
             if value == PAS_BONUS:
@@ -92,35 +92,36 @@ class Graphics:
                 state = 'on'
             else:
                 state = 'off'
+            img = img_moto[state]
             for (position, pattern) in trainee_moto.patterns():
                 images.place_img(position, self.screen,
-                        img_moto[state][pattern][trainee_moto.team],
+                        img[pattern][trainee_moto.team],
                         self.img_props)
-                nodes = trainee_moto.nodes
-                if len(nodes) > 1:
-                    dir = game.undo_direction(nodes[-2], nodes[-1])
-                else:
-                    dir = game.LEFT
-                dir = game.direction_to_str(dir)
-                images.place_img(trainee_moto.nodes[-1], self.screen,
-                        self.img['moto'][dir][trainee_moto.team], self.img_props)
-
-        for ((x, y), value) in self.game_state.objgrid:
-            color = (0, 0, 0)
-            if isinstance(value, game.Moto):
-                continue
-            elif isinstance(value, game.Source):
-                if value.coefficient < 0:
-                    color = (255, 0, 0)
-                elif value.coefficient == 0:
-                    color = (255, 255, 0)
-                else:
-                    color = (0, 255, 0)
+            nodes = trainee_moto.nodes
+            if len(nodes) > 1:
+                dir = game.undo_direction(nodes[-2], nodes[-1])
             else:
-                continue
-            self.screen.fill(color,
-                    (x * cell_size[0], vshift + y * cell_size[1],
-                     cell_size[0], cell_size[1]))
+                dir = game.LEFT
+            dir = game.direction_to_str(dir)
+            images.place_img(trainee_moto.nodes[-1], self.screen,
+                             self.img['moto'][dir][trainee_moto.team], self.img_props)
+
+        for source in self.game_state.sources:
+            if source.coefficient < 0:
+                status = 'consommateur'
+            elif source.coefficient > 0:
+                status = 'producteur'
+            else:
+                status = 'epuise'
+
+            if source in conn_sources:
+                state = 'on'
+            else:
+                state = 'off'
+
+            images.place_img(source.position, self.screen,
+                             self.img['source_energie'][state][status], self.img_props)
+
         pygame.display.flip()
 
     def init(self):
