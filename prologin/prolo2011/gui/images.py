@@ -60,6 +60,8 @@ def load_pix(teams):
             images['source_energie'][state][status] = \
                     load_image('source_energie-%s-%s.png' %
                             (state, status))
+    images['source_energie']['epuise'] = \
+        load_image('source_energie-epuise.png')
 
     images['terrain'] = {}
     for case in ('obstacle', 'point_croisement'):

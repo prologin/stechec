@@ -113,13 +113,16 @@ class Graphics:
             images.place_img(position, self.screen,
                              terrain_img[str_val], self.img_props)
 
+        source_imgs = self.img['source_energie']
         for source in self.game_state.sources:
             if source.coefficient < 0:
                 status = 'consommateur'
             elif source.coefficient > 0:
                 status = 'producteur'
             else:
-                status = 'epuise'
+                images.place_img(source.position, self.screen,
+                                 source_imgs['epuise'], self.img_props)
+                continue
 
             if source in conn_sources:
                 state = 'on'
@@ -127,7 +130,7 @@ class Graphics:
                 state = 'off'
 
             images.place_img(source.position, self.screen,
-                             self.img['source_energie'][state][status], self.img_props)
+                             source_imgs[state][status], self.img_props)
 
         pygame.display.flip()
 
