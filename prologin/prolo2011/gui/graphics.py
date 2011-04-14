@@ -9,6 +9,7 @@ import pygame
 from api import *
 import game
 import images
+import surface
 
 # TODO: erase this when the constant is updated upstream
 TAILLE_TERRAIN = 50
