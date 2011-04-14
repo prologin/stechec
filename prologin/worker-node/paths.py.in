@@ -24,7 +24,7 @@ paths = {
     "prefix": "@prefix@",
     "exec_prefix": "@exec_prefix@",
     "sysconfdir": "@sysconfdir@",
-    "workernodedir": "@libdir@/@PACKAGE@/workernode",
+    "workernodedir": "@libdir@/@PACKAGE@/worker-node",
     "cfgdir": "@sysconfdir@/@PACKAGE@",
     "bindir": "@bindir@",
 }
