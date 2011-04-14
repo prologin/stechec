@@ -29,7 +29,7 @@ class TeamSurface(surface.Surface):
         return surf.convert_alpha()
 
     def get_bonus(self, name, number):
-        text = self.font.render('x%d' % number, True, (255, 255, 255))
+        text = self.font.render(u'×%d' % number, True, (255, 255, 255))
         text_size = text.get_size()
         surf = pygame.Surface((text_size[0] + 16 + 8,
                                max(text_size[1] + 16, 16 + 16)
