@@ -71,7 +71,7 @@ struct Joueur
     erreur use_capacity(type_bonus	b);
 
 protected:
-    typename bonus_list::iterator
+    bonus_list::iterator
     get_bonus(type_bonus	b);
 };
 

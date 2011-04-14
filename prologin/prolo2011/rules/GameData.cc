@@ -45,7 +45,7 @@ bool Joueur::is_able(type_bonus	b)
 
 erreur Joueur::use_capacity(type_bonus	b)
 {
-    typename bonus_list::iterator	it;
+    bonus_list::iterator	it;
 
     it = get_bonus(b);
     if (it == bonus.end())
@@ -54,10 +54,10 @@ erreur Joueur::use_capacity(type_bonus	b)
     return (OK);
 }
 
-typename Joueur::bonus_list::iterator
+Joueur::bonus_list::iterator
 Joueur::get_bonus(type_bonus	b)
 {
-    typename bonus_list::iterator	it;
+    bonus_list::iterator	it;
     for (it = bonus.begin(); it != bonus.end(); ++it)
 	if (*it == b)
 	    return (it);
@@ -497,7 +497,7 @@ void GameData::apply_connections_unit(int id_trainee,
 				      std::vector<int>& degrees)
 {
     typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
-    typedef typename std::set<SourceEnergie*>::iterator sources_it;
+    typedef std::set<SourceEnergie*>::iterator sources_it;
 
     std::set<SourceEnergie*>	src_p;
     std::set<SourceEnergie*>	src_n;
