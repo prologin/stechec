@@ -57,6 +57,16 @@ class Team:
         self.score = score
         self.bonus = bonus
 
+    def count_bonus(self):
+        result = {}
+        result['plus_long'] = len([b for b in self.bonus if b == PLUS_LONG])
+        result['plus_pa'] = len([b for b in self.bonus if b == PLUS_PA])
+        result['bonus_croisement'] = len([b for b in self.bonus
+                                          if b == BONUS_CROISEMENT])
+        result['bonus_renegeration'] = len([b for b in self.bonus
+                                            if b == BONUS_REGENERATION])
+        return result
+
 class Source:
     def __init__(self, position, coefficient, grid):
         self.position = position
