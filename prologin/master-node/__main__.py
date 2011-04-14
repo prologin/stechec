@@ -36,7 +36,8 @@ import optparse
 import paths
 import psycopg2
 import psycopg2.extras
-import xmlrpclib
+import random
+import task
 import utils
 import yaml
 
@@ -78,14 +79,42 @@ class MasterNode(object):
                     ))
         self.update_worker(worker)
 
+    def compilation_result(self, worker, champ_id, ret):
+        hostname, port, slots, max_slots = worker
+        w = self.workers[(hostname, port)]
+        w.remove_compilation_task(champ_id)
+        gevent.spawn(self.complete_compilation, champ_id, ret)
+
+    def complete_compilation(self, champ_id, ret):
+        if ret is True:
+            status = 'ready'
+        else:
+            status = 'error'
+
+        logging.info('compilation of champion %d: %s' % (champ_id, status))
+
+        db = self.connect_to_db()
+        cur = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            self.config['sql']['queries']['set_champion_status'],
+            { 'champion_id': champ_id, 'champion_status': status }
+        )
+        db.commit()
+
     def janitor_task(self):
         while True:
             all_workers = copy.copy(self.workers)
             for worker in all_workers.itervalues():
                 if not worker.is_alive(self.config['worker']['timeout_secs']):
-                    logging.warn("timeout detected for worker %s:%d" % (
-                                     worker.hostname, worker.port
-                                ))
+                    logging.warn("timeout detected for worker %s" % worker)
+                    worker.kill_tasks()
+                    tasks = [t for (t, g) in worker.tasks]
+                    if tasks:
+                        logging.info("redispatching tasks for %s: %s" % (
+                                         worker, tasks
+                                    ))
+                        self.worker_tasks = tasks + self.worker_tasks
+                        self.to_dispatch.set()
                     del self.workers[(worker.hostname, worker.port)]
 
             gevent.sleep(1)
@@ -113,7 +142,8 @@ class MasterNode(object):
                 'champion_id': r['id'],
                 'champion_status': 'pending'
             })
-            self.worker_tasks.append(r)
+            t = task.CompilationTask(self.config, r['name'], r['id'])
+            self.worker_tasks.append(t)
 
         if to_set_pending:
             self.to_dispatch.set()
@@ -134,16 +164,31 @@ class MasterNode(object):
             matches = self.check_requested_matches()
             gevent.sleep(1)
 
+    def find_worker_for(self, task):
+        available = self.workers.values()
+        available = filter(lambda w: w.can_add_task(task), available)
+        random.shuffle(available)
+        available.sort(key=lambda w: w.usage)
+        if not available:
+            return None
+        else:
+            return available[0]
+
     def dispatcher_task(self):
         while True:
             self.to_dispatch.wait()
             if self.worker_tasks:
                 task = self.worker_tasks[0]
-                self.worker_tasks = self.worker_tasks[1:]
-                logging.error("todo: dispatch the task: %s" % task)
+                w = self.find_worker_for(task)
+                if w is None:
+                    logging.info("no worker available for task %s" % task)
+                else:
+                    w.add_task(task)
+                    logging.debug("task %s got to %s" % (task, w))
+                    self.worker_tasks = self.worker_tasks[1:]
             if not self.worker_tasks:
                 self.to_dispatch.clear()
-            gevent.sleep(0) # avoid blocking everything with a lot to dispatch
+            gevent.sleep(0.1) # avoid blocking everything with a lot to dispatch
 
 class MasterNodeProxy(object):
     def __init__(self, master):
@@ -151,6 +196,11 @@ class MasterNodeProxy(object):
 
     def heartbeat(self, secret, worker):
         self.master.heartbeat(worker)
+        return True
+
+    def compilation_result(self, secret, worker, champ_id, ret):
+        self.master.update_worker(worker)
+        self.master.compilation_result(worker, champ_id, ret)
         return True
 
 if __name__ == '__main__':

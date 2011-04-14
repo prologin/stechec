@@ -17,7 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Stechec.  If not, see <http://www.gnu.org/licenses/>.
 
+import gevent
+import task
 import time
+import xmlrpclib
 
 class Worker(object):
     def __init__(self, hostname, port, slots, max_slots):
@@ -27,6 +30,10 @@ class Worker(object):
         self.max_slots = max_slots
         self.tasks = []
         self.keep_alive()
+
+    @property
+    def usage(self):
+        return float(self.slots) / self.max_slots
 
     def update(self, slots, max_slots):
         self.slots = slots
@@ -39,10 +46,31 @@ class Worker(object):
     def is_alive(self, timeout):
         return (time.time() - self.last_heartbeat) < timeout
 
-    def can_add_task(self, used_slots):
-        return self.slots >= self.used_slots
+    def can_add_task(self, task):
+        return self.slots >= task.slots_taken
 
-    def add_task(self, task, used_slots):
-        self.slots -= self.used_slots
-        self.tasks.append(task)
-        task.execute(self)
+    def add_task(self, task):
+        self.slots -= task.slots_taken
+        greenlet = gevent.spawn(task.execute, self)
+        self.tasks.append((task, greenlet))
+
+    def kill_tasks(self):
+        for (t, g) in self.tasks:
+            g.kill()
+
+    def remove_compilation_task(self, champ_id):
+        new = []
+        for (t, g) in self.tasks:
+            if isinstance(t, task.CompilationTask):
+                if t.champ_id == champ_id:
+                    continue
+            new.append((t, g))
+        self.tasks = new
+
+    @property
+    def rpc(self):
+        url = "http://%s:%d/" % (self.hostname, self.port)
+        return xmlrpclib.ServerProxy(url)
+
+    def __repr__(self):
+        return '<Worker: %s:%d>' % (self.hostname, self.port)

@@ -1,6 +1,7 @@
 master:
   port: 8067
   shared_secret: <undefined>
+  contest: tron
 
 worker:
   timeout_secs: 12

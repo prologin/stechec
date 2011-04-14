@@ -5,6 +5,7 @@ dist_masternode_DATA = \
 	__init__.py \
 	__main__.py \
 	paths.py \
+	task.py \
 	utils.py \
 	worker.py
 
