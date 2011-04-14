@@ -37,3 +37,6 @@ paths = {name: expand_path(path) for name, path in paths.iteritems()}
 images_dir = paths['imagesdir']
 def get_image(name):
     return os.path.join(images_dir, name)
+
+def get_font(name):
+    return os.path.join(images_dir, name)
