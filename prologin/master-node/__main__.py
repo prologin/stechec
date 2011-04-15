@@ -174,11 +174,11 @@ class MasterNode(object):
             database=self.config['sql']['database'],
         )
 
-    def check_requested_compilations(self):
+    def check_requested_compilations(self, status='new'):
         cur = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(
             self.config['sql']['queries']['get_champions'],
-            { 'champion_status': 'new' }
+            { 'champion_status': status }
         )
 
         to_set_pending = []
@@ -200,11 +200,11 @@ class MasterNode(object):
         )
         self.db.commit()
 
-    def check_requested_matches(self):
+    def check_requested_matches(self, status='new'):
         cur = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute(
             self.config['sql']['queries']['get_matches'],
-            { 'match_status': 'new' }
+            { 'match_status': status }
         )
 
         to_set_pending = []
@@ -232,9 +232,11 @@ class MasterNode(object):
 
     def dbwatcher_task(self):
         self.db = self.connect_to_db()
+        self.check_requested_compilations('pending')
+        self.check_requested_matches('pending')
         while True:
-            compils = self.check_requested_compilations()
-            matches = self.check_requested_matches()
+            self.check_requested_compilations()
+            self.check_requested_matches()
             gevent.sleep(1)
 
     def find_worker_for(self, task):
