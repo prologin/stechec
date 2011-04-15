@@ -1,0 +1,95 @@
+master:
+  port: 8067
+  shared_secret: <undefined>
+  contest: tron
+
+worker:
+  timeout_secs: 12
+
+sql:
+  host: localhost
+  port: 5432
+  user: stechec
+  password: prologin
+  database: stechec
+  queries:
+    get_champions:
+      select
+        champions.id as id,
+        users.name as name
+      from
+        champions
+      left join users
+        on users.id = champions.author_id
+      where
+        champions.status = %(champion_status)s
+
+    set_champion_status:
+      update
+        champions
+      set
+        status = %(champion_status)s
+      where
+        champions.id = %(champion_id)s
+
+    get_matches:
+      select
+        matches.id as match_id,
+        matches.options as match_options,
+        array_agg(champions.id) as champion_ids,
+        array_agg(match_players.id) as match_player_ids,
+        array_agg(users.name) as user_names
+      from
+        matches
+      left join match_players
+        on match_players.match_id = matches.id
+      left join champions
+        on match_players.champion_id = champions.id
+      left join users
+        on champions.author_id = users.id
+      where
+        matches.status = %(match_status)s
+      group by
+        matches.id,
+        matches.options
+
+    set_match_status:
+      update
+        matches
+      set
+        status = %(match_status)s
+      where
+        matches.id = %(match_id)s
+
+    set_player_score:
+      update
+        match_players
+      set
+        score = %(player_score)s
+      where
+        match_players.id = %(player_id)s
+
+    update_tournament_score:
+      update
+        tournament_players
+      set
+        score = score + %(champion_score)s
+      where
+        tournament_players.tournament_id = (
+          select
+            matches.tournament_id
+          from
+            matches
+          where
+            matches.id = %(match_id)s
+        )
+        and tournament_players.champion_id = (
+          select
+            champions.id
+          from
+            champions
+          left join match_players
+            on champions.id = match_players.champion_id
+          where
+            match_players.id = %(player_id)s
+        )

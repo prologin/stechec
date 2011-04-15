@@ -97,6 +97,6 @@ compil_log=$champion_dir/compilation.log
     echo 'Success!'
 ) 2>&1 | tee "$compil_log"
 
-res=$?
+res=${PIPESTATUS[0]}
 rm -rf "$compil_dir"
 exit $res

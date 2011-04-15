@@ -86,9 +86,12 @@ class WorkerNode(object):
         logging.info('sending heartbeat to the server, %d/%d slots' % (
                          self.slots, self.max_slots
         ))
+        first_heartbeat = True
         while True:
             try:
-                self.master.heartbeat(self.secret, self.get_worker_infos())
+                self.master.heartbeat(self.secret, self.get_worker_infos(),
+                                      first_heartbeat)
+                first_heartbeat = False
             except gevent.socket.error:
                 msg = 'master down, retrying heartbeat in %ds' % self.interval
                 logging.warn(msg)
@@ -121,7 +124,6 @@ class WorkerNode(object):
     def run_server(self, contest, match_id, opts=''):
         logging.info('starting server for match %d' % match_id)
         port = self.available_server_port
-        self.matches[match_id] = {}
         operations.run_server(self.config, worker.server_done, port, contest,
                               match_id, opts)
         return False, self.master.match_ready, (match_id, port)
@@ -139,36 +141,28 @@ class WorkerNode(object):
             if m is None:
                 continue
             pid, score, stat = m.groups()
-            result.append((self.matches[match_id][int(pid)], int(score)))
+            result.append((int(pid), int(score)))
 
-        sent = False
-        while not sent:
-            try:
-                self.master.match_done(self.secret, self.get_worker_infos(),
-                                       match_id, result)
-                gevent.sleep(0.5)
-                sent = True
-            except socket.error:
-                pass
+        try:
+            self.master.match_done(self.secret, self.get_worker_infos(),
+                                   match_id, result)
+        except socket.error:
+            pass
 
-    def run_client(self, contest, match_id, ip, port, user, champ_id):
+    def run_client(self, contest, match_id, ip, port, user, champ_id, pl_id):
         logging.info('running champion %d from %s for match %d' % (
                          champ_id, user, match_id
         ))
-        available_id = 0
-        while available_id in self.matches[match_id]:
-            available_id += 1
-        self.matches[match_id][available_id] = champ_id
         operations.run_client(self.config, ip, port, contest, match_id, user,
-                              champ_id, available_id, self.client_done)
-        return False, self.master.client_ready, (match_id, champ_id)
+                              champ_id, pl_id, self.client_done)
+        return False, self.master.client_ready, (match_id, pl_id)
 
-    def client_done(self, retcode, stdout, match_id, champ_id):
-        self.slots += 1
+    def client_done(self, retcode, stdout, match_id, champ_id, pl_id):
+        self.slots += 2
         logging.info('champion %d for match %d done' % (champ_id, match_id))
         try:
             self.master.client_done(self.secret, self.get_worker_infos(),
-                                    match_id, champ_id, retcode)
+                                    match_id, pl_id, retcode)
         except socket.error:
             pass
 
@@ -195,7 +189,7 @@ class WorkerNodeProxy(object):
     def run_client(self, secret, *args, **kwargs):
         logging.debug('received a run_client request')
         return self.node.start_work(
-            self.node.run_client, 1, *args, **kwargs
+            self.node.run_client, 2, *args, **kwargs
         )
 
 def read_config(filename):
