@@ -140,15 +140,11 @@ class WorkerNode(object):
             pid, score, stat = m.groups()
             result.append(int(pid), int(score)))
 
-        sent = False
-        while not sent:
-            try:
-                self.master.match_done(self.secret, self.get_worker_infos(),
-                                       match_id, result)
-                gevent.sleep(0.5)
-                sent = True
-            except socket.error:
-                pass
+        try:
+            self.master.match_done(self.secret, self.get_worker_infos(),
+                                   match_id, result)
+        except socket.error:
+            pass
 
     def run_client(self, contest, match_id, ip, port, user, champ_id, pl_id):
         logging.info('running champion %d from %s for match %d' % (
