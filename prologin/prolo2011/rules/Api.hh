@@ -113,7 +113,10 @@ public:
 ///
 // Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
 //
-   erreur fusionner(int id1, position pos1, int id2, position pos2);
+   erreur fusionner(int id1, position pos1, int id2, position pos2)
+;
+
+  std::vector<position> chemin(position p1, position p2);
 
 ///
 // GUI specific

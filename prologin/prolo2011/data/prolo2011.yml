@@ -107,7 +107,6 @@ struct:
         - team
         - int
         - "identifiant de l'équipe qui possède cette traînée de moto"
-
 function:
   - doc_extra: |
      "\subsection{Fonctions d'information}"
@@ -162,6 +161,14 @@ function:
     fct_ret_type: type_bonus array
     fct_arg:
       - [equipe, int, "identifiant de l'équipe visée"]
+
+  -
+    fct_name: chemin
+    fct_summary: "Renvoie le chemin le plus court entre deux points (fonction lente)"
+    fct_ret_type: position array
+    fct_arg:
+      - [p1, position, "position de départ"]
+      - [p2, position, "position d'arrivée"]
 
   - doc_extra: |
      "\subsection{Fonctions d'action}"

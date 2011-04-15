@@ -325,6 +325,14 @@ extern "C" erreur api_allonger_pa()
 }
 
 ///
+// Allonge le tour en rajoutant des points d'action
+//
+extern "C" std::vector<position> api_chemin(position p1, position p2)
+{
+  return api->chemin(p1, p2);
+}
+
+///
 // Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
 extern "C" erreur api_agrandir_trainee_moto(int id, int longueur)
