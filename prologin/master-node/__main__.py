@@ -111,6 +111,9 @@ class MasterNode(object):
     def match_done(self, worker, mid, result):
         db = self.connect_to_db()
         cur = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        logging.info('match %(mid)d ended' % locals())
+
         to_update = [
             { 'player_id': r[0], 'player_score': r[1] }
             for r in result
@@ -119,10 +122,21 @@ class MasterNode(object):
             self.config['sql']['queries']['set_player_score'],
             to_update
         )
+
         cur.execute(
             self.config['sql']['queries']['set_match_status'],
             { 'match_id': mid, 'match_status': 'done' }
         )
+
+        to_update = [
+            { 'match_id': mid, 'champion_score': r[1], 'player_id': r[0] }
+            for r in result
+        ]
+        cur.executemany(
+            self.config['sql']['queries']['update_tournament_score'],
+            to_update
+        )
+
         db.commit()
 
     def janitor_task(self):

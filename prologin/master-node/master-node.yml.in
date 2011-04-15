@@ -13,7 +13,7 @@ sql:
   password: prologin
   database: stechec
   queries:
-    get_champions: >
+    get_champions:
       select
         champions.id as id,
         users.name as name
@@ -68,3 +68,28 @@ sql:
         score = %(player_score)s
       where
         match_players.id = %(player_id)s
+
+    update_tournament_score:
+      update
+        tournament_players
+      set
+        score = score + %(champion_score)s
+      where
+        tournament_players.tournament_id = (
+          select
+            matches.tournament_id
+          from
+            matches
+          where
+            matches.id = %(match_id)s
+        )
+        and tournament_players.champion_id = (
+          select
+            champions.id
+          from
+            champions
+          left join match_players
+            on champions.id = match_players.champion_id
+          where
+            match_players.id = %(player_id)s
+        )
