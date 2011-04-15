@@ -67,6 +67,24 @@ class Worker(object):
             new.append((t, g))
         self.tasks = new
 
+    def remove_match_task(self, mid):
+        new = []
+        for (t, g) in self.tasks:
+            if isinstance(t, task.MatchTask):
+                if t.mid == mid:
+                    continue
+            new.append((t, g))
+        self.tasks = new
+
+    def remove_player_task(self, mpid):
+        new = []
+        for (t, g) in self.tasks:
+            if isinstance(t, task.PlayerTask):
+                if t.mpid == mpid:
+                    continue
+            new.append((t, g))
+        self.tasks = new
+
     @property
     def rpc(self):
         url = "http://%s:%d/" % (self.hostname, self.port)

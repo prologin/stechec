@@ -75,7 +75,7 @@ class MasterNode(object):
     def heartbeat(self, worker):
         hostname, port, slots, max_slots = worker
         usage = (1.0 - float(slots) / max_slots) * 100
-        logging.info('received heartbeat from %s:%d, usage is %.2f' % (
+        logging.info('received heartbeat from %s:%d, usage is %.2f%%' % (
                          hostname, port, usage
                     ))
         self.update_worker(worker)
@@ -107,6 +107,7 @@ class MasterNode(object):
                           % locals())
         self.matches[match_id].server_port.put(port)
         del self.matches[match_id]
+        self.workers[(worker[0], worker[1])].remove_match_task(match_id)
 
     def match_done(self, worker, mid, result):
         db = self.connect_to_db()
@@ -138,6 +139,9 @@ class MasterNode(object):
         )
 
         db.commit()
+
+    def client_done(self, worker, mpid):
+        self.workers[(worker[0], worker[1])].remove_player_task(mpid)
 
     def janitor_task(self):
         while True:
@@ -285,6 +289,7 @@ class MasterNodeProxy(object):
 
     def client_done(self, secret, worker, mid, mpid, retcode):
         self.master.update_worker(worker)
+        self.master.client_done(worker, mpid)
         return True
 
 if __name__ == '__main__':

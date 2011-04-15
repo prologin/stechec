@@ -138,7 +138,7 @@ def spawn_client(cmd, path, match_id, champ_id, tid, callback):
     retcode, stdout = communicate(cmd)
     log_path = os.path.join(path, "log-champ-%d-%d.log" % (tid, champ_id))
     open(log_path, "w").write(stdout)
-    callback(retcode, stdout, match_id, champ_id)
+    callback(retcode, stdout, match_id, champ_id, tid)
 
 def run_client(config, ip, port, contest, match_id, user, champ_id, tid, cb):
     dir_path = champion_path(config, contest, user, champ_id)

@@ -154,12 +154,12 @@ class WorkerNode(object):
                               champ_id, pl_id, self.client_done)
         return False, self.master.client_ready, (match_id, pl_id)
 
-    def client_done(self, retcode, stdout, match_id, champ_id):
+    def client_done(self, retcode, stdout, match_id, champ_id, pl_id):
         self.slots += 2
         logging.info('champion %d for match %d done' % (champ_id, match_id))
         try:
             self.master.client_done(self.secret, self.get_worker_infos(),
-                                    match_id, champ_id, retcode)
+                                    match_id, pl_id, retcode)
         except socket.error:
             pass
 
