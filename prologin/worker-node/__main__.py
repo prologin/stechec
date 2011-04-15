@@ -138,7 +138,7 @@ class WorkerNode(object):
             if m is None:
                 continue
             pid, score, stat = m.groups()
-            result.append(int(pid), int(score)))
+            result.append((int(pid), int(score)))
 
         try:
             self.master.match_done(self.secret, self.get_worker_infos(),
@@ -152,10 +152,10 @@ class WorkerNode(object):
         ))
         operations.run_client(self.config, ip, port, contest, match_id, user,
                               champ_id, pl_id, self.client_done)
-        return False, self.master.client_ready, (match_id, champ_id)
+        return False, self.master.client_ready, (match_id, pl_id)
 
     def client_done(self, retcode, stdout, match_id, champ_id):
-        self.slots += 1
+        self.slots += 2
         logging.info('champion %d for match %d done' % (champ_id, match_id))
         try:
             self.master.client_done(self.secret, self.get_worker_infos(),
@@ -186,7 +186,7 @@ class WorkerNodeProxy(object):
     def run_client(self, secret, *args, **kwargs):
         logging.debug('received a run_client request')
         return self.node.start_work(
-            self.node.run_client, 1, *args, **kwargs
+            self.node.run_client, 2, *args, **kwargs
         )
 
 def read_config(filename):

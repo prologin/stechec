@@ -49,9 +49,9 @@ class Worker(object):
     def can_add_task(self, task):
         return self.slots >= task.slots_taken
 
-    def add_task(self, task):
+    def add_task(self, master, task):
         self.slots -= task.slots_taken
-        greenlet = gevent.spawn(task.execute, self)
+        greenlet = gevent.spawn(task.execute, master, self)
         self.tasks.append((task, greenlet))
 
     def kill_tasks(self):

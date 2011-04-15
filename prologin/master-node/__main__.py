@@ -48,6 +48,7 @@ class MasterNode(object):
         self.config = config
         self.workers = {}
         self.worker_tasks = []
+        self.matches = {}
 
         self.spawn_tasks()
 
@@ -98,6 +99,29 @@ class MasterNode(object):
         cur.execute(
             self.config['sql']['queries']['set_champion_status'],
             { 'champion_id': champ_id, 'champion_status': status }
+        )
+        db.commit()
+
+    def match_ready(self, worker, match_id, port):
+        logging.debug('match %(match_id)d ready on %(worker)s port %(port)d'
+                          % locals())
+        self.matches[match_id].server_port.put(port)
+        del self.matches[match_id]
+
+    def match_done(self, worker, mid, result):
+        db = self.connect_to_db()
+        cur = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        to_update = [
+            { 'player_id': r[0], 'player_score': r[1] }
+            for r in result
+        ]
+        cur.executemany(
+            self.config['sql']['queries']['set_player_score'],
+            to_update
+        )
+        cur.execute(
+            self.config['sql']['queries']['set_match_status'],
+            { 'match_id': mid, 'match_status': 'done' }
         )
         db.commit()
 
@@ -155,7 +179,35 @@ class MasterNode(object):
         self.db.commit()
 
     def check_requested_matches(self):
-        logging.error("todo: check_requested_matches")
+        cur = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(
+            self.config['sql']['queries']['get_matches'],
+            { 'match_status': 'new' }
+        )
+
+        to_set_pending = []
+        for r in cur:
+            logging.info('request match id %(match_id)d launch' % r)
+            mid = r['match_id']
+            opts = r['match_options']
+            players = zip(r['champion_ids'], r['match_player_ids'],
+                          r['user_names'])
+            to_set_pending.append({
+                'match_id': mid,
+                'match_status': 'pending',
+            })
+            t = task.MatchTask(self.config, mid, players, opts)
+            self.worker_tasks.append(t)
+            self.matches[mid] = t
+
+        if to_set_pending:
+            self.to_dispatch.set()
+
+        cur.executemany(
+            self.config['sql']['queries']['set_match_status'],
+            to_set_pending
+        )
+        self.db.commit()
 
     def dbwatcher_task(self):
         self.db = self.connect_to_db()
@@ -183,7 +235,7 @@ class MasterNode(object):
                 if w is None:
                     logging.info("no worker available for task %s" % task)
                 else:
-                    w.add_task(task)
+                    w.add_task(self, task)
                     logging.debug("task %s got to %s" % (task, w))
                     self.worker_tasks = self.worker_tasks[1:]
             if not self.worker_tasks:
@@ -201,6 +253,24 @@ class MasterNodeProxy(object):
     def compilation_result(self, secret, worker, champ_id, ret):
         self.master.update_worker(worker)
         self.master.compilation_result(worker, champ_id, ret)
+        return True
+
+    def match_ready(self, secret, worker, match_id, port):
+        self.master.update_worker(worker)
+        self.master.match_ready(worker, match_id, port)
+        return True
+
+    def match_done(self, secret, worker, mid, result):
+        self.master.update_worker(worker)
+        self.master.match_done(worker, mid, result)
+        return True
+
+    def client_ready(self, secret, worker, mid, mpid):
+        self.master.update_worker(worker)
+        return True
+
+    def client_done(self, secret, worker, mid, mpid, retcode):
+        self.master.update_worker(worker)
         return True
 
 if __name__ == '__main__':

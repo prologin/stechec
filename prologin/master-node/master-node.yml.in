@@ -31,3 +31,40 @@ sql:
         status = %(champion_status)s
       where
         champions.id = %(champion_id)s
+
+    get_matches:
+      select
+        matches.id as match_id,
+        matches.options as match_options,
+        array_agg(champions.id) as champion_ids,
+        array_agg(match_players.id) as match_player_ids,
+        array_agg(users.name) as user_names
+      from
+        matches
+      left join match_players
+        on match_players.match_id = matches.id
+      left join champions
+        on match_players.champion_id = champions.id
+      left join users
+        on champions.author_id = users.id
+      where
+        matches.status = %(match_status)s
+      group by
+        matches.id,
+        matches.options
+
+    set_match_status:
+      update
+        matches
+      set
+        status = %(match_status)s
+      where
+        matches.id = %(match_id)s
+
+    set_player_score:
+      update
+        match_players
+      set
+        score = %(player_score)s
+      where
+        match_players.id = %(player_id)s
