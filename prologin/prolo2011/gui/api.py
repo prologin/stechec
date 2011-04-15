@@ -2,7 +2,7 @@
 from _api import *
 
 # Taille du terrain
-TAILLE_TERRAIN = 100
+TAILLE_TERRAIN = 50
 
 # Nombre de tours par partie
 FIN_PARTIE = 1500

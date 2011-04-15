@@ -52,7 +52,7 @@ enum Type_bonus{
 public class Interface
 {
 // Taille du terrain
-  public static final int TAILLE_TERRAIN = 100;
+  public static final int TAILLE_TERRAIN = 50;
 
 // Nombre de tours par partie
   public static final int FIN_PARTIE = 1500;

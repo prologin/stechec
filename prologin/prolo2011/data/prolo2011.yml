@@ -9,7 +9,7 @@ constant:
   - doc_extra: \subsection{Constantes}
   -
     cst_name: TAILLE_TERRAIN
-    cst_val: 100
+    cst_val: 50
     cst_comment: Taille du terrain
   -
     cst_name: FIN_PARTIE

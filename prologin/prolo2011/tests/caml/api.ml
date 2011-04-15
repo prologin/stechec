@@ -7,7 +7,7 @@
 (*
 ** Taille du terrain
 *)
-let taille_terrain = 100
+let taille_terrain = 50
 
 (*
 ** Nombre de tours par partie
