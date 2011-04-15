@@ -86,9 +86,12 @@ class WorkerNode(object):
         logging.info('sending heartbeat to the server, %d/%d slots' % (
                          self.slots, self.max_slots
         ))
+        first_heartbeat = True
         while True:
             try:
-                self.master.heartbeat(self.secret, self.get_worker_infos())
+                self.master.heartbeat(self.secret, self.get_worker_infos(),
+                                      first_heartbeat)
+                first_heartbeat = False
             except gevent.socket.error:
                 msg = 'master down, retrying heartbeat in %ds' % self.interval
                 logging.warn(msg)

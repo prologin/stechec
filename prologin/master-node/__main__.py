@@ -72,12 +72,14 @@ class MasterNode(object):
                          ))
             self.workers[key].update(slots, max_slots)
 
-    def heartbeat(self, worker):
+    def heartbeat(self, worker, first):
         hostname, port, slots, max_slots = worker
         usage = (1.0 - float(slots) / max_slots) * 100
         logging.info('received heartbeat from %s:%d, usage is %.2f%%' % (
                          hostname, port, usage
                     ))
+        if first and (hostname, port) in self.workers:
+            self.redispatch_worker(self.workers[(hostname, port)])
         self.update_worker(worker)
 
     def compilation_result(self, worker, champ_id, ret):
@@ -106,8 +108,6 @@ class MasterNode(object):
         logging.debug('match %(match_id)d ready on %(worker)s port %(port)d'
                           % locals())
         self.matches[match_id].server_port.put(port)
-        del self.matches[match_id]
-        self.workers[(worker[0], worker[1])].remove_match_task(match_id)
 
     def match_done(self, worker, mid, result):
         db = self.connect_to_db()
@@ -139,9 +139,21 @@ class MasterNode(object):
         )
 
         db.commit()
+        self.workers[(worker[0], worker[1])].remove_match_task(mid)
 
     def client_done(self, worker, mpid):
         self.workers[(worker[0], worker[1])].remove_player_task(mpid)
+
+    def redispatch_worker(self, worker):
+        worker.kill_tasks()
+        tasks = [t for (t, g) in worker.tasks]
+        if tasks:
+            logging.info("redispatching tasks for %s: %s" % (
+                             worker, tasks
+                        ))
+            self.worker_tasks = tasks + self.worker_tasks
+            self.to_dispatch.set()
+        del self.workers[(worker.hostname, worker.port)]
 
     def janitor_task(self):
         while True:
@@ -149,15 +161,7 @@ class MasterNode(object):
             for worker in all_workers.itervalues():
                 if not worker.is_alive(self.config['worker']['timeout_secs']):
                     logging.warn("timeout detected for worker %s" % worker)
-                    worker.kill_tasks()
-                    tasks = [t for (t, g) in worker.tasks]
-                    if tasks:
-                        logging.info("redispatching tasks for %s: %s" % (
-                                         worker, tasks
-                                    ))
-                        self.worker_tasks = tasks + self.worker_tasks
-                        self.to_dispatch.set()
-                    del self.workers[(worker.hostname, worker.port)]
+                    self.redispatch_worker(worker)
 
             gevent.sleep(1)
 
@@ -216,7 +220,6 @@ class MasterNode(object):
             })
             t = task.MatchTask(self.config, mid, players, opts)
             self.worker_tasks.append(t)
-            self.matches[mid] = t
 
         if to_set_pending:
             self.to_dispatch.set()
@@ -264,8 +267,8 @@ class MasterNodeProxy(object):
     def __init__(self, master):
         self.master = master
 
-    def heartbeat(self, secret, worker):
-        self.master.heartbeat(worker)
+    def heartbeat(self, secret, worker, first):
+        self.master.heartbeat(worker, first)
         return True
 
     def compilation_result(self, secret, worker, champ_id, ret):

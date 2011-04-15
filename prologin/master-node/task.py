@@ -68,18 +68,26 @@ class MatchTask(object):
         self.players = players
         self.opts = opts
         self.server_port = gevent.queue.Queue()
+        self.player_tasks = set()
 
     @property
     def slots_taken(self):
         return 1 # Only the server is launched by this task
 
     def execute(self, master, worker):
+        master.matches[self.mid] = self
         worker.rpc.run_server(
             self.secret, self.contest, self.mid, self.opts
         )
         port = self.server_port.get()
         for (cid, mpid, user) in self.players:
+            # on error, prevent launching several times the players
+            if mpid in self.player_tasks:
+                continue
+            self.player_tasks.add(mpid)
+
             t = PlayerTask(self.config, self.mid, worker.hostname, port, cid,
                            mpid, user)
             master.worker_tasks.append(t)
         master.to_dispatch.set()
+        del master.matches[self.mid]
