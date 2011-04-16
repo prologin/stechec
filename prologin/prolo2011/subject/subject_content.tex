@@ -73,12 +73,25 @@ y rencontrer :
 \begin{itemize}
   \item \emph{un obstacle} : les obstacles sont infranchissables,
     et doivent être contournés.
+    %\vspace{1cm}
+    \begin{figure}[!h]
+    \centering
+    \includegraphics{../data/graphics/terrain-obstacle.png}
+    \caption{Un obstacle}
+    \end{figure}
+
   \item \emph{un bonus} : vous pouvez ramasser les bonus présents
     sur la Grille en vous déplaçant dessus. Les différents bonus et
     leurs utilisations sont détaillées dans la section sur les
     bonus, page \pageref{section-bonus}.
   \item \emph{un point de croisement} : sur ces cases, il est
     possible pour (au moins) deux traînées de se croiser sans dommage.
+%\vspace{1cm}
+    \begin{figure}[!h]
+    \centering
+    \includegraphics{../data/graphics/terrain-point_croisement.png}
+    \caption{Un point de croisement}
+    \end{figure}
   \item \emph{une source} : ces cases contiennent soit une
     source d'énergie, soit un point de stockage.
 \end{itemize}
@@ -95,9 +108,56 @@ d'énergie des sources vers les points de stockage, et d'empêcher votre
 adversaire de le faire.
 
 Pour cela, il suffit de connecter une source à un point de stockage,
-grâce à vos motos.\\
+grâce à vos motos. Une trainée reliant une source à un point de
+stockage est dite active.\\
 
-Chaque source ou point de stockage est caractérisé par une capacité et
+\subsubsection{I got the power!}
+
+Chaque source ou point de stockage est caractérisé par une capacité
+maximale d'énergie. Une source délivre 1 unité d'énergie par tour à
+chaque trainée active. De la même façon, un point de stockage accepte
+1u par tour.
+
+La capacité réelle d'une source correspond donc à la quantité
+d'énergie encore disponible pour le transport ; alors que la capacité
+réelle d'un point de stockage correspond à la quantité d'énergie
+pouvant encore être emmagasinée.
+
+Lorsque la capacité réelle atteint 0u, la source (respectivement le
+point de stockage) est dit épuisé.\\
+
+\begin{figure}[!h]
+\centering
+\begin{tabular}{c|c}
+    \includegraphics{../data/graphics/source_energie-on-producteur.png}
+%    \caption{Source active}
+
+ &
+
+    \includegraphics{../data/graphics/source_energie-off-producteur.png}
+%    \caption{Source épuisée}
+\\
+        Source active & Source épuisée \\ \hline
+
+    \includegraphics{../data/graphics/source_energie-on-consommateur.png}
+%    \caption{Point de stockage actif}
+
+&
+
+    \includegraphics{../data/graphics/source_energie-off-consommateur.png}
+%    \caption{Point de stockage épuisé}
+\\
+        Point de stockage actif & Point de stockage épuisé
+
+\end{tabular}
+\end{figure}
+
+\subsubsection{Rechargement}
+
+Une fois épuisées, les sources d'énergie reconstituent lentement leurs
+stocks, au rythme d'une unité par tour.
+
+
 
         \subsection{Interagir avec la Grille}
         \emph{This is Blue Leader to Blue Bikes. Run these guys into your jet walls.}
