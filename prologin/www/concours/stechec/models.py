@@ -10,7 +10,7 @@ class Map(models.Model):
     ts = models.DateTimeField("date", auto_now_add=True)
 
     def __unicode__(self):
-        return u"%u, de %u%u" % (self.name, self.author,
+        return u"%s, de %s%s" % (self.name, self.author,
                                  u" (officielle)" if self.official else u"")
 
     class Meta:
@@ -33,7 +33,7 @@ class Champion(models.Model):
     ts = models.DateTimeField("date", auto_now_add=True)
 
     def __unicode__(self):
-        return u"%u, de %u" % (self.name, self.author)
+        return u"%s, de %s" % (self.name, self.author)
 
     class Meta:
         ordering = ['-ts']
@@ -47,7 +47,7 @@ class Tournament(models.Model):
                                      through="TournamentPlayer")
 
     def __unicode__(self):
-        return u"%u, %u" % (self.name, self.ts)
+        return u"%s, %s" % (self.name, self.ts)
 
     class Meta:
         ordering = ['-ts']
@@ -60,7 +60,7 @@ class TournamentPlayer(models.Model):
     score = models.IntegerField("score", default=0)
 
     def __unicode__(self):
-        return u"%u pour tournoi %u" % (self.champion, self.tournament)
+        return u"%s pour tournoi %s" % (self.champion, self.tournament)
 
     class Meta:
         ordering = ["-tournament", "-score"]
@@ -109,7 +109,7 @@ class Match(models.Model):
         self.options_dict = d
 
     def __unicode__(self):
-        return u"%u (par %u)" % (self.ts, self.author)
+        return u"%s (par %s)" % (self.ts, self.author)
 
     class Meta:
         ordering = ["-ts"]
@@ -122,7 +122,7 @@ class MatchPlayer(models.Model):
     score = models.IntegerField("score", default=0)
 
     def __unicode__(self):
-        return u"%u pour match %u" % (self.champion, self.match)
+        return u"%s pour match %s" % (self.champion, self.match)
 
     class Meta:
         ordering = ["-match"]
