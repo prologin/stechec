@@ -6,6 +6,8 @@
 
 open Api;;
 
+let debug = false
+
 let ( |> ) f x = x f
 let unsome = function None -> assert false | Some x -> x
 let unsome_list xs = List.map (function None -> [] | Some x -> [x]) xs |> List.flatten
@@ -27,67 +29,134 @@ let dneighbours = near (dxys @ [ -1,-1 ; -1,1 ; 1,-1; 1,1 ])
 let is_free = function
 | Trainee | Obstacle | Source -> false | _ -> true
 
-let already_connected snake source =
-  snake.emplacement
+
+type id_snake = int
+
+module H = Hashtbl
+let cache : (id_snake, float) H.t = H.create 2
+let snake_map : id_snake list array array =
+  Array.init taille_terrain (fun _ ->
+  Array.init taille_terrain (fun _ -> [] ))
+let connections : (id_snake * (int * int), bool) H.t = H.create 0
+let reset_cache () =
+  H.clear cache ;
+  H.clear connections ;
+  for x = 0 to taille_terrain - 1 do
+	for y = 0 to taille_terrain - 1 do
+		snake_map.(x).(y) <- []
+	done
+  done ;
+  let me = mon_equipe () in
+  trainees_moto ()
   |> Array.to_list
-  |> List.exists (fun pos ->
-       List.exists (fun p -> p = source)
-	 (dneighbours pos)
-    )
+  |> List.filter (fun m -> m.team = me)
+  |> List.iter (fun m ->
+	Array.iter (fun (x, y) ->
+		snake_map.(x).(y) <- m.id :: snake_map.(x).(y)
+	) m.emplacement)
+
+module IdSet = Set.Make (struct type t = id_snake let compare = compare end)
+module PosSet = Set.Make (struct type t = position let compare = compare end)
+
+let sources_connected_with snake =
+  let snakes = trainees_moto () in
+(*
+  let ss = sources_energie () in
+*)
+  let visited = ref IdSet.empty in
+  let sources = ref PosSet.empty in
+  let stack = Queue.create () in
+  visited := IdSet.add snake.id !visited ;
+  Queue.push snake.id stack ;
+  while not (Queue.is_empty stack) do
+	Printf.printf "queue is running\n%!" ;
+	let snake_id = Queue.pop stack in
+	let sna = snakes.(snake_id) in
+	Array.iter (fun sna_pos ->
+		List.iter (fun ((x, y) as p) ->
+			match regarder_type_case p with
+			| Source -> sources := PosSet.add p !sources
+			| Trainee_et_croisement
+			| Trainee ->
+				List.iter (fun sid ->
+					if not (IdSet.mem sid !visited)
+					then begin
+						visited := IdSet.add sid !visited ;
+						Queue.push sid stack
+					end)
+					snake_map.(x).(y) 
+			| _ -> ()
+			)
+			(dneighbours sna_pos)
+		)
+		sna.emplacement
+  done ;
+  PosSet.iter (fun (x, y) -> Printf.printf " - sources at %i %i\n%!" x y) !sources ;
+  Printf.printf "nb sources = %i\n%!" (PosSet.cardinal !sources) ;
+  !sources
+					
+  
+let source_at_pos p =
+	sources_energie ()
+	|> Array.to_list
+	|> List.filter (fun s -> s.pos = p)
+	|> List.hd
 
 let coeff_of_snake snake =
-    sources_energie ()
-  |> Array.to_list
-  |> List.map (fun s ->
-      if already_connected snake s.pos
-      then float s.coef
-      else 0.0
-    )
-  |> sum
+  if H.mem cache snake.id
+  then H.find cache snake.id
+  else begin 
+    let result =
+	sources_connected_with snake
+        |> PosSet.elements
+	|> List.map (fun p -> float (source_at_pos p).coef)
+	|> sum
+    in
+    H.add cache snake.id result ;
+    result
+  end
 
 let select_sources snake =
-   sources_energie ()
-   |> Array.to_list
-   |> List.filter (fun s -> not (already_connected snake s.pos))
-   |> List.map (fun s ->
+   let truc = sources_energie ()
+   |> Array.fold_left (fun set s -> PosSet.add s.pos set) PosSet.empty
+   |> (fun set -> PosSet.diff set (sources_connected_with snake))
+   |> PosSet.elements
+(*
+   |> List.map (fun p -> (source_at_pos p).coef, p)
+*)
+   |> List.map (fun p ->
+        let s = source_at_pos p in
         List.map (fun pos -> s.coef, pos) (dneighbours s.pos)) 
    |> List.flatten
+   in
+	Printf.printf "select_sources # %i\n%!" (List.length truc) ;
+	truc
+
+let print_sources ss =
+  List.iter (fun (coef, p) -> Printf.printf "   %i at %i %i\n%!" coef (fst p) (snd p)) ss
 
 let diffusion_at p sources =
-(*
-  let p = snake.emplacement.(0) in
-  let sources =
-    sources_energies ()
-    |> List.filter (fun s -> not (already_connected snake s.pos))
-    |> Array.to_list
-    |> List.map (fun s ->
-         List.map (fun pos -> s.coef, pos)
-	  (dneighbours s.pos)) 
-    |> List.flatten in
-*)
+  Printf.printf "diffusion_at has # %i\n%!" (List.length sources) ;
+  print_sources sources ;
+let (pos, neg) as result =
   List.fold_left (fun (pos, neg) (coef, p') ->
     let d = dist p p' in
+    Printf.printf " d = %i \n%!" d ;
     if d = 0 && p <> p'
     then (pos, neg)
     else begin
+      Printf.printf "...\n%!" ;
       let cost = float coef /. float (d + 1) in
+      Printf.printf " cost = %f\n%!" cost ;
       if coef < 0
       then (pos, neg -. cost)
       else (pos +. cost, neg)
     end)
     (0., 0.)
     sources
-
-(*
-let affiche_diff p =
-  for y = 0 to 40 do
-    for x = 0 to 20 do
-      Printf.printf "%3.0f " (fst (diffusion_at (x, y)))
-    done ;
-    Printf.printf "\n%!" ;
-  done
-*)
-
+in
+  Printf.printf "and the best is %f, %f\n%!" pos neg ;
+  result
 
 (*
 ** Fonction appellée au début de la partie
@@ -148,10 +217,8 @@ let best_split snake =
   	Some (score, snake, emp.(best_i - 1), emp.(best_i)) 
 
 
-(*
-** Fonction appellée pour la phase de jeu
-*)
-let jouer () =  (* Pose ton code ici *)
+let action () =  (* Pose ton code ici *)
+  reset_cache () ;
 (*
   ignore (read_line ()) ;
 *)
@@ -166,6 +233,7 @@ let jouer () =  (* Pose ton code ici *)
                               me, me.emplacement.(Array.length me.emplacement - 1) ])
 	|> List.flatten in
   let best_moves = unsome_list (List.map (fun (me, p) -> best_move me p) mes) in
+  Printf.printf "best_moves # %i\n%!" (List.length best_moves) ;
   let Some (id, p, p', score) = 
 	maximum_by (fun (id, p, p', score) -> score) best_moves
   in
@@ -200,13 +268,43 @@ let jouer () =  (* Pose ton code ici *)
 	ignore (read_line ()) ;
   end else begin
   	let erreur = deplacer id p p' in
-    	afficher_erreur erreur ;
+    	Printf.printf "move %a -> %a\n%!" print_position p print_position p' ;
+	afficher_erreur erreur ;
   end ;
-
 (*
   affiche_diff () ;
 *)
   flush stderr; flush stdout;; (* Pour que vos sorties s'affichent *)
+
+let dump_infos () =
+  if debug then
+    begin
+      Printf.printf "<dump_infod>\n%!";
+      Array.iter
+	(fun t -> begin
+	  flush stdout;
+	  afficher_trainee_moto t;
+	  flush stdout;
+	end)
+	(trainees_moto ());
+      Printf.printf "</dump_infod>\n%!"
+    end
+
+let jouer () =
+  begin
+    dump_infos ();
+    action ();
+    Printf.printf "action 1\n%!" ;
+    dump_infos ();
+    action ();
+    Printf.printf "action 2\n%!" ;
+    dump_infos ();
+    action ();
+    Printf.printf "action 3\n%!" ;
+    dump_infos ();
+    Printf.printf "gain : %i\n%!" (diff_score ())
+  end
+
 
 (*
 ** Fonction appellée à la fin de la partie
