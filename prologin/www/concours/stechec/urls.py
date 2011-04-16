@@ -1,3 +1,4 @@
+from concours.stechec import views
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
@@ -7,4 +8,6 @@ urlpatterns = patterns('concours.stechec',
     url(r'^$', login_required(TemplateView.as_view(template_name='index.html')), name="index"),
     url(r'^login/$', auth_views.login, { 'template_name': 'login.html' }, name="login"),
     url(r'^logout/$', auth_views.logout, { 'next_page': '/' }, name="logout"),
+
+    url(r'^champions/all/$', views.AllChampionsView.as_view(), name="all_champions"),
 )
