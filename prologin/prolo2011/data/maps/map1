@@ -1,25 +1,25 @@
 4
 100
+-100
+-100
 100
--100
--100
 XXXXXXXXXXXXXXXXXXXX
+X1                 X
 X                  X
 X                  X
 X                  X
-X                  X
-X    XX     1XX    X
+X    XX      XX    X
 XXXXXX        X    X
-X !! X        X    X
+X  ! X        X    X
 X    X        X    X
 X    X        X    X
 X    X        X    X
 X    X        X    X
 X    X        X !! X
 X    X        XXXXXX
-X    XX2     XX    X
+X    XX      XX !  X
 X                  X
 X                  X
 X                  X
-X                  X
+X                 2X
 XXXXXXXXXXXXXXXXXXXX
