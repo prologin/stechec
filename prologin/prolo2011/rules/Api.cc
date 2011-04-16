@@ -123,6 +123,9 @@ type_case Api::regarder_type_case(position pos)
 	return (OBSTACLE);
     Case &c = g_->get_case(pos);
     if (c.nb_trainees_moto != 0){
+      if (c.type == POINT_CROISEMENT){
+	return TRAINEE_ET_CROISEMENT;
+      }
       return TRAINEE;
     }
     return (c.type);

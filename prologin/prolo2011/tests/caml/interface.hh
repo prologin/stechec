@@ -29,6 +29,7 @@ typedef enum type_case {
   POINT_CROISEMENT, /* <- point de croisement de traînées */
   SOURCE, /* <- source ou consommateur d'energie */
   TRAINEE, /* <- une trainée de moto */
+  TRAINEE_ET_CROISEMENT, /* <- une trainee sur un point de croisement */
 } type_case;
 
 

@@ -143,6 +143,8 @@ if (TYPE(in) != T_STRING) TYPEERR( (char*) "type_case", in);
       return SOURCE;
   if (strcmp(v, (char *) "trainee") == 0)
       return TRAINEE;
+  if (strcmp(v, (char *) "trainee_et_croisement") == 0)
+      return TRAINEE_ET_CROISEMENT;
   abort();
   TYPEERR((char *) "type_case", in);
 }
@@ -163,6 +165,8 @@ VALUE cxx2lang<type_case>(type_case in)
       return rb_str_new( (char *) "source", 6);
     case TRAINEE:
       return rb_str_new( (char *) "trainee", 7);
+    case TRAINEE_ET_CROISEMENT:
+      return rb_str_new( (char *) "trainee_et_croisement", 21);
   }
   abort();
 }
@@ -316,6 +320,10 @@ static VALUE rb_regarder_bonus(VALUE self, VALUE equipe)
 {
   return cxx2lang_array<>(api_regarder_bonus(lang2cxx<int>( equipe ) ));
 }
+static VALUE rb_diff_score(VALUE self)
+{
+  return cxx2lang<int>(api_diff_score());
+}
 static VALUE rb_chemin(VALUE self, VALUE p1, VALUE p2)
 {
   return cxx2lang_array<>(api_chemin(lang2cxx<position>( p1 ) , lang2cxx<position>( p2 ) ));
@@ -433,6 +441,11 @@ void loadCallback()
 // Retourne la liste des bonus d'une équipe
 //
     rb_define_global_function( (char *) "regarder_bonus", (VALUE(*)(ANYARGS))(rb_regarder_bonus), 1);
+
+///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+    rb_define_global_function( (char *) "diff_score", (VALUE(*)(ANYARGS))(rb_diff_score), 0);
 
 ///
 // Renvoie le chemin le plus court entre deux points (fonction lente)

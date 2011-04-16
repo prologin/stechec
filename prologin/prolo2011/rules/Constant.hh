@@ -67,7 +67,8 @@ typedef enum type_case {
   BONUS, /* <- cette case cotient un bonus */
   POINT_CROISEMENT, /* <- point de croisement de traînées */
   SOURCE,
-  TRAINEE
+  TRAINEE,
+  TRAINEE_ET_CROISEMENT
 } type_case;
 
 

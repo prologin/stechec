@@ -13,7 +13,7 @@ FIN_PARTIE = 1500
 MAX_PA = 3
 
 # Taille des traînées de moto
-TAILLE_TRAINEE = 80
+TAILLE_TRAINEE =80
 
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5

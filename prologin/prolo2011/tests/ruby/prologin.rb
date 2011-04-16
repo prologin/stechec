@@ -36,6 +36,8 @@ def jouer()
         end
       elsif c == "trainee" then
         str = "@"
+      elsif c == "trainee_et_croisement" then
+        str = "&"
       else
         str = "==#{c}=="
       end

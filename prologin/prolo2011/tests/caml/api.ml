@@ -56,6 +56,7 @@ type type_case =
 | Point_croisement (* <- point de croisement de traînées *)
 | Source (* <- source ou consommateur d'energie *)
 | Trainee (* <- une trainée de moto *)
+| Trainee_et_croisement (* <- une trainee sur un point de croisement *)
 
 
 (*

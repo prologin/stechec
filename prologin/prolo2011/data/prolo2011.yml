@@ -9,7 +9,7 @@ constant:
   - doc_extra: \subsection{Constantes}
   -
     cst_name: TAILLE_TERRAIN
-    cst_val: 50
+    cst_val: 20
     cst_comment: Taille du terrain
   -
     cst_name: FIN_PARTIE
@@ -21,7 +21,7 @@ constant:
     cst_comment: "Nombre de points d'action par tour"
   -
     cst_name: TAILLE_TRAINEE
-    cst_val: 900
+    cst_val: 80
     cst_comment: Taille des traînées de moto
   -
     cst_name: MAX_ALLONGEMENT
@@ -57,6 +57,7 @@ enum:
       - [point_croisement, point de croisement de traînées]
       - [source, source ou consommateur d'energie]
       - [trainee, une trainée de moto]
+      - [trainee_et_croisement, une trainee sur un point de croisement]
 
   -
     enum_name: type_bonus
