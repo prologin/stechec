@@ -381,7 +381,6 @@ GameData::get_sources(std::vector<source_energie>& srcs)
         srcs[i].coef = sources[i].potentiel_cur;
     }
 }
-
 void
 GameData::get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus)
 {
