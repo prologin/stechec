@@ -472,7 +472,8 @@ void GameData::give_pa(int pa)
  */
 void GameData::categorize_case(const position& p,
 			       std::set<SourceEnergie*>& src_p,
-			       std::set<SourceEnergie*>& src_n)
+			       std::set<SourceEnergie*>& src_n,
+			       std::deque<InternalTraineeMoto*> &a_traiter, int player, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4])
 {
     if (position_invalide(p))
 	return;
@@ -485,48 +486,61 @@ void GameData::categorize_case(const position& p,
 	    src_n.insert(&src);
 	else if (src.potentiel_cur > 0)
 	    src_p.insert(&src);
+    }else if (c.nb_trainees_moto != 0){
+      for (int i = 0; map[p.x][p.y][i] != -1 && i < 4; i++){
+	int indice = map[p.x][p.y][i];
+	InternalTraineeMoto *moto = &motos[indice];
+	if (moto->player_ == player){
+	  a_traiter.push_back(moto);
+	}
+      }
     }
 }
 
-/*
- * Look for every connection between one trainee_moto and the sources, compute
- * the partial sources potentel’s changes and increase the score.
- */
-void GameData::apply_connections_unit(int id_trainee,
-				      std::vector<int>& degrees)
-{
-    typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
-    typedef std::set<SourceEnergie*>::iterator sources_it;
+void GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4]){
 
-    std::set<SourceEnergie*>	src_p;
-    std::set<SourceEnergie*>	src_n;
-    InternalTraineeMoto&	moto = motos[id_trainee];
-    InternalTraineeMoto::nodes_list& nodes = moto.content_;
+  if (deja_traitees.count(id_trainee) == 1) return;
 
-    // Look for every sourced connected to the trainee_moto and categorize them
+  typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
+  typedef std::set<SourceEnergie*>::iterator sources_it;
+
+  std::set<SourceEnergie*>	src_p;
+  std::set<SourceEnergie*>	src_n;
+
+  std::deque<InternalTraineeMoto *> a_traiter;
+  a_traiter.push_front(&motos[id_trainee]);
+
+  int player = motos[id_trainee].player_;
+
+  while( 0 != a_traiter.size()){
+    InternalTraineeMoto *moto = a_traiter.front();
+    a_traiter.pop_front();
+    if (deja_traitees.count(id_trainee) == 1) continue;
+    deja_traitees.insert(moto->id_);
+
+    InternalTraineeMoto::nodes_list& nodes = moto->content_;
     for (nodes_it it = nodes.begin(); it != nodes.end(); ++it)
     {
-	position	p;
-
+	position p;
 	p.y = it->y - 1;
 	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
-	    categorize_case(p, src_p, src_n);
+	  categorize_case(p, src_p, src_n, a_traiter, player, map);
 
 	p.y = it->y;
 	p.x = it->x - 1;
-	categorize_case(p, src_p, src_n);
+	categorize_case(p, src_p, src_n, a_traiter, player, map);
 	p.x = it->x + 1;
-	categorize_case(p, src_p, src_n);
+	categorize_case(p, src_p, src_n, a_traiter, player, map);
 
 	p.y = it->y + 1;
 	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
-	    categorize_case(p, src_p, src_n);
+	  categorize_case(p, src_p, src_n, a_traiter, player, map);
     }
-
+  }
     if (src_p.empty() || src_n.empty())
 	return;
-
-    Joueur& joueur = joueurs[moto.player_];
+    // TODO
+    Joueur& joueur = joueurs[player];
     for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
     {
 	int potentiel = (*it)->potentiel_cur;
@@ -543,12 +557,38 @@ void GameData::apply_connections_unit(int id_trainee,
  */
 void GameData::apply_connections()
 {
+  typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
     motos_type::const_iterator	it;
     std::vector<int>		degrees;
 
+    std::set<int> deja_traitees;
+
+    int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4];
+
+
+    for (int x = 0; x < TAILLE_TERRAIN; x ++){
+      for (int y = 0; y < TAILLE_TERRAIN; y ++){
+	for (int i = 0; i < 4; i ++){
+	  map[x][y][i] = -1;
+	}
+      }
+    }
+    for (it = motos.begin(); it != motos.end(); ++it){
+      int indice = it->first;
+      InternalTraineeMoto &moto = motos[indice];
+      InternalTraineeMoto::nodes_list& nodes = moto.content_;
+      for (nodes_it it2 = nodes.begin(); it2 != nodes.end(); ++it2) {
+	int i;
+	for (i = 0; map[it2->x][it2->y][i] != -1; i ++){
+	}
+	map[it2->x][it2->y][i] = indice;
+      }
+    }
+
     degrees.resize(sources.size(), 0);
     for (it = motos.begin(); it != motos.end(); ++it)
-	apply_connections_unit(it->first, degrees);
+      apply_connections_group(it->first, degrees, deja_traitees, map);
+      //apply_connections_unit(it->first, degrees);
 
     // Change the sources’ potentiel
     for (int i = 0; i < degrees.size(); ++i)

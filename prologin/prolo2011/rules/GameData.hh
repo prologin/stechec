@@ -19,6 +19,7 @@
 # include "Actions.hh"
 # include "Utils.hh"
 
+# include <deque>
 # include <map>
 
 class Action;
@@ -180,19 +181,18 @@ protected:
      * sources potentiel’s changes and the increase the scores.
      */
     void apply_connections();
-    /*
-     * Look for every connection between one trainee_moto and the sources,
-     * compute the partial sources potentel’s changes and increase the score.
-     */
-    void apply_connections_unit(int id_trainee,
-				std::vector<int>& degrees);
+
+  void apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4]);
     /*
      * Look for an energy source at a (potentially invalid) position, and
      * categorize it (positive & negative).
      */
     void categorize_case(const position& p,
 			 std::set<SourceEnergie*>& src_p,
-			 std::set<SourceEnergie*>& src_n);
+			 std::set<SourceEnergie*>& src_n,
+			 std::deque<InternalTraineeMoto*> &a_traiter,
+			 int player,
+			 int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4]);
 };
 
 #endif // !GAMEDATA_HH_
