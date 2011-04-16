@@ -337,6 +337,7 @@ AC_CONFIG_FILES([
   prologin/prolo2011/rules/Makefile
   prologin/prolo2011/gui/Makefile
   prologin/prolo2011/gui/paths.py
+  prologin/prolo2011/dumper/Makefile
 ])
 fi
 

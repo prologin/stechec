@@ -3,4 +3,5 @@
 SUBDIRS =					\
 	data					\
 	rules					\
-	gui
+	gui						\
+	dumper
