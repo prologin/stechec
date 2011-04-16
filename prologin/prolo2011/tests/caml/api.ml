@@ -7,7 +7,7 @@
 (*
 ** Taille du terrain
 *)
-let taille_terrain = 50
+let taille_terrain = 20
 
 (*
 ** Nombre de tours par partie
@@ -22,7 +22,7 @@ let max_pa = 3
 (*
 ** Taille des traînées de moto
 *)
-let taille_trainee = 900
+let taille_trainee = 80
 
 (*
 ** Longueur maximale de l'allongement

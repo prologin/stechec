@@ -1,9 +1,10 @@
+# -*- coding: iso-8859-1 -*-
 # This file has been generated, if you wish to
 # modify it in a permanent way, please refer
 # to the script file : gen/generator_ruby.rb
 
 # Taille du terrain
-TAILLE_TERRAIN = 50
+TAILLE_TERRAIN = 20
 
 # Nombre de tours par partie
 FIN_PARTIE = 1500
@@ -12,7 +13,7 @@ FIN_PARTIE = 1500
 MAX_PA = 3
 
 # Taille des traînées de moto
-TAILLE_TRAINEE = 900
+TAILLE_TRAINEE = 80
 
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5
