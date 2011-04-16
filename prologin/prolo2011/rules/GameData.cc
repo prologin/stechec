@@ -210,7 +210,7 @@ void GameData::build_from_reverse_path(const position& reverse_begin,
     path.reserve(reverse_path.size());
     for (int i = length - 1; i >= 0; --i)
 	path.push_back(reverse_path[i]);
-    LOG4("Path's length: %1", reverse_path.size());
+    //LOG4("Path's length: %1", reverse_path.size());
 }
 
 /*
@@ -221,10 +221,10 @@ void GameData::get_shortest_path(const position& begin,
 				 const position& end,
 				 std::vector<position>& path)
 {
-    LOG4("Processing a shortest path betwee (%1, %2) and (%3, %4)",
+  /*LOG4("Processing a shortest path betwee (%1, %2) and (%3, %4)",
 	 begin.x, begin.y,
 	 end.x, end.y);
-
+  */
     // Proceed a BFS and keep in memory for each cell the previous cell
     // (building a reverse path)
     std::deque<position> fifo;
