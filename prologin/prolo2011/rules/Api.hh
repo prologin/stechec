@@ -116,6 +116,8 @@ public:
    erreur fusionner(int id1, position pos1, int id2, position pos2)
 ;
 
+  int diff_score();
+
   std::vector<position> chemin(position p1, position p2);
 
 ///

@@ -119,6 +119,11 @@ extern "C" type_bonus api_regarder_type_bonus(position pos);
 extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
 
 ///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+extern "C" int api_diff_score();
+
+///
 // Renvoie le chemin le plus court entre deux points (fonction lente)
 //
 extern "C" std::vector<position> api_chemin(position p1, position p2);

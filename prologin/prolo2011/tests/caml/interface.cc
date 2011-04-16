@@ -317,6 +317,16 @@ extern "C" value ml_regarder_bonus(value equipe)
 }
 
 ///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+extern "C" value ml_diff_score(value unit)
+{
+  CAMLparam0();
+  CAMLxparam1(unit);
+  CAMLreturn((cxx2lang<value, int>(api_diff_score())));
+}
+
+///
 // Renvoie le chemin le plus court entre deux points (fonction lente)
 //
 extern "C" value ml_chemin(value p1, value p2)

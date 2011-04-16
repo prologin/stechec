@@ -7,7 +7,7 @@
 (*
 ** Taille du terrain
 *)
-let taille_terrain = 20
+let taille_terrain = 50
 
 (*
 ** Nombre de tours par partie
@@ -22,7 +22,7 @@ let max_pa = 3
 (*
 ** Taille des traînées de moto
 *)
-let taille_trainee = 80
+let taille_trainee = 900
 
 (*
 ** Longueur maximale de l'allongement
@@ -128,6 +128,10 @@ external regarder_type_bonus : position -> type_bonus = "ml_regarder_type_bonus"
 ** Retourne la liste des bonus d'une équipe
 *)
 external regarder_bonus : int -> type_bonus array = "ml_regarder_bonus"
+(*
+** Renvoie les points que vous allez gagner a la fin du tour
+*)
+external diff_score : unit -> int = "ml_diff_score"
 (*
 ** Renvoie le chemin le plus court entre deux points (fonction lente)
 *)

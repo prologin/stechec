@@ -304,6 +304,14 @@ extern "C" erreur api_cancel()
 ///
 // Enrouler la traînée de moto en un point
 //
+extern "C" int api_diff_score()
+{
+  return api->diff_score();
+}
+
+///
+// Enrouler la traînée de moto en un point
+//
 extern "C" erreur api_enrouler(int id, position point)
 {
   return api->enrouler(id, point);

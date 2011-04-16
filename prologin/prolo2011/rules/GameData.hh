@@ -168,6 +168,12 @@ public:
     motos_type			motos;
     std::vector<SourceEnergie>  sources;
 
+    /*
+     * Look for every connection between trainees_moto and sources, compute the
+     * sources potentiel’s changes and the increase the scores.
+     */
+  int apply_connections(bool apply);
+
 protected:
     bool initialized_;
     int remaining_pa_;
@@ -176,13 +182,7 @@ protected:
 
     int get_free_moto_id();
 
-    /*
-     * Look for every connection between trainees_moto and sources, compute the
-     * sources potentiel’s changes and the increase the scores.
-     */
-    void apply_connections();
-
-  void apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4]);
+  int apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4], bool apply);
     /*
      * Look for an energy source at a (potentially invalid) position, and
      * categorize it (positive & negative).

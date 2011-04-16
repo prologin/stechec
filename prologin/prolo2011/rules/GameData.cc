@@ -310,7 +310,7 @@ void GameData::team_switched(){
     // Update scores and potentiels each time everybody have played
     if (current_player % 2 == 0)
     {
-	apply_connections();
+	apply_connections(true);
 	LOG4("Scores and potentiels have been updated!");
 	for (int i = 0; i < 2; ++i)
 	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
@@ -497,9 +497,9 @@ void GameData::categorize_case(const position& p,
     }
 }
 
-void GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4]){
+int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4], bool apply){
 
-  if (deja_traitees.count(id_trainee) == 1) return;
+  if (deja_traitees.count(id_trainee) == 1) return 0;
 
   typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
   typedef std::set<SourceEnergie*>::iterator sources_it;
@@ -538,24 +538,28 @@ void GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees
     }
   }
     if (src_p.empty() || src_n.empty())
-	return;
+	return 0;
     // TODO
     Joueur& joueur = joueurs[player];
+    int diff = 0;
     for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
     {
 	int potentiel = (*it)->potentiel_cur;
 	if (potentiel < 0)
 	    potentiel = -potentiel;
-	joueur.score += potentiel;
-	degrees[(*it)->id] += 1;
+	diff += potentiel;
+	if (apply) degrees[(*it)->id] += 1;
     }
+    if (apply)
+      joueur.score += diff;
+    return diff;
 }
 
 /*
  * Look for every connection between trainees_moto and sources, compute the
  * sources potentiel’s changes and the increase the scores.
  */
-void GameData::apply_connections()
+int GameData::apply_connections(bool apply)
 {
   typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
     motos_type::const_iterator	it;
@@ -564,7 +568,6 @@ void GameData::apply_connections()
     std::set<int> deja_traitees;
 
     int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4];
-
 
     for (int x = 0; x < TAILLE_TERRAIN; x ++){
       for (int y = 0; y < TAILLE_TERRAIN; y ++){
@@ -584,18 +587,20 @@ void GameData::apply_connections()
 	map[it2->x][it2->y][i] = indice;
       }
     }
-
+    int sum = 0;
     degrees.resize(sources.size(), 0);
     for (it = motos.begin(); it != motos.end(); ++it)
-      apply_connections_group(it->first, degrees, deja_traitees, map);
-      //apply_connections_unit(it->first, degrees);
+      sum += apply_connections_group(it->first, degrees, deja_traitees, map, apply);
 
+    if (apply){
     // Change the sources’ potentiel
     for (int i = 0; i < degrees.size(); ++i)
 	if (degrees[i] == 0)
 	    sources[i].release();
 	else
 	    sources[i].consume(degrees[i]);
+    }
+    return sum;
 }
 
 void GameData::stocker_action(Action* act)

@@ -164,6 +164,12 @@ function:
       - [equipe, int, "identifiant de l'équipe visée"]
 
   -
+    fct_name: diff_score
+    fct_summary: "Renvoie les points que vous allez gagner a la fin du tour"
+    fct_ret_type: int
+    fct_arg: []
+
+  -
     fct_name: chemin
     fct_summary: "Renvoie le chemin le plus court entre deux points (fonction lente)"
     fct_ret_type: position array

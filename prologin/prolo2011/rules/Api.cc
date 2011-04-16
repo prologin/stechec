@@ -284,6 +284,10 @@ void Api::teamSwitched()
 {
 }
 
+int Api::diff_score(){
+  return g_->apply_connections(false);
+}
+
 void Api::sendActions()
 {
 g_->send_actions();
