@@ -6,4 +6,5 @@ from django.views.generic import TemplateView
 urlpatterns = patterns('concours.stechec',
     url(r'^$', login_required(TemplateView.as_view(template_name='index.html')), name="index"),
     url(r'^login/$', auth_views.login, { 'template_name': 'login.html' }, name="login"),
+    url(r'^logout/$', auth_views.logout, { 'next_page': '/' }, name="logout"),
 )

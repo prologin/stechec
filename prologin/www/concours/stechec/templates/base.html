@@ -54,9 +54,9 @@
                 <h1>Mon compte</h1>
                 <ul>
                     {% if user.is_authenticated %}
-                    <li><a href="/logout/">Déconnexion</a></li>
+                    <li><a href="{% url logout %}">Déconnexion</a></li>
                     {% else %}
-                    <li><a href="/login/">Connexion</a></li>
+                    <li><a href="{% url login %}">Connexion</a></li>
                     {% endif %}
                 </ul>
             </div>
