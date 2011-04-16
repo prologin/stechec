@@ -1,18 +1,27 @@
 #include "prologin.hh"
 
+#include <cstdlib>
+#include <fstream>
 #include <iostream>
+#include <string>
+
+static std::ofstream fs;
 
 void init_game()
 {
-    std::cerr << "Dumper: init" << std::endl;
+    std::string path = "dump.json";
+    if (getenv("DUMP_PATH"))
+        path = getenv("DUMP_PATH");
+
+    fs.open(path.c_str());
 }
 
 void jouer()
 {
-    std::cerr << "Dumper: jouer" << std::endl;
+    // TODO
 }
 
 void end_game()
 {
-    std::cerr << "Dumper: end" << std::endl;
+    fs.close();
 }
