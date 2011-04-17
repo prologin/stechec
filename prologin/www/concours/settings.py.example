@@ -145,3 +145,6 @@ LOGGING = {
         },
     }
 }
+
+STECHEC_ROOT = "/srv/stechec"
+STECHEC_CONTEST = "tron"

@@ -9,5 +9,6 @@ urlpatterns = patterns('concours.stechec',
     url(r'^login/$', auth_views.login, { 'template_name': 'login.html' }, name="login"),
     url(r'^logout/$', auth_views.logout, { 'next_page': '/' }, name="logout"),
 
-    url(r'^champions/all/$', views.AllChampionsView.as_view(), name="all_champions"),
+    url(r'^champions/(?P<pk>\d+)/$', views.ChampionView.as_view(), name="champion-detail"),
+    url(r'^champions/all/$', views.AllChampionsView.as_view(), name="champions-all"),
 )

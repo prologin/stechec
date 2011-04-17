@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 from django.contrib.auth import models as auth
+from django.core.urlresolvers import reverse
 from django.db import models
+
+import os.path
 
 class Map(models.Model):
     author = models.ForeignKey(auth.User, verbose_name="auteur")
@@ -29,8 +33,23 @@ class Champion(models.Model):
     name = models.CharField("nom", max_length=100)
     author = models.ForeignKey(auth.User, verbose_name="auteur")
     status = models.CharField("statut", choices=STATUS_CHOICES,
-                              max_length=100)
+                              max_length=100, default="new")
+    deleted = models.BooleanField("supprimé", default=False)
+    comment = models.TextField("commentaire")
     ts = models.DateTimeField("date", auto_now_add=True)
+
+    @property
+    def compilation_log(self):
+        contest_dir = os.path.join(settings.STECHEC_ROOT, settings.STECHEC_CONTEST)
+        champions_dir = os.path.join(contest_dir, "champions")
+        this_dir = os.path.join(champions_dir, self.author.username, str(self.id))
+        try:
+            return open(os.path.join(this_dir, "compilation.log")).read().decode('iso-8859-15')
+        except Exception, e:
+            return str(e)
+
+    def get_absolute_url(self):
+        return reverse('champion-detail', kwargs={'pk': self.id})
 
     def __unicode__(self):
         return u"%s, de %s" % (self.name, self.author)
@@ -76,7 +95,8 @@ class Match(models.Model):
     )
 
     author = models.ForeignKey(auth.User, verbose_name="lancé par")
-    status = models.CharField("statut", choices=STATUS_CHOICES, max_length=100)
+    status = models.CharField("statut", choices=STATUS_CHOICES, max_length=100,
+                              default="creating")
     tournament = models.ForeignKey(Tournament, verbose_name="tournoi",
                                    null=True, blank=True)
     players = models.ManyToManyField(Champion, verbose_name="participants",
