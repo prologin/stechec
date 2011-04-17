@@ -27,6 +27,7 @@ typedef enum type_case {
   BONUS, /* <- cette case cotient un bonus */
   POINT_CROISEMENT, /* <- point de croisement de traînées */
   SOURCE, /* <- source ou consommateur d'energie */
+  TRAINEE, /* <- une trainée de moto */
 } type_case;
 
 
@@ -117,6 +118,11 @@ extern "C" type_bonus api_regarder_type_bonus(position pos);
 extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
 
 ///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+extern "C" std::vector<position> api_chemin(position p1, position p2);
+
+///
 // Déplace une moto
 //
 extern "C" erreur api_deplacer(int id, position de, position vers);
@@ -205,28 +211,4 @@ extern "C" void jouer();
 // Fonction appellée à la fin de la partie
 //
 extern "C" void end_game();
-
-///
-// Affiche le contenu d'une valeur de type erreur
-//
-
-///
-// Affiche le contenu d'une valeur de type type_case
-//
-
-///
-// Affiche le contenu d'une valeur de type type_bonus
-//
-
-///
-// Affiche le contenu d'une valeur de type position
-//
-
-///
-// Affiche le contenu d'une valeur de type source_energie
-//
-
-///
-// Affiche le contenu d'une valeur de type trainee_moto
-//
 

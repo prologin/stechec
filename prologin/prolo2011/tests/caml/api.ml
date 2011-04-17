@@ -30,6 +30,11 @@ let taille_trainee = 900
 let max_allongement = 5
 
 (*
+** Nombre de points d'action à rajouter avec bonus
+*)
+let ajout_pa = 5
+
+(*
 ** Énumération représentant une erreur renvoyée par une des fonctions d'action
 *)
 type erreur =
@@ -49,6 +54,8 @@ type type_case =
 | Obstacle (* <- cette case est inaccessible *)
 | Bonus (* <- cette case cotient un bonus *)
 | Point_croisement (* <- point de croisement de traînées *)
+| Source (* <- source ou consommateur d'energie *)
+| Trainee (* <- une trainée de moto *)
 
 
 (*
@@ -121,6 +128,10 @@ external regarder_type_bonus : position -> type_bonus = "ml_regarder_type_bonus"
 ** Retourne la liste des bonus d'une équipe
 *)
 external regarder_bonus : int -> type_bonus array = "ml_regarder_bonus"
+(*
+** Renvoie le chemin le plus court entre deux points (fonction lente)
+*)
+external chemin : position -> position -> position array = "ml_chemin"
 (*
 ** Déplace une moto
 *)

@@ -89,6 +89,7 @@ std::string convert_to_string(type_case in){
     case OBSTACLE: return "\"obstacle\"";
     case BONUS: return "\"bonus\"";
     case POINT_CROISEMENT: return "\"point_croisement\"";
+  case TRAINEE: return "\"trainee\"";
   }
   return "bad value";
 }
@@ -386,6 +387,7 @@ std::ostream& operator<<(std::ostream& os, type_case v)
   case OBSTACLE: os << "OBSTACLE"; break;
   case BONUS: os << "BONUS"; break;
   case POINT_CROISEMENT: os << "POINT_CROISEMENT"; break;
+  case TRAINEE: os << "TRAINEE"; break;
   }
   return os;
 }

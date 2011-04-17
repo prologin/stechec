@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 # This file has been generated, if you wish to
 # modify it in a permanent way, please refer
 # to the script file : gen/generator_ruby.rb
@@ -17,6 +16,9 @@ TAILLE_TRAINEE = 900
 
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5
+
+# Nombre de points d'action à rajouter avec bonus
+AJOUT_PA = 5
 
 # Représente une position sur le terrain du jeu
 class Position

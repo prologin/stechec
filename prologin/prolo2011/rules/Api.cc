@@ -122,6 +122,9 @@ type_case Api::regarder_type_case(position pos)
     if (position_invalide(pos.x, pos.y))
 	return (OBSTACLE);
     Case &c = g_->get_case(pos);
+    if (c.nb_trainees_moto != 0){
+      return TRAINEE;
+    }
     return (c.type);
 }
 

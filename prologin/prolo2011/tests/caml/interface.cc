@@ -317,6 +317,16 @@ extern "C" value ml_regarder_bonus(value equipe)
 }
 
 ///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+extern "C" value ml_chemin(value p1, value p2)
+{
+  CAMLparam0();
+  CAMLxparam2(p1, p2);
+  CAMLreturn((cxx2lang_array<position>(api_chemin(lang2cxx<value, position>(p1), lang2cxx<value, position>(p2)))));
+}
+
+///
 // Déplace une moto
 //
 extern "C" value ml_deplacer(value id, value de, value vers)
@@ -516,28 +526,4 @@ void end_game()
   CAMLreturn0;
 }
 
-
-///
-// Affiche le contenu d'une valeur de type erreur
-//
-
-///
-// Affiche le contenu d'une valeur de type type_case
-//
-
-///
-// Affiche le contenu d'une valeur de type type_bonus
-//
-
-///
-// Affiche le contenu d'une valeur de type position
-//
-
-///
-// Affiche le contenu d'une valeur de type source_energie
-//
-
-///
-// Affiche le contenu d'une valeur de type trainee_moto
-//
 

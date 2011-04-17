@@ -11,7 +11,7 @@ end
 def jouer()
   ma_team = mon_equipe();
   puts "equipe : #{ma_team}"
-
+  sources = sources_energie
   for y in (0 .. TAILLE_TERRAIN - 1) do
     for x in (0 .. TAILLE_TERRAIN - 1) do
       p = Position.new(x, y);
@@ -25,11 +25,22 @@ def jouer()
       elsif c == "point_croisement" then
         str = "+"
       elsif c == "source" then
-        str = "!"
+        for s in sources
+          if s.pos.x == p.x && s.pos.y == p.y
+            if s.coef > 0
+              str = "^"
+            else
+              str = "v"
+            end
+          end
+        end
+      elsif c == "trainee" then
+        str = "@"
       else
         str = "==#{c}=="
       end
       print str;
+      # print ( chemin(p, Position.new(25, 25) ).size / 10)
     end
     puts
   end
