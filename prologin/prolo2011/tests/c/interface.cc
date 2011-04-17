@@ -158,6 +158,7 @@ __internal__cxx__trainee_moto out;
 out.id = lang2cxx<int, int>(in.id);
 lang2cxx_array<position, __internal__cxx__position>(in.emplacement_arr, in.emplacement_len, out.emplacement);
 out.team = lang2cxx<int, int>(in.team);
+out.len = lang2cxx<int, int>(in.len);
  return out;
 }
 template<>
@@ -166,6 +167,7 @@ trainee_moto out;
 out.id = cxx2lang<int, int>(in.id);
 cxx2lang_array<position, __internal__cxx__position>(&out.emplacement_arr, &out.emplacement_len, in.emplacement);
 out.team = cxx2lang<int, int>(in.team);
+out.len = cxx2lang<int, int>(in.len);
  return out;
 }
 
@@ -261,6 +263,28 @@ void regarder_bonus(int equipe, type_bonus** ret_arr, size_t* ret_len)
   int param_equipe = lang2cxx<int, int>(equipe);
   _retval = api_regarder_bonus(param_equipe);
   cxx2lang_array<type_bonus, type_bonus>(ret_arr, ret_len, _retval);
+}
+
+///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+int diff_score(void)
+{
+  int _retval;
+  _retval = api_diff_score();
+  return cxx2lang<int, int>(_retval);
+}
+
+///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+void chemin(position p1, position p2, position** ret_arr, size_t* ret_len)
+{
+  std::vector<__internal__cxx__position> _retval;
+  __internal__cxx__position param_p1 = lang2cxx<position, __internal__cxx__position>(p1);
+  __internal__cxx__position param_p2 = lang2cxx<position, __internal__cxx__position>(p2);
+  _retval = api_chemin(param_p1, param_p2);
+  cxx2lang_array<position, __internal__cxx__position>(ret_arr, ret_len, _retval);
 }
 
 ///

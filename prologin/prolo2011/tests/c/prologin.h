@@ -9,7 +9,7 @@ typedef char * charp;
 /*!
 ** Taille du terrain
 */
-# define TAILLE_TERRAIN            50
+# define TAILLE_TERRAIN            30
 
 /*!
 ** Nombre de tours par partie
@@ -24,12 +24,17 @@ typedef char * charp;
 /*!
 ** Taille des traînées de moto
 */
-# define TAILLE_TRAINEE            900
+# define TAILLE_TRAINEE            120
 
 /*!
 ** Longueur maximale de l'allongement
 */
 # define MAX_ALLONGEMENT           5
+
+/*!
+** Nombre de points d'action à rajouter avec bonus
+*/
+# define AJOUT_PA                  5
 
 /*!
 ** Énumération représentant une erreur renvoyée par une des fonctions d'action
@@ -52,6 +57,9 @@ typedef enum type_case {
   OBSTACLE, /* <- cette case est inaccessible */
   BONUS, /* <- cette case cotient un bonus */
   POINT_CROISEMENT, /* <- point de croisement de traînées */
+  SOURCE, /* <- source ou consommateur d'energie */
+  TRAINEE, /* <- une trainée de moto */
+  TRAINEE_ET_CROISEMENT, /* <- une trainee sur un point de croisement */
 } type_case;
 
 
@@ -94,6 +102,7 @@ typedef struct trainee_moto {
   size_t emplacement_len;
   position *emplacement_arr;  /* <- position de chaque composant de la traînée de moto */
   int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
+  int len;  /* <- la taille maximale de la trainee */
 } trainee_moto;
 
 
@@ -141,6 +150,16 @@ type_bonus regarder_type_bonus(position pos);
 ** Retourne la liste des bonus d'une équipe
 */
 void regarder_bonus(int equipe, type_bonus** ret_arr, size_t* ret_len);
+
+/*!
+** Renvoie les points que vous allez gagner a la fin du tour
+*/
+int diff_score(void);
+
+/*!
+** Renvoie le chemin le plus court entre deux points (fonction lente)
+*/
+void chemin(position p1, position p2, position** ret_arr, size_t* ret_len);
 
 /*!
 ** Déplace une moto
@@ -231,28 +250,4 @@ void jouer(void);
 ** Fonction appellée à la fin de la partie
 */
 void end_game(void);
-
-/*!
-** Affiche le contenu d'une valeur de type erreur
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type type_case
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type type_bonus
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type position
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type source_energie
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type trainee_moto
-*/
 

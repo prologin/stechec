@@ -12,7 +12,7 @@ let taille_terrain = 30
 (*
 ** Nombre de tours par partie
 *)
-let fin_partie = 150
+let fin_partie = 1500
 
 (*
 ** Nombre de points d'action par tour
@@ -91,6 +91,7 @@ type trainee_moto = {
   id : int ; (* <- identifiant de la traînee *)
   emplacement : position array ; (* <- position de chaque composant de la traînée de moto *)
   team : int ; (* <- identifiant de l'équipe qui possède cette traînée de moto *)
+  len : int ; (* <- la taille maximale de la trainee *)
 }
 
 (*

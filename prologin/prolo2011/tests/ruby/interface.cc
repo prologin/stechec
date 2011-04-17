@@ -273,13 +273,15 @@ trainee_moto lang2cxx<trainee_moto>(VALUE in)
   out.emplacement = lang2cxx_array<position>(emplacement);
   VALUE team = rb_iv_get(in, (char *) "@team");
   out.team = lang2cxx<int>(team);
+  VALUE len = rb_iv_get(in, (char *) "@len");
+  out.len = lang2cxx<int>(len);
   return out;
 }
 template<>
 VALUE cxx2lang<trainee_moto>(trainee_moto in)
 {
-  VALUE argv[] = {cxx2lang<int>(in.id), cxx2lang_array<position>(in.emplacement), cxx2lang<int>(in.team)};
-  int argc = 3;
+  VALUE argv[] = {cxx2lang<int>(in.id), cxx2lang_array<position>(in.emplacement), cxx2lang<int>(in.team), cxx2lang<int>(in.len)};
+  int argc = 4;
   VALUE out = rb_funcall2(rb_path2class( (char *) "Trainee_moto"), rb_intern( (char *) "new"), argc, argv);
   return out;
 }

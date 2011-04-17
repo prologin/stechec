@@ -208,10 +208,11 @@ value cxx2lang<value, trainee_moto>(trainee_moto in)
 {
   CAMLparam0();
   CAMLlocal1(out);
-  out = caml_alloc(3, 0);
+  out = caml_alloc(4, 0);
   caml_initialize(&Field(out, 0), cxx2lang<value, int>(in.id));
   caml_initialize(&Field(out, 1), cxx2lang_array(in.emplacement));
   caml_initialize(&Field(out, 2), cxx2lang<value, int>(in.team));
+  caml_initialize(&Field(out, 3), cxx2lang<value, int>(in.len));
   CAMLreturn(out);
 }
 
@@ -223,6 +224,7 @@ trainee_moto lang2cxx<value, trainee_moto>(value in)
   out.id = lang2cxx<value, int>(Field(in, 0));
   out.emplacement = lang2cxx_array<position>(Field(in, 1));
   out.team = lang2cxx<value, int>(Field(in, 2));
+  out.len = lang2cxx<value, int>(Field(in, 3));
   CAMLreturnT(trainee_moto, out);
 }
 

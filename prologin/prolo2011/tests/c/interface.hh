@@ -41,6 +41,7 @@ typedef struct __internal__cxx__trainee_moto {
   int id; 
   std::vector<__internal__cxx__position> emplacement;
   int team; 
+  int len; 
 } __internal__cxx__trainee_moto;
 
 
@@ -88,6 +89,16 @@ extern "C" type_bonus api_regarder_type_bonus(__internal__cxx__position pos);
 // Retourne la liste des bonus d'une équipe
 //
 extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
+
+///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+extern "C" int api_diff_score();
+
+///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+extern "C" std::vector<__internal__cxx__position> api_chemin(__internal__cxx__position p1, __internal__cxx__position p2);
 
 ///
 // Déplace une moto

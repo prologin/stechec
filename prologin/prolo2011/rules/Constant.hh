@@ -110,6 +110,7 @@ typedef struct trainee_moto {
   int id;  /* <- identifiant de la traînee */
   std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
   int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
+  int len;
 } trainee_moto;
 
 

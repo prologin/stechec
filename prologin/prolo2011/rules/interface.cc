@@ -467,6 +467,8 @@ std::ostream& operator<<(std::ostream& os, trainee_moto v)
   os << "{ ";
   os << "id" << "=" << v.id;
   os << ", ";
+  os << "len" << "=" << v.len;
+  os << ", ";
   os << "emplacement" << "=" << v.emplacement;
   os << ", ";
   os << "team" << "=" << v.team;
