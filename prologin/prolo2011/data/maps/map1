@@ -3,23 +3,33 @@
 -100
 -100
 100
-XXXXXXXXXXXXXXXXXXXX
-X1                 X
-X                  X
-X                  X
-X                  X
-X    XX      XX    X
-XXXXXX        X    X
-X  ! X        X    X
-X    X        X    X
-X    X        X    X
-X    X        X    X
-X    X        X    X
-X    X        X !! X
-X    X        XXXXXX
-X    XX      XX !  X
-X                  X
-X                  X
-X                  X
-X                 2X
-XXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+X1                           X
+X                            X
+X                            X
+X                            X
+X  !  XX              XX     X
+XXXXXXX                X     X
+X  !  X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X  !  X
+X     X                XXXXXXX
+X     XX              XX  !  X
+X                            X
+X                            X
+X                            X
+X                           2X
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

@@ -18,7 +18,7 @@
 ///
 // Taille du terrain
 //
-# define TAILLE_TERRAIN            20
+# define TAILLE_TERRAIN            30
 
 ///
 // Nombre de tours avant la fin de la partie
@@ -33,7 +33,7 @@
 ///
 // Taille des traînées de moto
 //
-# define TAILLE_TRAINEE            80
+# define TAILLE_TRAINEE            120
 
 ///
 // Longueur maximale de l'allongement

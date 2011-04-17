@@ -7,12 +7,12 @@
 (*
 ** Taille du terrain
 *)
-let taille_terrain = 50
+let taille_terrain = 30
 
 (*
 ** Nombre de tours par partie
 *)
-let fin_partie = 1500
+let fin_partie = 150
 
 (*
 ** Nombre de points d'action par tour
@@ -22,7 +22,7 @@ let max_pa = 3
 (*
 ** Taille des traînées de moto
 *)
-let taille_trainee = 900
+let taille_trainee = 120
 
 (*
 ** Longueur maximale de l'allongement

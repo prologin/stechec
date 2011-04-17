@@ -9,7 +9,7 @@ constant:
   - doc_extra: \subsection{Constantes}
   -
     cst_name: TAILLE_TERRAIN
-    cst_val: 20
+    cst_val: 30
     cst_comment: Taille du terrain
   -
     cst_name: FIN_PARTIE
@@ -21,7 +21,7 @@ constant:
     cst_comment: "Nombre de points d'action par tour"
   -
     cst_name: TAILLE_TRAINEE
-    cst_val: 80
+    cst_val: 120
     cst_comment: Taille des traînées de moto
   -
     cst_name: MAX_ALLONGEMENT

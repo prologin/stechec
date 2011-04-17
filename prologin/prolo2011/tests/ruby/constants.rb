@@ -4,16 +4,16 @@
 # to the script file : gen/generator_ruby.rb
 
 # Taille du terrain
-TAILLE_TERRAIN = 20
+TAILLE_TERRAIN = 30
 
 # Nombre de tours par partie
-FIN_PARTIE = 1500
+FIN_PARTIE = 150
 
 # Nombre de points d'action par tour
 MAX_PA = 3
 
 # Taille des traînées de moto
-TAILLE_TRAINEE =80
+TAILLE_TRAINEE =120
 
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5
