@@ -18,7 +18,7 @@
                 <h1>Champions</h1>
                 <ul>
                     {% if user.is_authenticated %}
-                    <li><a href="/champions/my/">Mes champions</a></li>
+                    <li><a href="{% url champions-my %}">Mes champions</a></li>
                     <li><a href="/champions/upload/">Envoyer un champion</a></li>
                     {% endif %}
                     <li><a href="{% url champions-all %}">Tous les champions</a></li>

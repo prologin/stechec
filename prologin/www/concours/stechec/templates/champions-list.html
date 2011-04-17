@@ -5,7 +5,7 @@
 
 {% block "content" %}
 
-<p class="intro">Voici la liste de tous les champions participants actuellement.</p>
+<p class="intro">{{ explanation_text }}</p>
 
 {% if is_paginated %}{% load paginator %}{% paginator 5 %}{% endif %}
 

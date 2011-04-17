@@ -11,4 +11,5 @@ urlpatterns = patterns('concours.stechec',
 
     url(r'^champions/(?P<pk>\d+)/$', views.ChampionView.as_view(), name="champion-detail"),
     url(r'^champions/all/$', views.AllChampionsView.as_view(), name="champions-all"),
+    url(r'^champions/my/$', views.MyChampionsView.as_view(), name="champions-my"),
 )
