@@ -39,10 +39,14 @@ class Champion(models.Model):
     ts = models.DateTimeField("date", auto_now_add=True)
 
     @property
-    def compilation_log(self):
+    def directory(self):
         contest_dir = os.path.join(settings.STECHEC_ROOT, settings.STECHEC_CONTEST)
         champions_dir = os.path.join(contest_dir, "champions")
-        this_dir = os.path.join(champions_dir, self.author.username, str(self.id))
+        return os.path.join(champions_dir, self.author.username, str(self.id))
+
+    @property
+    def compilation_log(self):
+        this_dir = self.directory
         try:
             return open(os.path.join(this_dir, "compilation.log")).read().decode('iso-8859-15')
         except Exception, e:
