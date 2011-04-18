@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 import os.path
+import xmlrpclib
 
 class Map(models.Model):
     author = models.ForeignKey(auth.User, verbose_name="auteur")
@@ -152,3 +153,7 @@ class MatchPlayer(models.Model):
         ordering = ["-match"]
         verbose_name = "participant à un match"
         verbose_name_plural = "participants à un match"
+
+def master_status():
+    rpc = xmlrpclib.ServerProxy(settings.STECHEC_MASTER)
+    return rpc.status()

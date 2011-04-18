@@ -71,3 +71,10 @@ def new_champion(request):
 
     return render_to_response('champion-new.html', {'form': form},
                               context_instance=RequestContext(request))
+
+def master_status(request):
+    status = models.master_status()
+    status = [(h, p, (100 * (m - s)) / m) for (h, p, s, m) in status]
+    status.sort()
+    return render_to_response('master-status.html', {'status': status},
+                              context_instance=RequestContext(request))

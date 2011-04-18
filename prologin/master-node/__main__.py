@@ -60,6 +60,13 @@ class MasterNode(object):
         self.dbwatcher = gevent.spawn(self.dbwatcher_task)
         self.dispatcher = gevent.spawn(self.dispatcher_task)
 
+    @property
+    def status(self):
+        d = []
+        for (host, port), w in self.workers.iteritems():
+            d.append((host, port, w.slots, w.max_slots))
+        return d
+
     def update_worker(self, worker):
         hostname, port, slots, max_slots = worker
         key = hostname, port
@@ -296,6 +303,9 @@ class MasterNodeProxy(object):
         self.master.update_worker(worker)
         self.master.client_done(worker, mpid)
         return True
+
+    def status(self):
+        return self.master.status
 
 if __name__ == '__main__':
     parser = optparse.OptionParser()
