@@ -29,7 +29,7 @@
             <td>{{ match.get_status_display }}</td>
             {% if show_creator %}<td>{{ match.author }}</td>{% endif %}
             <td>{{ match.map }}</td>
-            <td><a href="#">Détails</a></td>
+            <td><a href="{{ match.get_absolute_url }}">Détails</a></td>
         </tr>
         {% empty %}
         <tr>

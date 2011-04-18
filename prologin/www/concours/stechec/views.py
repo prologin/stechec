@@ -3,6 +3,7 @@
 from concours.stechec import forms
 from concours.stechec import models
 from django.conf import settings
+from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -60,6 +61,11 @@ class MatchesListView(ListView):
         context['explanation_text'] = self.explanation_text
         context['show_creator'] = self.show_creator
         return context
+
+class MatchView(DetailView):
+    context_object_name = "match"
+    template_name = "match-detail.html"
+    queryset = models.Match.objects.annotate(Max('matchplayer__score')).annotate(Min('matchplayer__id'))
 
 class AllMatchesView(MatchesListView):
     queryset = models.Match.objects.all()

@@ -6,7 +6,12 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 import os.path
+import re
 import xmlrpclib
+
+stripper_re = re.compile(r'\033\[.*?m')
+def strip_ansi_codes(t):
+    return stripper_re.sub('', t)
 
 class Map(models.Model):
     author = models.ForeignKey(auth.User, verbose_name="auteur")
@@ -110,6 +115,23 @@ class Match(models.Model):
     ts = models.DateTimeField("date", auto_now_add=True)
 
     @property
+    def directory(self):
+        contest_dir = os.path.join(settings.STECHEC_ROOT, settings.STECHEC_CONTEST)
+        matches_dir = os.path.join(contest_dir, "matches")
+        hi_id = "%03d" % (self.id / 1000)
+        low_id = "%03d" % (self.id % 1000)
+        return os.path.join(matches_dir, hi_id, low_id)
+
+    @property
+    def log(self):
+        log_path = os.path.join(self.directory, "server.log")
+        try:
+            t = open(log_path).read().decode('iso-8859-15')
+            return strip_ansi_codes(t)
+        except Exception, e:
+            return str(e)
+
+    @property
     def options_dict(self):
         opts = {}
         for line in self.options.split('\n'):
@@ -133,6 +155,13 @@ class Match(models.Model):
         d['map'] = value
         self.options_dict = d
 
+    @property
+    def is_done(self):
+        return self.status == 'done'
+
+    def get_absolute_url(self):
+        return reverse('match-detail', kwargs={'pk': self.id})
+
     def __unicode__(self):
         return u"%s (par %s)" % (self.ts, self.author)
 
@@ -145,6 +174,15 @@ class MatchPlayer(models.Model):
     champion = models.ForeignKey(Champion, verbose_name="champion")
     match = models.ForeignKey(Match, verbose_name="match")
     score = models.IntegerField("score", default=0)
+
+    @property
+    def log(self):
+        filename = "log-champ-%d-%d.log" % (self.id, self.champion.id)
+        try:
+            t = open(os.path.join(self.match.directory, filename)).read().decode('iso-8859-15')
+            return strip_ansi_codes(t)
+        except Exception, e:
+            return str(e)
 
     def __unicode__(self):
         return u"%s pour match %s" % (self.champion, self.match)
