@@ -380,13 +380,12 @@ position InternalTraineeMoto::queue(position head__)
 {
     LOG4("trainee_moto queue");
     if (begin(head__))
-	return head();
-    else if (end(head__))
 	return queue();
+    else if (end(head__))
+	return head();
     else
     {
-	position p = {0, 0};
-	return p;
+      abort();
     }
 }
 

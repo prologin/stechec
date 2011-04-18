@@ -111,14 +111,17 @@ void ActionDeplacer::annuler(GameData* g)
     else if (old_len_ == moto.len_ - 1)
     {
 	moto.len_ --;
-	if (last_end_moved_)
-	    moto.content_.pop_front();
-	else
-	    moto.content_.pop_back();
+	//g->get_case(to_).nb_trainees_moto -= 1;
+	if (moto.last_end_moved_){
+	  g->get_case(moto.content_.back()).nb_trainees_moto -= 1;
+	  moto.content_.pop_back();
+	}else{
+	  g->get_case(moto.content_.front()).nb_trainees_moto -= 1;
+	  moto.content_.pop_front();
+	}
     }
     else
 	abort();
-    // TODO len : supprimer le debut si la taille a augmentee
     moto.last_end_moved_ = last_end_moved_;
     g->get_case(to_).bonus = taken_bonus_;
 }
