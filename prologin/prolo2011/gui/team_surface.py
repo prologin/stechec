@@ -8,7 +8,7 @@ import images
 import surface
 
 class TeamSurface(surface.Surface):
-    SIZE = (80 * 2 + 3 * 8, 200)
+    SIZE = (80 * 2 + 3 * 8, 250)
 
     def __init__(self, position):
         surface.Surface.__init__(self, position + TeamSurface.SIZE)
@@ -16,6 +16,7 @@ class TeamSurface(surface.Surface):
         self.imgs = images.load_pix()
 
         self.font = pygame.font.Font(paths.get_font('font.ttf'), 12)
+        self.font2 = pygame.font.Font(paths.get_font('font.ttf'), 10)
 
     def get_score(self, score):
         text = self.font.render(str(score), True, (255, 255, 255))
@@ -96,3 +97,13 @@ class TeamSurface(surface.Surface):
                                    bonus_stat['bonus_croisement'])
             self.surface.blit(bonus, (hshift, vshift))
             vshift += bonus.get_size()[1]
+
+        vshift += 32
+        but = self.make_button('H', self.font2)
+        self.surface.blit(but, (8, vshift))
+        text = self.font2.render(u'Afficher/Cacher l’aide', True, (255, 255, 255))
+        pos = (
+            40,
+            vshift + (but.get_size()[1] - text.get_size()[1]) / 2
+            )
+        self.surface.blit(text, pos)

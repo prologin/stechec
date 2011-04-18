@@ -8,11 +8,18 @@ import game
 import images
 import surface
 
+def get_dim(taille):
+    imgp = images.load_props()
+    vshift = imgp['vshift']
+    tile_size = imgp['tile_size']
+    return (taille * tile_size[0],
+            vshift + taille * tile_size[1])
+
 class FieldSurface(surface.Surface):
     BACKGROUND_COLOR = (0, 0, 0)
     GRID_COLOR = (32, 48, 64)
 
-    def __init__(self, position):
+    def __init__(self, position, detail):
         self.img_props = imgp = images.load_props()
 
         vshift = imgp['vshift']
@@ -23,6 +30,7 @@ class FieldSurface(surface.Surface):
         surface.Surface.__init__(self, position + size)
         self.imgs = images.load_pix()
         self.grid_surface = self.get_grid()
+        self.detail = detail
 
     def get_grid(self):
         imgp = self.img_props
@@ -49,6 +57,8 @@ class FieldSurface(surface.Surface):
         pos = (x, y)
         ground = self.game_state.ground[pos]
         bonus = self.game_state.bonusgrid[pos]
+        obj = self.game_state.objgrid[pos]
+        self.detail.update_pos(ground, bonus, obj)
 
     def update_field(self, game_state):
         self.game_state = game_state

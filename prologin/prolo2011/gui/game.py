@@ -66,12 +66,13 @@ class Team:
         return result
 
 class Source:
-    def __init__(self, position, capacite, capacite_max, grid):
+    def __init__(self, position, capacite, capacite_max, id, grid):
+        self.id = id
         self.position = position
         self.capacite = capacite
         self.capacite_max = capacite_max
         self.grid = grid
-        grid[position] = self
+        grid[position].append(self)
 
     def connections_lookup(self):
         result = set()
@@ -85,12 +86,13 @@ class Source:
         return result
 
 class Moto:
-    def __init__(self, team, nodes, grid):
+    def __init__(self, team, nodes, id, grid):
+        self.id = id
         self.team = team
         self.nodes = nodes
         self.grid = grid
         for pos in nodes:
-            self.grid[pos] = self
+            self.grid[pos].append(self)
 
     def patterns(self):
         if len(self.nodes) == 1:
@@ -155,13 +157,15 @@ class GameState:
 
         self.ground = Grid(lambda x: VIDE)
         self.bonusgrid = Grid(regarder_type_bonus)
-        self.objgrid = Grid(lambda x: None)
+        self.objgrid = Grid(lambda x: [])
         self.motos = [
-                Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement], self.objgrid)
+                Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement],
+                     m.id, self.objgrid)
                 for m in trainees_moto()
                 ]
         self.sources = [Source((s.pos.x, s.pos.y),
                                s.capacite, s.capacite_max,
+                               s.id,
                                self.objgrid)
                         for s in sources_energie()]
 

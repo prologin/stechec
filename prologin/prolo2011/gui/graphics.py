@@ -10,9 +10,13 @@ from api import *
 import game
 import images
 import surface
+
+import field_surface
 from field_surface import FieldSurface
 from team_surface import TeamSurface
 from state_surface import StateSurface
+from detail_surface import DetailSurface
+from help_surface import HelpSurface
 
 class State:
     TURN_FPS = 1
@@ -21,6 +25,10 @@ class State:
         self.looping = False
         self.ticks = 0
         self.loop_delay = 1000 / State.TURN_FPS
+        self.help = False
+
+    def switch_help(self):
+        self.help = not self.help
 
     def switch_looping(self):
         self.looping = not self.looping
@@ -74,13 +82,20 @@ class Graphics:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
-            elif event.type == pygame.KEYDOWN:
+            if self.state.help:
+                if event.type == pygame.KEYDOWN \
+                        and event.key == pygame.K_h:
+                    self.state.switch_help()
+                continue
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.state.switch_looping()
                 elif not self.state.looping and event.key == pygame.K_n:
                     self.go_next_turn()
+                elif event.key == pygame.K_h:
+                    self.state.switch_help()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.field_surf.click(event.pos)
+                self.field_surf.click(pygame.mouse.get_pos())
         return True
 
     def go_next_turn(self):
@@ -91,7 +106,7 @@ class Graphics:
         if self.state_reader.is_ended():
             return
 
-        if self.state.check_loop():
+        if not self.state.help and self.state.check_loop():
             self.go_next_turn()
 
         game_state = self.state_reader.get_next_state()
@@ -106,28 +121,38 @@ class Graphics:
         self.field_surf.blit(self.screen)
         self.team_surf.blit(self.screen)
         self.state_surf.blit(self.screen)
+        self.detail_surf.blit(self.screen)
+        if self.state.help:
+            self.help_surf.blit(self.screen)
         pygame.display.flip()
 
     def init(self):
         # Pygame initialization
         pygame.init()
         flags = pygame.DOUBLEBUF | pygame.HWSURFACE
-        screen_dim = (1, 1)
+        (w, h) = field_surface.get_dim(TAILLE_TERRAIN)
+        screen_dim = (TeamSurface.SIZE[0] + w, h)
         # This first instance is used to format new surfaces
         self.screen = pygame.display.set_mode(screen_dim, flags)
 
         self.clock = pygame.time.Clock()
-        self.field_surf = FieldSurface((0, 0))
+        self.detail_surf = DetailSurface((0, 0), 1)
+        self.field_surf = FieldSurface((0, 0), self.detail_surf)
         self.team_surf = TeamSurface((self.field_surf.size[0], 16))
         self.state_surf = StateSurface(
             (self.team_surf.position[0],
              self.team_surf.position[1] + self.team_surf.size[1]
             ), self.team_surf.size[0])
+        self.detail_surf.set_position((self.team_surf.position[0],
+                                       self.state_surf.position[1]
+                                       + self.state_surf.size[1]))
+        self.detail_surf.set_size((self.team_surf.size[0],
+                                  DetailSurface.HEIGHT))
+        self.help_surf = HelpSurface(screen_dim)
         screen_dim = (
             self.team_surf.position[0] + self.team_surf.size[0],
             self.field_surf.size[1]
             )
-        self.screen = pygame.display.set_mode(screen_dim, flags)
 
     def release(self):
         pygame.quit()

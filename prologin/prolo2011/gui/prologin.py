@@ -3,9 +3,10 @@
 # modify it in a permanent way, please refer
 # to the script file : gen/generator_python.rb
 
-from api import *
-
+import sys
 import threading
+
+from api import *
 
 import game
 import state_reader
