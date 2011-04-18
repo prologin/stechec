@@ -6,9 +6,29 @@
 
 open Api;;
 
-let debug = false
+let debug = true
 
 let ( |> ) f x = x f
+
+let annuler () = cancel ()
+
+let moto_by_id id =
+  let motos =
+    trainees_moto ()
+    |> Array.to_list
+    |> List.filter (fun m -> m.id == id)
+  in match motos with
+    | [] -> begin
+      Array.iter afficher_trainee_moto (trainees_moto ()) ;
+      Printf.printf "ID RECHERCHE = %i\n%!" id ;
+      failwith "pas de motos" end
+    | [x] -> x
+    | _ -> failwith "trop de motos"
+
+module Coefs = struct
+  let pas_cool = 0.02;
+end
+
 let unsome = function None -> assert false | Some x -> x
 let unsome_list xs = List.map (function None -> [] | Some x -> [x]) xs |> List.flatten
 let sum = List.fold_left ( +. ) 0.0
@@ -55,11 +75,31 @@ let reset_cache () =
 		snake_map.(x).(y) <- m.id :: snake_map.(x).(y)
 	) m.emplacement)
 
+let print_map () =
+    for y = 0 to taille_terrain - 1 do
+      for x = 0 to taille_terrain - 1 do
+      Printf.printf "%c%!" (match regarder_type_case (x, y) with
+	| Vide -> ' '
+	| Obstacle -> '#'
+	| Bonus -> '*'
+	| Point_croisement -> '+'
+	| Source -> 'o'
+	| Trainee | Trainee_et_croisement ->
+	  begin match snake_map.(x).(y) with
+	    | [] -> '?'
+	    | [x] -> (string_of_int x).[0]
+	    | _ -> 'S'
+	  end
+      )
+    done ;
+    Printf.printf "\n%!"
+  done
+
 module IdSet = Set.Make (struct type t = id_snake let compare = compare end)
 module PosSet = Set.Make (struct type t = position let compare = compare end)
 
-let sources_connected_with snake =
-  let snakes = trainees_moto () in
+let sources_snakes_connected_with snake =
+  let snakes = trainees_moto () |> Array.to_list |> List.filter (fun s -> s.team = snake.team) in
 (*
   let ss = sources_energie () in
 *)
@@ -69,9 +109,11 @@ let sources_connected_with snake =
   visited := IdSet.add snake.id !visited ;
   Queue.push snake.id stack ;
   while not (Queue.is_empty stack) do
+(*
 	Printf.printf "queue is running\n%!" ;
+*)
 	let snake_id = Queue.pop stack in
-	let sna = snakes.(snake_id) in
+	let sna = moto_by_id snake_id in
 	Array.iter (fun sna_pos ->
 		List.iter (fun ((x, y) as p) ->
 			match regarder_type_case p with
@@ -91,9 +133,13 @@ let sources_connected_with snake =
 		)
 		sna.emplacement
   done ;
+(*
   PosSet.iter (fun (x, y) -> Printf.printf " - sources at %i %i\n%!" x y) !sources ;
   Printf.printf "nb sources = %i\n%!" (PosSet.cardinal !sources) ;
-  !sources
+*)
+  !sources, !visited
+
+let sources_connected_with snake = fst (sources_snakes_connected_with snake)
 					
   
 let source_at_pos p =
@@ -116,6 +162,23 @@ let coeff_of_snake snake =
     result
   end
 
+let friends_of : trainee_moto -> (int * (int * int)) list = fun snake ->
+  let ignore_snakes = snd (sources_snakes_connected_with snake) in
+  let snakes = trainees_moto () |> Array.to_list |> List.filter (fun s -> s.team = snake.team) in
+  let snakes = List.fold_left (fun set s -> IdSet.add s.id set) IdSet.empty snakes in
+  let good_snakes = IdSet.diff snakes ignore_snakes |> IdSet.elements in
+  good_snakes
+  |> List.map (fun sid ->
+        let this_snake = moto_by_id sid in
+        let this_score = int_of_float (coeff_of_snake this_snake) in
+	List.map (fun p ->
+		List.map (fun p -> (this_score, p))
+			(dneighbours p))
+	(this_snake.emplacement |> Array.to_list))
+  |> List.flatten
+  |> List.flatten
+	
+
 let select_sources snake =
    let truc = sources_energie ()
    |> Array.fold_left (fun set s -> PosSet.add s.pos set) PosSet.empty
@@ -126,28 +189,34 @@ let select_sources snake =
 *)
    |> List.map (fun p ->
         let s = source_at_pos p in
-        List.map (fun pos -> s.coef, pos) (dneighbours s.pos)) 
+        List.map (fun pos -> s.coef, pos)
+		(dneighbours s.pos)) 
    |> List.flatten
+   |> List.append (friends_of snake)
    in
+(*
 	Printf.printf "select_sources # %i\n%!" (List.length truc) ;
+*)
 	truc
 
 let print_sources ss =
   List.iter (fun (coef, p) -> Printf.printf "   %i at %i %i\n%!" coef (fst p) (snd p)) ss
 
 let diffusion_at p sources =
+(*
   Printf.printf "diffusion_at has # %i\n%!" (List.length sources) ;
   print_sources sources ;
+*)
 let (pos, neg) as result =
   List.fold_left (fun (pos, neg) (coef, p') ->
     let d = dist p p' in
-    Printf.printf " d = %i \n%!" d ;
+    (* Printf.printf " d = %i \n%!" d ; *)
     if d = 0 && p <> p'
     then (pos, neg)
     else begin
-      Printf.printf "...\n%!" ;
-      let cost = float coef /. float (d + 1) in
-      Printf.printf " cost = %f\n%!" cost ;
+      let kfd = (d + 1) in
+      let cost = float coef /. float kfd in
+      (* Printf.printf " cost = %f\n%!" cost ; *)
       if coef < 0
       then (pos, neg -. cost)
       else (pos +. cost, neg)
@@ -155,7 +224,9 @@ let (pos, neg) as result =
     (0., 0.)
     sources
 in
+(*
   Printf.printf "and the best is %f, %f\n%!" pos neg ;
+*)
   result
 
 (*
@@ -171,10 +242,11 @@ let diffusing snake p sources =
 (*
  Printf.printf "coef = %f\n%!" coef ;
 *)
+ let pas_cool = Coefs.pas_cool /. ( abs_float coef) in
  if coef < 0.0
- then pos
+ then pos +. neg *. pas_cool
  else if coef > 0.0
- then neg
+ then neg +. pos *. pas_cool
  else neg +. pos
 (*  abs_float (pos +. neg +. coef) *)
 
@@ -234,39 +306,59 @@ let action () =  (* Pose ton code ici *)
 	|> List.flatten in
   let best_moves = unsome_list (List.map (fun (me, p) -> best_move me p) mes) in
   Printf.printf "best_moves # %i\n%!" (List.length best_moves) ;
+
+  let score_actuel = diff_score () in
+  let best_moves =
+    best_moves
+  |> List.filter (fun (id, p, p', _) ->
+    (* afficher_trainee_moto (moto_by_id id); *)
+      let erreur = deplacer id p p' in
+      Printf.printf "simulation : %a -> %a %!" print_position p print_position p' ;
+      (* afficher_trainee_moto (moto_by_id id); *)
+      match erreur with
+	| Ok ->
+      let new_score = diff_score () in
+(*
+      assert (new_score = 0) ;
+*)
+      annuler () ;
+(*      afficher_trainee_moto (moto_by_id id); *)
+      Printf.printf " act: %i, new:%i\n%!" score_actuel new_score ;
+      new_score >= score_actuel
+	| _ ->
+	  afficher_erreur erreur ;
+	  assert false
+) in
   let Some (id, p, p', score) = 
 	maximum_by (fun (id, p, p', score) -> score) best_moves
   in
+
+  match
+  	ts
+	|> List.map best_split
+	|> unsome_list
+	|> maximum_by (fun (score, _, _, _) -> score)
+  with
+  | Some (split_score, split_snake, split_p, split_p')
+    when split_score > score ->
+(*
+  in
  
-  if score = 0.0
+  if split_score > score
   then begin
-	let Some (score, snake, p, p') =
-		ts
-		|> List.map best_split
-		|> unsome_list
-		|> maximum_by (fun (score, _, _, _) -> score)
-	in
+*)
 (*
 		|> maximum_by (fun snake -> let score, _, _, _ = best_split snake in score)
 		|> unsome
 		|> best_split in
 *)
-	let erreur = couper_trainee_moto snake.id p p' in
+     begin
+	let erreur = couper_trainee_moto split_snake.id split_p split_p' in
 	afficher_erreur erreur ;
-	Printf.printf "SPLIT %f  %a \n%!" score print_position p ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
-	Printf.printf "SPLIT\n%!" ;
+	Printf.printf "SPLIT %f  %a \n%!" split_score print_position split_p ;
 	ignore (read_line ()) ;
-  end else begin
+     end
+  | _ -> begin
   	let erreur = deplacer id p p' in
     	Printf.printf "move %a -> %a\n%!" print_position p print_position p' ;
 	afficher_erreur erreur ;
@@ -287,7 +379,8 @@ let dump_infos () =
 	  flush stdout;
 	end)
 	(trainees_moto ());
-      Printf.printf "</dump_infod>\n%!"
+      Printf.printf "</dump_infod>\n%!" ;
+      print_map ()
     end
 
 let jouer () =
@@ -302,7 +395,9 @@ let jouer () =
     action ();
     Printf.printf "action 3\n%!" ;
     dump_infos ();
-    Printf.printf "gain : %i\n%!" (diff_score ())
+    Printf.printf "gain : %i\n%!" (diff_score ());
+(*    read_line ();*)
+    ();
   end
 
 

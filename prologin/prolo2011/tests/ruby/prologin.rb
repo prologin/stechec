@@ -13,6 +13,10 @@ def jouer()
   puts "equipe : #{ma_team}"
   sources = sources_energie
   for y in (0 .. TAILLE_TERRAIN - 1) do
+    if y < 10 then
+      print " "
+    end
+    print "#{y} |   "
     for x in (0 .. TAILLE_TERRAIN - 1) do
       p = Position.new(x, y);
       c = regarder_type_case(p);

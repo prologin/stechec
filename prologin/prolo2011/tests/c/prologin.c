@@ -45,27 +45,14 @@ void jouer(void)
     printf("t != tour : %d, %d", t, tour);
     abort();
   }
-  position from;
-  position to;
-  from.x = (mon_equipe() == 0) ? 0 : TAILLE_TERRAIN - 1;
-  
-  from.y = (mon_equipe() == 0) ? tour - 1 : TAILLE_TERRAIN - tour;
-  to.x = (mon_equipe() == 0) ? 0 : TAILLE_TERRAIN - 1;
-  to.y =  (mon_equipe() == 0) ? tour : TAILLE_TERRAIN - tour - 1;
-
-  int indice = mon_equipe() == 0 ? 0 : 1;
-
-  erreur err = deplacer(indice, from, to);
-
-  cancel();
-
-  afficher_position(from);
-  afficher_position(to);
   printf("tour : %d\n", tour);
-  afficher_erreur(err);
-  printf("\n");
-  
-  //show_map();
+  show_map();
+  trainee_moto * arr;
+  int nb, i;
+  trainees_moto(&arr, &nb);
+  for (i = 0; i < nb; i++){
+    afficher_trainee_moto(arr[i]);
+  }
 }
 
 /*!
@@ -75,28 +62,4 @@ void end_game(void)
 {
   /* fonction a completer */
 }
-
-/*!
-** Affiche le contenu d'une valeur de type erreur
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type type_case
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type type_bonus
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type position
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type source_energie
-*/
-
-/*!
-** Affiche le contenu d'une valeur de type trainee_moto
-*/
 
