@@ -33,7 +33,7 @@ class Worker(object):
 
     @property
     def usage(self):
-        return float(self.slots) / self.max_slots
+        return 1.0 - (float(self.slots) / self.max_slots)
 
     def update(self, slots, max_slots):
         self.slots = slots
