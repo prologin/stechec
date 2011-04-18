@@ -14,5 +14,8 @@ urlpatterns = patterns('concours.stechec',
     url(r'^champions/my/$', login_required(views.MyChampionsView.as_view()), name="champions-my"),
     url(r'^champions/new/$', login_required(views.new_champion), name="champion-new"),
 
+    url(r'^matches/all/$', views.AllMatchesView.as_view(), name="matches-all"),
+    url(r'^matches/my/$', login_required(views.MyMatchesView.as_view()), name="matches-my"),
+
     url(r'^status/$', views.master_status, name="status"),
 )

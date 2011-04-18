@@ -28,10 +28,10 @@
                 <h1>Matches</h1>
                 <ul>
                     {% if user.is_authenticated %}
-                    <li><a href="/matches/my/">Mes matches</a></li>
+                    <li><a href="{% url matches-my %}">Mes matches</a></li>
                     <li><a href="/matches/new/">Lancer un match</a></li>
                     {% endif %}
-                    <li><a href="/matches/all/">Tous les matches</a></li>
+                    <li><a href="{% url matches-all %}">Tous les matches</a></li>
                     <li><a href="{% url status %}">Statut des serveurs</a></li>
                 </ul>
             </div>

@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 from concours.stechec import forms
 from concours.stechec import models
 from django.conf import settings
@@ -47,6 +49,30 @@ class MyChampionsView(ChampionsListView):
     def get_queryset(self):
         user = self.request.user
         return models.Champion.objects.filter(deleted=False, author=user)
+
+class MatchesListView(ListView):
+    context_object_name = "matches"
+    paginate_by = 100
+    template_name = "matches-list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(MatchesListView, self).get_context_data(**kwargs)
+        context['explanation_text'] = self.explanation_text
+        context['show_creator'] = self.show_creator
+        return context
+
+class AllMatchesView(MatchesListView):
+    queryset = models.Match.objects.all()
+    explanation_text = "Voici la liste de tous les matches ayant été réalisés."
+    show_creator = True
+
+class MyMatchesView(MatchesListView):
+    explanation_text = "Voici la liste des matches que vous avez lancé."
+    show_creator = False
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.Match.objects.filter(author=user)
 
 def new_champion(request):
     if request.method == 'POST':
