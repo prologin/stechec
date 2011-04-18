@@ -32,11 +32,11 @@ class TeamSurface(surface.Surface):
     def get_bonus(self, name, number):
         text = self.font.render(u'×%d' % number, True, (255, 255, 255))
         text_size = text.get_size()
-        surf = pygame.Surface((text_size[0] + 16 + 8,
+        surf = pygame.Surface((text_size[0] + 16 + 16,
                                max(text_size[1] + 16, 16 + 16)
                                ))
         surf_size = surf.get_size()
-        pos = (16 + 8,
+        pos = (16 + 16,
                (surf_size[1] - text_size[1]) / 2)
         surf.blit(text, pos)
         surf.blit(self.imgs['bonus'][name], (0, (surf_size[1] - 16) / 2))

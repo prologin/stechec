@@ -22,38 +22,46 @@ class DetailSurface(surface.Surface):
     def update_pos(self, ground, bonus, objects):
         self.surface.fill((0, 0, 0))
 
-        vshift = 0
-        vshift = max(vshift, self.put_ground(ground))
-        vshift = max(vshift, self.put_bonus(bonus))
-        for obj in objects:
+        vshift = DetailSurface.PADDING
+        vshift += self.put_ground(vshift, ground)
+        vshift += self.put_bonus(vshift, bonus)
+        for obj in objects: 
             vshift += self.put_object(obj, vshift)
 
-    def put_bonus(self, bonus):
+    def put_bonus(self, vshift, bonus):
         str = ''
+        desc = ''
         if bonus == PLUS_LONG:
             str = 'plus_long'
+            desc = u'Allongement'
         elif bonus == PLUS_PA:
             str = 'plus_pa'
+            desc = u'Point d’action'
         elif bonus == BONUS_CROISEMENT:
             str = 'bonus_croisement'
+            desc = u'Point de croisement'
         elif bonus == BONUS_REGENERATION:
             str = 'bonus_regeneration'
+            desc = u'Régénération'
         else:
-            return
+            return 0
         
         img = self.imgs['bonus'][str]
         img_sz = img.get_size()
         pos = (
             self.size[0] - img_sz[0] - DetailSurface.PADDING,
-            DetailSurface.PADDING
+            vshift
             )
         self.surface.blit(img, pos)
-        return pos[1] + img_sz[1]
+        text = self.font.render(desc, True, (255, 255, 255))
+        self.surface.blit(text, (DetailSurface.PADDING, vshift))
+        return pos[1] + max(img_sz[1], text.get_size()[1])
 
-    def put_ground(self, ground):
+    def put_ground(self, vshift, ground):
         str = ''
         if ground == VIDE:
             str = 'Vide'
+            return 0
         elif ground == OBSTACLE:
             str = 'Obstacle'
         elif ground == POINT_CROISEMENT:
@@ -63,8 +71,9 @@ class DetailSurface(surface.Surface):
         else:
             str = '???'
         text = self.font.render(str, True, (255, 255, 255))
-        self.surface.blit(text, (DetailSurface.PADDING, DetailSurface.PADDING))
-        return DetailSurface.PADDING + text.get_size()[1]
+        vshift += DetailSurface.PADDING
+        self.surface.blit(text, (DetailSurface.PADDING, vshift))
+        return text.get_size()[1]
 
     def put_object(self, obj, vshift):
         height = 45
