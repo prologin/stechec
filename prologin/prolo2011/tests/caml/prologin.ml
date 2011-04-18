@@ -4,81 +4,36 @@
 ** to the script file : gen/generator_caml.rb
 *)
 
-open Api;;
+open Hapi;;
+open Stdlib;;
+open Cache;;
 
 let debug = true
-
-let ( |> ) f x = x f
-
-let annuler () = cancel ()
-
-let moto_by_id id =
-  let motos =
-    trainees_moto ()
-    |> Array.to_list
-    |> List.filter (fun m -> m.id == id)
-  in match motos with
-    | [] -> begin
-      Array.iter afficher_trainee_moto (trainees_moto ()) ;
-      Printf.printf "ID RECHERCHE = %i\n%!" id ;
-      failwith "pas de motos" end
-    | [x] -> x
-    | _ -> failwith "trop de motos"
 
 module Coefs = struct
   let pas_cool = 0.02;
 end
 
-let unsome = function None -> assert false | Some x -> x
-let unsome_list xs = List.map (function None -> [] | Some x -> [x]) xs |> List.flatten
-let sum = List.fold_left ( +. ) 0.0
-let max_by f a b = if f a > f b then a else b
-let maximum_by f = function
-  | [] -> None
-  | x::xs -> Some (List.fold_left (max_by f) x xs)
-
-let dist a b = chemin a b |> Array.length
-
-let ( ++ ) (x, y) (x', y') = (x + x', y + y')
-
-let near xs p = List.map (( ++ ) p) xs
-let dxys = [ 1, 0 ; -1, 0 ; 0, 1 ; 0, -1 ]
-let neighbours = near dxys
-let dneighbours = near (dxys @ [ -1,-1 ; -1,1 ; 1,-1; 1,1 ])
-
-type id_snake = int
-
-module H = Hashtbl
-let cache : (id_snake, float) H.t = H.create 2
-let snake_map : id_snake list array array =
-  Array.init taille_terrain (fun _ ->
-  Array.init taille_terrain (fun _ -> [] ))
-let connections : (id_snake * (int * int), bool) H.t = H.create 0
-let reset_cache () =
-  H.clear cache ;
-  H.clear connections ;
-  for x = 0 to taille_terrain - 1 do
-	for y = 0 to taille_terrain - 1 do
-		snake_map.(x).(y) <- []
-	done
-  done ;
-  let me = mon_equipe () in
-  trainees_moto ()
-  |> Array.to_list
-  |> List.filter (fun m -> m.team = me)
-  |> List.iter (fun m ->
-	Array.iter (fun (x, y) ->
-		snake_map.(x).(y) <- m.id :: snake_map.(x).(y)
-	) m.emplacement)
 
 let print_map () =
+  let snake_map = Cache.snake_map () in
     for y = 0 to taille_terrain - 1 do
       for x = 0 to taille_terrain - 1 do
       Printf.printf "%c%!" (match regarder_type_case (x, y) with
-	| Vide -> ' '
 	| Obstacle -> '#'
 	| Point_croisement -> '+'
 	| Source -> 'o'
+	| Vide ->
+	  match regarder_type_bonus (x, y) with
+	    | Pas_bonus ->
+	      if case_traversable (x, y) then ' '
+	      else
+		begin match snake_map.(x).(y) with
+		  | [] -> '?'
+		  | [x] -> (string_of_int x).[0]
+		  | _ -> 'S'
+		end
+	    | _ -> '*'
       )
     done ;
     Printf.printf "\n%!"
@@ -88,7 +43,8 @@ module IdSet = Set.Make (struct type t = id_snake let compare = compare end)
 module PosSet = Set.Make (struct type t = position let compare = compare end)
 
 let sources_snakes_connected_with snake =
-  let snakes = trainees_moto () |> Array.to_list |> List.filter (fun s -> s.team = snake.team) in
+  let snake_map = Cache.snake_map () in
+(*  let snakes = trainees_moto () |> Array.to_list |> List.filter (fun s -> s.team = snake.team) in *)
 (*
   let ss = sources_energie () in
 *)
@@ -107,23 +63,15 @@ let sources_snakes_connected_with snake =
 		List.iter (fun ((x, y) as p) ->
 			match regarder_type_case p with
 			| Source -> sources := PosSet.add p !sources
-			| Vide | Point_croisement ->
-			  let print_list l =
-			    Printf.printf "[";
-			    let rec sub = function
-			      | [] -> Printf.printf "]\n"
-			      | head::tail -> Printf.printf "%d, " head
-			    in
-			    sub l
-			  in
-			  print_list snake_map.(x).(y);
-			  List.iter (fun sid ->
-			    if not (IdSet.mem sid !visited)
-			    then begin
+			| Vide ->
+			  if not (case_traversable (x, y)) then (* trainee *)
+			    List.iter (fun sid ->
+			      if not (IdSet.mem sid !visited)
+			      then begin
 			      visited := IdSet.add sid !visited ;
-			      Queue.push sid stack
-			    end)
-					snake_map.(x).(y) 
+				Queue.push sid stack
+			      end)
+			      snake_map.(x).(y)
 			| _ -> ()
 			)
 			(dneighbours sna_pos)
@@ -146,6 +94,7 @@ let source_at_pos p =
 	|> List.hd
 
 let coeff_of_snake snake =
+  let cache = Cache.snake_cache () in
   if H.mem cache snake.id
   then H.find cache snake.id
   else begin 
@@ -196,8 +145,6 @@ let select_sources snake =
 *)
 	truc
 
-let print_sources ss =
-  List.iter (fun (coef, p) -> Printf.printf "   %i at %i %i\n%!" coef (fst p) (snd p)) ss
 
 let diffusion_at p sources =
 (*
@@ -247,14 +194,10 @@ let diffusing snake p sources =
  else neg +. pos
 (*  abs_float (pos +. neg +. coef) *)
 
-
-let print_position f (x, y) = Printf.fprintf f "(%i, %i)" x y
-
 let best_move snake p =
   let sources = select_sources snake in
   let possible_moves =
-    neighbours p
-    |> List.filter case_traversable
+    neighbours p |> List.filter case_traversable
   in
   if possible_moves = []
   then None
@@ -287,7 +230,7 @@ let best_split snake =
 
 
 let action () =  (* Pose ton code ici *)
-  reset_cache () ;
+  Cache.reset () ;
 (*
   ignore (read_line ()) ;
 *)
@@ -301,7 +244,6 @@ let action () =  (* Pose ton code ici *)
 	|> List.map (fun me -> [ me, me.emplacement.(0) ;
                               me, me.emplacement.(Array.length me.emplacement - 1) ])
 	|> List.flatten in
-  Printf.printf "mes -> # %i\n%!" (List.length mes) ;
   let best_moves = unsome_list (List.map (fun (me, p) -> best_move me p) mes) in
   Printf.printf "best_moves # %i\n%!" (List.length best_moves) ;
 
@@ -328,7 +270,7 @@ let action () =  (* Pose ton code ici *)
 	  assert false
 ) in
   let Some (id, p, p', score) = 
-	maximum_by (fun (id, p, p', score) -> score) best_moves
+    maximum_by (fun (id, p, p', score) -> score) best_moves
   in
 
   match
@@ -353,8 +295,8 @@ let action () =  (* Pose ton code ici *)
      begin
 	let erreur = couper_trainee_moto split_snake.id split_p split_p' in
 	afficher_erreur erreur ;
-	Printf.printf "SPLIT %f  %a \n%!" split_score print_position split_p ;
-	ignore (read_line ()) ;
+(*	Printf.printf "SPLIT %f  %a \n%!" split_score print_position split_p ;
+	ignore (read_line ()) ; *)
      end
   | _ -> begin
   	let erreur = deplacer id p p' in
