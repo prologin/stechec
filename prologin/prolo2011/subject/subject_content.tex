@@ -1,8 +1,15 @@
-\section{Introduction}
-\emph{Greetings, Program! I'm Castor! Your host! Provider of any and
-  all, entertainment, and diversions\ldots{}}
+\newcommand\citationTron[1]{
+	\selectlanguage{english}
+	
+	{\em #1}
+	\selectlanguage{french}
+}
 
-\emph{\ldots{}at your service.}\\
+\section{Introduction}
+\citationTron{Greetings, Program! I'm Castor! Your host! Provider of any and
+all, entertainment, and diversions…
+
+… at your service.}
 
 Ce monde de programmes, régi par des programmes pour les programmes,
 est dirigé d'un pointeur de fer par Clu. Chargé de concevoir un monde
@@ -27,37 +34,46 @@ condition d'être alimenté par des quantités astronomiques d'énergie.
 Et Clu a déjà commencé à en emmagasiner\ldots{}\\
 
         \subsection{Votre mission}
+\selectlanguage{english}
+
         \emph{In there is a new world! In there is our future! In
           there is our destiny!}
+\selectlanguage{french}
 
-Votre mission : pénétrez sur la Grille, et empêchez à tout prix Clu
-d'arriver à ses fins, en le privant des sources d'énergie.
+Vous devez pénétrer sur la Grille, et empêcher à tout prix Clu
+d'arriver à ses fins, en le privant des sources d'énergie. //FIXME
 
-Mais attention, Programme. Le suicide n'est pas une option. Vous
+Mais attention, Programme. Le suicide n'est pas une option\footnote{Contrairement
+à certains films récents.}. Vous
 \textbf{devez} revenir, et pour cela passer le Portail.
 
-\subsection{La Grille}
-Vous vous battrez sur la Grille, environnement numérique carré, dont vous
-connaissez la taille.
+(survivre)
 
-Cette Grille se découpe en cases, sur lesquels sont notamment
-éparpillées les précieuses sources d'énergie et les points de stockage.
+\subsection{La Grille}
+Vous vous battrez sur la Grille, environnement numérique carré se découpant en cases, sur lesquelles sont notamment éparpillées les précieuses sources d'énergie et les points de stockage.
+
+La Grille vous confère tous vos pouvoirs.
 
 \newpage
 \section{Les règles}
+\selectlanguage{english}
+
 \emph{Patience, Sam Flynn. All of your questions will be answered soon.}
+\selectlanguage{french}
 
 //FIXME histoire
 
-        \subsection{Les Programmes}
+Les règles du jeu\footnote{En anglais, « THE GAME ».}
+
+        \subsection{Les traînées de lumière}
+\selectlanguage{english}
+
         \emph{Attention, Program. You will receive, an identity disc. Everything you do, or learn, will be imprinted on this disc. If you, lose your disc, or fail, to follow commands, you will be subject to immediate de-resolution.}\\
+\selectlanguage{french}
 
-A chaque tour, vous donnerez des ordres à vos Programmes. Ces derniers
-sont des entités capables d'interagir avec la Grille. Ils sont
-représentés par des motos.
+À chaque tour, vous interagirez avec des traînées de lumière (délimitées par des motos) sur la Grille. Vous pouvez en déplacer les extrémités, les couper, les fusionner, les concentrer en un point.
 
-Soyez vigilants, tout ordre vous coûtera un PA\footnote{Point
-  d'Action}, et ces PA sont rares. La Grille vous en donne un certain
+Soyez vigilants, tout ordre vous coûtera un PA (point d'action), et ces PA sont rares\footnote{Comme dirait Ken, « Décidément les temps comme les œufs sont durs. »}. La Grille vous en donne un certain
 nombre en début de tour, mais reprendra les PA inutilisés en fin de tour.
 
 \subsection{La Grille}
@@ -67,18 +83,29 @@ nombre en début de tour, mais reprendra les PA inutilisés en fin de tour.
           kept dreaming of a world I thought I'd never see. And then, one
           day, I got in\ldots{}}\\
 
-La Grille n'est pas qu'un simple support numérique vide. Vous pourrez
-y rencontrer :
+Sur la Grille, vous pourrez rencontrer :
 
 \begin{itemize}
-  \item \emph{un obstacle} : les obstacles sont infranchissables,
+  \item \emph{des obstacles} : ils sont infranchissables,
     et doivent être contournés.
+    %\vspace{1cm}
+    \begin{figure}[!h]
+    \centering
+    \includegraphics{../data/graphics/terrain-obstacle.png}
+    \caption{Un obstacle}
+    \end{figure}
+
   \item \emph{un bonus} : vous pouvez ramasser les bonus présents
     sur la Grille en vous déplaçant dessus. Les différents bonus et
-    leurs utilisations sont détaillées dans la section sur les
-    bonus, page \pageref{section-bonus}.
+    leurs utilisations sont détaillées dans la section page \pageref{section-bonus}.
   \item \emph{un point de croisement} : sur ces cases, il est
     possible pour (au moins) deux traînées de se croiser sans dommage.
+%\vspace{1cm}
+    \begin{figure}[!h]
+    \centering
+    \includegraphics{../data/graphics/terrain-point_croisement.png}
+    \caption{Un point de croisement}
+    \end{figure}
   \item \emph{une source} : ces cases contiennent soit une
     source d'énergie, soit un point de stockage.
 \end{itemize}
@@ -87,17 +114,64 @@ Sans oublier bien entendu votre adversaire, ses Programmes et surtout
 ses traces.\\
 
 \subsection{Gestion de l'énergie}
-Vous êtes-vous déjà demandé pourquoi les traînées des motos sont
-dangeureuses ? C'est parce qu'elles transportent de l'énergie !\\
+Vous êtes-vous déjà demandé pourquoi les traînées\footnote{Ne jouez pas sur les mots, hein, on a déjà assez peu de filles comme ça.} des motos sont
+dangeureuses ? C'est parce qu'elles véhiculent de l'énergie !\\
 
 Vous l'aurez compris, votre objectif est de transférer un maximum
 d'énergie des sources vers les points de stockage, et d'empêcher votre
 adversaire de le faire.
 
 Pour cela, il suffit de connecter une source à un point de stockage,
-grâce à vos motos.\\
+grâce à vos motos. Une trainée reliant une source à un point de
+stockage est dite active.\\
 
-Chaque source ou point de stockage est caractérisé par une capacité et
+\subsubsection{I got the power!}
+
+Chaque source ou point de stockage est caractérisé par une capacité
+maximale d'énergie. Une source délivre 1 unité d'énergie par tour à
+chaque trainée active. De la même façon, un point de stockage accepte
+1u par tour.
+
+La capacité réelle d'une source correspond donc à la quantité
+d'énergie encore disponible pour le transport ; alors que la capacité
+réelle d'un point de stockage correspond à la quantité d'énergie
+pouvant encore être emmagasinée.
+
+Lorsque la capacité réelle atteint 0u, la source (respectivement le
+point de stockage) est dit épuisé.\\
+
+\begin{figure}[!h]
+\centering
+\begin{tabular}{c|c}
+    \includegraphics{../data/graphics/source_energie-on-producteur.png}
+%    \caption{Source active}
+
+ &
+
+    \includegraphics{../data/graphics/source_energie-off-producteur.png}
+%    \caption{Source épuisée}
+\\
+        Source active & Source épuisée \\ \hline
+
+    \includegraphics{../data/graphics/source_energie-on-consommateur.png}
+%    \caption{Point de stockage actif}
+
+&
+
+    \includegraphics{../data/graphics/source_energie-off-consommateur.png}
+%    \caption{Point de stockage épuisé}
+\\
+        Point de stockage actif & Point de stockage épuisé
+
+\end{tabular}
+\end{figure}
+
+\subsubsection{Rechargement}
+
+Lorsqu'elles ne sont pas reliées, les sources d'énergie reconstituent leurs
+stocks au rythme d'une unité par tour. //FIXME
+
+
 
         \subsection{Interagir avec la Grille}
         \emph{This is Blue Leader to Blue Bikes. Run these guys into your jet walls.}

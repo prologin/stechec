@@ -7,7 +7,7 @@
 (*
 ** Taille du terrain
 *)
-let taille_terrain = 100
+let taille_terrain = 30
 
 (*
 ** Nombre de tours par partie
@@ -22,12 +22,17 @@ let max_pa = 3
 (*
 ** Taille des traînées de moto
 *)
-let taille_trainee = 900
+let taille_trainee = 120
 
 (*
 ** Longueur maximale de l'allongement
 *)
 let max_allongement = 5
+
+(*
+** Nombre de points d'action à rajouter avec bonus
+*)
+let ajout_pa = 5
 
 (*
 ** Énumération représentant une erreur renvoyée par une des fonctions d'action
@@ -49,6 +54,9 @@ type type_case =
 | Obstacle (* <- cette case est inaccessible *)
 | Bonus (* <- cette case cotient un bonus *)
 | Point_croisement (* <- point de croisement de traînées *)
+| Source (* <- source ou consommateur d'energie *)
+| Trainee (* <- une trainée de moto *)
+| Trainee_et_croisement (* <- une trainee sur un point de croisement *)
 
 
 (*
@@ -83,6 +91,7 @@ type trainee_moto = {
   id : int ; (* <- identifiant de la traînee *)
   emplacement : position array ; (* <- position de chaque composant de la traînée de moto *)
   team : int ; (* <- identifiant de l'équipe qui possède cette traînée de moto *)
+  len : int ; (* <- la taille maximale de la trainee *)
 }
 
 (*
@@ -121,6 +130,14 @@ external regarder_type_bonus : position -> type_bonus = "ml_regarder_type_bonus"
 ** Retourne la liste des bonus d'une équipe
 *)
 external regarder_bonus : int -> type_bonus array = "ml_regarder_bonus"
+(*
+** Renvoie les points que vous allez gagner a la fin du tour
+*)
+external diff_score : unit -> int = "ml_diff_score"
+(*
+** Renvoie le chemin le plus court entre deux points (fonction lente)
+*)
+external chemin : position -> position -> position array = "ml_chemin"
 (*
 ** Déplace une moto
 *)

@@ -1,63 +1,37 @@
-12
-100
-100
-10
-10
-10
-100
+6
 -100
 -100
+100
+100
 -100
--10
--10
--10
-                                                 X
-                  X                              X
-            XXXX  X                              X
-      !     X     X                              X
-X           X XX  XXXXXXXXXXX                    X
-X              X  X                              X
-X XXXXXXXXX XX X  X                              X
-X X   !   X XX X  X     X                        X
-X X   1   X       X     X                        X
-X X       XXXX    X     X           !            X
-X                    !  X                        X
-XXXXXXXXXXXXXXXXXXX     X                        X
-X !                     X                        X
-X                       X                        X
-X    XXXXXXXXXXXXXXXXXXXX                        X
-X                                                X
-X                                                X
-XXXXXXXXXXX                                      X
-X                                                X
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX X
-X!                                               X
-X          XX XXXXXXXX  XXXXXXXX XX         XXXXXX
-X                                                X
-X          X        CLPR          X              X
-X          X        RPLC          X              X
-X                                                X
-X          XX XXXXXXXX  XXXXXXXX XX              X
-X                                                X
-XXXXX                                            X
-X                                               !X
-X XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-X                                                X
-X                                     X  XXXXXXXXX
-X                                     X  X      !X
-X                                     X     X    X
-X                                     XXXXXXX    X
-X                                     X          X
-X                                     X  XXXXXXXXX
-X                                     X          X
-X    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   !   X
-X                  X                             X
-X                  X XXXXXXXXXXXXXXXXXXXXXXXXXXX X
-XXXXXXXXXXXXXXX    X                             X
-X                  XXXXXXXXXXXXXXX XXXXXXXXXXXXXX 
-X  !   X     XXXXXXX                              
-X      X         2    XXXXXXXXXXXXXXXXXXXX   !    
-X      X     X                                    
-X  !   X     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 
-X      X                                          
-X                                                 
+100
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+X1                           X
+X                            X
+X                            X
+X                            X
+X  !  XX              XX     X
+XXXXXXX                X     X
+X ! ! X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X     X
+X     X                X ! ! X
+X     X                XXXXXXX
+X     XX              XX  !  X
+X                            X
+X                            X
+X                            X
+X                           2X
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

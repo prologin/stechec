@@ -18,12 +18,12 @@
 ///
 // Taille du terrain
 //
-# define TAILLE_TERRAIN            50
+# define TAILLE_TERRAIN            30
 
 ///
 // Nombre de tours avant la fin de la partie
 //
-# define FIN_PARTIE                3
+# define FIN_PARTIE                150
 
 ///
 // Nombre de points d'action par tour
@@ -33,7 +33,7 @@
 ///
 // Taille des traînées de moto
 //
-# define TAILLE_TRAINEE            900
+# define TAILLE_TRAINEE            120
 
 ///
 // Longueur maximale de l'allongement
@@ -67,6 +67,8 @@ typedef enum type_case {
   BONUS, /* <- cette case cotient un bonus */
   POINT_CROISEMENT, /* <- point de croisement de traînées */
   SOURCE,
+  TRAINEE,
+  TRAINEE_ET_CROISEMENT
 } type_case;
 
 
@@ -108,6 +110,7 @@ typedef struct trainee_moto {
   int id;  /* <- identifiant de la traînee */
   std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
   int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
+  int len;
 } trainee_moto;
 
 

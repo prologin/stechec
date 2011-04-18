@@ -200,6 +200,5 @@ bool        ServerEntry::isMatchFinished(void)
 
 int ServerEntry::getScore(int uid)
 {
-    // TODO
-    return 0;
+  return g_->joueurs[uid].score;
 }

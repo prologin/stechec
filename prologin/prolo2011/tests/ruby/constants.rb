@@ -1,10 +1,9 @@
-# -*- coding: iso-8859-1 -*-
 # This file has been generated, if you wish to
 # modify it in a permanent way, please refer
 # to the script file : gen/generator_ruby.rb
 
 # Taille du terrain
-TAILLE_TERRAIN = 50
+TAILLE_TERRAIN = 30
 
 # Nombre de tours par partie
 FIN_PARTIE = 1500
@@ -13,10 +12,13 @@ FIN_PARTIE = 1500
 MAX_PA = 3
 
 # Taille des traînées de moto
-TAILLE_TRAINEE = 900
+TAILLE_TRAINEE = 120
 
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5
+
+# Nombre de points d'action à rajouter avec bonus
+AJOUT_PA = 5
 
 # Représente une position sur le terrain du jeu
 class Position
@@ -45,10 +47,12 @@ class Trainee_moto
     attr_reader :id # int
     attr_reader :emplacement # position array
     attr_reader :team # int
-  def initialize(id, emplacement, team)
+    attr_reader :len # int
+  def initialize(id, emplacement, team, len)
     @id = id
     @emplacement = emplacement
     @team = team
+    @len = len
   end
 end
 

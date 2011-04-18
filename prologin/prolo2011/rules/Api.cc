@@ -122,6 +122,12 @@ type_case Api::regarder_type_case(position pos)
     if (position_invalide(pos.x, pos.y))
 	return (OBSTACLE);
     Case &c = g_->get_case(pos);
+    if (c.nb_trainees_moto != 0){
+      if (c.type == POINT_CROISEMENT){
+	return TRAINEE_ET_CROISEMENT;
+      }
+      return TRAINEE;
+    }
     return (c.type);
 }
 
@@ -260,9 +266,15 @@ erreur Api::fusionner(int	id1, position	pos1,
     return OK;
 }
 
+std::vector<position> Api::chemin(position p1, position p2){
+  std::vector<position> v;
+  g_->get_shortest_path(p1, p2, v);
+  return v;
+}
+
 std::vector<std::vector<int> > Api::actions_effectuees()
 {
-    LOG4("Api::actions_effectuees");
+  LOG4("Api::actions_effectuees");
     return g_->actions_stockees;
 }
 
@@ -273,6 +285,10 @@ bool Api::mon_tour()
 
 void Api::teamSwitched()
 {
+}
+
+int Api::diff_score(){
+  return g_->apply_connections(false);
 }
 
 void Api::sendActions()

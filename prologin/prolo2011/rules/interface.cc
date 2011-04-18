@@ -89,6 +89,7 @@ std::string convert_to_string(type_case in){
     case OBSTACLE: return "\"obstacle\"";
     case BONUS: return "\"bonus\"";
     case POINT_CROISEMENT: return "\"point_croisement\"";
+  case TRAINEE: return "\"trainee\"";
   }
   return "bad value";
 }
@@ -303,6 +304,14 @@ extern "C" erreur api_cancel()
 ///
 // Enrouler la traînée de moto en un point
 //
+extern "C" int api_diff_score()
+{
+  return api->diff_score();
+}
+
+///
+// Enrouler la traînée de moto en un point
+//
 extern "C" erreur api_enrouler(int id, position point)
 {
   return api->enrouler(id, point);
@@ -322,6 +331,14 @@ extern "C" erreur api_regenerer_source_energie(int id)
 extern "C" erreur api_allonger_pa()
 {
   return api->allonger_pa();
+}
+
+///
+// Allonge le tour en rajoutant des points d'action
+//
+extern "C" std::vector<position> api_chemin(position p1, position p2)
+{
+  return api->chemin(p1, p2);
 }
 
 ///
@@ -378,6 +395,7 @@ std::ostream& operator<<(std::ostream& os, type_case v)
   case OBSTACLE: os << "OBSTACLE"; break;
   case BONUS: os << "BONUS"; break;
   case POINT_CROISEMENT: os << "POINT_CROISEMENT"; break;
+  case TRAINEE: os << "TRAINEE"; break;
   }
   return os;
 }
@@ -448,6 +466,8 @@ std::ostream& operator<<(std::ostream& os, trainee_moto v)
 {
   os << "{ ";
   os << "id" << "=" << v.id;
+  os << ", ";
+  os << "len" << "=" << v.len;
   os << ", ";
   os << "emplacement" << "=" << v.emplacement;
   os << ", ";

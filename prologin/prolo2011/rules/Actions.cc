@@ -79,8 +79,10 @@ void Action::verifier_pa(GameData *g, int pa)
 void ActionDeplacer::verifier(GameData *g){
     LOG2("ActionDeplacer::verifier()");
     verifier_pa(g, 1);
-    if (!g->moto_valide(id_))
+    if (!g->moto_valide(id_)){
+      LOG3("Deplacer : moto pas valide");
 	throw ID_INVALIDE;
+    }
     InternalTraineeMoto &moto = g->motos.at(id_);
     if (player_ != moto.player_)
 	throw PAS_A_TOI;
@@ -110,15 +112,19 @@ void ActionDeplacer::annuler(GameData* g)
 	moto.move(new_queue_, old_queue_, trash);
     else if (old_len_ == moto.len_ - 1)
     {
+      LOG3("suppression de la tete");
 	moto.len_ --;
-	if (last_end_moved_)
-	    moto.content_.pop_front();
-	else
-	    moto.content_.pop_back();
+	//g->get_case(to_).nb_trainees_moto -= 1;
+	if (moto.last_end_moved_){
+	  g->get_case(moto.content_.back()).nb_trainees_moto -= 1;
+	  moto.content_.pop_back();
+	}else{
+	  g->get_case(moto.content_.front()).nb_trainees_moto -= 1;
+	  moto.content_.pop_front();
+	}
     }
     else
 	abort();
-    // TODO len : supprimer le debut si la taille a augmentee
     moto.last_end_moved_ = last_end_moved_;
     g->get_case(to_).bonus = taken_bonus_;
 }

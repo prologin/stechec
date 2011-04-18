@@ -181,7 +181,7 @@ void InternalTraineeMoto::take_case(const position&	pos,
 erreur InternalTraineeMoto::move(position from, position to,
 				 type_bonus&	taken_bonus)
 {
-  LOG4("trainee_moto move");
+  LOG4("trainee_moto move %1 -> %2", from, to);
   if (begin(from))
   {
     if (len_ == max_len_)
@@ -380,13 +380,12 @@ position InternalTraineeMoto::queue(position head__)
 {
     LOG4("trainee_moto queue");
     if (begin(head__))
-	return head();
-    else if (end(head__))
 	return queue();
+    else if (end(head__))
+	return head();
     else
     {
-	position p = {0, 0};
-	return p;
+      abort();
     }
 }
 
@@ -424,6 +423,7 @@ trainee_moto InternalTraineeMoto::to_trainee_moto() const
     out.id = id_;
     out.emplacement.reserve(len_);
     out.team = player_;
+    out.len = max_len_;
     for (it = content_.begin(); it != content_.end(); ++it)
 	out.emplacement.push_back(*it); // TODO
     return out;

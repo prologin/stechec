@@ -208,10 +208,11 @@ value cxx2lang<value, trainee_moto>(trainee_moto in)
 {
   CAMLparam0();
   CAMLlocal1(out);
-  out = caml_alloc(3, 0);
+  out = caml_alloc(4, 0);
   caml_initialize(&Field(out, 0), cxx2lang<value, int>(in.id));
   caml_initialize(&Field(out, 1), cxx2lang_array(in.emplacement));
   caml_initialize(&Field(out, 2), cxx2lang<value, int>(in.team));
+  caml_initialize(&Field(out, 3), cxx2lang<value, int>(in.len));
   CAMLreturn(out);
 }
 
@@ -223,6 +224,7 @@ trainee_moto lang2cxx<value, trainee_moto>(value in)
   out.id = lang2cxx<value, int>(Field(in, 0));
   out.emplacement = lang2cxx_array<position>(Field(in, 1));
   out.team = lang2cxx<value, int>(Field(in, 2));
+  out.len = lang2cxx<value, int>(Field(in, 3));
   CAMLreturnT(trainee_moto, out);
 }
 
@@ -314,6 +316,26 @@ extern "C" value ml_regarder_bonus(value equipe)
   CAMLparam0();
   CAMLxparam1(equipe);
   CAMLreturn((cxx2lang_array<type_bonus>(api_regarder_bonus(lang2cxx<value, int>(equipe)))));
+}
+
+///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+extern "C" value ml_diff_score(value unit)
+{
+  CAMLparam0();
+  CAMLxparam1(unit);
+  CAMLreturn((cxx2lang<value, int>(api_diff_score())));
+}
+
+///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+extern "C" value ml_chemin(value p1, value p2)
+{
+  CAMLparam0();
+  CAMLxparam2(p1, p2);
+  CAMLreturn((cxx2lang_array<position>(api_chemin(lang2cxx<value, position>(p1), lang2cxx<value, position>(p2)))));
 }
 
 ///
@@ -516,28 +538,4 @@ void end_game()
   CAMLreturn0;
 }
 
-
-///
-// Affiche le contenu d'une valeur de type erreur
-//
-
-///
-// Affiche le contenu d'une valeur de type type_case
-//
-
-///
-// Affiche le contenu d'une valeur de type type_bonus
-//
-
-///
-// Affiche le contenu d'une valeur de type position
-//
-
-///
-// Affiche le contenu d'une valeur de type source_energie
-//
-
-///
-// Affiche le contenu d'une valeur de type trainee_moto
-//
 

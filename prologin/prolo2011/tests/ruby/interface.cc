@@ -141,6 +141,10 @@ if (TYPE(in) != T_STRING) TYPEERR( (char*) "type_case", in);
       return POINT_CROISEMENT;
   if (strcmp(v, (char *) "source") == 0)
       return SOURCE;
+  if (strcmp(v, (char *) "trainee") == 0)
+      return TRAINEE;
+  if (strcmp(v, (char *) "trainee_et_croisement") == 0)
+      return TRAINEE_ET_CROISEMENT;
   abort();
   TYPEERR((char *) "type_case", in);
 }
@@ -159,8 +163,11 @@ VALUE cxx2lang<type_case>(type_case in)
       return rb_str_new( (char *) "point_croisement", 16);
     case SOURCE:
       return rb_str_new( (char *) "source", 6);
+    case TRAINEE:
+      return rb_str_new( (char *) "trainee", 7);
+    case TRAINEE_ET_CROISEMENT:
+      return rb_str_new( (char *) "trainee_et_croisement", 21);
   }
-  std::cout << "aborting..." << __FILE__ << __LINE__ << std::endl;
   abort();
 }
 
@@ -266,13 +273,15 @@ trainee_moto lang2cxx<trainee_moto>(VALUE in)
   out.emplacement = lang2cxx_array<position>(emplacement);
   VALUE team = rb_iv_get(in, (char *) "@team");
   out.team = lang2cxx<int>(team);
+  VALUE len = rb_iv_get(in, (char *) "@len");
+  out.len = lang2cxx<int>(len);
   return out;
 }
 template<>
 VALUE cxx2lang<trainee_moto>(trainee_moto in)
 {
-  VALUE argv[] = {cxx2lang<int>(in.id), cxx2lang_array<position>(in.emplacement), cxx2lang<int>(in.team)};
-  int argc = 3;
+  VALUE argv[] = {cxx2lang<int>(in.id), cxx2lang_array<position>(in.emplacement), cxx2lang<int>(in.team), cxx2lang<int>(in.len)};
+  int argc = 4;
   VALUE out = rb_funcall2(rb_path2class( (char *) "Trainee_moto"), rb_intern( (char *) "new"), argc, argv);
   return out;
 }
@@ -303,8 +312,7 @@ static VALUE rb_trainees_moto(VALUE self)
 }
 static VALUE rb_regarder_type_case(VALUE self, VALUE pos)
 {
-  type_case c = api_regarder_type_case(lang2cxx<position>( pos ) );
-  return cxx2lang<type_case>( c );
+  return cxx2lang<type_case>(api_regarder_type_case(lang2cxx<position>( pos ) ));
 }
 static VALUE rb_regarder_type_bonus(VALUE self, VALUE pos)
 {
@@ -313,6 +321,14 @@ static VALUE rb_regarder_type_bonus(VALUE self, VALUE pos)
 static VALUE rb_regarder_bonus(VALUE self, VALUE equipe)
 {
   return cxx2lang_array<>(api_regarder_bonus(lang2cxx<int>( equipe ) ));
+}
+static VALUE rb_diff_score(VALUE self)
+{
+  return cxx2lang<int>(api_diff_score());
+}
+static VALUE rb_chemin(VALUE self, VALUE p1, VALUE p2)
+{
+  return cxx2lang_array<>(api_chemin(lang2cxx<position>( p1 ) , lang2cxx<position>( p2 ) ));
 }
 static VALUE rb_deplacer(VALUE self, VALUE id, VALUE de, VALUE vers)
 {
@@ -427,6 +443,16 @@ void loadCallback()
 // Retourne la liste des bonus d'une équipe
 //
     rb_define_global_function( (char *) "regarder_bonus", (VALUE(*)(ANYARGS))(rb_regarder_bonus), 1);
+
+///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+    rb_define_global_function( (char *) "diff_score", (VALUE(*)(ANYARGS))(rb_diff_score), 0);
+
+///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+    rb_define_global_function( (char *) "chemin", (VALUE(*)(ANYARGS))(rb_chemin), 2);
 
 ///
 // Déplace une moto
@@ -615,29 +641,5 @@ abort();
 
   }
 }
-
-///
-// Affiche le contenu d'une valeur de type erreur
-//
-
-///
-// Affiche le contenu d'une valeur de type type_case
-//
-
-///
-// Affiche le contenu d'une valeur de type type_bonus
-//
-
-///
-// Affiche le contenu d'une valeur de type position
-//
-
-///
-// Affiche le contenu d'une valeur de type source_energie
-//
-
-///
-// Affiche le contenu d'une valeur de type trainee_moto
-//
 
 }

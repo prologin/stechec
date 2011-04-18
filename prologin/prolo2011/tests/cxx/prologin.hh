@@ -14,7 +14,7 @@
 ///
 // Taille du terrain
 //
-# define TAILLE_TERRAIN            100
+# define TAILLE_TERRAIN            30
 
 ///
 // Nombre de tours par partie
@@ -29,12 +29,17 @@
 ///
 // Taille des traînées de moto
 //
-# define TAILLE_TRAINEE            900
+# define TAILLE_TRAINEE            120
 
 ///
 // Longueur maximale de l'allongement
 //
 # define MAX_ALLONGEMENT           5
+
+///
+// Nombre de points d'action à rajouter avec bonus
+//
+# define AJOUT_PA                  5
 
 ///
 // Énumération représentant une erreur renvoyée par une des fonctions d'action
@@ -57,6 +62,9 @@ typedef enum type_case {
   OBSTACLE, /* <- cette case est inaccessible */
   BONUS, /* <- cette case cotient un bonus */
   POINT_CROISEMENT, /* <- point de croisement de traînées */
+  SOURCE, /* <- source ou consommateur d'energie */
+  TRAINEE, /* <- une trainée de moto */
+  TRAINEE_ET_CROISEMENT, /* <- une trainee sur un point de croisement */
 } type_case;
 
 
@@ -98,6 +106,7 @@ typedef struct trainee_moto {
   int id;  /* <- identifiant de la traînee */
   std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
   int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
+  int len;  /* <- la taille maximale de la trainee */
 } trainee_moto;
 
 
@@ -188,6 +197,26 @@ extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
 static inline std::vector<type_bonus> regarder_bonus(int equipe)
 {
   return api_regarder_bonus(equipe);
+}
+
+
+///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+extern "C" int api_diff_score();
+static inline int diff_score()
+{
+  return api_diff_score();
+}
+
+
+///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+extern "C" std::vector<position> api_chemin(position p1, position p2);
+static inline std::vector<position> chemin(position p1, position p2)
+{
+  return api_chemin(p1, p2);
 }
 
 
@@ -358,30 +387,6 @@ void jouer();
 // Fonction appellée à la fin de la partie
 //
 void end_game();
-
-///
-// Affiche le contenu d'une valeur de type erreur
-//
-
-///
-// Affiche le contenu d'une valeur de type type_case
-//
-
-///
-// Affiche le contenu d'une valeur de type type_bonus
-//
-
-///
-// Affiche le contenu d'une valeur de type position
-//
-
-///
-// Affiche le contenu d'une valeur de type source_energie
-//
-
-///
-// Affiche le contenu d'une valeur de type trainee_moto
-//
 
 }
 #endif
