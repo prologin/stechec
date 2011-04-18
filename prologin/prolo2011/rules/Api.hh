@@ -79,6 +79,14 @@ public:
 //
    std::vector<type_bonus> regarder_bonus(int equipe);
 ///
+// Retourne la liste des id des traînées présentes sur une case
+//
+   std::vector<int> regarder_trainee_case(position pos);
+///
+// Retourne si une case peut être traversée par une traînée de plus
+//
+   bool case_traversable(position pos);
+///
 // Déplace une moto
 //
    erreur deplacer(int id, position de, position vers);
@@ -119,6 +127,9 @@ public:
   int diff_score();
 
   std::vector<position> chemin(position p1, position p2);
+///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
 
 ///
 // GUI specific

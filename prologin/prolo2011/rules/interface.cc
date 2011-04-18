@@ -87,9 +87,7 @@ std::string convert_to_string(type_case in){
   {
     case VIDE: return "\"vide\"";
     case OBSTACLE: return "\"obstacle\"";
-    case BONUS: return "\"bonus\"";
     case POINT_CROISEMENT: return "\"point_croisement\"";
-  case TRAINEE: return "\"trainee\"";
   }
   return "bad value";
 }
@@ -150,13 +148,16 @@ std::string convert_to_string(std::vector<position> in){
 std::string convert_to_string(source_energie in){
   std::string id = convert_to_string(in.id);
   std::string pos = convert_to_string(in.pos);
-  std::string coef = convert_to_string(in.coef);
+  std::string capacite = convert_to_string(in.capacite);
+  std::string capacite_max = convert_to_string(in.capacite_max);
   std::string out = "{";
   out += "id:" + id;
   out += ", ";
   out += "pos:" + pos;
   out += ", ";
-  out += "coef:" + coef;
+  out += "capacite:" + capacite;
+  out += ", ";
+  out += "capacite_max:" + capacite_max;
   return out + "}";
 }
 
@@ -278,6 +279,22 @@ extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe)
 }
 
 ///
+// Retourne la liste des id des traînées présentes sur une case
+//
+extern "C" std::vector<int> api_regarder_trainee_case(position pos)
+{
+  return api->regarder_trainee_case(pos);
+}
+
+///
+// Retourne si une case peut être traversée par une traînée de plus
+//
+extern "C" bool api_case_traversable(position pos)
+{
+  return api->case_traversable(pos);
+}
+
+///
 // Déplace une moto
 //
 extern "C" erreur api_deplacer(int id, position de, position vers)
@@ -334,7 +351,7 @@ extern "C" erreur api_allonger_pa()
 }
 
 ///
-// Allonge le tour en rajoutant des points d'action
+// Renvoie le chemin le plus court entre deux ponits (fonction lente)
 //
 extern "C" std::vector<position> api_chemin(position p1, position p2)
 {
@@ -393,9 +410,7 @@ std::ostream& operator<<(std::ostream& os, type_case v)
   switch (v) {
   case VIDE: os << "VIDE"; break;
   case OBSTACLE: os << "OBSTACLE"; break;
-  case BONUS: os << "BONUS"; break;
   case POINT_CROISEMENT: os << "POINT_CROISEMENT"; break;
-  case TRAINEE: os << "TRAINEE"; break;
   }
   return os;
 }
@@ -450,7 +465,9 @@ std::ostream& operator<<(std::ostream& os, source_energie v)
   os << ", ";
   os << "pos" << "=" << v.pos;
   os << ", ";
-  os << "coef" << "=" << v.coef;
+  os << "capacite" << "=" << v.capacite;
+  os << ", ";
+  os << "capacite_max" << "=" << v.capacite_max;
   os << " }";
   return os;
 }
@@ -467,7 +484,7 @@ std::ostream& operator<<(std::ostream& os, trainee_moto v)
   os << "{ ";
   os << "id" << "=" << v.id;
   os << ", ";
-  os << "len" << "=" << v.len;
+  os << "longueur" << "=" << v.longueur;
   os << ", ";
   os << "emplacement" << "=" << v.emplacement;
   os << ", ";

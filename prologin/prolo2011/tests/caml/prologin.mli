@@ -21,27 +21,3 @@ val jouer : unit -> unit
 *)
 val end_game : unit -> unit
 
-(*
-** Affiche le contenu d'une valeur de type erreur
-*)
-
-(*
-** Affiche le contenu d'une valeur de type type_case
-*)
-
-(*
-** Affiche le contenu d'une valeur de type type_bonus
-*)
-
-(*
-** Affiche le contenu d'une valeur de type position
-*)
-
-(*
-** Affiche le contenu d'une valeur de type source_energie
-*)
-
-(*
-** Affiche le contenu d'une valeur de type trainee_moto
-*)
-

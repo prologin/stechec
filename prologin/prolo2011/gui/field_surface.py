@@ -3,8 +3,6 @@
 import pygame
 
 from api import *
-# TODO: erase this when the constant is updated upstream in ALL FILES
-TAILLE_TERRAIN = 50
 
 import game
 import images
@@ -107,9 +105,9 @@ class FieldSurface(surface.Surface):
 
         source_imgs = self.imgs['source_energie']
         for source in self.game_state.sources:
-            if source.coefficient < 0:
+            if source.capacite_max < 0:
                 status = 'consommateur'
-            elif source.coefficient > 0:
+            elif source.capacite_max > 0:
                 status = 'producteur'
             else:
                 images.place_img(source.position, self.surface,

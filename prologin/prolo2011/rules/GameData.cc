@@ -69,7 +69,8 @@ source_energie  SourceEnergie::to_source_energie(int indice)
     source_energie  s;
     s.id = indice;
     s.pos = pos;
-    s.coef = potentiel_cur;
+    s.capacite = potentiel_cur;
+    s.capacite_max = potentiel_max;
     return (s);
 }
 
@@ -181,14 +182,11 @@ bool GameData::is_crossable_pos(const position& p)
 {
     if (position_invalide(p))
 	return false;
-    else
-    {
-	Case& c = get_case(p);
-	if ((c.type != VIDE && c.type != BONUS) ||
-	    (c.nb_trainees_moto != 0 && c.type != POINT_CROISEMENT))
-	    return false;
-    }
-    return true;
+    Case& c = get_case(p);
+    if ((c.type == VIDE && c.nb_trainees_moto == 0)
+	|| c.type == POINT_CROISEMENT)
+	return true;
+    return false;
 }
 
 void GameData::build_from_reverse_path(const position& reverse_begin,
@@ -375,11 +373,7 @@ GameData::get_sources(std::vector<source_energie>& srcs)
 {
     srcs.reserve(sources.size());
     for (int i = 0; i < sources.size(); ++i)
-    {
-        srcs[i].id = i;
-        srcs[i].pos = sources[i].pos;
-        srcs[i].coef = sources[i].potentiel_cur;
-    }
+      srcs[i] = sources[i].to_source_energie(i);
 }
 void
 GameData::get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus)

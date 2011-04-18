@@ -46,10 +46,6 @@ let dxys = [ 1, 0 ; -1, 0 ; 0, 1 ; 0, -1 ]
 let neighbours = near dxys
 let dneighbours = near (dxys @ [ -1,-1 ; -1,1 ; 1,-1; 1,1 ])
 
-let is_free = function
-| Trainee | Obstacle | Source -> false | _ -> true
-
-
 type id_snake = int
 
 module H = Hashtbl
@@ -81,15 +77,8 @@ let print_map () =
       Printf.printf "%c%!" (match regarder_type_case (x, y) with
 	| Vide -> ' '
 	| Obstacle -> '#'
-	| Bonus -> '*'
 	| Point_croisement -> '+'
 	| Source -> 'o'
-	| Trainee | Trainee_et_croisement ->
-	  begin match snake_map.(x).(y) with
-	    | [] -> '?'
-	    | [x] -> (string_of_int x).[0]
-	    | _ -> 'S'
-	  end
       )
     done ;
     Printf.printf "\n%!"
@@ -118,14 +107,22 @@ let sources_snakes_connected_with snake =
 		List.iter (fun ((x, y) as p) ->
 			match regarder_type_case p with
 			| Source -> sources := PosSet.add p !sources
-			| Trainee_et_croisement
-			| Trainee ->
-				List.iter (fun sid ->
-					if not (IdSet.mem sid !visited)
-					then begin
-						visited := IdSet.add sid !visited ;
-						Queue.push sid stack
-					end)
+			| Vide | Point_croisement ->
+			  let print_list l =
+			    Printf.printf "[";
+			    let rec sub = function
+			      | [] -> Printf.printf "]\n"
+			      | head::tail -> Printf.printf "%d, " head
+			    in
+			    sub l
+			  in
+			  print_list snake_map.(x).(y);
+			  List.iter (fun sid ->
+			    if not (IdSet.mem sid !visited)
+			    then begin
+			      visited := IdSet.add sid !visited ;
+			      Queue.push sid stack
+			    end)
 					snake_map.(x).(y) 
 			| _ -> ()
 			)
@@ -155,7 +152,7 @@ let coeff_of_snake snake =
     let result =
 	sources_connected_with snake
         |> PosSet.elements
-	|> List.map (fun p -> float (source_at_pos p).coef)
+	|> List.map (fun p -> float (source_at_pos p).capacite)
 	|> sum
     in
     H.add cache snake.id result ;
@@ -185,11 +182,11 @@ let select_sources snake =
    |> (fun set -> PosSet.diff set (sources_connected_with snake))
    |> PosSet.elements
 (*
-   |> List.map (fun p -> (source_at_pos p).coef, p)
+   |> List.map (fun p -> (source_at_pos p).capacite, p)
 *)
    |> List.map (fun p ->
         let s = source_at_pos p in
-        List.map (fun pos -> s.coef, pos)
+        List.map (fun pos -> s.capacite, pos)
 		(dneighbours s.pos)) 
    |> List.flatten
    |> List.append (friends_of snake)
@@ -257,7 +254,7 @@ let best_move snake p =
   let sources = select_sources snake in
   let possible_moves =
     neighbours p
-    |> List.filter (fun p -> regarder_type_case p |>  is_free)
+    |> List.filter case_traversable
   in
   if possible_moves = []
   then None
@@ -304,6 +301,7 @@ let action () =  (* Pose ton code ici *)
 	|> List.map (fun me -> [ me, me.emplacement.(0) ;
                               me, me.emplacement.(Array.length me.emplacement - 1) ])
 	|> List.flatten in
+  Printf.printf "mes -> # %i\n%!" (List.length mes) ;
   let best_moves = unsome_list (List.map (fun (me, p) -> best_move me p) mes) in
   Printf.printf "best_moves # %i\n%!" (List.length best_moves) ;
 

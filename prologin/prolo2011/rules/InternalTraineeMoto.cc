@@ -423,7 +423,7 @@ trainee_moto InternalTraineeMoto::to_trainee_moto() const
     out.id = id_;
     out.emplacement.reserve(len_);
     out.team = player_;
-    out.len = max_len_;
+    out.longueur = max_len_;
     for (it = content_.begin(); it != content_.end(); ++it)
 	out.emplacement.push_back(*it); // TODO
     return out;

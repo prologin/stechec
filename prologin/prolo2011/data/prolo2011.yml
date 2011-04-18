@@ -53,11 +53,8 @@ enum:
     enum_field:
       - [vide, "rien n'est présent sur la case"]
       - [obstacle, cette case est inaccessible]
-      - [bonus, "cette case cotient un bonus"]
       - [point_croisement, point de croisement de traînées]
       - [source, source ou consommateur d'energie]
-      - [trainee, une trainée de moto]
-      - [trainee_et_croisement, une trainee sur un point de croisement]
 
   -
     enum_name: type_bonus
@@ -90,11 +87,17 @@ struct:
       - [id, int, "identifiant de la source d'énergie"]
       - [pos, position, "position de la source d'énergie"]
       -
-        - coef
+        - capacite
         - int
         -
-          "coefficient representant les points d'énergie que la source va
+          "coefficient représentant les points d'énergie que la source va
           vous apporter"
+      -
+        - capacite_max
+        - int
+        -
+          "coefficient représentant la capacité de la source lorsqu'elle est
+          chargée au maximum"
   -
     str_name: trainee_moto
     str_summary: Représente une traînée de moto sur le terrain
@@ -109,7 +112,7 @@ struct:
         - team
         - int
         - "identifiant de l'équipe qui possède cette traînée de moto"
-      - [len, int, la taille maximale de la trainee]
+      - [longueur, int, "taille maximale de la traînée"]
 function:
   - doc_extra: |
      "\subsection{Fonctions d'information}"
@@ -164,6 +167,21 @@ function:
     fct_ret_type: type_bonus array
     fct_arg:
       - [equipe, int, "identifiant de l'équipe visée"]
+
+  -
+    fct_name: regarder_trainee_case
+    fct_summary: "Retourne la liste des id des traînées présentes sur une case"
+    fct_ret_type: int array
+    fct_arg:
+      - [pos, position, "position de la case"]
+
+  -
+    fct_name: case_traversable
+    fct_summary: "Retourne si une case peut être traversée par une traînée de
+    plus"
+    fct_ret_type: bool
+    fct_arg:
+      - [pos, position, "position de la case"]
 
   -
     fct_name: diff_score

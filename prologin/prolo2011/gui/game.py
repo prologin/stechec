@@ -2,8 +2,6 @@
 
 from api import *
 
-TAILLE_TERRAIN = 50
-
 LEFT = 8
 TOP = 4
 RIGHT = 2
@@ -68,9 +66,10 @@ class Team:
         return result
 
 class Source:
-    def __init__(self, position, coefficient, grid):
+    def __init__(self, position, capacite, capacite_max, grid):
         self.position = position
-        self.coefficient = coefficient
+        self.capacite = capacite
+        self.capacite_max = capacite_max
         self.grid = grid
         grid[position] = self
 
@@ -161,7 +160,9 @@ class GameState:
                 Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement], self.objgrid)
                 for m in trainees_moto()
                 ]
-        self.sources = [Source((s.pos.x, s.pos.y), s.coef, self.objgrid)
+        self.sources = [Source((s.pos.x, s.pos.y),
+                               s.capacite, s.capacite_max,
+                               self.objgrid)
                         for s in sources_energie()]
 
         for y in xrange(TAILLE_TERRAIN):
@@ -180,8 +181,8 @@ class GameState:
         connected_sources_energie = set()
         for t in self.motos:
             sources = t.connections_lookup()
-            if any(source.coefficient < 0 for source in sources) and \
-                any (source.coefficient > 0 for source in sources):
+            if any(source.capacite < 0 for source in sources) and \
+                any (source.capacite > 0 for source in sources):
                 connected_sources_energie.update(sources)
                 connected_trainees_moto.add(t)
         return (connected_trainees_moto, connected_sources_energie)
