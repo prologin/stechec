@@ -10,12 +10,17 @@ module Cache : sig
   type motos_id_cache = trainee_moto option array
   type snake_map = id_snake list array array
 
+  type distances = {
+    values : int option array array;
+    params : (position list * int ) array
+  }
+
   val reset : unit -> unit
   val snake_map : unit -> snake_map
   val connections : unit -> connections
   val snake_cache : unit -> snake_cache
   val motos_id : unit -> motos_id_cache
-  val distances : unit -> int option array array
+  val distances : unit -> distances
 
 end = struct
 
@@ -26,12 +31,17 @@ end = struct
   type motos_id_cache = trainee_moto option array
   type snake_map = id_snake list array array
 
+  type distances = {
+    values : int option array array;
+    params : ( position list * int ) array
+  }
+
   type cache = {
     snake_coefs : snake_cache;
     motos_id : motos_id_cache ref;
     connections : connections;
     snake_map : snake_map;
-    distances : int option array array;
+    distances : distances;
   }
 
   let mk_cache_snake : unit -> snake_cache = fun () -> H.create 2
@@ -51,8 +61,13 @@ end = struct
     Array.init taille_terrain (fun _ ->
       Array.init taille_terrain (fun _ -> [] ))
 
-  let mk_distances () = Array.init
-    ncases ( fun i -> Array.make ncases None)
+  let mk_distances () =
+    let d = Array.init
+      ncases ( fun i -> Array.make ncases None)
+    in
+    let li : position list = [] in
+    let params = Array.make ncases (li, 0) in
+    {values = d; params = params}
 
   let mk_cache : unit -> cache = fun () ->
     {
@@ -76,6 +91,9 @@ end = struct
 	snake_map = cache.snake_map in
     for x = 0 to taille_terrain - 1 do
       for y = 0 to taille_terrain - 1 do
+
+	let indice1 = case_indice x y in
+	distances.params.(indice1) <- ([], 0);
 	let v0 = if case_traversable (x, y)
 	  then None
 	  else Some (-1) in
@@ -94,7 +112,7 @@ end = struct
 		      else None
 		    else Some (-1)
 	    in
-	    distances.(case_indice x y).(case_indice x2 y2) <- value;
+	    distances.values.(indice1).(case_indice x2 y2) <- value;
 	  done;
 	done ;
       done;

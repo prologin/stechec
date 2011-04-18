@@ -18,11 +18,20 @@ let dist a b =
   let distances = Cache.distances () in
   let ia = case_indice x1 y1 in
   let ib = case_indice x2 y2 in
-  let dia = distances.(ia) in
+  let dia = distances.Cache.values.(ia) in
   let () =  if dia.(ib) = None then
       let min_distance = ref 0 in
       let to_process = ref [a] in
-      while !to_process != [] do
+      let () =
+	match distances.Cache.params.(ia) with
+	  | ([], 0) -> ();
+	  | (toproc, mind) -> begin
+	    min_distance := mind;
+	    to_process := toproc;
+	  end
+      in
+      begin
+	while dia.(ib) = None && !to_process != [] do
 	let min_d = !min_distance in
 	let new_min_d = min_d + 1 in
 	let some_new_min_d = Some new_min_d in
@@ -51,15 +60,18 @@ let dist a b =
 	  to_process2;
 	min_distance := !min_distance + 1;
       done;
+	distances.Cache.params.(ia) <- (!to_process, !min_distance);
+      end
   in
   match dia.(ib) with
     | None -> 0
     | Some (-1) -> 0
     | Some s ->
-      let other = chemin a b |> Array.length in
-      assert (other = s);
+      (* let other = chemin a b |> Array.length in
+      assert (other = s); *)
       s
-(* chemin a b |> Array.length *)
+
+(* let dist a b = chemin a b |> Array.length *)
 
 let print_sources ss =
   List.iter (fun (coef, p) -> Printf.printf "   %i at %i %i\n%!" coef (fst p) (snd p)) ss
