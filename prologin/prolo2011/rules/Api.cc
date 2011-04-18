@@ -157,7 +157,7 @@ std::vector<type_bonus> Api::regarder_bonus(int equipe)
 std::vector<int> Api::regarder_trainee_case(position pos)
 {
   std::vector<int> trainees;
-  // TODO
+  g_->lookup_trainee_case(pos, trainees);
   return trainees;
 }
 

@@ -389,6 +389,18 @@ position InternalTraineeMoto::queue(position head__)
     }
 }
 
+bool InternalTraineeMoto::contains(const position& pos) const
+{
+    nodes_list::const_iterator it;
+
+    for (it = content_.begin(); it != content_.end(); ++it)
+    {
+	if (*it == pos)
+	    return true;
+    }
+    return false;
+}
+
 void InternalTraineeMoto::save_data(MotoData& data)
 {
     data.content = content_;

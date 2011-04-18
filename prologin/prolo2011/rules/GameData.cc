@@ -297,6 +297,16 @@ void GameData::supprimer_moto(int id)
     motos.erase(id);
 }
 
+void GameData::lookup_trainee_case(const position& pos,
+				   std::vector<int>& trainees)
+{
+    motos_type::const_iterator it;
+
+    for (it = motos.begin(); it != motos.end(); ++it)
+	if (it->second.contains(pos))
+	    trainees.push_back(it->first);
+}
+
 bool GameData::source_valide(int id)
 {
     return (0 <= id && id < sources.size());

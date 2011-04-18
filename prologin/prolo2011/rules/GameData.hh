@@ -120,6 +120,7 @@ public:
     creer_trainee_moto(int player, position init, int max_len);
     bool moto_valide(int id);
     void supprimer_moto(int id);
+    void lookup_trainee_case(const position& pos, std::vector<int>& trainees);
 
     bool source_valide(int id);
 
