@@ -39,11 +39,16 @@ class FieldSurface(surface.Surface):
 
 
     def recv_click(self, position):
+        if self.game_state is None:
+            return None
         x = position[0] / self.img_props['tile_size'][0]
         y = (position[1] - self.img_props['vshift']) \
             / self.img_props['tile_size'][1]
         if y < 0:
             return None
+        pos = (x, y)
+        ground = self.game_state.ground[pos]
+        bonus = self.game_state.bonusgrid[pos]
 
     def update_field(self, game_state):
         self.game_state = game_state

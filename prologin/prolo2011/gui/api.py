@@ -5,7 +5,7 @@ from _api import *
 TAILLE_TERRAIN = 30
 
 # Nombre de tours par partie
-FIN_PARTIE = 1500
+FIN_PARTIE = 150
 
 # Nombre de points d'action par tour
 MAX_PA = 3

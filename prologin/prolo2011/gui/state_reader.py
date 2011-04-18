@@ -21,6 +21,9 @@ class Reader:
     def is_ended(self):
         pass
 
+    def get_turn(self):
+        pass
+
 class StechecReader(Reader):
     '''
     Stechec reader get the game from the Stechec client.
@@ -38,6 +41,8 @@ class StechecReader(Reader):
         self.end_game = threading.Event()
         self.waiting_turn = False
         self.realeased = threading.Event()
+        self.turn = 0
+        self.waiting_end = False
 
     def get_next_state(self):
         '''
@@ -49,6 +54,7 @@ class StechecReader(Reader):
             return None
         game_state = None
         if self.new_turn.is_set():
+            self.turn += 1
             game_state = self.pipe.get()
             self.new_turn.clear()
             self.waiting_turn = True
@@ -70,6 +76,8 @@ class StechecReader(Reader):
         Must be called in the Stechec thread.
         '''
 
+        if self.waiting_end:
+            return
         self.pipe.put(game_state)
         self.end_turn.clear()
         self.new_turn.set()
@@ -89,13 +97,9 @@ class StechecReader(Reader):
         Must be called in the GUI thread.
         '''
 
-        if self.new_turn.set():
-            self.new_turn.clear()
-            self.end_turn.clear()
-        while not self.is_ended():
-            self.new_turn.wait()
-            self.new_turn.clear()
-            self.end_turn.set()
+        self.end_turn.clear()
+        self.end_turn.set()
+        self.waiting_end = True
 
     def do_end(self):
         '''
@@ -104,6 +108,14 @@ class StechecReader(Reader):
         '''
 
         self.end_game.set()
+
+    def get_turn(self):
+        '''
+        Return the turn number.
+        Should be called in the GUI thread.
+        '''
+
+        return self.turn
 
 class DumpReader(Reader):
     def __init__(self):
