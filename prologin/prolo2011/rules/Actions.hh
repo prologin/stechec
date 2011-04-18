@@ -17,7 +17,7 @@
 # include "Contest.hh"
 # include "Constant.hh"
 # include "GameData.hh"
-
+# include "interface.hh"
 # include "InternalTraineeMoto.hh"
 
 # include <map>
@@ -82,6 +82,7 @@ public:
 	Action(player), id_(id), entre_(entre), et_(et),
 	new_id_(-1)
     {
+      LOG4("couper trainee moto %1 %2 %3 %4", player, id, entre, et);
     }
 
     ACTIONS(ActionCouperTraineeMoto, ACT_COUPER_TRAINEE_MOTO);

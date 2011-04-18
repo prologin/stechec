@@ -181,7 +181,7 @@ void InternalTraineeMoto::take_case(const position&	pos,
 erreur InternalTraineeMoto::move(position from, position to,
 				 type_bonus&	taken_bonus)
 {
-  LOG4("trainee_moto move");
+  LOG4("trainee_moto move %1 -> %2", from, to);
   if (begin(from))
   {
     if (len_ == max_len_)
