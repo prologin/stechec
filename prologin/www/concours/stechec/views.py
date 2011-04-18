@@ -31,15 +31,19 @@ class ChampionsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ChampionsListView, self).get_context_data(**kwargs)
+        context['show_for_all'] = self.show_for_all
         context['explanation_text'] = self.explanation_text
         return context
 
 class AllChampionsView(ChampionsListView):
     queryset = models.Champion.objects.filter(deleted=False)
     explanation_text = 'Voici la liste de tous les champions participants actuellement.'
+    show_for_all = True
 
 class MyChampionsView(ChampionsListView):
     explanation_text = 'Voici la liste de tous vos champions participants actuellement.'
+    show_for_all = False
+
     def get_queryset(self):
         user = self.request.user
         return models.Champion.objects.filter(deleted=False, author=user)

@@ -14,8 +14,12 @@
         <tr>
             <th>ID</th>
             <th>Nom</th>
+            {% if show_for_all %}
             <th>Auteur</th>
-            <th>Détails</th>
+            {% else %}
+            <th>Statut</th>
+            {% endif %}
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,12 +27,21 @@
         <tr class="{% cycle "row1" "row2" %}">
             <td>{{ champion.id }}</td>
             <td>{{ champion.name }}</td>
+            {% if show_for_all %}
             <td>{{ champion.author }}</td>
             <td><a href="{{ champion.get_absolute_url }}">Détails</a></td>
+            {% else %}
+            <td>{{ champion.get_status_display }}</td>
+            <td>
+                <a href="{{ champion.get_absolute_url }}">Détails</a> -
+                <a href="#">Éditer</a> -
+                <a href="#">Supprimer</a>
+            </td>
+            {% endif %}
         </tr>
         {% empty %}
         <tr>
-            <td colspan="4">Aucun champion inscrit actuellement.</td>
+            <td colspan="8">Aucun champion inscrit actuellement.</td>
         </tr>
         {% endfor %}
     </tbody>
