@@ -27,6 +27,7 @@ class State:
         self.ticks = 0
         self.loop_delay = 1000 / State.TURN_FPS
         self.help = False
+        self.is_closed = False
 
     def switch_help(self):
         self.help = not self.help
@@ -43,6 +44,9 @@ class State:
             self.ticks = ticks
             return True
         return False
+
+    def close(self):
+        self.is_closed = True
 
 class Graphics:
     FPS = 20
@@ -63,26 +67,35 @@ class Graphics:
         self.release()
 
     def loop(self):
-        looping = True
-        while looping:
+        while not self.state.is_closed \
+                and not self.state_reader.is_ended():
             self.clock.tick(Graphics.FPS)
             self.update_state()
-            looping = self.handle_events()
+            self.handle_events()
+            self.update_graphics()
+
+        self.state_surf.update_end()
+        while not self.state.is_closed:
+            self.clock.tick(Graphics.FPS)
+            self.looping = self.handle_events()
             self.update_graphics()
 
         self.state_reader.wait_end()
-        self.state_surf.update_end()
+        if self.state.is_closed and self.state_reader.can_quit():
+            self.release()
+            sys.exit(0)
+
+        # This is implemented only if can_quit returns false
         looping = True
         while not self.state_reader.is_ended():
-            if self.state_reader.is_ended():
-                break
-            self.clock.tick(Graphics.FPS)
+            self.state_surf.update_wait_end(self.state_reader.get_turn() / 2)
             self.update_graphics()
+            self.clock.tick(Graphics.FPS)
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return False
+                self.state.close()
             if self.state.help:
                 if event.type == pygame.KEYDOWN \
                         and event.key == pygame.K_h:
@@ -103,7 +116,6 @@ class Graphics:
                     self.actions_surf.update_roll(-1)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.field_surf.click(pygame.mouse.get_pos())
-        return True
 
     def go_next_turn(self):
         self.state_reader.go_next()
