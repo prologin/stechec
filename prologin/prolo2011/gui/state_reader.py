@@ -3,6 +3,9 @@
 import threading
 import Queue as queue
 
+from api import *
+import game
+
 class Reader:
     '''
     This class just exhibit the reader interface needed by the gui.
@@ -68,7 +71,7 @@ class StechecReader(Reader):
             self.waiting_turn = False
             self.end_turn.set()
 
-    def put_state(self, game_state):
+    def put_state(self):
         '''
         Put the next game state.
         Must be called in the Stechec thread.
@@ -76,6 +79,7 @@ class StechecReader(Reader):
 
         if self.waiting_end:
             return
+        game_state = self.build_game()
         self.pipe.put(game_state)
         self.end_turn.clear()
         self.end_turn.wait()
@@ -113,6 +117,44 @@ class StechecReader(Reader):
         '''
 
         return self.turn
+
+    def build_game(self):
+        '''
+        Build a Game object from the Stechec’s API and return it.
+        Shouldn’t be called out of this class (Stechec thread).
+        '''
+
+        g = game.GameState()
+        g.turn_no = tour_actuel()
+        g.actions = actions_effectuees()
+
+        g.ground = game.Grid(lambda x: VIDE)
+        g.bonusgrid = game.Grid(regarder_type_bonus)
+        g.objgrid = game.Grid(lambda x: [])
+        g.motos = [
+                game.Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement],
+                          m.id, g.objgrid)
+                for m in trainees_moto()
+                ]
+        g.sources = [game.Source((s.pos.x, s.pos.y),
+                                 s.capacite, s.capacite_max,
+                                 s.id,
+                                 g.objgrid)
+                        for s in sources_energie()]
+
+        for y in xrange(TAILLE_TERRAIN):
+            for x in xrange(TAILLE_TERRAIN):
+                c = regarder_type_case(position(x=x, y=y))
+                if c in (OBSTACLE, POINT_CROISEMENT):
+                    g.ground[(x, y)] = c
+
+        g.teams = [game.Team(i, 0, []) for i in xrange(nombre_equipes())]
+        for (no, s) in enumerate(scores()):
+            g.teams[no].bonus = regarder_bonus(no)
+            g.teams[no].score = s
+
+        return g
+
 
 class DumpReader(Reader):
     def __init__(self):

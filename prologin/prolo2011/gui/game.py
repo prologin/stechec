@@ -184,33 +184,16 @@ class Grid:
 
 class GameState:
     def __init__(self):
-        self.turn_no = tour_actuel()
-        self.actions = actions_effectuees()
+        self.turn_no = -1
+        self.actions = []
 
-        self.ground = Grid(lambda x: VIDE)
-        self.bonusgrid = Grid(regarder_type_bonus)
-        self.objgrid = Grid(lambda x: [])
-        self.motos = [
-                Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement],
-                     m.id, self.objgrid)
-                for m in trainees_moto()
-                ]
-        self.sources = [Source((s.pos.x, s.pos.y),
-                               s.capacite, s.capacite_max,
-                               s.id,
-                               self.objgrid)
-                        for s in sources_energie()]
+        self.ground = Grid(lambda x: None)
+        self.bonusgrid = Grid(lambda x: None)
+        self.objgrid = Grid(lambda x: None)
+        self.motos = []
+        self.sources = []
 
-        for y in xrange(TAILLE_TERRAIN):
-            for x in xrange(TAILLE_TERRAIN):
-                c = regarder_type_case(position(x=x, y=y))
-                if c in (OBSTACLE, POINT_CROISEMENT):
-                    self.ground[(x, y)] = c
-
-        self.teams = [Team(i, 0, []) for i in xrange(nombre_equipes())]
-        for (no, s) in enumerate(scores()):
-            self.teams[no].bonus = regarder_bonus(no)
-            self.teams[no].score = s
+        self.teams = []
 
     def get_connected_objects(self):
         connected_trainees_moto = set()

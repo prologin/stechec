@@ -27,7 +27,7 @@ def init_game():
     gfx_thread.start()
 
 def jouer():
-    state_reader.put_state(game.GameState())
+    state_reader.put_state()
 
 def end_game():
     state_reader.do_end()
