@@ -222,7 +222,7 @@ if __name__ == '__main__':
     )
 
     config = read_config(options.config_file)
-    s = SimpleXMLRPCServer(('localhost', config['worker']['port']),
+    s = SimpleXMLRPCServer(('0.0.0.0', config['worker']['port']),
                            logRequests=False)
     s.register_introspection_functions()
 

@@ -182,10 +182,11 @@ value cxx2lang<value, source_energie>(source_energie in)
 {
   CAMLparam0();
   CAMLlocal1(out);
-  out = caml_alloc(3, 0);
+  out = caml_alloc(4, 0);
   caml_initialize(&Field(out, 0), cxx2lang<value, int>(in.id));
   caml_initialize(&Field(out, 1), cxx2lang<value, position>(in.pos));
-  caml_initialize(&Field(out, 2), cxx2lang<value, int>(in.coef));
+  caml_initialize(&Field(out, 2), cxx2lang<value, int>(in.capacite));
+  caml_initialize(&Field(out, 3), cxx2lang<value, int>(in.capacite_max));
   CAMLreturn(out);
 }
 
@@ -196,7 +197,8 @@ source_energie lang2cxx<value, source_energie>(value in)
   source_energie out;
   out.id = lang2cxx<value, int>(Field(in, 0));
   out.pos = lang2cxx<value, position>(Field(in, 1));
-  out.coef = lang2cxx<value, int>(Field(in, 2));
+  out.capacite = lang2cxx<value, int>(Field(in, 2));
+  out.capacite_max = lang2cxx<value, int>(Field(in, 3));
   CAMLreturnT(source_energie, out);
 }
 
@@ -212,7 +214,7 @@ value cxx2lang<value, trainee_moto>(trainee_moto in)
   caml_initialize(&Field(out, 0), cxx2lang<value, int>(in.id));
   caml_initialize(&Field(out, 1), cxx2lang_array(in.emplacement));
   caml_initialize(&Field(out, 2), cxx2lang<value, int>(in.team));
-  caml_initialize(&Field(out, 3), cxx2lang<value, int>(in.len));
+  caml_initialize(&Field(out, 3), cxx2lang<value, int>(in.longueur));
   CAMLreturn(out);
 }
 
@@ -224,7 +226,7 @@ trainee_moto lang2cxx<value, trainee_moto>(value in)
   out.id = lang2cxx<value, int>(Field(in, 0));
   out.emplacement = lang2cxx_array<position>(Field(in, 1));
   out.team = lang2cxx<value, int>(Field(in, 2));
-  out.len = lang2cxx<value, int>(Field(in, 3));
+  out.longueur = lang2cxx<value, int>(Field(in, 3));
   CAMLreturnT(trainee_moto, out);
 }
 
@@ -316,6 +318,26 @@ extern "C" value ml_regarder_bonus(value equipe)
   CAMLparam0();
   CAMLxparam1(equipe);
   CAMLreturn((cxx2lang_array<type_bonus>(api_regarder_bonus(lang2cxx<value, int>(equipe)))));
+}
+
+///
+// Retourne la liste des id des traînées présentes sur une case
+//
+extern "C" value ml_regarder_trainee_case(value pos)
+{
+  CAMLparam0();
+  CAMLxparam1(pos);
+  CAMLreturn((cxx2lang_array<int>(api_regarder_trainee_case(lang2cxx<value, position>(pos)))));
+}
+
+///
+// Retourne si une case peut être traversée par une traînée de plus
+//
+extern "C" value ml_case_traversable(value pos)
+{
+  CAMLparam0();
+  CAMLxparam1(pos);
+  CAMLreturn((cxx2lang<value, bool>(api_case_traversable(lang2cxx<value, position>(pos)))));
 }
 
 ///

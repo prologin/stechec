@@ -69,7 +69,8 @@ source_energie  SourceEnergie::to_source_energie(int indice)
     source_energie  s;
     s.id = indice;
     s.pos = pos;
-    s.coef = potentiel_cur;
+    s.capacite = potentiel_cur;
+    s.capacite_max = potentiel_max;
     return (s);
 }
 
@@ -181,14 +182,11 @@ bool GameData::is_crossable_pos(const position& p)
 {
     if (position_invalide(p))
 	return false;
-    else
-    {
-	Case& c = get_case(p);
-	if ((c.type != VIDE && c.type != BONUS) ||
-	    (c.nb_trainees_moto != 0 && c.type != POINT_CROISEMENT))
-	    return false;
-    }
-    return true;
+    Case& c = get_case(p);
+    if ((c.type == VIDE && c.nb_trainees_moto == 0)
+	|| c.type == POINT_CROISEMENT)
+	return true;
+    return false;
 }
 
 void GameData::build_from_reverse_path(const position& reverse_begin,
@@ -299,6 +297,16 @@ void GameData::supprimer_moto(int id)
     motos.erase(id);
 }
 
+void GameData::lookup_trainee_case(const position& pos,
+				   std::vector<int>& trainees)
+{
+    motos_type::const_iterator it;
+
+    for (it = motos.begin(); it != motos.end(); ++it)
+	if (it->second.contains(pos))
+	    trainees.push_back(it->first);
+}
+
 bool GameData::source_valide(int id)
 {
     return (0 <= id && id < sources.size());
@@ -316,7 +324,8 @@ void GameData::team_switched(){
 	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
     }
 
-    actions_stockees.clear();
+    actions_stockees = actions_stockees_buffer;
+    actions_stockees_buffer.clear();
 
     can_play = true;
     current_player = (current_player + 1 ) % 2;
@@ -375,11 +384,7 @@ GameData::get_sources(std::vector<source_energie>& srcs)
 {
     srcs.reserve(sources.size());
     for (int i = 0; i < sources.size(); ++i)
-    {
-        srcs[i].id = i;
-        srcs[i].pos = sources[i].pos;
-        srcs[i].coef = sources[i].potentiel_cur;
-    }
+      srcs[i] = sources[i].to_source_energie(i);
 }
 void
 GameData::get_bonus_joueur(int joueur, std::vector<type_bonus>& bonus)
@@ -609,5 +614,5 @@ void GameData::stocker_action(Action* act)
     // action is done. Serialize, and store that.
     std::vector<int> ser = act->serialiser();
     ser.insert(ser.begin(), 1, act->type());
-    actions_stockees.push_back(ser);
+    actions_stockees_buffer.push_back(ser);
 }

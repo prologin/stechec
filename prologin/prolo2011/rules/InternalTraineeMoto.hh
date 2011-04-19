@@ -70,6 +70,7 @@ public:
     position queue(position head);
     position head();
     position queue();
+    bool contains(const position& pos) const;
 
     GameData*	gd_;
     int		player_;

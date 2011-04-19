@@ -111,8 +111,8 @@ def load_props():
     if props_memory is not None:
         return props_memory
     props = {
-        'tile_size': (16, 16),
-        'vshift': 16
+        'tile_size': (24, 24),
+        'vshift': 24
         }
     props_memory = props
     return props

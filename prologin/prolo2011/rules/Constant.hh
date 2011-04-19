@@ -64,11 +64,8 @@ typedef enum erreur {
 typedef enum type_case {
   VIDE, /* <- rien n'est présent sur la case */
   OBSTACLE, /* <- cette case est inaccessible */
-  BONUS, /* <- cette case cotient un bonus */
   POINT_CROISEMENT, /* <- point de croisement de traînées */
-  SOURCE,
-  TRAINEE,
-  TRAINEE_ET_CROISEMENT
+  SOURCE, /* <- cette case est une source */
 } type_case;
 
 
@@ -99,7 +96,8 @@ typedef struct position {
 typedef struct source_energie {
   int id;  /* <- identifiant de la source d'énergie */
   position pos;  /* <- position de la source d'énergie */
-  int coef;  /* <- coefficient representant les points d'énergie que la source va vous apporter */
+  int capacite;  /* <- coefficient representant les points d'énergie que la source va vous apporter */
+  int capacite_max; /* coefficient représentant la capacité de la source lorsqu'elle est chargée au maximum */
 } source_energie;
 
 
@@ -110,7 +108,7 @@ typedef struct trainee_moto {
   int id;  /* <- identifiant de la traînee */
   std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
   int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
-  int len;
+  int longueur; /* taille maximale de la traînée */
 } trainee_moto;
 
 

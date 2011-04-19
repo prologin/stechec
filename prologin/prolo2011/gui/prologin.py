@@ -3,9 +3,10 @@
 # modify it in a permanent way, please refer
 # to the script file : gen/generator_python.rb
 
-from api import *
-
+import sys
 import threading
+
+from api import *
 
 import game
 import state_reader
@@ -26,7 +27,7 @@ def init_game():
     gfx_thread.start()
 
 def jouer():
-    state_reader.put_state(game.GameState())
+    state_reader.put_state()
 
 def end_game():
     state_reader.do_end()

@@ -60,11 +60,8 @@ typedef enum erreur {
 typedef enum type_case {
   VIDE, /* <- rien n'est présent sur la case */
   OBSTACLE, /* <- cette case est inaccessible */
-  BONUS, /* <- cette case cotient un bonus */
   POINT_CROISEMENT, /* <- point de croisement de traînées */
   SOURCE, /* <- source ou consommateur d'energie */
-  TRAINEE, /* <- une trainée de moto */
-  TRAINEE_ET_CROISEMENT, /* <- une trainee sur un point de croisement */
 } type_case;
 
 
@@ -95,7 +92,8 @@ typedef struct position {
 typedef struct source_energie {
   int id;  /* <- identifiant de la source d'énergie */
   position pos;  /* <- position de la source d'énergie */
-  int coef;  /* <- coefficient representant les points d'énergie que la source va vous apporter */
+  int capacite;  /* <- coefficient représentant les points d'énergie que la source va vous apporter */
+  int capacite_max;  /* <- coefficient représentant la capacité de la source lorsqu'elle est chargée au maximum */
 } source_energie;
 
 
@@ -106,7 +104,7 @@ typedef struct trainee_moto {
   int id;  /* <- identifiant de la traînee */
   std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
   int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
-  int len;  /* <- la taille maximale de la trainee */
+  int longueur;  /* <- taille maximale de la traînée */
 } trainee_moto;
 
 
@@ -197,6 +195,26 @@ extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
 static inline std::vector<type_bonus> regarder_bonus(int equipe)
 {
   return api_regarder_bonus(equipe);
+}
+
+
+///
+// Retourne la liste des id des traînées présentes sur une case
+//
+extern "C" std::vector<int> api_regarder_trainee_case(position pos);
+static inline std::vector<int> regarder_trainee_case(position pos)
+{
+  return api_regarder_trainee_case(pos);
+}
+
+
+///
+// Retourne si une case peut être traversée par une traînée de plus
+//
+extern "C" bool api_case_traversable(position pos);
+static inline bool case_traversable(position pos)
+{
+  return api_case_traversable(pos);
 }
 
 

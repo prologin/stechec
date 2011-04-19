@@ -83,6 +83,14 @@ int Api::tour_actuel()
 }
 
 ///
+// Retourne le tour actuel
+//
+int Api::tour_reel()
+{
+  return g_->getCurrentTurn();
+}
+
+///
 // Retourne la liste des sources d'énergie
 //
 std::vector<source_energie> Api::sources_energie()
@@ -122,12 +130,6 @@ type_case Api::regarder_type_case(position pos)
     if (position_invalide(pos.x, pos.y))
 	return (OBSTACLE);
     Case &c = g_->get_case(pos);
-    if (c.nb_trainees_moto != 0){
-      if (c.type == POINT_CROISEMENT){
-	return TRAINEE_ET_CROISEMENT;
-      }
-      return TRAINEE;
-    }
     return (c.type);
 }
 
@@ -155,6 +157,24 @@ std::vector<type_bonus> Api::regarder_bonus(int equipe)
     std::vector<type_bonus>	result;
     g_->get_bonus_joueur(equipe, result);
     return (result);
+}
+
+///
+// Retourne la liste des id des traînées présentes sur une case
+//
+std::vector<int> Api::regarder_trainee_case(position pos)
+{
+  std::vector<int> trainees;
+  g_->lookup_trainee_case(pos, trainees);
+  return trainees;
+}
+
+///
+// Retourne si une case peut être traversée par une traînée de plus
+//
+bool Api::case_traversable(position pos)
+{
+    return g_->is_crossable_pos(pos);
 }
 
 ///

@@ -3,6 +3,9 @@
 import threading
 import Queue as queue
 
+from api import *
+import game
+
 class Reader:
     '''
     This class just exhibit the reader interface needed by the gui.
@@ -21,6 +24,9 @@ class Reader:
     def is_ended(self):
         pass
 
+    def get_turn(self):
+        pass
+
 class StechecReader(Reader):
     '''
     Stechec reader get the game from the Stechec client.
@@ -32,12 +38,13 @@ class StechecReader(Reader):
 
     def __init__(self):
         Reader.__init__(self)
-        self.new_turn = threading.Event()
         self.end_turn = threading.Event()
         self.pipe = queue.Queue()
         self.end_game = threading.Event()
         self.waiting_turn = False
         self.realeased = threading.Event()
+        self.turn = 0
+        self.waiting_end = False
 
     def get_next_state(self):
         '''
@@ -48,9 +55,9 @@ class StechecReader(Reader):
         if self.waiting_turn:
             return None
         game_state = None
-        if self.new_turn.is_set():
+        if not self.pipe.empty():
+            self.turn += 1
             game_state = self.pipe.get()
-            self.new_turn.clear()
             self.waiting_turn = True
         return game_state
 
@@ -64,15 +71,17 @@ class StechecReader(Reader):
             self.waiting_turn = False
             self.end_turn.set()
 
-    def put_state(self, game_state):
+    def put_state(self):
         '''
         Put the next game state.
         Must be called in the Stechec thread.
         '''
 
+        if self.waiting_end:
+            return
+        game_state = self.build_game()
         self.pipe.put(game_state)
         self.end_turn.clear()
-        self.new_turn.set()
         self.end_turn.wait()
 
     def is_ended(self):
@@ -89,13 +98,9 @@ class StechecReader(Reader):
         Must be called in the GUI thread.
         '''
 
-        if self.new_turn.set():
-            self.new_turn.clear()
-            self.end_turn.clear()
-        while not self.is_ended():
-            self.new_turn.wait()
-            self.new_turn.clear()
-            self.end_turn.set()
+        self.end_turn.clear()
+        self.end_turn.set()
+        self.waiting_end = True
 
     def do_end(self):
         '''
@@ -104,6 +109,52 @@ class StechecReader(Reader):
         '''
 
         self.end_game.set()
+
+    def get_turn(self):
+        '''
+        Return the turn number.
+        Should be called in the GUI thread.
+        '''
+
+        return self.turn
+
+    def build_game(self):
+        '''
+        Build a Game object from the Stechec’s API and return it.
+        Shouldn’t be called out of this class (Stechec thread).
+        '''
+
+        g = game.GameState()
+        g.turn_no = tour_actuel()
+        g.actions = actions_effectuees()
+
+        g.ground = game.Grid(lambda x: VIDE)
+        g.bonusgrid = game.Grid(regarder_type_bonus)
+        g.objgrid = game.Grid(lambda x: [])
+        g.motos = [
+                game.Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement],
+                          m.id, g.objgrid)
+                for m in trainees_moto()
+                ]
+        g.sources = [game.Source((s.pos.x, s.pos.y),
+                                 s.capacite, s.capacite_max,
+                                 s.id,
+                                 g.objgrid)
+                        for s in sources_energie()]
+
+        for y in xrange(TAILLE_TERRAIN):
+            for x in xrange(TAILLE_TERRAIN):
+                c = regarder_type_case(position(x=x, y=y))
+                if c in (OBSTACLE, POINT_CROISEMENT):
+                    g.ground[(x, y)] = c
+
+        g.teams = [game.Team(i, 0, []) for i in xrange(nombre_equipes())]
+        for (no, s) in enumerate(scores()):
+            g.teams[no].bonus = regarder_bonus(no)
+            g.teams[no].score = s
+
+        return g
+
 
 class DumpReader(Reader):
     def __init__(self):

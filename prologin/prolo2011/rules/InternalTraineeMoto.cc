@@ -389,6 +389,18 @@ position InternalTraineeMoto::queue(position head__)
     }
 }
 
+bool InternalTraineeMoto::contains(const position& pos) const
+{
+    nodes_list::const_iterator it;
+
+    for (it = content_.begin(); it != content_.end(); ++it)
+    {
+	if (*it == pos)
+	    return true;
+    }
+    return false;
+}
+
 void InternalTraineeMoto::save_data(MotoData& data)
 {
     data.content = content_;
@@ -423,7 +435,7 @@ trainee_moto InternalTraineeMoto::to_trainee_moto() const
     out.id = id_;
     out.emplacement.reserve(len_);
     out.team = player_;
-    out.len = max_len_;
+    out.longueur = max_len_;
     for (it = content_.begin(); it != content_.end(); ++it)
 	out.emplacement.push_back(*it); // TODO
     return out;

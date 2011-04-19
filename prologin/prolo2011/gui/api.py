@@ -2,16 +2,16 @@
 from _api import *
 
 # Taille du terrain
-TAILLE_TERRAIN = 50
+TAILLE_TERRAIN = 30
 
 # Nombre de tours par partie
-FIN_PARTIE = 1500
+FIN_PARTIE = 150
 
 # Nombre de points d'action par tour
 MAX_PA = 3
 
 # Taille des traînées de moto
-TAILLE_TRAINEE = 900
+TAILLE_TRAINEE = 120
 
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5
@@ -34,10 +34,9 @@ AJOUT_PA = 5
 (
     VIDE, # <- rien n'est présent sur la case
     OBSTACLE, # <- cette case est inaccessible
-    BONUS, # <- cette case cotient un bonus
     POINT_CROISEMENT, # <- point de croisement de traînées
     SOURCE, # <- source ou consommateur d'energie
-) = range(5)
+) = range(4)
 
 
 # Énumération représentant les différents types de bonii
@@ -63,7 +62,8 @@ position = namedtuple("position",
 source_energie = namedtuple("source_energie",
     'id ' # <- identifiant de la source d'énergie
     'pos ' # <- position de la source d'énergie
-    'coef ' # <- coefficient representant les points d'énergie que la source va vous apporter
+    'capacite ' # <- coefficient représentant les points d'énergie que la source va vous apporter
+    'capacite_max ' # <- coefficient représentant la capacité de la source lorsqu'elle est chargée au maximum
 )
 
 
@@ -72,6 +72,7 @@ trainee_moto = namedtuple("trainee_moto",
     'id ' # <- identifiant de la traînee
     'emplacement ' # <- position de chaque composant de la traînée de moto
     'team ' # <- identifiant de l'équipe qui possède cette traînée de moto
+    'longueur ' # <- taille maximale de la traînée
 )
 
 

@@ -32,8 +32,6 @@ std::string	str_type_case(type_case	c)
 	return "VIDE";
     else if (c == OBSTACLE)
 	return "OBSTACLE";
-    else if (c == BONUS)
-	return "BONUS";
     else if (c == POINT_CROISEMENT)
 	return "POINT_CROISEMENT";
     else
@@ -93,7 +91,7 @@ void my_print_sources()
         source_energie& s = sources[i];
         std::cout << "  source[" << s.id << "] @ ("
                   << s.pos.x << ", " << s.pos.y << ") : "
-                  << s.coef << std::endl;
+                  << s.capacite << "/" << s.capacite_max << std::endl;
     }
 }
 

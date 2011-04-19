@@ -3,18 +3,23 @@
 import pygame
 
 from api import *
-# TODO: erase this when the constant is updated upstream in ALL FILES
-TAILLE_TERRAIN = 50
 
 import game
 import images
 import surface
 
+def get_dim(taille):
+    imgp = images.load_props()
+    vshift = imgp['vshift']
+    tile_size = imgp['tile_size']
+    return (taille * tile_size[0],
+            vshift + taille * tile_size[1])
+
 class FieldSurface(surface.Surface):
     BACKGROUND_COLOR = (0, 0, 0)
     GRID_COLOR = (32, 48, 64)
 
-    def __init__(self, position):
+    def __init__(self, position, detail):
         self.img_props = imgp = images.load_props()
 
         vshift = imgp['vshift']
@@ -25,6 +30,8 @@ class FieldSurface(surface.Surface):
         surface.Surface.__init__(self, position + size)
         self.imgs = images.load_pix()
         self.grid_surface = self.get_grid()
+        self.detail = detail
+        self.detail_pos = None
 
     def get_grid(self):
         imgp = self.img_props
@@ -41,11 +48,21 @@ class FieldSurface(surface.Surface):
 
 
     def recv_click(self, position):
+        if self.game_state is None:
+            return None
         x = position[0] / self.img_props['tile_size'][0]
         y = (position[1] - self.img_props['vshift']) \
             / self.img_props['tile_size'][1]
         if y < 0:
             return None
+        self.update_detail((x, y))
+
+    def update_detail(self, position):
+        self.detail_pos = pos = position
+        ground = self.game_state.ground[pos]
+        bonus = self.game_state.bonusgrid[pos]
+        obj = self.game_state.objgrid[pos]
+        self.detail.update_pos(position, ground, bonus, obj)
 
     def update_field(self, game_state):
         self.game_state = game_state
@@ -107,9 +124,9 @@ class FieldSurface(surface.Surface):
 
         source_imgs = self.imgs['source_energie']
         for source in self.game_state.sources:
-            if source.coefficient < 0:
+            if source.capacite_max < 0:
                 status = 'consommateur'
-            elif source.coefficient > 0:
+            elif source.capacite_max > 0:
                 status = 'producteur'
             else:
                 images.place_img(source.position, self.surface,
@@ -123,3 +140,6 @@ class FieldSurface(surface.Surface):
 
             images.place_img(source.position, self.surface,
                              source_imgs[state][status], self.img_props)
+
+        if self.detail_pos is not None:
+            self.update_detail(self.detail_pos)

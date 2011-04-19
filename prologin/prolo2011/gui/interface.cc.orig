@@ -192,10 +192,11 @@ position lang2cxx<PyObject*, position>(PyObject* in)
 template <>
 PyObject* cxx2lang<PyObject*, source_energie>(source_energie in)
 {
-  PyObject* tuple = PyTuple_New(3);
+  PyObject* tuple = PyTuple_New(4);
   PyTuple_SET_ITEM(tuple, 0, (cxx2lang<PyObject*, int>(in.id)));
   PyTuple_SET_ITEM(tuple, 1, (cxx2lang<PyObject*, position>(in.pos)));
-  PyTuple_SET_ITEM(tuple, 2, (cxx2lang<PyObject*, int>(in.coef)));
+  PyTuple_SET_ITEM(tuple, 2, (cxx2lang<PyObject*, int>(in.capacite)));
+  PyTuple_SET_ITEM(tuple, 3, (cxx2lang<PyObject*, int>(in.capacite_max)));
   PyObject* name = PyString_FromString("source_energie");
   PyObject* cstr = PyObject_GetAttr(py_module, name);
   Py_DECREF(name);
@@ -225,7 +226,12 @@ source_energie lang2cxx<PyObject*, source_energie>(PyObject* in)
   i = cxx2lang<PyObject*, int>(2);
   i = PyObject_GetItem(in, i);
   if (i == NULL) throw 42;
-  out.coef = lang2cxx<PyObject*, int>(i);
+  out.capacite = lang2cxx<PyObject*, int>(i);
+  Py_DECREF(i);
+  i = cxx2lang<PyObject*, int>(3);
+  i = PyObject_GetItem(in, i);
+  if (i == NULL) throw 42;
+  out.capacite_max = lang2cxx<PyObject*, int>(i);
   Py_DECREF(i);
   return out;
 }
@@ -236,10 +242,11 @@ source_energie lang2cxx<PyObject*, source_energie>(PyObject* in)
 template <>
 PyObject* cxx2lang<PyObject*, trainee_moto>(trainee_moto in)
 {
-  PyObject* tuple = PyTuple_New(3);
+  PyObject* tuple = PyTuple_New(4);
   PyTuple_SET_ITEM(tuple, 0, (cxx2lang<PyObject*, int>(in.id)));
   PyTuple_SET_ITEM(tuple, 1, cxx2lang_array(in.emplacement));
   PyTuple_SET_ITEM(tuple, 2, (cxx2lang<PyObject*, int>(in.team)));
+  PyTuple_SET_ITEM(tuple, 3, (cxx2lang<PyObject*, int>(in.longueur)));
   PyObject* name = PyString_FromString("trainee_moto");
   PyObject* cstr = PyObject_GetAttr(py_module, name);
   Py_DECREF(name);
@@ -270,6 +277,11 @@ trainee_moto lang2cxx<PyObject*, trainee_moto>(PyObject* in)
   i = PyObject_GetItem(in, i);
   if (i == NULL) throw 42;
   out.team = lang2cxx<PyObject*, int>(i);
+  Py_DECREF(i);
+  i = cxx2lang<PyObject*, int>(3);
+  i = PyObject_GetItem(in, i);
+  if (i == NULL) throw 42;
+  out.longueur = lang2cxx<PyObject*, int>(i);
   Py_DECREF(i);
   return out;
 }
@@ -400,6 +412,66 @@ PyObject* a0;
   }
     try {
 return cxx2lang_array(api_regarder_bonus(lang2cxx<PyObject*, int>(a0)));
+  } catch (...) { return NULL; }
+}
+
+///
+// Retourne la liste des id des traînées présentes sur une case
+//
+static PyObject* p_regarder_trainee_case(PyObject* self, PyObject* args)
+{
+  (void)self;
+PyObject* a0;
+  if (!PyArg_ParseTuple(args, "O", &a0)) {
+    return NULL;
+  }
+    try {
+return cxx2lang_array(api_regarder_trainee_case(lang2cxx<PyObject*, position>(a0)));
+  } catch (...) { return NULL; }
+}
+
+///
+// Retourne si une case peut être traversée par une traînée de plus
+//
+static PyObject* p_case_traversable(PyObject* self, PyObject* args)
+{
+  (void)self;
+PyObject* a0;
+  if (!PyArg_ParseTuple(args, "O", &a0)) {
+    return NULL;
+  }
+    try {
+return cxx2lang<PyObject*, bool>(api_case_traversable(lang2cxx<PyObject*, position>(a0)));
+  } catch (...) { return NULL; }
+}
+
+///
+// Renvoie les points que vous allez gagner a la fin du tour
+//
+static PyObject* p_diff_score(PyObject* self, PyObject* args)
+{
+  (void)self;
+  if (!PyArg_ParseTuple(args, "")) {
+    return NULL;
+  }
+    try {
+return cxx2lang<PyObject*, int>(api_diff_score());
+  } catch (...) { return NULL; }
+}
+
+///
+// Renvoie le chemin le plus court entre deux points (fonction lente)
+//
+static PyObject* p_chemin(PyObject* self, PyObject* args)
+{
+  (void)self;
+PyObject* a0;
+PyObject* a1;
+  if (!PyArg_ParseTuple(args, "OO", &a0, &a1)) {
+    return NULL;
+  }
+    try {
+return cxx2lang_array(api_chemin(lang2cxx<PyObject*, position>(a0), lang2cxx<PyObject*, position>(a1)));
   } catch (...) { return NULL; }
 }
 
@@ -652,7 +724,7 @@ api_afficher_trainee_moto(lang2cxx<PyObject*, trainee_moto>(a0));
 ** Api functions to register.
 */
 static PyMethodDef api_callback[] = {
-  {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"sources_energie", p_sources_energie, METH_VARARGS, "sources_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_source_energie", p_regenerer_source_energie, METH_VARARGS, "regenerer_source_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"agrandir_trainee_moto", p_agrandir_trainee_moto, METH_VARARGS, "agrandir_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_source_energie", p_afficher_source_energie, METH_VARARGS, "afficher_source_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"},  {NULL, NULL, 0, NULL}
+  {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"sources_energie", p_sources_energie, METH_VARARGS, "sources_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"regarder_trainee_case", p_regarder_trainee_case, METH_VARARGS, "regarder_trainee_case"},  {"case_traversable", p_case_traversable, METH_VARARGS, "case_traversable"},  {"diff_score", p_diff_score, METH_VARARGS, "diff_score"},  {"chemin", p_chemin, METH_VARARGS, "chemin"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_source_energie", p_regenerer_source_energie, METH_VARARGS, "regenerer_source_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"agrandir_trainee_moto", p_agrandir_trainee_moto, METH_VARARGS, "agrandir_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_source_energie", p_afficher_source_energie, METH_VARARGS, "afficher_source_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"},  {NULL, NULL, 0, NULL}
 };
 
 static void _initapi()

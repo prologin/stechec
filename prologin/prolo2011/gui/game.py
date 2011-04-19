@@ -2,14 +2,17 @@
 
 from api import *
 
-TAILLE_TERRAIN = 50
-
 LEFT = 8
 TOP = 4
 RIGHT = 2
 BOTTOM = 1
 NONE = 0
 ALL_DIRECTIONS = (LEFT, TOP, RIGHT, BOTTOM)
+
+(NB_SOURCES, CONTENU_CASE, SOURCE_CONTENT, MOTO_POS,
+ ACT_DEPLACER, ACT_COUPER_TRAINEE_MOTO, ACT_FUSIONNER, ACT_ENROULER,
+ ACT_REGENERER, ACT_ALLONGER_PA, ACT_AGRANDIR, ACT_POSER_PT_CROIX,
+ LAST_MSG) = range(13)
 
 def apply_direction(point, direction):
     (x, y) = point
@@ -51,6 +54,28 @@ def direction_to_str(direction):
 def serialize_pattern(pat):
     return bin(pat)[2:].rjust(4, '0')
 
+def action_to_str(action):
+    act_type = action[0]
+    act_args = tuple(action[2:])
+    if act_type == ACT_DEPLACER:
+        return u'Déplacement de la traînée %d : (%d, %d) → (%d, %d)' % act_args
+    elif act_type == ACT_COUPER_TRAINEE_MOTO:
+        return u'Coupure de la traînée %d : (%d, %d) ↔ (%d, %d)' % \
+            act_args
+    elif act_type == ACT_FUSIONNER:
+        return u'Fusion des traînées %d et %d : (%d, %d) ↔ (%d, %d)' % \
+            act_args
+    elif act_type == ACT_ENROULER:
+        return u'Enroulage de la traînée %d en (%d, %d)' % act_args
+    elif act_type == ACT_REGENER:
+        return u'Source %d regénérée' % (act_args[1])
+    elif act_type == ACT_ALLONGER_PA:
+        return u'Bonus Point d’Action'
+    elif act_type == ACT_AGRANDIR:
+        return u'Bonus Allonger traînée %d (+%d)' % act_args
+    elif act_type == ACT_POSER_PT_CROIX:
+        return u'Bonus Point de Croisement en (%d, %d)' % act_args
+
 class Team:
     def __init__(self, no, score, bonus):
         self.no = no
@@ -68,30 +93,35 @@ class Team:
         return result
 
 class Source:
-    def __init__(self, position, coefficient, grid):
+    def __init__(self, position, capacite, capacite_max, id, grid):
+        self.id = id
         self.position = position
-        self.coefficient = coefficient
+        self.capacite = capacite
+        self.capacite_max = capacite_max
         self.grid = grid
-        grid[position] = self
+        grid[position].append(self)
 
     def connections_lookup(self):
         result = set()
-        for direction in ALL_DIRECTIONS:
-            pos = apply_direction(self.position, direction)
+        for direction in ((-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1),
+                          (0, 1), (-1, 1)):
+            pos = (self.position[0] + direction[0],
+                   self.position[1] + direction[1])
             if not self.grid.contains(pos):
                 continue
-            obj = self.grid[pos]
-            if isinstance(obj, Moto):
-                result.add(obj)
+            for obj in self.grid[pos]:
+                if isinstance(obj, Moto):
+                    result.add(obj)
         return result
 
 class Moto:
-    def __init__(self, team, nodes, grid):
+    def __init__(self, team, nodes, id, grid):
+        self.id = id
         self.team = team
         self.nodes = nodes
         self.grid = grid
         for pos in nodes:
-            self.grid[pos] = self
+            self.grid[pos].append(self)
 
     def patterns(self):
         if len(self.nodes) == 1:
@@ -110,13 +140,15 @@ class Moto:
     def connections_lookup(self):
         result = set()
         for node in self.nodes:
-            for direction in ALL_DIRECTIONS:
-                pos = apply_direction(node, direction)
+            for direction in ((-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0),
+                              (1, 1), (0, 1), (-1, 1)):
+                pos = (node[0] + direction[0],
+                       node[1] + direction[1])
                 if not self.grid.contains(pos):
                     continue
-                obj = self.grid[pos]
-                if isinstance(obj, Source):
-                    result.add(obj)
+                for obj in self.grid[pos]:
+                    if isinstance(obj, Source):
+                        result.add(obj)
         return result
 
 class Grid:
@@ -152,39 +184,29 @@ class Grid:
 
 class GameState:
     def __init__(self):
-        self.turn_no = tour_actuel()
+        self.turn_no = -1
+        self.actions = []
 
-        self.ground = Grid(lambda x: VIDE)
-        self.bonusgrid = Grid(regarder_type_bonus)
+        self.ground = Grid(lambda x: None)
+        self.bonusgrid = Grid(lambda x: None)
         self.objgrid = Grid(lambda x: None)
-        self.motos = [
-                Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement], self.objgrid)
-                for m in trainees_moto()
-                ]
-        self.sources = [Source((s.pos.x, s.pos.y), s.coef, self.objgrid)
-                        for s in sources_energie()]
+        self.motos = []
+        self.sources = []
 
-        for y in xrange(TAILLE_TERRAIN):
-            for x in xrange(TAILLE_TERRAIN):
-                c = regarder_type_case(position(x=x, y=y))
-                if c in (OBSTACLE, POINT_CROISEMENT):
-                    self.ground[(x, y)] = c
-
-        self.teams = [Team(i, 0, []) for i in xrange(nombre_equipes())]
-        for (no, s) in enumerate(scores()):
-            self.teams[no].bonus = regarder_bonus(no)
-            self.teams[no].score = s
+        self.teams = []
 
     def get_connected_objects(self):
         connected_trainees_moto = set()
         connected_sources_energie = set()
         for t in self.motos:
             sources = t.connections_lookup()
-            if any(source.coefficient < 0 for source in sources) and \
-                any (source.coefficient > 0 for source in sources):
+            if any(source.capacite < 0 for source in sources) and \
+                any (source.capacite > 0 for source in sources):
                 connected_sources_energie.update(sources)
                 connected_trainees_moto.add(t)
         return (connected_trainees_moto, connected_sources_energie)
+
+    
 
     def dump(self):
         (conn_trainees, conn_sources) = self.get_connected_objects()

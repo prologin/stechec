@@ -16,9 +16,82 @@ void init_game()
     fs.open(path.c_str());
 }
 
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& v)
+{
+    os << "[";
+    typename std::vector<T>::const_iterator it;
+    for (it = v.begin(); it != v.end(); ++it)
+    {
+        if (it != v.begin())
+            os << ", ";
+        os << *it;
+    }
+    os << "]";
+    return os;
+}
+
+static std::ostream& operator<<(std::ostream& os, position p)
+{
+    return os << "{ \"x\": " << p.x << ", \"y\": " << p.y << "}";
+}
+
+static std::ostream& operator<<(std::ostream& os, source_energie s)
+{
+    return os << "{ \"id\": " << s.id << ", \"pos\": " << s.pos <<
+                 ", \"capacite\": " << s.capacite << ", \"capacite_max\": " <<
+                 s.capacite_max << "}";
+}
+
+static std::ostream& operator<<(std::ostream& os, trainee_moto t)
+{
+    return os << "{ \"id\": " << t.id << ", \"emplacement\": " << t.emplacement <<
+                 ", \"team\": " << t.team << ", \"longueur\": " << t.longueur <<
+                 "}";
+}
+
 void jouer()
 {
-    // TODO
+    fs << "{";
+
+    fs << "\"mon_equipe\": " << mon_equipe() << ", ";
+    fs << "\"scores\": " << scores() << ", ";
+    fs << "\"nombre_equipes\": " << nombre_equipes() << ", ";
+    fs << "\"tour_actuel\": " << tour_actuel() << ", ";
+    fs << "\"sources_energie\": " << sources_energie() << ", ";
+    fs << "\"trainees_moto\": " << trainees_moto () << ", ";
+
+    fs << "\"type_cases\": [";
+    for (int y = 0; y < TAILLE_TERRAIN; ++y)
+    {
+        for (int x = 0; x < TAILLE_TERRAIN; ++x)
+        {
+            if (x != 0 || y != 0)
+                fs << ", ";
+            position p = { x, y };
+            fs << regarder_type_case(p);
+        }
+    }
+    fs << "], ";
+
+    fs << "\"type_bonus\": [";
+    for (int y = 0; y < TAILLE_TERRAIN; ++y)
+    {
+        for (int x = 0; x < TAILLE_TERRAIN; ++x)
+        {
+            if (x != 0 || y != 0)
+                fs << ", ";
+            position p = { x, y };
+            fs << regarder_type_bonus(p);
+        }
+    }
+    fs << "], ";
+
+    fs << "\"bonus_team\": [";
+    fs << api_regarder_bonus(0) << ", ";
+    fs << api_regarder_bonus(1) << "]";
+
+    fs << "}" << std::endl;
 }
 
 void end_game()

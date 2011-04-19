@@ -93,16 +93,16 @@ int ServerEntry::loadMap()
 		s.id = g_->sources.size();
 		g_->sources.push_back(s);
 	    }else if (line[x] == 'C'){
-		c.type = BONUS;
+		c.type = VIDE;
 		c.bonus = BONUS_CROISEMENT;
 	    }else if (line[x] == 'L'){
-		c.type = BONUS;
+		c.type = VIDE;
 		c.bonus = PLUS_LONG;
 	    }else if (line[x] == 'P'){
-		c.type = BONUS;
+		c.type = VIDE;
 		c.bonus = PLUS_PA;
 	    }else if (line[x] == 'R'){
-		c.type = BONUS;
+		c.type = VIDE;
 		c.bonus = BONUS_REGENERATION;
 	    }else if (line[x] == '1'){
 		LOG4("Le joueur 1 est positionne a (%1, %2)", x, y);

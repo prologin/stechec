@@ -52,11 +52,8 @@ type erreur =
 type type_case =
 | Vide (* <- rien n'est présent sur la case *)
 | Obstacle (* <- cette case est inaccessible *)
-| Bonus (* <- cette case cotient un bonus *)
 | Point_croisement (* <- point de croisement de traînées *)
 | Source (* <- source ou consommateur d'energie *)
-| Trainee (* <- une trainée de moto *)
-| Trainee_et_croisement (* <- une trainee sur un point de croisement *)
 
 
 (*
@@ -81,7 +78,8 @@ type position = (int * int)
 type source_energie = {
   id : int ; (* <- identifiant de la source d'énergie *)
   pos : position ; (* <- position de la source d'énergie *)
-  coef : int ; (* <- coefficient representant les points d'énergie que la source va vous apporter *)
+  capacite : int ; (* <- coefficient représentant les points d'énergie que la source va vous apporter *)
+  capacite_max : int ; (* <- coefficient représentant la capacité de la source lorsqu'elle est chargée au maximum *)
 }
 
 (*
@@ -91,7 +89,7 @@ type trainee_moto = {
   id : int ; (* <- identifiant de la traînee *)
   emplacement : position array ; (* <- position de chaque composant de la traînée de moto *)
   team : int ; (* <- identifiant de l'équipe qui possède cette traînée de moto *)
-  len : int ; (* <- la taille maximale de la trainee *)
+  longueur : int ; (* <- taille maximale de la traînée *)
 }
 
 (*
@@ -130,6 +128,14 @@ external regarder_type_bonus : position -> type_bonus = "ml_regarder_type_bonus"
 ** Retourne la liste des bonus d'une équipe
 *)
 external regarder_bonus : int -> type_bonus array = "ml_regarder_bonus"
+(*
+** Retourne la liste des id des traînées présentes sur une case
+*)
+external regarder_trainee_case : position -> int array = "ml_regarder_trainee_case"
+(*
+** Retourne si une case peut être traversée par une traînée de plus
+*)
+external case_traversable : position -> bool = "ml_case_traversable"
 (*
 ** Renvoie les points que vous allez gagner a la fin du tour
 *)
