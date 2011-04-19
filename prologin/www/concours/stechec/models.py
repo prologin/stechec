@@ -141,6 +141,11 @@ class Match(models.Model):
             return str(e)
 
     @property
+    def dump(self):
+        dump_path = os.path.join(self.directory, "dump.json.gz")
+        return open(dump_path, "rb").read()
+
+    @property
     def options_dict(self):
         opts = {}
         for line in self.options.split('\n'):

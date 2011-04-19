@@ -5,7 +5,7 @@ from concours.stechec import models
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db.models import Max, Min
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic import DetailView, ListView
@@ -143,6 +143,12 @@ def new_match(request):
 
     return render_to_response('match-new.html', {'form': form},
                               context_instance=RequestContext(request))
+
+def match_dump(request, pk):
+    match = get_object_or_404(models.Match, pk=pk)
+    h = HttpResponse(match.dump, mimetype="application/stechec-dump")
+    h['Content-Disposition'] = 'attachment; filename=dump-%s.json.gz' % pk
+    return h
 
 def master_status(request):
     status = models.master_status()

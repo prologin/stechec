@@ -16,6 +16,7 @@ urlpatterns = patterns('concours.stechec',
     url(r'^champions/delete/(?P<pk>\d+)/$', login_required(views.delete_champion), name="champion-delete"),
 
     url(r'^matches/(?P<pk>\d+?)/$', views.MatchView.as_view(), name="match-detail"),
+    url(r'^matches/(?P<pk>\d+?)/dump/$', views.match_dump, name="match-dump"),
     url(r'^matches/all/$', views.AllMatchesView.as_view(), name="matches-all"),
     url(r'^matches/my/$', login_required(views.MyMatchesView.as_view()), name="matches-my"),
     url(r'^matches/new/$', login_required(views.new_match), name="match-new"),

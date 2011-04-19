@@ -23,6 +23,9 @@
 
     <dt>Date &amp; heure</dt>
     <dd>{{ match.ts|naturalday }} à {{ match.ts|time:"H:i:s" }}</dd>
+
+    <dt>Replay</dt>
+    <dd><a href="{% url match-dump match.id %}">Télécharger</a></dd>
 </dl>
 
 <h2>Participants</h2>
