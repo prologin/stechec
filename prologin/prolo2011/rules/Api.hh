@@ -59,6 +59,10 @@ public:
 //
    int tour_actuel();
 ///
+// Returne le tour réel
+//
+   int tour_reel();
+///
 // Retourne la liste des sources d'énergie
 //
    std::vector<source_energie> sources_energie();

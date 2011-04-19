@@ -239,6 +239,14 @@ extern "C" int api_tour_actuel()
 }
 
 ///
+// Retourne le tour réel
+//
+extern "C" int api_get_real_turn()
+{
+  return api->tour_reel();
+}
+
+///
 // Retourne la liste des sources d'énergie
 //
 extern "C" std::vector<source_energie> api_sources_energie()

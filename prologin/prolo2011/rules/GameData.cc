@@ -324,7 +324,8 @@ void GameData::team_switched(){
 	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
     }
 
-    //actions_stockees.clear();
+    actions_stockees = actions_stockees_buffer;
+    actions_stockees_buffer.clear();
 
     can_play = true;
     current_player = (current_player + 1 ) % 2;
@@ -613,5 +614,5 @@ void GameData::stocker_action(Action* act)
     // action is done. Serialize, and store that.
     std::vector<int> ser = act->serialiser();
     ser.insert(ser.begin(), 1, act->type());
-    actions_stockees.push_back(ser);
+    actions_stockees_buffer.push_back(ser);
 }

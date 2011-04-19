@@ -83,6 +83,14 @@ int Api::tour_actuel()
 }
 
 ///
+// Retourne le tour actuel
+//
+int Api::tour_reel()
+{
+  return g_->getCurrentTurn();
+}
+
+///
 // Retourne la liste des sources d'énergie
 //
 std::vector<source_energie> Api::sources_energie()

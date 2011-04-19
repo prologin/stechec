@@ -103,13 +103,15 @@ class Source:
 
     def connections_lookup(self):
         result = set()
-        for direction in ALL_DIRECTIONS:
-            pos = apply_direction(self.position, direction)
+        for direction in ((-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1),
+                          (0, 1), (-1, 1)):
+            pos = (self.position[0] + direction[0],
+                   self.position[1] + direction[1])
             if not self.grid.contains(pos):
                 continue
-            obj = self.grid[pos]
-            if isinstance(obj, Moto):
-                result.add(obj)
+            for obj in self.grid[pos]:
+                if isinstance(obj, Moto):
+                    result.add(obj)
         return result
 
 class Moto:
@@ -138,13 +140,15 @@ class Moto:
     def connections_lookup(self):
         result = set()
         for node in self.nodes:
-            for direction in ALL_DIRECTIONS:
-                pos = apply_direction(node, direction)
+            for direction in ((-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0),
+                              (1, 1), (0, 1), (-1, 1)):
+                pos = (node[0] + direction[0],
+                       node[1] + direction[1])
                 if not self.grid.contains(pos):
                     continue
-                obj = self.grid[pos]
-                if isinstance(obj, Source):
-                    result.add(obj)
+                for obj in self.grid[pos]:
+                    if isinstance(obj, Source):
+                        result.add(obj)
         return result
 
 class Grid:

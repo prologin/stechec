@@ -91,6 +91,8 @@ class Graphics:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.state.switch_looping()
+                    if self.state.looping:
+                        self.go_next_turn()
                 elif not self.state.looping and event.key == pygame.K_n:
                     self.go_next_turn()
                 elif event.key == pygame.K_h:
@@ -111,16 +113,19 @@ class Graphics:
         if self.state_reader.is_ended():
             return
 
-        if not self.state.help and self.state.check_loop():
-            self.go_next_turn()
+        if self.state.help:
+            return
 
         game_state = self.state_reader.get_next_state()
         if game_state is not None:
-                self.game_state = game_state
-                self.field_surf.update_field(game_state)
-                self.team_surf.update_teams(game_state)
-                self.state_surf.update_turn(self.state_reader.get_turn())
-                self.actions_surf.update_actions(game_state.actions)
+            self.game_state = game_state
+            self.field_surf.update_field(game_state)
+            self.team_surf.update_teams(game_state)
+            self.state_surf.update_turn(tour_actuel())
+            self.actions_surf.update_actions(game_state.actions)
+
+            if self.state.check_loop():
+                self.go_next_turn()
 
     def update_graphics(self):
         self.screen.fill((0, 0, 0))
@@ -161,7 +166,6 @@ class Graphics:
         self.help_surf = HelpSurface(screen_dim)
         self.actions_surf = ActionsSurface((0, self.field_surf.size[1]),
                                            screen_dim[0])
-        print screen_dim
 
     def release(self):
         pygame.quit()

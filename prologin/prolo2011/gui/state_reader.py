@@ -35,7 +35,6 @@ class StechecReader(Reader):
 
     def __init__(self):
         Reader.__init__(self)
-        self.new_turn = threading.Event()
         self.end_turn = threading.Event()
         self.pipe = queue.Queue()
         self.end_game = threading.Event()
@@ -53,10 +52,9 @@ class StechecReader(Reader):
         if self.waiting_turn:
             return None
         game_state = None
-        if self.new_turn.is_set():
+        if not self.pipe.empty():
             self.turn += 1
             game_state = self.pipe.get()
-            self.new_turn.clear()
             self.waiting_turn = True
         return game_state
 
@@ -80,7 +78,6 @@ class StechecReader(Reader):
             return
         self.pipe.put(game_state)
         self.end_turn.clear()
-        self.new_turn.set()
         self.end_turn.wait()
 
     def is_ended(self):

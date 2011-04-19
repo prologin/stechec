@@ -21,6 +21,7 @@ extern "C" int api_state_is_end(void*);
 extern "C" int api_state_is_playturn(void*);
 extern "C" void api_do_end_turn(void*);
 extern "C" int api_get_nb_team(void*);
+extern "C" int api_get_real_turn();
 extern "C" int client_cx_process(void*);
 
 /* Must be defined in champion library. */
@@ -37,18 +38,20 @@ extern "C" int run(void* foo, void* api, void* client_cx)
 {
     Api&	g_api = *((Api*) api);
     ClientCx&	g_cx = *((ClientCx*) client_cx);
+    int turn = 1;
 
     init_game();
     while (!api_state_is_end(api))
     {
-	jouer();
+	if (turn != api_get_real_turn())
+	{
+	    jouer();
+	    turn = api_get_real_turn();
+	}
 
 	g_cx.setReady();
 	while (client_cx_process(client_cx))
 	    ;
-
-	if (api_state_is_end(api))
-	    break;
     }
 
     end_game();
