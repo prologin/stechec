@@ -15,15 +15,17 @@ module Cache : sig
     params : (position list * int ) array
   }
 
-  val reset : unit -> unit
+  val reset : bool -> unit
   val snake_map : unit -> snake_map
   val connections : unit -> connections
   val snake_cache : unit -> snake_cache
   val motos_id : unit -> motos_id_cache
   val distances : unit -> distances
 
-end = struct
+  val trainees_moto : unit -> trainee_moto list
+  val sources : unit -> source_energie list
 
+end = struct
   let ncases = taille_terrain * taille_terrain
 
   type snake_cache = (id_snake, float ) H.t
@@ -42,10 +44,13 @@ end = struct
     connections : connections;
     snake_map : snake_map;
     distances : distances;
+    trainees_moto : trainee_moto list ref;
+    sources : source_energie list ref;
   }
 
   let mk_cache_snake : unit -> snake_cache = fun () -> H.create 2
   let mk_cache_motos : unit -> motos_id_cache = fun () ->
+   try
     let li = trainees_moto () |> Array.to_list in
     let ids = List.map (fun s -> s.id) li in
     let max = 1 + List.fold1 max ids in
@@ -55,6 +60,8 @@ end = struct
 	arr.(s.id) <- Some s
       ) li
     in arr
+   with Invalid_argument _ -> failwith "mk_cache_motos"
+
   let mk_cache_connections : unit -> connections = fun () -> H.create 0
 
   let mk_snake_map : unit -> snake_map = fun () ->
@@ -76,6 +83,8 @@ end = struct
       connections = mk_cache_connections ();
       snake_map = mk_snake_map ();
       distances = mk_distances ();
+      trainees_moto = ref [];
+      sources = ref [];
     }
   let cache : cache = mk_cache ()
 
@@ -84,39 +93,45 @@ end = struct
   let connections () = cache.connections
   let snake_map () = cache.snake_map
   let distances () = cache.distances
-  let reset_snake_cache () =
+  let trainees_moto () = ! ( cache.trainees_moto )
+  let sources () = ! ( cache.sources )
+
+  let reset_snake_cache b =
+try
     let cache = cache.snake_coefs and
 	connections = cache.connections and
 	distances = cache.distances and
 	snake_map = cache.snake_map in
-    for x = 0 to taille_terrain - 1 do
-      for y = 0 to taille_terrain - 1 do
-
-	let indice1 = case_indice x y in
-	distances.params.(indice1) <- ([], 0);
-	let v0 = if case_traversable (x, y)
-	  then None
-	  else Some (-1) in
-	for x2 = 0 to taille_terrain - 1 do
-	  for y2 = 0 to taille_terrain - 1 do
-	    let value =
-	      if x = x2 && y = y2
+    if b then
+      begin
+	for x = 0 to taille_terrain - 1 do
+	for y = 0 to taille_terrain - 1 do
+	  let indice1 = case_indice x y in
+	  distances.params.(indice1) <- ([], 0);
+	  let v0 = if case_traversable (x, y)
+	    then None
+	    else Some (-1) in
+	  for x2 = 0 to taille_terrain - 1 do
+	    for y2 = 0 to taille_terrain - 1 do
+	      let value =
+		if x = x2 && y = y2
 	      then Some 0
-	      else
-		match v0 with
-		  | Some _ -> v0
-		  | None ->
-		    if case_traversable (x2, y2) then
-		      if x = x2 && y = y2
-		      then Some 0
-		      else None
-		    else Some (-1)
-	    in
-	    distances.values.(indice1).(case_indice x2 y2) <- value;
-	  done;
-	done ;
+		else
+		  match v0 with
+		    | Some _ -> v0
+		    | None ->
+		      if case_traversable (x2, y2) then
+			if x = x2 && y = y2
+			then Some 0
+			else None
+		      else Some (-1)
+	      in
+	      distances.values.(indice1).(case_indice x2 y2) <- value;
+	    done;
+	  done ;
+	done;
       done;
-    done;
+end;
     H.clear cache ;
     H.clear connections ;
     for x = 0 to taille_terrain - 1 do
@@ -125,15 +140,18 @@ end = struct
       done
     done ;
     let me = mon_equipe () in
-    trainees_moto ()
+    Api.trainees_moto ()
   |> Array.to_list
   |> List.filter (fun m -> m.team = me)
   |> List.iter (fun m ->
     Array.iter (fun (x, y) ->
       snake_map.(x).(y) <- m.id :: snake_map.(x).(y)
     ) m.emplacement)
+with Invalid_argument _ -> failwith "reset"
 
-  let reset () =
-    reset_snake_cache ();
-    cache.motos_id := mk_cache_motos ()
+  let reset b =
+    reset_snake_cache b;
+    cache.motos_id := mk_cache_motos () ;
+    cache.trainees_moto := Api.trainees_moto () |> Array.to_list ;
+    cache.sources := Api.sources_energie () |> Array.to_list
 end

@@ -4,16 +4,17 @@
 ** to the script file : gen/generator_caml.rb
 *)
 
-open Hapi;;
-open Stdlib;;
-open Cache;;
+open Stdlib
+open Hapi
+open Cache
 
-let debug = true
+let debug = false
 
 module Coefs = struct
-  let pas_cool = 0.02;
+  let pas_cool = 0.02
+  let pupute = 10
+  let amoi = 100
 end
-
 
 let print_map () =
   let snake_map = Cache.snake_map () in
@@ -42,7 +43,7 @@ let print_map () =
 module IdSet = Set.Make (struct type t = id_snake let compare = compare end)
 module PosSet = Set.Make (struct type t = position let compare = compare end)
 
-let sources_snakes_connected_with snake =
+let sources_snakes_connected_with snake = time "sources_snakes_connected_with" @$ fun () ->
   let snake_map = Cache.snake_map () in
 (*  let snakes = trainees_moto () |> Array.to_list |> List.filter (fun s -> s.team = snake.team) in *)
 (*
@@ -88,12 +89,11 @@ let sources_connected_with snake = fst (sources_snakes_connected_with snake)
 					
   
 let source_at_pos p =
-	sources_energie ()
-	|> Array.to_list
+	Cache.sources ()
 	|> List.filter (fun s -> s.pos = p)
 	|> List.hd
 
-let coeff_of_snake snake =
+let coeff_of_snake snake = time "coeff_of_snake" @$ fun () ->
   let cache = Cache.snake_cache () in
   if H.mem cache snake.id
   then H.find cache snake.id
@@ -108,9 +108,9 @@ let coeff_of_snake snake =
     result
   end
 
-let friends_of : trainee_moto -> (int * (int * int)) list = fun snake ->
+let friends_of : trainee_moto -> (int * (int * int)) list = fun snake -> time "friends_of" @$ fun () ->
   let ignore_snakes = snd (sources_snakes_connected_with snake) in
-  let snakes = trainees_moto () |> Array.to_list |> List.filter (fun s -> s.team = snake.team) in
+  let snakes = Cache.trainees_moto () |> List.filter (fun s -> s.team = snake.team) in
   let snakes = List.fold_left (fun set s -> IdSet.add s.id set) IdSet.empty snakes in
   let good_snakes = IdSet.diff snakes ignore_snakes |> IdSet.elements in
   good_snakes
@@ -125,61 +125,113 @@ let friends_of : trainee_moto -> (int * (int * int)) list = fun snake ->
   |> List.flatten
 	
 
-let select_sources snake =
-   let truc = sources_energie ()
-   |> Array.fold_left (fun set s -> PosSet.add s.pos set) PosSet.empty
+let targets_ennemy : unit -> (int * Hapi.position) list = fun () -> time "targets_ennemy" @$ fun () ->
+try
+	let pss = Cache.trainees_moto ()
+		|> List.filter (fun s -> s.team <> mon_equipe ())
+		|> List.map (fun s -> 
+			if Array.length s.emplacement < 2
+			then []
+			else
+			List.map (fun pos -> [(Coefs.pupute, pos); (-Coefs.pupute, pos)])
+			((neighbours s.emplacement.(0))
+                        @(neighbours s.emplacement.(Array.length s.emplacement - 1))))
+		|> List.flatten
+		|> List.flatten
+		|> List.filter (fun (coef, pos) -> case_traversable pos)
+	in pss
+with Invalid_argument _ -> failwith "FUUUUUUUUUUU"
+
+let select_sources snake = time "select_sources" @$ fun () -> 
+   let already_connected = sources_connected_with snake in
+   let snakes_ennemys =
+	Cache.trainees_moto ()
+	|> List.filter (fun s -> s.team <> mon_equipe ())
+	|> List.map (fun s ->
+		List.map neighbours [s.emplacement.(0);s.emplacement.(Array.length s.emplacement - 1)])
+	|> List.flatten
+	|> List.flatten in
+   let truc = Cache.sources ()
+(*
+   |> List.fold_left (fun set s -> PosSet.add s.pos set) PosSet.empty
    |> (fun set -> PosSet.diff set (sources_connected_with snake))
    |> PosSet.elements
+*)
 (*
    |> List.map (fun p -> (source_at_pos p).capacite, p)
 *)
-   |> List.map (fun p ->
+   |> List.map (fun s ->
+(*
         let s = source_at_pos p in
-        List.map (fun pos -> s.capacite, pos)
+*)
+        let capacite = if PosSet.mem s.pos already_connected then 0 else s.capacite in
+        List.map (fun pos ->
+		let di = try minimum (List.map (fun p -> if not (case_traversable p && case_traversable pos && p <> pos)
+							then max_int
+							else let d = dist p pos in if d = 0 then max_int else d) snakes_ennemys)
+			with _ -> max_int in
+(*
+		Printf.printf "min dist = %i vers %a\n%!" di print_position pos ;
+*)
+		let d = Coefs.amoi * s.capacite / di in
+		[capacite + d, pos; -d, pos])
 		(dneighbours s.pos)) 
    |> List.flatten
+   |> List.flatten
    |> List.append (friends_of snake)
+   |> List.append (targets_ennemy ())
    in
 (*
 	Printf.printf "select_sources # %i\n%!" (List.length truc) ;
 *)
 	truc
 
+module TrucSet = Set.Make (struct type t = int * Hapi.position let compare = compare end)
+let no_dups =
+	List.fold_left (fun set p -> TrucSet.add p set) TrucSet.empty
 
-let diffusion_at p sources =
+let diffusion_at p sources = time "diffusion_at" ~size:(TrucSet.cardinal sources) @$ fun () ->
 (*
   Printf.printf "diffusion_at has # %i\n%!" (List.length sources) ;
   print_sources sources ;
 *)
+(*
 let (pos, neg) as result =
-  List.fold_left (fun (pos, neg) (coef, p') ->
-    let d = dist p p' in
+*)
+  let pos = ref 0.0 in
+  let neg = ref 0.0 in
+  TrucSet.iter (fun (coef, p') ->
+    let d = dist p' p in
     (* Printf.printf " d = %i \n%!" d ; *)
     if d = 0 && p <> p'
-    then (pos, neg)
+    then ()
     else begin
       let kfd = (d + 1) in
       let cost = float coef /. float kfd in
       (* Printf.printf " cost = %f\n%!" cost ; *)
       if coef < 0
-      then (pos, neg -. cost)
-      else (pos +. cost, neg)
+      then neg := !neg -. cost
+      else pos := !pos +. cost
     end)
-    (0., 0.)
-    sources
-in
+    sources ;
+  !pos, !neg
 (*
   Printf.printf "and the best is %f, %f\n%!" pos neg ;
-*)
   result
+*)
 
 (*
 ** Fonction appellée au début de la partie
 *)
 let init_game () =  (* Pose ton code ici *)
+(*
+  Gc.set @$ { (Gc.get ()) with Gc.minor_heap_size = 2000000;
+                             Gc.major_heap_increment = 2000000;
+                             Gc.max_overhead = 1000000 } ;
+*)
   flush stderr; flush stdout;; (* Pour que vos sorties s'affichent *)
 
-let diffusing snake p sources =
+let diffusing snake p sources = time "diffusing" @$ fun () ->
 
  let pos, neg = diffusion_at p sources in  
  let coef = coeff_of_snake snake in  
@@ -194,8 +246,13 @@ let diffusing snake p sources =
  else neg +. pos
 (*  abs_float (pos +. neg +. coef) *)
 
-let best_move snake p =
-  let sources = select_sources snake in
+let best_move snake p = time "best_move" @$ fun () ->
+  let sources = select_sources snake |> no_dups in
+(*
+  Printf.printf "#################################################\n%!" ;
+  Printf.printf "######## NB SOURCES = %i   ######################\n%!" (TrucSet.cardinal sources) ;
+  Printf.printf "#################################################\n%!" ;
+*)
   let possible_moves =
     neighbours p |> List.filter case_traversable
   in
@@ -213,9 +270,31 @@ let best_move snake p =
   	Some (snake.id, p, best_p, diffusing snake best_p sources)
   end
 
-let best_split snake =
-  let is = Array.mapi (fun i _ -> i) snake.emplacement |> Array.to_list in
-  let is = List.tl is in
+let rec but_last = function
+	| [] -> assert false
+	| [_] -> []
+	| x::xs -> x::but_last xs
+
+let best_split snake = time "best_split" @$ fun () ->
+try
+  if Array.length snake.emplacement < 3
+then None
+else begin
+  let emp = snake.emplacement in
+  let is = Array.mapi (fun i _ -> i) emp
+        |> Array.to_list
+	|> List.tl
+	|> but_last
+(*
+	|> List.filter (fun i ->
+		let (x0, y0) = emp.(i - 1) in
+		let (x1, y1) = emp.(i) in
+		let (x2, y2) = emp.(i + 1) in
+		not (  (x0 = x1 && x1 = x2)
+                    || (y0 = y1 && y1 = y2) )
+		)
+*)
+  in
   let trucs =
 	List.map (fun i -> match best_move snake snake.emplacement.(i) with None -> None | Some t -> Some (i, t)) is
 	|> unsome_list in
@@ -225,19 +304,18 @@ let best_split snake =
 (*
 	let Some (_, _, _, score) = best_move snake snake.emplacement.(best_i) in
 *)
-  	let emp = snake.emplacement in
   	Some (score, snake, emp.(best_i - 1), emp.(best_i)) 
+end
+with Invalid_argument _ -> failwith "best_split"
 
 
-let action () =  (* Pose ton code ici *)
-  Cache.reset () ;
+let action do_split =  (* Pose ton code ici *)
 (*
   ignore (read_line ()) ;
 *)
   let mt = mon_equipe () in
 
-  let ts = trainees_moto ()
-  |> Array.to_list      
+  let ts = Cache.trainees_moto ()
   |> List.filter (fun t -> t.team = mt) in
   let mes =
 	ts
@@ -245,8 +323,11 @@ let action () =  (* Pose ton code ici *)
                               me, me.emplacement.(Array.length me.emplacement - 1) ])
 	|> List.flatten in
   let best_moves = unsome_list (List.map (fun (me, p) -> best_move me p) mes) in
+(*
   Printf.printf "best_moves # %i\n%!" (List.length best_moves) ;
+*)
 
+(*
   let score_actuel = diff_score () in
   let best_moves =
     best_moves
@@ -269,15 +350,19 @@ let action () =  (* Pose ton code ici *)
 	  afficher_erreur erreur ;
 	  assert false
 ) in
+*)
   let Some (id, p, p', score) = 
     maximum_by (fun (id, p, p', score) -> score) best_moves
   in
 
   match
+     if do_split
+     then
   	ts
 	|> List.map best_split
 	|> unsome_list
 	|> maximum_by (fun (score, _, _, _) -> score)
+     else None
   with
   | Some (split_score, split_snake, split_p, split_p')
     when split_score > score ->
@@ -300,7 +385,9 @@ let action () =  (* Pose ton code ici *)
      end
   | _ -> begin
   	let erreur = deplacer id p p' in
+(*
     	Printf.printf "move %a -> %a\n%!" print_position p print_position p' ;
+*)
 	afficher_erreur erreur ;
   end ;
 (*
@@ -312,33 +399,36 @@ let dump_infos () =
   if debug then
     begin
       Printf.printf "<dump_infod>\n%!";
-      Array.iter
+      List.iter
 	(fun t -> begin
 	  flush stdout;
 	  afficher_trainee_moto t;
 	  flush stdout;
 	end)
-	(trainees_moto ());
+	(Cache.trainees_moto ());
       Printf.printf "</dump_infod>\n%!" ;
-      print_map ()
-    end
+    end ;
+    print_map ()
 
 let jouer () =
-  begin
+  try begin
+    Cache.reset true ;
     dump_infos ();
-    action ();
+    action true;
     Printf.printf "action 1\n%!" ;
     dump_infos ();
-    action ();
+    Cache.reset false ;
+    action true;
     Printf.printf "action 2\n%!" ;
     dump_infos ();
-    action ();
+    Cache.reset false ;
+    action true;
     Printf.printf "action 3\n%!" ;
     dump_infos ();
     Printf.printf "gain : %i\n%!" (diff_score ());
 (*    read_line ();*)
     ();
-  end
+  end with Invalid_argument _ -> failwith "jouer"
 
 
 (*

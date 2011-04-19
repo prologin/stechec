@@ -1,5 +1,22 @@
-
 let ( |> ) f x = x f
+let ( @$ ) f x = f x
+
+module U = Unix
+module T = Map.Make (struct type t = string let compare = compare end)
+(*
+let time_cache = ref T.empty
+*)
+let time ?(size=0) name f = f ()
+(*
+   let t = U.gettimeofday () in
+   let res = f () in
+   let t' = U.gettimeofday () in
+   let dt = t' -. t in
+   let old_time, max_time, max_size, nb_calls = try T.find name !time_cache with _ -> 0.0, 0.0, 0, 0 in
+   time_cache := T.add name (old_time +. dt, max dt max_time, max max_size size, nb_calls + 1) !time_cache ;
+   T.iter (fun name (t, mt, ms, nb) -> Printf.printf "\t\t %f %f %10i (%10i) %s\n%!" t mt nb ms name) !time_cache ;
+   res
+*)
 
 let unsome = function None -> assert false | Some x -> x
 let unsome_list xs = List.map (function None -> [] | Some x -> [x]) xs |> List.flatten
@@ -8,7 +25,6 @@ let max_by f a b = if f a > f b then a else b
 let maximum_by f = function
   | [] -> None
   | x::xs -> Some (List.fold_left (max_by f) x xs)
-
 
 let ( ++ ) (x, y) (x', y') = (x + x', y + y')
 
@@ -64,3 +80,4 @@ end = struct
       end
     | [] -> None
 end
+let minimum xs = List.fold1 min xs
