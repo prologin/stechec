@@ -3,8 +3,11 @@
 import threading
 import Queue as queue
 
+import json
+
 from api import *
 import game
+import sys
 
 class Reader:
     '''
@@ -79,7 +82,7 @@ class StechecReader(Reader):
 
         if self.waiting_end:
             return
-        game_state = self.build_game()
+        game_state = self.build_state()
         self.pipe.put(game_state)
         self.end_turn.clear()
         self.end_turn.wait()
@@ -118,9 +121,9 @@ class StechecReader(Reader):
 
         return self.turn
 
-    def build_game(self):
+    def build_state(self):
         '''
-        Build a Game object from the Stechec’s API and return it.
+        Build a GameState object from the Stechec’s API and return it.
         Shouldn’t be called out of this class (Stechec thread).
         '''
 
@@ -157,5 +160,69 @@ class StechecReader(Reader):
 
 
 class DumpReader(Reader):
-    def __init__(self):
-        raise NotImplementedError()
+    def __init__(self, dump_file):
+        self.dump_file = dump_file
+        self.generator = iter(
+                self.build_state(json.loads(line))
+                for line in
+                self.dump_file)
+        self.turn = 0
+        self.is_ended_bool = False
+        self.go_next()
+
+    def get_next_state(self):
+        if self.next_state is not None:
+            ns = self.next_state
+            self.next_state = None
+            self.turn += 1
+            return ns
+        return None
+
+    def go_next(self):
+        try:
+            self.next_state = self.generator.next()
+        except StopIteration:
+            self.next_state = None
+            self.is_ended_bool = True
+
+    def is_ended(self):
+        return self.is_ended_bool
+
+    def get_turn(self):
+        return self.turn
+
+    def build_state(self, json):
+        g = game.GameState()
+        g.turn_no = json['tour_actuel']
+        g.actions = json['actions_effectuees']
+
+        type_cases = json['type_cases']
+        type_bonus = json['type_bonus']
+        trainees_moto = json['trainees_moto']
+        sources_energie = json['sources_energie']
+        g.ground = game.Grid(lambda x: VIDE)
+        g.bonusgrid = game.Grid(lambda (x, y): type_bonus[x + y *
+            TAILLE_TERRAIN])
+        g.objgrid = game.Grid(lambda x: [])
+        g.motos = [
+                game.Moto(m['team'],
+                    [(pos['x'], pos['y']) for pos in m['emplacement']],
+                    m['id'], g.objgrid)
+                for m in trainees_moto]
+        g.sources = [game.Source((s['pos']['x'], s['pos']['y']),
+            s['capacite'], s['capacite_max'],
+            s['id'], g.objgrid)
+            for s in sources_energie]
+
+        for y in xrange(TAILLE_TERRAIN):
+            for x in xrange(TAILLE_TERRAIN):
+                c = type_cases[x + y * TAILLE_TERRAIN]
+                if c in (OBSTACLE, POINT_CROISEMENT):
+                    g.ground[(x, y)] = c
+
+        g.teams = [game.Team(i, 0, []) for i in xrange(json['nombre_equipes'])]
+        for (no, s) in enumerate(json['scores']):
+            g.teams[no].bonus = json['bonus_team']
+            g.teams[no].score = s
+
+        return g
