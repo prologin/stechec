@@ -80,13 +80,12 @@ class Graphics:
             self.looping = self.handle_events()
             self.update_graphics()
 
-        self.state_reader.wait_end()
         if self.state.is_closed and self.state_reader.can_quit():
             self.release()
             sys.exit(0)
 
         # This is implemented only if can_quit returns false
-        looping = True
+        self.state_reader.wait_end()
         while not self.state_reader.is_ended():
             self.state_surf.update_wait_end(self.state_reader.get_turn() / 2)
             self.update_graphics()
