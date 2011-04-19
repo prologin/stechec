@@ -19,6 +19,12 @@ class Map(models.Model):
     official = models.BooleanField("officielle", default=False)
     ts = models.DateTimeField("date", auto_now_add=True)
 
+    @property
+    def path(self):
+        contest_dir = os.path.join(settings.STECHEC_ROOT, settings.STECHEC_CONTEST)
+        maps_dir = os.path.join(contest_dir, "maps")
+        return os.path.join(maps_dir, str(self.id))
+
     def __unicode__(self):
         return u"%s, de %s%s" % (self.name, self.author,
                                  u" (officielle)" if self.official else u"")
@@ -143,7 +149,7 @@ class Match(models.Model):
 
     @options_dict.setter
     def options_dict(self, value):
-        self.options = '\n'.join('%s = %s' % t for t in value.iteritems())
+        self.options = '\n'.join('%s=%s' % t for t in value.iteritems())
 
     @property
     def map(self):

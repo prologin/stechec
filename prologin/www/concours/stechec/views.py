@@ -104,6 +104,36 @@ def new_champion(request):
     return render_to_response('champion-new.html', {'form': form},
                               context_instance=RequestContext(request))
 
+def new_match(request):
+    if request.method == 'POST':
+        form = forms.MatchCreationForm(request.POST)
+        if form.is_valid():
+            match = models.Match(
+                author=request.user,
+                status='creating',
+                tournament=None,
+                options=''
+            )
+            match.map = form.cleaned_data['map'].path
+            match.save()
+
+            for i in xrange(1, settings.STECHEC_NPLAYERS + 1):
+                champ = form.cleaned_data['champion_%d' % i]
+                player = models.MatchPlayer(
+                    champion=champ,
+                    match=match
+                )
+                player.save()
+
+            match.status = 'new'
+            match.save()
+            return HttpResponseRedirect(match.get_absolute_url())
+    else:
+        form = forms.MatchCreationForm()
+
+    return render_to_response('match-new.html', {'form': form},
+                              context_instance=RequestContext(request))
+
 def master_status(request):
     status = models.master_status()
     status = [(h, p, (100 * (m - s)) / m) for (h, p, s, m) in status]
