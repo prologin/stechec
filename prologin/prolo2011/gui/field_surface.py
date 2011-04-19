@@ -31,6 +31,7 @@ class FieldSurface(surface.Surface):
         self.imgs = images.load_pix()
         self.grid_surface = self.get_grid()
         self.detail = detail
+        self.detail_pos = None
 
     def get_grid(self):
         imgp = self.img_props
@@ -54,11 +55,14 @@ class FieldSurface(surface.Surface):
             / self.img_props['tile_size'][1]
         if y < 0:
             return None
-        pos = (x, y)
+        self.update_detail((x, y))
+
+    def update_detail(self, position):
+        self.detail_pos = pos = position
         ground = self.game_state.ground[pos]
         bonus = self.game_state.bonusgrid[pos]
         obj = self.game_state.objgrid[pos]
-        self.detail.update_pos(ground, bonus, obj)
+        self.detail.update_pos(position, ground, bonus, obj)
 
     def update_field(self, game_state):
         self.game_state = game_state
@@ -136,3 +140,6 @@ class FieldSurface(surface.Surface):
 
             images.place_img(source.position, self.surface,
                              source_imgs[state][status], self.img_props)
+
+        if self.detail_pos is not None:
+            self.update_detail(self.detail_pos)

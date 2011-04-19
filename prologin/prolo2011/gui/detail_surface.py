@@ -19,14 +19,29 @@ class DetailSurface(surface.Surface):
         self.imgs = images.load_pix()
         self.font = pygame.font.Font(paths.get_font('font.ttf'), 12)
 
-    def update_pos(self, ground, bonus, objects):
+    def update_pos(self, position, ground, bonus, objects):
         self.surface.fill((0, 0, 0))
 
         vshift = DetailSurface.PADDING
-        vshift += self.put_ground(vshift, ground)
-        vshift += self.put_bonus(vshift, bonus)
-        for obj in objects: 
-            vshift += self.put_object(obj, vshift)
+        vshift += self.put_position(vshift, position)
+        if ground == VIDE and bonus == PAS_BONUS and not objects:
+            vshift += self.put_empty(vshift)
+        else:
+            vshift += self.put_ground(vshift, ground)
+            vshift += self.put_bonus(vshift, bonus)
+            for obj in objects: 
+                vshift += self.put_object(obj, vshift)
+
+    def put_position(self, vshift, position):
+        text = self.font.render(u'Position : (%d, %d)' % position,
+                                True, (255, 255, 255))
+        self.surface.blit(text, (DetailSurface.PADDING, vshift))
+        return text.get_size()[1]
+
+    def put_empty(self, vshift):
+        text = self.font.render(u'<Vide>', True, (128, 128, 128))
+        self.surface.blit(text, (DetailSurface.PADDING, vshift))
+        return text.get_size()[1]
 
     def put_bonus(self, vshift, bonus):
         str = ''
