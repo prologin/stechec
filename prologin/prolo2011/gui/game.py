@@ -9,6 +9,11 @@ BOTTOM = 1
 NONE = 0
 ALL_DIRECTIONS = (LEFT, TOP, RIGHT, BOTTOM)
 
+(NB_SOURCES, CONTENU_CASE, SOURCE_CONTENT, MOTO_POS,
+ ACT_DEPLACER, ACT_COUPER_TRAINEE_MOTO, ACT_FUSIONNER, ACT_ENROULER,
+ ACT_REGENERER, ACT_ALLONGER_PA, ACT_AGRANDIR, ACT_POSER_PT_CROIX,
+ LAST_MSG) = range(13)
+
 def apply_direction(point, direction):
     (x, y) = point
     if direction == LEFT:
@@ -48,6 +53,28 @@ def direction_to_str(direction):
 
 def serialize_pattern(pat):
     return bin(pat)[2:].rjust(4, '0')
+
+def action_to_str(action):
+    act_type = action[0]
+    act_args = tuple(action[2:])
+    if act_type == ACT_DEPLACER:
+        return u'Déplacement de la traînée %d : (%d, %d) → (%d, %d)' % act_args
+    elif act_type == ACT_COUPER_TRAINEE_MOTO:
+        return u'Coupure de la traînée %d : (%d, %d) ↔ (%d, %d)' % \
+            act_args
+    elif act_type == ACT_FUSIONNER:
+        return u'Fusion des traînées %d et %d : (%d, %d) ↔ (%d, %d)' % \
+            act_args
+    elif act_type == ACT_ENROULER:
+        return u'Enroulage de la traînée %d en (%d, %d)' % act_args
+    elif act_type == ACT_REGENER:
+        return u'Source %d regénérée' % (act_args[1])
+    elif act_type == ACT_ALLONGER_PA:
+        return u'Bonus Point d’Action'
+    elif act_type == ACT_AGRANDIR:
+        return u'Bonus Allonger traînée %d (+%d)' % act_args
+    elif act_type == ACT_POSER_PT_CROIX:
+        return u'Bonus Point de Croisement en (%d, %d)' % act_args
 
 class Team:
     def __init__(self, no, score, bonus):
@@ -154,6 +181,7 @@ class Grid:
 class GameState:
     def __init__(self):
         self.turn_no = tour_actuel()
+        self.actions = actions_effectuees()
 
         self.ground = Grid(lambda x: VIDE)
         self.bonusgrid = Grid(regarder_type_bonus)
@@ -190,6 +218,8 @@ class GameState:
                 connected_sources_energie.update(sources)
                 connected_trainees_moto.add(t)
         return (connected_trainees_moto, connected_sources_energie)
+
+    
 
     def dump(self):
         (conn_trainees, conn_sources) = self.get_connected_objects()

@@ -383,6 +383,14 @@ extern "C" erreur api_fusionner(int id1, position pos1, int id2, position pos2)
 }
 
 ///
+// Retourne la liste des actions effectuées (GUI)
+//
+extern "C" std::vector<std::vector<int> > api_actions_effectuees()
+{
+  return api->actions_effectuees();
+}
+
+///
 // Affiche le contenu d'une valeur de type erreur
 //
 std::ostream& operator<<(std::ostream& os, erreur v)

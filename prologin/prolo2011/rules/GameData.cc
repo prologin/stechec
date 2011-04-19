@@ -324,7 +324,7 @@ void GameData::team_switched(){
 	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
     }
 
-    actions_stockees.clear();
+    //actions_stockees.clear();
 
     can_play = true;
     current_player = (current_player + 1 ) % 2;

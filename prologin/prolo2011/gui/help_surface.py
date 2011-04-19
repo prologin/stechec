@@ -11,7 +11,7 @@ class HelpSurface(surface.Surface):
     PADDING = 16
     MARGIN = 64
     WIDTH = 375
-    HEIGHT = 200
+    HEIGHT = 350
 
     BACKGROUND = (0, 0, 0)
     BORDER = (32, 48, 64)
@@ -34,10 +34,13 @@ class HelpSurface(surface.Surface):
 
         vshift = HelpSurface.PADDING
         messages = (
-            ('H', u'Afficher/cacher l’aide'),
+            (u'H', u'Afficher/cacher l’aide'),
             None,
-            ('Space', u'Activer/désactiver la pause'),
-            ('N', u'Passer au tour suivant (en pause)')
+            (u'Space', u'Activer/désactiver la pause'),
+            (u'N', u'Passer au tour suivant (en pause)'),
+            None,
+            (u'↑', u'Monter dans la liste des actions'),
+            (u'↓', u'Descendre dans la liste des actions'),
             )
         for msg in messages:
             if msg is None:

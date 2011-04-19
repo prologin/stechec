@@ -18,6 +18,7 @@ dist_prolo2011gui_DATA = \
 	state_surface.py \
 	detail_surface.py \
 	help_surface.py \
+	actions_surface.py \
 	graphics.py \
 	prologin.py
 

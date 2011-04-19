@@ -11,12 +11,13 @@ import game
 import images
 import surface
 
-import field_surface
+import field_surface, actions_surface
 from field_surface import FieldSurface
 from team_surface import TeamSurface
 from state_surface import StateSurface
 from detail_surface import DetailSurface
 from help_surface import HelpSurface
+from actions_surface import ActionsSurface
 
 class State:
     TURN_FPS = 1
@@ -94,6 +95,10 @@ class Graphics:
                     self.go_next_turn()
                 elif event.key == pygame.K_h:
                     self.state.switch_help()
+                elif event.key == pygame.K_DOWN:
+                    self.actions_surf.update_roll(1)
+                elif event.key == pygame.K_UP:
+                    self.actions_surf.update_roll(-1)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.field_surf.click(pygame.mouse.get_pos())
         return True
@@ -115,6 +120,7 @@ class Graphics:
                 self.field_surf.update_field(game_state)
                 self.team_surf.update_teams(game_state)
                 self.state_surf.update_turn(self.state_reader.get_turn())
+                self.actions_surf.update_actions(game_state.actions)
 
     def update_graphics(self):
         self.screen.fill((0, 0, 0))
@@ -124,6 +130,7 @@ class Graphics:
         self.detail_surf.blit(self.screen)
         if self.state.help:
             self.help_surf.blit(self.screen)
+        self.actions_surf.blit(self.screen)
         pygame.display.flip()
 
     def init(self):
@@ -131,7 +138,10 @@ class Graphics:
         pygame.init()
         flags = pygame.DOUBLEBUF | pygame.HWSURFACE
         (w, h) = field_surface.get_dim(TAILLE_TERRAIN)
-        screen_dim = (TeamSurface.SIZE[0] + w, h)
+        screen_dim = (
+            TeamSurface.SIZE[0] + w,
+            h + actions_surface.get_height()
+            )
         # This first instance is used to format new surfaces
         self.screen = pygame.display.set_mode(screen_dim, flags)
 
@@ -149,10 +159,9 @@ class Graphics:
         self.detail_surf.set_size((self.team_surf.size[0],
                                   DetailSurface.HEIGHT))
         self.help_surf = HelpSurface(screen_dim)
-        screen_dim = (
-            self.team_surf.position[0] + self.team_surf.size[0],
-            self.field_surf.size[1]
-            )
+        self.actions_surf = ActionsSurface((0, self.field_surf.size[1]),
+                                           screen_dim[0])
+        print screen_dim
 
     def release(self):
         pygame.quit()
