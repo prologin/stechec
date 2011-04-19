@@ -28,6 +28,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& v)
         os << *it;
     }
     os << "]";
+    return os;
 }
 
 static std::ostream& operator<<(std::ostream& os, position p)
