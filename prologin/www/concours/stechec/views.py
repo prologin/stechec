@@ -3,9 +3,10 @@
 from concours.stechec import forms
 from concours.stechec import models
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db.models import Max, Min
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic import DetailView, ListView
 
@@ -102,6 +103,15 @@ def new_champion(request):
         form = forms.ChampionUploadForm()
 
     return render_to_response('champion-new.html', {'form': form},
+                              context_instance=RequestContext(request))
+
+def delete_champion(request, pk):
+    ch = get_object_or_404(models.Champion, pk=pk, author=request.user)
+    if request.method == 'POST':
+        ch.deleted = True
+        ch.save()
+        return HttpResponseRedirect(reverse("champions-my"))
+    return render_to_response('champion-delete.html',
                               context_instance=RequestContext(request))
 
 def new_match(request):

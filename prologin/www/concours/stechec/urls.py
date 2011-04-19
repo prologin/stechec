@@ -13,6 +13,7 @@ urlpatterns = patterns('concours.stechec',
     url(r'^champions/all/$', views.AllChampionsView.as_view(), name="champions-all"),
     url(r'^champions/my/$', login_required(views.MyChampionsView.as_view()), name="champions-my"),
     url(r'^champions/new/$', login_required(views.new_champion), name="champion-new"),
+    url(r'^champions/delete/(?P<pk>\d+)/$', login_required(views.delete_champion), name="champion-delete"),
 
     url(r'^matches/(?P<pk>\d+?)/$', views.MatchView.as_view(), name="match-detail"),
     url(r'^matches/all/$', views.AllMatchesView.as_view(), name="matches-all"),

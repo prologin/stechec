@@ -67,6 +67,9 @@ class Champion(models.Model):
     def get_absolute_url(self):
         return reverse('champion-detail', kwargs={'pk': self.id})
 
+    def get_delete_url(self):
+        return reverse('champion-delete', kwargs={'pk': self.id})
+
     def __unicode__(self):
         return u"%s, de %s" % (self.name, self.author)
 

@@ -34,8 +34,7 @@
             <td>{{ champion.get_status_display }}</td>
             <td>
                 <a href="{{ champion.get_absolute_url }}">Détails</a> -
-                <a href="#">Éditer</a> -
-                <a href="#">Supprimer</a>
+                <a href="{{ champion.get_delete_url }}">Supprimer</a>
             </td>
             {% endif %}
         </tr>
