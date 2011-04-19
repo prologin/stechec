@@ -13,7 +13,7 @@ constant:
     cst_comment: Taille du terrain
   -
     cst_name: FIN_PARTIE
-    cst_val: 1500
+    cst_val: 150
     cst_comment: Nombre de tours par partie
   -
     cst_name: MAX_PA
