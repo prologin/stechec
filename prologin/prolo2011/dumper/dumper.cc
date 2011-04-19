@@ -7,6 +7,8 @@
 
 static std::ofstream fs;
 
+extern "C" std::vector<std::vector<int> > api_actions_effectuees();
+
 void init_game()
 {
     std::string path = "dump.json";
@@ -60,6 +62,7 @@ void jouer()
     fs << "\"tour_actuel\": " << tour_actuel() << ", ";
     fs << "\"sources_energie\": " << sources_energie() << ", ";
     fs << "\"trainees_moto\": " << trainees_moto () << ", ";
+    fs << "\"actions_effectuees\": " << api_actions_effectuees () << ", ";
 
     fs << "\"type_cases\": [";
     for (int y = 0; y < TAILLE_TERRAIN; ++y)

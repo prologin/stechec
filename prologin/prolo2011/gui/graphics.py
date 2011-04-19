@@ -121,7 +121,7 @@ class Graphics:
             self.game_state = game_state
             self.field_surf.update_field(game_state)
             self.team_surf.update_teams(game_state)
-            self.state_surf.update_turn(tour_actuel())
+            self.state_surf.update_turn(game_state.turn_no)
             self.actions_surf.update_actions(game_state.actions)
 
             if self.state.check_loop():
