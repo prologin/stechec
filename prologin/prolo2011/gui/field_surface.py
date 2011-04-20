@@ -18,6 +18,7 @@ def get_dim(taille):
 class FieldSurface(surface.Surface):
     BACKGROUND_COLOR = (0, 0, 0)
     GRID_COLOR = (32, 48, 64)
+    ERROR_COLOR = (255, 0, 0)
 
     def __init__(self, position, detail):
         self.img_props = imgp = images.load_props()
@@ -116,6 +117,14 @@ class FieldSurface(surface.Surface):
                 str_val = 'obstacle'
             elif value == POINT_CROISEMENT:
                 str_val = 'point_croisement'
+            elif value != VIDE:
+                self.surface.fill(FieldSurface.ERROR_COLOR,
+                                  (self.img_props['tile_size'][0] * position[0],
+                                   self.img_props['tile_size'][1] * position[1] + \
+                                       self.img_props['vshift'],
+                                   self.img_props['tile_size'][0],
+                                   self.img_props['tile_size'][1]))
+                continue
             else:
                 continue
 
