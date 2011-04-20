@@ -112,7 +112,7 @@ struct:
         - team
         - int
         - "identifiant de l'équipe qui possède cette traînée de moto"
-      - [longueur, int, "taille maximale de la traînée"]
+      - [longueur_max, int, "taille maximale de la traînée"]
 function:
   - doc_extra: |
      "\subsection{Fonctions d'information}"

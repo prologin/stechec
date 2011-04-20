@@ -19,7 +19,7 @@
 ///
 // Nombre de tours par partie
 //
-# define FIN_PARTIE                1500
+# define FIN_PARTIE                150
 
 ///
 // Nombre de points d'action par tour
@@ -104,7 +104,7 @@ typedef struct trainee_moto {
   int id;  /* <- identifiant de la traînee */
   std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
   int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
-  int longueur;  /* <- taille maximale de la traînée */
+  int longueur_max;  /* <- taille maximale de la traînée */
 } trainee_moto;
 
 

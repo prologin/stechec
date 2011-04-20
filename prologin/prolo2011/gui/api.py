@@ -1,8 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-try:
-    from _api import *
-except ImportError:
-    pass
+from _api import *
 
 # Taille du terrain
 TAILLE_TERRAIN = 30
@@ -75,5 +72,7 @@ trainee_moto = namedtuple("trainee_moto",
     'id ' # <- identifiant de la traînee
     'emplacement ' # <- position de chaque composant de la traînée de moto
     'team ' # <- identifiant de l'équipe qui possède cette traînée de moto
-    'longueur ' # <- taille maximale de la traînée
+    'longueur_max ' # <- taille maximale de la traînée
 )
+
+

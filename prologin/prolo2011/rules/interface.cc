@@ -500,7 +500,7 @@ std::ostream& operator<<(std::ostream& os, trainee_moto v)
   os << "{ ";
   os << "id" << "=" << v.id;
   os << ", ";
-  os << "longueur" << "=" << v.longueur;
+  os << "longueur_max" << "=" << v.longueur_max;
   os << ", ";
   os << "emplacement" << "=" << v.emplacement;
   os << ", ";
