@@ -140,27 +140,23 @@ position InternalTraineeMoto::queue(){
 
 // ne check pas PLUS_DE_PA ni PAS_A_TOI ni ID_INVALIDE
 void InternalTraineeMoto::reject_bad_move(position from, position to){
-  LOG4("trainee_moto reject bad move");
-  if (!a_cote(from, to)){
-    LOG4("pas a cote");
-    throw POSITION_INVALIDE;
-  }
-  if (!begin(from) && !end(from)){
-    LOG4("pas de tete");
-    throw POSITION_INVALIDE;
-  }
-  Case& c = gd_->get_case(to);
-  if (c.type == OBSTACLE){
-    LOG4("obstacle");
-    throw POSITION_INVALIDE;
-  }
-
-  if (
-      (c.type != POINT_CROISEMENT && c.nb_trainees_moto == 1) ||
-      (c.type == POINT_CROISEMENT && c.nb_trainees_moto == 4)){
-    LOG4("destination occupee");
-      throw POSITION_INVALIDE;
-  }
+    LOG4("trainee_moto reject bad move");
+    if (!a_cote(from, to)){
+	LOG4("pas a cote");
+	throw POSITION_INVALIDE;
+    }
+    if (!begin(from) && !end(from)){
+	LOG4("pas de tete");
+	throw POSITION_INVALIDE;
+    }
+    Case& c = gd_->get_case(to);
+    if (
+	(c.type != VIDE || c.nb_trainees_moto != 0) &&
+	(c.type != POINT_CROISEMENT))
+    {
+	LOG4("destination occupee");
+	throw POSITION_INVALIDE;
+    }
 }
 
 void InternalTraineeMoto::take_case(const position&	pos,
