@@ -60,15 +60,15 @@ def action_to_str(action):
     if act_type == ACT_DEPLACER:
         return u'Déplacement de la traînée %d : (%d, %d) → (%d, %d)' % act_args
     elif act_type == ACT_COUPER_TRAINEE_MOTO:
-        return u'Coupure de la traînée %d : (%d, %d) ↔ (%d, %d)' % \
-            act_args
+        return u'Coupure de la traînée %d : ' % (act_args[0], ) + \
+            u'(%d, %d) ↔ (%d, %d) (incr_size=%d)' % act_args[1:]
     elif act_type == ACT_FUSIONNER:
         return u'Fusion des traînées %d et %d : (%d, %d) ↔ (%d, %d)' % \
             act_args
     elif act_type == ACT_ENROULER:
         return u'Enroulage de la traînée %d en (%d, %d)' % act_args
-    elif act_type == ACT_REGENER:
-        return u'Source %d regénérée' % (act_args[1])
+    elif act_type == ACT_REGENERER:
+        return u'Source %d regénérée' % (act_args[0])
     elif act_type == ACT_ALLONGER_PA:
         return u'Bonus Point d’Action'
     elif act_type == ACT_AGRANDIR:
@@ -88,7 +88,7 @@ class Team:
         result['plus_pa'] = len([b for b in self.bonus if b == PLUS_PA])
         result['bonus_croisement'] = len([b for b in self.bonus
                                           if b == BONUS_CROISEMENT])
-        result['bonus_renegeration'] = len([b for b in self.bonus
+        result['bonus_regeneration'] = len([b for b in self.bonus
                                             if b == BONUS_REGENERATION])
         return result
 

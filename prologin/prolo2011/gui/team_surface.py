@@ -94,7 +94,7 @@ class TeamSurface(surface.Surface):
             vshift += bonus.get_size()[1]
 
             bonus = self.get_bonus('bonus_regeneration',
-                                   bonus_stat['bonus_croisement'])
+                                   bonus_stat['bonus_regeneration'])
             self.surface.blit(bonus, (hshift, vshift))
             vshift += bonus.get_size()[1]
 
