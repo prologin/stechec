@@ -192,11 +192,11 @@ erreur Api::deplacer(int id, position de, position vers)
 ///
 // Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
 //
-erreur Api::couper_trainee_moto(int id, position entre, position et)
+erreur Api::couper_trainee_moto(int id, position entre, position et, int incr_size)
 {
     LOG4("Api::couper_trainee_moto");
     DO_ACTION(ActionCouperTraineeMoto, g_->get_current_player(),
-	      id, entre, et);
+	      id, entre, et, incr_size);;
     LOG4("Api::deplacer : OK");
     return OK;
 }

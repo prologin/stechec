@@ -96,8 +96,7 @@ void ActionDeplacer::appliquer(GameData* g)
     InternalTraineeMoto &moto = g->motos.at(id_);
     old_len_ = moto.length();
     old_queue_ = moto.queue(from_);
-    last_end_moved_ = moto.last_end_moved_;
-    moto.move(from_, to_, taken_bonus_);
+    moved_end_ = moto.move(from_, to_, taken_bonus_);
     new_queue_ = moto.queue(to_);
 }
 
@@ -112,20 +111,21 @@ void ActionDeplacer::annuler(GameData* g)
 	moto.move(new_queue_, old_queue_, trash);
     else if (old_len_ == moto.len_ - 1)
     {
-      LOG3("suppression de la tete");
+	LOG3("suppression de la tete");
 	moto.len_ --;
-	//g->get_case(to_).nb_trainees_moto -= 1;
-	if (moto.last_end_moved_){
-	  g->get_case(moto.content_.back()).nb_trainees_moto -= 1;
-	  moto.content_.pop_back();
-	}else{
-	  g->get_case(moto.content_.front()).nb_trainees_moto -= 1;
-	  moto.content_.pop_front();
+	if (moved_end_)
+	{
+	    g->get_case(moto.content_.back()).nb_trainees_moto -= 1;
+	    moto.content_.pop_back();
+	}
+	else
+	{
+	    g->get_case(moto.content_.front()).nb_trainees_moto -= 1;
+	    moto.content_.pop_front();
 	}
     }
     else
 	abort();
-    moto.last_end_moved_ = last_end_moved_;
     g->get_case(to_).bonus = taken_bonus_;
 }
 
@@ -167,7 +167,7 @@ void ActionCouperTraineeMoto::verifier(GameData* g)
     InternalTraineeMoto& moto = g->motos[id_];
     if (player_ != moto.player_)
 	throw PAS_A_TOI;
-    moto.reject_bad_coupe(entre_, et_);
+    moto.reject_bad_coupe(entre_, et_, incr_size_);
 }
 
 void ActionCouperTraineeMoto::appliquer(GameData* g)
@@ -177,7 +177,7 @@ void ActionCouperTraineeMoto::appliquer(GameData* g)
     InternalTraineeMoto&	moto1 = g->motos[id_];
     InternalTraineeMoto*	pmoto2;
 
-    moto1.couper(entre_, et_, &pmoto2);
+    moto1.couper(entre_, et_, &pmoto2, incr_size_);
     new_id_ = pmoto2->id_;
 }
 
@@ -208,7 +208,8 @@ ActionCouperTraineeMoto::recevoir(const StechecPkt* pkt)
     et.x = pkt->arg[5];
     et.y = pkt->arg[6];
     result = new ActionCouperTraineeMoto(pkt->arg[1],
-					 pkt->arg[2], entre, et);
+					 pkt->arg[2], entre, et,
+					 pkt->arg[7]);
     return (result);
 }
 
@@ -242,6 +243,7 @@ void ActionFusionner::appliquer(GameData* g)
     InternalTraineeMoto&	moto1 = g->motos[id1_];
     InternalTraineeMoto&	moto2 = g->motos[id2_];
 
+    incr_size_ = moto1.max_len_ - moto1.len_;
     moto1.fusionner(moto2, pos1_, pos2_);
 }
 
@@ -252,7 +254,7 @@ void ActionFusionner::annuler(GameData* g)
     InternalTraineeMoto&	moto1 = g->motos[id1_];
     InternalTraineeMoto*	pmoto2;
 
-    moto1.couper(pos1_, pos2_, &pmoto2);
+    moto1.couper(pos1_, pos2_, &pmoto2, incr_size_);
     id2_ = pmoto2->id_;
 }
 

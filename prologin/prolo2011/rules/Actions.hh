@@ -71,18 +71,21 @@ protected:
     position	old_queue_;
     position	new_queue_;
     type_bonus	taken_bonus_;
-    bool	last_end_moved_;
+    bool	moved_end_;
 };
 
 class ActionCouperTraineeMoto : public Action
 {
 public:
     ActionCouperTraineeMoto(int player, int id,
-			    position entre, position et) :
+			    position entre, position et,
+			    int incr_size) :
 	Action(player), id_(id), entre_(entre), et_(et),
+	incr_size_(incr_size),
 	new_id_(-1)
     {
-      LOG4("couper trainee moto %1 %2 %3 %4", player, id, entre, et);
+	LOG4("couper trainee moto %1 %2 %3 %4 %5",
+	     player, id, entre, et, incr_size);
     }
 
     ACTIONS(ActionCouperTraineeMoto, ACT_COUPER_TRAINEE_MOTO);
@@ -92,6 +95,7 @@ protected:
     int		new_id_;
     position	entre_;
     position	et_;
+    int		incr_size_;
 };
 
 class ActionFusionner : public Action
@@ -113,6 +117,7 @@ protected:
     int		id2_;
     position	pos1_;
     position	pos2_;
+    int		incr_size_;
 };
 
 class ActionEnrouler : public Action

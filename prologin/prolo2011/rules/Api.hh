@@ -97,7 +97,7 @@ public:
 ///
 // Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
 //
-   erreur couper_trainee_moto(int id, position entre, position et);
+   erreur couper_trainee_moto(int id, position entre, position et, int incr_size);
 ///
 // Annuler l'action précédente
 //

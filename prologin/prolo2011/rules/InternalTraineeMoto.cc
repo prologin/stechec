@@ -109,8 +109,7 @@ InternalTraineeMoto::InternalTraineeMoto(GameData*	gd,
       player_(player),
       id_(id),
       len_(1),
-      max_len_(max_len),
-      last_end_moved_(false)
+      max_len_(max_len)
 {
   content_.push_front(init);
   LOG4("trainee_moto constructor");
@@ -178,54 +177,53 @@ void InternalTraineeMoto::take_case(const position&	pos,
     }
 }
 
-erreur InternalTraineeMoto::move(position from, position to,
-				 type_bonus&	taken_bonus)
+bool InternalTraineeMoto::move(position from, position to,
+			       type_bonus&	taken_bonus)
 {
-  LOG4("trainee_moto move %1 -> %2", from, to);
-  if (begin(from))
-  {
-    if (len_ == max_len_)
+    LOG4("trainee_moto move %1 -> %2", from, to);
+    if (begin(from))
     {
-      position pos = content_.back();
-      content_.pop_back();
-      gd_->get_case(pos).nb_trainees_moto -= 1;
+	if (len_ == max_len_)
+	{
+	    position pos = content_.back();
+	    content_.pop_back();
+	    gd_->get_case(pos).nb_trainees_moto -= 1;
+	}
+	else
+	    len_ ++;
+	content_.push_front(to);
+	take_case(to, taken_bonus);
+	return false;
     }
-    else
-      len_ ++;
-    content_.push_front(to);
-    take_case(to, taken_bonus);
-    last_end_moved_ = false;
-    return OK;
-  }
-  else if (end(from))
-  {
-    if (len_ == max_len_)
+    else if (end(from))
     {
-      position pos = content_.front();
-      content_.pop_front();
-      gd_->get_case(pos).nb_trainees_moto -= 1;
+	if (len_ == max_len_)
+	{
+	    position pos = content_.front();
+	    content_.pop_front();
+	    gd_->get_case(pos).nb_trainees_moto -= 1;
+	}
+	else
+	    len_ ++;
+	content_.push_back(to);
+	take_case(to, taken_bonus);
+	return true;
     }
-    else
-      len_ ++;
-    content_.push_back(to);
-    take_case(to, taken_bonus);
-    last_end_moved_ = true;
-    return OK;
-  }
-  LOG2("BAD MOVE : %1 -> %2", from, to);
-  return POSITION_INVALIDE;
+    throw POSITION_INVALIDE;
+    return false;
 }
 
 erreur InternalTraineeMoto::couper(position entre, position et,
-				   InternalTraineeMoto** moitie)
+				   InternalTraineeMoto** moitie,
+				   int incr_size)
 {
-    // TODO: associate "entre" with the first half, and "et" with the second
-    // one (this is necessary when cancelling a "coupe"
-
     // First find the two adjectent nodes to split
     nodes_list::iterator it;
     nodes_list::iterator it2;
     int i = 1;
+
+    // True if "entre" belong to the current internal moto
+    bool entre_remains = false;
 
     for (it = content_.begin(); it != content_.end(); ++it, ++i)
         if (*it == entre)
@@ -234,6 +232,7 @@ erreur InternalTraineeMoto::couper(position entre, position et,
 	    ++it2;
             if (it2 == content_.end() || *it2 != et)
                 throw POSITION_INVALIDE;
+	    entre_remains = true;
             break;
         }
         else if (*it == et)
@@ -245,23 +244,25 @@ erreur InternalTraineeMoto::couper(position entre, position et,
             break;
         }
 
+    /*
+     * Now, entre can belong to the current trainee_moto or to the old one,
+     * there’s no determinism about this
+     */
+
     // Then create the second TraineeMoto
-    int new_max_len = 0;
-    if (last_end_moved_)
-        new_max_len = len_ - i;
+    int sub_max_len = 0;
+    if (entre_remains)
+	sub_max_len = max_len_ - incr_size - i;
     else
-        new_max_len = max_len_ - i;
+	sub_max_len = incr_size;
     InternalTraineeMoto& moto = gd_->creer_trainee_moto(player_,
                                                         *it2,
-                                                        new_max_len);
-    std::cout << "New moto, init pos: (" << it2->x << ", " << it2->y << ")" << std::endl;
+                                                        sub_max_len);
     *moitie = &moto;
-    moto.last_end_moved_ = last_end_moved_;
-    max_len_ -= new_max_len;
+    max_len_ -= incr_size;
     len_ -= 1;
     while ((it2 = content_.erase(it2)) != content_.end())
     {
-	std::cout << "Pushing: (" << it2->x << ", " << it2->y << ")" << std::endl;
         moto.content_.push_back(*it2);
         moto.len_ += 1;
         len_ -= 1;
@@ -271,12 +272,16 @@ erreur InternalTraineeMoto::couper(position entre, position et,
 
 /*
  * Just check that "entre" and "et" are two positions owned by the TraineeMoto
- * and that they are adjacent.
-*/
-void InternalTraineeMoto::reject_bad_coupe(position entre, position et)
+ * and that they are adjacent. Check also that the TraineeMoto can still
+ * increase its length with "incr_size" units.
+ */
+void InternalTraineeMoto::reject_bad_coupe(position entre, position et, int incr_size)
 {
     nodes_list::const_iterator it;
     nodes_list::const_iterator it2;
+
+    if (incr_size < 0 || incr_size > max_len_ - len_)
+	throw POSITION_INVALIDE;
 
     for (it = content_.begin(); it != content_.end(); ++it)
         if (*it == entre)
@@ -406,7 +411,6 @@ void InternalTraineeMoto::save_data(MotoData& data)
     data.content = content_;
     data.len = len_;
     data.max_len = max_len_;
-    data.last_end_moved = last_end_moved_;
 
     // Remove all the node from the map
     nodes_list::const_iterator	it;
@@ -424,7 +428,6 @@ void InternalTraineeMoto::load_data(const MotoData& data)
 	gd_->get_case(*it).nb_trainees_moto += 1;
     len_ = data.len;
     max_len_ = data.max_len;
-    last_end_moved_ = data.last_end_moved;
 }
 
 trainee_moto InternalTraineeMoto::to_trainee_moto() const

@@ -47,13 +47,15 @@ public:
 
     void take_case(const position&	pos,
 		   type_bonus&		taken_bonus);
-    erreur move(position from, position to,
-		type_bonus&	taken_bonus);
+    bool move(position from, position to,
+	      type_bonus&	taken_bonus);
     void reject_bad_move(position from, position to);
 
     erreur couper(position entre, position et,
-		  InternalTraineeMoto** moitie);
-    void reject_bad_coupe(position entre, position et);
+		  InternalTraineeMoto** moitie,
+		  int incr_size);
+    void reject_bad_coupe(position entre, position et,
+			 int incr_size);
 
     erreur fusionner(InternalTraineeMoto	&autre,
 		     position			entre,
@@ -79,7 +81,6 @@ public:
     nodes_list content_;
     int len_;
     int max_len_;
-    bool last_end_moved_; /* false when head, true when queue */
 
 protected:
     void save_data(MotoData& data);

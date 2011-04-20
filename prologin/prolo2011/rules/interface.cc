@@ -313,9 +313,9 @@ extern "C" erreur api_deplacer(int id, position de, position vers)
 ///
 // Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
 //
-extern "C" erreur api_couper_trainee_moto(int id, position entre, position et)
+extern "C" erreur api_couper_trainee_moto(int id, position entre, position et, int incr_size)
 {
-  return api->couper_trainee_moto(id, entre, et);
+  return api->couper_trainee_moto(id, entre, et, incr_size);
 }
 
 ///
