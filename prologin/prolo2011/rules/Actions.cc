@@ -193,7 +193,9 @@ void ActionCouperTraineeMoto::annuler(GameData* g)
 
 std::vector<int> ActionCouperTraineeMoto::serialiser()
 {
-    return make_int_vect(6, player_, id_, entre_.x, entre_.y, et_.x, et_.y);
+    return make_int_vect(7, player_, id_,
+			 entre_.x, entre_.y, et_.x, et_.y,
+			 incr_size_);
 }
 
 ActionCouperTraineeMoto*
