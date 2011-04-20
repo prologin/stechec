@@ -199,7 +199,7 @@ void jouer()
 		  << pos2.x << ", " << pos2.y << ")" << std::endl;
 	if (couper_trainee_moto(my_motos[0].id,
 				my_motos[0].emplacement[0],
-				my_motos[0].emplacement[1]) != OK)
+				my_motos[0].emplacement[1], 0) != OK)
 	    return;
 	--act_points;
 	get_team_motos(my_motos, my_player);

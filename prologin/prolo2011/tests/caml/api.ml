@@ -151,7 +151,7 @@ external deplacer : int -> position -> position -> erreur = "ml_deplacer"
 (*
 ** Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
 *)
-external couper_trainee_moto : int -> position -> position -> erreur = "ml_couper_trainee_moto"
+external couper_trainee_moto : int -> position -> position -> int -> erreur = "ml_couper_trainee_moto"
 (*
 ** Annuler l'action précédente
 *)

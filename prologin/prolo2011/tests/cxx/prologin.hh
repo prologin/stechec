@@ -251,10 +251,10 @@ static inline erreur deplacer(int id, position de, position vers)
 ///
 // Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
 //
-extern "C" erreur api_couper_trainee_moto(int id, position entre, position et);
-static inline erreur couper_trainee_moto(int id, position entre, position et)
+extern "C" erreur api_couper_trainee_moto(int id, position entre, position et, int surplus);
+static inline erreur couper_trainee_moto(int id, position entre, position et, int surplus)
 {
-  return api_couper_trainee_moto(id, entre, et);
+  return api_couper_trainee_moto(id, entre, et, surplus);
 }
 
 

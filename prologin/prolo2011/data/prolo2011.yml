@@ -218,6 +218,10 @@ function:
     - [id, int, identifiant de la traînée de moto à couper]
     - [entre, position, nouvelle extrémité de la première traînée de moto]
     - [et, position, nouvelle extrémité de la deuxième traînée de moto]
+    -
+      - surplus
+      - int
+      - croissance restante de la moitié de la traînée de moto contenant entre]
 
   -
     fct_name: cancel

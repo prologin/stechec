@@ -293,7 +293,7 @@ let action () =  (* Pose ton code ici *)
 		|> best_split in
 *)
      begin
-	let erreur = couper_trainee_moto split_snake.id split_p split_p' in
+	let erreur = couper_trainee_moto split_snake.id split_p split_p' 0 in
 	afficher_erreur erreur ;
 (*	Printf.printf "SPLIT %f  %a \n%!" split_score print_position split_p ;
 	ignore (read_line ()) ; *)
