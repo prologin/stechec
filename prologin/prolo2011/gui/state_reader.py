@@ -88,6 +88,11 @@ class StechecReader(Reader):
 
         if self.waiting_end.is_set():
             self.turn += 1
+            # Flushing is used to delay the return of put_state. Yes, this is
+            # an ugly hack.
+            sys.stdin.flush()
+            sys.stdout.flush()
+            sys.stderr.flush()
             return
         game_state = self.build_state()
         self.pipe.put(game_state)
