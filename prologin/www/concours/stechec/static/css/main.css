@@ -115,6 +115,7 @@ label {
 input, select, button, textarea {
     margin: 4px;
     border: 1px solid #777;
+    background-color: #222;
     color: #ddd;
     font-family: 'Trebuchet MS',Verdana,Tahoma,sans-serif;
     font-size: 1em;
