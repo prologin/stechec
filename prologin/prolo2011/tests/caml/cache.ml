@@ -23,7 +23,7 @@ module Cache : sig
   val distances : unit -> distances
 
   val trainees_moto : unit -> trainee_moto list
-  val sources : unit -> source_energie list
+  val sources : unit -> unite_energie list
 
 end = struct
   let ncases = taille_terrain * taille_terrain
@@ -45,7 +45,7 @@ end = struct
     snake_map : snake_map;
     distances : distances;
     trainees_moto : trainee_moto list ref;
-    sources : source_energie list ref;
+    sources : unite_energie list ref;
   }
 
   let mk_cache_snake : unit -> snake_cache = fun () -> H.create 2
@@ -153,5 +153,5 @@ with Invalid_argument _ -> failwith "reset"
     reset_snake_cache b;
     cache.motos_id := mk_cache_motos () ;
     cache.trainees_moto := Api.trainees_moto () |> Array.to_list ;
-    cache.sources := Api.sources_energie () |> Array.to_list
+    cache.sources := Api.unites_energie () |> Array.to_list
 end

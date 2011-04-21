@@ -198,7 +198,7 @@ std::string convert_to_string(std::vector<trainee_moto> in){
 }
 std::string dump_infos()
 {
-  std::string string_info1 = convert_to_string(api->sources_energie());
+  std::string string_info1 = convert_to_string(api->unites_energie());
   std::string string_info2 = convert_to_string(api->trainees_moto());
   std::string string_info3 = convert_to_string(api->scores());
   // TODO modifie les infos ici, si besoin (si tu as une vue subjective, ca peut-etre utile)
@@ -249,9 +249,9 @@ extern "C" int api_get_real_turn()
 ///
 // Retourne la liste des sources d'énergie
 //
-extern "C" std::vector<source_energie> api_sources_energie()
+extern "C" std::vector<source_energie> api_unites_energie()
 {
-  return api->sources_energie();
+  return api->unites_energie();
 }
 
 ///
@@ -345,9 +345,9 @@ extern "C" erreur api_enrouler(int id, position point)
 ///
 // Régénère une source d'énergie à son maximal
 //
-extern "C" erreur api_regenerer_source_energie(int id)
+extern "C" erreur api_regenerer_unite_energie(int id)
 {
-  return api->regenerer_source_energie(id);
+  return api->regenerer_unite_energie(id);
 }
 
 ///
@@ -487,7 +487,7 @@ std::ostream& operator<<(std::ostream& os, source_energie v)
   os << " }";
   return os;
 }
-extern "C" void api_afficher_source_energie(source_energie v)
+extern "C" void api_afficher_unite_energie(source_energie v)
 {
   std::cerr << v << std::endl;
 }

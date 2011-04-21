@@ -85,13 +85,13 @@ void my_print_trainees()
 void my_print_sources()
 {
     std::cout << "Sources:" << std::endl;
-    std::vector<source_energie> sources = sources_energie();
+    std::vector<unite_energie> sources = unites_energie();
     for (unsigned int i = 0; i < sources.size(); ++i)
     {
-        source_energie& s = sources[i];
+        unite_energie& s = sources[i];
         std::cout << "  source[" << s.id << "] @ ("
                   << s.pos.x << ", " << s.pos.y << ") : "
-                  << s.capacite << "/" << s.capacite_max << std::endl;
+                  << s.valeur << "/" << s.valeur_max << std::endl;
     }
 }
 
@@ -236,7 +236,7 @@ void jouer()
 	--act_points;
 	act_points += 5;
 
-	regenerer_source_energie(0);
+	regenerer_unite_energie(0);
 	--act_points;
     }
 

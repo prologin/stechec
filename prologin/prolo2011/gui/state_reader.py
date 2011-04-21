@@ -148,14 +148,14 @@ class StechecReader(Reader):
         g.objgrid = game.Grid(lambda x: [])
         g.motos = [
                 game.Moto(m.team, [(pos.x, pos.y) for pos in m.emplacement],
-                          m.id, g.objgrid)
+                          m.id, m.intensite, g.objgrid)
                 for m in trainees_moto()
                 ]
         g.sources = [game.Source((s.pos.x, s.pos.y),
-                                 s.capacite, s.capacite_max,
+                                 s.valeur, s.valeur_max,
                                  s.id,
                                  g.objgrid)
-                        for s in sources_energie()]
+                        for s in unites_energie()]
 
         for y in xrange(TAILLE_TERRAIN):
             for x in xrange(TAILLE_TERRAIN):
@@ -214,7 +214,7 @@ class DumpReader(Reader):
         type_cases = json['type_cases']
         type_bonus = json['type_bonus']
         trainees_moto = json['trainees_moto']
-        sources_energie = json['sources_energie']
+        sources_energie = json['unites_energie']
         g.ground = game.Grid(lambda x: VIDE)
         g.bonusgrid = game.Grid(lambda (x, y): type_bonus[x + y *
             TAILLE_TERRAIN])
@@ -222,10 +222,10 @@ class DumpReader(Reader):
         g.motos = [
                 game.Moto(m['team'],
                     [(pos['x'], pos['y']) for pos in m['emplacement']],
-                    m['id'], g.objgrid)
+                    m['id'], m['longueur_max'], g.objgrid)
                 for m in trainees_moto]
         g.sources = [game.Source((s['pos']['x'], s['pos']['y']),
-            s['capacite'], s['capacite_max'],
+            s['valeur'], s['valeur_max'],
             s['id'], g.objgrid)
             for s in sources_energie]
 

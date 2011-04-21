@@ -112,7 +112,7 @@ class DetailSurface(surface.Surface):
             pos = (hshift, vshift)
             self.surface.blit(text, pos)
             
-            message = u'Capacité: %d / %d' % (obj.capacite, obj.capacite_max)
+            message = u'Valeur: %d / %d' % (obj.capacite, obj.capacite_max)
             pos = (hshift, vshift + text.get_size()[1])
             text = self.font.render(message, True, (255, 255, 255))
             self.surface.blit(text, pos)
@@ -132,7 +132,7 @@ class DetailSurface(surface.Surface):
             pos = (hshift, vshift)
             self.surface.blit(text, pos)
             
-            message = u'Longueur: %d' % (len(obj.nodes))
+            message = u'Longueur: %d / %d' % (len(obj.nodes), obj.longueur_max)
             pos = (hshift, vshift + text.get_size()[1])
             text = self.font.render(message, True, (255, 255, 255))
             self.surface.blit(text, pos)

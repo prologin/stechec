@@ -12,69 +12,69 @@
 # include <string>
 
 ///
-// Énumération représentant une erreur renvoyée par une des fonctions d'action
+// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action
 //
 typedef enum erreur {
   OK, /* <- aucune erreur n'est survenue */
   ID_INVALIDE, /* <- identifiant invalide */
-  POSITION_INVALIDE, /* <- la position spécifiée est invalide */
+  POSITION_INVALIDE, /* <- la position spÃ©cifiÃ©e est invalide */
   PLUS_DE_PA, /* <- vous n'avez pas assez de points d'action */
   BONUS_INVALIDE, /* <- vous n'avez pas ce bonus */
-  PAS_A_TOI, /* <- l'unité n'est pas a vous */
+  PAS_A_TOI, /* <- l'unitÃ© n'est pas a vous */
 } erreur;
 
 
 ///
-// Énumération représentant les différents types de case
+// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de case
 //
 typedef enum type_case {
-  VIDE, /* <- rien n'est présent sur la case */
+  VIDE, /* <- rien n'est prÃ©sent sur la case */
   OBSTACLE, /* <- cette case est inaccessible */
-  POINT_CROISEMENT, /* <- point de croisement de traînées */
-  SOURCE, /* <- source ou consommateur d'energie */
+  POINT_CROISEMENT, /* <- point de croisement de traÃ®nÃ©es */
+  UNITE, /* <- unitÃ© d'Ã©nergie */
 } type_case;
 
 
 ///
-// Énumération représentant les différents types de bonii
+// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de bonii
 //
 typedef enum type_bonus {
   PAS_BONUS, /* <- ceci n'est pas un bonus :-) */
-  BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traînées de moto sur une case */
-  PLUS_LONG, /* <- bonus permettant d'agrandir une traînée de moto */
+  BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traÃ®nÃ©es de moto sur une case */
+  PLUS_LONG, /* <- bonus permettant d'agrandir une traÃ®nÃ©e de moto */
   PLUS_PA, /* <- bonus permettant d'avoir plus de points d'action */
-  BONUS_REGENERATION, /* <- bonus permettant de regenerer une source d'energie */
+  BONUS_REGENERATION, /* <- bonus permettant de regenerer une unitÃ© d'Ã©nergie */
 } type_bonus;
 
 
 ///
-// Représente une position sur le terrain du jeu
+// ReprÃ©sente une position sur le terrain du jeu
 //
 typedef struct position {
-  int x;  /* <- coordonnée en X */
-  int y;  /* <- coordonnée en Y */
+  int x;  /* <- coordonnÃ©e en X */
+  int y;  /* <- coordonnÃ©e en Y */
 } position;
 
 
 ///
-// Caracteristiques d'une source d'énergie
+// Caracteristiques d'une unitÃ© d'Ã©nergie
 //
-typedef struct source_energie {
-  int id;  /* <- identifiant de la source d'énergie */
-  position pos;  /* <- position de la source d'énergie */
-  int capacite;  /* <- coefficient représentant les points d'énergie que la source va vous apporter */
-  int capacite_max;  /* <- coefficient représentant la capacité de la source lorsqu'elle est chargée au maximum */
-} source_energie;
+typedef struct unite_energie {
+  int id;  /* <- identifiant de lâ€™unitÃ© d'Ã©nergie */
+  position pos;  /* <- position de lâ€™unitÃ© d'Ã©nergie */
+  int valeur;  /* <- coefficient reprÃ©sentant les points d'Ã©nergie que lâ€™unitÃ© va vous apporter */
+  int valeur_max;  /* <- coefficient reprÃ©sentant la capacitÃ© de lâ€™unitÃ© lorsqu'elle est chargÃ©e au maximum */
+} unite_energie;
 
 
 ///
-// Représente une traînée de moto sur le terrain
+// ReprÃ©sente une traÃ®nÃ©e de moto sur le terrain
 //
 typedef struct trainee_moto {
-  int id;  /* <- identifiant de la traînee */
-  std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
-  int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
-  int longueur_max;  /* <- taille maximale de la traînée */
+  int id;  /* <- identifiant de la traÃ®nee */
+  std::vector<position> emplacement;  /* <- position de chaque composant de la traÃ®nÃ©e de moto */
+  int team;  /* <- identifiant de l'Ã©quipe qui possÃ¨de cette traÃ®nÃ©e de moto */
+  int intensite;  /* <- taille maximale de la traÃ®nÃ©e */
 } trainee_moto;
 
 
@@ -82,32 +82,32 @@ typedef struct trainee_moto {
 extern "C" {
 
 ///
-// Retourne le numéro de votre équipe
+// Retourne le numÃ©ro de votre Ã©quipe
 //
 int api_mon_equipe();
 
 ///
-// Retourne les scores de chaque équipe
+// Retourne les scores de chaque Ã©quipe
 //
 std::vector<int> api_scores();
 
 ///
-// Retourne le nombre d'équipes sur le terrain
+// Retourne le nombre d'Ã©quipes sur le terrain
 //
 int api_nombre_equipes();
 
 ///
-// Retourne le numéro du tour actuel
+// Retourne le numÃ©ro du tour actuel
 //
 int api_tour_actuel();
 
 ///
-// Retourne la liste des sources d'énergie
+// Retourne la liste des unitÃ©s d'Ã©nergie
 //
-std::vector<source_energie> api_sources_energie();
+std::vector<unite_energie> api_unites_energie();
 
 ///
-// Retourne la liste des traînées de moto
+// Retourne la liste des traÃ®nÃ©es de moto
 //
 std::vector<trainee_moto> api_trainees_moto();
 
@@ -122,17 +122,17 @@ type_case api_regarder_type_case(position pos);
 type_bonus api_regarder_type_bonus(position pos);
 
 ///
-// Retourne la liste des bonus d'une équipe
+// Retourne la liste des bonus d'une Ã©quipe
 //
 std::vector<type_bonus> api_regarder_bonus(int equipe);
 
 ///
-// Retourne la liste des id des traînées présentes sur une case
+// Retourne la liste des id des traÃ®nÃ©es prÃ©sentes sur une case
 //
 std::vector<int> api_regarder_trainee_case(position pos);
 
 ///
-// Retourne si une case peut être traversée par une traînée de plus
+// Retourne si une case peut Ãªtre traversÃ©e par une traÃ®nÃ©e de plus
 //
 bool api_case_traversable(position pos);
 
@@ -147,29 +147,29 @@ int api_diff_score();
 std::vector<position> api_chemin(position p1, position p2);
 
 ///
-// Déplace une moto
+// DÃ©place une moto
 //
 erreur api_deplacer(int id, position de, position vers);
 
 ///
-// Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
+// Coupe une traÃ®nÃ©e de moto en deux nouvelles traÃ®nÃ©es. Â« p1 Â» et Â« p2 Â» doivent Ãªtre deux positions adjacentes occupÃ©es par une mÃªme traÃ®nÃ©e de moto.
 //
-erreur api_couper_trainee_moto(int id, position entre, position et);
+erreur api_couper_trainee_moto(int id, position p1, position p2, int intensite_p1);
 
 ///
-// Annuler l'action précédente
+// Annuler l'action prÃ©cÃ©dente
 //
 erreur api_cancel();
 
 ///
-// Enrouler la traînée de moto en un point
+// Enrouler la traÃ®nÃ©e de moto en un point
 //
-erreur api_enrouler(int id, position point);
+erreur api_enrouler(int id, position p);
 
 ///
-// Régénère une source d'énergie à son maximal
+// RÃ©gÃ©nÃ¨re une unitÃ© d'Ã©nergie Ã  son maximal
 //
-erreur api_regenerer_source_energie(int id);
+erreur api_regenerer_unite_energie(int id);
 
 ///
 // Allonge le tour en rajoutant des points d'action
@@ -177,17 +177,17 @@ erreur api_regenerer_source_energie(int id);
 erreur api_allonger_pa();
 
 ///
-// Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
+// Allonge une traÃ®nÃ©e de moto. L'allongement se fera aux prochains dÃ©placements. La longueur du prolongement doit Ãªtre comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
-erreur api_agrandir_trainee_moto(int id, int longueur);
+erreur api_etendre_trainee_moto(int id, int longueur);
 
 ///
-// Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
+// Pose un point de croisement sur une case du terrain. La case doit ne pas dÃ©jÃ  Ãªtre un point de croisement.
 //
 erreur api_poser_point_croisement(position point);
 
 ///
-// Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
+// Fusionner deux traÃ®nÃ©es de moto. Les deux doivent appartenir Ã  la mÃªme Ã©quipe, mais doivent Ãªtre deux traÃ®nÃ©es distinctes. Â« pos1 Â» et Â« pos2 Â» doivent Ãªtre adjacentes et occupÃ©es respectivement par Â« id1 Â» et Â« id2 Â».
 //
 erreur api_fusionner(int id1, position pos1, int id2, position pos2);
 
@@ -212,9 +212,9 @@ void api_afficher_type_bonus(type_bonus v);
 void api_afficher_position(position v);
 
 ///
-// Affiche le contenu d'une valeur de type source_energie
+// Affiche le contenu d'une valeur de type unite_energie
 //
-void api_afficher_source_energie(source_energie v);
+void api_afficher_unite_energie(unite_energie v);
 
 ///
 // Affiche le contenu d'une valeur de type trainee_moto

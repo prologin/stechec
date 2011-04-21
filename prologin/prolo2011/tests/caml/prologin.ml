@@ -24,8 +24,8 @@ let print_map () =
       Printf.printf "%c%!" (match regarder_type_case (x, y) with
 	| Obstacle -> '#'
 	| Point_croisement -> '+'
-	| Source -> begin
-	  let source = sources_energie () |> Array.to_list |> List.filter (fun s -> s.pos = (x, y)) |> List.hd in
+	| Unite -> begin
+	  let source = unites_energie () |> Array.to_list |> List.filter (fun s -> s.pos = (x, y)) |> List.hd in
 	end_line := source :: ( ! end_line);
 	  'o'
 	end
@@ -43,7 +43,7 @@ let print_map () =
       )
     done ;
       List.iter (fun s ->
-	Printf.printf " %i/%i" s.capacite s.capacite_max
+	Printf.printf " %i/%i" s.valeur s.valeur_max
       ) (!end_line);
     Printf.printf "\n%!"
   done
@@ -71,7 +71,7 @@ let sources_snakes_connected_with snake = time "sources_snakes_connected_with" @
 	Array.iter (fun sna_pos ->
 		List.iter (fun ((x, y) as p) ->
 			match regarder_type_case p with
-			| Source -> sources := PosSet.add p !sources
+			| Unite -> sources := PosSet.add p !sources
 			| Vide ->
 			  if not (case_traversable (x, y)) then (* trainee *)
 			    List.iter (fun sid ->
@@ -109,7 +109,7 @@ let coeff_of_snake snake = time "coeff_of_snake" @$ fun () ->
     let result =
 	sources_connected_with snake
         |> PosSet.elements
-	|> List.map (fun p -> float (source_at_pos p).capacite)
+	|> List.map (fun p -> float (source_at_pos p).valeur)
 	|> sum
     in
     H.add cache snake.id result ;
@@ -166,13 +166,13 @@ let select_sources snake = time "select_sources" @$ fun () ->
    |> PosSet.elements
 *)
 (*
-   |> List.map (fun p -> (source_at_pos p).capacite, p)
+   |> List.map (fun p -> (source_at_pos p).valeur, p)
 *)
    |> List.map (fun s ->
 (*
         let s = source_at_pos p in
 *)
-        let capacite = if PosSet.mem s.pos already_connected then 0 else s.capacite in
+        let valeur = if PosSet.mem s.pos already_connected then 0 else s.valeur in
         List.map (fun pos ->
 		let di = try minimum (List.map (fun p -> if not (case_traversable p && case_traversable pos && p <> pos)
 							then max_int
@@ -181,8 +181,8 @@ let select_sources snake = time "select_sources" @$ fun () ->
 (*
 		Printf.printf "min dist = %i vers %a\n%!" di print_position pos ;
 *)
-		let d = Coefs.amoi * s.capacite / di in
-		[capacite + d, pos; -d, pos])
+		let d = Coefs.amoi * s.valeur / di in
+		[valeur + d, pos; -d, pos])
 		(dneighbours s.pos)) 
    |> List.flatten
    |> List.flatten

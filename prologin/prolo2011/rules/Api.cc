@@ -93,7 +93,7 @@ int Api::tour_reel()
 ///
 // Retourne la liste des sources d'énergie
 //
-std::vector<source_energie> Api::sources_energie()
+std::vector<source_energie> Api::unites_energie()
 {
     std::vector<source_energie> result;
     std::vector<SourceEnergie>&  sources = g_->sources;
@@ -231,7 +231,7 @@ erreur Api::enrouler(int id, position point)
 ///
 // Régénère une source d'énergie à son maximal
 //
-erreur Api::regenerer_source_energie(int id)
+erreur Api::regenerer_unite_energie(int id)
 {
     LOG4("Api::regenerer");
     DO_ACTION(ActionRegenererSourceEnergie, g_->get_current_player(),

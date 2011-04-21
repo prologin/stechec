@@ -104,7 +104,7 @@ std::vector<Cxx> lang2cxx_array(PyObject* in)
   return out;
 }
 ///
-// Énumération représentant une erreur renvoyée par une des fonctions d'action
+// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action
 //
 template <>
 PyObject* cxx2lang<PyObject*, erreur>(erreur in)
@@ -119,7 +119,7 @@ erreur lang2cxx<PyObject*, erreur>(PyObject* in)
 }
 
 ///
-// Énumération représentant les différents types de case
+// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de case
 //
 template <>
 PyObject* cxx2lang<PyObject*, type_case>(type_case in)
@@ -134,7 +134,7 @@ type_case lang2cxx<PyObject*, type_case>(PyObject* in)
 }
 
 ///
-// Énumération représentant les différents types de bonii
+// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de bonii
 //
 template <>
 PyObject* cxx2lang<PyObject*, type_bonus>(type_bonus in)
@@ -149,7 +149,7 @@ type_bonus lang2cxx<PyObject*, type_bonus>(PyObject* in)
 }
 
 ///
-// Représente une position sur le terrain du jeu
+// ReprÃ©sente une position sur le terrain du jeu
 //
 template <>
 PyObject* cxx2lang<PyObject*, position>(position in)
@@ -187,17 +187,17 @@ position lang2cxx<PyObject*, position>(PyObject* in)
 }
 
 ///
-// Caracteristiques d'une source d'énergie
+// Caracteristiques d'une unitÃ© d'Ã©nergie
 //
 template <>
-PyObject* cxx2lang<PyObject*, source_energie>(source_energie in)
+PyObject* cxx2lang<PyObject*, unite_energie>(unite_energie in)
 {
   PyObject* tuple = PyTuple_New(4);
   PyTuple_SET_ITEM(tuple, 0, (cxx2lang<PyObject*, int>(in.id)));
   PyTuple_SET_ITEM(tuple, 1, (cxx2lang<PyObject*, position>(in.pos)));
-  PyTuple_SET_ITEM(tuple, 2, (cxx2lang<PyObject*, int>(in.capacite)));
-  PyTuple_SET_ITEM(tuple, 3, (cxx2lang<PyObject*, int>(in.capacite_max)));
-  PyObject* name = PyString_FromString("source_energie");
+  PyTuple_SET_ITEM(tuple, 2, (cxx2lang<PyObject*, int>(in.valeur)));
+  PyTuple_SET_ITEM(tuple, 3, (cxx2lang<PyObject*, int>(in.valeur_max)));
+  PyObject* name = PyString_FromString("unite_energie");
   PyObject* cstr = PyObject_GetAttr(py_module, name);
   Py_DECREF(name);
   if (cstr == NULL) throw 42;
@@ -209,9 +209,9 @@ PyObject* cxx2lang<PyObject*, source_energie>(source_energie in)
 }
 
 template <>
-source_energie lang2cxx<PyObject*, source_energie>(PyObject* in)
+unite_energie lang2cxx<PyObject*, unite_energie>(PyObject* in)
 {
-  source_energie out;
+  unite_energie out;
   PyObject* i;
   i = cxx2lang<PyObject*, int>(0);
   i = PyObject_GetItem(in, i);
@@ -226,18 +226,18 @@ source_energie lang2cxx<PyObject*, source_energie>(PyObject* in)
   i = cxx2lang<PyObject*, int>(2);
   i = PyObject_GetItem(in, i);
   if (i == NULL) throw 42;
-  out.capacite = lang2cxx<PyObject*, int>(i);
+  out.valeur = lang2cxx<PyObject*, int>(i);
   Py_DECREF(i);
   i = cxx2lang<PyObject*, int>(3);
   i = PyObject_GetItem(in, i);
   if (i == NULL) throw 42;
-  out.capacite_max = lang2cxx<PyObject*, int>(i);
+  out.valeur_max = lang2cxx<PyObject*, int>(i);
   Py_DECREF(i);
   return out;
 }
 
 ///
-// Représente une traînée de moto sur le terrain
+// ReprÃ©sente une traÃ®nÃ©e de moto sur le terrain
 //
 template <>
 PyObject* cxx2lang<PyObject*, trainee_moto>(trainee_moto in)
@@ -246,7 +246,7 @@ PyObject* cxx2lang<PyObject*, trainee_moto>(trainee_moto in)
   PyTuple_SET_ITEM(tuple, 0, (cxx2lang<PyObject*, int>(in.id)));
   PyTuple_SET_ITEM(tuple, 1, cxx2lang_array(in.emplacement));
   PyTuple_SET_ITEM(tuple, 2, (cxx2lang<PyObject*, int>(in.team)));
-  PyTuple_SET_ITEM(tuple, 3, (cxx2lang<PyObject*, int>(in.longueur_max)));
+  PyTuple_SET_ITEM(tuple, 3, (cxx2lang<PyObject*, int>(in.intensite)));
   PyObject* name = PyString_FromString("trainee_moto");
   PyObject* cstr = PyObject_GetAttr(py_module, name);
   Py_DECREF(name);
@@ -281,20 +281,20 @@ trainee_moto lang2cxx<PyObject*, trainee_moto>(PyObject* in)
   i = cxx2lang<PyObject*, int>(3);
   i = PyObject_GetItem(in, i);
   if (i == NULL) throw 42;
-  out.longueur_max = lang2cxx<PyObject*, int>(i);
+  out.intensite = lang2cxx<PyObject*, int>(i);
   Py_DECREF(i);
   return out;
 }
 
 ///
 // GUI specific
-// Retourne la liste des actions effectuées pendant ce tour.
+// Retourne la liste des actions effectuÃ©es pendant ce tour.
 //
 extern "C" std::vector<std::vector<int> > api_actions_effectuees();
 static PyObject* p_actions_effectuees(PyObject* self, PyObject* args)
 {
   std::vector<std::vector<int> > actions = api_actions_effectuees();
-  size_t size = actions.size();
+ size_t size = actions.size();
   PyObject* out = PyList_New(size);
 
   for (unsigned int i = 0; i < size; ++i)
@@ -304,7 +304,7 @@ static PyObject* p_actions_effectuees(PyObject* self, PyObject* args)
 }
 
 ///
-// Retourne le numéro de votre équipe
+// Retourne le numÃ©ro de votre Ã©quipe
 //
 static PyObject* p_mon_equipe(PyObject* self, PyObject* args)
 {
@@ -318,7 +318,7 @@ return cxx2lang<PyObject*, int>(api_mon_equipe());
 }
 
 ///
-// Retourne les scores de chaque équipe
+// Retourne les scores de chaque Ã©quipe
 //
 static PyObject* p_scores(PyObject* self, PyObject* args)
 {
@@ -332,7 +332,7 @@ return cxx2lang_array(api_scores());
 }
 
 ///
-// Retourne le nombre d'équipes sur le terrain
+// Retourne le nombre d'Ã©quipes sur le terrain
 //
 static PyObject* p_nombre_equipes(PyObject* self, PyObject* args)
 {
@@ -346,7 +346,7 @@ return cxx2lang<PyObject*, int>(api_nombre_equipes());
 }
 
 ///
-// Retourne le numéro du tour actuel
+// Retourne le numÃ©ro du tour actuel
 //
 static PyObject* p_tour_actuel(PyObject* self, PyObject* args)
 {
@@ -360,21 +360,21 @@ return cxx2lang<PyObject*, int>(api_tour_actuel());
 }
 
 ///
-// Retourne la liste des sources d'énergie
+// Retourne la liste des unitÃ©s d'Ã©nergie
 //
-static PyObject* p_sources_energie(PyObject* self, PyObject* args)
+static PyObject* p_unites_energie(PyObject* self, PyObject* args)
 {
   (void)self;
   if (!PyArg_ParseTuple(args, "")) {
     return NULL;
   }
     try {
-return cxx2lang_array(api_sources_energie());
+return cxx2lang_array(api_unites_energie());
   } catch (...) { return NULL; }
 }
 
 ///
-// Retourne la liste des traînées de moto
+// Retourne la liste des traÃ®nÃ©es de moto
 //
 static PyObject* p_trainees_moto(PyObject* self, PyObject* args)
 {
@@ -418,7 +418,7 @@ return cxx2lang<PyObject*, type_bonus>(api_regarder_type_bonus(lang2cxx<PyObject
 }
 
 ///
-// Retourne la liste des bonus d'une équipe
+// Retourne la liste des bonus d'une Ã©quipe
 //
 static PyObject* p_regarder_bonus(PyObject* self, PyObject* args)
 {
@@ -433,7 +433,7 @@ return cxx2lang_array(api_regarder_bonus(lang2cxx<PyObject*, int>(a0)));
 }
 
 ///
-// Retourne la liste des id des traînées présentes sur une case
+// Retourne la liste des id des traÃ®nÃ©es prÃ©sentes sur une case
 //
 static PyObject* p_regarder_trainee_case(PyObject* self, PyObject* args)
 {
@@ -448,7 +448,7 @@ return cxx2lang_array(api_regarder_trainee_case(lang2cxx<PyObject*, position>(a0
 }
 
 ///
-// Retourne si une case peut être traversée par une traînée de plus
+// Retourne si une case peut Ãªtre traversÃ©e par une traÃ®nÃ©e de plus
 //
 static PyObject* p_case_traversable(PyObject* self, PyObject* args)
 {
@@ -493,7 +493,7 @@ return cxx2lang_array(api_chemin(lang2cxx<PyObject*, position>(a0), lang2cxx<PyO
 }
 
 ///
-// Déplace une moto
+// DÃ©place une moto
 //
 static PyObject* p_deplacer(PyObject* self, PyObject* args)
 {
@@ -510,7 +510,7 @@ return cxx2lang<PyObject*, erreur>(api_deplacer(lang2cxx<PyObject*, int>(a0), la
 }
 
 ///
-// Coupe une traînée de moto en deux nouvelles traînées. « entre » et « et » doivent être deux positions adjacentes occupées par une même traînée de moto.
+// Coupe une traÃ®nÃ©e de moto en deux nouvelles traÃ®nÃ©es. Â« p1 Â» et Â« p2 Â» doivent Ãªtre deux positions adjacentes occupÃ©es par une mÃªme traÃ®nÃ©e de moto.
 //
 static PyObject* p_couper_trainee_moto(PyObject* self, PyObject* args)
 {
@@ -518,16 +518,17 @@ static PyObject* p_couper_trainee_moto(PyObject* self, PyObject* args)
 PyObject* a0;
 PyObject* a1;
 PyObject* a2;
-  if (!PyArg_ParseTuple(args, "OOO", &a0, &a1, &a2)) {
+PyObject* a3;
+  if (!PyArg_ParseTuple(args, "OOOO", &a0, &a1, &a2, &a3)) {
     return NULL;
   }
     try {
-return cxx2lang<PyObject*, erreur>(api_couper_trainee_moto(lang2cxx<PyObject*, int>(a0), lang2cxx<PyObject*, position>(a1), lang2cxx<PyObject*, position>(a2)));
+return cxx2lang<PyObject*, erreur>(api_couper_trainee_moto(lang2cxx<PyObject*, int>(a0), lang2cxx<PyObject*, position>(a1), lang2cxx<PyObject*, position>(a2), lang2cxx<PyObject*, int>(a3)));
   } catch (...) { return NULL; }
 }
 
 ///
-// Annuler l'action précédente
+// Annuler l'action prÃ©cÃ©dente
 //
 static PyObject* p_cancel(PyObject* self, PyObject* args)
 {
@@ -541,7 +542,7 @@ return cxx2lang<PyObject*, erreur>(api_cancel());
 }
 
 ///
-// Enrouler la traînée de moto en un point
+// Enrouler la traÃ®nÃ©e de moto en un point
 //
 static PyObject* p_enrouler(PyObject* self, PyObject* args)
 {
@@ -557,9 +558,9 @@ return cxx2lang<PyObject*, erreur>(api_enrouler(lang2cxx<PyObject*, int>(a0), la
 }
 
 ///
-// Régénère une source d'énergie à son maximal
+// RÃ©gÃ©nÃ¨re une unitÃ© d'Ã©nergie Ã  son maximal
 //
-static PyObject* p_regenerer_source_energie(PyObject* self, PyObject* args)
+static PyObject* p_regenerer_unite_energie(PyObject* self, PyObject* args)
 {
   (void)self;
 PyObject* a0;
@@ -567,7 +568,7 @@ PyObject* a0;
     return NULL;
   }
     try {
-return cxx2lang<PyObject*, erreur>(api_regenerer_source_energie(lang2cxx<PyObject*, int>(a0)));
+return cxx2lang<PyObject*, erreur>(api_regenerer_unite_energie(lang2cxx<PyObject*, int>(a0)));
   } catch (...) { return NULL; }
 }
 
@@ -586,9 +587,9 @@ return cxx2lang<PyObject*, erreur>(api_allonger_pa());
 }
 
 ///
-// Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
+// Allonge une traÃ®nÃ©e de moto. L'allongement se fera aux prochains dÃ©placements. La longueur du prolongement doit Ãªtre comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
-static PyObject* p_agrandir_trainee_moto(PyObject* self, PyObject* args)
+static PyObject* p_etendre_trainee_moto(PyObject* self, PyObject* args)
 {
   (void)self;
 PyObject* a0;
@@ -597,12 +598,12 @@ PyObject* a1;
     return NULL;
   }
     try {
-return cxx2lang<PyObject*, erreur>(api_agrandir_trainee_moto(lang2cxx<PyObject*, int>(a0), lang2cxx<PyObject*, int>(a1)));
+return cxx2lang<PyObject*, erreur>(api_etendre_trainee_moto(lang2cxx<PyObject*, int>(a0), lang2cxx<PyObject*, int>(a1)));
   } catch (...) { return NULL; }
 }
 
 ///
-// Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
+// Pose un point de croisement sur une case du terrain. La case doit ne pas dÃ©jÃ  Ãªtre un point de croisement.
 //
 static PyObject* p_poser_point_croisement(PyObject* self, PyObject* args)
 {
@@ -617,7 +618,7 @@ return cxx2lang<PyObject*, erreur>(api_poser_point_croisement(lang2cxx<PyObject*
 }
 
 ///
-// Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
+// Fusionner deux traÃ®nÃ©es de moto. Les deux doivent appartenir Ã  la mÃªme Ã©quipe, mais doivent Ãªtre deux traÃ®nÃ©es distinctes. Â« pos1 Â» et Â« pos2 Â» doivent Ãªtre adjacentes et occupÃ©es respectivement par Â« id1 Â» et Â« id2 Â».
 //
 static PyObject* p_fusionner(PyObject* self, PyObject* args)
 {
@@ -703,9 +704,9 @@ api_afficher_position(lang2cxx<PyObject*, position>(a0));
 }
 
 ///
-// Affiche le contenu d'une valeur de type source_energie
+// Affiche le contenu d'une valeur de type unite_energie
 //
-static PyObject* p_afficher_source_energie(PyObject* self, PyObject* args)
+static PyObject* p_afficher_unite_energie(PyObject* self, PyObject* args)
 {
   (void)self;
 PyObject* a0;
@@ -713,7 +714,7 @@ PyObject* a0;
     return NULL;
   }
     try {
-api_afficher_source_energie(lang2cxx<PyObject*, source_energie>(a0));
+api_afficher_unite_energie(lang2cxx<PyObject*, unite_energie>(a0));
   Py_INCREF(Py_None);
   return Py_None;
   } catch (...) { return NULL; }
@@ -741,7 +742,7 @@ api_afficher_trainee_moto(lang2cxx<PyObject*, trainee_moto>(a0));
 ** Api functions to register.
 */
 static PyMethodDef api_callback[] = {
-    {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"sources_energie", p_sources_energie, METH_VARARGS, "sources_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"regarder_trainee_case", p_regarder_trainee_case, METH_VARARGS, "regarder_trainee_case"},  {"case_traversable", p_case_traversable, METH_VARARGS, "case_traversable"},  {"diff_score", p_diff_score, METH_VARARGS, "diff_score"},  {"chemin", p_chemin, METH_VARARGS, "chemin"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_source_energie", p_regenerer_source_energie, METH_VARARGS, "regenerer_source_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"agrandir_trainee_moto", p_agrandir_trainee_moto, METH_VARARGS, "agrandir_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_source_energie", p_afficher_source_energie, METH_VARARGS, "afficher_source_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"}, {"actions_effectuees", p_actions_effectuees, METH_VARARGS, "actions_effectuees"},  {NULL, NULL, 0, NULL}
+    {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"unites_energie", p_unites_energie, METH_VARARGS, "unites_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"regarder_trainee_case", p_regarder_trainee_case, METH_VARARGS, "regarder_trainee_case"},  {"case_traversable", p_case_traversable, METH_VARARGS, "case_traversable"},  {"diff_score", p_diff_score, METH_VARARGS, "diff_score"},  {"chemin", p_chemin, METH_VARARGS, "chemin"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_unite_energie", p_regenerer_unite_energie, METH_VARARGS, "regenerer_unite_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"etendre_trainee_moto", p_etendre_trainee_moto, METH_VARARGS, "etendre_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_unite_energie", p_afficher_unite_energie, METH_VARARGS, "afficher_unite_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"}, {"actions_effectuees", p_actions_effectuees, METH_VARARGS, "actions_effectuees"},  {NULL, NULL, 0, NULL}
 };
 
 static void _initapi()
@@ -757,7 +758,7 @@ static void _init_python()
 {
   PyObject* name;
   const char* champion_path;
-
+      
   champion_path = CHAMPION_PATH; // Set by Makefile.am
   if (champion_path == NULL)
     champion_path = ".";

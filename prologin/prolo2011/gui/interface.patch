@@ -1,17 +1,17 @@
---- interface.cc.generated	2011-04-20 23:32:37.176922072 +0200
-+++ interface.cc	2011-04-20 23:32:21.007675116 +0200
+--- interface.cc.generated	2011-04-21 12:44:13.452432851 +0200
++++ interface.cc	2011-04-21 12:47:01.344031787 +0200
 @@ -287,6 +287,23 @@
  }
  
  ///
 +// GUI specific
-+// Retourne la liste des actions effectuées pendant ce tour.
++// Retourne la liste des actions effectuÃ©es pendant ce tour.
 +//
 +extern "C" std::vector<std::vector<int> > api_actions_effectuees();
 +static PyObject* p_actions_effectuees(PyObject* self, PyObject* args)
 +{
 +  std::vector<std::vector<int> > actions = api_actions_effectuees();
-+  size_t size = actions.size();
++ size_t size = actions.size();
 +  PyObject* out = PyList_New(size);
 +
 +  for (unsigned int i = 0; i < size; ++i)
@@ -21,22 +21,22 @@
 +}
 +
 +///
- // Retourne le numéro de votre équipe
+ // Retourne le numÃ©ro de votre Ã©quipe
  //
  static PyObject* p_mon_equipe(PyObject* self, PyObject* args)
-@@ -724,7 +741,7 @@
+@@ -725,7 +742,7 @@
  ** Api functions to register.
  */
  static PyMethodDef api_callback[] = {
--    {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"sources_energie", p_sources_energie, METH_VARARGS, "sources_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"regarder_trainee_case", p_regarder_trainee_case, METH_VARARGS, "regarder_trainee_case"},  {"case_traversable", p_case_traversable, METH_VARARGS, "case_traversable"},  {"diff_score", p_diff_score, METH_VARARGS, "diff_score"},  {"chemin", p_chemin, METH_VARARGS, "chemin"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_source_energie", p_regenerer_source_energie, METH_VARARGS, "regenerer_source_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"agrandir_trainee_moto", p_agrandir_trainee_moto, METH_VARARGS, "agrandir_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_source_energie", p_afficher_source_energie, METH_VARARGS, "afficher_source_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"},  {NULL, NULL, 0, NULL}
-+    {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"sources_energie", p_sources_energie, METH_VARARGS, "sources_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"regarder_trainee_case", p_regarder_trainee_case, METH_VARARGS, "regarder_trainee_case"},  {"case_traversable", p_case_traversable, METH_VARARGS, "case_traversable"},  {"diff_score", p_diff_score, METH_VARARGS, "diff_score"},  {"chemin", p_chemin, METH_VARARGS, "chemin"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_source_energie", p_regenerer_source_energie, METH_VARARGS, "regenerer_source_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"agrandir_trainee_moto", p_agrandir_trainee_moto, METH_VARARGS, "agrandir_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_source_energie", p_afficher_source_energie, METH_VARARGS, "afficher_source_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"}, {"actions_effectuees", p_actions_effectuees, METH_VARARGS, "actions_effectuees"},  {NULL, NULL, 0, NULL}
+-  {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"unites_energie", p_unites_energie, METH_VARARGS, "unites_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"regarder_trainee_case", p_regarder_trainee_case, METH_VARARGS, "regarder_trainee_case"},  {"case_traversable", p_case_traversable, METH_VARARGS, "case_traversable"},  {"diff_score", p_diff_score, METH_VARARGS, "diff_score"},  {"chemin", p_chemin, METH_VARARGS, "chemin"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_unite_energie", p_regenerer_unite_energie, METH_VARARGS, "regenerer_unite_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"etendre_trainee_moto", p_etendre_trainee_moto, METH_VARARGS, "etendre_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_unite_energie", p_afficher_unite_energie, METH_VARARGS, "afficher_unite_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"},  {NULL, NULL, 0, NULL}
++    {"mon_equipe", p_mon_equipe, METH_VARARGS, "mon_equipe"},  {"scores", p_scores, METH_VARARGS, "scores"},  {"nombre_equipes", p_nombre_equipes, METH_VARARGS, "nombre_equipes"},  {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},  {"unites_energie", p_unites_energie, METH_VARARGS, "unites_energie"},  {"trainees_moto", p_trainees_moto, METH_VARARGS, "trainees_moto"},  {"regarder_type_case", p_regarder_type_case, METH_VARARGS, "regarder_type_case"},  {"regarder_type_bonus", p_regarder_type_bonus, METH_VARARGS, "regarder_type_bonus"},  {"regarder_bonus", p_regarder_bonus, METH_VARARGS, "regarder_bonus"},  {"regarder_trainee_case", p_regarder_trainee_case, METH_VARARGS, "regarder_trainee_case"},  {"case_traversable", p_case_traversable, METH_VARARGS, "case_traversable"},  {"diff_score", p_diff_score, METH_VARARGS, "diff_score"},  {"chemin", p_chemin, METH_VARARGS, "chemin"},  {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},  {"couper_trainee_moto", p_couper_trainee_moto, METH_VARARGS, "couper_trainee_moto"},  {"cancel", p_cancel, METH_VARARGS, "cancel"},  {"enrouler", p_enrouler, METH_VARARGS, "enrouler"},  {"regenerer_unite_energie", p_regenerer_unite_energie, METH_VARARGS, "regenerer_unite_energie"},  {"allonger_pa", p_allonger_pa, METH_VARARGS, "allonger_pa"},  {"etendre_trainee_moto", p_etendre_trainee_moto, METH_VARARGS, "etendre_trainee_moto"},  {"poser_point_croisement", p_poser_point_croisement, METH_VARARGS, "poser_point_croisement"},  {"fusionner", p_fusionner, METH_VARARGS, "fusionner"},  {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},  {"afficher_type_case", p_afficher_type_case, METH_VARARGS, "afficher_type_case"},  {"afficher_type_bonus", p_afficher_type_bonus, METH_VARARGS, "afficher_type_bonus"},  {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},  {"afficher_unite_energie", p_afficher_unite_energie, METH_VARARGS, "afficher_unite_energie"},  {"afficher_trainee_moto", p_afficher_trainee_moto, METH_VARARGS, "afficher_trainee_moto"}, {"actions_effectuees", p_actions_effectuees, METH_VARARGS, "actions_effectuees"},  {NULL, NULL, 0, NULL}
  };
  
  static void _initapi()
-@@ -741,7 +758,7 @@
+@@ -742,7 +759,7 @@
    PyObject* name;
    const char* champion_path;
- 
+       
 -  champion_path = getenv("CHAMPION_PATH");
 +  champion_path = CHAMPION_PATH; // Set by Makefile.am
    if (champion_path == NULL)

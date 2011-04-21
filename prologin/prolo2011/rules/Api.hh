@@ -65,7 +65,7 @@ public:
 ///
 // Retourne la liste des sources d'énergie
 //
-   std::vector<source_energie> sources_energie();
+   std::vector<source_energie> unites_energie();
 ///
 // Retourne la liste des traînées de moto
 //
@@ -109,7 +109,7 @@ public:
 ///
 // Régénère une source d'énergie à son maximal
 //
-   erreur regenerer_source_energie(int id);
+   erreur regenerer_unite_energie(int id);
 ///
 // Allonge le tour en rajoutant des points d'action
 //

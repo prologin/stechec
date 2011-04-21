@@ -115,10 +115,11 @@ class Source:
         return result
 
 class Moto:
-    def __init__(self, team, nodes, id, grid):
+    def __init__(self, team, nodes, id, longueur_max, grid):
         self.id = id
         self.team = team
         self.nodes = nodes
+        self.longueur_max = longueur_max
         self.grid = grid
         for pos in nodes:
             self.grid[pos].append(self)
