@@ -189,6 +189,7 @@ dl {
 }
 dt {
     font-weight: bold;
+    color: #09f;
     margin-top: 0.75em;
 }
 dd {
