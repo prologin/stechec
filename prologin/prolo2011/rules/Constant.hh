@@ -55,6 +55,7 @@ typedef enum erreur {
   PLUS_DE_PA, /* <- vous n'avez pas assez de points d'action */
   BONUS_INVALIDE, /* <- vous n'avez pas ce bonus */
   PAS_A_TOI, /* <- l'unité n'est pas a vous */
+  INTENSITE_INVALIDE, /* <- cette intensité est invalide */
 } erreur;
 
 

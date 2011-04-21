@@ -46,6 +46,7 @@ enum:
       - [plus_de_pa, "vous n'avez pas assez de points d'action"]
       - [bonus_invalide, "vous n'avez pas ce bonus"]
       - [pas_a_toi, "l'unité n'est pas a vous"]
+      - [intensite_invalide, "cette intensité est invalide"]
 
   -
     enum_name: type_case

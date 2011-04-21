@@ -13,69 +13,70 @@ FIN_PARTIE = 150
 # Nombre de points d'action par tour
 MAX_PA = 3
 
-# Taille des traÃ®nÃ©es de moto
+# Taille des traînées de moto
 INTENSITE_TRAINEE = 120
 
 # Longueur maximale de l'allongement
 MAX_ALLONGEMENT = 5
 
-# Nombre de points d'action Ã  rajouter avec bonus
+# Nombre de points d'action à rajouter avec bonus
 AJOUT_PA = 5
 
-# Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action
+# Énumération représentant une erreur renvoyée par une des fonctions d'action
 (
     OK, # <- aucune erreur n'est survenue
     ID_INVALIDE, # <- identifiant invalide
-    POSITION_INVALIDE, # <- la position spÃ©cifiÃ©e est invalide
+    POSITION_INVALIDE, # <- la position spécifiée est invalide
     PLUS_DE_PA, # <- vous n'avez pas assez de points d'action
     BONUS_INVALIDE, # <- vous n'avez pas ce bonus
-    PAS_A_TOI, # <- l'unitÃ© n'est pas a vous
-) = range(6)
+    PAS_A_TOI, # <- l'unité n'est pas a vous
+    INTENSITE_INVALIDE, # <- cette intensité est invalide
+) = range(7)
 
 
-# Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de case
+# Énumération représentant les différents types de case
 (
-    VIDE, # <- rien n'est prÃ©sent sur la case
+    VIDE, # <- rien n'est présent sur la case
     OBSTACLE, # <- cette case est inaccessible
-    POINT_CROISEMENT, # <- point de croisement de traÃ®nÃ©es
-    UNITE, # <- unitÃ© d'Ã©nergie
+    POINT_CROISEMENT, # <- point de croisement de traînées
+    UNITE, # <- unité d'énergie
 ) = range(4)
 
 
-# Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de bonii
+# Énumération représentant les différents types de bonii
 (
     PAS_BONUS, # <- ceci n'est pas un bonus :-)
-    BONUS_CROISEMENT, # <- bonus permettant de croiser deux traÃ®nÃ©es de moto sur une case
-    PLUS_LONG, # <- bonus permettant d'agrandir une traÃ®nÃ©e de moto
+    BONUS_CROISEMENT, # <- bonus permettant de croiser deux traînées de moto sur une case
+    PLUS_LONG, # <- bonus permettant d'agrandir une traînée de moto
     PLUS_PA, # <- bonus permettant d'avoir plus de points d'action
-    BONUS_REGENERATION, # <- bonus permettant de regenerer une unitÃ© d'Ã©nergie
+    BONUS_REGENERATION, # <- bonus permettant de regenerer une unité d'énergie
 ) = range(5)
 
 
 from collections import namedtuple
 
-# ReprÃ©sente une position sur le terrain du jeu
+# Représente une position sur le terrain du jeu
 position = namedtuple("position",
-    'x ' # <- coordonnÃ©e en X
-    'y ' # <- coordonnÃ©e en Y
+    'x ' # <- coordonnée en X
+    'y ' # <- coordonnée en Y
 )
 
 
-# Caracteristiques d'une unitÃ© d'Ã©nergie
+# Caracteristiques d'une unité d'énergie
 unite_energie = namedtuple("unite_energie",
-    'id ' # <- identifiant de lâ€™unitÃ© d'Ã©nergie
-    'pos ' # <- position de lâ€™unitÃ© d'Ã©nergie
-    'valeur ' # <- coefficient reprÃ©sentant les points d'Ã©nergie que lâ€™unitÃ© va vous apporter
-    'valeur_max ' # <- coefficient reprÃ©sentant la capacitÃ© de lâ€™unitÃ© lorsqu'elle est chargÃ©e au maximum
+    'id ' # <- identifiant de l'unité d'énergie
+    'pos ' # <- position de l'unité d'énergie
+    'valeur ' # <- coefficient représentant les points d'énergie que l'unité va vous apporter
+    'valeur_max ' # <- coefficient représentant la capacité de l'unité lorsqu'elle est chargée au maximum
 )
 
 
-# ReprÃ©sente une traÃ®nÃ©e de moto sur le terrain
+# Représente une traînée de moto sur le terrain
 trainee_moto = namedtuple("trainee_moto",
-    'id ' # <- identifiant de la traÃ®nee
-    'emplacement ' # <- position de chaque composant de la traÃ®nÃ©e de moto
-    'team ' # <- identifiant de l'Ã©quipe qui possÃ¨de cette traÃ®nÃ©e de moto
-    'intensite ' # <- taille maximale de la traÃ®nÃ©e
+    'id ' # <- identifiant de la traînee
+    'emplacement ' # <- position de chaque composant de la traînée de moto
+    'team ' # <- identifiant de l'équipe qui possède cette traînée de moto
+    'intensite ' # <- taille maximale de la traînée
 )
 
 

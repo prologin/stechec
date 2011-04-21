@@ -20,7 +20,7 @@ let fin_partie = 150
 let max_pa = 3
 
 (*
-** Taille des traÃ®nÃ©es de moto
+** Taille des traînées de moto
 *)
 let intensite_trainee = 120
 
@@ -30,90 +30,91 @@ let intensite_trainee = 120
 let max_allongement = 5
 
 (*
-** Nombre de points d'action Ã  rajouter avec bonus
+** Nombre de points d'action à rajouter avec bonus
 *)
 let ajout_pa = 5
 
 (*
-** Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action
+** Énumération représentant une erreur renvoyée par une des fonctions d'action
 *)
 type erreur =
 | Ok (* <- aucune erreur n'est survenue *)
 | Id_invalide (* <- identifiant invalide *)
-| Position_invalide (* <- la position spÃ©cifiÃ©e est invalide *)
+| Position_invalide (* <- la position spécifiée est invalide *)
 | Plus_de_pa (* <- vous n'avez pas assez de points d'action *)
 | Bonus_invalide (* <- vous n'avez pas ce bonus *)
-| Pas_a_toi (* <- l'unitÃ© n'est pas a vous *)
+| Pas_a_toi (* <- l'unité n'est pas a vous *)
+| Intensite_invalide (* <- cette intensité est invalide *)
 
 
 (*
-** Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de case
+** Énumération représentant les différents types de case
 *)
 type type_case =
-| Vide (* <- rien n'est prÃ©sent sur la case *)
+| Vide (* <- rien n'est présent sur la case *)
 | Obstacle (* <- cette case est inaccessible *)
-| Point_croisement (* <- point de croisement de traÃ®nÃ©es *)
-| Unite (* <- unitÃ© d'Ã©nergie *)
+| Point_croisement (* <- point de croisement de traînées *)
+| Unite (* <- unité d'énergie *)
 
 
 (*
-** Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de bonii
+** Énumération représentant les différents types de bonii
 *)
 type type_bonus =
 | Pas_bonus (* <- ceci n'est pas un bonus :-) *)
-| Bonus_croisement (* <- bonus permettant de croiser deux traÃ®nÃ©es de moto sur une case *)
-| Plus_long (* <- bonus permettant d'agrandir une traÃ®nÃ©e de moto *)
+| Bonus_croisement (* <- bonus permettant de croiser deux traînées de moto sur une case *)
+| Plus_long (* <- bonus permettant d'agrandir une traînée de moto *)
 | Plus_pa (* <- bonus permettant d'avoir plus de points d'action *)
-| Bonus_regeneration (* <- bonus permettant de regenerer une unitÃ© d'Ã©nergie *)
+| Bonus_regeneration (* <- bonus permettant de regenerer une unité d'énergie *)
 
 
 (*
-** ReprÃ©sente une position sur le terrain du jeu
+** Représente une position sur le terrain du jeu
 *)
 type position = (int * int)
 
 (*
-** Caracteristiques d'une unitÃ© d'Ã©nergie
+** Caracteristiques d'une unité d'énergie
 *)
 type unite_energie = {
-  id : int ; (* <- identifiant de lâ€™unitÃ© d'Ã©nergie *)
-  pos : position ; (* <- position de lâ€™unitÃ© d'Ã©nergie *)
-  valeur : int ; (* <- coefficient reprÃ©sentant les points d'Ã©nergie que lâ€™unitÃ© va vous apporter *)
-  valeur_max : int ; (* <- coefficient reprÃ©sentant la capacitÃ© de lâ€™unitÃ© lorsqu'elle est chargÃ©e au maximum *)
+  id : int ; (* <- identifiant de l'unité d'énergie *)
+  pos : position ; (* <- position de l'unité d'énergie *)
+  valeur : int ; (* <- coefficient représentant les points d'énergie que l'unité va vous apporter *)
+  valeur_max : int ; (* <- coefficient représentant la capacité de l'unité lorsqu'elle est chargée au maximum *)
 }
 
 (*
-** ReprÃ©sente une traÃ®nÃ©e de moto sur le terrain
+** Représente une traînée de moto sur le terrain
 *)
 type trainee_moto = {
-  id : int ; (* <- identifiant de la traÃ®nee *)
-  emplacement : position array ; (* <- position de chaque composant de la traÃ®nÃ©e de moto *)
-  team : int ; (* <- identifiant de l'Ã©quipe qui possÃ¨de cette traÃ®nÃ©e de moto *)
-  intensite : int ; (* <- taille maximale de la traÃ®nÃ©e *)
+  id : int ; (* <- identifiant de la traînee *)
+  emplacement : position array ; (* <- position de chaque composant de la traînée de moto *)
+  team : int ; (* <- identifiant de l'équipe qui possède cette traînée de moto *)
+  intensite : int ; (* <- taille maximale de la traînée *)
 }
 
 (*
-** Retourne le numÃ©ro de votre Ã©quipe
+** Retourne le numéro de votre équipe
 *)
 external mon_equipe : unit -> int = "ml_mon_equipe"
 (*
-** Retourne les scores de chaque Ã©quipe
+** Retourne les scores de chaque équipe
 *)
 external scores : unit -> int array = "ml_scores"
 (*
-** Retourne le nombre d'Ã©quipes sur le terrain
+** Retourne le nombre d'équipes sur le terrain
 *)
 external nombre_equipes : unit -> int = "ml_nombre_equipes"
 (*
-** Retourne le numÃ©ro du tour actuel
+** Retourne le numéro du tour actuel
 *)
 external tour_actuel : unit -> int = "ml_tour_actuel"
 (*
-** Retourne la liste des unitÃ©s d'Ã©nergie
+** Retourne la liste des unités d'énergie
 *)
 external unites_energie : unit -> unite_energie array = "ml_unites_energie"
 (*
-** Retourne la liste des traÃ®nÃ©es de moto
+** Retourne la liste des traînées de moto
 *)
 external trainees_moto : unit -> trainee_moto array = "ml_trainees_moto"
 (*
@@ -125,15 +126,15 @@ external regarder_type_case : position -> type_case = "ml_regarder_type_case"
 *)
 external regarder_type_bonus : position -> type_bonus = "ml_regarder_type_bonus"
 (*
-** Retourne la liste des bonus d'une Ã©quipe
+** Retourne la liste des bonus d'une équipe
 *)
 external regarder_bonus : int -> type_bonus array = "ml_regarder_bonus"
 (*
-** Retourne la liste des id des traÃ®nÃ©es prÃ©sentes sur une case
+** Retourne la liste des id des traînées présentes sur une case
 *)
 external regarder_trainee_case : position -> int array = "ml_regarder_trainee_case"
 (*
-** Retourne si une case peut Ãªtre traversÃ©e par une traÃ®nÃ©e de plus
+** Retourne si une case peut être traversée par une traînée de plus
 *)
 external case_traversable : position -> bool = "ml_case_traversable"
 (*
@@ -145,23 +146,23 @@ external gain_tour_suivant : unit -> int = "ml_gain_tour_suivant"
 *)
 external chemin : position -> position -> position array = "ml_chemin"
 (*
-** DÃ©place une moto
+** Déplace une moto
 *)
 external deplacer : int -> position -> position -> erreur = "ml_deplacer"
 (*
-** Coupe une traÃ®nÃ©e de moto en deux nouvelles traÃ®nÃ©es. Â« p1 Â» et Â« p2 Â» doivent Ãªtre deux positions adjacentes occupÃ©es par une mÃªme traÃ®nÃ©e de moto.
+** Coupe une traînée de moto en deux nouvelles traînées. « p1 » et « p2 » doivent être deux positions adjacentes occupées par une même traînée de moto.
 *)
 external couper_trainee_moto : int -> position -> position -> int -> erreur = "ml_couper_trainee_moto"
 (*
-** Annuler l'action prÃ©cÃ©dente
+** Annuler l'action précédente
 *)
 external cancel : unit -> erreur = "ml_cancel"
 (*
-** Enrouler la traÃ®nÃ©e de moto en un point
+** Enrouler la traînée de moto en un point
 *)
 external enrouler : int -> position -> erreur = "ml_enrouler"
 (*
-** RÃ©gÃ©nÃ¨re une unitÃ© d'Ã©nergie Ã  son maximal
+** Régénère une unité d'énergie à son maximal
 *)
 external regenerer_unite_energie : int -> erreur = "ml_regenerer_unite_energie"
 (*
@@ -169,15 +170,15 @@ external regenerer_unite_energie : int -> erreur = "ml_regenerer_unite_energie"
 *)
 external allonger_pa : unit -> erreur = "ml_allonger_pa"
 (*
-** Allonge une traÃ®nÃ©e de moto. L'allongement se fera aux prochains dÃ©placements. La longueur du prolongement doit Ãªtre comprise entre 0 et MAX_ALLONGEMENT (inclus).
+** Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
 *)
 external etendre_trainee_moto : int -> int -> erreur = "ml_etendre_trainee_moto"
 (*
-** Pose un point de croisement sur une case du terrain. La case doit ne pas dÃ©jÃ  Ãªtre un point de croisement.
+** Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
 *)
 external poser_point_croisement : position -> erreur = "ml_poser_point_croisement"
 (*
-** Fusionner deux traÃ®nÃ©es de moto. Les deux doivent appartenir Ã  la mÃªme Ã©quipe, mais doivent Ãªtre deux traÃ®nÃ©es distinctes. Â« pos1 Â» et Â« pos2 Â» doivent Ãªtre adjacentes et occupÃ©es respectivement par Â« id1 Â» et Â« id2 Â».
+** Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
 *)
 external fusionner : int -> position -> int -> position -> erreur = "ml_fusionner"
 (*

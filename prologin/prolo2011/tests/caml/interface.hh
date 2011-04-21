@@ -7,99 +7,100 @@
 #include <vector>
 #include <string>
 ///
-// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action
+// Énumération représentant une erreur renvoyée par une des fonctions d'action
 //
 typedef enum erreur {
   OK, /* <- aucune erreur n'est survenue */
   ID_INVALIDE, /* <- identifiant invalide */
-  POSITION_INVALIDE, /* <- la position spÃ©cifiÃ©e est invalide */
+  POSITION_INVALIDE, /* <- la position spécifiée est invalide */
   PLUS_DE_PA, /* <- vous n'avez pas assez de points d'action */
   BONUS_INVALIDE, /* <- vous n'avez pas ce bonus */
-  PAS_A_TOI, /* <- l'unitÃ© n'est pas a vous */
+  PAS_A_TOI, /* <- l'unité n'est pas a vous */
+  INTENSITE_INVALIDE, /* <- cette intensité est invalide */
 } erreur;
 
 
 ///
-// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de case
+// Énumération représentant les différents types de case
 //
 typedef enum type_case {
-  VIDE, /* <- rien n'est prÃ©sent sur la case */
+  VIDE, /* <- rien n'est présent sur la case */
   OBSTACLE, /* <- cette case est inaccessible */
-  POINT_CROISEMENT, /* <- point de croisement de traÃ®nÃ©es */
-  UNITE, /* <- unitÃ© d'Ã©nergie */
+  POINT_CROISEMENT, /* <- point de croisement de traînées */
+  UNITE, /* <- unité d'énergie */
 } type_case;
 
 
 ///
-// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de bonii
+// Énumération représentant les différents types de bonii
 //
 typedef enum type_bonus {
   PAS_BONUS, /* <- ceci n'est pas un bonus :-) */
-  BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traÃ®nÃ©es de moto sur une case */
-  PLUS_LONG, /* <- bonus permettant d'agrandir une traÃ®nÃ©e de moto */
+  BONUS_CROISEMENT, /* <- bonus permettant de croiser deux traînées de moto sur une case */
+  PLUS_LONG, /* <- bonus permettant d'agrandir une traînée de moto */
   PLUS_PA, /* <- bonus permettant d'avoir plus de points d'action */
-  BONUS_REGENERATION, /* <- bonus permettant de regenerer une unitÃ© d'Ã©nergie */
+  BONUS_REGENERATION, /* <- bonus permettant de regenerer une unité d'énergie */
 } type_bonus;
 
 
 ///
-// ReprÃ©sente une position sur le terrain du jeu
+// Représente une position sur le terrain du jeu
 //
 typedef struct position {
-  int x;  /* <- coordonnÃ©e en X */
-  int y;  /* <- coordonnÃ©e en Y */
+  int x;  /* <- coordonnée en X */
+  int y;  /* <- coordonnée en Y */
 } position;
 
 
 ///
-// Caracteristiques d'une unitÃ© d'Ã©nergie
+// Caracteristiques d'une unité d'énergie
 //
 typedef struct unite_energie {
-  int id;  /* <- identifiant de lâ€™unitÃ© d'Ã©nergie */
-  position pos;  /* <- position de lâ€™unitÃ© d'Ã©nergie */
-  int valeur;  /* <- coefficient reprÃ©sentant les points d'Ã©nergie que lâ€™unitÃ© va vous apporter */
-  int valeur_max;  /* <- coefficient reprÃ©sentant la capacitÃ© de lâ€™unitÃ© lorsqu'elle est chargÃ©e au maximum */
+  int id;  /* <- identifiant de l'unité d'énergie */
+  position pos;  /* <- position de l'unité d'énergie */
+  int valeur;  /* <- coefficient représentant les points d'énergie que l'unité va vous apporter */
+  int valeur_max;  /* <- coefficient représentant la capacité de l'unité lorsqu'elle est chargée au maximum */
 } unite_energie;
 
 
 ///
-// ReprÃ©sente une traÃ®nÃ©e de moto sur le terrain
+// Représente une traînée de moto sur le terrain
 //
 typedef struct trainee_moto {
-  int id;  /* <- identifiant de la traÃ®nee */
-  std::vector<position> emplacement;  /* <- position de chaque composant de la traÃ®nÃ©e de moto */
-  int team;  /* <- identifiant de l'Ã©quipe qui possÃ¨de cette traÃ®nÃ©e de moto */
-  int intensite;  /* <- taille maximale de la traÃ®nÃ©e */
+  int id;  /* <- identifiant de la traînee */
+  std::vector<position> emplacement;  /* <- position de chaque composant de la traînée de moto */
+  int team;  /* <- identifiant de l'équipe qui possède cette traînée de moto */
+  int intensite;  /* <- taille maximale de la traînée */
 } trainee_moto;
 
 
 ///
-// Retourne le numÃ©ro de votre Ã©quipe
+// Retourne le numéro de votre équipe
 //
 extern "C" int api_mon_equipe();
 
 ///
-// Retourne les scores de chaque Ã©quipe
+// Retourne les scores de chaque équipe
 //
 extern "C" std::vector<int> api_scores();
 
 ///
-// Retourne le nombre d'Ã©quipes sur le terrain
+// Retourne le nombre d'équipes sur le terrain
 //
 extern "C" int api_nombre_equipes();
 
 ///
-// Retourne le numÃ©ro du tour actuel
+// Retourne le numéro du tour actuel
 //
 extern "C" int api_tour_actuel();
 
 ///
-// Retourne la liste des unitÃ©s d'Ã©nergie
+// Retourne la liste des unités d'énergie
 //
 extern "C" std::vector<unite_energie> api_unites_energie();
 
 ///
-// Retourne la liste des traÃ®nÃ©es de moto
+// Retourne la liste des traînées de moto
 //
 extern "C" std::vector<trainee_moto> api_trainees_moto();
 
@@ -114,17 +115,17 @@ extern "C" type_case api_regarder_type_case(position pos);
 extern "C" type_bonus api_regarder_type_bonus(position pos);
 
 ///
-// Retourne la liste des bonus d'une Ã©quipe
+// Retourne la liste des bonus d'une équipe
 //
 extern "C" std::vector<type_bonus> api_regarder_bonus(int equipe);
 
 ///
-// Retourne la liste des id des traÃ®nÃ©es prÃ©sentes sur une case
+// Retourne la liste des id des traînées présentes sur une case
 //
 extern "C" std::vector<int> api_regarder_trainee_case(position pos);
 
 ///
-// Retourne si une case peut Ãªtre traversÃ©e par une traÃ®nÃ©e de plus
+// Retourne si une case peut être traversée par une traînée de plus
 //
 extern "C" bool api_case_traversable(position pos);
 
@@ -139,27 +140,27 @@ extern "C" int api_gain_tour_suivant();
 extern "C" std::vector<position> api_chemin(position p1, position p2);
 
 ///
-// DÃ©place une moto
+// Déplace une moto
 //
 extern "C" erreur api_deplacer(int id, position de, position vers);
 
 ///
-// Coupe une traÃ®nÃ©e de moto en deux nouvelles traÃ®nÃ©es. Â« p1 Â» et Â« p2 Â» doivent Ãªtre deux positions adjacentes occupÃ©es par une mÃªme traÃ®nÃ©e de moto.
+// Coupe une traînée de moto en deux nouvelles traînées. « p1 » et « p2 » doivent être deux positions adjacentes occupées par une même traînée de moto.
 //
 extern "C" erreur api_couper_trainee_moto(int id, position p1, position p2, int intensite_p1);
 
 ///
-// Annuler l'action prÃ©cÃ©dente
+// Annuler l'action précédente
 //
 extern "C" erreur api_cancel();
 
 ///
-// Enrouler la traÃ®nÃ©e de moto en un point
+// Enrouler la traînée de moto en un point
 //
 extern "C" erreur api_enrouler(int id, position p);
 
 ///
-// RÃ©gÃ©nÃ¨re une unitÃ© d'Ã©nergie Ã  son maximal
+// Régénère une unité d'énergie à son maximal
 //
 extern "C" erreur api_regenerer_unite_energie(int id);
 
@@ -169,17 +170,17 @@ extern "C" erreur api_regenerer_unite_energie(int id);
 extern "C" erreur api_allonger_pa();
 
 ///
-// Allonge une traÃ®nÃ©e de moto. L'allongement se fera aux prochains dÃ©placements. La longueur du prolongement doit Ãªtre comprise entre 0 et MAX_ALLONGEMENT (inclus).
+// Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
 extern "C" erreur api_etendre_trainee_moto(int id, int longueur);
 
 ///
-// Pose un point de croisement sur une case du terrain. La case doit ne pas dÃ©jÃ  Ãªtre un point de croisement.
+// Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
 //
 extern "C" erreur api_poser_point_croisement(position point);
 
 ///
-// Fusionner deux traÃ®nÃ©es de moto. Les deux doivent appartenir Ã  la mÃªme Ã©quipe, mais doivent Ãªtre deux traÃ®nÃ©es distinctes. Â« pos1 Â» et Â« pos2 Â» doivent Ãªtre adjacentes et occupÃ©es respectivement par Â« id1 Â» et Â« id2 Â».
+// Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
 //
 extern "C" erreur api_fusionner(int id1, position pos1, int id2, position pos2);
 
@@ -214,17 +215,17 @@ extern "C" void api_afficher_unite_energie(unite_energie v);
 extern "C" void api_afficher_trainee_moto(trainee_moto v);
 
 ///
-// Fonction appellÃ©e au dÃ©but de la partie
+// Fonction appellée au début de la partie
 //
 extern "C" void init_game();
 
 ///
-// Fonction appellÃ©e pour la phase de jeu
+// Fonction appellée pour la phase de jeu
 //
 extern "C" void jouer();
 
 ///
-// Fonction appellÃ©e Ã  la fin de la partie
+// Fonction appellée à la fin de la partie
 //
 extern "C" void end_game();
 
