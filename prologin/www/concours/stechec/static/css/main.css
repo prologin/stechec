@@ -115,7 +115,6 @@ label {
 input, select, button, textarea {
     margin: 4px;
     border: 1px solid #777;
-    background: url('../img/form.png') #222 repeat-x;
     color: #ddd;
     font-family: 'Trebuchet MS',Verdana,Tahoma,sans-serif;
     font-size: 1em;
@@ -154,7 +153,6 @@ table {
     border: 1px solid #ccc;
 }
 thead th, tfoot td {
-    /* background: url('../img/nav-bg.gif') repeat-x; */
     background: #06c ;
     border-bottom: 1px solid #ddd;
     color: #ccc;
