@@ -19,11 +19,16 @@ end
 let print_map () =
   let snake_map = Cache.snake_map () in
     for y = 0 to taille_terrain - 1 do
+      let end_line = ref [] in
       for x = 0 to taille_terrain - 1 do
       Printf.printf "%c%!" (match regarder_type_case (x, y) with
 	| Obstacle -> '#'
 	| Point_croisement -> '+'
-	| Source -> 'o'
+	| Source -> begin
+	  let source = sources_energie () |> Array.to_list |> List.filter (fun s -> s.pos = (x, y)) |> List.hd in
+	end_line := source :: ( ! end_line);
+	  'o'
+	end
 	| Vide ->
 	  match regarder_type_bonus (x, y) with
 	    | Pas_bonus ->
@@ -37,6 +42,9 @@ let print_map () =
 	    | _ -> '*'
       )
     done ;
+      List.iter (fun s ->
+	Printf.printf " %i/%i" s.capacite s.capacite_max
+      ) (!end_line);
     Printf.printf "\n%!"
   done
 
