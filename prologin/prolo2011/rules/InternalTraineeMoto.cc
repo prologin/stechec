@@ -276,9 +276,10 @@ void InternalTraineeMoto::reject_bad_coupe(position entre, position et, int incr
     nodes_list::const_iterator it;
     nodes_list::const_iterator it2;
 
-    if (incr_size < 0 || incr_size > max_len_ - len_)
+    if (incr_size < 0 || incr_size > max_len_ - len_){
+      LOG2("bad size : %1 %1 %1", incr_size, max_len_, len_);
 	throw POSITION_INVALIDE;
-
+    }
     for (it = content_.begin(); it != content_.end(); ++it)
         if (*it == entre)
         {
