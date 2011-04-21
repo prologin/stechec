@@ -10,5 +10,8 @@ worker:
   port_range_start: 40000
   port_range_end: 41000
 
+contest:
+  dumper: tron_dumper
+
 paths:
   data_root: /srv/stechec

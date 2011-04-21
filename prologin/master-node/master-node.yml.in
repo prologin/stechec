@@ -15,81 +15,81 @@ sql:
   queries:
     get_champions:
       select
-        champions.id as id,
-        users.name as name
+        stechec_champion.id as id,
+        auth_user.username as name
       from
-        champions
-      left join users
-        on users.id = champions.author_id
+        stechec_champion
+      left join auth_user
+        on auth_user.id = stechec_champion.author_id
       where
-        champions.status = %(champion_status)s
+        stechec_champion.status = %(champion_status)s
 
     set_champion_status:
       update
-        champions
+        stechec_champion
       set
         status = %(champion_status)s
       where
-        champions.id = %(champion_id)s
+        stechec_champion.id = %(champion_id)s
 
     get_matches:
       select
-        matches.id as match_id,
-        matches.options as match_options,
-        array_agg(champions.id) as champion_ids,
-        array_agg(match_players.id) as match_player_ids,
-        array_agg(users.name) as user_names
+        stechec_match.id as match_id,
+        stechec_match.options as match_options,
+        array_agg(stechec_champion.id) as champion_ids,
+        array_agg(stechec_matchplayer.id) as match_player_ids,
+        array_agg(auth_user.username) as user_names
       from
-        matches
-      left join match_players
-        on match_players.match_id = matches.id
-      left join champions
-        on match_players.champion_id = champions.id
-      left join users
-        on champions.author_id = users.id
+        stechec_match
+      left join stechec_matchplayer
+        on stechec_matchplayer.match_id = stechec_match.id
+      left join stechec_champion
+        on stechec_matchplayer.champion_id = stechec_champion.id
+      left join auth_user
+        on stechec_champion.author_id = auth_user.id
       where
-        matches.status = %(match_status)s
+        stechec_match.status = %(match_status)s
       group by
-        matches.id,
-        matches.options
+        stechec_match.id,
+        stechec_match.options
 
     set_match_status:
       update
-        matches
+        stechec_match
       set
         status = %(match_status)s
       where
-        matches.id = %(match_id)s
+        stechec_match.id = %(match_id)s
 
     set_player_score:
       update
-        match_players
+        stechec_matchplayer
       set
         score = %(player_score)s
       where
-        match_players.id = %(player_id)s
+        stechec_matchplayer.id = %(player_id)s
 
     update_tournament_score:
       update
-        tournament_players
+        stechec_tournamentplayer
       set
         score = score + %(champion_score)s
       where
-        tournament_players.tournament_id = (
+        stechec_tournamentplayer.tournament_id = (
           select
-            matches.tournament_id
+            stechec_match.tournament_id
           from
-            matches
+            stechec_match
           where
-            matches.id = %(match_id)s
+            stechec_match.id = %(match_id)s
         )
-        and tournament_players.champion_id = (
+        and stechec_tournamentplayer.champion_id = (
           select
-            champions.id
+            stechec_champion.id
           from
-            champions
-          left join match_players
-            on champions.id = match_players.champion_id
+            stechec_champion
+          left join stechec_matchplayer
+            on stechec_champion.id = stechec_matchplayer.champion_id
           where
-            match_players.id = %(player_id)s
+            stechec_matchplayer.id = %(player_id)s
         )

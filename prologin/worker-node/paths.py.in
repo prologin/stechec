@@ -27,6 +27,7 @@ paths = {
     "workernodedir": "@libdir@/@PACKAGE@/worker-node",
     "cfgdir": "@sysconfdir@/@PACKAGE@",
     "bindir": "@bindir@",
+    "libdir": "@libdir@",
 }
 
 def expand_path(p):
@@ -38,3 +39,4 @@ config_file = os.path.join(paths['cfgdir'], "worker-node.yml")
 compile_script = os.path.join(paths['workernodedir'], "compile-champion.sh")
 stechec_server = os.path.join(paths['bindir'], "stechec_server")
 stechec_client = os.path.join(paths['bindir'], "stechec")
+libdir = paths['libdir']

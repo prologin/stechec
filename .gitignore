@@ -44,6 +44,8 @@ prologin/worker-node/paths.py
 prologin/worker-node/worker-node
 prologin/worker-node/worker-node.yml
 
+prologin/www/concours/settings.py
+
 stechec/client/stechec
 stechec/scripts/conf.rb
 stechec/scripts/generator
