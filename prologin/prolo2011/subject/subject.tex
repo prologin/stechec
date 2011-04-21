@@ -11,10 +11,10 @@
 \def\pyear{2011}
 
 \def\ptitle{The Grid} %% Subject's main title
-\def\psubtitle{} %% Subject's sub title
+\def\psubtitle{\tt SHALL WE PLAY A GAME?} %% Subject's sub title
 
-\def\plogo{prologin2010.png} %% Logo
-\def\psubjectpicture{image.png} %% Picture to be displayed
+\def\plogo{prologin2011.png} %% Logo
+\def\psubjectpicture{tron.png} %% Picture to be displayed
 %% on its own page
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,7 +71,7 @@ $\bullet$ \underline{\textbf{#1}}
 }
 
 %\NoAutoSpaceBeforeFDP
-\geometry{bindingoffset=5mm,hmarginratio=1:1,heightrounded,headheight=15pt}
+\geometry{bindingoffset=5mm,hmarginratio=1:1,heightrounded,headheight=15pt,bottom=3cm}
 
 \makeindex
 
@@ -101,6 +101,10 @@ Sujet de la finale du Concours National d'Informatique\\
 \end{center}
 \end{titlepage}
 
+\newpage
+
+\input{preambule.tex}
+
 % Sommaire ===========================================================
 \cleardoublepage
 \tableofcontents
@@ -119,10 +123,10 @@ Sujet de la finale du Concours National d'Informatique\\
 
 \newpage
 \section{API}
-\input{api.tex}
+%\input{api.tex}
 
 \newpage
 \section{Notes sur l'utilisation de l'API}
-\input{useapi.tex}
+%\input{useapi.tex}
 
 \end{document}
