@@ -25,6 +25,17 @@ class Map(models.Model):
         maps_dir = os.path.join(contest_dir, "maps")
         return os.path.join(maps_dir, str(self.id))
 
+    @property
+    def contents(self):
+        return open(self.path).read()
+
+    @contents.setter
+    def contents(self, value):
+        open(self.path, 'w').write(value)
+
+    def get_absolute_url(self):
+        return reverse("map-detail", kwargs={"pk": self.id})
+
     def __unicode__(self):
         return u"%s, de %s%s" % (self.name, self.author,
                                  u" (officielle)" if self.official else u"")

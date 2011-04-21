@@ -74,3 +74,7 @@ class MatchCreationForm(forms.Form):
         except models.Map.DoesNotExist:
             raise ValidationError("Cette carte n'existe pas")
         return value
+
+class MapCreationForm(forms.Form):
+    name = forms.CharField(max_length=64, required=True, label="Nom de la map")
+    contents = forms.CharField(required=True, widget=forms.widgets.Textarea(), label="Contenu")

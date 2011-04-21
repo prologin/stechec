@@ -39,17 +39,19 @@
                 <h1>Cartes</h1>
                 <ul>
                     {% if user.is_authenticated %}
-                    <li><a href="/maps/new/">Uploader une carte</a></li>
+                    <li><a href="{% url map-new %}">Uploader une carte</a></li>
                     {% endif %}
-                    <li><a href="/maps/all/">Liste des cartes</a></li>
+                    <li><a href="{% url maps-all %}">Liste des cartes</a></li>
                 </ul>
             </div>
+            {% comment %}
             <div class="block">
                 <h1>Tournois</h1>
                 <ul>
                     <li><a href="/tournois/all/">Tous les tournois</a></li>
                 </ul>
             </div>
+            {% endcomment %}
             <div class="block">
                 <h1>Mon compte</h1>
                 <ul>

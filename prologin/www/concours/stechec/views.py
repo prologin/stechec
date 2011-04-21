@@ -90,6 +90,17 @@ class MyMatchesView(MatchesListView):
         user = self.request.user
         return models.Match.objects.filter(author=user)
 
+class AllMapsView(ListView):
+    context_object_name = "maps"
+    paginate_by = 100
+    template_name = "maps-list.html"
+    queryset = models.Map.objects.order_by('-official', '-id')
+
+class MapView(DetailView):
+    context_object_name = "map"
+    template_name = "map-detail.html"
+    model = models.Map
+
 def new_champion(request):
     if request.method == 'POST':
         form = forms.ChampionUploadForm(request.POST, request.FILES)
@@ -158,6 +169,24 @@ def match_dump(request, pk):
     h = HttpResponse(match.dump, mimetype="application/stechec-dump")
     h['Content-Disposition'] = 'attachment; filename=dump-%s.json.gz' % pk
     return h
+
+def new_map(request):
+    if request.method == 'POST':
+        form = forms.MapCreationForm(request.POST)
+        if form.is_valid():
+            map = models.Map(
+                author = request.user,
+                name = form.cleaned_data['name'],
+                official = False
+            )
+            map.save()
+            map.contents = form.cleaned_data['contents']
+            return HttpResponseRedirect(map.get_absolute_url())
+    else:
+        form = forms.MapCreationForm()
+
+    return render_to_response('map-new.html', {'form': form},
+                              context_instance=RequestContext(request))
 
 def master_status(request):
     status = models.master_status()
