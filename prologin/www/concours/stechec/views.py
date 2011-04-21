@@ -61,6 +61,15 @@ class MatchesListView(ListView):
         context = super(MatchesListView, self).get_context_data(**kwargs)
         context['explanation_text'] = self.explanation_text
         context['show_creator'] = self.show_creator
+        matches = []
+        for m in context['matches']:
+            try:
+                map_id = int(m.map.split('/')[-1])
+                map_name = models.Map.objects.get(pk=map_id).name
+            except Exception:
+                map_name = m.map
+            matches.append((m, map_name))
+        context['matches'] = matches
         return context
 
 class MatchView(DetailView):

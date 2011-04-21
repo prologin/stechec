@@ -22,13 +22,13 @@
         </tr>
     </thead>
     <tbody>
-        {% for match in matches %}
+        {% for match, map_name in matches %}
         <tr class="{% cycle "row1" "row2" %}">
             <td>{{ match.id }}</td>
             <td>{{ match.ts|naturalday }} à {{ match.ts|time:"H:i:s" }}</td>
             <td>{{ match.get_status_display }}</td>
             {% if show_creator %}<td>{{ match.author }}</td>{% endif %}
-            <td>{{ match.map }}</td>
+            <td>{{ map_name }}</td>
             <td><a href="{{ match.get_absolute_url }}">Détails</a></td>
         </tr>
         {% empty %}
