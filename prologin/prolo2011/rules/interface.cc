@@ -329,9 +329,9 @@ extern "C" erreur api_cancel()
 ///
 // Enrouler la traînée de moto en un point
 //
-extern "C" int api_diff_score()
+extern "C" int api_gain_tour_suivant()
 {
-  return api->diff_score();
+  return api->gain_tour_suivant();
 }
 
 ///

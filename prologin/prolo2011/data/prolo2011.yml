@@ -184,7 +184,7 @@ function:
       - [pos, position, "position de la case"]
 
   -
-    fct_name: diff_score
+    fct_name: gain_tour_suivant
     fct_summary: "Renvoie les points que vous allez gagner a la fin du tour"
     fct_ret_type: int
     fct_arg: []

@@ -139,7 +139,7 @@ external case_traversable : position -> bool = "ml_case_traversable"
 (*
 ** Renvoie les points que vous allez gagner a la fin du tour
 *)
-external diff_score : unit -> int = "ml_diff_score"
+external gain_tour_suivant : unit -> int = "ml_gain_tour_suivant"
 (*
 ** Renvoie le chemin le plus court entre deux points (fonction lente)
 *)

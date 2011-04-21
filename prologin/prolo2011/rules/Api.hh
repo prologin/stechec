@@ -128,7 +128,7 @@ public:
    erreur fusionner(int id1, position pos1, int id2, position pos2)
 ;
 
-  int diff_score();
+  int gain_tour_suivant();
 
   std::vector<position> chemin(position p1, position p2);
 ///

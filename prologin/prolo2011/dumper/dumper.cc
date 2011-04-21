@@ -38,17 +38,17 @@ static std::ostream& operator<<(std::ostream& os, position p)
     return os << "{ \"x\": " << p.x << ", \"y\": " << p.y << "}";
 }
 
-static std::ostream& operator<<(std::ostream& os, source_energie s)
+static std::ostream& operator<<(std::ostream& os, unite_energie s)
 {
     return os << "{ \"id\": " << s.id << ", \"pos\": " << s.pos <<
-                 ", \"capacite\": " << s.capacite << ", \"capacite_max\": " <<
-                 s.capacite_max << "}";
+                 ", \"valeur\": " << s.valeur << ", \"valeur_max\": " <<
+                 s.valeur_max << "}";
 }
 
 static std::ostream& operator<<(std::ostream& os, trainee_moto t)
 {
     return os << "{ \"id\": " << t.id << ", \"emplacement\": " << t.emplacement <<
-                 ", \"team\": " << t.team << ", \"longueur\": " << t.longueur <<
+                 ", \"team\": " << t.team << ", \"intensite\": " << t.intensite <<
                  "}";
 }
 
@@ -60,7 +60,7 @@ void jouer()
     fs << "\"scores\": " << scores() << ", ";
     fs << "\"nombre_equipes\": " << nombre_equipes() << ", ";
     fs << "\"tour_actuel\": " << tour_actuel() << ", ";
-    fs << "\"sources_energie\": " << sources_energie() << ", ";
+    fs << "\"unites_energie\": " << unites_energie() << ", ";
     fs << "\"trainees_moto\": " << trainees_moto () << ", ";
     fs << "\"actions_effectuees\": " << api_actions_effectuees () << ", ";
 

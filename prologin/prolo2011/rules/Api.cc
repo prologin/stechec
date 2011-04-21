@@ -307,7 +307,7 @@ void Api::teamSwitched()
 {
 }
 
-int Api::diff_score(){
+int Api::gain_tour_suivant(){
   return g_->apply_connections(false);
 }
 

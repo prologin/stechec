@@ -336,7 +336,7 @@ let action do_split =  (* Pose ton code ici *)
 *)
 
 (*
-  let score_actuel = diff_score () in
+  let score_actuel = gain_tour_suivant () in
   let best_moves =
     best_moves
   |> List.filter (fun (id, p, p', _) ->
@@ -346,7 +346,7 @@ let action do_split =  (* Pose ton code ici *)
       (* afficher_trainee_moto (moto_by_id id); *)
       match erreur with
 	| Ok ->
-      let new_score = diff_score () in
+      let new_score = gain_tour_suivant () in
 (*
       assert (new_score = 0) ;
 *)
@@ -433,7 +433,7 @@ let jouer () =
     action true;
     Printf.printf "action 3\n%!" ;
     dump_infos ();
-    Printf.printf "gain : %i\n%!" (diff_score ());
+    Printf.printf "gain : %i\n%!" (gain_tour_suivant ());
 (*    read_line ();*)
     ();
   end with Invalid_argument _ -> failwith "jouer"

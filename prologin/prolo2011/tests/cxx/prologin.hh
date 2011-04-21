@@ -221,10 +221,10 @@ static inline bool case_traversable(position pos)
 ///
 // Renvoie les points que vous allez gagner a la fin du tour
 //
-extern "C" int api_diff_score();
-static inline int diff_score()
+extern "C" int api_gain_tour_suivant();
+static inline int gain_tour_suivant()
 {
-  return api_diff_score();
+  return api_gain_tour_suivant();
 }
 
 

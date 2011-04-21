@@ -222,7 +222,7 @@ class DumpReader(Reader):
         g.motos = [
                 game.Moto(m['team'],
                     [(pos['x'], pos['y']) for pos in m['emplacement']],
-                    m['id'], m['longueur_max'], g.objgrid)
+                    m['id'], m['intensite'], g.objgrid)
                 for m in trainees_moto]
         g.sources = [game.Source((s['pos']['x'], s['pos']['y']),
             s['valeur'], s['valeur_max'],

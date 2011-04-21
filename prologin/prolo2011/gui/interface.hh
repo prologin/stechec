@@ -139,7 +139,7 @@ bool api_case_traversable(position pos);
 ///
 // Renvoie les points que vous allez gagner a la fin du tour
 //
-int api_diff_score();
+int api_gain_tour_suivant();
 
 ///
 // Renvoie le chemin le plus court entre deux points (fonction lente)

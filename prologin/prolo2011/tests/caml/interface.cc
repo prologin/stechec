@@ -343,11 +343,11 @@ extern "C" value ml_case_traversable(value pos)
 ///
 // Renvoie les points que vous allez gagner a la fin du tour
 //
-extern "C" value ml_diff_score(value unit)
+extern "C" value ml_gain_tour_suivant(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-  CAMLreturn((cxx2lang<value, int>(api_diff_score())));
+  CAMLreturn((cxx2lang<value, int>(api_gain_tour_suivant())));
 }
 
 ///
