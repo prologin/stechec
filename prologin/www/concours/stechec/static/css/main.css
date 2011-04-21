@@ -121,6 +121,7 @@ input, select, button, textarea {
     font-size: 1em;
 }
 button, input[type=submit] {
+    background: #222;
     padding: 0 6px;
     padding-bottom: 3px;
     height: 22px;
@@ -153,7 +154,8 @@ table {
     border: 1px solid #ccc;
 }
 thead th, tfoot td {
-    background: url('../img/nav-bg.gif') repeat-x;
+    /* background: url('../img/nav-bg.gif') repeat-x; */
+    background: #06c ;
     border-bottom: 1px solid #ddd;
     color: #ccc;
     text-align: left;
@@ -166,8 +168,8 @@ td, th {
     border-left: 1px solid #eee;
 }
 
-.row1 { background-color: #420; color: #fc8; }
-.row2 { background-color: #024; color: #8cf; }
+.row1 { background-color: #000; }
+.row2 { background-color: #333; }
 
 /* PAGINATION */
 p.pagination {
@@ -186,6 +188,7 @@ dl {
 }
 dt {
     font-weight: bold;
+    margin-top: 0.75em;
 }
 dd {
     padding-left: 20px;
