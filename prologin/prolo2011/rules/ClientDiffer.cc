@@ -46,8 +46,10 @@ void ClientDiffer::ApplyDiff(const StechecPkt* pkt)
     break;
   case SOURCE_CONTENT:
     {
-      LOG6("loading source : %1", pkt->arg[0]);
-      SourceEnergie &s = g_->sources.at(pkt->arg[0]);
+      int id = pkt->arg[0];
+      LOG6("loading source : %1", id);
+      SourceEnergie &s = g_->sources.at(id);
+      s.id = id;
       s.pos.x = pkt->arg[1];
       s.pos.y = pkt->arg[2];
       s.potentiel_max = pkt->arg[3];

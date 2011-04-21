@@ -478,24 +478,37 @@ void GameData::give_pa(int pa)
 void GameData::categorize_case(const position& p,
 			       std::set<SourceEnergie*>& src_p,
 			       std::set<SourceEnergie*>& src_n,
-			       std::deque<InternalTraineeMoto*> &a_traiter, int player, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4])
+			       std::deque<InternalTraineeMoto*> &a_traiter,
+			       int player,
+			       int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4])
 {
     if (position_invalide(p))
 	return;
-
     Case& c = get_case(p);
     if (c.source_id != -1)
     {
 	SourceEnergie&	src = sources[c.source_id];
+	
+	if (src_p.count(&src) != 0) return;
+	if (src_n.count(&src) != 0) return;
+	LOG3("source energie : %1 - %1", src.pos, src.potentiel_cur);
 	if (src.potentiel_cur < 0)
 	    src_n.insert(&src);
 	else if (src.potentiel_cur > 0)
 	    src_p.insert(&src);
+	for (int x = p.x - 1; x <= p.x + 1; x ++)
+	  for (int y = p.y - 1; y <= p.y + 1; y ++){
+	    if (x != p.x || y != p.y){
+	      position p2 = {x, y};
+	      categorize_case(p2, src_p, src_n, a_traiter, player, map);
+	    }
+	  }
     }else if (c.nb_trainees_moto != 0){
       for (int i = 0; map[p.x][p.y][i] != -1 && i < 4; i++){
 	int indice = map[p.x][p.y][i];
 	InternalTraineeMoto *moto = &motos[indice];
 	if (moto->player_ == player){
+	  // LOG2("moto a traiter %1 in %1", indice, p);
 	  a_traiter.push_back(moto);
 	}
       }
@@ -503,7 +516,7 @@ void GameData::categorize_case(const position& p,
 }
 
 int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4], bool apply){
-
+  LOG3("APPLY CONNECTIONS GROUP");
   if (deja_traitees.count(id_trainee) == 1) return 0;
 
   typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
@@ -520,44 +533,56 @@ int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees,
   while( 0 != a_traiter.size()){
     InternalTraineeMoto *moto = a_traiter.front();
     a_traiter.pop_front();
-    if (deja_traitees.count(id_trainee) == 1) continue;
+    if (deja_traitees.count(moto->id_) == 1){
+      // LOG3("moto : %1 deja traitee...", moto->id_);
+      continue;
+    }
+    LOG3("moto : %1", moto->id_);
     deja_traitees.insert(moto->id_);
 
     InternalTraineeMoto::nodes_list& nodes = moto->content_;
     for (nodes_it it = nodes.begin(); it != nodes.end(); ++it)
     {
 	position p;
-	p.y = it->y - 1;
-	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
-	  categorize_case(p, src_p, src_n, a_traiter, player, map);
-
-	p.y = it->y;
-	p.x = it->x - 1;
-	categorize_case(p, src_p, src_n, a_traiter, player, map);
-	p.x = it->x + 1;
-	categorize_case(p, src_p, src_n, a_traiter, player, map);
-
-	p.y = it->y + 1;
-	for (p.x = it->x - 1; p.x <= it->x + 1; ++p.x)
-	  categorize_case(p, src_p, src_n, a_traiter, player, map);
+	for (p.x = it->x - 1; p.x <= it->x + 1; p.x ++)
+	  for (p.y = it->y - 1; p.y <= it->y + 1; p.y ++)
+	    if (p.x != it->x || p.y != it->y)
+	      categorize_case(p, src_p, src_n, a_traiter, player, map);
     }
   }
-    if (src_p.empty() || src_n.empty())
-	return 0;
-    // TODO
-    Joueur& joueur = joueurs[player];
-    int diff = 0;
-    for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
+  if (src_p.empty() || src_n.empty())
+    return 0;
+  int sum_neg = 0, sum_pos = 0;
+  for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
     {
-	int potentiel = (*it)->potentiel_cur;
-	if (potentiel < 0)
-	    potentiel = -potentiel;
-	diff += potentiel;
-	if (apply) degrees[(*it)->id] += 1;
+      sum_pos += (*it)->potentiel_cur;
     }
-    if (apply)
-      joueur.score += diff;
-    return diff;
+  for (sources_it it = src_n.begin(); it != src_n.end(); ++it)
+    {
+      sum_neg -= (*it)->potentiel_cur;
+    }
+
+  LOG3("sum_pos = %1, sum_neg = %2", sum_pos, sum_neg);
+  
+  Joueur& joueur = joueurs[player];
+  int diff = (sum_neg > sum_pos) ? sum_pos : sum_neg;
+  
+  if (diff == 0) return 0;
+  
+  if (apply){
+    for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
+      {
+	LOG3("consomme : %1 (%2) ", (*it)->id, (*it)->potentiel_cur);
+	degrees[(*it)->id] += 1;
+      }
+    for (sources_it it = src_n.begin(); it != src_n.end(); ++it)
+      {
+	LOG3("consomme : %1 (%2)", (*it)->id , (*it)->potentiel_cur);
+	degrees[(*it)->id] += 1;
+      }
+    joueur.score += diff;
+  }
+  return diff;
 }
 
 /*
@@ -583,6 +608,7 @@ int GameData::apply_connections(bool apply)
     }
     for (it = motos.begin(); it != motos.end(); ++it){
       int indice = it->first;
+      if (deja_traitees.count(indice) != 0) continue;
       InternalTraineeMoto &moto = motos[indice];
       InternalTraineeMoto::nodes_list& nodes = moto.content_;
       for (nodes_it it2 = nodes.begin(); it2 != nodes.end(); ++it2) {
@@ -600,10 +626,11 @@ int GameData::apply_connections(bool apply)
     if (apply){
     // Change the sources’ potentiel
     for (int i = 0; i < degrees.size(); ++i)
-	if (degrees[i] == 0)
-	    sources[i].release();
-	else
-	    sources[i].consume(degrees[i]);
+      if (degrees[i] != 0){
+	LOG3("consommer energie : %1 - %1", sources[i].pos, sources[i].potentiel_cur);
+	sources[i].consume(degrees[i]);
+	LOG3("apres consommer energie : %1 - %1", sources[i].pos, sources[i].potentiel_cur);
+      }
     }
     return sum;
 }
