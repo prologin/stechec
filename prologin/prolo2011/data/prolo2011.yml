@@ -222,10 +222,8 @@ function:
      précisant pourquoi (voir les autres constantes d’erreur)."
 
      Pour rendre l’écriture d’un champion plus facile, la fonction spéciale
-     \texttt{annuler} a été introduite. Elle permet d’annuler complètement les
-     effets des actions précédemment effectuées au tour courant.
-     \texttt{annuler} ne revoie jamais d’erreur, mais ne fait absolument rien
-     si vous n’avez pas fait d’action depuis le début du tour.
+     \texttt{annuler} a été introduite. Elle permet d’annuler la précédente
+     action effectuée pendant ce tour.
 
   -
     fct_name: deplacer
@@ -253,13 +251,15 @@ function:
 
   -
     fct_name: annuler
-    fct_summary: "Annuler l'action précédente"
-    fct_ret_type: erreur
+    fct_summary:
+      "Annule l'action précédente. Renvoie true si une action a été annulée,
+       false sinon."
+    fct_ret_type: bool
     fct_arg: []
 
   -
     fct_name: enrouler
-    fct_summary: Enrouler la traînée de moto en un point
+    fct_summary: Enroule la traînée de moto en un point
     fct_ret_type: erreur
     fct_arg:
     - [id, int, identifiant de la traînée de moto à enrouler]
@@ -303,7 +303,7 @@ function:
   -
     fct_name: fusionner
     fct_summary:
-      Fusionner deux traînées de moto. Les deux doivent appartenir à la
+      Fusionne deux traînées de moto. Les deux doivent appartenir à la
       même équipe, mais doivent être deux traînées distinctes. « pos1 »
       et « pos2 » doivent être adjacentes et occupées respectivement par
       « id1 » et « id2 ».

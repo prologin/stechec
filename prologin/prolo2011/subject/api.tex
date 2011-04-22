@@ -577,10 +577,8 @@ s’est bien passée (constante \texttt{OK}), ou si l’action est invalide,
 précisant pourquoi (voir les autres constantes d’erreur)."
 
 Pour rendre l’écriture d’un champion plus facile, la fonction spéciale
-\texttt{annuler} a été introduite. Elle permet d’annuler complètement les
-effets des actions précédemment effectuées au tour courant.
-\texttt{annuler} ne revoie jamais d’erreur, mais ne fait absolument rien
-si vous n’avez pas fait d’action depuis le début du tour.
+\texttt{annuler} a été introduite. Elle permet d’annuler la précédente
+action effectuée pendant ce tour.
 
 \begin{minipage}{\linewidth}
 \functitle{deplacer}
@@ -668,12 +666,12 @@ Parametres~: &
 \functitle{annuler}
 
 \begin{lst-c++}
-erreur annuler()
+bool annuler()
 \end{lst-c++}
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Annuler l'action précédente \\
+Description~: & Annule l'action précédente. Renvoie true si une action a été annulée, false sinon. \\
 
 
 
@@ -694,7 +692,7 @@ erreur enrouler(int id, position p)
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Enrouler la traînée de moto en un point \\
+Description~: & Enroule la traînée de moto en un point \\
 
 
 Parametres~: &
@@ -847,7 +845,7 @@ erreur fusionner(int id1, position pos1, int id2, position pos2)
 
 \noindent
 \begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
-Description~: & Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ». \\
+Description~: & Fusionne deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ». \\
 
 
 Parametres~: &
@@ -879,7 +877,3 @@ Parametres~: &
 
 \end{tabular} \\[0.3cm]
 \end{minipage}
-
-
-
-\end{document}
