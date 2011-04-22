@@ -250,12 +250,12 @@ erreur InternalTraineeMoto::couper(position entre, position et,
     if (entre_remains)
 	sub_max_len = max_len_ - incr_size - i;
     else
-	sub_max_len = incr_size;
+	sub_max_len = len_ - i + incr_size;
     InternalTraineeMoto& moto = gd_->creer_trainee_moto(player_,
                                                         *it2,
                                                         sub_max_len);
     *moitie = &moto;
-    max_len_ -= incr_size;
+    max_len_ -= sub_max_len;
     len_ -= 1;
     while ((it2 = content_.erase(it2)) != content_.end())
     {
