@@ -7,6 +7,7 @@ from api import *
 import game
 import images
 import surface
+import paths
 
 def get_dim(taille):
     imgp = images.load_props()
@@ -133,9 +134,9 @@ class FieldSurface(surface.Surface):
 
         source_imgs = self.imgs['source_energie']
         for source in self.game_state.sources:
-            if source.capacite_max < 0:
+            if source.capacite < 0:
                 status = 'consommateur'
-            elif source.capacite_max > 0:
+            elif source.capacite > 0:
                 status = 'producteur'
             else:
                 images.place_img(source.position, self.surface,
