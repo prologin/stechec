@@ -224,7 +224,7 @@ Champs~: &
 
 
 \subsection{Fonctions d'information}
-
+Les fonctions d’information permettent à chaque champion de prendre connaissance de l’état courant de la partie. Sans prendre en compte les performances, un champion peut les appeler autant de fois qu’il le désire sans aucune répercussion. En d’autres termes, elles ne modifient pas l’état du jeu.
 \begin{minipage}{\linewidth}
 \functitle{mon\_equipe}
 
@@ -563,6 +563,25 @@ Parametres~: &
 
 \subsection{Fonctions d'action}
 
+À l’inverse des fonctions d’information, les fonctions d’action modifient
+l’état du jeu. Chaque action coûte à un champion un Point d’Action
+(PA). Un champion est par conséquent limité dans le nombre d’actions qu’il
+peut effectuer par tour par sa réserve de PA. La constante MAX\_PA indique
+combien de PA un champion a au début de chaque tour. Le bonus
+\texttt{PLUS\_PA} permet à un champion d’obtenir plus de PA, mais ceux-ci
+ne sont valables que \emph{pendant le tour courant}~: ils sont perdus
+ensuite.
+
+Chaque fonction d’action renvoit un code d’erreur, indiquant si l’action
+s’est bien passée (constante \texttt{OK}), ou si l’action est invalide,
+précisant pourquoi (voir les autres constantes d’erreur)."
+
+Pour rendre l’écriture d’un champion plus facile, la fonction spéciale
+\texttt{annuler} a été introduite. Elle permet d’annuler complètement les
+effets des actions précédemment effectuées au tour courant.
+\texttt{annuler} ne revoie jamais d’erreur, mais ne fait absolument rien
+si vous n’avez pas fait d’action depuis le début du tour.
+
 \begin{minipage}{\linewidth}
 \functitle{deplacer}
 
@@ -646,10 +665,10 @@ Parametres~: &
 
 
 \begin{minipage}{\linewidth}
-\functitle{cancel}
+\functitle{annuler}
 
 \begin{lst-c++}
-erreur cancel()
+erreur annuler()
 \end{lst-c++}
 
 \noindent
@@ -860,3 +879,7 @@ Parametres~: &
 
 \end{tabular} \\[0.3cm]
 \end{minipage}
+
+
+
+\end{document}
