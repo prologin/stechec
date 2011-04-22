@@ -79,7 +79,7 @@ adversaire de le faire.
 
 \subsubsection{Transfert d'énergie}
 
-Pour vous relier à une source d'énergie, il suffit qu'une des traînées que vous commandez touche l'une des 8 cases\footnote{Et non 4.} autour de celle-ci. Il en va de même pour les consommateurs. Une source reliée à au moins un consommateur est dite \emph{active}.
+Pour vous relier à une source d'énergie, il suffit qu'une des traînées que vous commandez touche l'une des 8 cases\footnote{Et non 4.} autour de celle-ci. Il en va de même pour les consommateurs. Deux traînées peuvent se transmettre de l'énergie si on peut sauter de l'une à l'autre en empruntant une des 4 directions\footnote{Et non 8.}. Une source reliée à au moins un consommateur par vos traînées seulement est dite \emph{active}.
 
 Chaque unité d'énergie est caractérisée par une valeur $v$. Si elle est positive, il s'agit d'une source de \emph{teneur} $v$. Si elle est négative, il s'agit d'un consommateur de \emph{besoin} $-v$. Si cette valeur est nulle, l'unité est dite \emph{épuisée}.
 
@@ -102,17 +102,22 @@ Organisateur non épuisé & Organisateur épuisé
 \caption{Les différentes unités d'énergie}
 \end{figure}
 
-\begin{figure}[h]
-\centering
-\includegraphics{transfert.png}
-\caption{Un exemple de transfert}
-\end{figure}
-
-Ici, les 4 unités d'énergie sont toutes reliées, le nombre de points obtenu est : $\min(40 + 2, 40 + 2) = 42$.
-
 \subsubsection{Affaiblissement et régénération des unités}
 
-À chaque tour, toutes les sources d'énergie actives (resp. consommateurs actifs) diminuent leur teneur (resp. besoin) d'une unité, tandis que les sources inactives (resp. consommateurs inactifs) augmentent leur teneur (resp. besoin) d'une unité.
+La \emph{charge} d'une traînée est le nombre d'unités directement reliées à celle-ci.
+
+À chaque fin de tour, après que les 2 programmes ont joué, chaque source d'énergie active (resp. consommateur actif) diminue sa teneur (resp. besoin) de la somme des charges des traînées qui lui sont directement reliées\footnote{Si vous n'avez pas compris, demandez à un gentil organisateur (ils se font rares, en cette saison) et priez pour qu'il ne vous dise pas le contraire.}.
+
+Les sources inactives (resp. consommateurs inactifs), quant à elles, augmentent leur teneur (resp. besoin) d'un point.
+
+\begin{figure}[h]
+\centering
+\includegraphics{transfert.png}\hspace{5mm}\includegraphics{transfert2.png}
+\caption{Un exemple de transfert, avant puis après la fin du tour}
+\label{fig:transfert}
+\end{figure}
+
+Ici, 4 unités d'énergie sont reliées (le consommateur de besoin 99 n'appartient pas au réseau car les traînées ne peuvent véhiculer de l'énergie en diagonale), le nombre de points obtenu est : $\min(40 + 2, 18 + 57) = 42$\footnote{Vous voyez, ce n'était même pas la peine de vous poser la question.}. Le consommateur de besoin 99 n'est pas relié à une source, donc il n'est pas affaibli à la fin du tour.
 
 \subsection{L'interaction avec la Grille}
 \citationTron{This is Blue Leader to Blue Bikes. Run these guys into your jet walls.}
