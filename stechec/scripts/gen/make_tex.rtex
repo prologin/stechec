@@ -186,5 +186,3 @@ Remarques~: & <%= esc(f['fct_notice']) %> \\
 \end{minipage}
 
 <% end %>
-
-\end{document}
