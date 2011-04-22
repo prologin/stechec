@@ -480,7 +480,8 @@ void GameData::categorize_case(const position& p,
 			       std::set<SourceEnergie*>& src_n,
 			       std::deque<InternalTraineeMoto*> &a_traiter,
 			       int player,
-			       int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4])
+			       int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4],
+			       bool diagonale)
 {
     if (position_invalide(p))
 	return;
@@ -500,10 +501,10 @@ void GameData::categorize_case(const position& p,
 	  for (int y = p.y - 1; y <= p.y + 1; y ++){
 	    if (x != p.x || y != p.y){
 	      position p2 = {x, y};
-	      categorize_case(p2, src_p, src_n, a_traiter, player, map);
+	      categorize_case(p2, src_p, src_n, a_traiter, player, map, false);
 	    }
 	  }
-    }else if (c.nb_trainees_moto != 0){
+    }else if (!diagonale && c.nb_trainees_moto != 0){
       for (int i = 0; map[p.x][p.y][i] != -1 && i < 4; i++){
 	int indice = map[p.x][p.y][i];
 	InternalTraineeMoto *moto = &motos[indice];
@@ -547,7 +548,7 @@ int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees,
 	for (p.x = it->x - 1; p.x <= it->x + 1; p.x ++)
 	  for (p.y = it->y - 1; p.y <= it->y + 1; p.y ++)
 	    if (p.x != it->x || p.y != it->y)
-	      categorize_case(p, src_p, src_n, a_traiter, player, map);
+	      categorize_case(p, src_p, src_n, a_traiter, player, map, p.x == it->x || p.y == it->y );
     }
   }
   if (src_p.empty() || src_n.empty())

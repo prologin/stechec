@@ -194,7 +194,8 @@ protected:
 			 std::set<SourceEnergie*>& src_n,
 			 std::deque<InternalTraineeMoto*> &a_traiter,
 			 int player,
-			 int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4]);
+			 int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4],
+			 bool diagonale);
 };
 
 #endif // !GAMEDATA_HH_
