@@ -1,11 +1,862 @@
 
 
 %
-% Ce fichier a �t� g�n�r� avec gen/make_tex.rtex
-% Ne faites pas l'autiste, ne le modifiez pas directement !
+% Ce fichier a ete genere avec gen/make_tex.rtex
+% Ne faites pas l'autiste, ne le modifiez pas directement 
 %
 
-\subsection{Constantes}\subsubsection{Les codes d'erreur}
+\subsection{Constantes}
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & TAILLE\_TERRAIN \\
+\textbf{Valeur:} & 30 \\
+\textbf{Description:} & Taille du terrain \\
+\end{tabular} 
+\vspace{0.2cm} \\
 
 
-\end{document}
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & FIN\_PARTIE \\
+\textbf{Valeur:} & 150 \\
+\textbf{Description:} & Nombre de tours par partie \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & MAX\_PA \\
+\textbf{Valeur:} & 3 \\
+\textbf{Description:} & Nombre de points d'action par tour \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & INTENSITE\_TRAINEE \\
+\textbf{Valeur:} & 120 \\
+\textbf{Description:} & Taille des traînées de moto \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & MAX\_ALLONGEMENT \\
+\textbf{Valeur:} & 5 \\
+\textbf{Description:} & Longueur maximale de l'allongement \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\noindent \begin{tabular}{lp{15cm}}
+\textbf{Constante:} & AJOUT\_PA \\
+\textbf{Valeur:} & 5 \\
+\textbf{Description:} & Nombre de points d'action à rajouter avec bonus \\
+\end{tabular} 
+\vspace{0.2cm} \\
+
+
+
+\subsection{Énumérations}
+
+\functitle{erreur} \\
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Énumération représentant une erreur renvoyée par une des fonctions d'action \\
+Valeurs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    
+        \textsl{OK}~: & aucune erreur n'est survenue \\
+    
+        \textsl{ID\_INVALIDE}~: & identifiant invalide \\
+    
+        \textsl{POSITION\_INVALIDE}~: & la position spécifiée est invalide \\
+    
+        \textsl{PLUS\_DE\_PA}~: & vous n'avez pas assez de points d'action \\
+    
+        \textsl{BONUS\_INVALIDE}~: & vous n'avez pas ce bonus \\
+    
+        \textsl{PAS\_A\_TOI}~: & l'unité n'est pas a vous \\
+    
+        \textsl{INTENSITE\_INVALIDE}~: & cette intensité est invalide \\
+    
+\end{tabular} \\
+\end{tabular}
+
+
+
+\functitle{type\_case} \\
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Énumération représentant les différents types de case \\
+Valeurs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    
+        \textsl{VIDE}~: & rien n'est présent sur la case \\
+    
+        \textsl{OBSTACLE}~: & cette case est inaccessible \\
+    
+        \textsl{POINT\_CROISEMENT}~: & point de croisement de traînées \\
+    
+        \textsl{UNITE}~: & unité d'énergie \\
+    
+\end{tabular} \\
+\end{tabular}
+
+
+
+\functitle{type\_bonus} \\
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Énumération représentant les différents types de bonii \\
+Valeurs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    
+        \textsl{PAS\_BONUS}~: & ceci n'est pas un bonus :-) \\
+    
+        \textsl{BONUS\_CROISEMENT}~: & bonus permettant de croiser deux traînées de moto sur une case \\
+    
+        \textsl{PLUS\_LONG}~: & bonus permettant d'agrandir une traînée de moto \\
+    
+        \textsl{PLUS\_PA}~: & bonus permettant d'avoir plus de points d'action \\
+    
+        \textsl{BONUS\_REGENERATION}~: & bonus permettant de regenerer une unité d'énergie \\
+    
+\end{tabular} \\
+\end{tabular}
+
+
+
+\subsection{Structures}
+
+\functitle{position}
+
+\begin{lst-c++}
+struct position {
+    int x;
+    int y;
+};
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Représente une position sur le terrain du jeu \\
+Champs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    
+        \textsl{x}~: & coordonnée en X \\
+    
+        \textsl{y}~: & coordonnée en Y \\
+    
+\end{tabular} \\
+\end{tabular}
+
+
+
+\functitle{unite\_energie}
+
+\begin{lst-c++}
+struct unite_energie {
+    int id;
+    position pos;
+    int valeur;
+    int valeur_max;
+};
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Caracteristiques d'une unité d'énergie \\
+Champs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    
+        \textsl{id}~: & identifiant de l'unité d'énergie \\
+    
+        \textsl{pos}~: & position de l'unité d'énergie \\
+    
+        \textsl{valeur}~: & coefficient représentant les points d'énergie que l'unité va vous apporter \\
+    
+        \textsl{valeur\_max}~: & coefficient représentant la capacité de l'unité lorsqu'elle est chargée au maximum \\
+    
+\end{tabular} \\
+\end{tabular}
+
+
+
+\functitle{trainee\_moto}
+
+\begin{lst-c++}
+struct trainee_moto {
+    int id;
+    position array emplacement;
+    int team;
+    int intensite;
+};
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Représente une traînée de moto sur le terrain \\
+Champs~: &
+\small
+\begin{tabular}[t]{@{\extracolsep{0pt}}lp{7cm}}
+    
+        \textsl{id}~: & identifiant de la traînee \\
+    
+        \textsl{emplacement}~: & position de chaque composant de la traînée de moto \\
+    
+        \textsl{team}~: & identifiant de l'équipe qui possède cette traînée de moto \\
+    
+        \textsl{intensite}~: & taille maximale de la traînée \\
+    
+\end{tabular} \\
+\end{tabular}
+
+
+
+"\subsection{Fonctions d'information}"
+
+\begin{minipage}{\linewidth}
+\functitle{mon\_equipe}
+
+\begin{lst-c++}
+int mon_equipe()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne le numéro de votre équipe \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{scores}
+
+\begin{lst-c++}
+int array scores()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne les scores de chaque équipe \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{nombre\_equipes}
+
+\begin{lst-c++}
+int nombre_equipes()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne le nombre d'équipes sur le terrain \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{tour\_actuel}
+
+\begin{lst-c++}
+int tour_actuel()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne le numéro du tour actuel \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{unites\_energie}
+
+\begin{lst-c++}
+unite_energie array unites_energie()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne la liste des unités d'énergie \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{trainees\_moto}
+
+\begin{lst-c++}
+trainee_moto array trainees_moto()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne la liste des traînées de moto \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{regarder\_type\_case}
+
+\begin{lst-c++}
+type_case regarder_type_case(position pos)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne le type d'une case \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{pos}~: & position de la case \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{regarder\_type\_bonus}
+
+\begin{lst-c++}
+type_bonus regarder_type_bonus(position pos)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne le type de bonus d'une case \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{pos}~: & position de la case \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{regarder\_bonus}
+
+\begin{lst-c++}
+type_bonus array regarder_bonus(int equipe)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne la liste des bonus d'une équipe \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{equipe}~: & identifiant de l'équipe visée \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{regarder\_trainee\_case}
+
+\begin{lst-c++}
+int array regarder_trainee_case(position pos)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne la liste des id des traînées présentes sur une case \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{pos}~: & position de la case \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{case\_traversable}
+
+\begin{lst-c++}
+bool case_traversable(position pos)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Retourne si une case peut être traversée par une traînée de plus \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{pos}~: & position de la case \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{gain\_tour\_suivant}
+
+\begin{lst-c++}
+int gain_tour_suivant()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie les points que vous allez gagner a la fin du tour \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{chemin}
+
+\begin{lst-c++}
+position array chemin(position p1, position p2)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Renvoie le chemin le plus court entre deux points (fonction lente) \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{p1}~: & position de départ \\
+      
+    
+      
+        \textsl{p2}~: & position d'arrivée \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+"\subsection{Fonctions d'action}"
+
+\begin{minipage}{\linewidth}
+\functitle{deplacer}
+
+\begin{lst-c++}
+erreur deplacer(int id, position de, position vers)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Déplace une moto \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{id}~: & identifiant de la moto à déplacer \\
+      
+    
+      
+        \textsl{de}~: & position de l'extrémité que l'on déplace \\
+      
+    
+      
+        \textsl{vers}~: & nouvelle position pour cette extrémité \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{couper\_trainee\_moto}
+
+\begin{lst-c++}
+erreur couper_trainee_moto(int id, position p1, position p2, int intensite_p1)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Coupe une traînée de moto en deux nouvelles traînées. « p1 » et « p2 » doivent être deux positions adjacentes occupées par une même traînée de moto. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{id}~: & identifiant de la traînée de moto à couper \\
+      
+    
+      
+        \textsl{p1}~: & nouvelle extrémité de la première traînée de moto \\
+      
+    
+      
+        \textsl{p2}~: & nouvelle extrémité de la deuxième traînée de moto \\
+      
+    
+      
+        \textsl{intensite\_p1}~: & croissance restante de la moitié de la traînée de moto contenant entre] \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{cancel}
+
+\begin{lst-c++}
+erreur cancel()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Annuler l'action précédente \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{enrouler}
+
+\begin{lst-c++}
+erreur enrouler(int id, position p)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Enrouler la traînée de moto en un point \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{id}~: & identifiant de la traînée de moto à enrouler \\
+      
+    
+      
+        \textsl{p}~: & point sur lequel enrouler la moto \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{regenerer\_unite\_energie}
+
+\begin{lst-c++}
+erreur regenerer_unite_energie(int id)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Régénère une unité d'énergie à son maximal \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{id}~: & identifiant de l'unité d'énergie à regénérer \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{allonger\_pa}
+
+\begin{lst-c++}
+erreur allonger_pa()
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Allonge le tour en rajoutant des points d'action \\
+
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{etendre\_trainee\_moto}
+
+\begin{lst-c++}
+erreur etendre_trainee_moto(int id, int longueur)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX\_ALLONGEMENT (inclus). \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{id}~: & identifiant de la traînée de moto à allonger \\
+      
+    
+      
+        \textsl{longueur}~: & longueur du prolongement \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{poser\_point\_croisement}
+
+\begin{lst-c++}
+erreur poser_point_croisement(position point)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement. \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{point}~: & position de la case sur laquelle poser le point de croisement \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
+
+
+\begin{minipage}{\linewidth}
+\functitle{fusionner}
+
+\begin{lst-c++}
+erreur fusionner(int id1, position pos1, int id2, position pos2)
+\end{lst-c++}
+
+\noindent
+\begin{tabular}[t]{@{\extracolsep{0pt}}>{\bfseries}lp{10cm}}
+Description~: & Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ». \\
+
+
+Parametres~: &
+\begin{tabular}[t]{@{\extracolsep{0pt}}ll}
+    
+    
+      
+        \textsl{id1}~: & identifiant de la première traînée \\
+      
+    
+      
+        \textsl{pos1}~: & extrémité à fusionner de la première traînée \\
+      
+    
+      
+        \textsl{id2}~: & identifiant de la seconde traînée \\
+      
+    
+      
+        \textsl{pos2}~: & extrémité à fusionner de la seconde traînée \\
+      
+    
+  \end{tabular} \\
+
+
+
+
+
+
+\end{tabular} \\[0.3cm]
+\end{minipage}
