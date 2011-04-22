@@ -207,8 +207,6 @@ class GameState:
                 connected_trainees_moto.add(t)
         return (connected_trainees_moto, connected_sources_energie)
 
-    
-
     def dump(self):
         (conn_trainees, conn_sources) = self.get_connected_objects()
         result = ''

@@ -35,6 +35,8 @@ class FieldSurface(surface.Surface):
         self.detail = detail
         self.detail_pos = None
 
+        self.font = pygame.font.Font(paths.get_font('font.ttf'), 12)
+
     def get_grid(self):
         imgp = self.img_props
         tile_size = imgp['tile_size']
@@ -141,6 +143,7 @@ class FieldSurface(surface.Surface):
             else:
                 images.place_img(source.position, self.surface,
                                  source_imgs['epuise'], self.img_props)
+                self.paste_source_label(source.position, source.capacite)
                 continue
 
             if source in conn_sources:
@@ -150,6 +153,25 @@ class FieldSurface(surface.Surface):
 
             images.place_img(source.position, self.surface,
                              source_imgs[state][status], self.img_props)
+            self.paste_source_label(source.position, source.capacite)
 
         if self.detail_pos is not None:
             self.update_detail(self.detail_pos)
+
+    def paste_source_label(self, pos, capacite):
+        if capacite != 0:
+            color = (0, 0, 0)
+        else:
+            color = (255, 255, 255)
+        text = self.font.render(u'%d' % abs(capacite), True, color)
+        props = self.img_props
+        middle = (
+            float(pos[0] + 0.5) * props['tile_size'][0],
+            (pos[1] + 1 - 0.85) * props['tile_size'][1]
+            )
+        size = text.get_size()
+        top_right = (
+            int(round(middle[0] - float(size[0]) / 2)),
+            int(round(middle[1] - float(size[1]) / 2)) + props['vshift']
+            )
+        self.surface.blit(text, top_right)
