@@ -204,7 +204,7 @@ erreur Api::couper_trainee_moto(int id, position entre, position et, int incr_si
 ///
 // Annuler l'action précédente
 //
-erreur Api::cancel()
+bool Api::annuler()
 {
   LOG2("annuler");
   LOG4("state avant annuler"); 
@@ -212,8 +212,7 @@ erreur Api::cancel()
   bool out = g_->annuler();
   LOG4("state apres annuler"); 
   g_->check(__FILE__, __LINE__);
-  // TODO return out
-  return OK;
+  return out;
 }
 
 ///

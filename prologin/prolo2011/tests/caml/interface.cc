@@ -100,7 +100,7 @@ std::vector<Cxx> lang2cxx_array(value in)
   CAMLreturnT(std::vector<Cxx>, out);
 }
 ///
-// Énumération représentant une erreur renvoyée par une des fonctions d'action
+// Ã‰numÃ©ration reprÃ©sentant une erreur renvoyÃ©e par une des fonctions d'action
 //
 template <>
 value cxx2lang<value, erreur>(erreur in)
@@ -117,7 +117,7 @@ erreur lang2cxx<value, erreur>(value in)
 }
 
 ///
-// Énumération représentant les différents types de case
+// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de case
 //
 template <>
 value cxx2lang<value, type_case>(type_case in)
@@ -134,7 +134,7 @@ type_case lang2cxx<value, type_case>(value in)
 }
 
 ///
-// Énumération représentant les différents types de bonii
+// Ã‰numÃ©ration reprÃ©sentant les diffÃ©rents types de bonii
 //
 template <>
 value cxx2lang<value, type_bonus>(type_bonus in)
@@ -151,7 +151,7 @@ type_bonus lang2cxx<value, type_bonus>(value in)
 }
 
 ///
-// Représente une position sur le terrain du jeu
+// ReprÃ©sente une position sur le terrain du jeu
 //
 template <>
 value cxx2lang<value, position>(position in)
@@ -175,7 +175,7 @@ position lang2cxx<value, position>(value in)
 }
 
 ///
-// Caracteristiques d'une unité d'énergie
+// Caracteristiques d'une unitÃ© d'Ã©nergie
 //
 template <>
 value cxx2lang<value, unite_energie>(unite_energie in)
@@ -203,7 +203,7 @@ unite_energie lang2cxx<value, unite_energie>(value in)
 }
 
 ///
-// Représente une traînée de moto sur le terrain
+// ReprÃ©sente une traÃ®nÃ©e de moto sur le terrain
 //
 template <>
 value cxx2lang<value, trainee_moto>(trainee_moto in)
@@ -231,7 +231,7 @@ trainee_moto lang2cxx<value, trainee_moto>(value in)
 }
 
 ///
-// Retourne le numéro de votre équipe
+// Retourne le numÃ©ro de votre Ã©quipe
 //
 extern "C" value ml_mon_equipe(value unit)
 {
@@ -241,7 +241,7 @@ extern "C" value ml_mon_equipe(value unit)
 }
 
 ///
-// Retourne les scores de chaque équipe
+// Retourne les scores de chaque Ã©quipe
 //
 extern "C" value ml_scores(value unit)
 {
@@ -251,7 +251,7 @@ extern "C" value ml_scores(value unit)
 }
 
 ///
-// Retourne le nombre d'équipes sur le terrain
+// Retourne le nombre d'Ã©quipes sur le terrain
 //
 extern "C" value ml_nombre_equipes(value unit)
 {
@@ -261,7 +261,7 @@ extern "C" value ml_nombre_equipes(value unit)
 }
 
 ///
-// Retourne le numéro du tour actuel
+// Retourne le numÃ©ro du tour actuel
 //
 extern "C" value ml_tour_actuel(value unit)
 {
@@ -271,7 +271,7 @@ extern "C" value ml_tour_actuel(value unit)
 }
 
 ///
-// Retourne la liste des unités d'énergie
+// Retourne la liste des unitÃ©s d'Ã©nergie
 //
 extern "C" value ml_unites_energie(value unit)
 {
@@ -281,7 +281,7 @@ extern "C" value ml_unites_energie(value unit)
 }
 
 ///
-// Retourne la liste des traînées de moto
+// Retourne la liste des traÃ®nÃ©es de moto
 //
 extern "C" value ml_trainees_moto(value unit)
 {
@@ -311,7 +311,7 @@ extern "C" value ml_regarder_type_bonus(value pos)
 }
 
 ///
-// Retourne la liste des bonus d'une équipe
+// Retourne la liste des bonus d'une Ã©quipe
 //
 extern "C" value ml_regarder_bonus(value equipe)
 {
@@ -321,7 +321,7 @@ extern "C" value ml_regarder_bonus(value equipe)
 }
 
 ///
-// Retourne la liste des id des traînées présentes sur une case
+// Retourne la liste des id des traÃ®nÃ©es prÃ©sentes sur une case
 //
 extern "C" value ml_regarder_trainee_case(value pos)
 {
@@ -331,7 +331,7 @@ extern "C" value ml_regarder_trainee_case(value pos)
 }
 
 ///
-// Retourne si une case peut être traversée par une traînée de plus
+// Retourne si une case peut Ãªtre traversÃ©e par une traÃ®nÃ©e de plus
 //
 extern "C" value ml_case_traversable(value pos)
 {
@@ -361,7 +361,7 @@ extern "C" value ml_chemin(value p1, value p2)
 }
 
 ///
-// Déplace une moto
+// DÃ©place une moto
 //
 extern "C" value ml_deplacer(value id, value de, value vers)
 {
@@ -371,7 +371,7 @@ extern "C" value ml_deplacer(value id, value de, value vers)
 }
 
 ///
-// Coupe une traînée de moto en deux nouvelles traînées. « p1 » et « p2 » doivent être deux positions adjacentes occupées par une même traînée de moto.
+// Coupe une traÃ®nÃ©e de moto en deux nouvelles traÃ®nÃ©es. Â« p1 Â» et Â« p2 Â» doivent Ãªtre deux positions adjacentes occupÃ©es par une mÃªme traÃ®nÃ©e de moto.
 //
 extern "C" value ml_couper_trainee_moto(value id, value p1, value p2, value intensite_p1)
 {
@@ -381,17 +381,17 @@ extern "C" value ml_couper_trainee_moto(value id, value p1, value p2, value inte
 }
 
 ///
-// Annuler l'action précédente
+// Annule l'action prÃ©cÃ©dente. Renvoie true si une action a Ã©tÃ© annulÃ©e, false sinon.
 //
-extern "C" value ml_cancel(value unit)
+extern "C" value ml_annuler(value unit)
 {
   CAMLparam0();
   CAMLxparam1(unit);
-  CAMLreturn((cxx2lang<value, erreur>(api_cancel())));
+  CAMLreturn((cxx2lang<value, bool>(api_annuler())));
 }
 
 ///
-// Enrouler la traînée de moto en un point
+// Enroule la traÃ®nÃ©e de moto en un point
 //
 extern "C" value ml_enrouler(value id, value p)
 {
@@ -401,7 +401,7 @@ extern "C" value ml_enrouler(value id, value p)
 }
 
 ///
-// Régénère une unité d'énergie à son maximal
+// RÃ©gÃ©nÃ¨re une unitÃ© d'Ã©nergie Ã  son maximal
 //
 extern "C" value ml_regenerer_unite_energie(value id)
 {
@@ -421,7 +421,7 @@ extern "C" value ml_allonger_pa(value unit)
 }
 
 ///
-// Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
+// Allonge une traÃ®nÃ©e de moto. L'allongement se fera aux prochains dÃ©placements. La longueur du prolongement doit Ãªtre comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
 extern "C" value ml_etendre_trainee_moto(value id, value longueur)
 {
@@ -431,7 +431,7 @@ extern "C" value ml_etendre_trainee_moto(value id, value longueur)
 }
 
 ///
-// Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
+// Pose un point de croisement sur une case du terrain. La case doit ne pas dÃ©jÃ  Ãªtre un point de croisement.
 //
 extern "C" value ml_poser_point_croisement(value point)
 {
@@ -441,7 +441,7 @@ extern "C" value ml_poser_point_croisement(value point)
 }
 
 ///
-// Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
+// Fusionne deux traÃ®nÃ©es de moto. Les deux doivent appartenir Ã  la mÃªme Ã©quipe, mais doivent Ãªtre deux traÃ®nÃ©es distinctes. Â« pos1 Â» et Â« pos2 Â» doivent Ãªtre adjacentes et occupÃ©es respectivement par Â« id1 Â» et Â« id2 Â».
 //
 extern "C" value ml_fusionner(value id1, value pos1, value id2, value pos2)
 {
@@ -517,7 +517,7 @@ extern "C" value ml_afficher_trainee_moto(value v)
 }
 
 ///
-// Fonction appellée au début de la partie
+// Fonction appellÃ©e au dÃ©but de la partie
 //
 void init_game()
 {
@@ -532,7 +532,7 @@ void init_game()
 
 
 ///
-// Fonction appellée pour la phase de jeu
+// Fonction appellÃ©e pour la phase de jeu
 //
 void jouer()
 {
@@ -547,7 +547,7 @@ void jouer()
 
 
 ///
-// Fonction appellée à la fin de la partie
+// Fonction appellÃ©e Ã  la fin de la partie
 //
 void end_game()
 {

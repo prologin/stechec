@@ -321,9 +321,9 @@ extern "C" erreur api_couper_trainee_moto(int id, position entre, position et, i
 ///
 // Annuler l'action précédente
 //
-extern "C" erreur api_cancel()
+extern "C" bool api_annuler()
 {
-  return api->cancel();
+  return api->annuler();
 }
 
 ///

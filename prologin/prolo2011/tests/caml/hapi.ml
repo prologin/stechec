@@ -5,8 +5,6 @@ open Cache;;
 let in_board x y =
   x >= 0 && x < taille_terrain && y >= 0 && y < taille_terrain 
 
-let annuler () = cancel ()
-
 let moto_by_id id =
 try
   match (Cache.motos_id () ).(id) with

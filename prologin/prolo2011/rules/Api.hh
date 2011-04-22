@@ -101,7 +101,7 @@ public:
 ///
 // Annuler l'action précédente
 //
-   erreur cancel();
+   bool annuler();
 ///
 // Enrouler la traînée de moto en un point
 //

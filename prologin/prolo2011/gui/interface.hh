@@ -21,6 +21,7 @@ typedef enum erreur {
   PLUS_DE_PA, /* <- vous n'avez pas assez de points d'action */
   BONUS_INVALIDE, /* <- vous n'avez pas ce bonus */
   PAS_A_TOI, /* <- l'unité n'est pas a vous */
+  INTENSITE_INVALIDE, /* <- cette intensité est invalide */
 } erreur;
 
 
@@ -60,10 +61,10 @@ typedef struct position {
 // Caracteristiques d'une unité d'énergie
 //
 typedef struct unite_energie {
-  int id;  /* <- identifiant de l’unité d'énergie */
-  position pos;  /* <- position de l’unité d'énergie */
-  int valeur;  /* <- coefficient représentant les points d'énergie que l’unité va vous apporter */
-  int valeur_max;  /* <- coefficient représentant la capacité de l’unité lorsqu'elle est chargée au maximum */
+  int id;  /* <- identifiant de l'unité d'énergie */
+  position pos;  /* <- position de l'unité d'énergie */
+  int valeur;  /* <- coefficient représentant les points d'énergie que l'unité va vous apporter */
+  int valeur_max;  /* <- coefficient représentant la capacité de l'unité lorsqu'elle est chargée au maximum */
 } unite_energie;
 
 
@@ -157,12 +158,12 @@ erreur api_deplacer(int id, position de, position vers);
 erreur api_couper_trainee_moto(int id, position p1, position p2, int intensite_p1);
 
 ///
-// Annuler l'action précédente
+// Annule l'action précédente. Renvoie true si une action a été annulée, false sinon.
 //
-erreur api_cancel();
+bool api_annuler();
 
 ///
-// Enrouler la traînée de moto en un point
+// Enroule la traînée de moto en un point
 //
 erreur api_enrouler(int id, position p);
 
@@ -187,7 +188,7 @@ erreur api_etendre_trainee_moto(int id, int longueur);
 erreur api_poser_point_croisement(position point);
 
 ///
-// Fusionner deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
+// Fusionne deux traînées de moto. Les deux doivent appartenir à la même équipe, mais doivent être deux traînées distinctes. « pos1 » et « pos2 » doivent être adjacentes et occupées respectivement par « id1 » et « id2 ».
 //
 erreur api_fusionner(int id1, position pos1, int id2, position pos2);
 
