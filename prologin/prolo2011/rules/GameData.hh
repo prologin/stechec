@@ -150,7 +150,7 @@ public:
     int get_real_turn();
 
     bool isMatchFinished();
-
+    bool actif(position p);
     void stocker_action(Action* act);
     std::vector<std::vector<int> > actions_stockees;
     std::vector<std::vector<int> > actions_stockees_buffer;

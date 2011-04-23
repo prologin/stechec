@@ -314,7 +314,11 @@ bool GameData::source_valide(int id)
 
 void GameData::team_switched(){
     LOG4("GameData::team_switched");
-
+    for (motos_type::const_iterator it = motos.begin(); it != motos.end(); ++it){
+      if (it->second.player_ == current_player){
+	motos[it->second.id_].actif = false;
+      }
+    }
     // Update scores and potentiels each time everybody have played
     if (current_player % 2 == 0)
     {
@@ -365,13 +369,23 @@ void GameData::team_switched(){
 	  for (p2.x = x - 1; p2.x <= x + 1; p2.x++){
 	    for (p2.y = y - 1 ; p2.y <= y + 1; p2.y++){
 	      Case& c2 = get_case(p2);
-	      connected = connected || c2.nb_trainees_moto != 0;
+	      connected = connected || ( c2.nb_trainees_moto != 0 && actif(p) );
 	    }
 	  }
 	  if (!connected) src.release();
 	}
       }
     }
+}
+
+bool GameData::actif(position pos){
+  bool actif = false;
+  for (motos_type::const_iterator it = motos.begin(); it != motos.end(); ++it){
+    if (it->second.contains(pos)){
+      actif = actif || it->second.actif;
+    }
+  }
+  return actif;
 }
 
 void GameData::check(const char * file, int line){
@@ -543,15 +557,16 @@ int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees,
 
   typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
   typedef std::set<SourceEnergie*>::iterator sources_it;
+  typedef std::set<InternalTraineeMoto*>::iterator network_it;
 
   std::set<SourceEnergie*>	src_p;
   std::set<SourceEnergie*>	src_n;
+  std::set<InternalTraineeMoto*> motos_network;
 
   std::deque<InternalTraineeMoto *> a_traiter;
   a_traiter.push_front(&motos[id_trainee]);
-
   int player = motos[id_trainee].player_;
-
+  if (player != current_player) return 0;
   while( 0 != a_traiter.size()){
     InternalTraineeMoto *moto = a_traiter.front();
     a_traiter.pop_front();
@@ -559,6 +574,9 @@ int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees,
       // LOG3("moto : %1 deja traitee...", moto->id_);
       continue;
     }
+
+    
+    motos_network.insert(moto);
     LOG3("moto : %1", moto->id_);
     deja_traitees.insert(moto->id_);
 
@@ -592,6 +610,12 @@ int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees,
   if (diff == 0) return 0;
   
   if (apply){
+
+    for (network_it it = motos_network.begin(); it != motos_network.end(); ++it)
+      {
+	(*it)->actif = true;
+      }
+
     for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
       {
 	LOG3("consomme : %1 (%2) ", (*it)->id, (*it)->potentiel_cur);
@@ -642,7 +666,7 @@ int GameData::apply_connections(bool apply)
     }
     int sum = 0;
     degrees.resize(sources.size(), 0);
-    for (it = motos.begin(); it != motos.end(); ++it)
+    for (motos_type::const_iterator it = motos.begin(); it != motos.end(); ++it)
       sum += apply_connections_group(it->first, degrees, deja_traitees, map, apply);
 
     if (apply){

@@ -420,6 +420,10 @@ let dump_infos () =
 
 let jouer () =
   try begin
+
+Printf.printf "score = %i\n%!" ( (scores () ).(mon_equipe ()) ) ;
+(* ignore (read_line ()); *)
+
     Cache.reset true ;
     dump_infos ();
     action true;
@@ -434,7 +438,7 @@ let jouer () =
     Printf.printf "action 3\n%!" ;
     dump_infos ();
     Printf.printf "gain : %i\n%!" (gain_tour_suivant ());
-(*    read_line ();*)
+(*    read_line (); *)
     ();
   end with Invalid_argument _ -> failwith "jouer"
 

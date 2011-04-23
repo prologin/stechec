@@ -81,7 +81,7 @@ public:
     nodes_list content_;
     int len_;
     int max_len_;
-
+  bool actif;
 protected:
     void save_data(MotoData& data);
 };
