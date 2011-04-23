@@ -201,6 +201,6 @@ def run_client(config, ip, port, contest, match_id, user, champ_id, tid, cb):
                "-p", str(port),
                "-m", "250000",
                "-t", "50",
-               "-f", "45000",
+               "-f", "320000",
     ]
     gevent.spawn(spawn_client, cmd, mp, match_id, champ_id, tid, cb)
