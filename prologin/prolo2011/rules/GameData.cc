@@ -373,10 +373,13 @@ void GameData::team_switched(){
 	  for (p2.x = x - 1; p2.x <= x + 1; p2.x++){
 	    for (p2.y = y - 1 ; p2.y <= y + 1; p2.y++){
 	      Case& c2 = get_case(p2);
-	      connected = connected || ( c2.nb_trainees_moto != 0 && actif(p) );
+	      connected = connected || ( c2.nb_trainees_moto != 0 && actif(p2) );
 	    }
 	  }
-	  if (!connected) src.release();
+	  if (!connected){
+	    LOG2("src[%1].release()", src.id);
+	    src.release();
+	  }
 	}
       }
     }
