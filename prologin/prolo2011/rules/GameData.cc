@@ -351,6 +351,27 @@ void GameData::team_switched(){
 	 ++it)
 	std::cout << "-> (" << it->x << ", " << it->y << ")" << std::endl;
     */
+
+    // decrementation des sources
+
+    for (int x = 0; x < TAILLE_TERRAIN; x++){
+      for (int y = 0; y < TAILLE_TERRAIN; y++){
+	position p = {x, y};
+	Case& c = get_case(p);
+	if (c.source_id != -1){
+	  SourceEnergie& src = sources[c.source_id];
+	  position p2;
+	  bool connected = false;
+	  for (p2.x = x - 1; p2.x <= x + 1; p2.x++){
+	    for (p2.y = y - 1 ; p2.y <= y + 1; p2.y++){
+	      Case& c2 = get_case(p);
+	      connected = connected || c2.nb_trainees_moto != 0;
+	    }
+	  }
+	  if (!connected) src.release();
+	}
+      }
+    }
 }
 
 void GameData::check(const char * file, int line){
