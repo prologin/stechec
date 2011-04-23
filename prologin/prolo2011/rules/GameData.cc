@@ -283,6 +283,13 @@ GameData::creer_trainee_moto(int player, position init, int max_len)
 {
     int	id = get_free_moto_id();
     InternalTraineeMoto moto(this, player, id, init, max_len);
+
+    // Update the case’s content if this is the first moto to be put
+    // on the grid
+    Case& c = get_case(init);
+    if (c.nb_trainees_moto == 0)
+      c.nb_trainees_moto = 1;
+
     motos.insert(std::pair<int, InternalTraineeMoto>(id, moto));
     return motos[id];
 }

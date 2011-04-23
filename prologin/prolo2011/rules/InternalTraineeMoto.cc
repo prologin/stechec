@@ -150,9 +150,8 @@ void InternalTraineeMoto::reject_bad_move(position from, position to){
 	throw POSITION_INVALIDE;
     }
     Case& c = gd_->get_case(to);
-    if (
-	(c.type != VIDE || c.nb_trainees_moto != 0) &&
-	(c.type != POINT_CROISEMENT))
+
+    if (!gd_->is_crossable_pos(to))
     {
 	LOG4("destination occupee");
 	throw POSITION_INVALIDE;
