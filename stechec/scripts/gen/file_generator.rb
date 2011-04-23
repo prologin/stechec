@@ -661,7 +661,7 @@ class JavaProto < FileGenerator
   def conv_java_type_aux(t, in_generic)
     if t.is_array?
     then
-      "#{ conv_java_type_aux(t.type, true) }[]"
+      "#{ conv_java_type_aux(t.type, false) }[]"
     elsif t.is_struct? then
       t.name.capitalize()
     elsif t.is_simple? then
