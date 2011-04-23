@@ -253,11 +253,11 @@ erreur Api::allonger_pa()
 ///
 // Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
-erreur Api::agrandir_trainee_moto(int id, int longueur)
+erreur Api::etendre_trainee_moto(int id, int longueur)
 {
-    LOG4("Api::agrandir_trainee_moto");
+    LOG4("Api::etendre_trainee_moto");
     DO_ACTION(ActionAgrandirTraineeMoto, g_->get_current_player(), id, longueur);
-    LOG4("Api::agrandir_trainee_moto : OK");
+    LOG4("Api::etendre_trainee_moto : OK");
     return OK;
 }
 

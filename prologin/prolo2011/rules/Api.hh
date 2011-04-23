@@ -117,7 +117,7 @@ public:
 ///
 // Allonge une traînée de moto. L'allongement se fera aux prochains déplacements. La longueur du prolongement doit être comprise entre 0 et MAX_ALLONGEMENT (inclus).
 //
-   erreur agrandir_trainee_moto(int id, int longueur);
+   erreur etendre_trainee_moto(int id, int longueur);
 ///
 // Pose un point de croisement sur une case du terrain. La case doit ne pas déjà être un point de croisement.
 //
