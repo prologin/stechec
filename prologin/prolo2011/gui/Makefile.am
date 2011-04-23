@@ -20,7 +20,8 @@ dist_prolo2011gui_DATA = \
 	help_surface.py \
 	actions_surface.py \
 	graphics.py \
-	prologin.py
+	prologin.py \
+	read_dump.py
 
 dist_EXTRA = paths.py.in
 
