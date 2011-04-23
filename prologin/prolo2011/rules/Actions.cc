@@ -405,7 +405,7 @@ void ActionAllongerPA::appliquer(GameData* g)
 {
     LOG2("ActionAllongerPA::appliquer()");
     g->take_pa(1);
-    g->joueurs[player_].use_capacity(PLUS_LONG);
+    g->joueurs[player_].use_capacity(PLUS_PA);
     g->give_pa(AJOUT_PA);
 }
 
@@ -414,7 +414,7 @@ void ActionAllongerPA::annuler(GameData* g)
     LOG2("ActionAllongerPA::annuler()");
     g->give_pa(1);
     g->take_pa(AJOUT_PA);
-    g->joueurs[player_].bonus.push_back(PLUS_LONG);
+    g->joueurs[player_].bonus.push_back(PLUS_PA);
 }
 
 std::vector<int> ActionAllongerPA::serialiser()
