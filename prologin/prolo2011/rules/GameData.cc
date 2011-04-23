@@ -326,14 +326,11 @@ void GameData::team_switched(){
 	motos[it->second.id_].actif = false;
       }
     }
-    // Update scores and potentiels each time everybody have played
-    if (current_player % 2 == 0)
-    {
-	apply_connections(true);
-	LOG4("Scores and potentiels have been updated!");
-	for (int i = 0; i < 2; ++i)
-	    LOG4("  - Team %1 : %2", i, joueurs[i].score);
-    }
+
+    apply_connections(true);
+    LOG4("Scores and potentiels have been updated!");
+    for (int i = 0; i < 2; ++i)
+      LOG4("  - Team %1 : %2", i, joueurs[i].score);
 
     actions_stockees = actions_stockees_buffer;
     actions_stockees_buffer.clear();
