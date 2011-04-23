@@ -1,7 +1,6 @@
 let ( |> ) f x = x f
 let ( @$ ) f x = f x
 
-module U = Unix
 module T = Map.Make (struct type t = string let compare = compare end)
 (*
 let time_cache = ref T.empty

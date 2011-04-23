@@ -6,7 +6,6 @@ lib_TARGETS = champion
 # Les fichiers .mli correspondants seront automatiquement utilises si
 # existants.
 champion-srcs = api.ml stdlib.ml cache.ml hapi.ml prologin.ml
-champion-camlflags = -g unix.cma
 
 # Evite de toucher a ce qui suit
 champion-dists = interface.hh
