@@ -458,7 +458,7 @@ void ActionAgrandirTraineeMoto::appliquer(GameData* g)
     LOG2("ActionAgrandirTraineeMoto::appliquer()");
     g->take_pa(1);
     g->joueurs[player_].use_capacity(PLUS_LONG);
-    g->motos[id_].len_ += longueur_;
+    g->motos[id_].max_len_ += longueur_;
 }
 
 void ActionAgrandirTraineeMoto::annuler(GameData* g)
@@ -466,7 +466,7 @@ void ActionAgrandirTraineeMoto::annuler(GameData* g)
     LOG2("ActionAgrandirTraineeMoto::annuler()");
     g->give_pa(1);
     g->joueurs[player_].bonus.push_back(PLUS_LONG);
-    g->motos[id_].len_ -= longueur_;
+    g->motos[id_].max_len_ -= longueur_;
 }
 
 std::vector<int> ActionAgrandirTraineeMoto::serialiser()
