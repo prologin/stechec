@@ -612,7 +612,7 @@ int GameData::apply_connections_group(int id_trainee,
 		{
 		    if (position_invalide(p.x, p.y)) continue;
 		    if (p.x != it->x || p.y != it->y)
-			categorize_case(p, src_p, src_n, a_traiter, player, map, p.x == it->x || p.y == it->y );
+			categorize_case(p, src_p, src_n, a_traiter, player, map, p.x != it->x && p.y != it->y );
 		}
 	}
     }
