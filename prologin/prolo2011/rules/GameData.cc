@@ -372,6 +372,7 @@ void GameData::team_switched(){
 	  bool connected = false;
 	  for (p2.x = x - 1; p2.x <= x + 1; p2.x++){
 	    for (p2.y = y - 1 ; p2.y <= y + 1; p2.y++){
+	      if (position_invalide(p2)) continue;
 	      Case& c2 = get_case(p2);
 	      connected = connected || ( c2.nb_trainees_moto != 0 && actif(p2) );
 	    }
