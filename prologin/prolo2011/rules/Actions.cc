@@ -517,6 +517,7 @@ void ActionPoserPointCroisement::annuler(GameData* g)
 {
     LOG2("ActionPoserPointCroisement::annuler()");
     g->give_pa(1);
+    g->joueurs[player_].bonus.push_back(BONUS_CROISEMENT);
     Case& c = g->get_case(point_);
     c.type = old_type_;
 }
