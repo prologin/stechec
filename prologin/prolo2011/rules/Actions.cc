@@ -98,6 +98,7 @@ void ActionDeplacer::appliquer(GameData* g)
     old_queue_ = moto.queue(from_);
     moved_end_ = moto.move(from_, to_, taken_bonus_);
     new_queue_ = moto.queue(to_);
+    taken_bonus_ = g->get_case(to_).bonus;
 }
 
 void ActionDeplacer::annuler(GameData* g)
