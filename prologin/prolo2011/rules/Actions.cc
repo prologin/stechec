@@ -449,8 +449,8 @@ void ActionAgrandirTraineeMoto::verifier(GameData* g)
 	throw BONUS_INVALIDE;
     if (!g->moto_valide(id_))
 	throw ID_INVALIDE;
-    if (longueur_ < 0 || longueur_ >= MAX_ALLONGEMENT)
-	throw 100; /* TODO: introduce a meaningful error code */
+    if (longueur_ < 0 || longueur_ > MAX_ALLONGEMENT)
+	throw INTENSITE_INVALIDE; /* TODO: introduce a meaningful error code */
 }
 
 void ActionAgrandirTraineeMoto::appliquer(GameData* g)
