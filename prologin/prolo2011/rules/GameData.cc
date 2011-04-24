@@ -377,7 +377,7 @@ void GameData::team_switched(){
 	    }
 	  }
 	  if (!connected){
-	    LOG2("src[%1].release()", src.id);
+	    //	    LOG2("src[%1].release()", src.id);
 	    src.release();
 	  }
 	}
@@ -537,10 +537,11 @@ void GameData::categorize_case(const position& p,
 	LOG3("source energie : %1 - %1", src.pos, src.potentiel_cur);
 	if (src.potentiel_cur < 0)
 	    src_n.insert(&src);
-	else if (src.potentiel_cur > 0)
+	else if (src.potentiel_cur >= 0)
 	    src_p.insert(&src);
 	for (int x = p.x - 1; x <= p.x + 1; x ++)
 	  for (int y = p.y - 1; y <= p.y + 1; y ++){
+	    if (position_invalide(x, y)) continue;
 	    if (x != p.x || y != p.y){
 	      position p2 = {x, y};
 	      categorize_case(p2, src_p, src_n, a_traiter, player, map, false);
@@ -593,6 +594,7 @@ int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees,
 	position p;
 	for (p.x = it->x - 1; p.x <= it->x + 1; p.x ++)
 	  for (p.y = it->y - 1; p.y <= it->y + 1; p.y ++)
+	    if (position_invalide(p.x, p.y)) continue;
 	    if (p.x != it->x || p.y != it->y)
 	      categorize_case(p, src_p, src_n, a_traiter, player, map, p.x == it->x || p.y == it->y );
     }
@@ -666,7 +668,7 @@ int GameData::apply_connections(bool apply)
       InternalTraineeMoto::nodes_list& nodes = moto.content_;
       for (nodes_it it2 = nodes.begin(); it2 != nodes.end(); ++it2) {
 	int i;
-	for (i = 0; map[it2->x][it2->y][i] != -1; i ++){
+	for (i = 0; i < 4 && map[it2->x][it2->y][i] != -1; i ++){
 	}
 	map[it2->x][it2->y][i] = indice;
       }
