@@ -96,9 +96,9 @@ void ActionDeplacer::appliquer(GameData* g)
     InternalTraineeMoto &moto = g->motos.at(id_);
     old_len_ = moto.length();
     old_queue_ = moto.queue(from_);
+    taken_bonus_ = g->get_case(to_).bonus;
     moved_end_ = moto.move(from_, to_, taken_bonus_);
     new_queue_ = moto.queue(to_);
-    taken_bonus_ = g->get_case(to_).bonus;
 }
 
 void ActionDeplacer::annuler(GameData* g)
@@ -128,6 +128,7 @@ void ActionDeplacer::annuler(GameData* g)
     else
 	abort();
     g->get_case(to_).bonus = taken_bonus_;
+    LOG4("ActionDeplacer::annuler Put back the bonus %1", taken_bonus_);
     g->joueurs[moto.player_].use_capacity(taken_bonus_);
 }
 
