@@ -128,6 +128,7 @@ void ActionDeplacer::annuler(GameData* g)
     else
 	abort();
     g->get_case(to_).bonus = taken_bonus_;
+    g->joueurs[moto.player_].use_capacity(taken_bonus_);
 }
 
 std::vector<int> ActionDeplacer::serialiser()
