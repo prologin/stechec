@@ -539,105 +539,122 @@ void GameData::categorize_case(const position& p,
 	    src_n.insert(&src);
 	else if (src.potentiel_cur >= 0)
 	    src_p.insert(&src);
+
+	// Browse neighbor grid cells
 	for (int x = p.x - 1; x <= p.x + 1; x ++)
-	  for (int y = p.y - 1; y <= p.y + 1; y ++){
-	    if (position_invalide(x, y)) continue;
-	    if (x != p.x || y != p.y){
-	      position p2 = {x, y};
-	      categorize_case(p2, src_p, src_n, a_traiter, player, map, false);
+	    for (int y = p.y - 1; y <= p.y + 1; y ++)
+	    {
+		if (position_invalide(x, y)) continue;
+		if (x != p.x || y != p.y)
+		{
+		    position p2 = {x, y};
+		    categorize_case(p2, src_p, src_n, a_traiter, player, map, false);
+		}
 	    }
-	  }
-    }else if (!diagonale && c.nb_trainees_moto != 0){
-      for (int i = 0; map[p.x][p.y][i] != -1 && i < 4; i++){
-	int indice = map[p.x][p.y][i];
-	InternalTraineeMoto *moto = &motos[indice];
-	if (moto->player_ == player){
-	  // LOG2("moto a traiter %1 in %1", indice, p);
-	  a_traiter.push_back(moto);
+    }
+    else if (!diagonale && c.nb_trainees_moto != 0)
+    {
+	for (int i = 0; map[p.x][p.y][i] != -1 && i < 4; i++)
+	{
+	    int indice = map[p.x][p.y][i];
+	    InternalTraineeMoto *moto = &motos[indice];
+	    if (moto->player_ == player)
+	    {
+		// LOG2("moto a traiter %1 in %1", indice, p);
+		a_traiter.push_back(moto);
+	    }
 	}
-      }
     }
 }
 
-int GameData::apply_connections_group(int id_trainee, std::vector<int> &degrees, std::set<int> &deja_traitees, int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4], bool apply){
-  LOG3("APPLY CONNECTIONS GROUP");
-  if (deja_traitees.count(id_trainee) == 1) return 0;
+int GameData::apply_connections_group(int id_trainee,
+				      std::vector<int> &degrees,
+				      std::set<int> &deja_traitees,
+				      int map[TAILLE_TERRAIN][TAILLE_TERRAIN][4],
+				      bool apply)
+{
+    LOG3("APPLY CONNECTIONS GROUP");
+    if (deja_traitees.count(id_trainee) == 1) return 0;
 
-  typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
-  typedef std::set<SourceEnergie*>::iterator sources_it;
-  typedef std::set<InternalTraineeMoto*>::iterator network_it;
+    typedef InternalTraineeMoto::nodes_list::iterator nodes_it;
+    typedef std::set<SourceEnergie*>::iterator sources_it;
+    typedef std::set<InternalTraineeMoto*>::iterator network_it;
 
-  std::set<SourceEnergie*>	src_p;
-  std::set<SourceEnergie*>	src_n;
-  std::set<InternalTraineeMoto*> motos_network;
+    std::set<SourceEnergie*>	src_p;
+    std::set<SourceEnergie*>	src_n;
+    std::set<InternalTraineeMoto*> motos_network;
 
-  std::deque<InternalTraineeMoto *> a_traiter;
-  a_traiter.push_front(&motos[id_trainee]);
-  int player = motos[id_trainee].player_;
-  if (player != current_player) return 0;
-  while( 0 != a_traiter.size()){
-    InternalTraineeMoto *moto = a_traiter.front();
-    a_traiter.pop_front();
-    if (deja_traitees.count(moto->id_) == 1){
-      // LOG3("moto : %1 deja traitee...", moto->id_);
-      continue;
-    }
-
-    
-    motos_network.insert(moto);
-    LOG3("moto : %1", moto->id_);
-    deja_traitees.insert(moto->id_);
-
-    InternalTraineeMoto::nodes_list& nodes = moto->content_;
-    for (nodes_it it = nodes.begin(); it != nodes.end(); ++it)
+    std::deque<InternalTraineeMoto *> a_traiter;
+    a_traiter.push_front(&motos[id_trainee]);
+    int player = motos[id_trainee].player_;
+    if (player != current_player) return 0;
+    while( 0 != a_traiter.size())
     {
-	position p;
-	for (p.x = it->x - 1; p.x <= it->x + 1; p.x ++)
-	  for (p.y = it->y - 1; p.y <= it->y + 1; p.y ++)
-	    if (position_invalide(p.x, p.y)) continue;
-	    if (p.x != it->x || p.y != it->y)
-	      categorize_case(p, src_p, src_n, a_traiter, player, map, p.x == it->x || p.y == it->y );
-    }
-  }
-  if (src_p.empty() || src_n.empty())
-    return 0;
-  int sum_neg = 0, sum_pos = 0;
-  for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
-    {
-      sum_pos += (*it)->potentiel_cur;
-    }
-  for (sources_it it = src_n.begin(); it != src_n.end(); ++it)
-    {
-      sum_neg -= (*it)->potentiel_cur;
-    }
+	InternalTraineeMoto *moto = a_traiter.front();
+	a_traiter.pop_front();
+	if (deja_traitees.count(moto->id_) == 1)
+	{
+	    // LOG3("moto : %1 deja traitee...", moto->id_);
+	    continue;
+	}
 
-  LOG3("sum_pos = %1, sum_neg = %2", sum_pos, sum_neg);
-  
-  Joueur& joueur = joueurs[player];
-  int diff = (sum_neg > sum_pos) ? sum_pos : sum_neg;
-  
-  if (diff == 0) return 0;
-  
-  if (apply){
+	motos_network.insert(moto);
+	LOG3("moto : %1", moto->id_);
+	deja_traitees.insert(moto->id_);
 
-    for (network_it it = motos_network.begin(); it != motos_network.end(); ++it)
-      {
-	(*it)->actif = true;
-      }
-
+	InternalTraineeMoto::nodes_list& nodes = moto->content_;
+	for (nodes_it it = nodes.begin(); it != nodes.end(); ++it)
+	{
+	    position p;
+	    for (p.x = it->x - 1; p.x <= it->x + 1; p.x ++)
+		for (p.y = it->y - 1; p.y <= it->y + 1; p.y ++)
+		{
+		    if (position_invalide(p.x, p.y)) continue;
+		    if (p.x != it->x || p.y != it->y)
+			categorize_case(p, src_p, src_n, a_traiter, player, map, p.x == it->x || p.y == it->y );
+		}
+	}
+    }
+    if (src_p.empty() || src_n.empty())
+	return 0;
+    int sum_neg = 0, sum_pos = 0;
     for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
-      {
-	LOG3("consomme : %1 (%2) ", (*it)->id, (*it)->potentiel_cur);
-	degrees[(*it)->id] += 1;
-      }
+    {
+	sum_pos += (*it)->potentiel_cur;
+    }
     for (sources_it it = src_n.begin(); it != src_n.end(); ++it)
-      {
-	LOG3("consomme : %1 (%2)", (*it)->id , (*it)->potentiel_cur);
-	degrees[(*it)->id] += 1;
-      }
-    joueur.score += diff;
-  }
-  return diff;
+    {
+	sum_neg -= (*it)->potentiel_cur;
+    }
+
+    LOG3("sum_pos = %1, sum_neg = %2", sum_pos, sum_neg);
+  
+    Joueur& joueur = joueurs[player];
+    int diff = (sum_neg > sum_pos) ? sum_pos : sum_neg;
+  
+    if (diff == 0) return 0;
+  
+    if (apply)
+    {
+
+	for (network_it it = motos_network.begin(); it != motos_network.end(); ++it)
+	{
+	    (*it)->actif = true;
+	}
+
+	for (sources_it it = src_p.begin(); it != src_p.end(); ++it)
+	{
+	    LOG3("consomme : %1 (%2) ", (*it)->id, (*it)->potentiel_cur);
+	    degrees[(*it)->id] += 1;
+	}
+	for (sources_it it = src_n.begin(); it != src_n.end(); ++it)
+	{
+	    LOG3("consomme : %1 (%2)", (*it)->id , (*it)->potentiel_cur);
+	    degrees[(*it)->id] += 1;
+	}
+	joueur.score += diff;
+    }
+    return diff;
 }
 
 /*
