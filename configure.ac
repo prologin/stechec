@@ -2,7 +2,7 @@
 
 # Autconf init
 AC_PREREQ(2.59)
-AC_INIT([stechec], [3.2.3], [http://projects.nekeme.net/projects/tbt/newticket])
+AC_INIT([stechec], [3.2.3], [http://github.com/prologin/stechec-2012])
 
 # Auxiliary files
 AC_CONFIG_AUX_DIR([build-aux])
@@ -18,7 +18,7 @@ AM_CONFIG_HEADER([config.h])
 
 
 # Modules to build, by default
-modules="prolo2011"
+modules="prolo2012"
 
 # Existing modules/meta-modules
 STECHEC_ADDMODULE([prologin])
@@ -31,6 +31,7 @@ STECHEC_ADDMODULE([prolo2009])
 STECHEC_ADDMODULE([prolo2010])
 STECHEC_ADDMODULE([summer2010])
 STECHEC_ADDMODULE([prolo2011])
+STECHEC_ADDMODULE([prolo2012])
 
 # Modules dependencies
 DEPENDS=""
@@ -44,7 +45,6 @@ DEPENDS_prolo2009="prologin"
 DEPENDS_prolo2010="prologin"
 DEPENDS_summer2010="prologin"
 DEPENDS_prolo2011="prologin,python"
-
 
 # Can select which module(s) to build
 AC_MSG_CHECKING([for modules to build])
@@ -63,8 +63,8 @@ STECHEC_CONFIG_DEPENDENCY
 AC_ARG_ENABLE([debug],
         [AS_HELP_STRING([--enable-debug], [for debugging with gdb])],
         [echo "compiling in debug mode ... -ggdb3";
-         CXXFLAGS="-ggdb3 -W -Wall";
-         CFLAGS="-ggdb3 -W -Wall"])
+         CXXFLAGS="-ggdb3 -Wall -Wextra -std=c++0x";
+         CFLAGS="-ggdb3"])
 
 # to follow debian policy, don't set rpath when prefix is /usr
 AM_CONDITIONAL([USE_RPATH], [test "$prefix" != "/usr"])
@@ -164,8 +164,8 @@ EOF
 esac
 AC_SUBST([LIBDL])
 AC_SUBST([LT_NO_UNDEFINED])
-CFLAGS="$CFLAGS -pipe"
-CXXFLAGS="$CXXFLAGS -pipe"
+CFLAGS="$CFLAGS -Wall -Wextra -pipe"
+CXXFLAGS="$CXXFLAGS -Wall -Wextra -std=c++0x -pipe"
 
 # Readline (optional)
 HAVE_READLINE=no
