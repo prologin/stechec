@@ -213,8 +213,6 @@ TBT_CHECK_PTHREAD
 AC_CONFIG_FILES([
   doc/Makefile
   doc/doc.doxy
-  conf/Makefile
-  conf/config_prolo.xml
   stechec/Makefile
   stechec/base_rules/Makefile
   stechec/client/Makefile

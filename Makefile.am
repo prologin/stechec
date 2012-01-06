@@ -4,7 +4,6 @@ ACLOCAL_AMFLAGS	= -I build-aux
 
 SUBDIRS		= 				\
 	build-aux				\
-	conf					\
 	stechec					\
 	$(BUILD_bb5)				\
 	$(BUILD_prologin)

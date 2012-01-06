@@ -1,7 +1,0 @@
-usr/bin/meta_server
-usr/lib/stechec/bash/check_cheating.sh
-usr/lib/stechec/bash/compile_champion.sh
-usr/lib/stechec/bash/run_client.sh
-usr/lib/stechec/bash/run_server.sh
-usr/lib/stechec/bash/meta_cx.sh
-etc
