@@ -61,7 +61,7 @@ void CxPool<T>::addElt(T* elt)
 
   elt_list_[fd] = elt;
 
-#if HAVE_EPOOL
+#if HAVE_EPOLL
   struct epoll_event ev;
 
   ev.events = EPOLLIN;
@@ -84,7 +84,7 @@ void CxPool<T>::removeElt(T* elt)
     }
   elt_list_.erase(fd);
 
-#if HAVE_EPOOL
+#if HAVE_EPOLL
   struct epoll_event ev;
   int fd = elt->getFd();
 
@@ -115,7 +115,7 @@ const typename CxPool<T>::EltList& CxPool<T>::poll()
 
   ready_list_.clear();
 
-#if HAVE_EPOOL
+#if HAVE_EPOLL
   struct epoll_event ev[32];
 
   pthread_mutex_unlock(lock_);
@@ -192,7 +192,7 @@ const typename CxPool<T>::EltList& CxPool<T>::poll()
     if ((ev_[i].revents & POLLIN))
       {
         T* cx = elt_list_[ev_[i].fd];
-        
+
         // Read data once from fd.
         if (cx->state_ & CX_READ)
           {
