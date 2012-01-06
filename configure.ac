@@ -211,8 +211,6 @@ TBT_CHECK_PTHREAD
 # Stechec (base system) output files
 #
 AC_CONFIG_FILES([
-  doc/Makefile
-  doc/doc.doxy
   stechec/Makefile
   stechec/base_rules/Makefile
   stechec/client/Makefile

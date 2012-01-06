@@ -13,11 +13,6 @@ EXTRA_DIST	= README.stechec debian stechec.spec
 dist-hook:
 	rm -rf `find $(distdir)/debian -name .svn`
 
-# FIXME: move to stechec.
-if GENERATE_DOC
-SUBDIRS		+= doc
-endif
-
 CONFIGURE_DEPENDENCIES =			\
 	$(srcdir)/build-aux/sdl.m4		\
 	$(srcdir)/build-aux/pthreads.m4		\
