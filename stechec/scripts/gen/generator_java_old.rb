@@ -12,7 +12,7 @@
 
 
 # C++ generator, for java-interface
-class JavaCxxFileGenerator < CxxProto
+class OldJavaCxxFileGenerator < CxxProto
 
   def cxx_type(type)
     # Returns the C++ type for the provided type.
@@ -358,7 +358,7 @@ struct ProloginJavaVm javaVm;
   end
 
   def build
-    @path = Pathname.new($install_path) + "java"
+    @path = Pathname.new($install_path) + "java_old"
     @header_file = 'interface.hh'
     @source_file = 'interface.cc'
     @java_interface = 'Interface'
@@ -370,7 +370,7 @@ struct ProloginJavaVm javaVm;
 end
 
 
-class JavaFileGenerator < JavaProto
+class OldJavaFileGenerator < JavaProto
   def initialize
     super
     @lang = "java"
@@ -395,11 +395,11 @@ class JavaFileGenerator < JavaProto
   end
 
   def build
-    @path = Pathname.new($install_path) + "java"
+    @path = Pathname.new($install_path) + "java_old"
     @java_interface = 'Interface'
     @java_file = $conf['conf']['player_filename'].capitalize
 
-    JavaCxxFileGenerator.new.build
+    OldJavaCxxFileGenerator.new.build
 
     ######################################
     ##  Interface.java file generating  ##

@@ -33,7 +33,7 @@ nobase_dist_ruby_DATA =				\
 	gen/generator_c.rb			\
 	gen/generator_caml.rb			\
 	gen/generator_cxx.rb			\
-	gen/generator_java.rb			\
+	gen/generator_java_old.rb		\
 	gen/generator_pascal.rb			\
 	gen/generator_haskell.rb		\
 	gen/generator_ruby.rb			\
@@ -45,7 +45,7 @@ nobase_dist_ruby_DATA =				\
 	gen/makefile_c.rb			\
 	gen/makefile_caml.rb			\
 	gen/makefile_cxx.rb			\
-	gen/makefile_java.rb			\
+	gen/makefile_java_old.rb		\
 	gen/makefile_pascal.rb			\
 	gen/makefile_haskell.rb			\
 	gen/makefile_ruby.rb			\
