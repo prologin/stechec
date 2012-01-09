@@ -176,12 +176,10 @@ AM_CONDITIONAL([HAVE_READLINE], [test x"$HAVE_READLINE" = xyes])
 
 # SDL
 HAVE_SDL=no
-HAVE_PARAGUI=no
 case $DEPENDS in
     *sdl*) TBT_CHECK_SDL([1.2.0]) ;;
 esac
 AM_CONDITIONAL([HAVE_SDL], [test x"$HAVE_SDL" = xyes])
-AM_CONDITIONAL([HAVE_PARAGUI], [test x"$HAVE_PARAGUI" = xyes])
 
 # QT
 HAVE_QT=no
@@ -356,6 +354,5 @@ echo "
    Building modules:        ${show_modules}
    Building with readline:  ${HAVE_READLINE}
    Building with sdl:	    ${HAVE_SDL}
-   Building with paragui:   ${HAVE_PARAGUI}
    Generating doc:          ${documentation}
 "

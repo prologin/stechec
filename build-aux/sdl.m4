@@ -260,11 +260,6 @@ Warning: This is probably _not_ what you want.
       SDL_CHECK_EXT([SDL_gfx], [sdl-gfx], [SDL_rotozoom.h], [SDL_gfx], [rotozoomSurface],
           [http://www.ferzkopp.net/Software/SDL_gfx-2.0/])
 
-      # Check for Paragui, only for bb5 module.
-      case $used_modules in
-          *bb5*)  STECHEC_CHECK_PARAGUI([1.1.8]) ;;
-      esac
-
       HAVE_SDL=yes
       AC_DEFINE([HAVE_SDL], [], [Have SDL])
       AC_SUBST([SDL_CFLAGS])
