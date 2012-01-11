@@ -629,6 +629,12 @@ class JavaProto < FileGenerator
     end
   end
 
+  def camel_case(str)
+    strs = str.split("_")
+    strs.each { |s| s.capitalize! }
+    strs.join
+  end
+
   def for_each_user_fun(print_comment = true, prestr = '', &block)
     for_each_fun(print_comment, 'user_function', prestr) { |fn| block.call(fn) }
   end
@@ -653,27 +659,20 @@ class JavaProto < FileGenerator
     @f.print ")"
   end
 
-  def conv_java_type(x)
-    if x.is_a?(String) then t = @types[x] else t = x end
-    conv_java_type_aux(t, false)
-  end
+  def conv_java_type(t)
+    t = @types[t] if t.is_a?(String)
 
-  def conv_java_type_aux(t, in_generic)
     if t.is_array?
     then
-      "#{ conv_java_type_aux(t.type, false) }[]"
-    elsif t.is_struct? then
-      t.name.capitalize()
+      "#{ conv_java_type(t.type) }[]"
     elsif t.is_simple? then
       if t.name == "string" then
         "String"
-      elsif in_generic then
-        (@java_obj_types[t.name]).capitalize()
       else
         @java_types[t.name]
       end
     else
-      t.name.capitalize()
+      camel_case(t.name)
     end
   end
 end
