@@ -60,7 +60,7 @@ class JavaFileGenerator < JavaProto
     end
 
     @f.puts "public class #{@java_interface}", "{"
-    build_constants
+    build_constants '  '
     for_each_fun(true, 'function', '  ') do |f|
       print_proto("  public static native", f)
       @f.puts ";"

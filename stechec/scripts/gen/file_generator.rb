@@ -243,10 +243,10 @@ to the script file : gen/" + script
     @f.puts
   end
 
-  def build_constants
+  def build_constants(prestr = '')
     $conf['constant'].delete_if {|x| x['doc_extra'] }
     $conf['constant'].each do |x|
-      print_multiline_comment(x['cst_comment'])
+      print_multiline_comment(x['cst_comment'], prestr)
       print_constant(x['cst_type'], x['cst_name'], x['cst_val'])
       @f.puts "\n"
     end
@@ -324,11 +324,11 @@ class CProto < FileGenerator
     @f.puts '/* ' + str + ' */' if str
   end
 
-  def print_multiline_comment(str)
+  def print_multiline_comment(str, prestr = '')
     return unless str
-    @f.puts '/*!'
-    str.each_line {|s| @f.print '** ', s }
-    @f.puts "", "*/"
+    @f.puts prestr + '/*!'
+    str.each_line {|s| @f.print prestr + '** ', s }
+    @f.puts "", prestr + "*/"
   end
 
   def print_include(file, std_path = false)
@@ -456,12 +456,12 @@ class CxxProto < CProto
     @f.puts '// ' + str if str
   end
 
-  def print_multiline_comment(str)
+  def print_multiline_comment(str, prestr = '')
     return unless str
-    @f.puts '///'
-    str.each_line {|s| @f.print '// ', s }
+    @f.puts prestr + '///'
+    str.each_line {|s| @f.print prestr + '// ', s }
     # @f.puts
-    @f.puts "", "//"
+    @f.puts "", prestr + "//"
   end
 
   def print_empty_arg
