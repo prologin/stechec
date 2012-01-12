@@ -45,6 +45,7 @@ DEPENDS_prolo2009="prologin"
 DEPENDS_prolo2010="prologin"
 DEPENDS_summer2010="prologin"
 DEPENDS_prolo2011="prologin,python"
+DEPENDS_prolo2012="prologin,python"
 
 # Can select which module(s) to build
 AC_MSG_CHECKING([for modules to build])
@@ -109,6 +110,20 @@ AC_ARG_ENABLE([documentation],
     [documentation=no]
 )
 AM_CONDITIONAL([GENERATE_DOC], [test "$documentation" = "yes"])
+
+# Subject generation with sphinx (used in prolo2012)
+AC_ARG_ENABLE([subject],
+    [AS_HELP_STRING([--enable-subject], [enable subject generation])],
+    [subject=yes],
+    [subject=no])
+
+AM_CONDITIONAL([GENERATE_SUBJECT], [test "$subject" = "yes"])
+
+if test "$subject" = "yes"; then
+    # Sphinx
+    AC_CHECK_PROGS([SPHINX], [sphinx-build], [`$am_aux_dir/missing sphinx-build`])
+    AC_ARG_VAR([SPHINX], [Sphinx documentation generator])
+fi
 
 # Libtool
 AC_DISABLE_STATIC
@@ -336,6 +351,14 @@ AC_CONFIG_FILES([
 ])
 fi
 
+if test x$BUILD_prolo2012 != x; then
+AC_CONFIG_FILES([
+  prologin/prolo2012/Makefile
+  prologin/prolo2012/subject/Makefile
+  prologin/prolo2012/data/Makefile
+])
+fi
+
 fi # !BUILD_prologin
 
 AC_OUTPUT
@@ -356,4 +379,5 @@ echo "
    Building with readline:  ${HAVE_READLINE}
    Building with sdl:	    ${HAVE_SDL}
    Generating doc:          ${documentation}
+   Generating subject:      ${subject}
 "

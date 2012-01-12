@@ -56,6 +56,7 @@ nobase_dist_ruby_DATA =				\
 	gen/makefile_cs.rb			\
 	gen/make_rules.rb			\
 	gen/make_tex.rtex			\
+	gen/make_sphinx.rsphinx			\
 	rules_test.rb
 
 nodist_ruby_DATA =				\

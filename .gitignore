@@ -61,3 +61,6 @@ prologin/prolo2010/rules/prolo2010
 prologin/prolo2010/opa/_build
 
 prologin/prolo2011/gui/paths.py
+
+prologin/prolo2012/subject/subject
+prologin/prolo2012/subject/source/api.rst

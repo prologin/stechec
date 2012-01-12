@@ -11,4 +11,5 @@ SUBDIRS += 					\
 	$(BUILD_prolo2009)			\
 	$(BUILD_prolo2010)			\
 	$(BUILD_summer2010)			\
-	$(BUILD_prolo2011)
+	$(BUILD_prolo2011)			\
+	$(BUILD_prolo2012)
