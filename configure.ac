@@ -62,9 +62,9 @@ STECHEC_CONFIG_DEPENDENCY
 
 AC_ARG_ENABLE([debug],
         [AS_HELP_STRING([--enable-debug], [for debugging with gdb])],
-        [echo "compiling in debug mode ... -ggdb3";
-         CXXFLAGS="-ggdb3 -Wall -Wextra -std=c++0x";
-         CFLAGS="-ggdb3"])
+        [echo "compiling in debug mode ... -g";
+         CXXFLAGS="-g";
+         CFLAGS="-g"])
 
 # to follow debian policy, don't set rpath when prefix is /usr
 AM_CONDITIONAL([USE_RPATH], [test "$prefix" != "/usr"])
