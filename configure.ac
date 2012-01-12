@@ -121,9 +121,8 @@ AM_CONDITIONAL([GENERATE_SUBJECT], [test "$subject" = "yes"])
 
 if test "$subject" = "yes"; then
     # Sphinx
-    AC_CHECK_PROGS([SPHINX], [sphinx-build], [`$am_aux_dir/missing sphinx-build`])
+    AC_CHECK_PROGS([SPHINX], [sphinx-build], [`$am_aux_dir/missing sphinx-build`; exit 1])
     AC_ARG_VAR([SPHINX], [Sphinx documentation generator])
-    exit 1
 fi
 
 # Libtool
