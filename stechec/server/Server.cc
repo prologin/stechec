@@ -10,8 +10,6 @@
 ** Copyright (C) 2006, 2007 Prologin
 */
 
-#include <signal.h>
-
 #include "tools.hh"
 #include "misc/Conf.hh"
 #include "datatfs/TcpCx.hh"
@@ -20,29 +18,14 @@
 
 BEGIN_NS(server);
 
-
-Server* Server::inst = NULL;
-
 Server::Server(ConfFile& cfg_file, const ConfSection* cfg)
   : cfg_file_(cfg_file),
     cfg_(cfg),
     cl_pool_(1500),
-    server_shutdown_(0),
-    server_shutdown_reset_(2)
+    shutdown_(0),
+    shutdown_timer_(2)
 {
-  // Singleton.
-  assert(inst == NULL);
-  inst = this;
   pthread_mutex_init(&lock_, NULL);
-
-  // Catch ctl-c, to properly shutdown the server.
-  struct sigaction act;
-  int netbsdsuck;
-  netbsdsuck = sigemptyset(&act.sa_mask);
-  act.sa_handler = &Server::wantShutdown;
-  act.sa_flags = 0;
-  sigaction(SIGINT, &act, NULL);
-
 }
 
 Server::~Server()
@@ -52,37 +35,12 @@ Server::~Server()
   for (it = rules_.begin(); it != rules_.end(); ++it)
     delete it->second;
 
-  inst = NULL;
   pthread_mutex_destroy(&lock_);
 }
 
-
-// Ctl-C was pressed, shutdown it after all games were finished.
-void Server::wantShutdown(int)
-{
-  if (inst->server_shutdown_ == 0 || inst->server_shutdown_reset_.isTimeElapsed())
-    {
-      LOG1("Shutdown requested. Will stop when everybody will be disconnected.");
-      inst->server_shutdown_ = 1;
-      inst->server_shutdown_reset_.restart();
-    }
-  else if (inst->server_shutdown_ == 1)
-    {
-      LOG1("Ok, next press on Ctl-C will kill the server");
-      inst->server_shutdown_ = 2;
-    }
-  else
-    {
-      WARN("Seems you really want to exit... Killing everything.");
-      exit(1);
-    }
-}
-
-
-
 bool Server::checkServerState(Cx* cx)
 {
-  if (server_shutdown_)
+  if (shutdown_)
     {
       LOG2("Connection from %1 has been rejected. Server is shutdowning.", *cx);
       CxDeny denial;
@@ -350,11 +308,11 @@ bool    Server::cleanFinishedGame()
 
 // Handle listening socket, and all clients that hasn't join a
 // game yet.
-void        Server::run()
+void    Server::run()
 {
-  TcpCx		listen_socket;
-  Timer		wait_timeout(0);
-  int           port;
+  TcpCx listen_socket;
+  Timer wait_timeout(0);
+  int   port;
 
   is_persistent_ = cfg_->getValue<bool>("persistent");
   if (!is_persistent_)
@@ -362,7 +320,7 @@ void        Server::run()
   if (wait_timeout.getAllowedTime() > 0)
     {
       LOG3("Will wait for `%1' second that a game begin before exiting",
-	   wait_timeout.getAllowedTime());
+        wait_timeout.getAllowedTime());
       wait_timeout.start();
     }
 
@@ -372,7 +330,7 @@ void        Server::run()
 
   cl_pool_.addElt(&listen_socket);
 
-  while (!server_shutdown_ || !games_.empty() || cl_pool_.size() > 1)
+  while (!shutdown_ || !games_.empty() || cl_pool_.size() > 1)
     {
       CxPool<Cx>::ConstEltIter it;
       const CxPool<Cx>::EltList& ready_list(cl_pool_.poll());
@@ -407,6 +365,26 @@ void        Server::run()
 	break;
     }
   LOG1("Server has finished its work. Exiting.");
+}
+
+void Server::shutdown()
+{
+  if (shutdown_ == 0 || shutdown_timer_.isTimeElapsed())
+  {
+    LOG1("Shutdown requested. Will stop when everybody will be disconnected.");
+    shutdown_ = 1;
+    shutdown_timer_.restart();
+  }
+  else if (shutdown_ == 1)
+  {
+    LOG1("Ok, next press on Ctl-C will kill the server");
+    shutdown_ = 2;
+  }
+  else
+  {
+    WARN("Seems you really want to exit... Killing everything.");
+    exit(EXIT_FAILURE);
+  }
 }
 
 END_NS(server);

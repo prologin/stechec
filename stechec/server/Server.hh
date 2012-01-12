@@ -43,11 +43,12 @@ public:
   ~Server();
 
   //! @brief Run the server, never ending function...
-  void          run();
+  void run();
+
+  void shutdown();
 
 private:
   bool          cleanFinishedGame();
-  static void   wantShutdown(int signal);
 
   // These functions check client before accepting it. Return false if
   // it should be discarded.
@@ -60,8 +61,6 @@ private:
   bool          serveInitPacket(Client* cl, Packet* pkt);
   void          receivePacket(Cx* cx);
   void          serveNewConnection(TcpCx* cxl);
-
-  static Server*                inst;
 
   ConfFile&                     cfg_file_;
   const ConfSection*            cfg_;
@@ -87,11 +86,11 @@ private:
   ClientList                    cl_;
   CxPool<Cx>                    cl_pool_;
 
-  int                           server_shutdown_;
-  Timer				server_shutdown_reset_;
+  int                           shutdown_;
+  Timer                         shutdown_timer_;
   bool                          is_persistent_;
 
-  pthread_mutex_t		lock_;
+  pthread_mutex_t               lock_;
 };
 
 END_NS(server);

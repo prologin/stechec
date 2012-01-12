@@ -10,9 +10,62 @@
 ** Copyright (C) 2006, 2007 Prologin
 */
 
+#include <signal.h>
+#include <memory>
+
 #include "misc/Conf.hh"
 #include "Server.hh"
 
+typedef std::unique_ptr<server::Server> server_ptr;
+static server_ptr server_;
+
+static void parse_config(int argc, char** argv, ConfFile& cfg_file);
+static void interrupt_handler(int);
+
+int main(int argc, char** argv)
+{
+  Log main_log(3);
+  ConfFile cfg_file(argc, argv);
+  ConfSection* cfg_server;
+
+  try {
+    parse_config(argc, argv, cfg_file);
+    cfg_server = cfg_file.getSection("server");
+  } catch (const ConfException& e) {
+    ERR("Error loading configuration: %1", e.what());
+    return 69;
+  }
+
+  try {
+    main_log.setVerboseLevel(cfg_server->getValue<int>("server_verbose"));
+    main_log.setPrintLoc(cfg_server->getValue<bool>("server_verbose_location"));
+    server_ = server_ptr(new server::Server(cfg_file, cfg_server));
+
+    // Catch ctl-c, to properly shutdown the server.
+    struct sigaction act;
+    if (sigemptyset(&act.sa_mask) == -1)
+      WARN("Could not empty sigaction mask");
+    act.sa_handler = &interrupt_handler;
+    act.sa_flags = 0;
+    if (sigaction(SIGINT, &act, NULL) == -1)
+      WARN("Could not place SIGINT handler");
+
+    server_->run();
+  } catch (const NetError& e) {
+    ERR("Uncatched network error: %1", e);
+    return 51;
+  } catch (const ConfException& e) {
+    ERR("%1", e);
+    return 52;
+  } catch (const LibraryError&) {
+    return 53;
+  } catch (...) {
+    ERR("Uncatched error");
+    return 54;
+  }
+
+  return 0;
+}
 
 // Parse xml configuration file.
 static void parse_config(int argc, char** argv,
@@ -91,38 +144,7 @@ static void parse_config(int argc, char** argv,
   cfg_file.setDefaultEntries("server", def);
 }
 
-
-int main(int argc, char** argv)
+static void interrupt_handler(int)
 {
-  Log main_log(3);
-  ConfFile cfg_file(argc, argv);
-  ConfSection* cfg_server;
-
-  try {
-    parse_config(argc, argv, cfg_file);
-    cfg_server = cfg_file.getSection("server");
-  } catch (const ConfException& e) {
-    ERR("Error loading configuration: %1", e.what());
-    return 69;
-  }
-
-  try {
-    main_log.setVerboseLevel(cfg_server->getValue<int>("server_verbose"));
-    main_log.setPrintLoc(cfg_server->getValue<bool>("server_verbose_location"));
-    server::Server s(cfg_file, cfg_server);
-    s.run();
-  } catch (const NetError& e) {
-    ERR("Uncatched network error: %1", e);
-    return 51;
-  } catch (const ConfException& e) {
-    ERR("%1", e);
-    return 52;
-  } catch (const LibraryError&) {
-    return 53;
-  } catch (...) {
-    ERR("Uncatched error");
-    return 54;
-  }
-
-  return 0;
+  server_->shutdown();
 }
