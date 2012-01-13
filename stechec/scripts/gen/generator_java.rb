@@ -200,18 +200,10 @@ class JavaFileGenerator < JavaProto
 lib_TARGETS = #{target}
 
 #{target}-srcs = Interface.java Prologin.java
-#{target}-cxxflags = -I. -ggdb3
+#{target}-cxxflags = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -ggdb3
 
 # Evite de toucher a ce qui suit
 EOF
-    @f.print "#{target}-jclassopt ="
-    $conf['struct'].each do |x|
-        @f.print " ", x['str_name'].capitalize, ".class"
-    end
-    $conf['enum'].each do |x|
-       @f.print " ", x['enum_name'].capitalize, ".class"
-    end
-    @f.puts
     @f.print <<-EOF
 #{target}-dists = interface.hh
 #{target}-srcs += interface.cc ../includes/main.cc
