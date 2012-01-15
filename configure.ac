@@ -2,7 +2,7 @@
 
 # Autconf init
 AC_PREREQ(2.59)
-AC_INIT([stechec], [3.2.3], [http://github.com/prologin/stechec-2012])
+AC_INIT([stechec], [2012], [http://bitbucket.org/prologin/stechec])
 
 # Auxiliary files
 AC_CONFIG_AUX_DIR([build-aux])
