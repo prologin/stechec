@@ -19,7 +19,7 @@
 typedef std::unique_ptr<server::Server> server_ptr;
 static server_ptr server_;
 
-static void parse_config(int argc, char** argv, ConfFile& cfg_file);
+static void get_config(int argc, char** argv, ConfFile& cfg_file);
 static void interrupt_handler(int);
 
 int main(int argc, char** argv)
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
   ConfSection* cfg_server;
 
   try {
-    parse_config(argc, argv, cfg_file);
+    get_config(argc, argv, cfg_file);
     cfg_server = cfg_file.getSection("server");
   } catch (const ConfException& e) {
     ERR("Error loading configuration: %1", e.what());
@@ -67,9 +67,9 @@ int main(int argc, char** argv)
   return 0;
 }
 
-// Parse xml configuration file.
-static void parse_config(int argc, char** argv,
-                         ConfFile& cfg_file)
+// Get configuration
+static void get_config(int argc, char** argv,
+                       ConfFile& cfg_file)
 {
   ConfSection::RegList def;
   ConfSection* cfg;

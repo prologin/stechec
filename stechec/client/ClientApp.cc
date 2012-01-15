@@ -15,6 +15,7 @@
 # include <SDL.h>
 #endif // !HAVE_SDL
 
+#include <cstdlib>
 #include "tools.hh"
 #include "datatfs/Cx.hh"
 #include "ClientApp.hh"
@@ -102,16 +103,16 @@ void ClientApp::parseConfig()
   cfg_ = cfg_file_.parseCmdLine("client", opt);
 
   if (cfg_->exist("help") && cfg_->getValue<bool>("help"))
-    {
-      showHelp(argv_[0], opt);
-      exit(0);
-    }
+  {
+    showHelp(argv_[0], opt);
+    exit(EXIT_SUCCESS);
+  }
 
   if (cfg_->exist("version") && cfg_->getValue<bool>("version"))
-    {
-      showVersion();
-      exit(0);
-    }
+  {
+    showVersion();
+    exit(EXIT_SUCCESS);
+  }
 
   client_gid_ = 1;
   if (cfg_->exist("id"))
@@ -171,50 +172,51 @@ int ClientApp::runApp()
 
   try {
     while (ret_value == 0)
+    {
+      if ((ret_value = showMenu()))
+        break;
+
+      // FIXME: doesn't work right now, let it false.
+      // bool replay_log = cfg.getAttr<bool>("client", "mode", "replay");
+      bool replay_log = false;
+
+      // Load rules.
+      rules_ = rules_loader_.loadRules(&cfg_file_, cfg_);
+      ccx_.setRules(rules_);
+      ccx_.setClientGameId(client_gid_);
+
+      // Try connecting, if not done yet.
+      if (!ccx_.isConnected())
       {
-	if ((ret_value = showMenu()))
-	  break;
-
-	// FIXME: doesn't work right now, let it false.
-	// bool replay_log = cfg.getAttr<bool>("client", "mode", "replay");
-	bool replay_log = false;
-
-	// Load rules.
-	rules_ = rules_loader_.loadRules(&cfg_file_, cfg_);
-	ccx_.setRules(rules_);
-	ccx_.setClientGameId(client_gid_);
-
-	// Try connecting, if not done yet.
-	if (!ccx_.isConnected())
-	  if (!ccx_.connect(*cfg_))
-	    {
-	      ret_value = 21;
-	      break;
-	    }
-
-	// Join the game.
-	if (!ccx_.join(*cfg_, rules_loader_.getModuleDesc()))
-	  {
-	    ret_value = 22;
-	    break;
-	  }
-
-	if (replay_log)
-	  {
-	    // Log replay. Open the file, and play.
-	    ccx_.openLog(cfg_->getValue<std::string>("log"));
-	    ret_value = onPlay(true);
-	  }
-	else
-	  {
-	    // Normal game.
-	    ret_value = onPlay(false);
-	  }
-	ccx_.disconnect(false);
-
+        if (!ccx_.connect(*cfg_))
+        {
+          ret_value = 21;
+          break;
+        }
       }
+
+      // Join the game.
+      if (!ccx_.join(*cfg_, rules_loader_.getModuleDesc()))
+      {
+        ret_value = 22;
+        break;
+      }
+
+      if (replay_log)
+      {
+        // Log replay. Open the file, and play.
+        ccx_.openLog(cfg_->getValue<std::string>("log"));
+        ret_value = onPlay(true);
+      }
+      else
+      {
+        // Normal game.
+        ret_value = onPlay(false);
+      }
+      ccx_.disconnect(false);
+    }
   } catch (const NetError& e) {
-    ERR("Network: %1", e);
+    ERR("Network: %1", e.what());
     return 50;
   } catch (const LibraryError&) {
     return 52;
