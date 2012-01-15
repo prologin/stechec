@@ -25,7 +25,6 @@ Server::Server(ConfFile& cfg_file, const ConfSection* cfg)
     shutdown_(0),
     shutdown_timer_(2)
 {
-  pthread_mutex_init(&lock_, NULL);
 }
 
 Server::~Server()
@@ -34,20 +33,19 @@ Server::~Server()
 
   for (it = rules_.begin(); it != rules_.end(); ++it)
     delete it->second;
-
-  pthread_mutex_destroy(&lock_);
 }
 
 bool Server::checkServerState(Cx* cx)
 {
   if (shutdown_)
-    {
-      LOG2("Connection from %1 has been rejected. Server is shutdowning.", *cx);
-      CxDeny denial;
-      stringToPacket(denial.reason, "Server is shutdowning", 64);
-      cx->send(denial);
-      return false;
-    }
+  {
+    LOG2("Connection from %1 has been rejected. Server is shutting down.", *cx);
+    CxDeny denial;
+    stringToPacket(denial.reason, "Server is shutting down", 64);
+    cx->send(denial);
+    return false;
+  }
+
   return true;
 }
 
@@ -55,18 +53,7 @@ bool Server::checkServerState(Cx* cx)
 // If it's bad, the connection is closed right now.
 bool Server::checkRemoteTCP(TcpCx* cx)
 {
-  bool  bad = false;
-
-  // FIXME: do that, check for bad guys.
-
-  if (bad)
-    {
-      LOG3("Connection from %1 has been rejected.", *cx);
-      CxDeny denial;
-      stringToPacket(denial.reason, "I don't like you.", 64);
-      cx->send(denial);
-      return false;
-    }
+  // TODO: Check for bad guys
 
   LOG4("Connection from '%1` has been accepted.", *cx);
   Packet acpt(CX_ACCEPT);
@@ -77,21 +64,22 @@ bool Server::checkRemoteTCP(TcpCx* cx)
 bool Server::checkRemoteVersion(Cx* cx, const CxInit& pkt)
 {
   if (pkt.binary_version != STECHEC_BINARY_VERSION)
-    {
-      std::ostringstream os;
-      os << "Binary version mismatch: server is `" << STECHEC_BINARY_VERSION;
-      os << "', client is `" << pkt.binary_version << "'";
-      LOG3("Connection from %1 has been rejected, reason:", *cx);
-      LOG3(" - %1", os.str());
-      CxDeny pkt_deny;
-      stringToPacket(pkt_deny.reason, os.str(), 64);
-      cx->send(pkt_deny);
-      return false;
-    }
+  {
+    std::ostringstream os;
+    os << "Binary version mismatch: server is `" << STECHEC_BINARY_VERSION
+       << "', client is `" << pkt.binary_version << "'";
+
+    LOG3("Connection from %1 has been rejected, reason:", *cx);
+    LOG3(" - %1", os.str());
+
+    CxDeny pkt_deny;
+    stringToPacket(pkt_deny.reason, os.str(), 64);
+    cx->send(pkt_deny);
+    return false;
+  }
+
   return true;
 }
-
-
 
 // Send to the client the list of active games.
 bool Server::serveGameList(Client* cl, Packet*)

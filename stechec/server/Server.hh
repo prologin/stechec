@@ -89,8 +89,6 @@ private:
   int                           shutdown_;
   Timer                         shutdown_timer_;
   bool                          is_persistent_;
-
-  pthread_mutex_t               lock_;
 };
 
 END_NS(server);
