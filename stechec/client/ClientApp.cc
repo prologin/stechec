@@ -17,7 +17,7 @@
 
 #include <cstdlib>
 #include "tools.hh"
-#include "datatfs/Cx.hh"
+#include "net/Cx.hh"
 #include "ClientApp.hh"
 #include "ChampionLoader.hh"
 

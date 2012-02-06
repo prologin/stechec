@@ -29,16 +29,16 @@ libtools_la_SOURCES +=				\
 	logger/log.hh
 
 libtools_la_SOURCES +=				\
-	datatfs/Cx.hh				\
-	datatfs/Cx.cc				\
-	datatfs/CxPool.hh			\
-	datatfs/CxPool.hxx			\
-	datatfs/TcpCx.hh			\
-	datatfs/TcpCx.cc			\
-	datatfs/FileCx.hh			\
-	datatfs/FileCx.cc			\
-	datatfs/Packet.hh			\
-	datatfs/Packet.cc
+	net/Cx.hh				\
+	net/Cx.cc				\
+	net/CxPool.hh				\
+	net/CxPool.hxx				\
+	net/TcpCx.hh				\
+	net/TcpCx.cc				\
+	net/FileCx.hh				\
+	net/FileCx.cc				\
+	net/Packet.hh				\
+	net/Packet.cc
 
 libtools_la_CXXFLAGS	=			\
 	-DMODULE_NAME=\"tools\"			\

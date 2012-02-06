@@ -14,7 +14,7 @@
 ** The TBT Team consists of people listed in the `AUTHORS' file.
 */
 
-#include "datatfs/Cx.hh"
+#include "net/Cx.hh"
 #include "BaseRules.hh"
 
 BaseRules::BaseRules(int team_number)

@@ -17,7 +17,7 @@
 # include <string>
 
 # include "tools.hh"
-# include "datatfs/CxPool.hh"
+# include "net/CxPool.hh"
 # include "GameHosting.hh"
 
 //! @brief Maximum number of coachs + spectators connected on server.

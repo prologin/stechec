@@ -12,7 +12,7 @@
 
 #include "tools.hh"
 #include "misc/Conf.hh"
-#include "datatfs/TcpCx.hh"
+#include "net/TcpCx.hh"
 #include "Client.hh"
 #include "Server.hh"
 

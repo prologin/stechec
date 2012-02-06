@@ -11,7 +11,7 @@
 */
 
 #include "misc/Conf.hh"
-#include "datatfs/FileCx.hh"
+#include "net/FileCx.hh"
 #include "Server.hh"
 #include "Client.hh"
 #include "GameHosting.hh"

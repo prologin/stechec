@@ -14,7 +14,7 @@
 # define GAME_HOSTING_HH_
 
 # include "tools.hh"
-# include "datatfs/CxPool.hh"
+# include "net/CxPool.hh"
 # include "BaseSRules.hh"
 # include "PacketSender.hh"
 

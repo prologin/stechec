@@ -11,8 +11,8 @@
 */
 
 #include "tools.hh"
-#include "datatfs/FileCx.hh"
-#include "datatfs/TcpCx.hh"
+#include "net/FileCx.hh"
+#include "net/TcpCx.hh"
 #include "misc/Conf.hh"
 #include "ClientCx.hh"
 

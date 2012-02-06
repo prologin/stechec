@@ -91,7 +91,7 @@ END_NS(server);
 ** Implementation.
 */
 
-# include "datatfs/Cx.hh"
+# include "net/Cx.hh"
 
 BEGIN_NS(server);
 

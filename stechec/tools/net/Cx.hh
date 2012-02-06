@@ -13,7 +13,7 @@
 #ifndef CX_HH_
 # define CX_HH_
 
-# include "datatfs/Packet.hh"
+# include "net/Packet.hh"
 # include "misc/Exception.hh"
 
 //! @ingroup tools_net
